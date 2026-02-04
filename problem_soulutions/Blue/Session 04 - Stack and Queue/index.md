@@ -10,73 +10,33 @@ This session covers stack and queue data structures, including LIFO/FIFO operati
 
 ## Problems
 
-### Compilers and parsers (Codechef)
+### Compilers and Parsers
 
+#### Problem Information
+- **Source:** CodeChef
+- **Problem Code:** COMPILER
+- **Difficulty:** Easy
+- **URL:** https://www.codechef.com/problems/COMPILER
+
+#### Problem Statement
+Lira is designing a language L++ where expressions consist of "<" and ">" characters. For an expression to be valid, a "<" symbol must always have a corresponding ">" character somewhere after it. Each ">" symbol should correspond to exactly one "<" symbol.
+
+Given some expressions, find the length of the longest prefix of each expression that is valid.
+
+#### Input Format
+- First line: T (number of test cases)
+- Next T lines: One expression per line
+
+#### Output Format
+For each expression, output the length of the longest valid prefix, or 0 if there's no such prefix.
+
+#### Solution
+
+##### Approach
+Use a stack to track unmatched "<" characters. Pop when ">" is encountered. Track the longest valid prefix when the stack is empty.
+
+##### Python Solution
 ```python
-# Compilers and parsers Problem Code: COMPILER
-# https://www.codechef.com/problems/COMPILER
-
-# Lira is now very keen on compiler development. :)
-#
-# She knows that one of the most important components of a compiler, is its parser.
-#
-#     A parser is, in simple terms, a software component that processes text, and checks it's semantic correctness, or, if you prefer, if the text is properly built.
-#
-# As an example, in declaring and initializing an integer, in C/C++, you can't do something like:
-#
-# int = x ;4
-#
-# as the semantics of such statement is incorrect, as we all know that the datatype must precede an identifier and only afterwards should come the equal sign and the initialization value, so, the corrected statement should be:
-#
-# int x = 4;
-#
-# Today, Lira is concerned with an abstract instruction which is composed of the characters "<" and ">" , which she will use on the design of her language, L++ :D.
-#
-#                                                                                                                                                                    She is using it as an abstraction for generating XML code Tags in an easier fashion and she understood that, for an expression to be valid, a "<" symbol must always have a corresponding ">" character somewhere (not necessary immediately) after it. Moreover, each ">" symbol should correspond to exactly one "<" symbol.
-#
-# So, for instance, the instructions:
-#
-#     <<>>
-#
-# <>
-#
-# <><>
-#
-# are all valid. While:
-#
-# >>
-#
-# ><><
-#
-# are not.
-#
-# Given some expressions which represent some instructions to be analyzed by Lira's compiler, you should tell the length of the longest prefix of each of these expressions that is valid, or 0 if there's no such a prefix.
-#
-#     Input
-# Input will consist of an integer T denoting the number of test cases to follow.
-#
-#                                                                             Then, T strings follow, each on a single line, representing a possible expression in L++.
-#
-# Output
-# For each expression you should output the length of the longest prefix that is valid or 0 if there's no such a prefix.
-# Constraints
-# 1 ≤ T ≤ 500
-# 1 ≤ The length of a single expression ≤ 106
-# The total size all the input expressions is no more than 5*106
-#
-#
-# Example
-# Input:
-# 3
-# <<>>
-# ><
-# <>>>
-# Output:
-# 4
-# 0
-# 2
-
-
 T = int(input())
 
 results = []
@@ -103,61 +63,37 @@ for i in range(T):
 print(*results, sep='\n')
 ```
 
-### 644B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through each expression
+- **Space Complexity:** O(n) - stack size at most n/2
 
+---
+
+### Processing Time
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 644B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/644/B
+
+#### Problem Statement
+Simulate a one-thread server processing n queries. Each query arrives at time ti and needs di time to process. The server has a queue of size b. If the queue is full, queries are rejected. Determine when each query finishes processing or if it's rejected.
+
+#### Input Format
+- First line: n b (number of queries, queue size)
+- Next n lines: ti di (arrival time and processing duration for each query)
+
+#### Output Format
+For each query, output the finish time or -1 if rejected.
+
+#### Solution
+
+##### Approach
+Use a queue to simulate the server's pending requests. Process queries as they arrive and track when each completes.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/644/B
-
-# In this problem you have to simulate the workflow of one-thread server. There are n queries to process, the i-th will be received at moment ti and needs to be processed for di units of time. All ti are guaranteed to be distinct.
-#
-# When a query appears server may react in three possible ways:
-#
-# If server is free and query queue is empty, then server immediately starts to process this query.
-# If server is busy and there are less than b queries in the queue, then new query is added to the end of the queue.
-# If server is busy and there are already b queries pending in the queue, then new query is just rejected and will never be processed.
-# As soon as server finished to process some query, it picks new one from the queue (if it's not empty, of course). If a new query comes at some moment x, and the server finishes to process another query at exactly the same moment, we consider that first query is picked from the queue and only then new query appears.
-#
-# For each query find the moment when the server will finish to process it or print -1 if this query will be rejected.
-#
-# Input
-# The first line of the input contains two integers n and b (1 ≤ n, b ≤ 200 000) — the number of queries and the maximum possible size of the query queue.
-#
-# Then follow n lines with queries descriptions (in chronological order). Each description consists of two integers ti and di (1 ≤ ti, di ≤ 109), where ti is the moment of time when the i-th query appears and di is the time server needs to process it. It is guaranteed that ti - 1 < ti for all i > 1.
-#
-# Output
-# Print the sequence of n integers e1, e2, ..., en, where ei is the moment the server will finish to process the i-th query (queries are numbered in the order they appear in the input) or  - 1 if the corresponding query will be rejected.
-#
-# Examples
-# input
-# 5 1
-# 2 9
-# 4 8
-# 10 9
-# 15 2
-# 19 1
-# output
-# 11 19 -1 21 22
-# input
-# 4 1
-# 2 8
-# 4 8
-# 10 9
-# 15 2
-# output
-# 10 18 27 -1
-# Note
-# Consider the first sample.
-#
-# The server will start to process first query at the moment 2 and will finish to process it at the moment 11.
-# At the moment 4 second query appears and proceeds to the queue.
-# At the moment 10 third query appears. However, the server is still busy with query 1, b = 1 and there is already query 2 pending in the queue, so third query is just rejected.
-# At the moment 11 server will finish to process first query and will take the second query from the queue.
-# At the moment 15 fourth query appears. As the server is currently busy it proceeds to the queue.
-# At the moment 19 two events occur simultaneously: server finishes to proceed the second query and the fifth query appears. As was said in the statement above, first server will finish to process the second query, then it will pick the fourth query from the queue and only then will the fifth query appear. As the queue is empty fifth query is proceed there.
-# Server finishes to process query number 4 at the moment 21. Query number 5 is picked from the queue.
-# Server finishes to process query number 5 at the moment 22.
-
 import queue
 
 n, b = map(int, input().split())
@@ -182,57 +118,36 @@ while waiting_queue.qsize() > 0:
 print(*result, sep=' ')
 ```
 
-### MMASS (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - each query is processed once
+- **Space Complexity:** O(b) - queue size limited to b
 
+---
+
+### Mass of Molecule
+
+#### Problem Information
+- **Source:** SPOJ
+- **Problem Code:** MMASS
+- **Difficulty:** Medium
+- **URL:** https://www.spoj.com/problems/MMASS/
+
+#### Problem Statement
+Calculate the mass of a molecule from its chemical formula. The formula consists of H (mass 1), C (mass 12), O (mass 16), parentheses for grouping, and numbers 2-9 for multipliers. Calculate the total mass of the molecule.
+
+#### Input Format
+A single line containing the chemical formula.
+
+#### Output Format
+The total mass of the molecule.
+
+#### Solution
+
+##### Approach
+Use a stack to handle nested parentheses. Process the formula character by character, multiplying masses when digits are encountered.
+
+##### Python Solution
 ```python
-# Problem from SPOJ
-# https://www.spoj.com/problems/MMASS/
-
-# MMASS - Mass
-# of
-# Molecule
-# # ad-hoc-1
-# English
-# Vietnamese
-# A molecule can be defined as a sequence of atoms and represented by a chemical formula consisting of letters denoting these atoms. E.g. letter H denotes atom of hydrogen, C denotes atom of carbon, O denotes atom of oxygen, formula COOH represents molecule consisting of one atom of carbon, two atoms of oxygen and one atom of hydrogen.
-#
-# To write some formulas efficiently, we use the following rules. Letters denoting some atoms can be grouped by enclosing in parentheses, e.g. formula CH(OH) contains group OH. Groups can be nested – a group can also contain other groups. To simplify a formula, consecutive occurrences of the same letter can be replaced with that letter followed by a number of these occurrences. E.g. formula COOHHH can be written as CO2H3 and it represents a molecule consisting of one atom of carbon, two atoms of oxygen and three atoms of hydrogen. Furthermore, consecutive occurrences of the same group can be replaced with that group followed by a number of these occurrences. E.g. formula CH (CO2H) (CO2H) (CO2H) can be written as CH(CO2H)3 and molecule represented by both those formulas consists of four atoms of carbon, four atoms of hydrogen and six atoms of oxygen. A number written after a letter or a group is always greater than or equal to 2 and less than or equal to 9. A mass of a molecule is a sum of masses of all its atoms. One atom of hydrogen has mass 1, one atom of carbon has mass 12 and one atom of oxygen has mass 16.
-#
-# Write a program that will calculate a mass of a molecule.
-#
-# Input
-# The first and only line of input file contains a formula of a molecule whose mass needs to be determined. A formula of a molecule will consist of characters H, C, O, (, ) , 2, 3, ..., 9 only. Its length will be less or equal to 100 characters.
-#
-# Output
-# The first and only line of output file should contain a mass of a molecule represented with a given formula. The result will always be less than or equal to 10,000.
-#
-# Sample
-# MASS.IN
-#
-# COOH
-#
-# MASS.OUT
-#
-# 45
-#
-# MASS.IN
-#
-# CH(CO2H)
-# 3
-#
-# MASS.OUT
-#
-# 148
-#
-# MASS.IN
-#
-# ((CH)2(OH2H)(C(H))O)3
-#
-# MASS.OUT
-#
-# 222
-
-
 def get_value(atom):
     if atom == 'H':
         return 1
@@ -275,36 +190,37 @@ while len(stack) > 0:
 print(total_result)
 ```
 
-### ONP (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through the formula
+- **Space Complexity:** O(n) - stack size for nested parentheses
 
+---
+
+### Transform to RPN
+
+#### Problem Information
+- **Source:** SPOJ
+- **Problem Code:** ONP
+- **Difficulty:** Medium
+- **URL:** https://www.spoj.com/problems/ONP/
+
+#### Problem Statement
+Transform algebraic expressions with brackets into Reverse Polish Notation (RPN). Operators are +, -, *, /, ^ (priority from lowest to highest). Operands are lowercase letters a-z.
+
+#### Input Format
+- First line: t (number of expressions)
+- Next t lines: One expression per line
+
+#### Output Format
+The expressions in RPN form, one per line.
+
+#### Solution
+
+##### Approach
+Use the Shunting Yard algorithm with a stack for operators. Output operands immediately, push operators based on precedence.
+
+##### Python Solution
 ```python
-# Problem from SPOJ
-# https://www.spoj.com/problems/ONP/
-
-# ONP - Transform the Expression
-# #stack
-# Transform the algebraic expression with brackets into RPN form (Reverse Polish Notation). Two-argument operators: +, -, *, /, ^ (priority from the lowest to the highest), brackets ( ). Operands: only letters: a,b,...,z. Assume that there is only one RPN form (no expressions like a*b*c).
-#
-# Input
-# t [the number of expressions <= 100]
-# expression [length <= 400]
-# [other expressions]
-# Text grouped in [ ] does not appear in the input file.
-#
-# Output
-# The expressions in RPN form, one per line.
-# Example
-# Input:
-# 3
-# (a+(b*c))
-# ((a+b)*(z+x))
-# ((a+t)*((b+(a+c))^(c+d)))
-#
-# Output:
-# abc*+
-# ab+zx+*
-# at+bac++cd+^*
-
 n = int(input())
 results = []
 
@@ -324,9 +240,9 @@ for i in range(n):
     for j in range(cur_length):
         cur_elem = cur_exp[j]
         cur_prio = operator_list.get(cur_elem)
-        if cur_prio is None and cur_elem is not ')' and cur_elem is not '(': # This is a number
+        if cur_prio is None and cur_elem is not ')' and cur_elem is not '(':
             cur_output += cur_elem
-        elif cur_prio is not None: # This is an operator
+        elif cur_prio is not None:
             if len(temp_stack) > 0 and operator_list.get(temp_stack[-1]) is not None and operator_list.get(temp_stack[-1]) >= cur_prio:
                 cur_output += temp_stack.pop()
             temp_stack.append(cur_elem)
@@ -348,33 +264,37 @@ for i in range(n):
 print(*results, sep='\n')
 ```
 
-### STPAR (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through each expression
+- **Space Complexity:** O(n) - stack for operators
 
+---
+
+### Street Parade
+
+#### Problem Information
+- **Source:** SPOJ
+- **Problem Code:** STPAR
+- **Difficulty:** Medium
+- **URL:** https://www.spoj.com/problems/STPAR/
+
+#### Problem Statement
+Love mobiles need to be arranged in order 1 to n for a parade. They arrive in a given order and can use a side street (stack) to help reorder. Determine if the trucks can be arranged in the correct order.
+
+#### Input Format
+- First line: n (number of trucks, 0 to end)
+- Second line: n integers (arrival order)
+
+#### Output Format
+"yes" if reordering is possible, "no" otherwise.
+
+#### Solution
+
+##### Approach
+Use a stack as the side street. Try to output trucks in order 1 to n, using the stack to temporarily hold trucks that can't go directly.
+
+##### Python Solution
 ```python
-# Problem from SPOJ
-# https://www.spoj.com/problems/STPAR/
-
-# For sure, the love mobiles will roll again on this summer's street parade. Each year, the organisers decide on a fixed order for the decorated trucks. Experience taught them to keep free a side street to be able to bring the trucks into order.
-#
-# The side street is so narrow that no two cars can pass each other. Thus, the love mobile that enters the side street last must necessarily leave the side street first. Because the trucks and the ravers move up closely, a truck cannot drive back and re-enter the side street or the approach street.
-#
-# You are given the order in which the love mobiles arrive. Write a program that decides if the love mobiles can be brought into the order that the organisers want them to be.
-#
-# Input
-# There are several test cases. The first line of each test case contains a single number n, the number of love mobiles. The second line contains the numbers 1 to n in an arbitrary order. All the numbers are separated by single spaces. These numbers indicate the order in which the trucks arrive in the approach street. No more than 1000 love mobiles participate in the street parade. Input ends with number 0.
-#
-# Output
-# For each test case your program has to output a line containing a single word "yes" if the love mobiles can be re-ordered with the help of the side street, and a single word "no" in the opposite case.
-#
-# Example
-# Sample input:
-# 5
-# 5 1 2 4 3
-# 0
-#
-# Sample output:
-# yes
-
 results = []
 while True:
     n = int(input())
@@ -412,12 +332,38 @@ while True:
 print(*results, sep='\n')
 ```
 
-### 10901 - Ferry Loading III (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - each truck is processed once
+- **Space Complexity:** O(n) - stack for side street
 
+---
+
+### Ferry Loading III
+
+#### Problem Information
+- **Source:** UVA
+- **Problem Code:** 10901
+- **Difficulty:** Medium
+- **URL:** https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1842
+
+#### Problem Statement
+A ferry carries cars between two banks. Given arrival times and bank for each car, and ferry crossing time t, determine when each car arrives at the destination bank.
+
+#### Input Format
+- Multiple test cases
+- For each: n (ferry capacity), t (crossing time), m (number of cars)
+- m lines: arrival time and bank ("left" or "right")
+
+#### Output Format
+For each car, output its arrival time at the destination.
+
+#### Solution
+
+##### Approach
+Use two queues for left and right banks. Simulate ferry trips, loading cars based on their arrival times.
+
+##### Python Solution
 ```python
-# Problem from UVA 10901 - Ferry Loading III
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1842
-
 import queue
 
 n_test_cases = int(input())
@@ -477,49 +423,36 @@ for i in range(len(results)):
         print()
 ```
 
-### 10935 - Throwing cards away I (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(m) - each car processed once
+- **Space Complexity:** O(m) - queues for both banks
 
+---
+
+### Throwing Cards Away
+
+#### Problem Information
+- **Source:** UVA
+- **Problem Code:** 10935
+- **Difficulty:** Easy
+- **URL:** https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1876
+
+#### Problem Statement
+Given a deck of n cards numbered 1 to n, repeatedly throw away the top card and move the next card to the bottom until one card remains. Find the sequence of discarded cards and the remaining card.
+
+#### Input Format
+Multiple lines, each containing n (number of cards). 0 to end.
+
+#### Output Format
+For each test case, print the discarded cards and the remaining card.
+
+#### Solution
+
+##### Approach
+Use a queue to simulate the card operations. Dequeue top, move next to back.
+
+##### Python Solution
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1876
-
-#
-# Given is an ordered deck of n cards numbered 1
-# to n with card 1 at the top and card n at the
-# bottom. The following operation is performed as
-# long as there are at least two cards in the deck:
-# Throw away the top card and move
-# the card that is now on the top of the
-# deck to the bottom of the deck.
-# Your task is to find the sequence of discarded
-# cards and the last, remaining card.
-# Input
-# Each line of input (except the last) contains a
-# number n ≤ 50. The last line contains ‘0’ and
-# this line should not be processed.
-# Output
-# For each number from the input produce two
-# lines of output. The first line presents the sequence
-# of discarded cards, the second line reports
-# the last remaining card. No line will have
-# leading or trailing spaces. See the sample for the
-# expected format.
-# Sample Input
-# 7
-# 19
-# 10
-# 6
-# 0
-# Sample Output
-# Discarded cards: 1, 3, 5, 7, 4, 2
-# Remaining card: 6
-# Discarded cards: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 4, 8, 12, 16, 2, 10, 18, 14
-# Remaining card: 6
-# Discarded cards: 1, 3, 5, 7, 9, 2, 6, 10, 8
-# Remaining card: 4
-# Discarded cards: 1, 3, 5, 2, 6
-# Remaining card: 4
-
 import queue
 
 results = []
@@ -553,72 +486,38 @@ for i in range(len(results)):
     print('Remaining card: ' + str(remaining_card))
 ```
 
-### 12207 - That is Your Queue (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - each card is processed twice
+- **Space Complexity:** O(n) - queue for cards
 
+---
+
+### That is Your Queue
+
+#### Problem Information
+- **Source:** UVA
+- **Problem Code:** 12207
+- **Difficulty:** Medium
+- **URL:** https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=3359
+
+#### Problem Statement
+Simulate a hospital queue with P citizens and C commands. Commands are 'N' (next person) or 'E x' (expedite person x to front). Output the processed person for each 'N' command.
+
+#### Input Format
+- Multiple test cases until P=C=0
+- P C (population, commands)
+- C command lines
+
+#### Output Format
+For each 'N' command, output the citizen number being processed.
+
+#### Solution
+
+##### Approach
+Use a linked list to efficiently handle insertions at front and removals from middle.
+
+##### Python Solution
 ```python
-# Problem from UVA 12207	That is Your Queue
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=3359
-
-# Your government has finally solved the
-# problem of universal health care! Now
-# everyone, rich or poor, will finally have
-# access to the same level of medical care.
-# Hurrah!
-# There’s one minor complication. All
-# of the country’s hospitals have been condensed
-# down into one location, which can
-# only take care of one person at a time.
-# But don’t worry! There is also a plan
-# in place for a fair, efficient computerized
-# system to determine who will be admitted.
-# You are in charge of programming
-# this system.
-# Every citizen in the nation will be assigned
-# a unique number, from 1 to P
-# (where P is the current population). They will be put into a queue, with 1 in front of 2, 2 in front of
-# 3, and so on. The hospital will process patients one by one, in order, from this queue. Once a citizen
-# has been admitted, they will immediately move from the front of the queue to the back.
-# Of course, sometimes emergencies arise; if you’ve just been run over by a steamroller, you can’t wait
-# for half the country to get a routine checkup before you can be treated! So, for these (hopefully rare)
-# occasions, an expedite command can be given to move one person to the front of the queue. Everyone
-# else’s relative order will remain unchanged.
-# Given the sequence of processing and expediting commands, output the order in which citizens will
-# be admitted to the hospital.
-
-# Input
-# Input consists of at most ten test cases. Each test case starts with a line containing P, the population
-# of your country (1 ≤ P ≤ 1000000000), and C, the number of commands to process (1 ≤ C ≤ 1000).
-# The next C lines each contain a command of the form ‘N’, indicating the next citizen is to be
-# admitted, or ‘E x’, indicating that citizen x is to be expedited to the front of the queue.
-# The last test case is followed by a line containing two zeros.
-# Output
-# For each test case print the serial of output. This is followed by one line of output for each ‘N’ command,
-# indicating which citizen should be processed next. Look at the output for sample input for details.
-# Sample Input
-# 3 6
-# N
-# N
-# E 1
-# N
-# N
-# N
-# 10 2
-# N
-# N
-# 0 0
-
-# Sample Output
-# Case 1:
-# 1
-# 2
-# 1
-# 3
-# 2
-# Case 2:
-# 1
-# 2
-
-
 class Node:
     def __init__(self, data_val=None):
         self.data_val = data_val
@@ -629,17 +528,6 @@ class MyLinkedList:
     def __init__(self):
         self.head_node = None
         self.tail_node = self.head_node
-
-    def print_list(self):
-        print_node = self.head_node
-        while True:
-            if print_node.next_node is None:
-                print(print_node.data_val, end='')
-                break
-            else:
-                print(print_node.data_val, end=' ')
-                print_node = print_node.next_node
-        print('---')
 
     def add_node(self, value=None):
         new_node = Node(value)
@@ -716,4 +604,8 @@ for i in range(len(results)):
     print('Case %d:' %(i + 1))
     print(*results[i], sep='\n')
 ```
+
+##### Complexity Analysis
+- **Time Complexity:** O(C * P) - worst case for expedite operations
+- **Space Complexity:** O(min(P, C)) - linked list size
 

@@ -6,44 +6,45 @@ permalink: /problem_soulutions/Blue/Session 07 - DFS/
 
 # Session 07 - DFS
 
-This session covers Depth-First Search (DFS) algorithm, including graph traversal, connected components, and backtracking problems.
+Depth-First Search problems involving graph traversal, connected components, cycle detection, and backtracking.
 
 ## Problems
 
-### 723D (Codeforces)
+### Lakes in Berland
+
+#### Problem Information
+- **Source:** Codeforces 723D
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Berland is an n x m grid where:
+- '*' represents land
+- '.' represents water
+
+A "lake" is a connected component of water cells that does NOT touch the boundary of the grid. Water touching the boundary is considered part of the ocean/sea.
+
+The government wants to keep exactly k lakes. They will fill the smallest lakes with land to achieve this. Find the minimum number of cells to fill and output the resulting map.
+
+#### Input Format
+- Line 1: n m k (grid dimensions, desired number of lakes)
+- Next n lines: The grid
+
+#### Output Format
+- Line 1: Number of cells filled
+- Next n lines: The resulting grid after filling
+
+#### Solution
+
+##### Approach
+Use DFS to find all lakes (water components not touching boundary), sort by size, fill the smallest ones until k remain.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/contest/723/problem/D
-#
-# Problem: Lakes in Berland
-#
-# Berland is an n×m grid where:
-# - '*' represents land
-# - '.' represents water
-#
-# A "lake" is a connected component of water cells that does NOT touch the
-# boundary of the grid. Water touching the boundary is considered part of
-# the ocean/sea.
-#
-# The government wants to keep exactly k lakes. They will fill the smallest
-# lakes with land to achieve this. Find the minimum number of cells to fill
-# and output the resulting map.
-#
-# Input:
-# - Line 1: n m k (grid dimensions, desired number of lakes)
-# - Next n lines: The grid
-#
-# Output:
-# - Line 1: Number of cells filled
-# - Next n lines: The resulting grid after filling
-#
-# Approach: DFS to find all lakes (water components not touching boundary),
-#           sort by size, fill the smallest ones until k remain
-
-
 def fill_the_lakes(n, m, k, matrix):
-
     lakes = []
 
     dx = [1, 0, -1, 0]
@@ -92,7 +93,6 @@ def fill_the_lakes(n, m, k, matrix):
     for i in range(n):
         print(''.join(matrix[i]))
 
-
 def solution():
     n, m, k = map(int, input().split())
     matrix = []
@@ -101,33 +101,44 @@ def solution():
 
     fill_the_lakes(n, m, k, matrix)
 
-
 solution()
 ```
 
-### bishu-and-his-girlfriend (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(n * m) for DFS traversal plus O(L log L) for sorting lakes
+- **Space Complexity:** O(n * m) for visited array and lake storage
+
+---
+
+### Bishu and His Girlfriend
+
+#### Problem Information
+- **Source:** Hackerearth
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Bishu lives at node 1 of a tree with N nodes. There are Q girls living at various nodes. Bishu wants to find the closest girl. If multiple girls are at the same minimum distance, choose the one with the smallest node number.
+
+#### Input Format
+- Line 1: N (number of nodes)
+- Next N-1 lines: u v (edges of the tree)
+- Line N+1: Q (number of girls)
+- Next Q lines: Node number where each girl lives
+
+#### Output Format
+The node number of the closest girl (ties broken by smallest node).
+
+#### Solution
+
+##### Approach
+DFS from node 1, track distances, find minimum distance girl with smallest node number as tiebreaker.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/algorithms/graphs/depth-first-search/practice-problems/algorithm/bishu-and-his-girlfriend/description/
-#
-# Problem: Bishu and His Girlfriend
-#
-# Bishu lives at node 1 of a tree with N nodes. There are Q girls living at
-# various nodes. Bishu wants to find the closest girl. If multiple girls are
-# at the same minimum distance, choose the one with the smallest node number.
-#
-# Input:
-# - Line 1: N (number of nodes)
-# - Next N-1 lines: u v (edges of the tree)
-# - Line N+1: Q (number of girls)
-# - Next Q lines: Node number where each girl lives
-#
-# Output: The node number of the closest girl (ties broken by smallest node)
-#
-# Approach: DFS/BFS from node 1, track distances, find minimum distance girl
-
-
 def find_girl(N, graph, girls):
     s = []
     visited = [False for i in range(N + 1)]
@@ -159,7 +170,6 @@ def find_girl(N, graph, girls):
 
     return selected_girl
 
-
 def solution():
     N = int(input())
     roads = []
@@ -176,34 +186,45 @@ def solution():
 
     print(find_girl(N, graph, girls))
 
-
 solution()
 ```
 
-### CAM5 (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(N) for DFS traversal of the tree
+- **Space Complexity:** O(N) for graph and auxiliary arrays
+
+---
+
+### CAM5 - Connected Components
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 227ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+Given N people (numbered 0 to N-1) and E friendship pairs, find the number of friend groups (connected components). Two people are in the same group if they are friends directly or through other friends.
+
+#### Input Format
+- Line 1: T (number of test cases)
+- For each test case:
+  - Line 1: N (number of people)
+  - Line 2: E (number of friendship pairs)
+  - Next E lines: u v (friendship between person u and v)
+
+#### Output Format
+For each test case, print the number of friend groups.
+
+#### Solution
+
+##### Approach
+DFS to count connected components in an undirected graph. Start DFS from each unvisited node and increment the component count.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/CAM5/
-#
-# Problem: CAM5 - Connected Components (Friendship Problem)
-#
-# Given N people (numbered 0 to N-1) and E friendship pairs, find the number
-# of friend groups (connected components). Two people are in the same group
-# if they are friends directly or through other friends.
-#
-# Input:
-# - Line 1: T (number of test cases)
-# - For each test case:
-#   - Line 1: N (number of people)
-#   - Line 2: E (number of friendship pairs)
-#   - Next E lines: u v (friendship between person u and v)
-#
-# Output: For each test case, print the number of friend groups
-#
-# Approach: DFS to count connected components in undirected graph
-
-
 def calc_disjoint_sets(Ni, graph):
     result = 0
     visited = [False for i in range(Ni)]
@@ -224,7 +245,6 @@ def calc_disjoint_sets(Ni, graph):
         result += 1
 
     return result
-
 
 def solution():
     results = []
@@ -250,32 +270,44 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### Dudu (URI)
+##### Complexity Analysis
+- **Time Complexity:** O(N + E) for DFS traversal
+- **Space Complexity:** O(N + E) for graph storage
+
+---
+
+### Dudu - Cycle Detection
+
+#### Problem Information
+- **Source:** URI 1610
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a directed graph with N nodes and M edges, determine if there is a cycle in the graph. Output "SIM" (yes) if a cycle exists, "NAO" (no) otherwise.
+
+#### Input Format
+- Line 1: T (number of test cases)
+- For each test case:
+  - Line 1: N M (nodes, edges)
+  - Next M lines: A B (directed edge from A to B)
+
+#### Output Format
+For each test case, print "SIM" if cycle exists, "NAO" otherwise.
+
+#### Solution
+
+##### Approach
+DFS with cycle detection. Track visited nodes in the current DFS path. If we revisit a node already in the current path, a cycle exists.
+
+##### Python Solution
 
 ```python
-# Problem from URI
-# https://www.urionlinejudge.com.br/judge/en/problems/view/1610
-#
-# Problem: Dudu - Cycle Detection
-#
-# Given a directed graph with N nodes and M edges, determine if there is a
-# cycle in the graph. Output "SIM" (yes) if a cycle exists, "NAO" (no) otherwise.
-#
-# Input:
-# - Line 1: T (number of test cases)
-# - For each test case:
-#   - Line 1: N M (nodes, edges)
-#   - Next M lines: A B (directed edge from A to B)
-#
-# Output: For each test case, print "SIM" if cycle exists, "NAO" otherwise
-#
-# Approach: DFS with cycle detection (check if we revisit a node in current path)
-
-
 def sim_nao(N, graph):
     global_visited = [False for i in range(N+1)]
 
@@ -300,12 +332,10 @@ def sim_nao(N, graph):
 
     return 'NAO'
 
-
 def solution():
     results = []
     T = int(input())
     for i in range(T):
-
         while True:
             new_line = input().strip()
             if new_line:
@@ -325,7 +355,9 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(N + M) for DFS
+- **Space Complexity:** O(N + M) for graph and visited arrays

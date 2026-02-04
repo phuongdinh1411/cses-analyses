@@ -10,34 +10,35 @@ This session covers the Bellman-Ford algorithm for finding shortest paths in gra
 
 ## Problems
 
-### Monk's Business Day (Hackerearth)
+### Monk's Business Day
+
+#### Problem Information
+- **Source:** HackerEarth
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Monk is planning a business trip between cities. Each road has a profit/cost. Determine if Monk can make infinite profit by traveling in cycles (arbitrage). Essentially, detect if there's a positive cycle in the graph.
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - N M: number of cities and roads
+  - M lines with i j C: road from i to j with profit C
+
+#### Output Format
+- "Yes" if infinite profit is possible (positive cycle exists), "No" otherwise
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm with negated edge weights. Negate weights to convert profit maximization to shortest path. After N-1 iterations, if any edge can still be relaxed, a negative cycle exists. Negative cycle in negated graph = positive cycle in original = infinite profit.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/algorithms/graphs/shortest-path-algorithms/practice-problems/algorithm/monks-business-day/description/
-#
-# Problem Name: Monk's Business Day
-#
-# Problem Description:
-# Monk is planning a business trip between cities. Each road has a profit/cost.
-# Determine if Monk can make infinite profit by traveling in cycles (arbitrage).
-# Essentially, detect if there's a positive cycle in the graph.
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - N M: number of cities and roads
-#   - M lines with i j C: road from i to j with profit C
-#
-# Output Format:
-# - "Yes" if infinite profit is possible (positive cycle exists), "No" otherwise
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm with negated edge weights
-# - Negate weights to convert profit maximization to shortest path
-# - After N-1 iterations, if any edge can still be relaxed, a negative cycle exists
-# - Negative cycle in negated graph = positive cycle in original = infinite profit
-
 import sys
 
 
@@ -100,36 +101,43 @@ def solution():
 solution()
 ```
 
-### shortestpath3 (Kattis)
+##### Complexity Analysis
+- **Time Complexity:** O(V * E) where V is vertices and E is edges
+- **Space Complexity:** O(V + E)
+
+---
+
+### Single Source Shortest Path, Negative Weights
+
+#### Problem Information
+- **Source:** Kattis
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a directed weighted graph with possible negative edge weights, find the shortest path from source to multiple query nodes. Handle negative cycles by reporting "-Infinity" for affected nodes.
+
+#### Input Format
+- Multiple test cases until n=0
+- For each test case:
+  - n m q s: nodes, edges, queries, source
+  - m lines with u v w: directed edge from u to v with weight w
+  - q query nodes
+
+#### Output Format
+- For each query:
+  - Shortest distance, or "Impossible" if unreachable, or "-Infinity" if affected by negative cycle
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm for single-source shortest path with negative weights. Run N-1 iterations for standard relaxation. Run one more iteration to detect nodes affected by negative cycles. Nodes that can still be relaxed are affected by negative cycles.
+
+##### Python Solution
 
 ```python
-# Problem from Kattis
-# https://open.kattis.com/problems/shortestpath3
-#
-# Problem Name: Single source shortest path, negative weights
-#
-# Problem Description:
-# Given a directed weighted graph with possible negative edge weights,
-# find the shortest path from source to multiple query nodes.
-# Handle negative cycles by reporting "-Infinity" for affected nodes.
-#
-# Input Format:
-# - Multiple test cases until n=0
-# - For each test case:
-#   - n m q s: nodes, edges, queries, source
-#   - m lines with u v w: directed edge from u to v with weight w
-#   - q query nodes
-#
-# Output Format:
-# - For each query:
-#   - Shortest distance, or "Impossible" if unreachable, or "-Infinity" if affected by negative cycle
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm for single-source shortest path with negative weights
-# - Run N-1 iterations for standard relaxation
-# - Run one more iteration to detect nodes affected by negative cycles
-# - Nodes that can still be relaxed are affected by negative cycles
-
 import sys
 
 
@@ -167,7 +175,6 @@ def bellman_ford(N, M, E, q):
             if dist[u] != INF and dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
 
-    # for i in range(N):
     for j in range(M):
         u = E[j][0]
         v = E[j][1]
@@ -211,39 +218,45 @@ def solution():
 solution()
 ```
 
-### Extended Traffic (LightOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(V * E) per test case
+- **Space Complexity:** O(V + E)
+
+---
+
+### Extended Traffic
+
+#### Problem Information
+- **Source:** LightOJ
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 32MB
+
+#### Problem Statement
+
+Dhaka city has junctions with "busyness" values. The cost to travel from junction u to v is (busyness[v] - busyness[u])^3, which can be negative. Find the minimum cost from junction 1 to query junctions. If cost < 3 or unreachable or affected by negative cycle, output "?".
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - N: number of junctions
+  - N busyness values
+  - M: number of roads
+  - M lines with u v: directed road from u to v
+  - Q: number of queries
+  - Q query junction numbers
+
+#### Output Format
+- For each case: "Case X:" followed by minimum cost for each query (or "?")
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm to handle negative edge weights. Edge weight = (busyness[v] - busyness[u])^3. Detect negative cycles and mark affected nodes. Output "?" for unreachable, negative cycle affected, or cost < 3.
+
+##### Python Solution
 
 ```python
-# Problem from LightOJ
-# http://www.lightoj.com/volume_showproblem.php?problem=1074
-#
-# Problem Name: Extended Traffic
-#
-# Problem Description:
-# Dhaka city has junctions with "busyness" values. The cost to travel from
-# junction u to v is (busyness[v] - busyness[u])^3, which can be negative.
-# Find the minimum cost from junction 1 to query junctions.
-# If cost < 3 or unreachable or affected by negative cycle, output "?".
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - N: number of junctions
-#   - N busyness values
-#   - M: number of roads
-#   - M lines with u v: directed road from u to v
-#   - Q: number of queries
-#   - Q query junction numbers
-#
-# Output Format:
-# - For each case: "Case X:" followed by minimum cost for each query (or "?")
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm to handle negative edge weights
-# - Edge weight = busyness[v] - busyness[u] (cube computed implicitly in problem)
-# - Detect negative cycles and mark affected nodes
-# - Output "?" for unreachable, negative cycle affected, or cost < 3
-
 import sys
 
 
@@ -324,36 +337,44 @@ def solution():
 solution()
 ```
 
-### UCV2013B (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(T * V * E) where T is test cases
+- **Space Complexity:** O(V + E)
+
+---
+
+### Babylon Tours
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+Given N monuments in Babylon with travel costs between them (can be negative), find the shortest path for multiple tour queries. Detect if a query path is affected by a negative cycle.
+
+#### Input Format
+- Multiple test cases until N=0
+- For each test case:
+  - N: number of monuments
+  - N lines: monument name followed by N costs (0 means no direct path)
+  - Q: number of queries
+  - Q lines with source and destination monument indices
+
+#### Output Format
+- For each case: "Case #X:" followed by results for each query
+  - "monument1-monument2 cost" or "NOT REACHABLE" or "NEGATIVE CYCLE"
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm for each unique source in queries. Handle negative edge weights and detect negative cycles. Cache results to avoid recomputing for same source.
+
+##### Python Solution
 
 ```python
-# Problem from SPOJ
-# https://www.spoj.com/problems/UCV2013B/
-#
-# Problem Name: Babylon Tours
-#
-# Problem Description:
-# Given N monuments in Babylon with travel costs between them (can be negative),
-# find the shortest path for multiple tour queries. Detect if a query path
-# is affected by a negative cycle.
-#
-# Input Format:
-# - Multiple test cases until N=0
-# - For each test case:
-#   - N: number of monuments
-#   - N lines: monument name followed by N costs (0 means no direct path)
-#   - Q: number of queries
-#   - Q lines with source and destination monument indices
-#
-# Output Format:
-# - For each case: "Case #X:" followed by results for each query
-#   - "monument1-monument2 cost" or "NOT REACHABLE" or "NEGATIVE CYCLE"
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm for each unique source in queries
-# - Handle negative edge weights and detect negative cycles
-# - Cache results to avoid recomputing for same source
-
 from collections import defaultdict
 
 INF = int(1e9)
@@ -435,35 +456,41 @@ def solution():
 solution()
 ```
 
-### 106 Miles To Chicago (URI)
+##### Complexity Analysis
+- **Time Complexity:** O(Q * V * E) where Q is unique query sources
+- **Space Complexity:** O(V^2) for caching distances
+
+---
+
+### 106 Miles To Chicago
+
+#### Problem Information
+- **Source:** URI Online Judge
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A spy needs to travel from intersection 1 to intersection n through Chicago. Each road segment has a probability of not being spotted (given as percentage). Find the maximum probability of traveling the entire path without being spotted. The total probability is the product of individual segment probabilities.
+
+#### Input Format
+- Multiple test cases until n=0
+- For each test case:
+  - n m: number of intersections and streets
+  - m lines with a b p: street between a and b with p% probability of not being spotted
+
+#### Output Format
+- Maximum probability (as percentage) of reaching n from 1 unspotted
+
+#### Solution
+
+##### Approach
+Use modified Bellman-Ford to maximize product of probabilities. Initialize source with 100% probability. Relax edges by multiplying probabilities instead of adding distances. Edges are bidirectional.
+
+##### Python Solution
 
 ```python
-# Problem from URI
-# https://www.urionlinejudge.com.br/judge/en/problems/view/1655
-#
-# Problem Name: 106 Miles To Chicago
-#
-# Problem Description:
-# A spy needs to travel from intersection 1 to intersection n through Chicago.
-# Each road segment has a probability of not being spotted (given as percentage).
-# Find the maximum probability of traveling the entire path without being spotted.
-# The total probability is the product of individual segment probabilities.
-#
-# Input Format:
-# - Multiple test cases until n=0
-# - For each test case:
-#   - n m: number of intersections and streets
-#   - m lines with a b p: street between a and b with p% probability of not being spotted
-#
-# Output Format:
-# - Maximum probability (as percentage) of reaching n from 1 unspotted
-#
-# Key Approach/Algorithm:
-# - Modified Bellman-Ford to maximize product of probabilities
-# - Initialize source with 100% probability
-# - Relax edges by multiplying probabilities instead of adding distances
-# - Edges are bidirectional
-
 import sys
 
 
@@ -523,35 +550,41 @@ def solution():
 solution()
 ```
 
-### 10557 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(V * E)
+- **Space Complexity:** O(V + E)
+
+---
+
+### XYZZY
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A text adventure game where the player starts in room 1 with 100 energy. Moving to a room adds/subtracts energy based on the room's energy value. The player dies if energy drops to 0 or below. Determine if the player can reach the last room (room n) with positive energy.
+
+#### Input Format
+- Multiple test cases until n=-1
+- For each test case:
+  - n: number of rooms
+  - For each room: energy_value, num_connections, connected_rooms...
+
+#### Output Format
+- "winnable" if player can reach room n with positive energy, "hopeless" otherwise
+
+#### Solution
+
+##### Approach
+Use modified Bellman-Ford to maximize energy (find longest path). Only traverse edges if current energy > 0. If a positive cycle exists that can reach room n, game is winnable. Detect positive cycles that allow infinite energy gain.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1498
-#
-# Problem Name: XYZZY (UVA 10557)
-#
-# Problem Description:
-# A text adventure game where the player starts in room 1 with 100 energy.
-# Moving to a room adds/subtracts energy based on the room's energy value.
-# The player dies if energy drops to 0 or below. Determine if the player
-# can reach the last room (room n) with positive energy.
-#
-# Input Format:
-# - Multiple test cases until n=-1
-# - For each test case:
-#   - n: number of rooms
-#   - For each room: energy_value, num_connections, connected_rooms...
-#
-# Output Format:
-# - "winnable" if player can reach room n with positive energy, "hopeless" otherwise
-#
-# Key Approach/Algorithm:
-# - Modified Bellman-Ford to maximize energy (find longest path)
-# - Only traverse edges if current energy > 0
-# - If a positive cycle exists that can reach room n, game is winnable
-# - Detect positive cycles that allow infinite energy gain
-
 import sys
 
 
@@ -619,33 +652,39 @@ def solution():
 solution()
 ```
 
-### 423 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(V * E)
+- **Space Complexity:** O(V + E)
+
+---
+
+### MPI Maelstrom
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+N processors are connected in a network. The communication time between processors is given in a lower triangular matrix format. Some connections may not exist (marked as 'x'). Find the minimum time to broadcast a message from processor 0 to all other processors (maximum shortest path from source).
+
+#### Input Format
+- N: number of processors
+- Lower triangular matrix of communication times ('x' means no connection)
+
+#### Output Format
+- Maximum shortest path distance from processor 0 (broadcast completion time)
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm. Build undirected graph from lower triangular matrix. Find shortest paths from processor 0 to all others. Return the maximum of all shortest path distances.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=364
-#
-# Problem Name: MPI Maelstrom (UVA 423)
-#
-# Problem Description:
-# N processors are connected in a network. The communication time between
-# processors is given in a lower triangular matrix format. Some connections
-# may not exist (marked as 'x'). Find the minimum time to broadcast a message
-# from processor 0 to all other processors (maximum shortest path from source).
-#
-# Input Format:
-# - N: number of processors
-# - Lower triangular matrix of communication times ('x' means no connection)
-#
-# Output Format:
-# - Maximum shortest path distance from processor 0 (broadcast completion time)
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm (or Dijkstra/Floyd-Warshall would also work)
-# - Build undirected graph from lower triangular matrix
-# - Find shortest paths from processor 0 to all others
-# - Return the maximum of all shortest path distances
-
 INF = int(1e9)
 
 
@@ -685,34 +724,42 @@ def solution():
 solution()
 ```
 
-### 558 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(V * E)
+- **Space Complexity:** O(V + E)
+
+---
+
+### Wormholes
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A spaceship can travel through wormholes that may have negative time travel (going back in time). Determine if it's possible to travel back in time indefinitely by finding a negative cycle in the graph.
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - n m: number of star systems and wormholes
+  - m lines with x y t: wormhole from x to y with time t (can be negative)
+
+#### Output Format
+- "possible" if negative cycle exists (infinite time travel possible)
+- "not possible" otherwise
+
+#### Solution
+
+##### Approach
+Use Bellman-Ford algorithm to detect negative cycles. Run N-1 iterations of relaxation. If any edge can still be relaxed in iteration N, a negative cycle exists.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=499
-#
-# Problem Name: Wormholes (UVA 558)
-#
-# Problem Description:
-# A spaceship can travel through wormholes that may have negative time travel
-# (going back in time). Determine if it's possible to travel back in time
-# indefinitely by finding a negative cycle in the graph.
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - n m: number of star systems and wormholes
-#   - m lines with x y t: wormhole from x to y with time t (can be negative)
-#
-# Output Format:
-# - "possible" if negative cycle exists (infinite time travel possible)
-# - "not possible" otherwise
-#
-# Key Approach/Algorithm:
-# - Bellman-Ford algorithm to detect negative cycles
-# - Run N-1 iterations of relaxation
-# - If any edge can still be relaxed in iteration N, a negative cycle exists
-
 import sys
 
 
@@ -775,3 +822,6 @@ def solution():
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(T * V * E)
+- **Space Complexity:** O(V + E)

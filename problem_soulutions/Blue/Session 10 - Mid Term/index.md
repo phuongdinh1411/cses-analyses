@@ -6,38 +6,42 @@ permalink: /problem_soulutions/Blue/Session 10 - Mid Term/
 
 # Session 10 - Mid Term
 
-This session contains mid-term examination problems covering topics from Sessions 01-09.
+Mid-term examination problems covering topics from Sessions 01-09 including graph algorithms, data structures, and string processing.
 
 ## Problems
 
-### Bombs NO they are Mines (Custom)
+### Bombs NO they are Mines
+
+#### Problem Information
+- **Source:** Custom
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a grid of R rows and C columns, find the shortest path from a source cell to a destination cell. Some cells contain mines and are blocked.
+
+#### Input Format
+- Multiple test cases until R = 0
+- First line: R C (rows and columns)
+- Next line: number of rows containing mines
+- Following lines: row_index, count, and column indices of mines in that row
+- Source coordinates (row, col)
+- Destination coordinates (row, col)
+
+#### Output Format
+Minimum number of steps to reach destination, or -1 if impossible.
+
+#### Solution
+
+##### Approach
+Dijkstra's algorithm (BFS would also work since all edges have weight 1). Use priority queue to explore cells in order of distance. Move in 4 directions and avoid cells marked as mines.
+
+##### Python Solution
 
 ```python
-# Problem: Bombs NO they are Mines (Grid Shortest Path)
-#
-# Problem Description:
-# Given a grid of R rows and C columns, find the shortest path from a source
-# cell to a destination cell. Some cells contain mines and are blocked.
-#
-# Input Format:
-# - Multiple test cases until R = 0
-# - First line: R C (rows and columns)
-# - Next line: number of rows containing mines
-# - Following lines: row_index, count, and column indices of mines in that row
-# - Source coordinates (row, col)
-# - Destination coordinates (row, col)
-#
-# Output Format:
-# - Minimum number of steps to reach destination, or -1 if impossible
-#
-# Key Approach/Algorithm:
-# - Dijkstra's algorithm (BFS would also work since all edges have weight 1)
-# - Use priority queue to explore cells in order of distance
-# - Move in 4 directions (up, down, left, right)
-# - Avoid cells marked as mines
-
 import heapq
-
 
 class Node:
     def __init__(self, idx, idy, dist):
@@ -48,9 +52,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(r, c, s, d, matrix):
-
     dist = [[-1 for x in range(c)] for y in range(r)]
     pqueue = []
     heapq.heappush(pqueue, Node(s[0], s[1], 0))
@@ -74,7 +76,6 @@ def dijkstra(r, c, s, d, matrix):
 
     return dist[d[0]][d[1]]
 
-
 def solution():
     while True:
         R, C = map(int, input().strip().split())
@@ -82,7 +83,6 @@ def solution():
             break
 
         boom_rows = int(input())
-
         matrix = [[False for i in range(C)] for j in range(R)]
 
         for i in range(boom_rows):
@@ -94,36 +94,41 @@ def solution():
         d = list(map(int, input().strip().split()))
         print(dijkstra(R, C, s, d, matrix))
 
-
 solution()
 ```
 
-### 26B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(R * C * log(R * C)) for Dijkstra on grid
+- **Space Complexity:** O(R * C) for distance matrix and mine grid
+
+---
+
+### Regular Bracket Sequence
+
+#### Problem Information
+- **Source:** Codeforces 26B
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a bracket sequence consisting only of '(' and ')' characters, find the length of the longest regular (properly nested) bracket subsequence.
+
+#### Input Format
+A single string containing only '(' and ')' characters. Length up to 10^6.
+
+#### Output Format
+A single integer: the length of the longest regular bracket subsequence.
+
+#### Solution
+
+##### Approach
+Greedy approach using a counter. Track opening brackets with a counter. For each closing bracket, if there's a matching opening bracket, add 2 to total. If no matching opening bracket, skip it.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/26/B
-#
-# Problem Name: Regular Bracket Sequence
-#
-# Problem Description:
-# Given a bracket sequence consisting only of '(' and ')' characters,
-# find the length of the longest regular (properly nested) bracket subsequence.
-#
-# Input Format:
-# - A single string containing only '(' and ')' characters
-# - Length up to 10^6
-#
-# Output Format:
-# - A single integer: the length of the longest regular bracket subsequence
-#
-# Key Approach/Algorithm:
-# - Greedy approach using a counter (position)
-# - Track opening brackets with a counter
-# - For each closing bracket, if there's a matching opening bracket, add 2 to total
-# - If no matching opening bracket, skip the closing bracket
-
-
 def solution():
     s = input().strip()
     pos = 0
@@ -140,37 +145,44 @@ def solution():
 
     print(total)
 
-
 solution()
 ```
 
-### 600B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) where n is string length
+- **Space Complexity:** O(1)
+
+---
+
+### Queries about less or equal elements
+
+#### Problem Information
+- **Source:** Codeforces 600B
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given two arrays A and B, for each element b[i] in B, find how many elements in A are less than or equal to b[i].
+
+#### Input Format
+- First line: n m (sizes of arrays A and B)
+- Second line: n integers (array A)
+- Third line: m integers (array B)
+
+#### Output Format
+m integers: for each b[i], the count of elements in A that are <= b[i].
+
+#### Solution
+
+##### Approach
+Sort array A. For each query b[i], use binary search (bisect_right) to find the position where b[i] would be inserted, which gives the count.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/600/B
-#
-# Problem Name: Queries about less or equal elements
-#
-# Problem Description:
-# Given two arrays A and B, for each element b[i] in B, find how many
-# elements in A are less than or equal to b[i].
-#
-# Input Format:
-# - First line: n m (sizes of arrays A and B)
-# - Second line: n integers (array A)
-# - Third line: m integers (array B)
-#
-# Output Format:
-# - m integers: for each b[i], the count of elements in A that are <= b[i]
-#
-# Key Approach/Algorithm:
-# - Sort array A
-# - For each query b[i], use binary search (bisect_right) to find
-#   the position where b[i] would be inserted, which gives the count
-
 import bisect
-
 
 def solution():
     n, m = map(int, input().strip().split())
@@ -181,34 +193,44 @@ def solution():
 
     for i in range(m - 1):
         print(bisect.bisect_right(a, b[i]), end=' ')
-        # print(binary_search(a, b[i], -1, n), end=' ')
     print(bisect.bisect_right(a, b[m - 1]))
-
 
 solution()
 ```
 
-### Find the Median (Custom)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n + m log n) for sorting and m queries
+- **Space Complexity:** O(n) for sorted array
+
+---
+
+### Find the Median
+
+#### Problem Information
+- **Source:** Custom
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given an array of N integers, find the median value. For an array sorted in ascending order, the median is the middle element at index N/2 (0-indexed after sorting).
+
+#### Input Format
+- First line: N (number of elements)
+- Second line: N space-separated integers
+
+#### Output Format
+A single integer: the median of the array.
+
+#### Solution
+
+##### Approach
+Sort the array in ascending order and return the element at index N//2.
+
+##### Python Solution
 
 ```python
-# Problem: Find the Median
-#
-# Problem Description:
-# Given an array of N integers, find the median value.
-# For an array sorted in ascending order, the median is the middle element.
-# If N is odd, it's the element at index N/2 (0-indexed after sorting).
-#
-# Input Format:
-# - First line: N (number of elements)
-# - Second line: N space-separated integers
-#
-# Output Format:
-# - A single integer: the median of the array
-#
-# Key Approach/Algorithm:
-# - Sort the array in ascending order
-# - Return the element at index N//2
-
 def solution():
     n = int(input())
     ar = list(map(int, input().strip().split()))
@@ -217,37 +239,42 @@ def solution():
 
     print(ar[mid_index])
 
-
 solution()
 ```
 
-### CamelCase (Hackerrank)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n) for sorting
+- **Space Complexity:** O(n) for array storage
+
+---
+
+### CamelCase
+
+#### Problem Information
+- **Source:** Hackerrank
+- **Difficulty:** Secret
+- **Time Limit:** 4000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a string in camelCase format (first word starts with lowercase, subsequent words start with uppercase), count the number of words.
+
+#### Input Format
+A single line containing a camelCase string.
+
+#### Output Format
+A single integer: the number of words in the string.
+
+#### Solution
+
+##### Approach
+Start with count = 1 (for the first word). Iterate through each character. If character is uppercase (ASCII < 97), increment counter. Each uppercase letter marks the start of a new word.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerrank
-#  https://www.hackerrank.com/challenges/camelcase/problem
-#
-# Problem Name: CamelCase
-#
-# Problem Description:
-# Given a string in camelCase format (first word starts with lowercase,
-# subsequent words start with uppercase), count the number of words.
-#
-# Input Format:
-# - A single line containing a camelCase string
-#
-# Output Format:
-# - A single integer: the number of words in the string
-#
-# Key Approach/Algorithm:
-# - Start with count = 1 (for the first word)
-# - Iterate through each character
-# - If character is uppercase (ASCII < 97), increment counter
-# - Each uppercase letter marks the start of a new word
-
-
 def solution():
-
     s = input().strip()
     counter = 1
     for c in s:
@@ -256,42 +283,47 @@ def solution():
 
     print(counter)
 
-
 solution()
 ```
 
-### Country Roads (LightOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(n) where n is string length
+- **Space Complexity:** O(1)
+
+---
+
+### Country Roads
+
+#### Problem Information
+- **Source:** LightOJ 1002
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 32MB
+
+#### Problem Statement
+
+Given an undirected weighted graph representing cities and roads, find the minimum "maximum edge weight" path from a source city to all other cities. The cost of a path is the maximum edge weight along that path (minimax path problem).
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - N M: number of nodes and edges
+  - M lines with A B W: edge from A to B with weight W
+  - t: the source node
+
+#### Output Format
+For each test case: "Case X:" followed by the minimum maximum edge weight to reach each city (0 to N-1), or "Impossible" if unreachable.
+
+#### Solution
+
+##### Approach
+Modified Dijkstra's algorithm. Instead of summing weights, track the maximum edge weight on the path. For relaxation: dist[v] = max(dist[u], edge_weight) if this is smaller than current dist[v].
+
+##### Python Solution
 
 ```python
-#  Problem from LightOJ
-#  http://lightoj.com/volume_showproblem.php?problem=1002
-#
-# Problem Name: Country Roads
-#
-# Problem Description:
-# Given an undirected weighted graph representing cities and roads,
-# find the minimum "maximum edge weight" path from a source city to all other cities.
-# The cost of a path is the maximum edge weight along that path (minimax path problem).
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - N M: number of nodes and edges
-#   - M lines with A B W: edge from A to B with weight W
-#   - t: the source node
-#
-# Output Format:
-# - For each test case: "Case X:" followed by the minimum maximum edge weight
-#   to reach each city (0 to N-1), or "Impossible" if unreachable
-#
-# Key Approach/Algorithm:
-# - Modified Dijkstra's algorithm
-# - Instead of summing weights, track the maximum edge weight on the path
-# - For relaxation: dist[v] = max(dist[u], edge_weight) if this is smaller than current dist[v]
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -307,9 +339,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 class Node:
     def __init__(self, id, dist):
@@ -319,9 +349,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, t, graph):
-
     dist = [-1 for x in range(n+1)]
     pqueue = []
     heapq.heappush(pqueue, Node(t, 0))
@@ -338,9 +366,7 @@ def dijkstra(n, t, graph):
 
     return dist
 
-
 def solution():
-
     T = int(inp.next())
     case_number = 0
 
@@ -367,32 +393,42 @@ def solution():
             else:
                 print('Impossible')
 
-
 solution()
 ```
 
-### Pangram (Custom)
+##### Complexity Analysis
+- **Time Complexity:** O((N + M) log N) for modified Dijkstra
+- **Space Complexity:** O(N + M) for graph and distance arrays
+
+---
+
+### Pangram
+
+#### Problem Information
+- **Source:** Custom
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A pangram is a sentence that contains every letter of the alphabet at least once. Given a string, determine if it is a pangram.
+
+#### Input Format
+- First line: N (length of the string)
+- Second line: a string of N characters
+
+#### Output Format
+"YES" if the string is a pangram, "NO" otherwise.
+
+#### Solution
+
+##### Approach
+Use a boolean array of size 26 to track presence of each letter. Convert each character to index (0-25) regardless of case. Mark the corresponding index as True. If all 26 positions are True, it's a pangram.
+
+##### Python Solution
 
 ```python
-# Problem: Pangram
-#
-# Problem Description:
-# A pangram is a sentence that contains every letter of the alphabet at least once.
-# Given a string, determine if it is a pangram.
-#
-# Input Format:
-# - First line: N (length of the string)
-# - Second line: a string of N characters
-#
-# Output Format:
-# - "YES" if the string is a pangram, "NO" otherwise
-#
-# Key Approach/Algorithm:
-# - Use a boolean array of size 26 to track presence of each letter
-# - Convert each character to index (0-25) regardless of case
-# - Mark the corresponding index as True
-# - If all 26 positions are True, it's a pangram
-
 def solution():
     num_of_chars = int(input())
     checking_string = input().strip()
@@ -412,36 +448,44 @@ def solution():
             return
     print('YES')
 
-
 solution()
 ```
 
-### Printer_Queue (Custom)
+##### Complexity Analysis
+- **Time Complexity:** O(n) where n is string length
+- **Space Complexity:** O(1) for fixed-size array of 26
+
+---
+
+### Printer Queue
+
+#### Problem Information
+- **Source:** UVA 12100
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A printer queue processes jobs based on priority, not just FIFO order. Jobs with higher priority are printed first. If the front job doesn't have the highest priority, it's moved to the back of the queue. Find when a specific job (at position m) will be printed.
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - n m: number of jobs and position of our job (0-indexed)
+  - n integers: priorities of each job
+
+#### Output Format
+For each test case: the order in which our job is printed (1-indexed).
+
+#### Solution
+
+##### Approach
+Simulate the printer queue. Sort priorities in descending order to know which priority should print next. If front job has the current highest priority, print it; otherwise move to back. Track when our target job gets printed.
+
+##### Python Solution
 
 ```python
-# Problem: Printer Queue (UVA 12100)
-#
-# Problem Description:
-# A printer queue processes jobs based on priority, not just FIFO order.
-# Jobs with higher priority are printed first. If the front job doesn't have
-# the highest priority, it's moved to the back of the queue.
-# Find when a specific job (at position m) will be printed.
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - n m: number of jobs and position of our job (0-indexed)
-#   - n integers: priorities of each job
-#
-# Output Format:
-# - For each test case: the order in which our job is printed (1-indexed)
-#
-# Key Approach/Algorithm:
-# - Simulate the printer queue using a list
-# - Sort priorities in descending order to know which priority should print next
-# - If front job has the current highest priority, print it; otherwise move to back
-# - Track when our target job gets printed
-
 def solution():
     tcs = int(input())
     for i in range(tcs):
@@ -469,33 +513,44 @@ def solution():
 
         print(counter)
 
-
 solution()
 ```
 
-### Soldier and Bananas (Custom)
+##### Complexity Analysis
+- **Time Complexity:** O(n^2) worst case for queue simulation
+- **Space Complexity:** O(n) for queue and sorted list
+
+---
+
+### Soldier and Bananas
+
+#### Problem Information
+- **Source:** Codeforces 546A
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A soldier wants to buy w bananas. The cost of bananas is progressive: the 1st banana costs k dollars, 2nd costs 2*k, 3rd costs 3*k, and so on. The soldier has n dollars. How much more money does he need to borrow?
+
+#### Input Format
+Single line with three integers: k n w
+- k: base cost of first banana
+- n: dollars the soldier has
+- w: number of bananas to buy
+
+#### Output Format
+Single integer: amount to borrow (0 if soldier has enough).
+
+#### Solution
+
+##### Approach
+Total cost = k * (1 + 2 + ... + w) = k * w * (w + 1) / 2. Amount to borrow = max(0, total_cost - n).
+
+##### Python Solution
 
 ```python
-# Problem: Soldier and Bananas (Codeforces 546A)
-#
-# Problem Description:
-# A soldier wants to buy w bananas. The cost of bananas is progressive:
-# the 1st banana costs k dollars, 2nd costs 2*k, 3rd costs 3*k, and so on.
-# The soldier has n dollars. How much more money does he need to borrow?
-#
-# Input Format:
-# - Single line with three integers: k n w
-#   - k: base cost of first banana
-#   - n: dollars the soldier has
-#   - w: number of bananas to buy
-#
-# Output Format:
-# - Single integer: amount to borrow (0 if soldier has enough)
-#
-# Key Approach/Algorithm:
-# - Total cost = k * (1 + 2 + ... + w) = k * w * (w + 1) / 2
-# - Amount to borrow = max(0, total_cost - n)
-
 def solution():
     k, n, w = map(int, input().strip().split())
 
@@ -505,40 +560,45 @@ def solution():
 
     print(result)
 
-
 solution()
 ```
 
-### 429 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(1)
+- **Space Complexity:** O(1)
+
+---
+
+### Word Transformation
+
+#### Problem Information
+- **Source:** UVA 429
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a dictionary of words and pairs of words, find the minimum number of single-character transformations needed to change one word into another. A valid transformation changes exactly one character while keeping the resulting word in the dictionary.
+
+#### Input Format
+- N: number of test cases
+- For each test case:
+  - Dictionary words (one per line) until '*'
+  - Query pairs (start_word end_word) until blank line
+
+#### Output Format
+For each query: start_word end_word min_transformations.
+
+#### Solution
+
+##### Approach
+Build a graph where nodes are dictionary words. Connect two words with an edge if they differ by exactly one character. Use Dijkstra's algorithm (or BFS) to find shortest path between query words.
+
+##### Python Solution
 
 ```python
-#  Problem from UVA
-#  https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=370
-#
-# Problem Name: Word Transformation (UVA 429)
-#
-# Problem Description:
-# Given a dictionary of words and pairs of words, find the minimum number
-# of single-character transformations needed to change one word into another.
-# A valid transformation changes exactly one character while keeping the
-# resulting word in the dictionary.
-#
-# Input Format:
-# - N: number of test cases
-# - For each test case:
-#   - Dictionary words (one per line) until '*'
-#   - Query pairs (start_word end_word) until blank line
-#
-# Output Format:
-# - For each query: start_word end_word min_transformations
-#
-# Key Approach/Algorithm:
-# - Build a graph where nodes are dictionary words
-# - Connect two words with an edge if they differ by exactly one character
-# - Use Dijkstra's algorithm (or BFS) to find shortest path between query words
-
 import heapq
-
 
 class Node:
     def __init__(self, id, dist):
@@ -548,9 +608,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, S, T, graph):
-
     dist = [-1 for x in range(n+1)]
     pqueue = []
     heapq.heappush(pqueue, Node(S, 0))
@@ -567,9 +625,7 @@ def dijkstra(n, S, T, graph):
 
     return dist[T]
 
-
 def solution():
-
     N = int(input().strip())
     for tc in range(N):
         dictionary = []
@@ -624,7 +680,9 @@ def solution():
         if tc < N - 1:
             print()
 
-
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(W^2 * L + Q * (W + E) log W) where W is word count, L is max word length, Q is queries
+- **Space Complexity:** O(W^2) for graph edges in worst case

@@ -10,32 +10,35 @@ This session covers algorithmic complexity analysis, including time and space co
 
 ## Problems
 
-### 161A (Codeforces)
+### Soldier and Vests
 
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 161A
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/161/A
+
+#### Problem Statement
+There are n soldiers and m vests. Each soldier has a size a[i], and each vest has a size b[i]. A soldier can wear a vest if the vest size is in the range [a[i] - x, a[i] + y]. Both arrays are sorted in ascending order.
+
+Find the maximum number of soldiers that can receive vests, and output the pairs (soldier index, vest index) for each assignment.
+
+#### Input Format
+- Line 1: n m x y (soldiers, vests, lower tolerance, upper tolerance)
+- Line 2: n integers (soldier sizes, sorted ascending)
+- Line 3: m integers (vest sizes, sorted ascending)
+
+#### Output Format
+- Line 1: Number of soldiers who get vests
+- Next lines: Pairs of (soldier index, vest index) - 1-based
+
+#### Solution
+
+##### Approach
+Use two-pointer technique on sorted arrays to efficiently match soldiers with vests.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/161/A
-#
-# Problem: Soldier and Vests
-#
-# There are n soldiers and m vests. Each soldier has a size a[i], and each vest
-# has a size b[i]. A soldier can wear a vest if the vest size is in the range
-# [a[i] - x, a[i] + y]. Both arrays are sorted in ascending order.
-#
-# Find the maximum number of soldiers that can receive vests, and output the
-# pairs (soldier index, vest index) for each assignment.
-#
-# Input:
-# - Line 1: n m x y (soldiers, vests, lower tolerance, upper tolerance)
-# - Line 2: n integers (soldier sizes, sorted ascending)
-# - Line 3: m integers (vest sizes, sorted ascending)
-#
-# Output:
-# - Line 1: Number of soldiers who get vests
-# - Next lines: Pairs of (soldier index, vest index) - 1-based
-#
-# Approach: Two-pointer technique on sorted arrays
-
 n, m, x, y = map(int, input().split())
 a = list(map(int, input().split()))
 b = list(map(int, input().split()))
@@ -76,28 +79,37 @@ for i in range(len(u)):
     print(u[i], v[i], sep=' ')
 ```
 
-### 224B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n + m) - single pass through both arrays
+- **Space Complexity:** O(n) - storing the matching pairs
 
+---
+
+### Distinct K Segment
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 224B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/224/B
+
+#### Problem Statement
+Given an array of n integers and a number k, find the shortest contiguous segment that contains exactly k distinct values. Output the 1-based start and end positions of this segment.
+
+#### Input Format
+- Line 1: n k (array size, required distinct count)
+- Line 2: n integers (array elements, values up to 100000)
+
+#### Output Format
+Two integers - start and end positions (1-based), or "-1 -1" if no such segment exists.
+
+#### Solution
+
+##### Approach
+Use sliding window technique - expand right until k distinct values are found, then shrink left while maintaining k distinct values.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/224/B
-#
-# Problem: Sereja and Suffixes (Distinct K Segment)
-#
-# Given an array of n integers and a number k, find the shortest contiguous
-# segment that contains exactly k distinct values. Output the 1-based start
-# and end positions of this segment.
-#
-# Input:
-# - Line 1: n k (array size, required distinct count)
-# - Line 2: n integers (array elements, values up to 100000)
-#
-# Output: Two integers - start and end positions (1-based), or "-1 -1" if
-#         no such segment exists
-#
-# Approach: Sliding window - expand right until k distinct found, then
-#           shrink left while maintaining k distinct
-
 n, k = map(int, input().split())
 a = list(map(int, input().split()))
 
@@ -129,27 +141,37 @@ else:
     print(start_position + 1, end_position + 1, sep=' ')
 ```
 
-### 279B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through the array
+- **Space Complexity:** O(max_value) - frequency array for distinct count
 
+---
+
+### Books
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 279B
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/279/B
+
+#### Problem Statement
+Valera has n books on a shelf. Each book i takes a[i] minutes to read. He has t minutes of free time and wants to read as many CONSECUTIVE books as possible (starting from any position). Find the maximum number of consecutive books he can completely read within time t.
+
+#### Input Format
+- Line 1: n t (number of books, available time)
+- Line 2: n integers (reading time for each book)
+
+#### Output Format
+Maximum number of consecutive books that can be read.
+
+#### Solution
+
+##### Approach
+Use sliding window / two-pointer technique to find the maximum window where sum of reading times does not exceed t.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/279/B
-#
-# Problem: Books
-#
-# Valera has n books on a shelf. Each book i takes a[i] minutes to read.
-# He has t minutes of free time and wants to read as many CONSECUTIVE books
-# as possible (starting from any position). Find the maximum number of
-# consecutive books he can completely read within time t.
-#
-# Input:
-# - Line 1: n t (number of books, available time)
-# - Line 2: n integers (reading time for each book)
-#
-# Output: Maximum number of consecutive books that can be read
-#
-# Approach: Sliding window / two-pointer technique
-
 n, t = map(int, input().split())
 a = list(map(int, input().split()))
 
@@ -184,29 +206,39 @@ while True:
 print(max_total_book)
 ```
 
-### 381A (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - each element is visited at most twice
+- **Space Complexity:** O(1) - constant extra space
 
+---
+
+### Sereja and Dima
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 381A
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/contest/381/problem/A
+
+#### Problem Statement
+n cards are laid out in a row, each with a value. Sereja and Dima play a game where they take turns picking cards. On each turn, a player can take either the leftmost or rightmost card. Both players play optimally (always pick the card with the higher value). Sereja goes first.
+
+Calculate the final scores of both players.
+
+#### Input Format
+- Line 1: Integer n (number of cards)
+- Line 2: n integers (card values)
+
+#### Output Format
+Two integers - Sereja's score and Dima's score.
+
+#### Solution
+
+##### Approach
+Use two-pointer simulation from both ends, greedily selecting the larger card at each turn.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/contest/381/problem/A
-#
-# Problem: Sereja and Dima
-#
-# n cards are laid out in a row, each with a value. Sereja and Dima play a
-# game where they take turns picking cards. On each turn, a player can take
-# either the leftmost or rightmost card. Both players play optimally (always
-# pick the card with the higher value). Sereja goes first.
-#
-# Calculate the final scores of both players.
-#
-# Input:
-# - Line 1: Integer n (number of cards)
-# - Line 2: n integers (card values)
-#
-# Output: Two integers - Sereja's score and Dima's score
-#
-# Approach: Two-pointer simulation from both ends
-
 n = int(input())
 cards = list(map(int, input().split()))
 
@@ -237,32 +269,40 @@ while True:
 print(Sereja, Dima, sep=' ')
 ```
 
-### 387B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through the array
+- **Space Complexity:** O(1) - constant extra space
 
+---
+
+### George and Round
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 387B
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/387/B
+
+#### Problem Statement
+George wants to prepare a programming contest with n problems of specific difficulties a[1], a[2], ..., a[n]. He has m prepared problems with difficulties b[1], b[2], ..., b[m]. Both arrays are sorted in non-decreasing order.
+
+A prepared problem with difficulty b[j] can be used for a required problem with difficulty a[i] if b[j] >= a[i]. Each prepared problem can be used at most once. Find the minimum number of NEW problems George must create.
+
+#### Input Format
+- Line 1: n m (required problems, prepared problems)
+- Line 2: n integers (required difficulties, sorted)
+- Line 3: m integers (prepared difficulties, sorted)
+
+#### Output Format
+Minimum number of new problems to create.
+
+#### Solution
+
+##### Approach
+Use two-pointer greedy matching - for each required difficulty, find the smallest prepared problem that satisfies it.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/387/B
-#
-# Problem: George and Round
-#
-# George wants to prepare a programming contest with n problems of specific
-# difficulties a[1], a[2], ..., a[n]. He has m prepared problems with
-# difficulties b[1], b[2], ..., b[m]. Both arrays are sorted in non-decreasing
-# order.
-#
-# A prepared problem with difficulty b[j] can be used for a required problem
-# with difficulty a[i] if b[j] >= a[i]. Each prepared problem can be used at
-# most once. Find the minimum number of NEW problems George must create.
-#
-# Input:
-# - Line 1: n m (required problems, prepared problems)
-# - Line 2: n integers (required difficulties, sorted)
-# - Line 3: m integers (prepared difficulties, sorted)
-#
-# Output: Minimum number of new problems to create
-#
-# Approach: Two-pointer greedy matching
-
 n, m = map(int, input().split())
 a = list(map(int, input().split()))
 b = list(map(int, input().split()))
@@ -291,26 +331,37 @@ while True:
 print(n - needed_problem_index)
 ```
 
-### 602B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n + m) - single pass through both arrays
+- **Space Complexity:** O(1) - constant extra space
 
+---
+
+### Almost Constant Range
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 602B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/602/B
+
+#### Problem Statement
+Given an array of n integers, find the length of the longest contiguous subarray where the difference between the maximum and minimum values is at most 1 (i.e., max - min <= 1).
+
+#### Input Format
+- Line 1: Integer n (array size)
+- Line 2: n integers (array elements)
+
+#### Output Format
+Length of the longest "almost constant" subarray.
+
+#### Solution
+
+##### Approach
+Use sliding window technique while tracking minimum and maximum values in the current window.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/602/B
-#
-# Problem: Approximating a Constant Range (Almost Constant Range)
-#
-# Given an array of n integers, find the length of the longest contiguous
-# subarray where the difference between the maximum and minimum values is
-# at most 1 (i.e., max - min <= 1).
-#
-# Input:
-# - Line 1: Integer n (array size)
-# - Line 2: n integers (array elements)
-#
-# Output: Length of the longest "almost constant" subarray
-#
-# Approach: Sliding window tracking min/max values
-
 n = int(input())
 a = list(map(int, input().split()))
 
@@ -357,30 +408,39 @@ while True:
 print(max_almost_constant_range)
 ```
 
-### 6C (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - amortized linear time with sliding window
+- **Space Complexity:** O(1) - constant extra space
 
+---
+
+### Alice, Bob and Chocolate
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 6C
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/6/C
+
+#### Problem Statement
+n chocolate bars are lined up. Alice starts eating from the left side, Bob starts from the right side. They eat simultaneously and continuously. Each bar i takes t[i] seconds to eat. When they meet (or would overlap), they stop. If they finish a chocolate at the same time and there's one bar left, Alice gets it.
+
+Determine how many chocolates each person eats.
+
+#### Input Format
+- Line 1: Integer n (number of chocolates)
+- Line 2: n integers (time to eat each chocolate)
+
+#### Output Format
+Two integers - chocolates eaten by Alice and Bob.
+
+#### Solution
+
+##### Approach
+Use two-pointer simulation with time tracking from both ends.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/6/C
-#
-# Problem: Alice, Bob and Chocolate
-#
-# n chocolate bars are lined up. Alice starts eating from the left side,
-# Bob starts from the right side. They eat simultaneously and continuously.
-# Each bar i takes t[i] seconds to eat. When they meet (or would overlap),
-# they stop. If they finish a chocolate at the same time and there's one
-# bar left, Alice gets it.
-#
-# Determine how many chocolates each person eats.
-#
-# Input:
-# - Line 1: Integer n (number of chocolates)
-# - Line 2: n integers (time to eat each chocolate)
-#
-# Output: Two integers - chocolates eaten by Alice and Bob
-#
-# Approach: Two-pointer simulation with time tracking
-
 n = int(input())
 t = list(map(int, input().split()))
 
@@ -406,29 +466,39 @@ while True:
 print(alice_eating_index + 1, n - alice_eating_index - 1)
 ```
 
-### 892B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - each chocolate is processed once
+- **Space Complexity:** O(1) - constant extra space (modifying input array)
 
+---
+
+### Wrath (Survivors)
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 892B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/892/B
+
+#### Problem Statement
+n people stand in a line (positions 1 to n, left to right). Each person i has a weapon that can kill L[i] people to their left. At time 0, everyone swings simultaneously. A person survives if they are not killed by anyone to their right.
+
+Count how many people survive after everyone swings.
+
+#### Input Format
+- Line 1: Integer n (number of people)
+- Line 2: n integers L[i] (kill range for each person)
+
+#### Output Format
+Number of survivors.
+
+#### Solution
+
+##### Approach
+Process from right to left, tracking kill coverage and counting survivors.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/892/B
-#
-# Problem: Wrath (Survivors)
-#
-# n people stand in a line (positions 1 to n, left to right). Each person i
-# has a weapon that can kill L[i] people to their left. At time 0, everyone
-# swings simultaneously. A person survives if they are not killed by anyone
-# to their right.
-#
-# Count how many people survive after everyone swings.
-#
-# Input:
-# - Line 1: Integer n (number of people)
-# - Line 2: n integers L[i] (kill range for each person)
-#
-# Output: Number of survivors
-#
-# Approach: Process from right to left, tracking kill coverage
-
 n = int(input())
 L = list(map(int, input().split()))
 
@@ -446,4 +516,8 @@ for i in range(n - 1, 0, -1):
         last_kill = last_kill - 1 if last_kill > 0 else 0
 print(total_people)
 ```
+
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass from right to left
+- **Space Complexity:** O(1) - constant extra space
 

@@ -10,33 +10,33 @@ This session covers Binary Search Tree (BST) data structure, including insertion
 
 ## Problems
 
-### 514B (Codeforces)
+### Han Solo and Lazer Gun
+
+#### Problem Information
+- **Source:** Codeforces
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Han Solo is at position (x0, y0) and needs to shoot n stormtroopers. A single laser shot can kill all stormtroopers on the same ray from Han. Find the minimum number of shots needed to eliminate all stormtroopers.
+
+#### Input Format
+- First line: n x0 y0 (number of stormtroopers, Han's position)
+- Next n lines: x y (coordinates of each stormtrooper)
+
+#### Output Format
+- Minimum number of shots (distinct rays) needed
+
+#### Solution
+
+##### Approach
+Two points are on the same ray if they have the same angle from origin. For each stormtrooper, compute angle (or slope) relative to Han's position. Use a set to count distinct angles/slopes. Stormtroopers with same slope are on the same ray.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/514/B
-#
-# Problem Name: Han Solo and Lazer Gun (Codeforces 514B)
-#
-# Problem Description:
-# Han Solo is at position (x0, y0) and needs to shoot n stormtroopers.
-# A single laser shot can kill all stormtroopers on the same ray from Han.
-# Find the minimum number of shots needed to eliminate all stormtroopers.
-#
-# Input Format:
-# - First line: n x0 y0 (number of stormtroopers, Han's position)
-# - Next n lines: x y (coordinates of each stormtrooper)
-#
-# Output Format:
-# - Minimum number of shots (distinct rays) needed
-#
-# Key Approach/Algorithm:
-# - Two points are on the same ray if they have the same angle from origin
-# - For each stormtrooper, compute angle (or slope) relative to Han's position
-# - Use a set to count distinct angles/slopes
-# - Stormtroopers with same slope are on the same ray
-
-
 def solution():
     n, x0, y0 = map(int, input().strip().split())
     shots = set()
@@ -54,33 +54,44 @@ def solution():
 solution()
 ```
 
-### 704A (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n)
+- **Space Complexity:** O(n)
+
+---
+
+### Thor
+
+#### Problem Information
+- **Source:** Codeforces
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Simulate a notification system with n applications. Three operations:
+1. Type 1 x: application x generates a notification
+2. Type 2 x: read all notifications from application x
+3. Type 3 t: read first t notifications in order
+
+After each operation, output the current number of unread notifications.
+
+#### Input Format
+- First line: n q (number of applications, number of operations)
+- Next q lines: type x (operation type and parameter)
+
+#### Output Format
+- q lines: number of unread notifications after each operation
+
+#### Solution
+
+##### Approach
+Use sets to track unread notifications per application. Use a queue to track notification order for type 3 operations. For type 2: clear all notifications from specific app. For type 3: process notifications in order up to given index.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/704/A
-#
-# Problem Name: Thor (Codeforces 704A)
-#
-# Problem Description:
-# Simulate a notification system with n applications. Three operations:
-# 1. Type 1 x: application x generates a notification
-# 2. Type 2 x: read all notifications from application x
-# 3. Type 3 t: read first t notifications in order
-# After each operation, output the current number of unread notifications.
-#
-# Input Format:
-# - First line: n q (number of applications, number of operations)
-# - Next q lines: type x (operation type and parameter)
-#
-# Output Format:
-# - q lines: number of unread notifications after each operation
-#
-# Key Approach/Algorithm:
-# - Use sets to track unread notifications per application
-# - Use a queue to track notification order for type 3 operations
-# - For type 2: clear all notifications from specific app
-# - For type 3: process notifications in order up to given index
 import queue
 
 
@@ -124,38 +135,45 @@ def solution():
 solution()
 ```
 
-### distinct-count (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(q) amortized
+- **Space Complexity:** O(q)
+
+---
+
+### Distinct Count
+
+#### Problem Information
+- **Source:** HackerEarth
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given an array of N integers and a target X, determine if the number of distinct elements equals X, is less than X, or is greater than X.
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - N X: size of array and target count
+  - N integers (the array)
+
+#### Output Format
+- "Good" if distinct count equals X
+- "Bad" if distinct count is less than X
+- "Average" if distinct count is greater than X
+
+#### Solution
+
+##### Approach
+Use a set to count distinct elements in O(n). Compare set size with X to determine result.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/data-structures/trees/binary-search-tree/practice-problems/algorithm/distinct-count/
-#
-# Problem Name: Distinct Count
-#
-# Problem Description:
-# Given an array of N integers and a target X, determine if the number of
-# distinct elements equals X, is less than X, or is greater than X.
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - N X: size of array and target count
-#   - N integers (the array)
-#
-# Output Format:
-# - "Good" if distinct count equals X
-# - "Bad" if distinct count is less than X
-# - "Average" if distinct count is greater than X
-#
-# Key Approach/Algorithm:
-# - Use a set to count distinct elements in O(n)
-# - Compare set size with X to determine result
-
-
 def check_distinct(_n, _x, _a):
     distinct_set = set(_a)
-    # for i in range(_n):
-    #     distinct_set.add(_a[i])
     if len(distinct_set) == _x:
         return 'Good'
     if len(distinct_set) < _x:
@@ -174,37 +192,39 @@ def solution():
 solution()
 ```
 
-### minimum-loss (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(T * N)
+- **Space Complexity:** O(N)
+
+---
+
+### Minimum Loss
+
+#### Problem Information
+- **Source:** HackerRank
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Lauren wants to buy a house and sell it later. She has predicted house prices for n years. She must buy before selling (buy year < sell year). She can only afford to make a loss (buy price > sell price). Find the minimum possible loss she must incur.
+
+#### Input Format
+- n: number of years
+- n integers: predicted house prices (all distinct)
+
+#### Output Format
+- Minimum loss (buy_price - sell_price where buy_price > sell_price)
+
+#### Solution
+
+##### Approach
+Build a BST as we process prices in chronological order. For each new price (potential sell price), find the smallest price greater than it in the BST (which represents a valid buy price from past). The loss is (buy_price - current_price). Track minimum loss across all valid pairs.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerrank.com/contests/womens-codesprint-2/challenges/minimum-loss
-#
-# Problem Name: Minimum Loss
-#
-# Problem Description:
-# Lauren wants to buy a house and sell it later. She has predicted house prices
-# for n years. She must buy before selling (buy year < sell year).
-# She can only afford to make a loss (buy price > sell price).
-# Find the minimum possible loss she must incur.
-#
-# Input Format:
-# - n: number of years
-# - n integers: predicted house prices (all distinct)
-#
-# Output Format:
-# - Minimum loss (buy_price - sell_price where buy_price > sell_price)
-#
-# Key Approach/Algorithm:
-# - Build a BST as we process prices in chronological order
-# - For each new price (potential sell price), find the smallest price
-#   greater than it in the BST (which represents a valid buy price from past)
-# - The loss is (buy_price - current_price)
-# - Track minimum loss across all valid pairs
-
-
-#!/bin/python3
-
 import math
 import os
 import random
@@ -255,7 +275,6 @@ def find_min_loss(root, min_loss):
     return min_loss_left
 
 
-# Complete the minimumLoss function below.
 def minimum_loss(price):
     n = len(price)
     root = Node(price[0])
@@ -280,34 +299,41 @@ if __name__ == '__main__':
     fptr.close()
 ```
 
-### monk-and-his-friends (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n) average, O(n^2) worst case for unbalanced BST
+- **Space Complexity:** O(n)
+
+---
+
+### Monk and his Friends
+
+#### Problem Information
+- **Source:** HackerEarth
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Monk is waiting for his friends in a classroom. N friends are already inside. M more friends arrive one by one. When a friend arrives, check if someone with the same ID is already in the class. After checking, the friend enters.
+
+#### Input Format
+- T: number of test cases
+- For each test case:
+  - N M: friends already inside, friends arriving
+  - N+M integers: IDs (first N already inside, next M arriving)
+
+#### Output Format
+- For each arriving friend: "YES" if duplicate exists, "NO" otherwise
+
+#### Solution
+
+##### Approach
+Use a set to store IDs of friends inside the class. For each arriving friend, check if ID exists in set. Add the arriving friend's ID to the set after checking.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/data-structures/trees/binary-search-tree/practice-problems/algorithm/monk-and-his-friends/description/
-#
-# Problem Name: Monk and his Friends
-#
-# Problem Description:
-# Monk is waiting for his friends in a classroom. N friends are already inside.
-# M more friends arrive one by one. When a friend arrives, check if someone
-# with the same ID is already in the class. After checking, the friend enters.
-#
-# Input Format:
-# - T: number of test cases
-# - For each test case:
-#   - N M: friends already inside, friends arriving
-#   - N+M integers: IDs (first N already inside, next M arriving)
-#
-# Output Format:
-# - For each arriving friend: "YES" if duplicate exists, "NO" otherwise
-#
-# Key Approach/Algorithm:
-# - Use a set to store IDs of friends inside the class
-# - For each arriving friend, check if ID exists in set
-# - Add the arriving friend's ID to the set after checking
-
-
 def check_exist(_in, _out):
     inside_class = set(_in)
     for stu in _out:
@@ -331,34 +357,41 @@ def solution():
 solution()
 ```
 
-### 1196 (Timus)
+##### Complexity Analysis
+- **Time Complexity:** O(T * (N + M))
+- **Space Complexity:** O(N + M)
+
+---
+
+### History Exam
+
+#### Problem Information
+- **Source:** ACM TIMUS
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 64MB
+
+#### Problem Statement
+
+A student memorized n historical years for an exam. The exam has m questions asking about specific years. Count how many questions the student can answer correctly (i.e., how many exam years match memorized years).
+
+#### Input Format
+- n: number of years the student memorized
+- n lines: memorized years (one per line)
+- m: number of exam questions
+- m lines: years asked in exam (one per line)
+
+#### Output Format
+- Number of correct answers (exam years that match memorized years)
+
+#### Solution
+
+##### Approach
+Build a Binary Search Tree from memorized years. For each exam question, search the BST. Count successful searches.
+
+##### Python Solution
 
 ```python
-# Problem from ACM TIMUS
-# http://acm.timus.ru/problem.aspx?space=1&num=1196
-#
-# Problem Name: History Exam (Timus 1196)
-#
-# Problem Description:
-# A student memorized n historical years for an exam. The exam has m questions
-# asking about specific years. Count how many questions the student can answer
-# correctly (i.e., how many exam years match memorized years).
-#
-# Input Format:
-# - n: number of years the student memorized
-# - n lines: memorized years (one per line)
-# - m: number of exam questions
-# - m lines: years asked in exam (one per line)
-#
-# Output Format:
-# - Number of correct answers (exam years that match memorized years)
-#
-# Key Approach/Algorithm:
-# - Build a Binary Search Tree from memorized years
-# - For each exam question, search the BST
-# - Count successful searches
-
-
 class Node:
     def __init__(self, value):
         self.value = value
@@ -403,34 +436,39 @@ def solution():
 solution()
 ```
 
-### 10815 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n + m log n) average case
+- **Space Complexity:** O(n)
+
+---
+
+### Andy's First Dictionary
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Andy is making a dictionary from a text. Extract all distinct words from the input, convert to lowercase, and output them in alphabetical order. Words consist only of alphabetic characters.
+
+#### Input Format
+- Multiple lines of text containing words and non-alphabetic characters
+
+#### Output Format
+- All distinct words in lowercase, sorted alphabetically (one per line)
+
+#### Solution
+
+##### Approach
+Parse input to extract words (alphabetic sequences only). Convert to lowercase. Use a BST (or set) to store unique words. In-order traversal of BST gives sorted output.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1756
-#
-# Problem Name: Andy's First Dictionary (UVA 10815)
-#
-# Problem Description:
-# Andy is making a dictionary from a text. Extract all distinct words from
-# the input, convert to lowercase, and output them in alphabetical order.
-# Words consist only of alphabetic characters.
-#
-# Input Format:
-# - Multiple lines of text containing words and non-alphabetic characters
-#
-# Output Format:
-# - All distinct words in lowercase, sorted alphabetically (one per line)
-#
-# Key Approach/Algorithm:
-# - Parse input to extract words (alphabetic sequences only)
-# - Convert to lowercase
-# - Use a BST (or set) to store unique words
-# - In-order traversal of BST gives sorted output
-# import sys
 import re
-
-# sys.stdin = open("file.txt", "r")
 
 
 class Node:
@@ -484,37 +522,41 @@ def solution():
 solution()
 ```
 
-### 11062 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(W log W) where W is total words
+- **Space Complexity:** O(U) where U is unique words
+
+---
+
+### Andy's Second Dictionary
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Similar to Andy's First Dictionary, but now words can contain hyphens. A word split across lines with a hyphen at end should be merged. Extract all distinct words, convert to lowercase, output alphabetically.
+
+#### Input Format
+- Multiple lines of text
+- Words may contain hyphens
+- A word ending with hyphen at end of line continues on next line
+
+#### Output Format
+- All distinct words in lowercase, sorted alphabetically (one per line)
+
+#### Solution
+
+##### Approach
+Parse input handling hyphenated words and line-continuation hyphens. Track incomplete words (ending with hyphen at line end). Merge with next line's first word. Use BST for unique sorted storage. In-order traversal outputs sorted words.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=2003
-#
-# Problem Name: Andy's Second Dictionary (UVA 11062)
-#
-# Problem Description:
-# Similar to Andy's First Dictionary, but now words can contain hyphens.
-# A word split across lines with a hyphen at end should be merged.
-# Extract all distinct words, convert to lowercase, output alphabetically.
-#
-# Input Format:
-# - Multiple lines of text
-# - Words may contain hyphens
-# - A word ending with hyphen at end of line continues on next line
-#
-# Output Format:
-# - All distinct words in lowercase, sorted alphabetically (one per line)
-#
-# Key Approach/Algorithm:
-# - Parse input handling hyphenated words and line-continuation hyphens
-# - Track incomplete words (ending with hyphen at line end)
-# - Merge with next line's first word
-# - Use BST for unique sorted storage
-# - In-order traversal outputs sorted words
-# import sys
 import re
-
-# sys.stdin = open("file.txt", "r")
 
 
 class Node:
@@ -546,8 +588,6 @@ def solution():
     root = None
     imcompleted_word = None
     while True:
-        # new_line = None
-        # new_words = []
 
         try:
             new_line = input().strip()
@@ -579,3 +619,6 @@ def solution():
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(W log W) where W is total words
+- **Space Complexity:** O(U) where U is unique words

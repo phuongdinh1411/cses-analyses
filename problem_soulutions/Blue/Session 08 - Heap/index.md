@@ -6,38 +6,42 @@ permalink: /problem_soulutions/Blue/Session 08 - Heap/
 
 # Session 08 - Heap
 
-This session covers heap data structure and priority queue operations, including min-heap, max-heap, and heap-based algorithms.
+Heap data structure and priority queue problems involving min-heap, max-heap, and heap-based algorithms for efficient element retrieval.
 
 ## Problems
 
-### RRATING (Codechef)
+### Restaurant Rating
+
+#### Problem Information
+- **Source:** CodeChef RRATING
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A restaurant receives reviews with ratings. After each review, they want to display the rating at the top 1/3 position (ceiling). For example, if there are 5 reviews, show the rating at position ceil(5/3) = 2 from top.
+
+Operations:
+- "1 x": Add a review with rating x
+- "2": Query the rating at top 1/3 position (or "No reviews yet" if empty)
+
+#### Input Format
+- Line 1: N (number of operations)
+- Next N lines: Operations as described above
+
+#### Output Format
+For each query (type 2), print the answer.
+
+#### Solution
+
+##### Approach
+Use two heaps - one for top 1/3 ratings (min-heap to get minimum of top elements), another for candidates (max-heap). Keep balance as reviews are added.
+
+##### Python Solution
 
 ```python
-# Problem from CodeChef
-# https://www.codechef.com/problems/RRATING
-#
-# Problem: Restaurant Rating
-#
-# A restaurant receives reviews with ratings. After each review, they want
-# to display the rating at the top 1/3 position (ceiling). For example, if
-# there are 5 reviews, show the rating at position ceil(5/3) = 2 from top.
-#
-# Operations:
-# - "1 x": Add a review with rating x
-# - "2": Query the rating at top 1/3 position (or "No reviews yet" if empty)
-#
-# Input:
-# - Line 1: N (number of operations)
-# - Next N lines: Operations as described above
-#
-# Output: For each query (type 2), print the answer
-#
-# Approach: Use two heaps - one for top 1/3 ratings (min-heap), another for
-#           candidates (max-heap). Keep balance as reviews are added.
-
-
 import heapq
-
 
 def solution():
     top_reviews = []
@@ -72,33 +76,43 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### monk-and-multiplication (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(N log N) for N operations with heap operations
+- **Space Complexity:** O(N) for storing all reviews
+
+---
+
+### Monk and Multiplication
+
+#### Problem Information
+- **Source:** Hackerearth
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given an array of N integers added one by one, after each insertion output the product of the three largest numbers. If fewer than 3 numbers have been added, output -1.
+
+#### Input Format
+- Line 1: N (number of elements)
+- Line 2: N space-separated integers
+
+#### Output Format
+N lines, each containing the product of 3 largest so far, or -1.
+
+#### Solution
+
+##### Approach
+Maintain a min-heap of size 3 with the largest elements. The heap root is always the smallest of the top 3.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/data-structures/trees/heapspriority-queues/practice-problems/algorithm/monk-and-multiplication/
-#
-# Problem: Monk and Multiplication
-#
-# Given an array of N integers added one by one, after each insertion output
-# the product of the three largest numbers. If fewer than 3 numbers have been
-# added, output -1.
-#
-# Input:
-# - Line 1: N (number of elements)
-# - Line 2: N space-separated integers
-#
-# Output: N lines, each containing the product of 3 largest so far, or -1
-#
-# Approach: Maintain a min-heap of size 3 with the largest elements
-
-
 import heapq
-
 
 def solution():
     N = int(input())
@@ -125,39 +139,50 @@ def solution():
                 heapq.heappush(max_list, A[i])
             print(max_list[0]*max_list[1]*max_list[2])
 
-
 solution()
 ```
 
-### trending (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(N log 3) = O(N) for N insertions
+- **Space Complexity:** O(1) for the fixed-size heap of 3 elements
+
+---
+
+### Roy and Trending Topics
+
+#### Problem Information
+- **Source:** Hackerearth
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given N topics with current scores and engagement data (posts, likes, comments, shares), calculate new scores using:
+```
+new_score = posts*50 + likes*5 + comments*10 + shares*20
+```
+
+Find the top 5 trending topics based on the CHANGE in score (new - old). Ties are broken by higher topic ID.
+
+#### Input Format
+- Line 1: N (number of topics)
+- Next N lines: topic_id current_score posts likes comments shares
+
+#### Output Format
+Top 5 topics with their new scores (highest change first).
+
+#### Solution
+
+##### Approach
+Use a min-heap of size 5 tracking top trending by score change. Custom comparison for the Topic class handles tie-breaking.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/fr/practice/data-structures/trees/heapspriority-queues/practice-problems/algorithm/roy-and-trending-topics-1/description/
-#
-# Problem: Roy and Trending Topics
-#
-# Given N topics with current scores and engagement data (posts, likes,
-# comments, shares), calculate new scores using:
-#   new_score = posts*50 + likes*5 + comments*10 + shares*20
-#
-# Find the top 5 trending topics based on the CHANGE in score (new - old).
-# Ties are broken by higher topic ID.
-#
-# Input:
-# - Line 1: N (number of topics)
-# - Next N lines: topic_id current_score posts likes comments shares
-#
-# Output: Top 5 topics with their new scores (highest change first)
-#
-# Approach: Min-heap of size 5 tracking top trending by score change
-
-
 import heapq
 
-
 class Topic:
-
     def __init__(self, topic_id, current_score, posts, likes, comments, shares):
         self.id = topic_id
         self.new_score = posts * 50 + likes * 5 + comments * 10 + shares * 20
@@ -172,7 +197,6 @@ class Topic:
             else:
                 return False
         return False
-
 
 def solution():
     N = int(input())
@@ -196,35 +220,46 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### qheap1 (Hackerrank)
+##### Complexity Analysis
+- **Time Complexity:** O(N log 5) = O(N) for processing N topics
+- **Space Complexity:** O(1) for fixed-size heap of 5 elements
+
+---
+
+### QHEAP1
+
+#### Problem Information
+- **Source:** Hackerrank
+- **Difficulty:** Secret
+- **Time Limit:** 4000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+Implement a min-heap that supports the following operations:
+- "1 v": Add element v to the heap
+- "2 v": Delete element v from the heap (v is guaranteed to exist)
+- "3": Print the minimum element
+
+#### Input Format
+- Line 1: Q (number of queries)
+- Next Q lines: Queries as described above
+
+#### Output Format
+For each type-3 query, print the minimum element.
+
+#### Solution
+
+##### Approach
+Use a heap with lazy deletion. Track deleted elements separately and clean them when querying the minimum.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerrank
-#  https://www.hackerrank.com/challenges/qheap1/problem
-#
-# Problem: QHEAP1
-#
-# Implement a min-heap that supports the following operations:
-# - "1 v": Add element v to the heap
-# - "2 v": Delete element v from the heap (v is guaranteed to exist)
-# - "3": Print the minimum element
-#
-# Input:
-# - Line 1: Q (number of queries)
-# - Next Q lines: Queries as described above
-#
-# Output: For each type-3 query, print the minimum element
-#
-# Approach: Use a heap with lazy deletion (track deleted elements separately)
-
-
-#  Using not in and index is faster than checking manually using for loop
 import heapq
-
 
 def solution():
     Q = int(input())
@@ -248,61 +283,50 @@ def solution():
             else:
                 delete_list.append(param)
 
-
 solution()
-
-
-#
-# from queue import PriorityQueue
-#
-# def main():
-#     n = int(input())
-#     q = PriorityQueue()
-#     remove = []
-#     for i in range(n):
-#         line = list(map(int, input().split()))
-#         if line[0] == 1:
-#             q.put(line[1])
-#         elif line[0] == 2:
-#             remove.append(line[1])
-#         else:
-#             while q.queue[0] in remove:
-#                 remove.pop(remove.index(q.get()))
-#             print(q.queue[0])
-#
-# if __name__ == '__main__':
-#     main()
 ```
 
-### LAZYPROG (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(Q log Q) for Q operations
+- **Space Complexity:** O(Q) for heap and delete list
+
+---
+
+### LAZYPROG - Lazy Programmer
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 368ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+A lazy programmer has N projects with deadlines. Each project i has:
+- a[i]: cost per unit time to speed up (dollars/hour)
+- b[i]: time needed to complete at normal speed (hours)
+- d[i]: deadline (hours from now)
+
+He can pay to speed up any project. Find the minimum total cost to meet all deadlines.
+
+#### Input Format
+- Line 1: T (test cases)
+- For each test case:
+  - Line 1: N (number of projects)
+  - Next N lines: a b d for each project
+
+#### Output Format
+Minimum cost (2 decimal places).
+
+#### Solution
+
+##### Approach
+Sort by deadline, use heap to always speed up the cheapest project first. When a deadline is missed, take time from the project with lowest speedup cost.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/LAZYPROG/
-#
-# Problem: LAZYPROG - Lazy Programmer
-#
-# A lazy programmer has N projects with deadlines. Each project i has:
-# - a[i]: cost per unit time to speed up (dollars/hour)
-# - b[i]: time needed to complete at normal speed (hours)
-# - d[i]: deadline (hours from now)
-#
-# He can pay to speed up any project. Find the minimum total cost to meet
-# all deadlines.
-#
-# Input:
-# - Line 1: T (test cases)
-# - For each test case:
-#   - Line 1: N (number of projects)
-#   - Next N lines: a b d for each project
-#
-# Output: Minimum cost (2 decimal places)
-#
-# Approach: Sort by deadline, use heap to always speed up cheapest project first
-
-
 import heapq
-
 
 class Project:
     def __init__(self, a, b, d):
@@ -312,7 +336,6 @@ class Project:
 
     def __lt__(self, other):
         return self.a > other.a
-
 
 def solution():
     t = int(input())
@@ -341,49 +364,55 @@ def solution():
                     initial_time = projects[j].d
                     heapq.heappush(priority_queue, pop_project)
                     break
-
                 else:
                     sum_money += pop_project.b / pop_project.a
                     initial_time -= pop_project.b
 
         print("{0:.2f}".format(sum_money))
 
-
 solution()
 ```
 
-### PRO (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(N log N) for sorting and heap operations
+- **Space Complexity:** O(N) for storing projects
+
+---
+
+### PRO - Promotion
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+A supermarket runs a promotion over N days. Each day, some customers submit receipts. At the end of each day, the customer with the highest receipt wins prize equal to receipt value, and the lowest receipt customer wins prize equal to their receipt value (both are removed from future consideration).
+
+Calculate total prize money: sum(max) - sum(min) over all days.
+
+#### Input Format
+- Line 1: N (number of days)
+- Next N lines: k r1 r2 ... rk (k receipts for that day)
+
+#### Output Format
+Total prize difference.
+
+#### Solution
+
+##### Approach
+Use two heaps (min and max) with lazy deletion to track receipts efficiently.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/PRO/
-#
-# Problem: PRO - Promotion
-#
-# A supermarket runs a promotion over N days. Each day, some customers submit
-# receipts. At the end of each day, the customer with the highest receipt wins
-# prize equal to receipt value, and the lowest receipt customer wins prize
-# equal to their receipt value (both are removed from future consideration).
-#
-# Calculate total prize money: sum(max) - sum(min) over all days.
-#
-# Input:
-# - Line 1: N (number of days)
-# - Next N lines: k r1 r2 ... rk (k receipts for that day)
-#
-# Output: Total prize difference
-#
-# Approach: Use two heaps (min and max) with lazy deletion to track receipts
-
-
 import heapq
-
 
 MAX = 1000005
 
-
 def solution():
-
     n = int(input())
     sum_prizes = 0
     max_heap = []
@@ -417,43 +446,55 @@ def solution():
 
     print(sum_prizes)
 
-
 solution()
 ```
 
-### 11995 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(R log R) where R is total number of receipts
+- **Space Complexity:** O(R) for heaps and deletion arrays
+
+---
+
+### I Can Guess the Data Structure!
+
+#### Problem Information
+- **Source:** UVA 11995
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a sequence of operations (insert and extract), determine what data structure is being used: stack, queue, or priority queue (max-heap).
+
+Operations:
+- "1 x": Insert element x
+- "2 x": Extract returns element x
+
+Output:
+- "stack" if it matches stack behavior (LIFO)
+- "queue" if it matches queue behavior (FIFO)
+- "priority queue" if it matches max-heap behavior
+- "not sure" if multiple structures are possible
+- "impossible" if no structure matches
+
+#### Input Format
+Multiple test cases until EOF, each with N operations.
+
+#### Output Format
+One line per test case.
+
+#### Solution
+
+##### Approach
+Simulate all three structures simultaneously and check consistency with each extraction.
+
+##### Python Solution
 
 ```python
-#  Problem from UVA
-#  https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3146
-#
-# Problem: UVA 11995 - I Can Guess the Data Structure!
-#
-# Given a sequence of operations (insert and extract), determine what data
-# structure is being used: stack, queue, or priority queue (max-heap).
-#
-# Operations:
-# - "1 x": Insert element x
-# - "2 x": Extract returns element x
-#
-# Output:
-# - "stack" if it matches stack behavior (LIFO)
-# - "queue" if it matches queue behavior (FIFO)
-# - "priority queue" if it matches max-heap behavior
-# - "not sure" if multiple structures are possible
-# - "impossible" if no structure matches
-#
-# Input: Multiple test cases until EOF, each with N operations
-#
-# Output: One line per test case
-#
-# Approach: Simulate all three structures and check consistency
-
-
 import heapq
 import queue
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -469,13 +510,10 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 def solution():
     while inp.has_next():
-
         N = int(inp.next())
         my_heap = []
         my_queue = queue.Queue()
@@ -521,38 +559,47 @@ def solution():
             if is_heap == 1:
                 print('priority queue')
 
-
 solution()
 ```
 
-### AddAll (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(N log N) per test case for heap operations
+- **Space Complexity:** O(N) for storing elements in each structure
+
+---
+
+### Add All
+
+#### Problem Information
+- **Source:** UVA 10954
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given N numbers, you need to add them all together. Each addition operation costs the sum of the two numbers being added. Find the minimum total cost to combine all numbers into one.
+
+Example: Numbers [1, 2, 3]
+- Add 1+2=3 (cost 3), then 3+3=6 (cost 6) = total 9
+
+#### Input Format
+- Multiple test cases until N=0
+- Line 1: N
+- Line 2: N integers
+
+#### Output Format
+Minimum total cost for each test case.
+
+#### Solution
+
+##### Approach
+Huffman-like algorithm - always add the two smallest numbers using a min-heap.
+
+##### Python Solution
 
 ```python
-#  Problem from UVA
-#  https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1895
-#
-# Problem: UVA 10954 - Add All
-#
-# Given N numbers, you need to add them all together. Each addition operation
-# costs the sum of the two numbers being added. Find the minimum total cost
-# to combine all numbers into one.
-#
-# Input:
-# - Multiple test cases until N=0
-# - Line 1: N
-# - Line 2: N integers
-#
-# Output: Minimum total cost for each test case
-#
-# Example: Numbers [1, 2, 3] -> Add 1+2=3 (cost 3), then 3+3=6 (cost 6) = 9
-#          Better: Add 1+2=3 (cost 3), then 3+3=6 (cost 6) = 9
-#          Or: 1+3=4 (cost 4), 4+2=6 (cost 6) = 10 (worse)
-#
-# Approach: Huffman-like algorithm - always add two smallest (use min-heap)
-
-
 import heapq
-
 
 def solution():
     while True:
@@ -570,7 +617,9 @@ def solution():
 
         print(sum)
 
-
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(N log N) for N-1 heap operations
+- **Space Complexity:** O(N) for the heap

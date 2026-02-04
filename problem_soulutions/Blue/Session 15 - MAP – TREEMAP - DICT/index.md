@@ -1,44 +1,43 @@
 ---
 layout: simple
-title: "Session 15 - MAP – TREEMAP - DICT"
+title: "Session 15 - MAP - TREEMAP - DICT"
 permalink: /problem_soulutions/Blue/Session 15 - MAP – TREEMAP - DICT/
 ---
 
-# Session 15 - MAP – TREEMAP - DICT
+# Session 15 - MAP - TREEMAP - DICT
 
 This session covers map-based data structures including hash maps, tree maps, and dictionary operations for efficient key-value storage and retrieval.
 
 ## Problems
 
-### 424B (Codeforces)
+### Megacity
+
+#### Problem Information
+- **Source:** Codeforces
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+The city of Berland wants to become a megacity (population >= 1,000,000). There are n locations around the city, each at coordinates (x, y) with k people. The city can expand its borders to a circle of radius r centered at origin (0,0). Find the minimum radius r such that the city population reaches 1,000,000.
+
+#### Input Format
+- First line: n (number of locations) and s (current city population)
+- Next n lines: x, y, k (coordinates and population of each location)
+
+#### Output Format
+- Minimum radius r (to 7 decimal places) to reach population 1,000,000
+- Print -1 if impossible
+
+#### Solution
+
+##### Approach
+Calculate distance from origin to each location. Sort locations by distance. Greedily add locations (closest first) until population >= 1,000,000. Uses dictionary/sorting for efficient location management.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/424/B
-#
-# Problem: Megacity
-#
-# Description:
-# The city of Berland wants to become a megacity (population >= 1,000,000).
-# There are n locations around the city, each at coordinates (x, y) with k people.
-# The city can expand its borders to a circle of radius r centered at origin (0,0).
-# Find the minimum radius r such that the city population reaches 1,000,000.
-#
-# Input:
-# - First line: n (number of locations) and s (current city population)
-# - Next n lines: x, y, k (coordinates and population of each location)
-#
-# Output:
-# - Minimum radius r (to 7 decimal places) to reach population 1,000,000
-# - Print -1 if impossible
-#
-# Approach:
-# - Calculate distance from origin to each location
-# - Sort locations by distance
-# - Greedily add locations (closest first) until population >= 1,000,000
-# - Uses dictionary/sorting for efficient location management
-
-
 import math
 
 
@@ -77,32 +76,39 @@ def solution():
 solution()
 ```
 
-### 702B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n) for sorting
+- **Space Complexity:** O(n)
+
+---
+
+### Powers of Two
+
+#### Problem Information
+- **Source:** Codeforces
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given an array of n integers, count the number of pairs (i, j) where i < j such that a[i] + a[j] is a power of 2.
+
+#### Input Format
+- First line: n (number of elements)
+- Second line: n space-separated integers a[1], a[2], ..., a[n]
+
+#### Output Format
+- Single integer: number of pairs whose sum is a power of 2
+
+#### Solution
+
+##### Approach
+Use a dictionary (hash map) to store frequency of each number seen so far. For each element, check all powers of 2 (up to 2^60) and count pairs. For each power p, if (p - a[i]) exists in dictionary, add its count. Time complexity: O(n * 60) using hash map for O(1) lookups.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/702/B
-#
-# Problem: Powers of Two
-#
-# Description:
-# Given an array of n integers, count the number of pairs (i, j) where i < j
-# such that a[i] + a[j] is a power of 2.
-#
-# Input:
-# - First line: n (number of elements)
-# - Second line: n space-separated integers a[1], a[2], ..., a[n]
-#
-# Output:
-# - Single integer: number of pairs whose sum is a power of 2
-#
-# Approach:
-# - Use a dictionary (hash map) to store frequency of each number seen so far
-# - For each element, check all powers of 2 (up to 2^60) and count pairs
-# - For each power p, if (p - a[i]) exists in dictionary, add its count
-# - Time complexity: O(n * 60) using hash map for O(1) lookups
-
-
 def solution():
     n = int(input())
     a = list(map(int, input().split()))
@@ -127,32 +133,39 @@ def solution():
 solution()
 ```
 
-### 1585 (Timus)
+##### Complexity Analysis
+- **Time Complexity:** O(n * 60) = O(n)
+- **Space Complexity:** O(n)
+
+---
+
+### Penguins
+
+#### Problem Information
+- **Source:** ACM TIMUS
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 64MB
+
+#### Problem Statement
+
+A group of penguins have names. Find the most frequently occurring name among all the penguins. If there's a tie, return the name that appeared first with the maximum count.
+
+#### Input Format
+- First line: n (number of penguins)
+- Next n lines: name of each penguin
+
+#### Output Format
+- The most common penguin name
+
+#### Solution
+
+##### Approach
+Use a dictionary to count occurrences of each name. Track the most frequent name while iterating. Simple hash map frequency counting problem.
+
+##### Python Solution
 
 ```python
-# Problem from ACM TIMUS
-# http://acm.timus.ru/problem.aspx?space=1&num=1585
-#
-# Problem: Penguins
-#
-# Description:
-# A group of penguins have names. Find the most frequently occurring name
-# among all the penguins. If there's a tie, return the name that appeared
-# first with the maximum count.
-#
-# Input:
-# - First line: n (number of penguins)
-# - Next n lines: name of each penguin
-#
-# Output:
-# - The most common penguin name
-#
-# Approach:
-# - Use a dictionary to count occurrences of each name
-# - Track the most frequent name while iterating
-# - Simple hash map frequency counting problem
-
-
 def solution():
     penguins = {}
     n_penguins = int(input())
@@ -174,34 +187,39 @@ def solution():
 solution()
 ```
 
-### 1837 (Timus)
+##### Complexity Analysis
+- **Time Complexity:** O(n)
+- **Space Complexity:** O(n)
+
+---
+
+### Isenbaev's Number
+
+#### Problem Information
+- **Source:** ACM TIMUS
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 64MB
+
+#### Problem Statement
+
+In competitive programming, "Isenbaev's Number" represents the shortest chain of teammates connecting a person to Isenbaev (similar to Erdos number). Given a list of 3-person teams, calculate each person's Isenbaev number. Isenbaev himself has number 0, his teammates have number 1, etc.
+
+#### Input Format
+- First line: n (number of teams)
+- Next n lines: three space-separated names (team members)
+
+#### Output Format
+- For each unique name (in alphabetical order), print: "name number" or "name undefined" if not connected to Isenbaev
+
+#### Solution
+
+##### Approach
+Use dictionary to store each person's proximity to Isenbaev. For each team, propagate the minimum proximity value. Sort and output results alphabetically.
+
+##### Python Solution
 
 ```python
-# Problem from ACM TIMUS
-# http://acm.timus.ru/problem.aspx?space=1&num=1837
-#
-# Problem: Isenbaev's Number
-#
-# Description:
-# In competitive programming, "Isenbaev's Number" represents the shortest
-# chain of teammates connecting a person to Isenbaev (similar to Erdos number).
-# Given a list of 3-person teams, calculate each person's Isenbaev number.
-# Isenbaev himself has number 0, his teammates have number 1, etc.
-#
-# Input:
-# - First line: n (number of teams)
-# - Next n lines: three space-separated names (team members)
-#
-# Output:
-# - For each unique name (in alphabetical order), print:
-#   "name number" or "name undefined" if not connected to Isenbaev
-#
-# Approach:
-# - Use dictionary to store each person's proximity to Isenbaev
-# - For each team, propagate the minimum proximity value
-# - Sort and output results alphabetically
-
-
 INF = int(1e9)
 
 
@@ -233,36 +251,47 @@ def solution():
 solution()
 ```
 
-### 2002 (Timus)
+##### Complexity Analysis
+- **Time Complexity:** O(n * k + m log m) where k is team size, m is unique players
+- **Space Complexity:** O(m)
+
+---
+
+### Test Task
+
+#### Problem Information
+- **Source:** ACM TIMUS
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 64MB
+
+#### Problem Statement
+
+Implement a simple user authentication system with three operations:
+- register login password: Register a new user
+- login login password: Log in an existing user
+- logout login: Log out a logged-in user
+
+Each operation outputs success/fail with appropriate message.
+
+#### Input Format
+- First line: n (number of operations)
+- Next n lines: operation with arguments
+
+#### Output Format
+- For each operation, print the result message:
+  - register: "success: new user added" or "fail: user already exists"
+  - login: "success: user logged in" or appropriate fail message
+  - logout: "success: user logged out" or appropriate fail message
+
+#### Solution
+
+##### Approach
+Use dictionary to store user credentials and login state. Each user maps to [password, status] where status is 'in' or 'out'.
+
+##### Python Solution
 
 ```python
-# Problem from ACM TIMUS
-# http://acm.timus.ru/problem.aspx?space=1&num=2002
-#
-# Problem: Test Task
-#
-# Description:
-# Implement a simple user authentication system with three operations:
-# - register <login> <password>: Register a new user
-# - login <login> <password>: Log in an existing user
-# - logout <login>: Log out a logged-in user
-# Each operation outputs success/fail with appropriate message.
-#
-# Input:
-# - First line: n (number of operations)
-# - Next n lines: operation with arguments
-#
-# Output:
-# - For each operation, print the result message:
-#   - register: "success: new user added" or "fail: user already exists"
-#   - login: "success: user logged in" or appropriate fail message
-#   - logout: "success: user logged out" or appropriate fail message
-#
-# Approach:
-# - Use dictionary to store user credentials and login state
-# - Each user maps to [password, status] where status is 'in' or 'out'
-
-
 def solution():
     n = int(input())
     users = {}
@@ -302,38 +331,40 @@ def solution():
 solution()
 ```
 
-### 10226 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(n)
+- **Space Complexity:** O(u) where u is number of unique users
+
+---
+
+### Hardwood Species
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A census of trees in a forest has been conducted. Given a list of tree species, calculate what percentage of the total forest each species represents. Output results in alphabetical order.
+
+#### Input Format
+- First line: number of test cases
+- For each test case: list of tree names (one per line), separated by blank lines
+
+#### Output Format
+- For each test case: each tree species followed by its percentage (4 decimal places)
+- Species listed in alphabetical order
+
+#### Solution
+
+##### Approach
+Use dictionary to count occurrences of each tree species. Calculate percentage = (count / total) * 100. Sort keys alphabetically for output.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1167
-#
-# Problem: Hardwood Species (UVA 10226)
-#
-# Description:
-# A census of trees in a forest has been conducted. Given a list of tree species,
-# calculate what percentage of the total forest each species represents.
-# Output results in alphabetical order.
-#
-# Input:
-# - First line: number of test cases
-# - For each test case: list of tree names (one per line), separated by blank lines
-#
-# Output:
-# - For each test case: each tree species followed by its percentage (4 decimal places)
-# - Species listed in alphabetical order
-#
-# Approach:
-# - Use dictionary to count occurrences of each tree species
-# - Calculate percentage = (count / total) * 100
-# - Sort keys alphabetically for output
-
-# import sys
-
-
-# sys.stdin = open("file.txt", "r")
-
-
 def solution():
     n = int(input())
     input()
@@ -363,40 +394,43 @@ def solution():
 solution()
 ```
 
-### 11308 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n) for sorting species
+- **Space Complexity:** O(n) for dictionary
+
+---
+
+### Bankrupt Baker
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+A baker has recipe binders with ingredients and recipes. Given a budget, find which recipes can be made within budget. Output affordable recipes sorted by cost (then alphabetically if tied).
+
+#### Input Format
+- Number of binders
+- For each binder:
+  - Binder name
+  - m (ingredients), n (recipes), b (budget)
+  - m lines of ingredient name and price
+  - n recipes, each with name, number of ingredients, and ingredient quantities
+
+#### Output Format
+- For each binder: binder name (uppercase), then affordable recipes sorted by cost then name, or "Too expensive!" if none affordable
+
+#### Solution
+
+##### Approach
+Use dictionary to map ingredient names to prices. Calculate total cost for each recipe. Filter and sort recipes within budget.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=2283
-#
-# Problem: Bankrupt Baker (UVA 11308)
-#
-# Description:
-# A baker has recipe binders with ingredients and recipes. Given a budget,
-# find which recipes can be made within budget. Output affordable recipes
-# sorted by cost (then alphabetically if tied).
-#
-# Input:
-# - Number of binders
-# - For each binder:
-#   - Binder name
-#   - m (ingredients), n (recipes), b (budget)
-#   - m lines of ingredient name and price
-#   - n recipes, each with name, number of ingredients, and ingredient quantities
-#
-# Output:
-# - For each binder: binder name (uppercase), then affordable recipes
-#   sorted by cost then name, or "Too expensive!" if none affordable
-#
-# Approach:
-# - Use dictionary to map ingredient names to prices
-# - Calculate total cost for each recipe
-# - Filter and sort recipes within budget
-
-# import sys
-
-
-# sys.stdin = open("file.txt", "r")
 class Recipe:
     def __init__(self, name, cost):
         self.name = name
@@ -446,3 +480,6 @@ def solution():
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(B * (M + N * K + N log N)) where B is binders, M is ingredients, N is recipes, K is ingredients per recipe
+- **Space Complexity:** O(M + N)

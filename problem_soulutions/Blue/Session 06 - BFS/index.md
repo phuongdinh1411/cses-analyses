@@ -6,55 +6,59 @@ permalink: /problem_soulutions/Blue/Session 06 - BFS/
 
 # Session 06 - BFS
 
-This session covers Breadth-First Search (BFS) algorithm, including shortest path in unweighted graphs, level-order traversal, and grid-based problems.
+Breadth-First Search problems involving shortest paths in unweighted graphs, level-order traversal, and grid-based exploration.
 
 ## Problems
 
-### 540C (Codeforces)
+### Ice Cave
+
+#### Problem Information
+- **Source:** Codeforces 540C
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+You're in an ice cave represented as an n x m grid. Each cell is either:
+- '.' (intact ice) - you can step on it, but it will crack and become 'X'
+- 'X' (cracked ice) - you cannot step on it; stepping on it means falling through
+
+You start at position (r1, c1) and want to reach (r2, c2). The goal is to FALL THROUGH the ice at the destination (the destination must become cracked when you step on it).
+
+You can reach the destination if:
+- There's a valid path from start to an adjacent cell of destination
+- The destination ice will crack when you step on it (either already cracked, or you've visited an adjacent cell that cracks it)
+
+#### Input Format
+- Line 1: n m (grid dimensions)
+- Next n lines: Grid of '.' and 'X'
+- Line n+2: r1 c1 (starting position, 1-indexed)
+- Line n+3: r2 c2 (destination position, 1-indexed)
+
+#### Output Format
+"YES" if you can reach and fall through at destination, "NO" otherwise.
+
+#### Solution
+
+##### Approach
+Use BFS pathfinding with special handling for the destination cell. When we reach a cell adjacent to the destination, we check if the destination is already cracked (can step on it directly) or if there's another path to crack it first.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/540/C
-#
-# Problem: Ice Cave
-#
-# You're in an ice cave represented as an n×m grid. Each cell is either:
-# - '.' (intact ice) - you can step on it, but it will crack and become 'X'
-# - 'X' (cracked ice) - you cannot step on it; stepping on it means falling through
-#
-# You start at position (r1, c1) and want to reach (r2, c2). The goal is to
-# FALL THROUGH the ice at the destination (the destination must become cracked
-# when you step on it).
-#
-# You can reach the destination if:
-# - There's a valid path from start to an adjacent cell of destination
-# - The destination ice will crack when you step on it (either already cracked,
-#   or you've visited an adjacent cell that cracks it)
-#
-# Input:
-# - Line 1: n m (grid dimensions)
-# - Next n lines: Grid of '.' and 'X'
-# - Line n+2: r1 c1 (starting position, 1-indexed)
-# - Line n+3: r2 c2 (destination position, 1-indexed)
-#
-# Output: "YES" if you can reach and fall through at destination, "NO" otherwise
-#
-# Approach: BFS pathfinding with special handling for destination cell
-
-
 import queue
-
 
 def can_reach_destination(starting_point, ending_point, n, m, matrix):
     dx = [1, 0, -1, 0]
     dy = [0, -1, 0, 1]
 
     visited = [[False for i in range(m)] for j in range(n)]
-
     visited[starting_point[0]][starting_point[1]] = True
 
     q = queue.Queue()
     q.put(starting_point)
+
     while not q.empty():
         checking_node = q.get()
         for l in range(4):
@@ -78,7 +82,6 @@ def can_reach_destination(starting_point, ending_point, n, m, matrix):
 
     return 'NO'
 
-
 def solution():
     n, m = map(int, input().split())
     matrix = []
@@ -95,45 +98,50 @@ def solution():
 
     print(can_reach_destination(starting_point, ending_point, n, m, matrix))
 
-
 solution()
 ```
 
-### 580C (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n * m) for BFS traversal of the grid
+- **Space Complexity:** O(n * m) for visited array and queue
+
+---
+
+### Kefa and Park
+
+#### Problem Information
+- **Source:** Codeforces 580C
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Kefa wants to visit restaurants located at the leaves of a tree. The tree has n vertices rooted at vertex 1. Each vertex either has a cat (1) or not (0). Kefa is afraid of cats and won't go through a path with more than m consecutive vertices containing cats.
+
+Count the number of restaurants (leaf nodes) Kefa can reach from the root without passing through more than m consecutive cats.
+
+#### Input Format
+- Line 1: n m (vertices count, max consecutive cats allowed)
+- Line 2: n integers a[i] (1 if vertex i has a cat, 0 otherwise)
+- Next n-1 lines: u v (edge between vertices u and v)
+
+#### Output Format
+Number of restaurants (leaves) Kefa can visit.
+
+#### Solution
+
+##### Approach
+BFS from root, tracking consecutive cats on each path. When we encounter a non-cat vertex, reset the counter. Stop exploring a path if consecutive cats exceed m.
+
+##### Python Solution
 
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/580/C
-#
-# Problem: Kefa and Park
-#
-# Kefa wants to visit restaurants located at the leaves of a tree. The tree
-# has n vertices rooted at vertex 1. Each vertex either has a cat (1) or not (0).
-# Kefa is afraid of cats and won't go through a path with more than m consecutive
-# vertices containing cats.
-#
-# Count the number of restaurants (leaf nodes) Kefa can reach from the root
-# without passing through more than m consecutive cats.
-#
-# Input:
-# - Line 1: n m (vertices count, max consecutive cats allowed)
-# - Line 2: n integers a[i] (1 if vertex i has a cat, 0 otherwise)
-# - Next n-1 lines: u v (edge between vertices u and v)
-#
-# Output: Number of restaurants (leaves) Kefa can visit
-#
-# Approach: BFS/DFS from root, tracking consecutive cats on each path
-
-
 import queue
 
-
 def bfs_count_possible_leaves(n, m, a, graph):
-
     consecutive_cats = [-1 for i in range(n+9)]
-
     total_restaurants = 0
-
     consecutive_cats[1] = a[0]
 
     q = queue.Queue()
@@ -154,12 +162,10 @@ def bfs_count_possible_leaves(n, m, a, graph):
                         q.put(v)
     return total_restaurants
 
-
 def solution():
     n, m = map(int, input().split())
     a = list(map(int, input().split()))
     graph = [[] for i in range(n + 1)]
-    root = -1
     for i in range(1, n):
         s, e = map(int, input().split())
         graph[s].append(e)
@@ -167,41 +173,48 @@ def solution():
 
     print(bfs_count_possible_leaves(n, m, a, graph))
 
-
 solution()
 ```
 
-### Dhoom (Hackerearth)
+##### Complexity Analysis
+- **Time Complexity:** O(n) for BFS traversal of the tree
+- **Space Complexity:** O(n) for the graph and auxiliary arrays
+
+---
+
+### Dhoom 4
+
+#### Problem Information
+- **Source:** Hackerearth
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+You have a key with value K and need to unlock a lock with value L. You also have N magic numbers. Each time you can multiply your key value by any magic number, taking the result modulo 100000.
+
+Find the minimum number of operations to transform key value K into lock value L. If impossible, return -1.
+
+#### Input Format
+- Line 1: K L (initial key value, target lock value)
+- Line 2: N (number of magic numbers)
+- Line 3: N integers (the magic numbers)
+
+#### Output Format
+Minimum operations to reach lock value, or -1 if impossible.
+
+#### Solution
+
+##### Approach
+BFS where each state is a key value (0-99999), and edges represent multiplications by magic numbers. This finds the shortest path from K to L in the state space.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/ja/practice/algorithms/graphs/breadth-first-search/practice-problems/algorithm/dhoom-4/description/
-#
-# Problem: Dhoom 4
-#
-# You have a key with value K and need to unlock a lock with value L.
-# You also have N magic numbers. Each time you can multiply your key value
-# by any magic number, taking the result modulo 100000.
-#
-# Find the minimum number of operations to transform key value K into lock
-# value L. If impossible, return -1.
-#
-# Input:
-# - Line 1: K L (initial key value, target lock value)
-# - Line 2: N (number of magic numbers)
-# - Line 3: N integers (the magic numbers)
-#
-# Output: Minimum operations to reach lock value, or -1 if impossible
-#
-# Approach: BFS where each state is a key value (0-99999), edges are
-#           multiplications by magic numbers
-
-
 import queue
 
-
 def find_minimum_time(key_value, lock_value, keys):
-
     if key_value == lock_value:
         return 0
 
@@ -223,7 +236,6 @@ def find_minimum_time(key_value, lock_value, keys):
 
     return -1
 
-
 def get_time(key_value, lock_value, path):
     total_time = 0
     current_node = lock_value
@@ -234,7 +246,6 @@ def get_time(key_value, lock_value, path):
             total_time += 1
             current_node = path[current_node]
 
-
 def solution():
     key_value, lock_value = map(int, input().split())
     N = int(input())
@@ -242,47 +253,46 @@ def solution():
 
     print(find_minimum_time(key_value, lock_value, keys))
 
-
 solution()
 ```
 
-### bfsshortreach (Hackerrank)
+##### Complexity Analysis
+- **Time Complexity:** O(100000 * N) in worst case
+- **Space Complexity:** O(100000) for visited array and path reconstruction
+
+---
+
+### BFS: Shortest Reach in a Graph
+
+#### Problem Information
+- **Source:** Hackerrank
+- **Difficulty:** Secret
+- **Time Limit:** 4000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given an undirected graph with n nodes and m edges, find the shortest distance from a starting node s to all other nodes. Each edge has weight 6. If a node is unreachable, report -1.
+
+#### Input Format
+- Line 1: q (number of queries/test cases)
+- For each query:
+  - Line 1: n m (nodes, edges)
+  - Next m lines: u v (edge between u and v)
+  - Last line: s (starting node)
+
+#### Output Format
+For each query, print n-1 space-separated integers representing shortest distances from s to nodes 1, 2, ..., n (excluding s itself).
+
+#### Solution
+
+##### Approach
+Standard BFS from the starting node, multiply hop count by 6 for final distance since all edges have weight 6.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerrank
-#  https://www.hackerrank.com/challenges/bfsshortreach/problem
-#
-# Problem: BFS: Shortest Reach in a Graph
-#
-# Given an undirected graph with n nodes and m edges, find the shortest
-# distance from a starting node s to all other nodes. Each edge has weight 6.
-# If a node is unreachable, report -1.
-#
-# Input:
-# - Line 1: q (number of queries/test cases)
-# - For each query:
-#   - Line 1: n m (nodes, edges)
-#   - Next m lines: u v (edge between u and v)
-#   - Last line: s (starting node)
-#
-# Output: For each query, print n-1 space-separated integers representing
-#         shortest distances from s to nodes 1, 2, ..., n (excluding s itself)
-#
-# Approach: Standard BFS, multiply hop count by 6 for final distance
-
-
-# !/bin/python3
-
-import math
-import os
-import random
-import re
-import sys
 import queue
-
-
-# Complete the bfs function below.
-
 
 def bfs(n, m, edges, s):
     MAX = n + 9
@@ -295,9 +305,11 @@ def bfs(n, m, edges, s):
     for e in edges:
         graph[e[0]].append(e[1])
         graph[e[1]].append(e[0])
+
     q = queue.Queue()
     visited[s] = True
     q.put(s)
+
     while not q.empty():
         u = q.get()
         for v in graph[u]:
@@ -313,7 +325,6 @@ def bfs(n, m, edges, s):
 
     return _result
 
-
 def calc_path(s, f, path):
     steps = 0
     if path[f] == -1:
@@ -326,64 +337,64 @@ def calc_path(s, f, path):
             break
     return steps * 6
 
-
 if __name__ == '__main__':
-    fptr = sys.stdout
-
     q = int(input())
 
     for q_itr in range(q):
         nm = input().split()
-
         n = int(nm[0])
-
         m = int(nm[1])
 
         edges = []
-
         for _ in range(m):
             edges.append(list(map(int, input().rstrip().split())))
 
         s = int(input())
-
         result = bfs(n, m, edges, s)
-
-        fptr.write(' '.join(map(str, result)))
-        fptr.write('\n')
-
-    fptr.close()
+        print(' '.join(map(str, result)))
 ```
 
-### GuiltyPrince (LightOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(n + m) for BFS
+- **Space Complexity:** O(n + m) for graph storage and auxiliary arrays
+
+---
+
+### Guilty Prince
+
+#### Problem Information
+- **Source:** LightOJ 1012
+- **Difficulty:** Secret
+- **Time Limit:** 500ms
+- **Memory Limit:** 32MB
+
+#### Problem Statement
+
+A prince is standing in a dungeon cell. The dungeon is a W x H grid where:
+- '.' represents an empty cell (passable)
+- '#' represents a wall (impassable)
+- '@' represents the prince's starting position (also passable)
+
+The prince can move in 4 directions (up, down, left, right). Count the total number of cells the prince can reach from his starting position.
+
+#### Input Format
+- Line 1: T (number of test cases)
+- For each test case:
+  - Line 1: W H (width and height of dungeon)
+  - Next H lines: The dungeon grid
+
+#### Output Format
+For each test case, print "Case X: Y" where Y is the count of reachable cells (including the starting cell).
+
+#### Solution
+
+##### Approach
+BFS flood fill from prince's position to count all reachable cells.
+
+##### Python Solution
 
 ```python
-#  Problem from Light OJ
-#  http://lightoj.com/volume_showproblem.php?problem=1012
-#
-# Problem: Guilty Prince
-#
-# A prince is standing in a dungeon cell. The dungeon is a W×H grid where:
-# - '.' represents an empty cell (passable)
-# - '#' represents a wall (impassable)
-# - '@' represents the prince's starting position (also passable)
-#
-# The prince can move in 4 directions (up, down, left, right). Count the
-# total number of cells the prince can reach from his starting position.
-#
-# Input:
-# - Line 1: T (number of test cases)
-# - For each test case:
-#   - Line 1: W H (width and height of dungeon)
-#   - Next H lines: The dungeon grid
-#
-# Output: For each test case, print "Case X: Y" where Y is the count of
-#         reachable cells (including the starting cell)
-#
-# Approach: BFS flood fill from prince's position
-
-
 import queue
-
 
 def calculate_possible_cells(wi, hi, matrix, prince_position):
     total_possible_cells = 1
@@ -407,7 +418,6 @@ def calculate_possible_cells(wi, hi, matrix, prince_position):
 
     return total_possible_cells
 
-
 def solution():
     results = []
     T = int(input())
@@ -425,46 +435,54 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### KOZE (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(W * H) for BFS traversal
+- **Space Complexity:** O(W * H) for visited array
+
+---
+
+### KOZE - Sheep
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+A backyard is represented as an N x M grid with:
+- '#' - fence (impassable)
+- '.' - empty grass
+- 'k' - sheep
+- 'v' - wolf
+
+Wolves eat sheep unless they're in a fenced area (surrounded by fence on all sides, not touching the boundary). In a fenced area, if there are more sheep than wolves, the sheep survive; otherwise wolves survive. Outside fenced areas (connected to boundary), both survive.
+
+Count how many sheep and wolves survive.
+
+#### Input Format
+- Line 1: N M (grid dimensions)
+- Next N lines: The backyard grid
+
+#### Output Format
+Two integers - surviving sheep and wolves.
+
+#### Solution
+
+##### Approach
+BFS to find connected components of non-fence cells. For each component, check if it touches the boundary. If it's a closed sector, only the majority survives; if connected to boundary, all survive.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/KOZE/
-#
-# Problem: KOZE - Sheep
-#
-# A backyard is represented as an N×M grid with:
-# - '#' - fence (impassable)
-# - '.' - empty grass
-# - 'k' - sheep
-# - 'v' - wolf
-#
-# Wolves eat sheep unless they're in a fenced area (surrounded by fence on
-# all sides, not touching the boundary). In a fenced area, if there are more
-# sheep than wolves, the sheep survive; otherwise wolves survive.
-# Outside fenced areas (connected to boundary), both survive.
-#
-# Count how many sheep and wolves survive.
-#
-# Input:
-# - Line 1: N M (grid dimensions)
-# - Next N lines: The backyard grid
-#
-# Output: Two integers - surviving sheep and wolves
-#
-# Approach: BFS to find connected components, check if each touches boundary
-
-
 import queue
-
 
 def calc_survive(N, M, matrix):
     visited = [[False for i in range(M)] for j in range(N)]
-
     dx = [1, 0, -1, 0]
     dy = [0, -1, 0, 1]
 
@@ -512,7 +530,6 @@ def calc_survive(N, M, matrix):
 
     return [sheeps_counter, wolfs_counter]
 
-
 def solution():
     while True:
         new_line = input().strip()
@@ -529,39 +546,51 @@ def solution():
 
     print(*calc_survive(N, M, backyard), sep=' ')
 
-
 solution()
 ```
 
-### MAKEMAZE (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(N * M) for BFS traversal
+- **Space Complexity:** O(N * M) for visited array
+
+---
+
+### MAKEMAZE - Valid Maze
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 601ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+A maze is represented as an M x N grid with:
+- '.' representing open cells (passable)
+- '#' representing walls (blocked)
+
+A maze is "valid" if:
+1. There are exactly 2 openings on the boundary (entry and exit)
+2. There exists a path between these two openings
+
+#### Input Format
+- Line 1: T (number of test cases)
+- For each test case:
+  - Line 1: M N (rows, columns)
+  - Next M lines: The maze grid
+
+#### Output Format
+For each test case, print "valid" or "invalid".
+
+#### Solution
+
+##### Approach
+First count boundary openings. If exactly 2, build a graph and use BFS to check if they're connected.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/MAKEMAZE/
-#
-# Problem: MAKEMAZE - Valid Maze
-#
-# A maze is represented as an M×N grid with:
-# - '.' representing open cells (passable)
-# - '#' representing walls (blocked)
-#
-# A maze is "valid" if:
-# 1. There are exactly 2 openings on the boundary (entry and exit)
-# 2. There exists a path between these two openings
-#
-# Input:
-# - Line 1: T (number of test cases)
-# - For each test case:
-#   - Line 1: M N (rows, columns)
-#   - Next M lines: The maze grid
-#
-# Output: For each test case, print "valid" or "invalid"
-#
-# Approach: Count boundary openings, then BFS to check connectivity
-
-
 import queue
-
 
 def check_path(m, n, maze_graph, start_point, end_point):
     visited = [[False for i in range(n)] for j in range(m)]
@@ -579,7 +608,6 @@ def check_path(m, n, maze_graph, start_point, end_point):
                 q.put(v)
 
     return False
-
 
 def get_edge_openings(m, n, maze_matrix):
     edge_openings_counter = 0
@@ -606,7 +634,6 @@ def get_edge_openings(m, n, maze_matrix):
 
     return edge_openings
 
-
 def check_valid_maze(m, n, maze_matrix):
     edge_openings = get_edge_openings(m, n, maze_matrix)
     if len(edge_openings) == 2:
@@ -626,7 +653,6 @@ def check_valid_maze(m, n, maze_matrix):
         return check_path(m, n, maze_graph, edge_openings[0], edge_openings[1])
     return False
 
-
 def solution():
     t = int(input())
     result = []
@@ -644,45 +670,54 @@ def solution():
 
     print(*result, sep='\n')
 
-
 solution()
 ```
 
-### Slick (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(M * N) for BFS
+- **Space Complexity:** O(M * N) for graph and visited array
+
+---
+
+### Oil Slicks (Slick)
+
+#### Problem Information
+- **Source:** SPOJ UCV2013H
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+Given an N x M grid representing an ocean area where:
+- 0 = water
+- 1 = oil
+
+An oil slick is a connected component of oil cells (4-directional adjacency). Count the total number of slicks and categorize them by size.
+
+#### Input Format
+- Multiple test cases until N=0 M=0
+- For each test case:
+  - Line 1: N M (grid dimensions)
+  - Next N lines: M integers (0 or 1)
+
+#### Output Format
+For each test case:
+- Line 1: Total number of slicks
+- Following lines: "size count" pairs in increasing order of size
+
+#### Solution
+
+##### Approach
+BFS flood fill to find and measure connected components of oil cells.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/UCV2013H/
-#
-# Problem: Oil Slicks (Slick)
-#
-# Given an N×M grid representing an ocean area where:
-# - 0 = water
-# - 1 = oil
-#
-# An oil slick is a connected component of oil cells (4-directional adjacency).
-# Count the total number of slicks and categorize them by size.
-#
-# Input:
-# - Multiple test cases until N=0 M=0
-# - For each test case:
-#   - Line 1: N M (grid dimensions)
-#   - Next N lines: M integers (0 or 1)
-#
-# Output: For each test case:
-# - Line 1: Total number of slicks
-# - Following lines: "size count" pairs in increasing order of size
-#
-# Approach: BFS flood fill to find and measure connected components
-
-
 import queue
 
-
 def calc_slick(N, M, matrix):
-
     total_slicks = 0
-
     slick_list = {}
 
     dx = [1, 0, -1, 0]
@@ -718,9 +753,7 @@ def calc_slick(N, M, matrix):
 
     return results
 
-
 def solution():
-
     results = []
     while True:
         N, M = map(int, input().split())
@@ -736,7 +769,9 @@ def solution():
         for j in range(len(results[i])):
             print(*results[i][j], sep=' ')
 
-
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(N * M) per test case
+- **Space Complexity:** O(N * M) for the matrix and queue

@@ -10,36 +10,31 @@ This session covers string manipulation, pattern matching, and text processing a
 
 ## Problems
 
-### 43A (Codeforces)
+### Football Winner
 
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 43A
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/43/A
+
+#### Problem Statement
+Given the results of a football match where each goal is marked with the team name, determine which team won. The team that scores more goals wins. It is guaranteed the match did not end in a tie.
+
+#### Input Format
+- First line: n (number of goals)
+- Next n lines: Team name for each goal
+
+#### Output Format
+The name of the winning team.
+
+#### Solution
+
+##### Approach
+Count goals for each team using a simple counter. Track the first team and compare scores.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/43/A
-
-# One day Vasya decided to have a look at the results of Berland 1910 Football Championship’s finals. Unfortunately he didn't find the overall score of the match; however, he got hold of a profound description of the match's process. On the whole there are n lines in that description each of which described one goal. Every goal was marked with the name of the team that had scored it. Help Vasya, learn the name of the team that won the finals. It is guaranteed that the match did not end in a tie.
-#
-# Input
-# The first line contains an integer n (1 ≤ n ≤ 100) — the number of lines in the description. Then follow n lines — for each goal the names of the teams that scored it. The names are non-empty lines consisting of uppercase Latin letters whose lengths do not exceed 10 symbols. It is guaranteed that the match did not end in a tie and the description contains no more than two different teams.
-#
-# Output
-# Print the name of the winning team. We remind you that in football the team that scores more goals is considered the winner.
-#
-# Examples
-# input
-# 1
-# ABC
-# output
-# ABC
-# input
-# 5
-# A
-# ABA
-# ABA
-# A
-# A
-# output
-# A
-
 n = int(input())
 result = {}
 first_team = input().strip()
@@ -56,51 +51,37 @@ for i in range(1, n):
 print(first_team if first_team_score > 0 else second_team)
 ```
 
-### 448B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through input
+- **Space Complexity:** O(1) - only storing two team names
 
+---
+
+### Suffix Data Structures
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 448B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/448/B
+
+#### Problem Statement
+Transform word s into word t using suffix automaton (removes one character) and suffix array (swaps two characters). Determine which data structures are needed: "automaton" (removal only), "array" (swap only), "both", or "need tree" (impossible).
+
+#### Input Format
+- First line: String s
+- Second line: String t
+
+#### Output Format
+One of: "automaton", "array", "both", or "need tree".
+
+#### Solution
+
+##### Approach
+Check character frequencies. If same length, only swaps needed. If t is subsequence of s, only removals needed. Otherwise, both needed.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/448/B
-
-# Bizon the Champion isn't just a bison. He also is a favorite of the "Bizons" team.
-#
-# At a competition the "Bizons" got the following problem: "You are given two distinct words (strings of English letters), s and t. You need to transform word s into word t". The task looked simple to the guys because they know the suffix data structures well. Bizon Senior loves suffix automaton. By applying it once to a string, he can remove from this string any single character. Bizon Middle knows suffix array well. By applying it once to a string, he can swap any two characters of this string. The guys do not know anything about the suffix tree, but it can help them do much more.
-#
-# Bizon the Champion wonders whether the "Bizons" can solve the problem. Perhaps, the solution do not require both data structures. Find out whether the guys can solve the problem and if they can, how do they do it? Can they solve it either only with use of suffix automaton or only with use of suffix array or they need both structures? Note that any structure may be used an unlimited number of times, the structures may be used in any order.
-#
-# Input
-# The first line contains a non-empty word s. The second line contains a non-empty word t. Words s and t are different. Each word consists only of lowercase English letters. Each word contains at most 100 letters.
-#
-# Output
-# In the single line print the answer to the problem. Print "need tree" (without the quotes) if word s cannot be transformed into word t even with use of both suffix array and suffix automaton. Print "automaton" (without the quotes) if you need only the suffix automaton to solve the problem. Print "array" (without the quotes) if you need only the suffix array to solve the problem. Print "both" (without the quotes), if you need both data structures to solve the problem.
-#
-# It's guaranteed that if you can solve the problem only with use of suffix array, then it is impossible to solve it only with use of suffix automaton. This is also true for suffix automaton.
-#
-# Examples
-# input
-# automaton
-# tomat
-# output
-# automaton
-# input
-# array
-# arary
-# output
-# array
-# input
-# both
-# hot
-# output
-# both
-# input
-# need
-# tree
-# output
-# need tree
-# Note
-# In the third sample you can act like that: first transform "both" into "oth" by removing the first character using the suffix automaton and then make two swaps of the string using the suffix array and get "hot".
-
-
 def check_solution(_s, _t):
     is_array = False
 
@@ -149,51 +130,38 @@ t = input()
 print(check_solution(s, t))
 ```
 
-### 499B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - character frequency counting and subsequence check
+- **Space Complexity:** O(1) - fixed-size frequency arrays
 
+---
+
+### Lecture Notes
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 499B
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/499/B
+
+#### Problem Statement
+You know two languages with one-to-one word correspondence. During a lecture, write each word in whichever language has the shorter form. If equal length, prefer the first language.
+
+#### Input Format
+- First line: n m (words in lecture, dictionary size)
+- Next m lines: Word pairs (first language, second language)
+- Last line: n lecture words (in first language)
+
+#### Output Format
+The lecture with each word in its shortest form.
+
+#### Solution
+
+##### Approach
+Build a dictionary mapping first language words to their pairs. For each lecture word, output the shorter version.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/499/B
-
-# You have a new professor of graph theory and he speaks very quickly. You come up with the following plan to keep up with his lecture and make notes.
-#
-# You know two languages, and the professor is giving the lecture in the first one. The words in both languages consist of lowercase English characters, each language consists of several words. For each language, all words are distinct, i.e. they are spelled differently. Moreover, the words of these languages have a one-to-one correspondence, that is, for each word in each language, there exists exactly one word in the other language having has the same meaning.
-#
-# You can write down every word the professor says in either the first language or the second language. Of course, during the lecture you write down each word in the language in which the word is shorter. In case of equal lengths of the corresponding words you prefer the word of the first language.
-#
-# You are given the text of the lecture the professor is going to read. Find out how the lecture will be recorded in your notes.
-#
-# Input
-# The first line contains two integers, n and m (1 ≤ n ≤ 3000, 1 ≤ m ≤ 3000) — the number of words in the professor's lecture and the number of words in each of these languages.
-#
-# The following m lines contain the words. The i-th line contains two strings ai, bi meaning that the word ai belongs to the first language, the word bi belongs to the second language, and these two words have the same meaning. It is guaranteed that no word occurs in both languages, and each word occurs in its language exactly once.
-#
-# The next line contains n space-separated strings c1, c2, ..., cn — the text of the lecture. It is guaranteed that each of the strings ci belongs to the set of strings {a1, a2, ... am}.
-#
-# All the strings in the input are non-empty, each consisting of no more than 10 lowercase English letters.
-#
-# Output
-# Output exactly n words: how you will record the lecture in your notebook. Output the words of the lecture in the same order as in the input.
-#
-# Examples
-# input
-# 4 3
-# codeforces codesecrof
-# contest round
-# letter message
-# codeforces contest letter contest
-# output
-# codeforces round letter round
-# input
-# 5 3
-# joll wuqrd
-# euzf un
-# hbnyiyc rsoqqveh
-# hbnyiyc joll joll euzf joll
-# output
-# hbnyiyc joll joll un joll
-
-
 def get_shorter(ci, _a, _b):
     _i = 0
     while ci != _a[_i]:
@@ -219,49 +187,37 @@ for i in range(n):
 print(*result, sep=' ')
 ```
 
-### 518A (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n * m) - linear search for each word
+- **Space Complexity:** O(m) - storing dictionary
 
+---
+
+### Lexicographically Between
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 518A
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/518/A
+
+#### Problem Statement
+Given two strings s and t of equal length where s < t lexicographically, find a string that is lexicographically greater than s and less than t.
+
+#### Input Format
+- First line: String s
+- Second line: String t
+
+#### Output Format
+A string between s and t, or "No such string".
+
+#### Solution
+
+##### Approach
+Try to increment s to find a string between s and t. Handle carry-over carefully.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/518/A
-
-# Vitaly is a diligent student who never missed a lesson in his five years of studying in the university. He always does his homework on time and passes his exams in time.
-#
-# During the last lesson the teacher has provided two strings s and t to Vitaly. The strings have the same length, they consist of lowercase English letters, string s is lexicographically smaller than string t. Vitaly wondered if there is such string that is lexicographically larger than string s and at the same is lexicographically smaller than string t. This string should also consist of lowercase English letters and have the length equal to the lengths of strings s and t.
-#
-# Let's help Vitaly solve this easy problem!
-#
-# Input
-# The first line contains string s (1 ≤ |s| ≤ 100), consisting of lowercase English letters. Here, |s| denotes the length of the string.
-#
-# The second line contains string t (|t| = |s|), consisting of lowercase English letters.
-#
-# It is guaranteed that the lengths of strings s and t are the same and string s is lexicographically less than string t.
-#
-# Output
-# If the string that meets the given requirements doesn't exist, print a single string "No such string" (without the quotes).
-#
-# If such string exists, print it. If there are multiple valid strings, you may print any of them.
-#
-# Examples
-# input
-# a
-# c
-# output
-# b
-# input
-# aaa
-# zzz
-# output
-# kkk
-# input
-# abcdefg
-# abcdefh
-# output
-# No such string
-# Note
-# String s = s1s2... sn is said to be lexicographically smaller than t = t1t2... tn, if there exists such i, that s1 = t1, s2 = t2, ... si - 1 = ti - 1, si < ti.
-
 s = input().strip()
 t = input().strip()
 first_smaller = -1
@@ -288,60 +244,44 @@ if first_smaller >= 0:
         result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + s[first_smaller + 1:]
 
 print(result)
-
-
-#  New solution: +1 for s
 ```
 
-### 518B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through strings
+- **Space Complexity:** O(n) - storing result string
 
+---
+
+### Tanya's Birthday Postcard
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 518B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/518/B
+
+#### Problem Statement
+Tanya wants to create a message of length n from letters cut from a newspaper. Count how many exact matches ("YAY!") and case-insensitive matches ("WHOOPS") she can make.
+
+#### Input Format
+- First line: String s (message to create)
+- Second line: String t (newspaper letters)
+
+#### Output Format
+Two integers: number of YAY! and WHOOPS matches.
+
+#### Solution
+
+##### Approach
+Count character frequencies for both strings, matching exact case first, then wrong case.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/518/B
-
-# Little Tanya decided to present her dad a postcard on his Birthday. She has already created a message — string s of length n, consisting of uppercase and lowercase English letters. Tanya can't write yet, so she found a newspaper and decided to cut out the letters and glue them into the postcard to achieve string s. The newspaper contains string t, consisting of uppercase and lowercase English letters. We know that the length of string t greater or equal to the length of the string s.
-#
-# The newspaper may possibly have too few of some letters needed to make the text and too many of some other letters. That's why Tanya wants to cut some n letters out of the newspaper and make a message of length exactly n, so that it looked as much as possible like s. If the letter in some position has correct value and correct letter case (in the string s and in the string that Tanya will make), then she shouts joyfully "YAY!", and if the letter in the given position has only the correct value but it is in the wrong case, then the girl says "WHOOPS".
-#
-# Tanya wants to make such message that lets her shout "YAY!" as much as possible. If there are multiple ways to do this, then her second priority is to maximize the number of times she says "WHOOPS". Your task is to help Tanya make the message.
-#
-# Input
-# The first line contains line s (1 ≤ |s| ≤ 2·105), consisting of uppercase and lowercase English letters — the text of Tanya's message.
-#
-# The second line contains line t (|s| ≤ |t| ≤ 2·105), consisting of uppercase and lowercase English letters — the text written in the newspaper.
-#
-# Here |a| means the length of the string a.
-#
-# Output
-# Print two integers separated by a space:
-#
-# the first number is the number of times Tanya shouts "YAY!" while making the message,
-# the second number is the number of times Tanya says "WHOOPS" while making the message.
-# Examples
-# input
-# AbC
-# DCbA
-# output
-# 3 0
-# input
-# ABC
-# abc
-# output
-# 0 3
-# input
-# abacaba
-# AbaCaBA
-# output
-# 3 4
-
 s = input().strip()
 t = input().strip()
 
 yay = 0
 whoops = 0
-
-yay_map = [0] * 58
-whoops_map = [] * 58
 
 slength = len(s)
 tlength = len(t)
@@ -398,74 +338,38 @@ for i in range(26):
 print(yay, whoops)
 ```
 
-### 61B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n + m) - counting frequencies for both strings
+- **Space Complexity:** O(1) - fixed-size frequency arrays
 
+---
+
+### String Concatenation
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 61B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/61/B
+
+#### Problem Statement
+Given three strings, students concatenate them in any order. Check if a student's answer matches any valid concatenation (ignoring case and special characters like "-", ";", "_").
+
+#### Input Format
+- First three lines: Original strings
+- Fourth line: n (number of students)
+- Next n lines: Student answers
+
+#### Output Format
+"ACC" if correct, "WA" if wrong for each student.
+
+#### Solution
+
+##### Approach
+Normalize all strings (remove special chars, convert to lowercase), then check if student answer matches any of the 6 possible permutations.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/61/B
-
-# After the contest in comparing numbers, Shapur's teacher found out that he is a real genius and that no one could possibly do the calculations faster than him even using a super computer!
-#
-# Some days before the contest, the teacher took a very simple-looking exam and all his n students took part in the exam. The teacher gave them 3 strings and asked them to concatenate them. Concatenating strings means to put them in some arbitrary order one after the other. For example from concatenating Alireza and Amir we can get to AlirezaAmir or AmirAlireza depending on the order of concatenation.
-#
-# Unfortunately enough, the teacher forgot to ask students to concatenate their strings in a pre-defined order so each student did it the way he/she liked.
-#
-# Now the teacher knows that Shapur is such a fast-calculating genius boy and asks him to correct the students' papers.
-#
-# Shapur is not good at doing such a time-taking task. He rather likes to finish up with it as soon as possible and take his time to solve 3-SAT in polynomial time. Moreover, the teacher has given some advice that Shapur has to follow. Here's what the teacher said:
-#
-# As I expect you know, the strings I gave to my students (including you) contained only lowercase and uppercase Persian Mikhi-Script letters. These letters are too much like Latin letters, so to make your task much harder I converted all the initial strings and all of the students' answers to Latin.
-# As latin alphabet has much less characters than Mikhi-Script, I added three odd-looking characters to the answers, these include "-", ";" and "_". These characters are my own invention of course! And I call them Signs.
-# The length of all initial strings was less than or equal to 100 and the lengths of my students' answers are less than or equal to 600
-# My son, not all students are genius as you are. It is quite possible that they make minor mistakes changing case of some characters. For example they may write ALiReZaAmIR instead of AlirezaAmir. Don't be picky and ignore these mistakes.
-# Those signs which I previously talked to you about are not important. You can ignore them, since many students are in the mood for adding extra signs or forgetting about a sign. So something like Iran;;-- is the same as --;IRAN
-# You should indicate for any of my students if his answer was right or wrong. Do this by writing "WA" for Wrong answer or "ACC" for a correct answer.
-# I should remind you that none of the strings (initial strings or answers) are empty.
-# Finally, do these as soon as possible. You have less than 2 hours to complete this.
-# Input
-# The first three lines contain a string each. These are the initial strings. They consists only of lowercase and uppercase Latin letters and signs ("-", ";" and "_"). All the initial strings have length from 1 to 100, inclusively.
-#
-# In the fourth line there is a single integer n (0 ≤ n ≤ 1000), the number of students.
-#
-# Next n lines contain a student's answer each. It is guaranteed that the answer meets what the teacher said. Each answer iconsists only of lowercase and uppercase Latin letters and signs ("-", ";" and "_"). Length is from 1 to 600, inclusively.
-#
-# Output
-# For each student write in a different line. Print "WA" if his answer is wrong or "ACC" if his answer is OK.
-#
-# Examples
-# input
-# Iran_
-# Persian;
-# W_o;n;d;e;r;f;u;l;
-# 7
-# WonderfulPersianIran
-# wonderful_PersIAN_IRAN;;_
-# WONDERFUL___IRAN__PERSIAN__;;
-# Ira__Persiann__Wonderful
-# Wonder;;fulPersian___;I;r;a;n;
-# __________IranPersianWonderful__________
-# PersianIran_is_Wonderful
-# output
-# ACC
-# ACC
-# ACC
-# WA
-# ACC
-# ACC
-# WA
-# input
-# Shapur;;
-# is___
-# a_genius
-# 3
-# Shapur__a_is___geniUs
-# is___shapur___a__Genius;
-# Shapur;;is;;a;;geni;;us;;
-# output
-# WA
-# ACC
-# ACC
-
 str11 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
 str12 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
 str13 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
@@ -483,56 +387,38 @@ for i in range(n):
     print('WA')
 ```
 
-### 721B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n * L) where L is total string length
+- **Space Complexity:** O(L) - storing normalized strings
 
+---
+
+### Password Security
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 721B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/721/B
+
+#### Problem Statement
+Vanya tries passwords in order of increasing length, with same-length passwords in arbitrary order. After k wrong attempts, he waits 5 seconds. Find the best and worst case time to enter the correct password.
+
+#### Input Format
+- First line: n k (number of passwords, wrong attempts before wait)
+- Next n lines: passwords
+- Last line: correct password
+
+#### Output Format
+Two integers: best case and worst case time in seconds.
+
+#### Solution
+
+##### Approach
+Sort passwords by length, find the position range of the correct password, calculate time including 5-second penalties.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/721/B
-
-# Vanya is managed to enter his favourite site Codehorses. Vanya uses n distinct passwords for sites at all, however he can't remember which one exactly he specified during Codehorses registration.
-#
-# Vanya will enter passwords in order of non-decreasing their lengths, and he will enter passwords of same length in arbitrary order. Just when Vanya will have entered the correct password, he is immediately authorized on the site. Vanya will not enter any password twice.
-#
-# Entering any passwords takes one second for Vanya. But if Vanya will enter wrong password k times, then he is able to make the next try only 5 seconds after that. Vanya makes each try immediately, that is, at each moment when Vanya is able to enter password, he is doing that.
-#
-# Determine how many seconds will Vanya need to enter Codehorses in the best case for him (if he spends minimum possible number of second) and in the worst case (if he spends maximum possible amount of seconds).
-#
-# Input
-# The first line of the input contains two integers n and k (1 ≤ n, k ≤ 100) — the number of Vanya's passwords and the number of failed tries, after which the access to the site is blocked for 5 seconds.
-#
-# The next n lines contains passwords, one per line — pairwise distinct non-empty strings consisting of latin letters and digits. Each password length does not exceed 100 characters.
-#
-# The last line of the input contains the Vanya's Codehorses password. It is guaranteed that the Vanya's Codehorses password is equal to some of his n passwords.
-#
-# Output
-# Print two integers — time (in seconds), Vanya needs to be authorized to Codehorses in the best case for him and in the worst case respectively.
-#
-# Examples
-# input
-# 5 2
-# cba
-# abc
-# bb1
-# abC
-# ABC
-# abc
-# output
-# 1 15
-# input
-# 4 100
-# 11
-# 22
-# 1
-# 2
-# 22
-# output
-# 3 4
-# Note
-# Consider the first sample case. As soon as all passwords have the same length, Vanya can enter the right password at the first try as well as at the last try. If he enters it at the first try, he spends exactly 1 second. Thus in the best case the answer is 1. If, at the other hand, he enters it at the last try, he enters another 4 passwords before. He spends 2 seconds to enter first 2 passwords, then he waits 5 seconds as soon as he made 2 wrong tries. Then he spends 2 more seconds to enter 2 wrong passwords, again waits 5 seconds and, finally, enters the correct password spending 1 more second. In summary in the worst case he is able to be authorized in 15 seconds.
-#
-# Consider the second sample case. There is no way of entering passwords and get the access to the site blocked. As soon as the required password has length of 2, Vanya enters all passwords of length 1 anyway, spending 2 seconds for that. Then, in the best case, he immediately enters the correct password and the answer for the best case is 3, but in the worst case he enters wrong password of length 2 and only then the right one, spending 4 seconds at all.
-
-
 n, k = map(int, input().split())
 
 passwords = []
@@ -570,44 +456,38 @@ worst_case = counter_worst_case + (counter_worst_case // k - worst_case_mod) * 5
 print(best_case, worst_case)
 ```
 
-### 731A (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n log n) - sorting passwords
+- **Space Complexity:** O(n) - storing passwords
 
+---
+
+### Embosser Rotations
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 731A
+- **Difficulty:** Easy
+- **URL:** http://codeforces.com/problemset/problem/731/A
+
+#### Problem Statement
+An embosser has a wheel with letters arranged in a circle. Starting at 'a', find the minimum number of rotations (clockwise or counterclockwise) to print a given string.
+
+#### Input Format
+A single string (the exhibit name).
+
+#### Output Format
+Minimum number of rotations.
+
+#### Solution
+
+##### Approach
+For each character, calculate the minimum of clockwise and counterclockwise distance from current position.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/731/A
-
-# Grigoriy, like the hero of one famous comedy film, found a job as a night security guard at the museum. At first night he received embosser and was to take stock of the whole exposition.
-# 
-# Embosser is a special devise that allows to "print" the text of a plastic tape. Text is printed sequentially, character by character. The device consists of a wheel with a lowercase English letters written in a circle, static pointer to the current letter and a button that print the chosen letter. At one move it's allowed to rotate the alphabetic wheel one step clockwise or counterclockwise. Initially, static pointer points to letter 'a'. Other letters are located as shown on the picture:
-# 
-# 
-# After Grigoriy add new item to the base he has to print its name on the plastic tape and attach it to the corresponding exhibit. It's not required to return the wheel to its initial position with pointer on the letter 'a'.
-# 
-# Our hero is afraid that some exhibits may become alive and start to attack him, so he wants to print the names as fast as possible. Help him, for the given string find the minimum number of rotations of the wheel required to print it.
-# 
-# Input
-# The only line of input contains the name of some exhibit — the non-empty string consisting of no more than 100 characters. It's guaranteed that the string consists of only lowercase English letters.
-# 
-# Output
-# Print one integer — the minimum number of rotations of the wheel, required to print the name given in the input.
-# 
-# Examples
-# input
-# zeus
-# output
-# 18
-# input
-# map
-# output
-# 35
-# input
-# ares
-# output
-# 34
-
 ex_name = input()
 result = 0
-# 97 = a, 122 = z
 cur_pos = 97
 for c in ex_name:
     result += min(abs(ord(c) - cur_pos), 26 - abs(ord(c) - cur_pos))
@@ -615,45 +495,37 @@ for c in ex_name:
 print(result)
 ```
 
-### 90B (Codeforces)
+##### Complexity Analysis
+- **Time Complexity:** O(n) - single pass through string
+- **Space Complexity:** O(1) - constant extra space
 
+---
+
+### African Crossword
+
+#### Problem Information
+- **Source:** Codeforces
+- **Problem Code:** 90B
+- **Difficulty:** Medium
+- **URL:** http://codeforces.com/problemset/problem/90/B
+
+#### Problem Statement
+In a rectangular grid, cross out all letters that appear more than once in their row or column. The remaining letters form the encrypted word (read left to right, top to bottom).
+
+#### Input Format
+- First line: n m (grid dimensions)
+- Next n lines: m characters each (the grid)
+
+#### Output Format
+The encrypted word.
+
+#### Solution
+
+##### Approach
+Mark each cell if its letter repeats in the same row or column. Output unmarked letters in order.
+
+##### Python Solution
 ```python
-# Problem from Codeforces
-# http://codeforces.com/problemset/problem/90/B
-
-# An African crossword is a rectangular table n × m in size. Each cell of the table contains exactly one letter. This table (it is also referred to as grid) contains some encrypted word that needs to be decoded.
-#
-# To solve the crossword you should cross out all repeated letters in rows and columns. In other words, a letter should only be crossed out if and only if the corresponding column or row contains at least one more letter that is exactly the same. Besides, all such letters are crossed out simultaneously.
-#
-# When all repeated letters have been crossed out, we should write the remaining letters in a string. The letters that occupy a higher position follow before the letters that occupy a lower position. If the letters are located in one row, then the letter to the left goes first. The resulting word is the answer to the problem.
-#
-# You are suggested to solve an African crossword and print the word encrypted there.
-#
-# Input
-# The first line contains two integers n and m (1 ≤ n, m ≤ 100). Next n lines contain m lowercase Latin letters each. That is the crossword grid.
-#
-# Output
-# Print the encrypted word on a single line. It is guaranteed that the answer consists of at least one letter.
-#
-# Examples
-# input
-# 3 3
-# cba
-# bcd
-# cbc
-# output
-# abcd
-# input
-# 5 5
-# fcofd
-# ooedo
-# afaoa
-# rdcdf
-# eofsf
-# output
-# codeforces
-
-
 n, m = map(int, input().split())
 rectangular = []
 result = ''
@@ -665,7 +537,7 @@ for i in range(n):
 
 for i in range(n):
     for j in range(m):
-        if matrix[i][j] == 0:  # not crossed yet
+        if matrix[i][j] == 0:
             for row_checker in range(m):
                 if row_checker != j and rectangular[i][row_checker] == rectangular[i][j]:
                     matrix[i][row_checker] = 1
@@ -683,4 +555,8 @@ for i in range(n):
 
 print(result)
 ```
+
+##### Complexity Analysis
+- **Time Complexity:** O(n * m * (n + m)) - checking row and column for each cell
+- **Space Complexity:** O(n * m) - storing the marking matrix
 

@@ -10,48 +10,48 @@ This section contains final examination problems covering all topics from the Bl
 
 ## Problems
 
-### LEC18P01 (Blue Course)
+### Three Distinct Permutations
 
-```python
-# BLUE_LEC18P01
-"""
-Problem: Three Distinct Permutations of Sorted Array
+#### Problem Information
+- **Source:** Blue Course
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
 
-Description:
-Given an array of N integers, determine if it is possible to create at least 3 distinct
-permutations that, when sorted by values, produce different index mappings. If possible,
-output "YES" and print 3 such permutations; otherwise output "NO".
+#### Problem Statement
+
+Given an array of N integers, determine if it is possible to create at least 3 distinct permutations that, when sorted by values, produce different index mappings. If possible, output "YES" and print 3 such permutations; otherwise output "NO".
 
 The key insight is that we need duplicate values in the array to create different permutations:
 - If a value appears exactly 2 times, we can swap their positions (2 arrangements)
 - If a value appears 3+ times, we get more arrangements
 - To get 3 distinct permutations, we need either:
-  * One value appearing 4+ times (can create 3+ arrangements from one value)
-  * Two values each appearing exactly 2 times (2 * 2 = 4 >= 3 arrangements)
+  - One value appearing 4+ times (can create 3+ arrangements from one value)
+  - Two values each appearing exactly 2 times (2 * 2 = 4 >= 3 arrangements)
 
-Input Format:
+#### Input Format
 - Line 1: Integer N (size of array)
 - Line 2: N space-separated integers (the array elements)
 
-Output Format:
+#### Output Format
 - If not possible: "NO"
-- If possible: "YES" followed by 3 lines, each containing a permutation
-  (1-indexed positions that would sort the array)
+- If possible: "YES" followed by 3 lines, each containing a permutation (1-indexed positions that would sort the array)
 
-Algorithm/Approach:
+#### Solution
+
+##### Approach
 1. Track positions of each unique value using a dictionary
 2. Check if conditions for 3 permutations are met:
    - Two values with exactly 2 occurrences each, OR
    - One value with 4+ occurrences
 3. Generate permutations by swapping positions of duplicate values
-"""
 
+##### Python Solution
 
+```python
 def solution():
     N = int(input())
-
     tasks = list(map(int, input().split()))
-
     markers = {}
 
     for i in range(N):
@@ -87,7 +87,6 @@ def solution():
     tasks.sort()
 
     if len(duplications) == 2:
-
         for i in range(N):
             print(markers[tasks[i]][markers[tasks[i]][0]] + 1, end=' ')
             if markers[tasks[i]][0] == len(markers[tasks[i]]) - 1:
@@ -158,16 +157,23 @@ def solution():
 solution()
 ```
 
-### LEC18P02 (Blue Course)
+##### Complexity Analysis
+- **Time Complexity:** O(N log N) for sorting
+- **Space Complexity:** O(N) for storing markers
 
-```python
-# BLUE_LEC18P02
-"""
-Problem: Spiral Matrix Coordinates (Ant on a Chessboard / Diagonal Walk)
+---
 
-Description:
-Imagine an infinite grid where cells are numbered starting from (1,1) in a diagonal
-spiral pattern. Given a cell number, find its (x, y) coordinates.
+### Spiral Matrix Coordinates
+
+#### Problem Information
+- **Source:** Blue Course
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Imagine an infinite grid where cells are numbered starting from (1,1) in a diagonal spiral pattern. Given a cell number, find its (x, y) coordinates.
 
 The pattern follows a diagonal spiral:
 - Start at (1,1) = cell 1
@@ -175,28 +181,32 @@ The pattern follows a diagonal spiral:
 - Odd perfect squares are at (k,1), even perfect squares are at (1,k)
 
 For example:
-  Cell 1 -> (1,1)
-  Cell 2 -> (2,1)
-  Cell 3 -> (1,2)
-  Cell 4 -> (2,2)
-  Cell 5 -> (1,3)
-  ...
+- Cell 1 -> (1,1)
+- Cell 2 -> (2,1)
+- Cell 3 -> (1,2)
+- Cell 4 -> (2,2)
+- Cell 5 -> (1,3)
 
-Input Format:
+#### Input Format
 - Line 1: Integer T (number of test cases)
 - Next T lines: Each contains a single integer representing the cell number
 
-Output Format:
-- For each test case: "Case X: x y" where (x, y) are the coordinates
+#### Output Format
+For each test case: "Case X: x y" where (x, y) are the coordinates.
 
-Algorithm/Approach:
+#### Solution
+
+##### Approach
 1. Find the smallest perfect square >= given number: sqrt = ceil(sqrt(n))
 2. Calculate remainder r = sqrt^2 - n
 3. Determine position based on remainder and whether sqrt is odd/even:
    - If r < sqrt: coordinates are (sqrt, r+1) or (r+1, sqrt)
    - Otherwise: calculate offset from the corner
 4. Swap x,y if sqrt is odd (alternating diagonal directions)
-"""
+
+##### Python Solution
+
+```python
 import math
 
 
@@ -224,38 +234,46 @@ def solution():
 solution()
 ```
 
-### LEC18P03 (Blue Course)
+##### Complexity Analysis
+- **Time Complexity:** O(1) per query
+- **Space Complexity:** O(1)
 
-```python
-# BLUE_LEC18P03
-"""
-Problem: Counting Connected Components / Religion Groups (Union-Find)
+---
 
-Description:
-In a group of N people, some share the same religious beliefs. If person X and person Y
-share the same religion, they belong to the same religious group. Given M pairs of people
-who share the same religion, count the total number of distinct religious groups.
+### Religion Groups
 
-This is essentially counting the number of connected components in an undirected graph
-where nodes are people and edges represent shared religious beliefs.
+#### Problem Information
+- **Source:** Blue Course
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
 
-Input Format:
+#### Problem Statement
+
+In a group of N people, some share the same religious beliefs. If person X and person Y share the same religion, they belong to the same religious group. Given M pairs of people who share the same religion, count the total number of distinct religious groups.
+
+This is essentially counting the number of connected components in an undirected graph where nodes are people and edges represent shared religious beliefs.
+
+#### Input Format
 - Multiple test cases, each starting with: N M (N = number of people, M = number of pairs)
 - Next M lines: X Y (person X and Y share the same religion)
 - Input ends when N = 0 and M = 0
 
-Output Format:
-- For each test case: "Case T: K" where T is the case number and K is the number of
-  distinct religious groups (connected components)
+#### Output Format
+For each test case: "Case T: K" where T is the case number and K is the number of distinct religious groups (connected components).
 
-Algorithm/Approach:
+#### Solution
+
+##### Approach
 1. Use Union-Find (Disjoint Set Union) data structure with:
    - Path compression in find_set() for efficiency
    - Union by rank for balanced trees
 2. For each pair (X, Y), union their sets
 3. Count unique root parents to get number of connected components
-"""
 
+##### Python Solution
+
+```python
 parent = []
 ranks = []
 
@@ -295,7 +313,6 @@ def has_same_opinion(opinions1, opinions2, length):
 
 
 def solution():
-
     t = 1
     while True:
         n, m = map(int, input().split())
@@ -324,42 +341,53 @@ def solution():
 solution()
 ```
 
-### LEC18P04 (Blue Course)
+##### Complexity Analysis
+- **Time Complexity:** O(M * alpha(N)) where alpha is inverse Ackermann function
+- **Space Complexity:** O(N)
 
-```python
-# BLUE_LEC18P04
-"""
-Problem: Connecting Freckles / Minimum Spanning Tree on Points
+---
 
-Description:
-Given N points (freckles) on a 2D plane with their (x, y) coordinates, find the minimum
-total length of ink needed to connect all freckles. You can connect any two freckles
-with a straight line, and the goal is to connect all freckles using minimum total distance.
+### Connecting Freckles
+
+#### Problem Information
+- **Source:** Blue Course
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given N points (freckles) on a 2D plane with their (x, y) coordinates, find the minimum total length of ink needed to connect all freckles. You can connect any two freckles with a straight line, and the goal is to connect all freckles using minimum total distance.
 
 This is the classic Minimum Spanning Tree (MST) problem where:
 - Nodes are the freckle positions
 - Edge weights are Euclidean distances between points
 - We need to find a tree connecting all nodes with minimum total edge weight
 
-Input Format:
+#### Input Format
 - Line 1: Integer N (number of test cases)
 - For each test case:
   - Blank line
   - Integer: number of freckles
   - Next lines: x y coordinates (floating point) for each freckle
 
-Output Format:
+#### Output Format
 - For each test case: The minimum total distance (2 decimal places)
 - Blank line between test cases
 
-Algorithm/Approach:
+#### Solution
+
+##### Approach
 1. Build a complete graph where each pair of freckles has an edge with weight = Euclidean distance
 2. Apply Kruskal's algorithm:
    - Sort all edges by weight
    - Use Union-Find to avoid cycles
    - Add edges to MST until (V-1) edges are selected
 3. Return the sum of edge weights in the MST
-"""
+
+##### Python Solution
+
+```python
 import math
 
 
@@ -429,7 +457,6 @@ def calculate_distance(freckle1, freckle2):
 
 
 def solution():
-
     N = int(input())
     for t in range(N):
         input()
@@ -457,42 +484,51 @@ def solution():
 solution()
 ```
 
-### LEC18P05 (Blue Course)
+##### Complexity Analysis
+- **Time Complexity:** O(N^2 log N) for building and sorting edges
+- **Space Complexity:** O(N^2) for storing all edges
 
-```python
-# BLUE_LEC18P05
-"""
-Problem: Phone List / Prefix-Free Set Validation (Trie)
+---
 
-Description:
-Given a list of phone numbers, determine if the list is "consistent" - meaning no phone
-number is a prefix of another phone number. For example, if the list contains both
-"911" and "9111234", it is inconsistent because "911" is a prefix of "9111234".
+### Phone List Consistency
+
+#### Problem Information
+- **Source:** Blue Course
+- **Difficulty:** Secret
+- **Time Limit:** 1000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a list of phone numbers, determine if the list is "consistent" - meaning no phone number is a prefix of another phone number. For example, if the list contains both "911" and "9111234", it is inconsistent because "911" is a prefix of "9111234".
 
 This problem is also known as:
 - Phone List (UVa)
 - Consistent Phone Numbers
 - Prefix-Free Code Validation
 
-Input Format:
+#### Input Format
 - Line 1: Integer T (number of test cases)
 - For each test case:
   - Line 1: Integer N (number of phone numbers)
   - Next N lines: One phone number string per line
 
-Output Format:
-- For each test case: "YES" if the list is consistent (no prefix conflicts), "NO" otherwise
+#### Output Format
+For each test case: "YES" if the list is consistent (no prefix conflicts), "NO" otherwise.
 
-Algorithm/Approach:
+#### Solution
+
+##### Approach
 1. Use a Trie (prefix tree) data structure
 2. For each phone number, insert it into the trie character by character
 3. While inserting, check for prefix conflicts:
    - If we pass through a node marked as end of a word -> current number has a prefix in the set
    - If we reach the end but the node has children -> current number is a prefix of another
 4. If any conflict is found, output "NO"; otherwise "YES"
-"""
 
+##### Python Solution
 
+```python
 class Node:
     def __init__(self):
         self.countWord = 0
@@ -534,3 +570,6 @@ def solution():
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(N * L) where L is the average phone number length
+- **Space Complexity:** O(N * L) for Trie storage

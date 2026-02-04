@@ -10,35 +10,35 @@ This session covers Kruskal's algorithm for finding Minimum Spanning Trees (MST)
 
 ## Problems
 
-### 1123_Trail Maintenance (LightOJ)
+### Trail Maintenance
+
+#### Problem Information
+- **Source:** LightOJ
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 32MB
+
+#### Problem Statement
+
+A park has N fields connected by trails. Trails are added one by one. After each trail is added, compute the MST weight. Output -1 if the graph is not yet connected (before N-1 edges are added).
+
+#### Input Format
+- T (test cases)
+- For each test case:
+  - N (fields), M (trails to add)
+  - M lines: x, y, z (trail from field x to y with length z)
+
+#### Output Format
+After each trail addition: MST weight or -1 if not connected.
+
+#### Solution
+
+##### Approach
+Incrementally add edges to the graph. After each addition, run Kruskal's algorithm to find MST. Use DSU for cycle detection in Kruskal's. Return -1 until at least N-1 edges connect all nodes.
+
+##### Python Solution
 
 ```python
-# Problem from LightOJ
-# http://lightoj.com/volume_showproblem.php?problem=1123
-#
-# Problem: Trail Maintenance (LightOJ 1123)
-#
-# Description:
-# A park has N fields connected by trails. Trails are added one by one.
-# After each trail is added, compute the MST weight. Output -1 if the
-# graph is not yet connected (before N-1 edges are added).
-#
-# Input:
-# - T (test cases)
-# - For each test case:
-#   - N (fields), M (trails to add)
-#   - M lines: x, y, z (trail from field x to y with length z)
-#
-# Output:
-# - After each trail addition: MST weight or -1 if not connected
-#
-# Approach:
-# - Incrementally add edges to the graph
-# - After each addition, run Kruskal's algorithm to find MST
-# - Use DSU for cycle detection in Kruskal's
-# - Return -1 until at least N-1 edges connect all nodes
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -102,7 +102,6 @@ def kruskal(number_of_fields):
 
 
 def solution():
-
     T = int(input())
 
     for t in range(T):
@@ -125,33 +124,40 @@ def solution():
 solution()
 ```
 
-### 11631 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(M^2 log M) for repeated Kruskal's
+- **Space Complexity:** O(M + N)
+
+---
+
+### Dark Roads
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+A city wants to save electricity by turning off some street lights. They need to keep lights on only for roads in the MST (to maintain connectivity). Calculate how much power can be saved.
+
+#### Input Format
+- Multiple test cases until m=n=0
+- m (junctions), n (roads)
+- n lines: x, y, z (road from x to y with power cost z)
+
+#### Output Format
+Total power saved = (sum of all edges) - (MST weight)
+
+#### Solution
+
+##### Approach
+Use Kruskal's algorithm to find MST. Sum weights of edges not in MST (edges that form cycles). This gives the total power that can be saved.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2678
-#
-# Problem: Dark Roads (UVA 11631)
-#
-# Description:
-# A city wants to save electricity by turning off some street lights.
-# They need to keep lights on only for roads in the MST (to maintain
-# connectivity). Calculate how much power can be saved.
-#
-# Input:
-# - Multiple test cases until m=n=0
-# - m (junctions), n (roads)
-# - n lines: x, y, z (road from x to y with power cost z)
-#
-# Output:
-# - Total power saved = (sum of all edges) - (MST weight)
-#
-# Approach:
-# - Use Kruskal's algorithm to find MST
-# - Sum weights of edges not in MST (edges that form cycles)
-# - This gives the total power that can be saved
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -216,7 +222,6 @@ def kruskal(number_of_cities):
 
 
 def solution():
-
     while True:
         global graph, dist
         graph = []
@@ -236,35 +241,42 @@ def solution():
 solution()
 ```
 
-### 11710 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(E log E)
+- **Space Complexity:** O(E + V)
+
+---
+
+### Expensive Subway
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+Calculate the minimum cost to build a subway system connecting all stations. Stations are given as names (strings). If impossible to connect all stations, output "Impossible".
+
+#### Input Format
+- Multiple test cases until s=c=0
+- s (stations), c (connections)
+- s station names
+- c lines: station1 station2 cost
+- End station name (ignored)
+
+#### Output Format
+MST weight or "Impossible" if graph is disconnected.
+
+#### Solution
+
+##### Approach
+Map station names to indices using dictionary. Apply Kruskal's algorithm to find MST. Check if MST spans all stations (exactly s-1 edges).
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2757
-#
-# Problem: Expensive Subway (UVA 11710)
-#
-# Description:
-# Calculate the minimum cost to build a subway system connecting all stations.
-# Stations are given as names (strings). If impossible to connect all stations,
-# output "Impossible".
-#
-# Input:
-# - Multiple test cases until s=c=0
-# - s (stations), c (connections)
-# - s station names
-# - c lines: station1 station2 cost
-# - End station name (ignored)
-#
-# Output:
-# - MST weight or "Impossible" if graph is disconnected
-#
-# Approach:
-# - Map station names to indices using dictionary
-# - Apply Kruskal's algorithm to find MST
-# - Check if MST spans all stations (exactly s-1 edges)
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -328,7 +340,6 @@ def kruskal(number_of_cities):
 
 
 def solution():
-
     while True:
         global graph, dist
         graph = []
@@ -355,35 +366,41 @@ def solution():
 solution()
 ```
 
-### 11733 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(E log E)
+- **Space Complexity:** O(E + V)
+
+---
+
+### Airports
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+Connect N cities using either airports or roads. Each city needs either an airport OR road connection to an airport city. Building an airport costs A, and each road has its own cost. Minimize total cost.
+
+#### Input Format
+- T (test cases)
+- For each test case:
+  - N (cities), M (possible roads), A (airport cost)
+  - M lines: x, y, z (road from x to y with cost z)
+
+#### Output Format
+"Case #X: cost airports" (total cost and number of airports built)
+
+#### Solution
+
+##### Approach
+Modified Kruskal's algorithm. Only add edge to MST if its cost < airport cost A. Cities not connected by cheap roads get airports. Count components (each needs one airport).
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2833
-#
-# Problem: Airports (UVA 11733)
-#
-# Description:
-# Connect N cities using either airports or roads. Each city needs either
-# an airport OR road connection to an airport city. Building an airport
-# costs A, and each road has its own cost. Minimize total cost.
-#
-# Input:
-# - T (test cases)
-# - For each test case:
-#   - N (cities), M (possible roads), A (airport cost)
-#   - M lines: x, y, z (road from x to y with cost z)
-#
-# Output:
-# - "Case #X: cost airports" (total cost and number of airports built)
-#
-# Approach:
-# - Modified Kruskal's algorithm
-# - Only add edge to MST if its cost < airport cost A
-# - Cities not connected by cheap roads get airports
-# - Count components (each needs one airport)
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -447,7 +464,6 @@ def kruskal(number_of_cities, airport_cost):
 
 
 def solution():
-
     T = int(input())
 
     for t in range(T):
@@ -470,34 +486,41 @@ def solution():
 solution()
 ```
 
-### 11857 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(E log E)
+- **Space Complexity:** O(E + V)
+
+---
+
+### Driving Range
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+Find the minimum driving range needed for an electric car to travel between any two cities. The car must be able to travel the longest edge in the MST (the bottleneck edge).
+
+#### Input Format
+- Multiple test cases until N=M=0
+- N (cities), M (roads)
+- M lines: x, y, z (road from x to y with distance z)
+
+#### Output Format
+- Minimum driving range (maximum edge weight in MST)
+- "IMPOSSIBLE" if cities are not all connected
+
+#### Solution
+
+##### Approach
+Use Kruskal's algorithm to build MST. Track the maximum edge weight added to MST. This gives the minimum driving range needed.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=2957
-#
-# Problem: Driving Range (UVA 11857)
-#
-# Description:
-# Find the minimum driving range needed for an electric car to travel
-# between any two cities. The car must be able to travel the longest
-# edge in the MST (the bottleneck edge).
-#
-# Input:
-# - Multiple test cases until N=M=0
-# - N (cities), M (roads)
-# - M lines: x, y, z (road from x to y with distance z)
-#
-# Output:
-# - Minimum driving range (maximum edge weight in MST)
-# - "IMPOSSIBLE" if cities are not all connected
-#
-# Approach:
-# - Use Kruskal's algorithm to build MST
-# - Track the maximum edge weight added to MST
-# - This gives the minimum driving range needed
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -561,7 +584,6 @@ def kruskal(number_of_cities):
 
 
 def solution():
-
     while True:
         global graph, dist
         graph = []
@@ -585,34 +607,41 @@ def solution():
 solution()
 ```
 
-### 1208 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(E log E)
+- **Space Complexity:** O(E + V)
+
+---
+
+### Oreon
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+Given a weighted adjacency matrix of cities, find and print all edges in the Minimum Spanning Tree. Cities are labeled A, B, C, etc. Output edges in sorted order (by source, then by weight).
+
+#### Input Format
+- Number of test cases
+- For each test case:
+  - Number of cities
+  - Adjacency matrix (comma-separated, 0 means no edge)
+
+#### Output Format
+"Case X:" followed by MST edges in format "A-B W"
+
+#### Solution
+
+##### Approach
+Parse adjacency matrix to create edge list. Apply Kruskal's algorithm with edges sorted by (weight, source). Print MST edges with city letters.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3649
-#
-# Problem: Oreon (UVA 1208)
-#
-# Description:
-# Given a weighted adjacency matrix of cities, find and print all edges
-# in the Minimum Spanning Tree. Cities are labeled A, B, C, etc.
-# Output edges in sorted order (by source, then by weight).
-#
-# Input:
-# - Number of test cases
-# - For each test case:
-#   - Number of cities
-#   - Adjacency matrix (comma-separated, 0 means no edge)
-#
-# Output:
-# - "Case X:" followed by MST edges in format "A-B W"
-#
-# Approach:
-# - Parse adjacency matrix to create edge list
-# - Apply Kruskal's algorithm with edges sorted by (weight, source)
-# - Print MST edges with city letters
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -675,7 +704,6 @@ def print_MST():
 
 
 def solution():
-
     number_of_test_cases = int(input())
 
     for t in range(number_of_test_cases):
@@ -698,35 +726,41 @@ def solution():
 solution()
 ```
 
-### 1235 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O(V^2 + E log E)
+- **Space Complexity:** O(V^2)
+
+---
+
+### Anti Brute Force Lock
+
+#### Problem Information
+- **Source:** UVA
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 512MB
+
+#### Problem Statement
+
+A safe has N locks, each with a 4-digit combination. Starting from "0000", find the minimum total number of dial rotations to unlock all locks. Each dial can rotate in either direction (0->1 or 0->9).
+
+#### Input Format
+- Number of test cases
+- For each test case:
+  - N (number of locks)
+  - N 4-digit lock combinations
+
+#### Output Format
+Minimum total rotations to unlock all locks.
+
+#### Solution
+
+##### Approach
+Model as MST problem: nodes are lock combinations. Edge weight = minimum rotations to change one combination to another. Find minimum rotation from "0000" to any lock, then MST of all locks. Total = initial approach cost + MST weight.
+
+##### Python Solution
 
 ```python
-# Problem from UVA
-# https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3676
-#
-# Problem: Anti Brute Force Lock (UVA 1235)
-#
-# Description:
-# A safe has N locks, each with a 4-digit combination. Starting from "0000",
-# find the minimum total number of dial rotations to unlock all locks.
-# Each dial can rotate in either direction (0->1 or 0->9).
-#
-# Input:
-# - Number of test cases
-# - For each test case:
-#   - N (number of locks)
-#   - N 4-digit lock combinations
-#
-# Output:
-# - Minimum total rotations to unlock all locks
-#
-# Approach:
-# - Model as MST problem: nodes are lock combinations
-# - Edge weight = minimum rotations to change one combination to another
-# - Find minimum rotation from "0000" to any lock, then MST of all locks
-# - Total = initial approach cost + MST weight
-
-
 class Triad:
     def __init__(self, source, target, weight):
         self.source = source
@@ -796,7 +830,6 @@ def calculate_rolls(start, stop):
 
 
 def solution():
-
     number_of_test_cases = int(input())
 
     for t in range(number_of_test_cases):
@@ -824,3 +857,6 @@ def solution():
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O(N^2 log N) for building and sorting edges
+- **Space Complexity:** O(N^2)

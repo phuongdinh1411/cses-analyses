@@ -6,40 +6,43 @@ permalink: /problem_soulutions/Blue/Session 09 - Dijkstra/
 
 # Session 09 - Dijkstra
 
-This session covers Dijkstra's shortest path algorithm for weighted graphs with non-negative edge weights.
+Dijkstra's shortest path algorithm problems for weighted graphs with non-negative edge weights.
 
 ## Problems
 
-### Chocolate (Hackerearth)
+### Chocolate Journey
+
+#### Problem Information
+- **Source:** Hackerearth
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+There are N cities connected by M bidirectional roads. K cities have chocolate shops. You need to travel from city A to city B, but must buy chocolate from one of the K cities. The chocolate expires after X time units, so you must reach B within X time from the chocolate city.
+
+Find the minimum time to go from A to a chocolate city and then to B, such that the chocolate city to B takes at most X time.
+
+#### Input Format
+- Line 1: N M K X (cities, roads, chocolate cities, max time for chocolate)
+- Line 2: K integers (chocolate city IDs)
+- Next M lines: u v w (bidirectional road with weight w)
+- Last line: A B (start and destination)
+
+#### Output Format
+Minimum total time, or -1 if impossible.
+
+#### Solution
+
+##### Approach
+Run Dijkstra from A and from B. For each chocolate city within X distance from B, calculate total path through that city.
+
+##### Python Solution
 
 ```python
-#  Problem from Hackerearth
-#  https://www.hackerearth.com/practice/algorithms/graphs/shortest-path-algorithms/practice-problems/algorithm/successful-completion-of-project/
-#
-# Problem: Chocolate Journey
-#
-# There are N cities connected by M bidirectional roads. K cities have
-# chocolate shops. You need to travel from city A to city B, but must
-# buy chocolate from one of the K cities. The chocolate expires after
-# X time units, so you must reach B within X time from the chocolate city.
-#
-# Find the minimum time to go from A to a chocolate city and then to B,
-# such that the chocolate city to B takes at most X time.
-#
-# Input:
-# - Line 1: N M K X (cities, roads, chocolate cities, max time for chocolate)
-# - Line 2: K integers (chocolate city IDs)
-# - Next M lines: u v w (bidirectional road with weight w)
-# - Last line: A B (start and destination)
-#
-# Output: Minimum total time, or -1 if impossible
-#
-# Approach: Run Dijkstra from A and from B, find best chocolate city
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -55,9 +58,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 class Node:
     def __init__(self, id, dist):
@@ -67,9 +68,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(N, A, graph):
-
     dist = [-1 for x in range(N+1)]
     pqueue = []
     heapq.heappush(pqueue, Node(A, 0))
@@ -86,9 +85,7 @@ def dijkstra(N, A, graph):
 
     return dist
 
-
 def solution():
-
     N = int(inp.next())
     M = int(inp.next())
     k = int(inp.next())
@@ -142,41 +139,50 @@ def solution():
 
     print(min_time)
 
-
 solution()
 ```
 
-### Commandos (LightOJ)
+##### Complexity Analysis
+- **Time Complexity:** O((N + M) log N) for two Dijkstra runs
+- **Space Complexity:** O(N + M) for graph and distance arrays
+
+---
+
+### Commandos
+
+#### Problem Information
+- **Source:** LightOJ 1174
+- **Difficulty:** Secret
+- **Time Limit:** 2000ms
+- **Memory Limit:** 32MB
+
+#### Problem Statement
+
+A group of commandos starts at building S. They must visit ALL N buildings to complete their mission, then gather at building D. All commandos move simultaneously and take optimal paths.
+
+The total time is determined by the last commando to reach D. Find the minimum time for all commandos to complete the mission.
+
+#### Input Format
+- Line 1: T (test cases)
+- For each test case:
+  - Line 1: N (buildings)
+  - Line 2: R (roads)
+  - Next R lines: u v (bidirectional road)
+  - Last line: S D (start and destination buildings)
+
+#### Output Format
+Maximum of (dist[S][i] + dist[i][D]) for all buildings i.
+
+#### Solution
+
+##### Approach
+Run Dijkstra from S and from D, find max sum for any building to get the time of the slowest commando.
+
+##### Python Solution
 
 ```python
-#  Problem from LightOJ
-#  http://lightoj.com/volume_showproblem.php?problem=1174
-#
-# Problem: Commandos
-#
-# A group of commandos starts at building S. They must visit ALL N buildings
-# to complete their mission, then gather at building D. All commandos move
-# simultaneously and take optimal paths.
-#
-# The total time is determined by the last commando to reach D. Find the
-# minimum time for all commandos to complete the mission.
-#
-# Input:
-# - Line 1: T (test cases)
-# - For each test case:
-#   - Line 1: N (buildings)
-#   - Line 2: R (roads)
-#   - Next R lines: u v (bidirectional road)
-#   - Last line: S D (start and destination buildings)
-#
-# Output: Maximum of (dist[S][i] + dist[i][D]) for all buildings i
-#
-# Approach: Dijkstra from S and from D, find max sum for any building
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -192,9 +198,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 class Node:
     def __init__(self, id, dist):
@@ -204,9 +208,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, S, T, graph):
-
     dist = [-1 for x in range(n+1)]
     pqueue = []
     heapq.heappush(pqueue, Node(S, 0))
@@ -223,9 +225,7 @@ def dijkstra(n, S, T, graph):
             if neighbor.id == T:
                 return dist[neighbor.id]
 
-
 def solution():
-
     T = int(inp.next())
     results = []
     case_number = 0
@@ -255,39 +255,49 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### MICEMAZE (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(N * (N + R) log N) for N Dijkstra runs
+- **Space Complexity:** O(N + R) for graph storage
+
+---
+
+### MICEMAZE - Mice and Maze
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 1129ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+N mice are in a maze with N cells. Cell E is the exit. Each mouse starts in a different cell and has T seconds to reach the exit. Passages are one-way with travel times.
+
+Count how many mice can reach the exit within the time limit.
+
+#### Input Format
+- Line 1: N (cells/mice)
+- Line 2: E (exit cell)
+- Line 3: T (time limit)
+- Line 4: M (number of passages)
+- Next M lines: A B W (one-way passage from A to B taking W time)
+
+#### Output Format
+Number of mice that can reach exit in time.
+
+#### Solution
+
+##### Approach
+Run Dijkstra from exit on REVERSED graph. Count cells whose distance is within T.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/MICEMAZE/
-#
-# Problem: MICEMAZE - Mice and Maze
-#
-# N mice are in a maze with N cells. Cell E is the exit. Each mouse starts
-# in a different cell and has T seconds to reach the exit. Passages are
-# one-way with travel times.
-#
-# Count how many mice can reach the exit within the time limit.
-#
-# Input:
-# - Line 1: N (cells/mice)
-# - Line 2: E (exit cell)
-# - Line 3: T (time limit)
-# - Line 4: M (number of passages)
-# - Next M lines: A B W (one-way passage from A to B taking W time)
-#
-# Output: Number of mice that can reach exit in time
-#
-# Approach: Run Dijkstra from exit on REVERSED graph, count cells within T
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -303,12 +313,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
-
-MAX = 1100
-
 
 class Node:
     def __init__(self, id, dist):
@@ -318,9 +323,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(E, T, N, graph):
-
     dist = [-1 for x in range(N+1)]
     path = [-1 for y in range(N+1)]
     pqueue = []
@@ -344,9 +347,7 @@ def dijkstra(E, T, N, graph):
 
     return result
 
-
 def solution():
-
     N = int(inp.next())
     E = int(inp.next())
     T = int(inp.next())
@@ -364,39 +365,49 @@ def solution():
 
     print(result)
 
-
 solution()
 ```
 
-### SHPATH (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O((N + M) log N) for Dijkstra
+- **Space Complexity:** O(N + M) for graph and distance arrays
+
+---
+
+### SHPATH - The Shortest Path
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 1537ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+Given a weighted directed graph where cities have names, answer multiple shortest path queries between pairs of cities.
+
+#### Input Format
+- Line 1: S (number of test cases)
+- For each test case:
+  - Line 1: N (number of cities)
+  - For each city:
+    - City name
+    - Number of neighbors, followed by (neighbor_id, cost) pairs
+  - Line: R (number of queries)
+  - Next R lines: source_name destination_name
+
+#### Output Format
+Shortest path distance for each query.
+
+#### Solution
+
+##### Approach
+Dijkstra from source to destination for each query using city name to index mapping.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/SHPATH/
-#
-# Problem: SHPATH - The Shortest Path
-#
-# Given a weighted directed graph where cities have names, answer multiple
-# shortest path queries between pairs of cities.
-#
-# Input:
-# - Line 1: S (number of test cases)
-# - For each test case:
-#   - Line 1: N (number of cities)
-#   - For each city:
-#     - City name
-#     - Number of neighbors, followed by (neighbor_id, cost) pairs
-#   - Line: R (number of queries)
-#   - Next R lines: source_name destination_name
-#
-# Output: Shortest path distance for each query
-#
-# Approach: Dijkstra from source to destination for each query
-
-
 import heapq
-import sys
-
 
 class Node:
     def __init__(self, id, dist):
@@ -406,9 +417,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, s, d, graph):
-
     dist = [-1 for x in range(n + 1)]
     pqueue = []
     heapq.heappush(pqueue, Node(s, 0))
@@ -425,9 +434,7 @@ def dijkstra(n, s, d, graph):
 
     return dist[d]
 
-
 def solution():
-
     s = int(input())
 
     for i in range(s):
@@ -439,9 +446,7 @@ def solution():
         cities_index = {}
         graph = [[] for xx in range(n + 1)]
         for xxx in range(n):
-
             cities_index[input()] = xxx + 1
-
             n_road = int(input())
             for r in range(n_road):
                 ct, we = map(int, input().strip().split())
@@ -450,41 +455,49 @@ def solution():
         num_roads = int(input())
         for nr in range(num_roads):
             st, ds = map(str, input().strip().split())
-
             print(dijkstra(n, cities_index[st], cities_index[ds], graph))
-
 
 solution()
 ```
 
-### TRAFFICN (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O(R * (N + M) log N) for R queries
+- **Space Complexity:** O(N + M) for graph storage
+
+---
+
+### TRAFFICN - Traffic Network
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 211ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+A city has N junctions connected by M one-way roads. The mayor can build ONE new bidirectional road from a list of K proposals. Find the minimum shortest path from junction S to T after optimally choosing which new road to build (or not building any).
+
+#### Input Format
+- Line 1: T (test cases)
+- For each test case:
+  - Line 1: N M K S T
+  - Next M lines: u v w (existing one-way road)
+  - Next K lines: u v w (proposed bidirectional road)
+
+#### Output Format
+Minimum shortest path S to T, or -1 if unreachable.
+
+#### Solution
+
+##### Approach
+Run Dijkstra from S on original graph and from T on reversed graph. Try each proposed road in both directions.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/TRAFFICN/
-#
-# Problem: TRAFFICN - Traffic Network
-#
-# A city has N junctions connected by M one-way roads. The mayor can build
-# ONE new bidirectional road from a list of K proposals. Find the minimum
-# shortest path from junction S to T after optimally choosing which new
-# road to build (or not building any).
-#
-# Input:
-# - Line 1: T (test cases)
-# - For each test case:
-#   - Line 1: N M K S T
-#   - Next M lines: u v w (existing one-way road)
-#   - Next K lines: u v w (proposed bidirectional road)
-#
-# Output: Minimum shortest path S to T, or -1 if unreachable
-#
-# Approach: Dijkstra from S and reverse Dijkstra from T, try each new road
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -500,9 +513,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 class Node:
     def __init__(self, id, dist):
@@ -512,9 +523,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, s, graph):
-
     dist = [-1 for x in range(n + 1)]
     pqueue = []
     heapq.heappush(pqueue, Node(s, 0))
@@ -531,9 +540,7 @@ def dijkstra(n, s, graph):
 
     return dist
 
-
 def solution():
-
     T = int(inp.next())
 
     for test_case in range(T):
@@ -588,36 +595,47 @@ def solution():
             minimum_path = from_s[t]
         print(minimum_path)
 
-
 solution()
 ```
 
-### TRVCOST (SPOJ)
+##### Complexity Analysis
+- **Time Complexity:** O((N + M) log N + K) for two Dijkstra runs plus K road checks
+- **Space Complexity:** O(N^2) for adjacency matrix, O(N + M) for graphs
+
+---
+
+### TRVCOST - Travelling Cost
+
+#### Problem Information
+- **Source:** SPOJ
+- **Difficulty:** Secret
+- **Time Limit:** 296ms
+- **Memory Limit:** 1536MB
+
+#### Problem Statement
+
+Given N bidirectional weighted roads and a starting city U, answer Q queries about the shortest distance from U to various destination cities.
+
+#### Input Format
+- Line 1: N (number of roads)
+- Next N lines: A B W (bidirectional road between A and B with cost W)
+- Line: U (starting city)
+- Line: Q (number of queries)
+- Next Q lines: destination city
+
+#### Output Format
+For each query, print shortest distance or "NO PATH".
+
+#### Solution
+
+##### Approach
+Single Dijkstra from U, answer all queries from the precomputed distance array.
+
+##### Python Solution
 
 ```python
-#  Problem from SPOJ
-#  https://www.spoj.com/problems/TRVCOST/
-#
-# Problem: TRVCOST - Travelling Cost
-#
-# Given N bidirectional weighted roads and a starting city U, answer Q
-# queries about the shortest distance from U to various destination cities.
-#
-# Input:
-# - Line 1: N (number of roads)
-# - Next N lines: A B W (bidirectional road between A and B with cost W)
-# - Line: U (starting city)
-# - Line: Q (number of queries)
-# - Next Q lines: destination city
-#
-# Output: For each query, print shortest distance or "NO PATH"
-#
-# Approach: Single Dijkstra from U, answer all queries from distance array
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -633,12 +651,9 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
 
-
 MAX = 1100
-
 
 class Node:
     def __init__(self, id, dist):
@@ -648,9 +663,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(s, graph, queries):
-
     dist = [-1 for x in range(MAX)]
     path = [-1 for y in range(MAX)]
     pqueue = []
@@ -677,9 +690,7 @@ def dijkstra(s, graph, queries):
 
     return results
 
-
 def solution():
-
     N = int(inp.next())
 
     graph = [[] for i in range(MAX)]
@@ -701,36 +712,46 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### 10986 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O((V + N) log V + Q) where V is max vertex
+- **Space Complexity:** O(V + N) for graph and distance arrays
+
+---
+
+### Sending Email
+
+#### Problem Information
+- **Source:** UVA 10986
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Given a network of N servers connected by M bidirectional cables with latencies, find the minimum latency to send an email from server S to server T.
+
+#### Input Format
+- Line 1: N (test cases)
+- For each test case:
+  - Line 1: n m S T (servers, cables, source, target)
+  - Next m lines: A B W (cable between A and B with latency W)
+
+#### Output Format
+"Case #X: Y" where Y is shortest distance, or "unreachable".
+
+#### Solution
+
+##### Approach
+Standard Dijkstra's algorithm from S to T.
+
+##### Python Solution
 
 ```python
-#  Problem from UVA
-#  https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1927
-#
-# Problem: UVA 10986 - Sending Email
-#
-# Given a network of N servers connected by M bidirectional cables with
-# latencies, find the minimum latency to send an email from server S to
-# server T.
-#
-# Input:
-# - Line 1: N (test cases)
-# - For each test case:
-#   - Line 1: n m S T (servers, cables, source, target)
-#   - Next m lines: A B W (cable between A and B with latency W)
-#
-# Output: "Case #X: Y" where Y is shortest distance, or "unreachable"
-#
-# Approach: Standard Dijkstra's algorithm
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -746,12 +767,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
-
-MAX = 1100
-
 
 class Node:
     def __init__(self, id, dist):
@@ -761,9 +777,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, S, T, graph, case_number):
-
     dist = [-1 for x in range(n+1)]
     pqueue = []
     heapq.heappush(pqueue, Node(S, 0))
@@ -784,9 +798,7 @@ def dijkstra(n, S, T, graph, case_number):
 
     return 'Case #' + str(case_number) + ': ' + result
 
-
 def solution():
-
     N = int(inp.next())
     results = []
     case_number = 0
@@ -810,38 +822,47 @@ def solution():
 
     print(*results, sep='\n')
 
-
 solution()
 ```
 
-### 12144 (UVA)
+##### Complexity Analysis
+- **Time Complexity:** O((n + m) log n) per test case
+- **Space Complexity:** O(n + m) for graph storage
+
+---
+
+### Almost Shortest Path
+
+#### Problem Information
+- **Source:** UVA 12144
+- **Difficulty:** Secret
+- **Time Limit:** 3000ms
+- **Memory Limit:** 256MB
+
+#### Problem Statement
+
+Find the "almost shortest path" from S to D. This is the shortest path that does NOT use any edge that appears in ANY shortest path from S to D.
+
+#### Input Format
+- Multiple test cases until n=0 m=0
+- For each test case:
+  - Line 1: n m (nodes, edges)
+  - Line 2: S D (source, destination)
+  - Next m lines: A B W (directed edge from A to B with weight W)
+
+#### Output Format
+Almost shortest path length, or -1 if impossible.
+
+#### Solution
+
+##### Approach
+Run Dijkstra from S and reverse Dijkstra from D. Identify edges on shortest paths where dist_S[u] + w + dist_D[v] == shortest, remove them, run Dijkstra again.
+
+##### Python Solution
 
 ```python
-#  Problem from UVA
-#  https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&category=24&page=show_problem&problem=3296
-#
-# Problem: UVA 12144 - Almost Shortest Path
-#
-# Find the "almost shortest path" from S to D. This is the shortest path
-# that does NOT use any edge that appears in ANY shortest path from S to D.
-#
-# Input:
-# - Multiple test cases until n=0 m=0
-# - For each test case:
-#   - Line 1: n m (nodes, edges)
-#   - Line 2: S D (source, destination)
-#   - Next m lines: A B W (directed edge from A to B with weight W)
-#
-# Output: Almost shortest path length, or -1 if impossible
-#
-# Approach: Run Dijkstra from S and reverse from D, identify edges on shortest
-#           paths (where dist_S[u] + w + dist_D[v] == shortest), remove them,
-#           run Dijkstra again
-
-
 import heapq
 import sys
-
 
 class input_tokenizer:
     __tokens = None
@@ -857,9 +878,7 @@ class input_tokenizer:
     def __init__(self):
         self.__tokens = sys.stdin.read().split()[::-1]
 
-
 inp = input_tokenizer()
-
 
 class Node:
     def __init__(self, id, dist):
@@ -869,9 +888,7 @@ class Node:
     def __lt__(self, other):
         return self.dist < other.dist
 
-
 def dijkstra(n, s, graph, matrix):
-
     dist = [-1 for x in range(n)]
     path = [-1 for y in range(n)]
     pqueue = []
@@ -891,9 +908,7 @@ def dijkstra(n, s, graph, matrix):
 
     return [dist, path]
 
-
 def solution():
-
     while True:
         n = int(inp.next())
         if n == 0:
@@ -937,7 +952,9 @@ def solution():
 
         print(shortest)
 
-
 solution()
 ```
 
+##### Complexity Analysis
+- **Time Complexity:** O((n + m) log n) for multiple Dijkstra runs
+- **Space Complexity:** O(n^2) for adjacency matrix
