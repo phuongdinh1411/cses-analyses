@@ -20,8 +20,8 @@ A news feed system displays a personalized, constantly updating list of posts fr
 6. [Database Design](#database-design)
 7. [Deep Dive](#deep-dive)
 8. [Ranking Algorithm](#ranking-algorithm)
-9. [Implementation](#implementation)
-10. [Key Takeaways](#key-takeaways)
+9. [Key Takeaways](#key-takeaways)
+10. [Interview Tips](#interview-tips)
 
 ---
 
@@ -205,7 +205,16 @@ GET /v1/feed?user_id={user_id}&page_token={token}&limit={limit}
 
 ## Feed Generation Strategies
 
-### 1. Pull Model (Fan-out on Read)
+> **Interview context**: This is the CORE question in news feed design: "How do you generate the feed?" The answer reveals your understanding of the fundamental trade-off.
+
+### The Challenge
+
+When User A opens their feed, we need to show recent posts from hundreds of friends. Two extremes:
+
+1. **Compute on demand**: Slow for users with many friends (high read latency)
+2. **Pre-compute everything**: Expensive when someone with 10M followers posts (high write cost)
+
+### Option 1: Pull Model (Fan-out on Read)
 
 Generate feed when user requests it.
 
@@ -213,18 +222,13 @@ Generate feed when user requests it.
 User Request → Get Friends List → Fetch Recent Posts → Rank → Return
 ```
 
-**Pros:**
-- No precomputation needed
-- Fresh data always
-- Works well for users with few friends
+| Pros | Cons |
+|------|------|
+| No precomputation needed | High latency (many DB queries) |
+| Always fresh data | Heavy load on read path |
+| No wasted work for inactive users | Doesn't scale for users with many friends |
 
-**Cons:**
-- High latency for users with many friends
-- Heavy load on read
-
-**Best for:** Users with many followers (celebrities)
-
-### 2. Push Model (Fan-out on Write)
+### Option 2: Push Model (Fan-out on Write)
 
 Pre-generate feeds when posts are created.
 
@@ -232,20 +236,21 @@ Pre-generate feeds when posts are created.
 New Post → Get Followers List → Write to Each Follower's Feed
 ```
 
-**Pros:**
-- Fast read (O(1))
-- Pre-computed feeds
+| Pros | Cons |
+|------|------|
+| Fast read (O(1) from cache) | High write amplification |
+| Pre-computed, ready to serve | Wasteful for inactive users |
+| Consistent read latency | **Celebrity problem** |
 
-**Cons:**
-- Wasteful for inactive users
-- High write amplification
-- Celebrity problem (millions of followers)
+> **Interviewer might ask**: "What's the celebrity problem?"
 
-**Best for:** Users with few followers
+When a celebrity with 10 million followers posts, you need 10 million writes. This takes time and resources, delaying feed updates for everyone.
 
-### 3. Hybrid Model (Recommended)
+### Option 3: Hybrid Model (Recommended)
 
-Combine both approaches based on user type.
+> **This is the answer interviewers want to hear.**
+
+Combine both approaches based on user type:
 
 ```
 ┌─────────────────┐
@@ -269,10 +274,12 @@ Combine both approaches based on user type.
 └───────┘ └───────┘
 ```
 
-**Implementation:**
-- Regular users: Push to followers' feeds
-- Celebrities: Pull at read time and merge
-- Cache hot posts from celebrities
+**How it works:**
+- **Regular users** (< 10K followers): Push to followers' feeds
+- **Celebrities** (> 10K followers): Don't push; pull at read time
+- **On read**: Merge pre-computed feed + fresh celebrity posts + rank
+
+**Why this works**: Most users have few followers (push is cheap). Celebrities are few but have many followers (pull is cheaper than 10M writes).
 
 ---
 
@@ -339,7 +346,11 @@ CREATE TABLE following (
 
 ## Deep Dive
 
+> **Interview context**: "Let's dive deeper into some specific challenges..."
+
 ### 1. Feed Publishing Flow
+
+> **Interviewer might ask**: "Walk me through what happens when a user creates a post."
 
 ```
 ┌──────────────┐
@@ -411,20 +422,17 @@ CREATE TABLE following (
 
 ### 3. Handling the Celebrity Problem
 
-When a celebrity with millions of followers posts:
+> **Interviewer might ask**: "What specific strategies can you use for celebrities?"
 
-**Option 1: Selective Push**
-- Only push to active followers (logged in last 7 days)
-- Pull for inactive followers when they return
+When a celebrity with millions of followers posts, you have several options:
 
-**Option 2: Tiered Fanout**
-- Immediate: Push to top 10K most engaged followers
-- Background: Push to remaining followers over time
+| Strategy | How It Works | Trade-off |
+|----------|--------------|-----------|
+| **Selective Push** | Only push to active followers (last 7 days) | Inactive users see stale feed on return |
+| **Tiered Fanout** | Push to top 10K engaged first, rest in background | Some followers see post late |
+| **Pure Pull** | Never push celebrity posts, always fetch on read | Slightly higher read latency |
 
-**Option 3: Pure Pull for Celebrities**
-- Never push celebrity posts
-- Always fetch at read time
-- Cache aggressively
+**Recommended**: Pure Pull for celebrities (>10K followers) + aggressive caching. Celebrity posts are hot and cached anyway.
 
 ### 4. Cache Strategy
 
@@ -453,302 +461,132 @@ When a celebrity with millions of followers posts:
 
 ## Ranking Algorithm
 
-### Factors for Ranking
+> **Interview context**: After discussing feed generation, interviewers often ask: "How do you decide which posts to show first?"
 
-| Factor | Weight | Description |
-|--------|--------|-------------|
-| **Recency** | High | Newer posts rank higher |
-| **Engagement** | High | Likes, comments, shares |
-| **Relationship** | Medium | Close friends rank higher |
-| **Content type** | Medium | User preferences |
-| **Creator** | Low | Past interaction history |
+### The Challenge
+
+A user might have 1000+ posts from friends. Which 50 do you show first? Chronological order is simple but doesn't maximize engagement.
+
+### Ranking Factors
+
+| Factor | Weight | Why |
+|--------|--------|-----|
+| **Recency** | High | Users expect recent content |
+| **Engagement** | High | Popular posts are likely interesting |
+| **Relationship** | Medium | Close friends' posts matter more |
+| **Content type** | Medium | User preferences (photos vs text) |
+| **Past interactions** | Low | Posts from people you engage with |
 
 ### Simple Ranking Formula
 
-```python
-def calculate_score(post, user):
-    # Time decay (half-life = 6 hours)
-    hours_old = (now - post.created_at).hours
-    time_score = 1 / (1 + hours_old / 6)
-
-    # Engagement score
-    engagement = (
-        post.likes * 1 +
-        post.comments * 2 +
-        post.shares * 3
-    )
-    engagement_score = log(1 + engagement)
-
-    # Relationship score
-    relationship = get_relationship_strength(user, post.author)
-
-    # Final score
-    score = (
-        time_score * 0.4 +
-        engagement_score * 0.3 +
-        relationship * 0.3
-    )
-    return score
-```
-
-### ML-Based Ranking
-
-For production systems:
+> **Interviewer might ask**: "How would you implement a basic ranking algorithm?"
 
 ```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Feature   │────▶│    Model    │────▶│   Ranked    │
-│  Extraction │     │ (XGBoost/   │     │    Feed     │
-│             │     │  Neural Net)│     │             │
-└─────────────┘     └─────────────┘     └─────────────┘
+score = (time_decay × 0.4) + (engagement_score × 0.3) + (relationship × 0.3)
 
-Features:
-- User features (age, location, interests)
-- Post features (type, length, media)
-- Context features (time of day, device)
-- Interaction features (past clicks, likes)
+where:
+  time_decay = 1 / (1 + hours_old / 6)     # Half-life of 6 hours
+  engagement = log(1 + likes + comments×2 + shares×3)
+  relationship = interaction_frequency with author
 ```
 
----
+### Production: ML-Based Ranking
 
-## Implementation
+For real systems, use machine learning:
 
-### Feed Service (Python)
+```
+Features → Model (XGBoost/Neural Net) → Ranked Feed
 
-```python
-class FeedService:
-    def __init__(self, redis_client, post_db, user_db):
-        self.redis = redis_client
-        self.post_db = post_db
-        self.user_db = user_db
-        self.FEED_SIZE = 500
-        self.CELEBRITY_THRESHOLD = 10000
-
-    def get_feed(self, user_id: str, limit: int = 50,
-                 offset: int = 0) -> List[Post]:
-        # Try cache first
-        cached = self.redis.zrevrange(
-            f"feed:{user_id}", offset, offset + limit - 1
-        )
-
-        if cached:
-            post_ids = [item.decode() for item in cached]
-            posts = self.post_db.get_posts(post_ids)
-            return posts
-
-        # Generate feed
-        feed = self._generate_feed(user_id)
-
-        # Cache it
-        self._cache_feed(user_id, feed)
-
-        return feed[offset:offset + limit]
-
-    def _generate_feed(self, user_id: str) -> List[Post]:
-        # Get pre-computed feed (from push)
-        precomputed = self.redis.zrevrange(
-            f"feed:{user_id}", 0, self.FEED_SIZE - 1
-        )
-
-        # Get celebrity posts (pull)
-        celebrities = self.user_db.get_celebrity_following(user_id)
-        celebrity_posts = []
-        for celeb_id in celebrities:
-            posts = self.post_db.get_recent_posts(
-                celeb_id, limit=10
-            )
-            celebrity_posts.extend(posts)
-
-        # Merge and rank
-        all_posts = list(precomputed) + celebrity_posts
-        ranked = self._rank_posts(all_posts, user_id)
-
-        return ranked[:self.FEED_SIZE]
-
-    def _rank_posts(self, posts: List[Post],
-                    user_id: str) -> List[Post]:
-        scored = []
-        for post in posts:
-            score = self._calculate_score(post, user_id)
-            scored.append((score, post))
-
-        scored.sort(key=lambda x: x[0], reverse=True)
-        return [post for _, post in scored]
-
-    def _calculate_score(self, post: Post, user_id: str) -> float:
-        now = datetime.utcnow()
-        hours_old = (now - post.created_at).total_seconds() / 3600
-
-        time_score = 1 / (1 + hours_old / 6)
-        engagement = (
-            post.likes_count +
-            post.comments_count * 2 +
-            post.shares_count * 3
-        )
-        engagement_score = math.log(1 + engagement)
-
-        return time_score * 0.5 + engagement_score * 0.5
-
-
-class FanoutService:
-    def __init__(self, redis_client, user_db, message_queue):
-        self.redis = redis_client
-        self.user_db = user_db
-        self.queue = message_queue
-        self.CELEBRITY_THRESHOLD = 10000
-
-    def fanout_post(self, post: Post):
-        author = self.user_db.get_user(post.user_id)
-
-        if author.follower_count > self.CELEBRITY_THRESHOLD:
-            # Celebrity: don't fanout, will be pulled
-            return
-
-        # Get all followers
-        followers = self.user_db.get_followers(post.user_id)
-
-        # Batch fanout
-        for batch in chunks(followers, 1000):
-            self.queue.publish('fanout', {
-                'post_id': post.post_id,
-                'timestamp': post.created_at.timestamp(),
-                'follower_ids': batch
-            })
-
-    def process_fanout(self, message):
-        post_id = message['post_id']
-        timestamp = message['timestamp']
-        follower_ids = message['follower_ids']
-
-        pipeline = self.redis.pipeline()
-        for follower_id in follower_ids:
-            pipeline.zadd(
-                f"feed:{follower_id}",
-                {post_id: timestamp}
-            )
-            # Trim to keep feed size bounded
-            pipeline.zremrangebyrank(
-                f"feed:{follower_id}", 0, -501
-            )
-        pipeline.execute()
+Feature categories:
+- User: age, location, interests, activity patterns
+- Post: type, length, media, author popularity
+- Context: time of day, device, session depth
+- Interaction: past clicks, dwell time, hides
 ```
 
-### Post Service (Go)
-
-```go
-type PostService struct {
-    db       *cassandra.Session
-    cache    *redis.Client
-    queue    *kafka.Producer
-    s3       *s3.Client
-}
-
-func (s *PostService) CreatePost(ctx context.Context,
-    req *CreatePostRequest) (*Post, error) {
-
-    post := &Post{
-        PostID:    uuid.New(),
-        UserID:    req.UserID,
-        Content:   req.Content,
-        MediaIDs:  req.MediaIDs,
-        CreatedAt: time.Now(),
-    }
-
-    // Save to database
-    err := s.db.Query(`
-        INSERT INTO posts (post_id, user_id, content,
-                          media_ids, created_at)
-        VALUES (?, ?, ?, ?, ?)
-    `, post.PostID, post.UserID, post.Content,
-       post.MediaIDs, post.CreatedAt).Exec()
-
-    if err != nil {
-        return nil, err
-    }
-
-    // Publish to fanout queue
-    msg, _ := json.Marshal(post)
-    s.queue.Produce(&kafka.Message{
-        Topic: "new-posts",
-        Value: msg,
-    })
-
-    return post, nil
-}
-
-func (s *PostService) GetPost(ctx context.Context,
-    postID string) (*Post, error) {
-
-    // Try cache
-    cached, err := s.cache.Get(ctx,
-        fmt.Sprintf("post:%s", postID)).Result()
-    if err == nil {
-        var post Post
-        json.Unmarshal([]byte(cached), &post)
-        return &post, nil
-    }
-
-    // Query database
-    var post Post
-    err = s.db.Query(`
-        SELECT post_id, user_id, content, media_ids,
-               created_at, likes_count
-        FROM posts WHERE post_id = ?
-    `, postID).Scan(&post.PostID, &post.UserID,
-        &post.Content, &post.MediaIDs,
-        &post.CreatedAt, &post.LikesCount)
-
-    if err != nil {
-        return nil, err
-    }
-
-    // Cache for future
-    data, _ := json.Marshal(post)
-    s.cache.Set(ctx, fmt.Sprintf("post:%s", postID),
-        data, time.Hour)
-
-    return &post, nil
-}
-```
+**Key insight**: The ranking model optimizes for a business metric (engagement, time spent, or a combination).
 
 ---
 
 ## Key Takeaways
 
-### Design Decisions
+### Design Decisions Summary
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Feed generation | Hybrid push/pull | Balance latency and write cost |
-| Post storage | Cassandra | High write throughput, time-series |
-| Feed storage | Redis | Fast sorted set operations |
-| Media storage | S3 + CDN | Cost-effective, scalable |
+| Decision | Choice | Why |
+|----------|--------|-----|
+| **Feed generation** | Hybrid push/pull | Balance read latency and write cost |
+| **Post storage** | Cassandra | High write throughput, time-series optimized |
+| **Feed storage** | Redis Sorted Set | O(log n) insert, O(1) range query |
+| **Celebrity handling** | Pure pull + cache | Avoids 10M write amplification |
+| **Media storage** | S3 + CDN | Cost-effective, edge caching |
 
-### Scalability Patterns
+### Trade-offs to Discuss
 
-1. **Horizontal scaling**: Shard by user_id
-2. **Caching**: Multi-layer cache strategy
-3. **Async processing**: Message queues for fanout
-4. **Read replicas**: For read-heavy workload
+| Decision | Option A | Option B |
+|----------|----------|----------|
+| Feed generation | Push (fast read) | Pull (fresh data) |
+| Ranking | Chronological (simple) | ML-based (engaging) |
+| Celebrity posts | Push (consistent) | Pull (efficient) |
+| Feed size | Large (comprehensive) | Small (focused) |
 
-### Trade-offs
+### Scalability Phases
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| Push model | Fast reads | High write cost |
-| Pull model | Fresh data | Slow reads |
-| Hybrid | Balanced | Complex |
+```
+Phase 1: Small scale (~1M users)
+└── Single server, simple push model, PostgreSQL
 
-### Common Interview Questions
+Phase 2: Medium scale (~100M users)
+└── Hybrid push/pull, Redis for feeds, Cassandra for posts
 
-1. How do you handle the celebrity problem?
-2. How do you ensure feed freshness?
-3. How do you rank posts?
-4. How do you handle real-time updates?
-5. How do you scale to billions of users?
+Phase 3: Large scale (~1B users)
+└── Sharded everything, ML ranking, CDN for media
+```
+
+---
+
+## Interview Tips
+
+### How to Approach (45 minutes)
+
+```
+1. CLARIFY (3-5 min)
+   "What's the scale? Just friends or also pages/groups?
+    Do we need ranking or just chronological?"
+
+2. HIGH-LEVEL DESIGN (5-7 min)
+   Draw: Post Service → Fanout → Feed Cache → Feed Service
+
+3. DEEP DIVE (25-30 min)
+   - Push vs Pull vs Hybrid (THE key discussion)
+   - Celebrity problem and solutions
+   - Feed storage (Redis sorted set)
+   - Ranking algorithm basics
+
+4. WRAP UP (5 min)
+   - Caching strategy (CDN, Redis, DB)
+   - Real-time updates (WebSocket for new posts)
+```
+
+### Key Phrases That Show Depth
+
+| Instead of... | Say... |
+|---------------|--------|
+| "We push to followers" | "For users with <10K followers, we push to their followers' feeds. For celebrities, we pull at read time to avoid write amplification." |
+| "Store feed in Redis" | "Redis Sorted Set is perfect for feeds - we store (post_id, timestamp) with O(log n) insert and O(1) top-N retrieval." |
+| "Rank by time" | "Chronological is simple but engagement-based ranking keeps users scrolling longer. We use a score combining recency, engagement, and relationship strength." |
+
+### Common Follow-up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How handle celebrity problem?" | Hybrid model - don't push for >10K followers, pull + cache |
+| "How ensure freshness?" | Short TTL on cache, invalidate on new post |
+| "How rank posts?" | Time decay + engagement + relationship (or ML model) |
+| "How handle real-time?" | WebSocket push for new posts from close friends |
+| "How scale fanout?" | Async via Kafka, batch writes, shard by user_id |
 
 ### Related Topics
 
 - [Consistent Hashing](/cses-analyses/system_design/consistent-hashing) - Data distribution
 - [Design Key-Value Store](/cses-analyses/system_design/design-key-value-store) - Feed storage
-- [Design URL Shortener](/cses-analyses/system_design/design-url-shortener) - Link handling
+- [Design Chat System](/cses-analyses/system_design/design-chat-system) - Similar fanout patterns

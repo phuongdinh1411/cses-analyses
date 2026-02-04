@@ -79,3 +79,17 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 5 - 2026-02-04 - News Feed Transformation
+- Transformed design-news-feed.md to interview style
+- Removed Implementation section (~163 lines of Python/Go)
+- Added interview context and discussions for:
+  - Push vs Pull vs Hybrid (the core trade-off)
+  - Celebrity problem with solution strategies
+  - Ranking algorithm basics
+- Converted pros/cons to tables
+- Added comprehensive Interview Tips section
+- Reduced document from 755 to 592 lines
+- Completed F004
+
+---
+
