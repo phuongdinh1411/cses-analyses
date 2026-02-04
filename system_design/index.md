@@ -6,7 +6,20 @@ permalink: /system_design
 
 # System Design
 
-Comprehensive guides for designing scalable, distributed systems. Each guide covers requirements, high-level architecture, deep dives, and implementation details.
+Comprehensive interview-focused guides for designing scalable, distributed systems. Each guide follows a **discussion-first approach**: explaining trade-offs and design decisions as you would in an actual interview, rather than presenting solutions directly.
+
+---
+
+## How to Use These Guides
+
+These guides are designed to prepare you for system design interviews:
+
+1. **Practice explaining out loud** - Read the "Interview context" callouts and practice articulating the trade-offs
+2. **Use the "Interviewer might ask" prompts** - These highlight follow-up questions you should be ready for
+3. **Study the "Why not X?" sections** - Understanding rejected alternatives shows depth
+4. **Review Interview Tips sections** - Each guide has specific phrases and approaches for that topic
+
+> **Tip**: Don't memorize solutions. Focus on understanding WHY each design decision was made, so you can adapt when requirements change.
 
 ---
 
@@ -14,31 +27,32 @@ Comprehensive guides for designing scalable, distributed systems. Each guide cov
 
 ### Building Blocks
 
-| Guide | Description | Key Concepts |
-|-------|-------------|--------------|
-| [Consistent Hashing](/cses-analyses/system_design/consistent-hashing) | Distribute data across nodes with minimal reorganization | Hash ring, Virtual nodes, Replication |
-| [Unique ID Generator](/cses-analyses/system_design/design-unique-id-generator) | Generate globally unique IDs at scale | UUID, Snowflake, Database sequences |
+| Guide | Description | Key Trade-offs |
+|-------|-------------|----------------|
+| [Consistent Hashing](/cses-analyses/system_design/consistent-hashing) | Why modulo fails, hash ring mechanics, virtual nodes | Distribution vs complexity, memory vs balance |
+| [Unique ID Generator](/cses-analyses/system_design/design-unique-id-generator) | UUID vs Snowflake vs ULID decision framework | Sortability vs randomness, coordination vs independence |
 
 ### Storage Systems
 
-| Guide | Description | Key Concepts |
-|-------|-------------|--------------|
-| [Key-Value Store](/cses-analyses/system_design/design-key-value-store) | Design a distributed KV store like DynamoDB | Consistent hashing, Replication, CAP theorem |
+| Guide | Description | Key Trade-offs |
+|-------|-------------|----------------|
+| [Key-Value Store](/cses-analyses/system_design/design-key-value-store) | Distributed storage with replication and consistency | CAP trade-offs, consistency vs availability |
 
 ### Web-Scale Systems
 
-| Guide | Description | Key Concepts |
-|-------|-------------|--------------|
-| [URL Shortener](/cses-analyses/system_design/design-url-shortener) | Design TinyURL/bit.ly | Base62 encoding, Key generation, Caching |
-| [Web Crawler](/cses-analyses/system_design/design-web-crawler) | Design a distributed web crawler | BFS, URL frontier, Politeness |
-| [Chat System](/cses-analyses/system_design/design-chat-system) | Design WhatsApp/Messenger | WebSocket, Message delivery, Presence |
+| Guide | Description | Key Trade-offs |
+|-------|-------------|----------------|
+| [URL Shortener](/cses-analyses/system_design/design-url-shortener) | Short URL generation strategies and caching | Predictability vs security, SQL vs NoSQL |
+| [Web Crawler](/cses-analyses/system_design/design-web-crawler) | URL frontier, politeness, duplicate detection | Breadth vs depth, crawl rate vs politeness |
+| [Chat System](/cses-analyses/system_design/design-chat-system) | Real-time messaging with presence and delivery | WebSocket vs polling, push vs pull |
+| [News Feed](/cses-analyses/system_design/design-news-feed) | Push vs pull vs hybrid, celebrity problem | Fan-out trade-offs, real-time vs batch |
 
 ### Domain-Specific Systems
 
-| Guide | Description | Key Concepts |
-|-------|-------------|--------------|
-| [Payment System](/cses-analyses/system_design/design-payment-system) | Design a payment processing system | Idempotency, Transactions, Reconciliation |
-| [Skills GraphRAG](/cses-analyses/system_design/design-skills-graphrag) | Design a knowledge graph with RAG | Graph DB, Embeddings, LLM integration |
+| Guide | Description | Key Trade-offs |
+|-------|-------------|----------------|
+| [Payment System](/cses-analyses/system_design/design-payment-system) | Idempotency, exactly-once semantics, reconciliation | Sync vs async, retry vs reconciliation |
+| [Skills GraphRAG](/cses-analyses/system_design/design-skills-graphrag) | Graph traversal with LLM-powered retrieval | Graph vs vector, latency vs accuracy |
 
 ---
 
@@ -75,17 +89,19 @@ Draw the main components:
 
 ### Step 4: Deep Dive (15 min)
 
-Pick 2-3 components to discuss in detail:
-- Database schema
-- API design
-- Scaling strategies
-- Failure scenarios
+Pick 2-3 components to **discuss** in detail:
+- Database schema and why you chose it
+- API design trade-offs
+- Scaling strategies and when they apply
+- Failure scenarios and how the system recovers
+
+> **Interview tip**: Always explain WHY, not just WHAT. "I'd use Redis here because we need sub-millisecond latency for read-heavy workloads" beats "I'd use Redis for caching."
 
 ### Step 5: Wrap Up (5 min)
 
 - Bottlenecks and how to address them
-- Trade-offs made
-- Future improvements
+- Trade-offs you made (and alternatives you considered)
+- Future improvements if requirements change
 
 ---
 
@@ -149,6 +165,28 @@ Pick 2-3 components to discuss in detail:
 | Small | 100 QPS | GBs |
 | Medium | 10K QPS | TBs |
 | Large | 1M QPS | PBs |
+
+---
+
+## Interview Mindset
+
+### Discussion, Not Presentation
+
+In an interview, you're having a conversation with your interviewer. The guides in this collection are structured to help you think like an interviewer expects:
+
+| Instead of... | Do this... |
+|---------------|------------|
+| "We need a database" | "What kind of access patterns do we have? Read-heavy suggests..." |
+| "Use Redis for caching" | "We could use Redis or Memcached. Redis gives us data structures, Memcached is simpler..." |
+| "Here's the schema" | "Let me think about the queries we'll need to support..." |
+| "Scale horizontally" | "At what point does horizontal scaling help? Let's estimate..." |
+
+### When You Don't Know
+
+It's okay to not know everything. Strong candidates:
+- Acknowledge uncertainty: "I'm not sure about the exact number, but let me reason through it..."
+- Ask clarifying questions: "Before I dive in, can I clarify the expected read/write ratio?"
+- Show reasoning: "I haven't designed this exact system, but the core challenge seems similar to..."
 
 ---
 
