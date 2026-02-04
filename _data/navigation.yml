@@ -731,6 +731,8 @@ main:
     url: /cses-analyses/system_design/design-payment-system
   - title: Skills GraphRAG
     url: /cses-analyses/system_design/design-skills-graphrag
+  - title: News Feed
+    url: /cses-analyses/system_design/design-news-feed
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
