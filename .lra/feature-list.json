@@ -1,0 +1,221 @@
+{
+  "project": "CSES Analyses - System Design Content Improvement",
+  "description": "Transform system design documents from solution-oriented to interview-style discussion format, removing implementation code and adding trade-off discussions",
+  "created_at": "2026-02-04T00:00:00Z",
+  "features": [
+    {
+      "id": "F001",
+      "category": "core",
+      "priority": "critical",
+      "description": "Create interview-style template based on design-key-value-store.md patterns",
+      "acceptance_criteria": [
+        "Define canonical section structure for interview-style documents",
+        "Include 'Interview context' callout format",
+        "Include 'The Problem/Challenge' framing sections",
+        "Include 'Why not X?' discussion format",
+        "Include 'Interviewer might ask' prompts",
+        "Document when pseudocode is acceptable vs full implementation"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "Use design-key-value-store.md as reference - it has the best interview-style patterns"
+    },
+    {
+      "id": "F002",
+      "category": "core",
+      "priority": "critical",
+      "description": "Transform design-url-shortener.md to interview style",
+      "acceptance_criteria": [
+        "Remove Implementation section (lines 652-984, ~350 lines of Python code)",
+        "Add 'Interview context' callouts before major decisions",
+        "Add 'The Problem' framing before each solution",
+        "Transform hash function choice into discussion (Why not MD5? Why not random?)",
+        "Transform database choice into discussion (SQL vs NoSQL trade-offs)",
+        "Add 'Interviewer might ask' prompts for key decisions"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "35KB document, ~350 lines of implementation code to remove"
+    },
+    {
+      "id": "F003",
+      "category": "core",
+      "priority": "critical",
+      "description": "Transform design-chat-system.md to interview style",
+      "acceptance_criteria": [
+        "Remove Implementation section (lines 599-1068, ~500 lines Node.js/Go/Python)",
+        "Add discussion for WebSocket vs Long Polling vs SSE choice",
+        "Add discussion for message storage strategy",
+        "Add discussion for presence service design",
+        "Frame group chat scaling as a discussion topic",
+        "Add 'Interviewer might ask' about message ordering guarantees"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "37KB document, ~500 lines of implementation code to remove"
+    },
+    {
+      "id": "F004",
+      "category": "core",
+      "priority": "critical",
+      "description": "Transform design-news-feed.md to interview style",
+      "acceptance_criteria": [
+        "Remove Implementation section (lines 514-713, ~200 lines Python/Go)",
+        "Add discussion for push vs pull model (fanout on write vs read)",
+        "Add discussion for feed ranking algorithm approach",
+        "Add discussion for handling celebrity users (hybrid approach)",
+        "Frame caching strategy as interview discussion",
+        "Add 'Interviewer might ask' about real-time updates"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "22KB document, ~200 lines of implementation code to remove"
+    },
+    {
+      "id": "F005",
+      "category": "core",
+      "priority": "high",
+      "description": "Transform design-payment-system.md to interview style",
+      "acceptance_criteria": [
+        "Remove embedded implementation code (~200 lines Python)",
+        "Add discussion for idempotency key strategy",
+        "Add discussion for amount representation (string vs integer cents)",
+        "Add discussion for retry vs reconciliation approach",
+        "Frame PSP integration as interview topic",
+        "Add 'Interviewer might ask' about exactly-once semantics"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "43KB document, implementation code scattered throughout"
+    },
+    {
+      "id": "F006",
+      "category": "core",
+      "priority": "high",
+      "description": "Transform design-web-crawler.md to interview style",
+      "acceptance_criteria": [
+        "Remove extensive embedded code (~700+ lines Python throughout)",
+        "Add discussion for URL frontier design (priority vs breadth-first)",
+        "Add discussion for politeness policy implementation",
+        "Add discussion for duplicate detection (URL vs content)",
+        "Frame distributed crawling coordination as discussion",
+        "Add 'Interviewer might ask' about handling dynamic content"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "76KB document - largest, most code-heavy document"
+    },
+    {
+      "id": "F007",
+      "category": "core",
+      "priority": "high",
+      "description": "Transform design-unique-id-generator.md to interview style",
+      "acceptance_criteria": [
+        "Remove Implementation section (lines 406-555, ~200 lines Python)",
+        "Add discussion for UUID vs Snowflake vs ULID trade-offs",
+        "Add discussion for clock synchronization challenges",
+        "Add discussion for ID sortability requirements",
+        "Frame datacenter/machine ID assignment as discussion",
+        "Add 'Interviewer might ask' about ID collision probability"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "19KB document"
+    },
+    {
+      "id": "F008",
+      "category": "core",
+      "priority": "high",
+      "description": "Transform consistent-hashing.md to interview style",
+      "acceptance_criteria": [
+        "Remove Implementation section (~80 lines Python)",
+        "Add discussion for why modulo hashing fails",
+        "Add discussion for virtual nodes trade-off",
+        "Add discussion for hash function selection",
+        "Frame rebalancing scenario as interview discussion",
+        "Add 'Interviewer might ask' about hot spots"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "12KB document - smallest, foundational concept"
+    },
+    {
+      "id": "F009",
+      "category": "core",
+      "priority": "medium",
+      "description": "Review and enhance design-key-value-store.md",
+      "acceptance_criteria": [
+        "Remove any remaining implementation code (~300 lines scattered)",
+        "Ensure all sections follow interview discussion format",
+        "Verify 'Interview context' callouts are comprehensive",
+        "Add any missing 'Interviewer might ask' prompts",
+        "This document is the template - ensure it's exemplary"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "114KB document - already best example, needs polish"
+    },
+    {
+      "id": "F010",
+      "category": "core",
+      "priority": "medium",
+      "description": "Transform design-skills-graphrag.md to interview style",
+      "acceptance_criteria": [
+        "Remove implementation code",
+        "Add discussion for graph vs vector database choice",
+        "Add discussion for RAG architecture decisions",
+        "Frame embedding strategy as interview topic",
+        "Add 'Interviewer might ask' about query optimization"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "64KB document - specialized topic (GraphRAG)"
+    },
+    {
+      "id": "F011",
+      "category": "core",
+      "priority": "medium",
+      "description": "Update index.md to reflect interview-focused approach",
+      "acceptance_criteria": [
+        "Update descriptions to emphasize discussion format",
+        "Add guidance on how to use documents for interview prep",
+        "Link to the 5-step framework appropriately",
+        "Remove any references to implementation code"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "4KB document - landing page for system design section"
+    },
+    {
+      "id": "F012",
+      "category": "core",
+      "priority": "low",
+      "description": "Add interview transition phrases guide",
+      "acceptance_criteria": [
+        "Create section with phrases for transitioning between topics",
+        "Include phrases for clarifying requirements",
+        "Include phrases for proposing trade-offs",
+        "Include phrases for handling unknown areas gracefully"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "Could be added to index.md or separate guide"
+    },
+    {
+      "id": "F013",
+      "category": "testing",
+      "priority": "low",
+      "description": "Final review - ensure consistency across all documents",
+      "acceptance_criteria": [
+        "All documents follow the same interview-style template",
+        "No implementation code remains",
+        "All have 'Interview context' callouts",
+        "All have 'Interviewer might ask' sections",
+        "Cross-references between documents work correctly"
+      ],
+      "status": "pending",
+      "completed_at": null,
+      "notes": "Final quality check"
+    }
+  ]
+}
