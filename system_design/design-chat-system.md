@@ -20,8 +20,8 @@ A chat system enables real-time messaging between users. Examples include WhatsA
 6. [Database Design](#database-design)
 7. [Deep Dive](#deep-dive)
 8. [Message Delivery](#message-delivery)
-9. [Implementation](#implementation)
-10. [Key Takeaways](#key-takeaways)
+9. [Key Takeaways](#key-takeaways)
+10. [Interview Tips](#interview-tips)
 
 ---
 
@@ -225,14 +225,38 @@ GET /v1/messages?user_id={user_id}&chat_id={chat_id}&before={timestamp}&limit={l
 
 ## Communication Protocols
 
-### Protocol Comparison
+> **Interview context**: After the high-level design, the interviewer will ask: "How do clients receive messages in real-time? What protocol would you use?"
 
-| Protocol | Pros | Cons | Use Case |
-|----------|------|------|----------|
-| **HTTP Polling** | Simple | High latency, wasteful | Legacy systems |
-| **Long Polling** | Near real-time | Connection overhead | Fallback |
-| **WebSocket** | True real-time, bidirectional | Stateful | Primary choice |
-| **Server-Sent Events** | Simple server push | Unidirectional | Notifications |
+### The Challenge
+
+HTTP is request-response: the client must ask for data. But in a chat system, the server needs to **push** messages to clients instantly. How do we achieve this?
+
+### Protocol Options
+
+| Protocol | How It Works | Pros | Cons |
+|----------|--------------|------|------|
+| **HTTP Polling** | Client polls server every N seconds | Simple | High latency, wasteful |
+| **Long Polling** | Server holds request until data available | Near real-time | Connection overhead |
+| **WebSocket** | Persistent bidirectional connection | True real-time | Stateful, complex |
+| **Server-Sent Events** | Server pushes over HTTP | Simple server push | Unidirectional only |
+
+### Why WebSocket?
+
+> **Interviewer might ask**: "Why not just use long polling? It's simpler."
+
+**Long polling limitations**:
+- Each message requires a new HTTP request
+- Headers overhead on every request (~800 bytes)
+- Server must track pending requests
+- Harder to implement server → client push efficiently
+
+**WebSocket advantages**:
+- Single persistent connection (established once)
+- True bidirectional: server can push anytime
+- Low overhead after handshake (~2-6 bytes per frame)
+- Native browser support
+
+**When to use long polling**: As a fallback when WebSocket is blocked (corporate firewalls, old proxies).
 
 ### WebSocket Architecture
 
@@ -278,6 +302,29 @@ GET /v1/messages?user_id={user_id}&chat_id={chat_id}&before={timestamp}&limit={l
 ---
 
 ## Database Design
+
+> **Interview context**: "Now let's discuss data storage. What database would you use for messages?"
+
+### The Challenge
+
+Chat messages have specific access patterns:
+- **Write-heavy**: 230K messages/second
+- **Time-ordered**: Messages retrieved in chronological order
+- **Per-conversation**: Always query by chat_id, then time
+- **High volume**: 730TB/year of text alone
+
+### Why Cassandra for Messages?
+
+> **Interviewer might ask**: "Why not MySQL or PostgreSQL?"
+
+| Requirement | Cassandra | Traditional SQL |
+|-------------|-----------|-----------------|
+| Write throughput | Excellent (distributed) | Limited (single master) |
+| Horizontal scaling | Built-in | Complex sharding |
+| Time-series queries | Optimized | Requires careful indexing |
+| Availability | AP (highly available) | CP (consistency focus) |
+
+**Key insight**: Messages are append-only and queried by (chat_id, time). This is exactly what Cassandra excels at.
 
 ### Message Table (Cassandra)
 
@@ -361,7 +408,11 @@ TTL: 5 minutes (refreshed by heartbeat)
 
 ## Deep Dive
 
+> **Interview context**: "Let's dive deeper into some interesting challenges..."
+
 ### 1. Message Delivery Flow (1:1 Chat)
+
+> **Interviewer might ask**: "Walk me through what happens when User A sends a message to User B."
 
 ```
 ┌──────────┐                                           ┌──────────┐
@@ -397,6 +448,10 @@ TTL: 5 minutes (refreshed by heartbeat)
 ```
 
 ### 2. Message Delivery Flow (Group Chat)
+
+> **Interviewer might ask**: "Group chat with 500 members is different from 1:1. How do you handle it?"
+
+**The challenge**: One message → 500 deliveries. This is a **fan-out** problem.
 
 ```
 ┌──────────┐
@@ -434,7 +489,21 @@ TTL: 5 minutes (refreshed by heartbeat)
                          └───────────┘
 ```
 
+**Why use Kafka for fan-out?**
+- Decouples sender from delivery
+- Handles backpressure (slow consumers don't block sender)
+- Reliable delivery with retries
+- Partitioning by user_id for ordered delivery
+
 ### 3. Online Presence System
+
+> **Interviewer might ask**: "How do you show who's online? This seems simple but gets complex at scale."
+
+**The challenge**:
+- 50 million concurrent users
+- Each user has hundreds of friends
+- Status changes must propagate quickly
+- But we can't broadcast every change to everyone
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -473,7 +542,14 @@ Heartbeat mechanism:
 If heartbeat stops → TTL expires → User marked offline
 ```
 
+**Why heartbeat + TTL?**
+- Handles ungraceful disconnects (network drop, app crash)
+- No need to detect disconnection explicitly
+- Redis handles cleanup automatically via TTL
+
 ### 4. Message Sync for Multiple Devices
+
+> **Interviewer might ask**: "Users have phones, tablets, and laptops. How do you sync messages across devices?"
 
 ```
 User has multiple devices (phone, tablet, laptop):
@@ -534,29 +610,37 @@ User B reads message →
 
 ## Message Delivery
 
-### Delivery Guarantees
+> **Interview context**: "Let's discuss delivery guarantees. This is where things get interesting."
 
-| Guarantee | Implementation |
-|-----------|----------------|
-| **At-least-once** | Retry with idempotency key |
-| **Ordering** | Sequential message IDs per chat |
-| **No duplicates** | client_msg_id deduplication |
+### The Challenge: Delivery Guarantees
+
+> **Interviewer might ask**: "How do you ensure messages are delivered reliably?"
+
+| Guarantee | Challenge | Solution |
+|-----------|-----------|----------|
+| **At-least-once** | Network failures | Retry with exponential backoff |
+| **Ordering** | Concurrent messages | Sequential IDs per chat (TimeUUID) |
+| **No duplicates** | Retries cause duplicates | client_msg_id deduplication |
+
+### Why Not Exactly-Once?
+
+> **Interviewer might ask**: "Can you guarantee exactly-once delivery?"
+
+**The hard truth**: Exactly-once delivery is impossible in distributed systems without significant complexity. Instead:
+
+1. **At-least-once delivery** (guaranteed)
+2. **Idempotent processing** (client_msg_id dedup)
+3. **Result**: Effectively exactly-once from user's perspective
 
 ### Retry Strategy
 
-```python
-def send_with_retry(message, max_retries=3):
-    for attempt in range(max_retries):
-        try:
-            result = send_message(message)
-            return result
-        except TemporaryError:
-            wait_time = (2 ** attempt) + random.uniform(0, 1)
-            time.sleep(wait_time)
-
-    # Store in dead letter queue
-    dlq.push(message)
-    notify_offline(message.receiver_id, message)
+```
+Retry with exponential backoff + jitter:
+  Attempt 1: immediate
+  Attempt 2: 1s + random(0-1s)
+  Attempt 3: 2s + random(0-1s)
+  Attempt 4: 4s + random(0-1s)
+  After max retries: Dead letter queue + push notification
 ```
 
 ### Offline Message Handling
@@ -596,511 +680,82 @@ def send_with_retry(message, max_retries=3):
 
 ---
 
-## Implementation
+## Key Takeaways
 
-### WebSocket Server (Node.js)
+### Design Decisions Summary
 
-```javascript
-const WebSocket = require('ws');
-const Redis = require('ioredis');
+| Decision | Choice | Why |
+|----------|--------|-----|
+| **Protocol** | WebSocket | True real-time, bidirectional, low overhead |
+| **Message storage** | Cassandra | High write throughput, time-series optimized |
+| **Session storage** | Redis | Fast lookups, pub/sub for cross-server messaging |
+| **Message queue** | Kafka | Reliable fan-out, ordering guarantees |
+| **Presence** | Redis + TTL | Simple, automatic cleanup on disconnect |
 
-class ChatWebSocketServer {
-    constructor(port, redisConfig) {
-        this.wss = new WebSocket.Server({ port });
-        this.redis = new Redis(redisConfig);
-        this.pubsub = new Redis(redisConfig);
-        this.connections = new Map(); // userId -> WebSocket
+### Trade-offs to Discuss
 
-        this.setupServer();
-        this.setupPubSub();
-    }
+| Decision | Option A | Option B |
+|----------|----------|----------|
+| Protocol | WebSocket (stateful) | Long polling (stateless) |
+| Delivery | At-least-once + dedup | Exactly-once (complex) |
+| Group fanout | Sync (simple) | Async via Kafka (scalable) |
+| Presence | Push updates | Pull on demand |
 
-    setupServer() {
-        this.wss.on('connection', async (ws, req) => {
-            const userId = await this.authenticate(req);
-            if (!userId) {
-                ws.close(4001, 'Unauthorized');
-                return;
-            }
+### Scalability Phases
 
-            this.connections.set(userId, ws);
-            await this.registerSession(userId);
-            await this.publishPresence(userId, 'online');
-
-            ws.on('message', (data) => this.handleMessage(userId, data));
-            ws.on('close', () => this.handleDisconnect(userId));
-            ws.on('pong', () => this.handleHeartbeat(userId));
-
-            // Start heartbeat
-            ws.isAlive = true;
-            this.startHeartbeat(ws, userId);
-        });
-    }
-
-    setupPubSub() {
-        // Subscribe to user-specific channels
-        this.pubsub.psubscribe('chat:*', (err) => {
-            if (err) console.error('Subscribe error:', err);
-        });
-
-        this.pubsub.on('pmessage', (pattern, channel, message) => {
-            const userId = channel.split(':')[1];
-            const ws = this.connections.get(userId);
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(message);
-            }
-        });
-    }
-
-    async handleMessage(userId, data) {
-        const message = JSON.parse(data);
-
-        switch (message.type) {
-            case 'message':
-                await this.routeMessage(userId, message.data);
-                break;
-            case 'typing':
-                await this.broadcastTyping(userId, message.chatId);
-                break;
-            case 'ack':
-                await this.handleAck(userId, message.messageId);
-                break;
-            case 'read':
-                await this.handleReadReceipt(userId, message.chatId,
-                                            message.messageId);
-                break;
-        }
-    }
-
-    async routeMessage(senderId, messageData) {
-        const { receiverId, content, clientMsgId, chatId } = messageData;
-
-        // Deduplication check
-        const exists = await this.redis.get(`msg:${clientMsgId}`);
-        if (exists) return;
-
-        // Generate server message ID
-        const messageId = generateTimeUUID();
-        const timestamp = Date.now();
-
-        // Store message
-        await this.storeMessage({
-            chatId,
-            messageId,
-            senderId,
-            content,
-            timestamp
-        });
-
-        // Mark as processed
-        await this.redis.setex(`msg:${clientMsgId}`, 3600, messageId);
-
-        // Send ACK to sender
-        this.sendToUser(senderId, {
-            type: 'ack',
-            clientMsgId,
-            messageId,
-            status: 'sent'
-        });
-
-        // Route to receiver
-        await this.deliverMessage(receiverId, {
-            type: 'message',
-            messageId,
-            senderId,
-            chatId,
-            content,
-            timestamp
-        });
-    }
-
-    async deliverMessage(receiverId, message) {
-        // Check if user is connected to this server
-        const ws = this.connections.get(receiverId);
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(message));
-            return;
-        }
-
-        // Check if user is on another server
-        const session = await this.redis.hgetall(`session:${receiverId}`);
-        if (session && session.serverId) {
-            // Publish to user's channel
-            await this.redis.publish(
-                `chat:${receiverId}`,
-                JSON.stringify(message)
-            );
-        } else {
-            // User is offline - push notification
-            await this.sendPushNotification(receiverId, message);
-        }
-    }
-
-    async registerSession(userId) {
-        await this.redis.hset(`session:${userId}`, {
-            serverId: process.env.SERVER_ID,
-            connectedAt: Date.now()
-        });
-        await this.redis.expire(`session:${userId}`, 120);
-    }
-
-    startHeartbeat(ws, userId) {
-        const interval = setInterval(() => {
-            if (!ws.isAlive) {
-                clearInterval(interval);
-                return ws.terminate();
-            }
-            ws.isAlive = false;
-            ws.ping();
-        }, 30000);
-    }
-
-    async handleHeartbeat(userId) {
-        await this.redis.expire(`session:${userId}`, 120);
-        await this.redis.expire(`presence:${userId}`, 120);
-    }
-
-    async handleDisconnect(userId) {
-        this.connections.delete(userId);
-        await this.redis.del(`session:${userId}`);
-
-        // Delay presence update (user might reconnect)
-        setTimeout(async () => {
-            const session = await this.redis.exists(`session:${userId}`);
-            if (!session) {
-                await this.publishPresence(userId, 'offline');
-            }
-        }, 5000);
-    }
-}
 ```
+Phase 1: Small scale (~10K concurrent)
+└── Single WS server + Redis + PostgreSQL
 
-### Chat Service (Go)
+Phase 2: Medium scale (~1M concurrent)
+└── WS cluster + Redis pub/sub + Cassandra
 
-```go
-package chat
-
-import (
-    "context"
-    "encoding/json"
-    "time"
-
-    "github.com/gocql/gocql"
-    "github.com/redis/go-redis/v9"
-    "github.com/segmentio/kafka-go"
-)
-
-type ChatService struct {
-    cassandra *gocql.Session
-    redis     *redis.Client
-    kafka     *kafka.Writer
-}
-
-type Message struct {
-    ChatID    gocql.UUID `json:"chat_id"`
-    MessageID gocql.UUID `json:"message_id"`
-    SenderID  int64      `json:"sender_id"`
-    Content   string     `json:"content"`
-    MsgType   string     `json:"msg_type"`
-    MediaURL  string     `json:"media_url,omitempty"`
-    CreatedAt time.Time  `json:"created_at"`
-}
-
-func (s *ChatService) SendMessage(ctx context.Context,
-    msg *Message) error {
-
-    // Generate time-based UUID for ordering
-    msg.MessageID = gocql.TimeUUID()
-    msg.CreatedAt = time.Now()
-
-    // Store in Cassandra
-    err := s.cassandra.Query(`
-        INSERT INTO messages
-        (chat_id, message_id, sender_id, content,
-         msg_type, media_url, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, msg.ChatID, msg.MessageID, msg.SenderID,
-       msg.Content, msg.MsgType, msg.MediaURL,
-       msg.CreatedAt).Exec()
-
-    if err != nil {
-        return err
-    }
-
-    // Update chat's last message
-    err = s.updateChatLastMessage(ctx, msg)
-    if err != nil {
-        // Log but don't fail
-        log.Printf("Failed to update last message: %v", err)
-    }
-
-    // Publish to Kafka for delivery
-    msgBytes, _ := json.Marshal(msg)
-    err = s.kafka.WriteMessages(ctx, kafka.Message{
-        Topic: "chat-messages",
-        Key:   []byte(msg.ChatID.String()),
-        Value: msgBytes,
-    })
-
-    return err
-}
-
-func (s *ChatService) GetMessages(ctx context.Context,
-    chatID gocql.UUID, before time.Time,
-    limit int) ([]Message, error) {
-
-    var messages []Message
-
-    iter := s.cassandra.Query(`
-        SELECT chat_id, message_id, sender_id, content,
-               msg_type, media_url, created_at
-        FROM messages
-        WHERE chat_id = ? AND message_id < ?
-        ORDER BY message_id DESC
-        LIMIT ?
-    `, chatID, gocql.UUIDFromTime(before), limit).Iter()
-
-    var msg Message
-    for iter.Scan(&msg.ChatID, &msg.MessageID, &msg.SenderID,
-        &msg.Content, &msg.MsgType, &msg.MediaURL,
-        &msg.CreatedAt) {
-        messages = append(messages, msg)
-    }
-
-    return messages, iter.Close()
-}
-
-func (s *ChatService) SendGroupMessage(ctx context.Context,
-    groupID int64, msg *Message) error {
-
-    msg.MessageID = gocql.TimeUUID()
-    msg.CreatedAt = time.Now()
-
-    // Store message
-    err := s.cassandra.Query(`
-        INSERT INTO messages
-        (chat_id, message_id, sender_id, content,
-         msg_type, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `, msg.ChatID, msg.MessageID, msg.SenderID,
-       msg.Content, msg.MsgType, msg.CreatedAt).Exec()
-
-    if err != nil {
-        return err
-    }
-
-    // Get group members
-    members, err := s.getGroupMembers(ctx, groupID)
-    if err != nil {
-        return err
-    }
-
-    // Fan-out to members via Kafka
-    for _, memberID := range members {
-        if memberID == msg.SenderID {
-            continue // Don't send to self
-        }
-
-        delivery := map[string]interface{}{
-            "user_id": memberID,
-            "message": msg,
-        }
-        deliveryBytes, _ := json.Marshal(delivery)
-
-        s.kafka.WriteMessages(ctx, kafka.Message{
-            Topic: "message-delivery",
-            Key:   []byte(fmt.Sprintf("%d", memberID)),
-            Value: deliveryBytes,
-        })
-    }
-
-    return nil
-}
-
-func (s *ChatService) MarkAsRead(ctx context.Context,
-    userID int64, chatID gocql.UUID,
-    messageID gocql.UUID) error {
-
-    // Update read position
-    err := s.cassandra.Query(`
-        UPDATE user_chats
-        SET last_read_at = ?, unread_count = 0
-        WHERE user_id = ? AND chat_id = ?
-    `, time.Now(), userID, chatID).Exec()
-
-    if err != nil {
-        return err
-    }
-
-    // Notify sender about read receipt
-    msg, err := s.getMessage(ctx, chatID, messageID)
-    if err != nil {
-        return err
-    }
-
-    receipt := map[string]interface{}{
-        "type":       "read_receipt",
-        "chat_id":    chatID,
-        "message_id": messageID,
-        "reader_id":  userID,
-        "read_at":    time.Now(),
-    }
-    receiptBytes, _ := json.Marshal(receipt)
-
-    return s.kafka.WriteMessages(ctx, kafka.Message{
-        Topic: "message-delivery",
-        Key:   []byte(fmt.Sprintf("%d", msg.SenderID)),
-        Value: receiptBytes,
-    })
-}
-```
-
-### Presence Service (Python)
-
-```python
-import asyncio
-import json
-from datetime import datetime, timedelta
-from typing import Set, Dict
-import aioredis
-
-class PresenceService:
-    def __init__(self, redis_url: str):
-        self.redis = None
-        self.redis_url = redis_url
-        self.PRESENCE_TTL = 120  # seconds
-        self.HEARTBEAT_INTERVAL = 30
-
-    async def connect(self):
-        self.redis = await aioredis.from_url(self.redis_url)
-        self.pubsub = self.redis.pubsub()
-
-    async def set_online(self, user_id: str, server_id: str):
-        pipeline = self.redis.pipeline()
-
-        # Set presence
-        pipeline.setex(
-            f"presence:{user_id}",
-            self.PRESENCE_TTL,
-            "online"
-        )
-
-        # Set session info
-        pipeline.hset(f"session:{user_id}", mapping={
-            "server_id": server_id,
-            "connected_at": datetime.utcnow().isoformat()
-        })
-        pipeline.expire(f"session:{user_id}", self.PRESENCE_TTL)
-
-        await pipeline.execute()
-
-        # Notify friends
-        await self.notify_presence_change(user_id, "online")
-
-    async def set_offline(self, user_id: str):
-        # Small delay to handle reconnections
-        await asyncio.sleep(5)
-
-        # Check if user reconnected
-        exists = await self.redis.exists(f"session:{user_id}")
-        if exists:
-            return
-
-        await self.redis.delete(f"presence:{user_id}")
-        await self.notify_presence_change(user_id, "offline")
-
-    async def heartbeat(self, user_id: str):
-        pipeline = self.redis.pipeline()
-        pipeline.expire(f"presence:{user_id}", self.PRESENCE_TTL)
-        pipeline.expire(f"session:{user_id}", self.PRESENCE_TTL)
-        await pipeline.execute()
-
-    async def get_presence(self, user_id: str) -> str:
-        presence = await self.redis.get(f"presence:{user_id}")
-        return presence.decode() if presence else "offline"
-
-    async def get_bulk_presence(self, user_ids: list) -> Dict[str, str]:
-        pipeline = self.redis.pipeline()
-        for user_id in user_ids:
-            pipeline.get(f"presence:{user_id}")
-
-        results = await pipeline.execute()
-
-        return {
-            user_id: (r.decode() if r else "offline")
-            for user_id, r in zip(user_ids, results)
-        }
-
-    async def notify_presence_change(self, user_id: str, status: str):
-        # Get user's friends who are online
-        friends = await self.get_online_friends(user_id)
-
-        message = json.dumps({
-            "type": "presence",
-            "user_id": user_id,
-            "status": status,
-            "timestamp": datetime.utcnow().isoformat()
-        })
-
-        # Publish to each friend's channel
-        for friend_id in friends:
-            await self.redis.publish(f"chat:{friend_id}", message)
-
-    async def get_online_friends(self, user_id: str) -> Set[str]:
-        # Get friend list (from cache or DB)
-        friends = await self.get_friends(user_id)
-
-        # Check which friends are online
-        presences = await self.get_bulk_presence(friends)
-
-        return {
-            friend_id
-            for friend_id, status in presences.items()
-            if status == "online"
-        }
-
-    async def subscribe_to_presence(self, user_id: str,
-                                    friend_ids: list):
-        """Subscribe to presence updates for friends"""
-        channels = [f"presence:{fid}" for fid in friend_ids]
-        await self.pubsub.subscribe(*channels)
+Phase 3: Large scale (~50M concurrent)
+└── Multiple DCs + Kafka + sharded everything
 ```
 
 ---
 
-## Key Takeaways
+## Interview Tips
 
-### Design Decisions
+### How to Approach (45 minutes)
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Protocol | WebSocket | Real-time, bidirectional |
-| Message storage | Cassandra | High write throughput, time-series |
-| Session storage | Redis | Fast lookups, pub/sub |
-| Message queue | Kafka | Reliable delivery, ordering |
+```
+1. CLARIFY (3-5 min)
+   "1:1 only or groups? How large? Need presence? Read receipts?"
 
-### Scalability Patterns
+2. HIGH-LEVEL DESIGN (5-7 min)
+   Draw: Clients → LB → WS Servers → Message Queue → Database
 
-1. **Horizontal scaling**: Shard by chat_id/user_id
-2. **Connection distribution**: Consistent hashing for WebSocket servers
-3. **Message fanout**: Async via Kafka for groups
-4. **Presence**: Redis pub/sub with TTL
+3. DEEP DIVE (25-30 min)
+   - Protocol choice (WebSocket vs alternatives)
+   - Message routing (how to find recipient's server)
+   - Group chat fan-out strategy
+   - Presence system design
+   - Offline message handling
 
-### Trade-offs
+4. WRAP UP (5 min)
+   - Discuss E2E encryption, push notifications
+   - Mention monitoring, rate limiting
+```
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| Single WebSocket server | Simple | Limited scale |
-| Server cluster + Redis | Scalable | Added latency |
-| Connection pinning | Fast delivery | Uneven load |
+### Key Phrases That Show Depth
 
-### Common Interview Questions
+| Instead of... | Say... |
+|---------------|--------|
+| "We use WebSocket" | "HTTP is request-response, so we need WebSocket for server-initiated push. It's bidirectional and has low per-message overhead after the initial handshake." |
+| "Store in Cassandra" | "Messages are append-only and queried by (chat_id, time) - perfect for Cassandra's time-series model with chat_id as partition key." |
+| "Use Redis for presence" | "Redis with TTL handles presence elegantly - heartbeat refreshes TTL, and if heartbeat stops, TTL expires and user is automatically offline." |
 
-1. How do you handle millions of concurrent connections?
-2. How do you ensure message ordering?
-3. How do you handle message delivery to offline users?
-4. How do you implement read receipts at scale?
-5. How do you design group chat for large groups?
+### Common Follow-up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How handle 50M connections?" | Horizontal scaling, ~50K connections/server, 1000+ servers |
+| "How ensure ordering?" | TimeUUID per chat, Kafka partition by chat_id |
+| "How handle offline users?" | Store message, send push notification, sync on reconnect |
+| "How scale group chat?" | Async fan-out via Kafka, not blocking sender |
+| "How implement E2E encryption?" | Signal protocol, keys exchanged out-of-band, server can't read |
 
 ### Related Topics
 

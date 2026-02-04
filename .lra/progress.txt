@@ -63,3 +63,19 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 4 - 2026-02-04 - Chat System Transformation
+- Transformed design-chat-system.md to interview style
+- Removed entire Implementation section (~470 lines of Node.js/Go/Python)
+- Added interview context and discussions for:
+  - Protocol choice (WebSocket vs Long Polling vs SSE)
+  - Database selection (Why Cassandra for messages?)
+  - Presence system design with heartbeat/TTL
+  - Group chat fan-out strategy
+  - Delivery guarantees (at-least-once + dedup)
+- Added "Interviewer might ask" prompts throughout
+- Added comprehensive Interview Tips section
+- Reduced document from 1110 to 764 lines
+- Completed F003
+
+---
+
