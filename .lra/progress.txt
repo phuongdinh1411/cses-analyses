@@ -169,3 +169,22 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 9 - 2026-02-04 - Consistent Hashing Transformation
+- Transformed consistent-hashing.md to interview style
+- Removed ~80 lines of Python implementation code:
+  - ConsistentHash class
+  - ReplicatedConsistentHash class
+- Added interview context and discussions for:
+  - Why modulo hashing fails (thundering herd, data migration)
+  - Virtual nodes purpose and trade-offs
+  - Replication strategy
+- Added Interview Tips section with:
+  - 5-minute explanation guide
+  - Key phrases that show depth
+  - Common follow-up questions
+- Added trade-off tables for design decisions
+- Document stayed similar size (426 to 425 lines) as it was already interview-focused
+- Completed F008
+
+---
+

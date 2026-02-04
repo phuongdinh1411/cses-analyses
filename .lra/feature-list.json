@@ -135,9 +135,9 @@
         "Frame rebalancing scenario as interview discussion",
         "Add 'Interviewer might ask' about hot spots"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "12KB document - smallest, foundational concept"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Removed ~80 lines of Python code. Added interview context, 5-minute explanation guide, key phrases, follow-up questions, trade-off tables."
     },
     {
       "id": "F009",
