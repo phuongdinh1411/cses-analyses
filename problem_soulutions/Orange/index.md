@@ -46,7 +46,7 @@ Welcome to the Orange problem set! This collection contains competitive programm
 ### String Algorithms
 - **KMP (Knuth-Morris-Pratt)**: Linear time pattern matching
 
-### Mathematical Concepts
+##### Mathematical
 - **Bit Manipulation**: Binary operations and tricks
 - **Number Theory**: Primes, GCD, modular arithmetic
 
