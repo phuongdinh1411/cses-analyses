@@ -56,55 +56,48 @@ Server = hash("user_123") % 3  →  Server 1
 
 Imagine a circular ring of hash values (0 to 2^32-1):
 
-```
-                    0
-                    |
-           +---------------+
-          /                 \
-         |    Hash Ring      |
-         |                   |
-          \                 /
-           +---------------+
+```mermaid
+flowchart TB
+    subgraph Ring["Hash Ring (0 to 2^32-1)"]
+        direction TB
+        Top["0"]
+    end
 ```
 
 ### Placing Nodes on the Ring
 
 Hash each server's identifier to position it on the ring:
 
-```
-                   0
-                   |
-            o------+------o  Server A
-           /               \
-          /                 \
-   Server C o               |
-          \                 /
-           \               /
-            o-------------o
-                 Server B
+```mermaid
+flowchart TB
+    subgraph HashRing["Hash Ring"]
+        A["Server A"]
+        B["Server B"]
+        C["Server C"]
+    end
 ```
 
 ### Placing Keys on the Ring
 
 Hash each key and walk **clockwise** to find the first server:
 
-```
-        Key "user_123" hashes here
-                   |
-                   v -----> walks clockwise -----> o Server A
-                  /
-                 /
+```mermaid
+flowchart LR
+    Key["Key 'user_123'<br/>hashes here"] -->|walks clockwise| ServerA["Server A"]
 ```
 
 **Key "user_123" is stored on Server A** (the first server clockwise from the key's position).
 
 ### Key Lookup Process
 
-```
-1. Hash the key        →  hash("user_123") = 847291...
-2. Find position       →  Locate this value on the ring
-3. Walk clockwise      →  Find first node >= hash value
-4. Query that node     →  Ask Server A for "user_123"
+```mermaid
+flowchart LR
+    Step1["1. Hash the key<br/>hash('user_123') = 847291..."]
+    Step2["2. Find position<br/>Locate on ring"]
+    Step3["3. Walk clockwise<br/>Find first node >= hash"]
+    Step4["4. Query that node<br/>Ask Server A"]
+
+    Step1 --> Step2 --> Step3 --> Step4
 ```
 
 **The client (or a coordinator) computes which node owns the key, then queries only that node directly.** No broadcast needed.
@@ -221,38 +214,31 @@ The word "virtual" means these nodes don't exist physically—they're simply ext
 
 When a node is removed, its data is **LOST**:
 
+**Before:**
+```mermaid
+flowchart TB
+    A["Server A<br/>(has keys X, Y, Z)"]
+    B["Server B"]
+    C["Server C"]
 ```
-Before:                          After removing A:
 
-       o A (has keys X, Y, Z)          (gone!)
-      /                               /
-     /                               /
-    o C                             o C
-     \                               \
-      \                               \
-       o B                             o B <- now responsible for X, Y, Z
-                                           but doesn't have the data!
+**After removing A:**
+```mermaid
+flowchart TB
+    Gone["(A gone!)"]
+    B["Server B<br/>now responsible for X, Y, Z<br/>but doesn't have the data!"]
+    C["Server C"]
 ```
 
 ### With Replication: Data Survives
 
 Production systems replicate data to **N successor nodes** on the ring:
 
-```
-Key "user_123" → Store on:
-  1. Server A (primary)
-  2. Server B (replica 1) <- next clockwise
-  3. Server C (replica 2) <- next after B
-```
-
-```
-       o A --- has "user_123" (primary)
-      /|
-     / | replicated to
-    o  v
-    C  o B --- has "user_123" (replica)
-    |
-    +-- has "user_123" (replica)
+```mermaid
+flowchart LR
+    Key["Key 'user_123'"] --> A["Server A (primary)"]
+    A -->|replicated to| B["Server B (replica 1)"]
+    B -->|replicated to| C["Server C (replica 2)"]
 ```
 
 **When A is removed:**

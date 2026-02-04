@@ -174,50 +174,48 @@ With hash-based deduplication: ~500 GB
 
 ### System Overview
 
-```
-                                    ┌─────────────────┐
-                                    │   Seed URLs     │
-                                    └────────┬────────┘
-                                             │
-                                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                           URL FRONTIER                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │  Priority   │  │   Domain    │  │   Politeness │                 │
-│  │   Queue     │  │   Queues    │  │    Manager   │                 │
-│  └─────────────┘  └─────────────┘  └──────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                                             │
-                                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                         CRAWLER WORKERS                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │ Worker 1 │  │ Worker 2 │  │ Worker 3 │  │ Worker N │            │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘            │
-└─────────────────────────────────────────────────────────────────────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    ▼                        ▼                        ▼
-           ┌───────────────┐        ┌───────────────┐        ┌───────────────┐
-           │  DNS Resolver │        │ Robots.txt    │        │    HTTP       │
-           │    (Cache)    │        │    Cache      │        │   Fetcher     │
-           └───────────────┘        └───────────────┘        └───────────────┘
-                                             │
-                                             ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      CONTENT PROCESSOR                              │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
-│  │  HTML    │  │ Duplicate│  │   Link   │  │  Content │            │
-│  │  Parser  │  │ Detector │  │ Extractor│  │  Store   │            │
-│  └──────────┘  └──────────┘  └──────────┘  └──────────┘            │
-└─────────────────────────────────────────────────────────────────────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    ▼                        ▼                        ▼
-           ┌───────────────┐        ┌───────────────┐        ┌───────────────┐
-           │  URL Storage  │        │    Content    │        │   Metadata    │
-           │  (Seen URLs)  │        │    Storage    │        │   Database    │
-           └───────────────┘        └───────────────┘        └───────────────┘
+```mermaid
+flowchart TB
+    Seeds["Seed URLs"]
+
+    subgraph URLFrontier["URL FRONTIER"]
+        PQ["Priority Queue"]
+        DQ["Domain Queues"]
+        PM["Politeness Manager"]
+    end
+
+    subgraph CrawlerWorkers["CRAWLER WORKERS"]
+        W1["Worker 1"]
+        W2["Worker 2"]
+        W3["Worker 3"]
+        WN["Worker N"]
+    end
+
+    DNS["DNS Resolver (Cache)"]
+    Robots["Robots.txt Cache"]
+    HTTP["HTTP Fetcher"]
+
+    subgraph ContentProcessor["CONTENT PROCESSOR"]
+        Parser["HTML Parser"]
+        Dedup["Duplicate Detector"]
+        Extractor["Link Extractor"]
+        Store["Content Store"]
+    end
+
+    URLStore["URL Storage (Seen URLs)"]
+    ContentStorage["Content Storage"]
+    MetadataDB["Metadata Database"]
+
+    Seeds --> URLFrontier
+    URLFrontier --> CrawlerWorkers
+    CrawlerWorkers --> DNS
+    CrawlerWorkers --> Robots
+    CrawlerWorkers --> HTTP
+    HTTP --> ContentProcessor
+    ContentProcessor --> URLStore
+    ContentProcessor --> ContentStorage
+    ContentProcessor --> MetadataDB
+    Extractor --> URLFrontier
 ```
 
 ### Component Summary
@@ -248,33 +246,28 @@ The URL Frontier manages what to crawl next. It has two conflicting goals:
 
 You want to crawl important pages first (priority), but you also can't hammer the same domain repeatedly (politeness). How do you balance these?
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                         URL FRONTIER                                │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    PRIORITIZER                               │   │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │   │
-│  │  │Priority │  │Priority │  │Priority │  │Priority │        │   │
-│  │  │Queue P1 │  │Queue P2 │  │Queue P3 │  │Queue PN │        │   │
-│  │  │(High)   │  │(Medium) │  │(Low)    │  │(Lowest) │        │   │
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                              │                                      │
-│                              ▼                                      │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    POLITENESS ENFORCER                       │   │
-│  │  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐        │   │
-│  │  │Domain   │  │Domain   │  │Domain   │  │Domain   │        │   │
-│  │  │Queue    │  │Queue    │  │Queue    │  │Queue    │        │   │
-│  │  │google   │  │amazon   │  │wiki     │  │...      │        │   │
-│  │  └─────────┘  └─────────┘  └─────────┘  └─────────┘        │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                              │                                      │
-│                              ▼                                      │
-│                       Queue Selector                                │
-│                       (Round Robin)                                 │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph URLFrontier["URL FRONTIER"]
+        subgraph Prioritizer["PRIORITIZER"]
+            P1["Priority Queue P1 (High)"]
+            P2["Priority Queue P2 (Medium)"]
+            P3["Priority Queue P3 (Low)"]
+            PN["Priority Queue PN (Lowest)"]
+        end
+
+        subgraph PolitenessEnforcer["POLITENESS ENFORCER"]
+            DQ1["Domain Queue: google"]
+            DQ2["Domain Queue: amazon"]
+            DQ3["Domain Queue: wiki"]
+            DQN["Domain Queue: ..."]
+        end
+
+        Selector["Queue Selector (Round Robin)"]
+
+        Prioritizer --> PolitenessEnforcer
+        PolitenessEnforcer --> Selector
+    end
 ```
 
 #### Two-Level Queue Design
@@ -374,71 +367,49 @@ Allow: /private/public-page
 
 ### Complete Crawl Flow
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        CRAWL DATA FLOW                              │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph Step1["1. URL SELECTION"]
+        S1A["Frontier"] --> S1B["Politeness Check"] --> S1C["Worker Assignment"]
+    end
 
-1. URL SELECTION
-   ┌─────────┐     ┌─────────────┐     ┌─────────────┐
-   │ Frontier│────▶│  Politeness │────▶│   Worker    │
-   │         │     │   Check     │     │  Assignment │
-   └─────────┘     └─────────────┘     └─────────────┘
+    subgraph Step2["2. PRE-FETCH CHECKS"]
+        S2A["DNS Resolve"] --> S2B["Robots.txt Check"] --> S2C["URL Validation"]
+    end
 
-2. PRE-FETCH CHECKS
-   ┌─────────┐     ┌─────────────┐     ┌─────────────┐
-   │  DNS    │────▶│ Robots.txt  │────▶│   URL       │
-   │ Resolve │     │   Check     │     │ Validation  │
-   └─────────┘     └─────────────┘     └─────────────┘
+    subgraph Step3["3. FETCH"]
+        S3A["HTTP Request"] --> S3B["Handle Redirects"] --> S3C["Download Content"]
+    end
 
-3. FETCH
-   ┌─────────┐     ┌─────────────┐     ┌─────────────┐
-   │  HTTP   │────▶│  Handle     │────▶│  Download   │
-   │ Request │     │  Redirects  │     │  Content    │
-   └─────────┘     └─────────────┘     └─────────────┘
+    subgraph Step4["4. PROCESSING"]
+        S4A["Parse HTML"] --> S4B["Duplicate Detection"] --> S4C["Extract Links"]
+    end
 
-4. PROCESSING
-   ┌─────────┐     ┌─────────────┐     ┌─────────────┐
-   │  Parse  │────▶│  Duplicate  │────▶│  Extract    │
-   │  HTML   │     │  Detection  │     │  Links      │
-   └─────────┘     └─────────────┘     └─────────────┘
+    subgraph Step5["5. STORAGE"]
+        S5A["Store Content"] --> S5B["Update Metadata"] --> S5C["Add New URLs"]
+    end
 
-5. STORAGE
-   ┌─────────┐     ┌─────────────┐     ┌─────────────┐
-   │  Store  │────▶│  Update     │────▶│  Add New    │
-   │ Content │     │  Metadata   │     │  URLs       │
-   └─────────┘     └─────────────┘     └─────────────┘
+    Step1 --> Step2 --> Step3 --> Step4 --> Step5
 ```
 
 ### Sequence Diagram
 
-```
-    Worker          Frontier        DNS Cache      Web Server       Storage
-      │                │                │               │              │
-      │  get_next_url  │                │               │              │
-      │───────────────▶│                │               │              │
-      │                │                │               │              │
-      │  URL           │                │               │              │
-      │◀───────────────│                │               │              │
-      │                │                │               │              │
-      │  resolve_dns   │                │               │              │
-      │────────────────────────────────▶│               │              │
-      │                │                │               │              │
-      │  IP address    │                │               │              │
-      │◀────────────────────────────────│               │              │
-      │                │                │               │              │
-      │  HTTP GET      │                │               │              │
-      │──────────────────────────────────────────────▶ │              │
-      │                │                │               │              │
-      │  HTML content  │                │               │              │
-      │◀──────────────────────────────────────────────│              │
-      │                │                │               │              │
-      │  store_content │                │               │              │
-      │───────────────────────────────────────────────────────────────▶│
-      │                │                │               │              │
-      │  add_urls      │                │               │              │
-      │───────────────▶│                │               │              │
-      │                │                │               │              │
+```mermaid
+sequenceDiagram
+    participant Worker
+    participant Frontier
+    participant DNS as DNS Cache
+    participant Server as Web Server
+    participant Storage
+
+    Worker->>Frontier: get_next_url
+    Frontier-->>Worker: URL
+    Worker->>DNS: resolve_dns
+    DNS-->>Worker: IP address
+    Worker->>Server: HTTP GET
+    Server-->>Worker: HTML content
+    Worker->>Storage: store_content
+    Worker->>Frontier: add_urls
 ```
 
 ---
@@ -692,39 +663,30 @@ Exact matching (MD5) misses near-duplicates. We need **fuzzy matching**.
 
 ### Storage Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      STORAGE ARCHITECTURE                           │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                    URL STORAGE                               │   │
-│  │                                                               │   │
-│  │  Purpose: Track seen URLs, crawl status, schedule            │   │
-│  │  Technology: Redis / RocksDB                                  │   │
-│  │  Data: URL hash → (status, last_crawl, next_crawl)           │   │
-│  │  Size: ~500 GB for 10B URLs                                  │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   CONTENT STORAGE                            │   │
-│  │                                                               │   │
-│  │  Purpose: Store raw HTML and processed content               │   │
-│  │  Technology: S3 / HDFS / Cassandra                           │   │
-│  │  Data: URL → (content, metadata, timestamp)                  │   │
-│  │  Size: ~30 TB/month compressed                               │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐   │
-│  │                   METADATA DATABASE                          │   │
-│  │                                                               │   │
-│  │  Purpose: Searchable page metadata, link graph               │   │
-│  │  Technology: PostgreSQL / Elasticsearch                       │   │
-│  │  Data: Page info, links, crawl history                       │   │
-│  │  Size: ~5 TB                                                 │   │
-│  └─────────────────────────────────────────────────────────────┘   │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph StorageArchitecture["STORAGE ARCHITECTURE"]
+        subgraph URLStorage["URL STORAGE"]
+            US1["Purpose: Track seen URLs, crawl status, schedule"]
+            US2["Technology: Redis / RocksDB"]
+            US3["Data: URL hash → (status, last_crawl, next_crawl)"]
+            US4["Size: ~500 GB for 10B URLs"]
+        end
+
+        subgraph ContentStorage["CONTENT STORAGE"]
+            CS1["Purpose: Store raw HTML and processed content"]
+            CS2["Technology: S3 / HDFS / Cassandra"]
+            CS3["Data: URL → (content, metadata, timestamp)"]
+            CS4["Size: ~30 TB/month compressed"]
+        end
+
+        subgraph MetadataDB["METADATA DATABASE"]
+            MD1["Purpose: Searchable page metadata, link graph"]
+            MD2["Technology: PostgreSQL / Elasticsearch"]
+            MD3["Data: Page info, links, crawl history"]
+            MD4["Size: ~5 TB"]
+        end
+    end
 ```
 
 ### Schema Design
@@ -825,33 +787,31 @@ s3://crawler-bucket/content/2024/01/15/a3f2/a3f2b7c4d5e6f789.gz
 
 ### Horizontal Scaling Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     DISTRIBUTED ARCHITECTURE                        │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│                      ┌─────────────────┐                           │
-│                      │  Coordinator    │                           │
-│                      │  (Zookeeper)    │                           │
-│                      └────────┬────────┘                           │
-│                               │                                     │
-│          ┌────────────────────┼────────────────────┐               │
-│          │                    │                    │               │
-│          ▼                    ▼                    ▼               │
-│  ┌───────────────┐   ┌───────────────┐   ┌───────────────┐        │
-│  │   Frontier    │   │   Frontier    │   │   Frontier    │        │
-│  │   Shard 1     │   │   Shard 2     │   │   Shard N     │        │
-│  │ (domains A-H) │   │ (domains I-P) │   │ (domains Q-Z) │        │
-│  └───────┬───────┘   └───────┬───────┘   └───────┬───────┘        │
-│          │                    │                    │               │
-│          ▼                    ▼                    ▼               │
-│  ┌───────────────┐   ┌───────────────┐   ┌───────────────┐        │
-│  │   Crawler     │   │   Crawler     │   │   Crawler     │        │
-│  │   Pool 1      │   │   Pool 2      │   │   Pool N      │        │
-│  │ (10 workers)  │   │ (10 workers)  │   │ (10 workers)  │        │
-│  └───────────────┘   └───────────────┘   └───────────────┘        │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph DistributedArchitecture["DISTRIBUTED ARCHITECTURE"]
+        Coord["Coordinator (Zookeeper)"]
+
+        subgraph Shards["Frontier Shards"]
+            F1["Frontier Shard 1<br/>(domains A-H)"]
+            F2["Frontier Shard 2<br/>(domains I-P)"]
+            FN["Frontier Shard N<br/>(domains Q-Z)"]
+        end
+
+        subgraph Pools["Crawler Pools"]
+            CP1["Crawler Pool 1<br/>(10 workers)"]
+            CP2["Crawler Pool 2<br/>(10 workers)"]
+            CPN["Crawler Pool N<br/>(10 workers)"]
+        end
+
+        Coord --> F1
+        Coord --> F2
+        Coord --> FN
+
+        F1 --> CP1
+        F2 --> CP2
+        FN --> CPN
+    end
 ```
 
 ### Domain-Based Sharding

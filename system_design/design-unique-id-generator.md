@@ -93,22 +93,17 @@ Why not just use the current time?
 
 ## Approaches Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ID Generation Strategies                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│   ┌─────────────┐   ┌─────────────┐   ┌─────────────────────┐   │
-│   │    UUID     │   │  Snowflake  │   │  Database Ranges    │   │
-│   │  (128-bit)  │   │   (64-bit)  │   │    (64-bit)         │   │
-│   └─────────────┘   └─────────────┘   └─────────────────────┘   │
-│         │                 │                     │                │
-│         ▼                 ▼                     ▼                │
-│   No coordination   Time + Node ID      Pre-allocated blocks     │
-│   Random/Time       Sortable             Sortable                │
-│   128-bit           64-bit compact       64-bit compact          │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph IDGenerationStrategies["ID Generation Strategies"]
+        UUID["UUID<br/>(128-bit)"]
+        Snowflake["Snowflake<br/>(64-bit)"]
+        DBRange["Database Ranges<br/>(64-bit)"]
+
+        UUID --> UUIDDesc["No coordination<br/>Random/Time<br/>128-bit"]
+        Snowflake --> SFDesc["Time + Node ID<br/>Sortable<br/>64-bit compact"]
+        DBRange --> DBDesc["Pre-allocated blocks<br/>Sortable<br/>64-bit compact"]
+    end
 ```
 
 ---
@@ -170,19 +165,13 @@ xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
 
 A coordinator pre-allocates ID ranges to each server:
 
-```
-┌─────────────────┐
-│  ID Coordinator │
-│  (Database)     │
-└────────┬────────┘
-         │ Allocate ranges
-    ┌────┴────┬────────────┐
-    ▼         ▼            ▼
-┌───────┐ ┌───────┐  ┌───────┐
-│Server1│ │Server2│  │Server3│
-│1-1000 │ │1001-  │  │2001-  │
-│       │ │2000   │  │3000   │
-└───────┘ └───────┘  └───────┘
+```mermaid
+flowchart TB
+    Coord["ID Coordinator (Database)"]
+
+    Coord -->|Allocate ranges| S1["Server1<br/>1-1000"]
+    Coord -->|Allocate ranges| S2["Server2<br/>1001-2000"]
+    Coord -->|Allocate ranges| S3["Server3<br/>2001-3000"]
 ```
 
 ### The Concept
@@ -410,27 +399,19 @@ nanoid() // => "V1StGXR8_Z5jdHi6B-myT"
 
 ### Decision Tree
 
-```
-Need unique IDs?
-│
-├─ Need 64-bit? ──────────────────┐
-│   │                             │
-│   ├─ Yes ─► Snowflake           │
-│   │         (or Sonyflake)      │
-│   │                             │
-│   └─ No ──► Continue            │
-│                                 │
-├─ Need sortability? ─────────────┤
-│   │                             │
-│   ├─ Yes ─► ULID or UUID v7     │
-│   │                             │
-│   └─ No ──► UUID v4             │
-│                                 │
-├─ Need sequential? ──────────────┤
-│   │                             │
-│   └─ Yes ─► DB Range/Ticket     │
-│                                 │
-└─ Default ─► UUID v4 (simplest)
+```mermaid
+flowchart TB
+    Start["Need unique IDs?"]
+
+    Start --> Q1{"Need 64-bit?"}
+    Q1 -->|Yes| SF["Snowflake<br/>(or Sonyflake)"]
+    Q1 -->|No| Q2{"Need sortability?"}
+
+    Q2 -->|Yes| ULID["ULID or UUID v7"]
+    Q2 -->|No| Q3{"Need sequential?"}
+
+    Q3 -->|Yes| DBRange["DB Range/Ticket"]
+    Q3 -->|No| UUIDv4["UUID v4 (simplest)"]
 ```
 
 ---

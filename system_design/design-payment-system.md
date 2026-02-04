@@ -101,40 +101,33 @@ Keep 7 years for compliance: ~7 TB
 
 ### System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              Client Applications                              │
-│                         (Web, Mobile, Point of Sale)                          │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                             Load Balancer                                     │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           Payment Service                                     │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
-│  │  Risk Checker   │  │ Payment Router  │  │ Status Manager  │              │
-│  │  (AML/Fraud)    │  │                 │  │                 │              │
-│  └─────────────────┘  └─────────────────┘  └─────────────────┘              │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-              ┌───────────────────┼───────────────────┐
-              ▼                   ▼                   ▼
-┌─────────────────────┐ ┌─────────────────────┐ ┌─────────────────────┐
-│  Payment Executor   │ │      Ledger         │ │      Wallet         │
-│  (PSP Integration)  │ │  (Double-entry)     │ │  (Account Balance)  │
-└──────────┬──────────┘ └─────────────────────┘ └─────────────────────┘
-           │
-           ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    Payment Service Providers (PSPs)                           │
-│     ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐               │
-│     │ Stripe  │    │ PayPal  │    │  Adyen  │    │  Banks  │               │
-│     └─────────┘    └─────────┘    └─────────┘    └─────────┘               │
-└─────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Clients["Client Applications (Web, Mobile, Point of Sale)"]
+    end
+
+    Clients --> LB["Load Balancer"]
+
+    subgraph PaymentService["Payment Service"]
+        RC["Risk Checker (AML/Fraud)"]
+        PR["Payment Router"]
+        SM["Status Manager"]
+    end
+
+    LB --> PaymentService
+
+    PaymentService --> PE["Payment Executor (PSP Integration)"]
+    PaymentService --> Ledger["Ledger (Double-entry)"]
+    PaymentService --> Wallet["Wallet (Account Balance)"]
+
+    subgraph PSPs["Payment Service Providers (PSPs)"]
+        Stripe
+        PayPal
+        Adyen
+        Banks
+    end
+
+    PE --> PSPs
 ```
 
 ### Core Components
@@ -325,41 +318,22 @@ Net = Debits - Credits = $100 - $100 = $0 ✓
 
 ### Pay-in Flow (Customer to Merchant)
 
-```
-┌──────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Client  │    │   Payment   │    │   Payment   │    │    PSP      │
-│          │    │   Service   │    │   Executor  │    │  (Stripe)   │
-└────┬─────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
-     │                 │                  │                  │
-     │  1. Place Order │                  │                  │
-     │────────────────►│                  │                  │
-     │                 │                  │                  │
-     │                 │ 2. Store Event   │                  │
-     │                 │─────────────────►│                  │
-     │                 │      (DB)        │                  │
-     │                 │                  │                  │
-     │                 │ 3. Risk Check    │                  │
-     │                 │◄────────────────►│                  │
-     │                 │    (AML/Fraud)   │                  │
-     │                 │                  │                  │
-     │                 │ 4. Execute Order │                  │
-     │                 │─────────────────►│                  │
-     │                 │                  │                  │
-     │                 │                  │ 5. Call PSP API  │
-     │                 │                  │─────────────────►│
-     │                 │                  │                  │
-     │                 │                  │ 6. PSP Response  │
-     │                 │                  │◄─────────────────│
-     │                 │                  │                  │
-     │                 │ 7. Update Wallet │                  │
-     │                 │◄─────────────────│                  │
-     │                 │                  │                  │
-     │                 │ 8. Update Ledger │                  │
-     │                 │◄─────────────────│                  │
-     │                 │                  │                  │
-     │ 9. Confirmation │                  │                  │
-     │◄────────────────│                  │                  │
-     │                 │                  │                  │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant PS as Payment Service
+    participant PE as Payment Executor
+    participant PSP as PSP (Stripe)
+
+    Client->>PS: 1. Place Order
+    PS->>PE: 2. Store Event (DB)
+    PS->>PE: 3. Risk Check (AML/Fraud)
+    PS->>PE: 4. Execute Order
+    PE->>PSP: 5. Call PSP API
+    PSP-->>PE: 6. PSP Response
+    PE-->>PS: 7. Update Wallet
+    PE-->>PS: 8. Update Ledger
+    PS-->>Client: 9. Confirmation
 ```
 
 ### Detailed Steps
@@ -389,40 +363,21 @@ Net = Debits - Credits = $100 - $100 = $0 ✓
 
 ### Hosted Payment Page Flow
 
-```
-┌──────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Client  │    │   Payment   │    │    PSP      │    │  PSP Hosted │
-│  (Web)   │    │   Service   │    │   (Stripe)  │    │    Page     │
-└────┬─────┘    └──────┬──────┘    └──────┬──────┘    └──────┬──────┘
-     │                 │                  │                  │
-     │ 1. Checkout     │                  │                  │
-     │────────────────►│                  │                  │
-     │                 │                  │                  │
-     │                 │ 2. Register      │                  │
-     │                 │    Payment       │                  │
-     │                 │─────────────────►│                  │
-     │                 │                  │                  │
-     │                 │ 3. Return Token  │                  │
-     │                 │◄─────────────────│                  │
-     │                 │                  │                  │
-     │ 4. Redirect to  │                  │                  │
-     │    PSP Page     │                  │                  │
-     │◄────────────────│                  │                  │
-     │                 │                  │                  │
-     │ 5. Enter Card   │                  │                  │
-     │─────────────────┼──────────────────┼─────────────────►│
-     │                 │                  │                  │
-     │                 │                  │ 6. Process Card  │
-     │                 │                  │◄─────────────────│
-     │                 │                  │                  │
-     │ 7. Redirect to  │                  │                  │
-     │    Success URL  │                  │                  │
-     │◄────────────────┼──────────────────┼──────────────────│
-     │                 │                  │                  │
-     │                 │ 8. Webhook       │                  │
-     │                 │    Notification  │                  │
-     │                 │◄─────────────────│                  │
-     │                 │                  │                  │
+```mermaid
+sequenceDiagram
+    participant Client as Client (Web)
+    participant PS as Payment Service
+    participant PSP as PSP (Stripe)
+    participant Page as PSP Hosted Page
+
+    Client->>PS: 1. Checkout
+    PS->>PSP: 2. Register Payment
+    PSP-->>PS: 3. Return Token
+    PS-->>Client: 4. Redirect to PSP Page
+    Client->>Page: 5. Enter Card
+    Page->>PSP: 6. Process Card
+    Page-->>Client: 7. Redirect to Success URL
+    PSP->>PS: 8. Webhook Notification
 ```
 
 ### Benefits of Hosted Page
@@ -480,21 +435,14 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 **The answer**: True exactly-once is impossible in distributed systems. Instead, we achieve **effectively exactly-once** through:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Exactly-Once Delivery                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   At-Least-Once (Retry)    +    At-Most-Once (Idempotency)  │
-│                                                              │
-│   ┌─────────────────┐         ┌─────────────────┐           │
-│   │ Keep retrying   │    +    │ Idempotency key │           │
-│   │ until success   │         │ prevents dupes  │           │
-│   └─────────────────┘         └─────────────────┘           │
-│                                                              │
-│   = Exactly-Once Semantics                                   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph ExactlyOnce["Exactly-Once Delivery"]
+        A["At-Least-Once (Retry)<br/>Keep retrying until success"]
+        B["At-Most-Once (Idempotency)<br/>Idempotency key prevents dupes"]
+        A ---|+| B
+        Result["= Exactly-Once Semantics"]
+    end
 ```
 
 ### Communication Patterns
@@ -531,46 +479,40 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 ### Retry Strategies
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Retry Strategies                          │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. Immediate Retry                                          │
-│     [Attempt 1] ─► [Attempt 2] ─► [Attempt 3]               │
-│                                                              │
-│  2. Fixed Interval                                           │
-│     [Attempt 1] ─5s─► [Attempt 2] ─5s─► [Attempt 3]         │
-│                                                              │
-│  3. Incremental Interval                                     │
-│     [Attempt 1] ─5s─► [Attempt 2] ─10s─► [Attempt 3]        │
-│                                                              │
-│  4. Exponential Backoff (Recommended)                        │
-│     [Attempt 1] ─1s─► [Attempt 2] ─2s─► [Attempt 3] ─4s─►   │
-│                                                              │
-│  5. Cancel (Permanent failure)                               │
-│     [Attempt 1] ─► [Mark as failed]                         │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph R1["1. Immediate Retry"]
+        A1["Attempt 1"] --> A2["Attempt 2"] --> A3["Attempt 3"]
+    end
+
+    subgraph R2["2. Fixed Interval"]
+        B1["Attempt 1"] -->|5s| B2["Attempt 2"] -->|5s| B3["Attempt 3"]
+    end
+
+    subgraph R3["3. Incremental Interval"]
+        C1["Attempt 1"] -->|5s| C2["Attempt 2"] -->|10s| C3["Attempt 3"]
+    end
+
+    subgraph R4["4. Exponential Backoff (Recommended)"]
+        D1["Attempt 1"] -->|1s| D2["Attempt 2"] -->|2s| D3["Attempt 3"] -->|4s| D4["..."]
+    end
+
+    subgraph R5["5. Cancel (Permanent failure)"]
+        E1["Attempt 1"] --> E2["Mark as failed"]
+    end
 ```
 
 ### Queue Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Retry Queue System                       │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   ┌─────────────┐      ┌─────────────┐      ┌────────────┐  │
-│   │   Payment   │      │   Retry     │      │   Dead     │  │
-│   │   Queue     │ ───► │   Queue     │ ───► │   Letter   │  │
-│   │             │      │ (3 retries) │      │   Queue    │  │
-│   └─────────────┘      └─────────────┘      └────────────┘  │
-│                                                              │
-│   Normal flow          Transient errors     Needs manual    │
-│                        auto-retry           investigation   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph RetryQueueSystem["Retry Queue System"]
+        PQ["Payment Queue<br/>(Normal flow)"]
+        RQ["Retry Queue<br/>(3 retries)<br/>Transient errors auto-retry"]
+        DLQ["Dead Letter Queue<br/>Needs manual investigation"]
+
+        PQ --> RQ --> DLQ
+    end
 ```
 
 **Key principle**: After max retries, don't silently fail. Move to dead letter queue for manual investigation.
@@ -594,42 +536,28 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 ### Reconciliation Process
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   Daily Reconciliation                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   ┌─────────────┐                 ┌─────────────┐           │
-│   │   Internal  │                 │ PSP Settlement│          │
-│   │   Ledger    │                 │   File        │          │
-│   └──────┬──────┘                 └──────┬───────┘          │
-│          │                               │                   │
-│          └───────────┬───────────────────┘                  │
-│                      │                                       │
-│                      ▼                                       │
-│              ┌──────────────┐                                │
-│              │   Compare    │                                │
-│              │  & Match     │                                │
-│              └──────┬───────┘                                │
-│                     │                                        │
-│        ┌────────────┼────────────┐                          │
-│        ▼            ▼            ▼                          │
-│   ┌─────────┐  ┌─────────┐  ┌─────────┐                    │
-│   │ Matched │  │Mismatch │  │ Missing │                    │
-│   │   OK    │  │ (Diff)  │  │ (One-   │                    │
-│   │         │  │         │  │ sided)  │                    │
-│   └─────────┘  └────┬────┘  └────┬────┘                    │
-│                     │            │                          │
-│                     ▼            ▼                          │
-│              ┌───────────────────────┐                      │
-│              │   Resolution Queue    │                      │
-│              │                       │                      │
-│              │ - Auto-fix (known)    │                      │
-│              │ - Manual review       │                      │
-│              │ - Investigation       │                      │
-│              └───────────────────────┘                      │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph DailyReconciliation["Daily Reconciliation"]
+        IL["Internal Ledger"]
+        PSP["PSP Settlement File"]
+
+        IL --> Compare["Compare & Match"]
+        PSP --> Compare
+
+        Compare --> Matched["Matched OK"]
+        Compare --> Mismatch["Mismatch (Diff)"]
+        Compare --> Missing["Missing (One-sided)"]
+
+        Mismatch --> RQ["Resolution Queue"]
+        Missing --> RQ
+
+        subgraph RQ["Resolution Queue"]
+            AF["Auto-fix (known)"]
+            MR["Manual review"]
+            INV["Investigation"]
+        end
+    end
 ```
 
 ### Mismatch Categories
@@ -666,38 +594,36 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 ### Security Layers
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Security Architecture                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Layer 1: Network Security                                   │
-│  ├── TLS 1.3 for all communications                         │
-│  ├── WAF (Web Application Firewall)                         │
-│  └── DDoS protection                                        │
-│                                                              │
-│  Layer 2: Application Security                               │
-│  ├── Input validation                                       │
-│  ├── Rate limiting                                          │
-│  └── Request signing (HMAC)                                 │
-│                                                              │
-│  Layer 3: Data Security                                      │
-│  ├── Encryption at rest (AES-256)                          │
-│  ├── Tokenization (no raw card data)                       │
-│  └── Data masking in logs                                   │
-│                                                              │
-│  Layer 4: Fraud Prevention                                   │
-│  ├── 3D Secure                                              │
-│  ├── Velocity checks                                        │
-│  ├── Device fingerprinting                                  │
-│  └── ML-based fraud detection                               │
-│                                                              │
-│  Layer 5: Compliance                                         │
-│  ├── AML/KYC checks                                         │
-│  ├── Sanctions screening                                    │
-│  └── Audit logging                                          │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph SecurityArchitecture["Security Architecture"]
+        subgraph L1["Layer 1: Network Security"]
+            L1A["TLS 1.3 for all communications"]
+            L1B["WAF (Web Application Firewall)"]
+            L1C["DDoS protection"]
+        end
+        subgraph L2["Layer 2: Application Security"]
+            L2A["Input validation"]
+            L2B["Rate limiting"]
+            L2C["Request signing (HMAC)"]
+        end
+        subgraph L3["Layer 3: Data Security"]
+            L3A["Encryption at rest (AES-256)"]
+            L3B["Tokenization (no raw card data)"]
+            L3C["Data masking in logs"]
+        end
+        subgraph L4["Layer 4: Fraud Prevention"]
+            L4A["3D Secure"]
+            L4B["Velocity checks"]
+            L4C["Device fingerprinting"]
+            L4D["ML-based fraud detection"]
+        end
+        subgraph L5["Layer 5: Compliance"]
+            L5A["AML/KYC checks"]
+            L5B["Sanctions screening"]
+            L5C["Audit logging"]
+        end
+    end
 ```
 
 ### Rate Limiting
@@ -735,16 +661,10 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 **Option 1: Single Primary Database**
 
-```
-┌─────────────┐
-│   Primary   │ ◄── All reads/writes
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  Replicas   │ ◄── Async replication
-│  (Read-only)│
-└─────────────┘
+```mermaid
+flowchart TB
+    Primary["Primary<br/>(All reads/writes)"]
+    Primary -->|Async replication| Replicas["Replicas<br/>(Read-only)"]
 ```
 
 - **Pros**: Strong consistency, simple
@@ -752,18 +672,14 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 **Option 2: Distributed Database (Recommended for scale)**
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│         Distributed Database (CockroachDB/YugabyteDB)        │
-│                                                              │
-│   ┌─────────┐    ┌─────────┐    ┌─────────┐                │
-│   │  Node 1 │◄──►│  Node 2 │◄──►│  Node 3 │                │
-│   │  (Raft) │    │  (Raft) │    │  (Raft) │                │
-│   └─────────┘    └─────────┘    └─────────┘                │
-│                                                              │
-│   Consensus-based replication (Raft/Paxos)                   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph DistributedDB["Distributed Database (CockroachDB/YugabyteDB)"]
+        N1["Node 1 (Raft)"] <--> N2["Node 2 (Raft)"]
+        N2 <--> N3["Node 3 (Raft)"]
+        N1 <--> N3
+    end
+    Note["Consensus-based replication (Raft/Paxos)"]
 ```
 
 - **Pros**: Horizontal scale, strong consistency
@@ -811,17 +727,14 @@ Use hosted payment pages when possible:
 
 ### 5. Defense in Depth
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                   Payment Defense Layers                      │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Layer 1: Idempotency      ─► Prevent duplicates           │
-│   Layer 2: Retry with backoff─► Handle transient failures   │
-│   Layer 3: Dead letter queue ─► Capture unresolvable cases │
-│   Layer 4: Reconciliation    ─► Catch everything else       │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph PaymentDefense["Payment Defense Layers"]
+        L1["Layer 1: Idempotency"] -->|Prevent duplicates| L2["Layer 2: Retry with backoff"]
+        L2 -->|Handle transient failures| L3["Layer 3: Dead letter queue"]
+        L3 -->|Capture unresolvable cases| L4["Layer 4: Reconciliation"]
+        L4 -->|Catch everything else| Done["Complete"]
+    end
 ```
 
 ### 6. Production Checklist

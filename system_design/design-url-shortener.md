@@ -152,34 +152,22 @@ Prevent abuse by limiting requests per API key:
 
 ### Basic Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              Clients                                     │
-│                    (Web, Mobile, API Consumers)                          │
-└─────────────────────────────────┬───────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           Load Balancer                                  │
-│                        (Round Robin/Least Conn)                          │
-└─────────────────────────────────┬───────────────────────────────────────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    ▼                           ▼
-            ┌───────────────┐           ┌───────────────┐
-            │   Web Server  │    ...    │   Web Server  │
-            │   (Stateless) │           │   (Stateless) │
-            └───────┬───────┘           └───────┬───────┘
-                    │                           │
-                    └─────────────┬─────────────┘
-                                  │
-          ┌───────────────────────┼───────────────────────┐
-          │                       │                       │
-          ▼                       ▼                       ▼
-    ┌───────────┐          ┌───────────┐          ┌───────────┐
-    │   Cache   │          │  Database │          │Key Gen Svc│
-    │  (Redis)  │          │  (MySQL)  │          │  (KGS)    │
-    └───────────┘          └───────────┘          └───────────┘
+```mermaid
+flowchart TB
+    subgraph Clients["Clients (Web, Mobile, API Consumers)"]
+    end
+
+    Clients --> LB["Load Balancer<br/>(Round Robin/Least Conn)"]
+
+    LB --> WS1["Web Server<br/>(Stateless)"]
+    LB --> WS2["Web Server<br/>(Stateless)"]
+
+    WS1 --> Cache["Cache<br/>(Redis)"]
+    WS1 --> DB["Database<br/>(MySQL)"]
+    WS1 --> KGS["Key Gen Svc<br/>(KGS)"]
+    WS2 --> Cache
+    WS2 --> DB
+    WS2 --> KGS
 ```
 
 ### Component Overview
@@ -275,20 +263,23 @@ Encoding: 0-9 (digits), a-z (10-35), A-Z (36-61)
 
 Pre-generate random keys and store in a pool:
 
-```
-┌───────────────────────────────────────────────────────┐
-│                Key Generation Service                  │
-├───────────────────────────────────────────────────────┤
-│                                                        │
-│   ┌─────────────────┐      ┌─────────────────┐        │
-│   │  Unused Keys    │      │   Used Keys     │        │
-│   │  abc123         │ ──►  │  xyz789         │        │
-│   │  def456         │      │  pqr321         │        │
-│   │  ghi789         │      │  ...            │        │
-│   └─────────────────┘      └─────────────────┘        │
-│                                                        │
-│   Background process continuously generates new keys   │
-└───────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph KGS["Key Generation Service"]
+        direction LR
+        subgraph Unused["Unused Keys"]
+            U1["abc123"]
+            U2["def456"]
+            U3["ghi789"]
+        end
+        subgraph Used["Used Keys"]
+            V1["xyz789"]
+            V2["pqr321"]
+            V3["..."]
+        end
+        Unused -->|"move on use"| Used
+    end
+    BG["Background process continuously generates new keys"] -.-> Unused
 ```
 
 **How it works:**
@@ -321,19 +312,13 @@ Pre-generate random keys and store in a pool:
 
 > **Interview context**: "For a production system at scale, I'd combine KGS with range allocation..."
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        KGS Coordinator                           │
-│                   (Allocates ID ranges)                          │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-         ┌───────────────────┼───────────────────┐
-         ▼                   ▼                   ▼
-    ┌─────────┐         ┌─────────┐         ┌─────────┐
-    │ Server1 │         │ Server2 │         │ Server3 │
-    │Range:   │         │Range:   │         │Range:   │
-    │0-999999 │         │1M-1.99M │         │2M-2.99M │
-    └─────────┘         └─────────┘         └─────────┘
+```mermaid
+flowchart TB
+    Coord["KGS Coordinator<br/>(Allocates ID ranges)"]
+
+    Coord --> S1["Server1<br/>Range: 0-999999"]
+    Coord --> S2["Server2<br/>Range: 1M-1.99M"]
+    Coord --> S3["Server3<br/>Range: 2M-2.99M"]
 ```
 
 **Why this works well:**
@@ -440,30 +425,25 @@ This is a classic trade-off question:
 
 ### Redirection Flow
 
-```
-┌──────────┐     GET /abc123      ┌─────────────┐
-│  Client  │ ──────────────────►  │ Load Balancer│
-└──────────┘                      └──────┬──────┘
-     ▲                                   │
-     │                                   ▼
-     │                           ┌─────────────┐
-     │                           │ Web Server  │
-     │                           └──────┬──────┘
-     │                                  │
-     │                    ┌─────────────┴─────────────┐
-     │                    │                           │
-     │                    ▼                           ▼
-     │             ┌─────────────┐            ┌─────────────┐
-     │             │    Cache    │◄──────────│  Database   │
-     │             │   (Redis)   │ miss      │   (MySQL)   │
-     │             └──────┬──────┘            └─────────────┘
-     │                    │ hit
-     │                    ▼
-     │           Long URL found
-     │                    │
-     │    HTTP 302 Redirect
-     └────────────────────┘
-       Location: long_url
+```mermaid
+sequenceDiagram
+    participant Client
+    participant LB as Load Balancer
+    participant WS as Web Server
+    participant Cache as Cache (Redis)
+    participant DB as Database (MySQL)
+
+    Client->>LB: GET /abc123
+    LB->>WS: Forward request
+    WS->>Cache: Check cache
+    alt Cache Hit
+        Cache-->>WS: Long URL found
+    else Cache Miss
+        WS->>DB: Query database
+        DB-->>WS: Long URL
+        WS->>Cache: Update cache
+    end
+    WS-->>Client: HTTP 302 Redirect<br/>Location: long_url
 ```
 
 ### Detailed Flow
@@ -481,25 +461,24 @@ This is a classic trade-off question:
 
 ### Caching Strategy
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      Caching Layer                           │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Cache Key: short_code                                      │
-│   Cache Value: {long_url, expires_at, created_at}            │
-│   TTL: 24 hours (or until expiration)                        │
-│                                                              │
-│   Eviction: LRU (Least Recently Used)                        │
-│   Memory: ~35GB for 20% of daily traffic                     │
-│                                                              │
-│   Cache Aside Pattern:                                       │
-│   1. Check cache first                                       │
-│   2. On miss, query DB                                       │
-│   3. Populate cache                                          │
-│   4. Return result                                           │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph CachingLayer["Caching Layer"]
+        direction TB
+        K["Cache Key: short_code"]
+        V["Cache Value: {long_url, expires_at, created_at}"]
+        TTL["TTL: 24 hours (or until expiration)"]
+        E["Eviction: LRU (Least Recently Used)"]
+        M["Memory: ~35GB for 20% of daily traffic"]
+
+        subgraph Pattern["Cache Aside Pattern"]
+            P1["1. Check cache first"]
+            P2["2. On miss, query DB"]
+            P3["3. Populate cache"]
+            P4["4. Return result"]
+            P1 --> P2 --> P3 --> P4
+        end
+    end
 ```
 
 ---
@@ -515,36 +494,29 @@ This is a classic trade-off question:
 Some URLs (viral content) get massive traffic:
 
 **Solution 1: Cache Replication**
-```
-┌─────────────┐
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────────┐
-│           Cache Cluster (Redis)          │
-│  ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐     │
-│  │Rep 1│  │Rep 2│  │Rep 3│  │Rep 4│     │
-│  │abc12│  │abc12│  │abc12│  │abc12│     │
-│  └─────┘  └─────┘  └─────┘  └─────┘     │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    Client --> CacheCluster
+    subgraph CacheCluster["Cache Cluster (Redis)"]
+        Rep1["Rep 1<br/>abc12"]
+        Rep2["Rep 2<br/>abc12"]
+        Rep3["Rep 3<br/>abc12"]
+        Rep4["Rep 4<br/>abc12"]
+    end
 ```
 
 **Solution 2: Local Cache + Distributed Cache**
-```
-App Server 1              App Server 2
-┌─────────────┐          ┌─────────────┐
-│ Local Cache │          │ Local Cache │
-│ (in-memory) │          │ (in-memory) │
-└──────┬──────┘          └──────┬──────┘
-       │                        │
-       └────────┬───────────────┘
-                │
-                ▼
-       ┌─────────────┐
-       │   Redis     │
-       │ (Distributed)│
-       └─────────────┘
+```mermaid
+flowchart TB
+    subgraph AS1["App Server 1"]
+        LC1["Local Cache<br/>(in-memory)"]
+    end
+    subgraph AS2["App Server 2"]
+        LC2["Local Cache<br/>(in-memory)"]
+    end
+
+    LC1 --> Redis["Redis<br/>(Distributed)"]
+    LC2 --> Redis
 ```
 
 ### Duplicate URL Detection
@@ -589,18 +561,27 @@ App Server 1              App Server 2
 
 **Real-time vs. Batch:**
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Analytics Pipeline                        │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│   Real-time Path (for dashboards):                           │
-│   Click → Kafka → Stream Processor → Redis (counters)        │
-│                                                              │
-│   Batch Path (for reports):                                  │
-│   Click → Kafka → S3 → Spark → Data Warehouse               │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph AnalyticsPipeline["Analytics Pipeline"]
+        Click["Click"]
+        Kafka["Kafka"]
+
+        subgraph RealTime["Real-time Path (for dashboards)"]
+            SP["Stream Processor"]
+            RedisC["Redis (counters)"]
+        end
+
+        subgraph Batch["Batch Path (for reports)"]
+            S3["S3"]
+            Spark["Spark"]
+            DW["Data Warehouse"]
+        end
+
+        Click --> Kafka
+        Kafka --> SP --> RedisC
+        Kafka --> S3 --> Spark --> DW
+    end
 ```
 
 **Click event schema:**
@@ -712,15 +693,21 @@ App Server 1              App Server 2
 
 ### Scalability Phases
 
-```
-Phase 1: Single Server (~1K QPS, ~1M URLs)
-└── MySQL + Redis + single app server
+```mermaid
+flowchart TB
+    subgraph Phase1["Phase 1: Single Server (~1K QPS, ~1M URLs)"]
+        P1["MySQL + Redis + single app server"]
+    end
 
-Phase 2: Horizontal Scaling (~10K QPS, ~100M URLs)
-└── Load balancer + app servers + MySQL replicas + Redis cluster
+    subgraph Phase2["Phase 2: Horizontal Scaling (~10K QPS, ~100M URLs)"]
+        P2["Load balancer + app servers + MySQL replicas + Redis cluster"]
+    end
 
-Phase 3: Distributed (~100K QPS, ~10B URLs)
-└── Multiple DCs + sharded DB + CDN
+    subgraph Phase3["Phase 3: Distributed (~100K QPS, ~10B URLs)"]
+        P3["Multiple DCs + sharded DB + CDN"]
+    end
+
+    Phase1 --> Phase2 --> Phase3
 ```
 
 ---

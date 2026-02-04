@@ -73,49 +73,32 @@ Calculations:
 
 ## High-Level Architecture
 
-```
-                                    ┌─────────────────────────────────────┐
-                                    │           Client Layer              │
-                                    │  (SDK / HTTP Client / CLI)          │
-                                    └──────────────┬──────────────────────┘
-                                                   │
-                                    ┌──────────────▼──────────────────────┐
-                                    │         Load Balancer               │
-                                    │     (Round Robin / Least Conn)      │
-                                    └──────────────┬──────────────────────┘
-                                                   │
-                    ┌──────────────────────────────┼──────────────────────────────┐
-                    │                              │                              │
-         ┌──────────▼──────────┐       ┌──────────▼──────────┐       ┌──────────▼──────────┐
-         │   Coordinator 1     │       │   Coordinator 2     │       │   Coordinator N     │
-         │  (Stateless API)    │       │  (Stateless API)    │       │  (Stateless API)    │
-         └──────────┬──────────┘       └──────────┬──────────┘       └──────────┬──────────┘
-                    │                              │                              │
-                    └──────────────────────────────┼──────────────────────────────┘
-                                                   │
-                                    ┌──────────────▼──────────────────────┐
-                                    │     Consistent Hash Ring            │
-                                    │   (Partition Key → Node Mapping)    │
-                                    └──────────────┬──────────────────────┘
-                                                   │
-      ┌────────────────────────────────────────────┼────────────────────────────────────────────┐
-      │                    │                       │                       │                    │
-┌─────▼─────┐        ┌─────▼─────┐          ┌─────▼─────┐          ┌─────▼─────┐        ┌─────▼─────┐
-│  Node A   │        │  Node B   │          │  Node C   │          │  Node D   │        │  Node N   │
-│ ┌───────┐ │        │ ┌───────┐ │          │ ┌───────┐ │          │ ┌───────┐ │        │ ┌───────┐ │
-│ │MemTab│ │        │ │MemTab│ │          │ │MemTab│ │          │ │MemTab│ │        │ │MemTab│ │
-│ └───┬───┘ │        │ └───┬───┘ │          │ └───┬───┘ │          │ └───┬───┘ │        │ └───┬───┘ │
-│ ┌───▼───┐ │        │ ┌───▼───┐ │          │ ┌───▼───┐ │          │ ┌───▼───┐ │        │ ┌───▼───┐ │
-│ │SSTable│ │        │ │SSTable│ │          │ │SSTable│ │          │ │SSTable│ │        │ │SSTable│ │
-│ └───────┘ │        │ └───────┘ │          │ └───────┘ │          │ └───────┘ │        │ └───────┘ │
-└───────────┘        └───────────┘          └───────────┘          └───────────┘        └───────────┘
-     │                    │                       │                       │                    │
-     └────────────────────┴───────────────────────┼───────────────────────┴────────────────────┘
-                                                  │
-                                    ┌─────────────▼─────────────┐
-                                    │    Replication Layer      │
-                                    │  (Sync/Async Replication) │
-                                    └───────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph ClientLayer["Client Layer (SDK / HTTP Client / CLI)"]
+    end
+
+    ClientLayer --> LB["Load Balancer<br/>(Round Robin / Least Conn)"]
+
+    LB --> C1["Coordinator 1<br/>(Stateless API)"]
+    LB --> C2["Coordinator 2<br/>(Stateless API)"]
+    LB --> CN["Coordinator N<br/>(Stateless API)"]
+
+    C1 --> Ring["Consistent Hash Ring<br/>(Partition Key → Node Mapping)"]
+    C2 --> Ring
+    CN --> Ring
+
+    Ring --> NA["Node A<br/>MemTab → SSTable"]
+    Ring --> NB["Node B<br/>MemTab → SSTable"]
+    Ring --> NC["Node C<br/>MemTab → SSTable"]
+    Ring --> ND["Node D<br/>MemTab → SSTable"]
+    Ring --> NN["Node N<br/>MemTab → SSTable"]
+
+    NA --> Repl["Replication Layer<br/>(Sync/Async Replication)"]
+    NB --> Repl
+    NC --> Repl
+    ND --> Repl
+    NN --> Repl
 ```
 
 ### Components
@@ -274,32 +257,15 @@ Replication gives us:
 
 ### Replication Strategy
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                    Replication Model (N=3)                       │
-│                                                                  │
-│    Key "user:123" hashes to position P                          │
-│                                                                  │
-│                        Hash Ring                                 │
-│                           │                                      │
-│               ┌───────────┼───────────┐                         │
-│               │           P           │                         │
-│               │           ↓           │                         │
-│               │      ● Node A ← Primary (Coordinator)           │
-│               │           │           │                         │
-│               │           │ replicate │                         │
-│               │           ↓           │                         │
-│               │      ● Node B ← Replica 1                       │
-│               │           │           │                         │
-│               │           │ replicate │                         │
-│               │           ↓           │                         │
-│               │      ● Node C ← Replica 2                       │
-│               │                       │                         │
-│               └───────────────────────┘                         │
-│                                                                  │
-│    Preference List: [A, B, C, D, E] (in ring order)             │
-│    Active Replicas: First 3 healthy nodes from list             │
-└──────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph ReplicationModel["Replication Model (N=3)"]
+        Key["Key 'user:123' hashes to position P"]
+        Key --> NodeA["Node A (Primary/Coordinator)"]
+        NodeA -->|replicate| NodeB["Node B (Replica 1)"]
+        NodeB -->|replicate| NodeC["Node C (Replica 2)"]
+    end
+    Note["Preference List: [A, B, C, D, E] (in ring order)<br/>Active Replicas: First 3 healthy nodes from list"]
 ```
 
 ### Quorum Configuration (NWR)
@@ -336,41 +302,39 @@ Replication gives us:
 
 ### Synchronous vs Asynchronous Replication
 
+**Synchronous (W=N):**
+```mermaid
+sequenceDiagram
+    participant Client
+    participant NodeA as Node A
+    participant NodeB as Node B
+    participant NodeC as Node C
+
+    Client->>NodeA: write
+    NodeA->>NodeB: replicate
+    NodeA->>NodeC: replicate
+    NodeB-->>NodeA: ack
+    NodeC-->>NodeA: ack
+    NodeA-->>Client: ack (all replicas)
 ```
-Synchronous (W=N):
-┌────────┐    write    ┌────────┐
-│ Client │────────────▶│ Node A │──┐
-└────────┘             └────────┘  │ wait for all
-    ▲                              │ replicas
-    │                  ┌────────┐  │
-    │                  │ Node B │◀─┤
-    │                  └────────┘  │
-    │                              │
-    │                  ┌────────┐  │
-    │      ack         │ Node C │◀─┘
-    └──────────────────┴────────┘
+- Pros: Strong consistency
+- Cons: Higher latency, lower availability
 
-    Pros: Strong consistency
-    Cons: Higher latency, lower availability
+**Asynchronous (W=1):**
+```mermaid
+sequenceDiagram
+    participant Client
+    participant NodeA as Node A
+    participant NodeB as Node B
+    participant NodeC as Node C
 
-Asynchronous (W=1):
-┌────────┐    write    ┌────────┐
-│ Client │────────────▶│ Node A │──┐
-└────────┘             └────────┘  │ async
-    ▲                      │       │ replication
-    │ ack (immediate)      │       │
-    └──────────────────────┘       │
-                                   │
-                       ┌────────┐  │
-                       │ Node B │◀─┤
-                       └────────┘  │
-                       ┌────────┐  │
-                       │ Node C │◀─┘
-                       └────────┘
-
-    Pros: Low latency, high availability
-    Cons: Potential data loss, eventual consistency
+    Client->>NodeA: write
+    NodeA-->>Client: ack (immediate)
+    NodeA-)NodeB: async replicate
+    NodeA-)NodeC: async replicate
 ```
+- Pros: Low latency, high availability
+- Cons: Potential data loss, eventual consistency
 
 ---
 
@@ -568,65 +532,45 @@ In a distributed system, we can't rely on a single "master" to track health - th
 
 #### How Gossip Works
 
+Every T seconds (typically 1s), each node:
+1. Picks random peer
+2. Exchanges membership list with heartbeat counters
+3. Merges lists (keep highest heartbeat per node)
+
+```mermaid
+sequenceDiagram
+    participant NodeA as Node A
+    participant NodeB as Node B
+
+    Note over NodeA: {A:10, B:5, C:7, D:3}
+    Note over NodeB: {A:9, B:6, C:7, D:4}
+
+    NodeA->>NodeB: gossip exchange
+    NodeB-->>NodeA: respond
+
+    Note over NodeA,NodeB: Merged: {A:10, B:6, C:7, D:4}
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    Gossip Protocol                              │
-│                                                                 │
-│   Every T seconds (typically 1s), each node:                    │
-│   1. Picks random peer                                          │
-│   2. Exchanges membership list with heartbeat counters          │
-│   3. Merges lists (keep highest heartbeat per node)            │
-│                                                                 │
-│   ┌──────┐ gossip  ┌──────┐                                    │
-│   │Node A│────────▶│Node B│                                    │
-│   └──────┘         └──────┘                                    │
-│       │                │                                        │
-│       │  {A:10,B:5,   {A:9,B:6,                                │
-│       │   C:7,D:3}     C:7,D:4}                                │
-│       │                │                                        │
-│       │    Merged:     │                                        │
-│       │  {A:10,B:6,C:7,D:4}                                    │
-│       │                │                                        │
-│                                                                 │
-│   Node marked DOWN if heartbeat unchanged for T_fail seconds   │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+Node marked DOWN if heartbeat unchanged for T_fail seconds.
 
 #### Failure State Transitions
 
+```mermaid
+stateDiagram-v2
+    [*] --> HEALTHY
+    HEALTHY --> SUSPICIOUS: Missed heartbeats (T > 5s)
+    SUSPICIOUS --> DOWN: No recovery (T > 30s)
+    DOWN --> HEALTHY: Node recovers
+    DOWN --> PERMANENTLY_FAILED: No recovery (T > 10min)
+    PERMANENTLY_FAILED --> REMOVED: Admin removes or auto-remove
+    REMOVED --> [*]
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                 Node State Machine                              │
-│                                                                 │
-│   HEALTHY ──────────────────────────────────────────────────   │
-│      │                                                          │
-│      │ Missed heartbeats (T > 5s)                              │
-│      ▼                                                          │
-│   SUSPICIOUS ───────────────────────────────────────────────   │
-│      │                                                          │
-│      │ No recovery (T > 30s)                                   │
-│      ▼                                                          │
-│   DOWN (Temporary) ─────────────────────────────────────────   │
-│      │         │                                                │
-│      │         │ Node recovers → back to HEALTHY               │
-│      │         │                                                │
-│      │ No recovery (T > 10min)                                 │
-│      ▼                                                          │
-│   PERMANENTLY FAILED ───────────────────────────────────────   │
-│      │                                                          │
-│      │ Admin removes or system auto-removes                    │
-│      ▼                                                          │
-│   REMOVED (from ring)                                          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
 
-Timeline:
-─────────────────────────────────────────────────────────────────
-T=0      Node D stops responding
-T=5s     Marked SUSPICIOUS (missed heartbeats)
-T=30s    Marked DOWN (hinted handoff activates)
-T=10min  Marked PERMANENTLY FAILED (re-replication triggers)
-```
+**Timeline:**
+- T=0: Node D stops responding
+- T=5s: Marked SUSPICIOUS (missed heartbeats)
+- T=30s: Marked DOWN (hinted handoff activates)
+- T=10min: Marked PERMANENTLY FAILED (re-replication triggers)
 
 ---
 
@@ -1321,37 +1265,27 @@ Most distributed KV stores use **LSM trees** because they convert random writes 
 
 ### Write Flow Sequence
 
-```
-┌────────┐       ┌─────────────┐       ┌────────┐       ┌────────┐       ┌────────┐
-│ Client │       │ Coordinator │       │ Node A │       │ Node B │       │ Node C │
-└───┬────┘       └──────┬──────┘       └───┬────┘       └───┬────┘       └───┬────┘
-    │                   │                  │                │                │
-    │  PUT(k,v)         │                  │                │                │
-    │──────────────────▶│                  │                │                │
-    │                   │                  │                │                │
-    │                   │ hash(k)→[A,B,C]  │                │                │
-    │                   │                  │                │                │
-    │                   │  write(k,v)      │                │                │
-    │                   │─────────────────▶│                │                │
-    │                   │                  │                │                │
-    │                   │  write(k,v)      │                │                │
-    │                   │─────────────────────────────────▶│                │
-    │                   │                  │                │                │
-    │                   │  write(k,v)      │                │                │
-    │                   │────────────────────────────────────────────────▶│
-    │                   │                  │                │                │
-    │                   │         ACK      │                │                │
-    │                   │◀─────────────────│                │                │
-    │                   │                  │                │                │
-    │                   │         ACK (W=2 reached)         │                │
-    │                   │◀─────────────────────────────────│                │
-    │                   │                  │                │                │
-    │   SUCCESS         │                  │                │                │
-    │◀──────────────────│                  │                │                │
-    │                   │                  │                │                │
-    │                   │         ACK (async, W already met)                 │
-    │                   │◀────────────────────────────────────────────────│
-    │                   │                  │                │                │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Coord as Coordinator
+    participant NodeA as Node A
+    participant NodeB as Node B
+    participant NodeC as Node C
+
+    Client->>Coord: PUT(k,v)
+    Note over Coord: hash(k) → [A,B,C]
+
+    par Write to all replicas
+        Coord->>NodeA: write(k,v)
+        Coord->>NodeB: write(k,v)
+        Coord->>NodeC: write(k,v)
+    end
+
+    NodeA-->>Coord: ACK
+    NodeB-->>Coord: ACK (W=2 reached)
+    Coord-->>Client: SUCCESS
+    NodeC-->>Coord: ACK (async, W already met)
 ```
 
 ---

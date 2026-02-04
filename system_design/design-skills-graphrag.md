@@ -129,57 +129,41 @@ Based on the Textkernel Ontology API:
 
 ### High-Level Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     SKILLS GRAPHRAG ARCHITECTURE                    │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    Query["User Query (Natural Lang)"]
 
-                            ┌─────────────────┐
-                            │   User Query    │
-                            │  (Natural Lang) │
-                            └────────┬────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                         QUERY PROCESSOR                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Intent    │  │   Entity    │  │   Query     │                 │
-│  │ Classifier  │  │  Extractor  │  │  Planner    │                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                    ┌────────────────┼────────────────┐
-                    ▼                ▼                ▼
-           ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-           │ Skills Graph  │ │ Vector Store  │ │ Document Store│
-           │   (Neo4j)     │ │  (Embeddings) │ │  (Raw Data)   │
-           └───────────────┘ └───────────────┘ └───────────────┘
-                    │                │                │
-                    └────────────────┼────────────────┘
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       CONTEXT ASSEMBLER                             │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Graph     │  │   Vector    │  │  Hybrid     │                 │
-│  │  Context    │  │   Context   │  │   Ranker    │                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                        LLM RESPONSE GENERATOR                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Prompt    │  │    LLM      │  │  Response   │                 │
-│  │  Builder    │  │  (GPT-4)    │  │  Formatter  │                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                                     │
-                                     ▼
-                            ┌─────────────────┐
-                            │    Response     │
-                            │ (Structured +   │
-                            │  Explanation)   │
-                            └─────────────────┘
+    subgraph QueryProcessor["QUERY PROCESSOR"]
+        IC["Intent Classifier"]
+        EE["Entity Extractor"]
+        QP["Query Planner"]
+    end
+
+    Query --> QueryProcessor
+
+    QueryProcessor --> SG["Skills Graph (Neo4j)"]
+    QueryProcessor --> VS["Vector Store (Embeddings)"]
+    QueryProcessor --> DS["Document Store (Raw Data)"]
+
+    subgraph ContextAssembler["CONTEXT ASSEMBLER"]
+        GC["Graph Context"]
+        VC["Vector Context"]
+        HR["Hybrid Ranker"]
+    end
+
+    SG --> ContextAssembler
+    VS --> ContextAssembler
+    DS --> ContextAssembler
+
+    subgraph LLMGenerator["LLM RESPONSE GENERATOR"]
+        PB["Prompt Builder"]
+        LLM["LLM (GPT-4)"]
+        RF["Response Formatter"]
+    end
+
+    ContextAssembler --> LLMGenerator
+
+    LLMGenerator --> Response["Response<br/>(Structured + Explanation)"]
 ```
 
 ### Component Overview
@@ -249,39 +233,24 @@ CATEGORY ──[PARENT_OF]──> CATEGORY
 
 ### Example Graph Data
 
-```
-                         ┌──────────────────┐
-                         │    CATEGORY:     │
-                         │   Programming    │
-                         └────────┬─────────┘
-                                  │ PARENT_OF
-                    ┌─────────────┼─────────────┐
-                    ▼             ▼             ▼
-            ┌───────────┐ ┌───────────┐ ┌───────────┐
-            │ Backend   │ │ Frontend  │ │   Data    │
-            │Development│ │Development│ │ Science   │
-            └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-                  │             │             │
-                  ▼             ▼             ▼
-            ┌───────────┐ ┌───────────┐ ┌───────────┐
-            │  Python   │ │JavaScript │ │  Python   │
-            │  (Skill)  │ │  (Skill)  │ │  (Skill)  │
-            └─────┬─────┘ └─────┬─────┘ └─────┬─────┘
-                  │             │             │
-    ┌─────────────┼─────────────┼─────────────┤
-    │             │             │             │
-    ▼             ▼             ▼             ▼
-┌────────┐  ┌────────┐   ┌────────┐    ┌────────┐
-│ Django │  │ FastAPI│   │ React  │    │ Pandas │
-│(Skill) │  │(Skill) │   │(Skill) │    │(Skill) │
-└────────┘  └────────┘   └────────┘    └────────┘
-    │
-    │ VALIDATED_BY
-    ▼
-┌──────────────────┐
-│   Django        │
-│  Certification  │
-└──────────────────┘
+```mermaid
+flowchart TB
+    Programming["CATEGORY: Programming"]
+
+    Programming -->|PARENT_OF| Backend["Backend Development"]
+    Programming -->|PARENT_OF| Frontend["Frontend Development"]
+    Programming -->|PARENT_OF| DataSci["Data Science"]
+
+    Backend --> Python["Python (Skill)"]
+    Frontend --> JavaScript["JavaScript (Skill)"]
+    DataSci --> Python2["Python (Skill)"]
+
+    Python --> Django["Django (Skill)"]
+    Python --> FastAPI["FastAPI (Skill)"]
+    JavaScript --> React["React (Skill)"]
+    Python2 --> Pandas["Pandas (Skill)"]
+
+    Django -->|VALIDATED_BY| DjangoCert["Django Certification"]
 ```
 
 ### Neo4j Schema (Cypher)
@@ -436,47 +405,19 @@ STEP 5: STRUCTURED RESPONSE
 
 > **Interview context**: The core of GraphRAG is the query processing pipeline. Understand each step.
 
-```
-User Query: "What skills do I need to become a Machine Learning Engineer?"
-     │
-     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│ Step 1: INTENT CLASSIFICATION                                       │
-│   Input: Natural language query                                     │
-│   Output: SKILLS_GAP | CAREER_PATH | RECOMMENDATIONS | ...         │
-│   Method: LLM prompt or fine-tuned classifier                      │
-└─────────────────────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│ Step 2: ENTITY EXTRACTION                                           │
-│   Input: Query text                                                 │
-│   Output: {skills: [...], professions: [...], certifications: [...]}│
-│   Method: NER or LLM extraction                                     │
-└─────────────────────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│ Step 3: GRAPH QUERY GENERATION                                      │
-│   Based on intent, generate appropriate Cypher query                │
-│   - SKILLS_GAP → Compare profession skill sets                     │
-│   - CAREER_PATH → Traverse TRANSITIONS_TO relationships            │
-│   - RECOMMENDATIONS → Find related skills not in user's set        │
-└─────────────────────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│ Step 4: CONTEXT ASSEMBLY                                            │
-│   Combine: Graph results + Vector search results + User context     │
-│   Format into prompt for LLM                                        │
-└─────────────────────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│ Step 5: LLM RESPONSE GENERATION                                     │
-│   LLM receives: Query + Intent + Graph Context + Vector Context    │
-│   LLM produces: Structured answer citing graph relationships        │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    Query["User Query:<br/>'What skills do I need to become a Machine Learning Engineer?'"]
+
+    Query --> Step1["Step 1: INTENT CLASSIFICATION<br/>Input: Natural language query<br/>Output: SKILLS_GAP | CAREER_PATH | RECOMMENDATIONS | ...<br/>Method: LLM prompt or fine-tuned classifier"]
+
+    Step1 --> Step2["Step 2: ENTITY EXTRACTION<br/>Input: Query text<br/>Output: {skills: [...], professions: [...]}<br/>Method: NER or LLM extraction"]
+
+    Step2 --> Step3["Step 3: GRAPH QUERY GENERATION<br/>Based on intent, generate Cypher query<br/>SKILLS_GAP → Compare profession skill sets<br/>CAREER_PATH → Traverse TRANSITIONS_TO relationships"]
+
+    Step3 --> Step4["Step 4: CONTEXT ASSEMBLY<br/>Combine: Graph + Vector + User context<br/>Format into prompt for LLM"]
+
+    Step4 --> Step5["Step 5: LLM RESPONSE GENERATION<br/>LLM receives: Query + Intent + Context<br/>LLM produces: Structured answer"]
 ```
 
 ### Key Graph Queries
@@ -657,49 +598,43 @@ RESPONSE:
 
 ### Data Ingestion Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                      DATA INGESTION PIPELINE                        │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Sources["DATA SOURCES"]
+        TK["Textkernel Skills API"]
+        JB["Job Boards (Indeed, etc)"]
+        RS["Resumes (User Data)"]
+        CR["Courses (Coursera)"]
+    end
 
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌──────────┐
-│ Textkernel  │    │ Job Boards  │    │   Resumes   │    │ Courses  │
-│  Skills API │    │(Indeed,etc) │    │  (User Data)│    │(Coursera)│
-└──────┬──────┘    └──────┬──────┘    └──────┬──────┘    └────┬─────┘
-       │                  │                  │                 │
-       ▼                  ▼                  ▼                 ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                       DATA COLLECTORS                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │  API Client │  │  Scraper    │  │  File Parser│                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      DATA PROCESSING                                │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Entity    │  │  Relation   │  │   Data      │                 │
-│  │ Extraction  │  │ Extraction  │  │ Validation  │                 │
-│  │   (LLM)     │  │   (LLM)     │  │             │                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    GRAPH CONSTRUCTION                               │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
-│  │   Entity    │  │  Relation   │  │   Graph     │                 │
-│  │  Resolver   │  │  Merger     │  │  Writer     │                 │
-│  │(Dedup/Match)│  │             │  │  (Neo4j)    │                 │
-│  └─────────────┘  └─────────────┘  └─────────────┘                 │
-└─────────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │ Skills Knowledge│
-                    │     Graph       │
-                    └─────────────────┘
+    subgraph Collectors["DATA COLLECTORS"]
+        API["API Client"]
+        Scraper["Scraper"]
+        Parser["File Parser"]
+    end
+
+    TK --> API
+    JB --> Scraper
+    RS --> Parser
+    CR --> API
+
+    subgraph Processing["DATA PROCESSING"]
+        EE["Entity Extraction (LLM)"]
+        RE["Relation Extraction (LLM)"]
+        DV["Data Validation"]
+    end
+
+    Collectors --> Processing
+
+    subgraph GraphConstruction["GRAPH CONSTRUCTION"]
+        ER["Entity Resolver (Dedup/Match)"]
+        RM["Relation Merger"]
+        GW["Graph Writer (Neo4j)"]
+    end
+
+    Processing --> GraphConstruction
+
+    GraphConstruction --> KG["Skills Knowledge Graph"]
 ```
 
 ### Entity Extraction Pipeline

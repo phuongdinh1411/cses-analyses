@@ -95,68 +95,43 @@ Storage:
 
 > **Interview context**: "Let me draw the high-level architecture. There are two main flows: serving suggestions (read path) and updating the suggestion data (write path)."
 
+### Read Path (Serving Suggestions)
+
+```mermaid
+flowchart TD
+    subgraph ReadPath["READ PATH - Serving Suggestions"]
+        User["User types 'how t'"]
+        API["API Gateway<br/>(Rate Limiting)"]
+        App["Application Servers"]
+        Redis["Redis Cache<br/>(Prefix → Top K)"]
+        Trie["Trie Service<br/>(In-Memory Trie)"]
+        Response["Return top 10 suggestions<br/>['how to cook', 'how to tie', ...]"]
+
+        User --> API
+        API --> App
+        App -->|"Cache Hit?"| Redis
+        App -->|"Cache Miss"| Trie
+        Redis --> Response
+        Trie --> Response
+    end
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           READ PATH                                  │
-│                     (Serving Suggestions)                            │
-└─────────────────────────────────────────────────────────────────────┘
 
-    User types "how t"
-          │
-          ▼
-┌──────────────────┐
-│   API Gateway    │
-│  (Rate Limiting) │
-└──────────────────┘
-          │
-          ▼
-┌──────────────────┐     Cache Hit?     ┌──────────────────┐
-│   Application    │ ──────────────────▶│   Redis Cache    │
-│     Servers      │     Yes            │  (Prefix → Top K)│
-└──────────────────┘                    └──────────────────┘
-          │ No                                   │
-          ▼                                      │
-┌──────────────────┐                             │
-│   Trie Service   │                             │
-│  (In-Memory Trie)│                             │
-└──────────────────┘                             │
-          │                                      │
-          └──────────────────┬───────────────────┘
-                             ▼
-                    ["how to cook", "how to tie", ...]
-                    (Return top 10 suggestions)
+### Write Path (Updating Suggestions)
 
+```mermaid
+flowchart TD
+    subgraph WritePath["WRITE PATH - Updating Suggestions"]
+        Logs["Search Logs"]
+        Kafka["Kafka Queue<br/>(Search Events)"]
+        Spark["Aggregation Service<br/>(Spark/Flink)"]
+        Builder["Trie Builder<br/>(Batch Job)"]
+        TrieService["Trie Service<br/>(Hot Reload)"]
 
-┌─────────────────────────────────────────────────────────────────────┐
-│                          WRITE PATH                                  │
-│                   (Updating Suggestions)                             │
-└─────────────────────────────────────────────────────────────────────┘
-
-    Search logs
-          │
-          ▼
-┌──────────────────┐
-│   Kafka Queue    │
-│  (Search Events) │
-└──────────────────┘
-          │
-          ▼
-┌──────────────────┐
-│  Aggregation     │
-│  Service (Spark) │
-└──────────────────┘
-          │
-          ▼
-┌──────────────────┐
-│  Trie Builder    │
-│   (Batch Job)    │
-└──────────────────┘
-          │
-          ▼
-┌──────────────────┐
-│  Trie Service    │
-│  (Hot Reload)    │
-└──────────────────┘
+        Logs --> Kafka
+        Kafka --> Spark
+        Spark --> Builder
+        Builder --> TrieService
+    end
 ```
 
 ### Component Responsibilities
@@ -299,17 +274,13 @@ Search trends change constantly. "Super Bowl" spikes during game day. We need to
 
 #### Pipeline Architecture
 
-```
-┌─────────┐    ┌─────────┐    ┌─────────────┐    ┌────────────┐    ┌──────────┐
-│ Search  │───▶│  Kafka  │───▶│ Aggregator  │───▶│   Trie     │───▶│  Trie    │
-│ Servers │    │  Queue  │    │ (Spark/Flink)│    │  Builder   │    │ Service  │
-└─────────┘    └─────────┘    └─────────────┘    └────────────┘    └──────────┘
-                                    │
-                                    ▼
-                             ┌─────────────┐
-                             │ Query Store │
-                             │ (Cassandra) │
-                             └─────────────┘
+```mermaid
+flowchart LR
+    Search["Search<br/>Servers"] --> Kafka["Kafka<br/>Queue"]
+    Kafka --> Agg["Aggregator<br/>(Spark/Flink)"]
+    Agg --> Builder["Trie<br/>Builder"]
+    Builder --> Trie["Trie<br/>Service"]
+    Agg --> Store["Query Store<br/>(Cassandra)"]
 ```
 
 #### Aggregation Windows
@@ -455,36 +426,18 @@ Raw Query → Lowercase → Trim → Remove Special Chars → Blocklist Check �
 
 ### Cache Hierarchy
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      Request Flow                                │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    User["User Request: 'how t'"]
+    Browser["Browser Cache<br/>(Local Storage)<br/>TTL: 60s"]
+    CDN["CDN Edge<br/>(CloudFront)<br/>Geographic distribution"]
+    Redis["Redis Cluster<br/>(L2 Cache)<br/>Centralized hot cache"]
+    Trie["Trie Service<br/>(In-Memory)<br/>Source of truth"]
 
-        User Request: "how t"
-              │
-              ▼
-     ┌─────────────────┐
-     │  Browser Cache  │ ← Client-side, 60s TTL
-     │  (Local Storage)│
-     └─────────────────┘
-              │ Miss
-              ▼
-     ┌─────────────────┐
-     │    CDN Edge     │ ← Geographic distribution
-     │   (CloudFront)  │
-     └─────────────────┘
-              │ Miss
-              ▼
-     ┌─────────────────┐
-     │  Redis Cluster  │ ← Centralized hot cache
-     │   (L2 Cache)    │
-     └─────────────────┘
-              │ Miss
-              ▼
-     ┌─────────────────┐
-     │  Trie Service   │ ← Source of truth
-     │   (In-Memory)   │
-     └─────────────────┘
+    User --> Browser
+    Browser -->|Miss| CDN
+    CDN -->|Miss| Redis
+    Redis -->|Miss| Trie
 ```
 
 ### Cache Configuration
@@ -540,17 +493,16 @@ Start with **prefix-based sharding with weighted distribution**:
 
 ### Replication
 
-```
-                    ┌─────────────────┐
-                    │  Load Balancer  │
-                    └─────────────────┘
-                            │
-            ┌───────────────┼───────────────┐
-            ▼               ▼               ▼
-     ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-     │  Shard 1    │ │  Shard 1    │ │  Shard 1    │
-     │  Replica A  │ │  Replica B  │ │  Replica C  │
-     └─────────────┘ └─────────────┘ └─────────────┘
+```mermaid
+flowchart TD
+    LB["Load Balancer"]
+    R1["Shard 1<br/>Replica A"]
+    R2["Shard 1<br/>Replica B"]
+    R3["Shard 1<br/>Replica C"]
+
+    LB --> R1
+    LB --> R2
+    LB --> R3
 ```
 
 Each shard has 3 replicas for:

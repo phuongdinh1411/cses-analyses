@@ -160,35 +160,23 @@ GET /v1/feed?user_id={user_id}&page_token={token}&limit={limit}
 
 ## High-Level Design
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Load Balancer                           │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│  Post Service │    │ Feed Service  │    │ User Service  │
-└───────┬───────┘    └───────┬───────┘    └───────┬───────┘
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│  Post Cache   │    │  Feed Cache   │    │  User Cache   │
-│   (Redis)     │    │   (Redis)     │    │   (Redis)     │
-└───────┬───────┘    └───────┬───────┘    └───────┬───────┘
-        │                    │                    │
-        ▼                    ▼                    ▼
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│   Post DB     │    │   Feed DB     │    │   User DB     │
-│  (Cassandra)  │    │   (Redis)     │    │  (PostgreSQL) │
-└───────────────┘    └───────────────┘    └───────────────┘
-        │
-        ▼
-┌───────────────┐
-│ Media Storage │
-│     (S3)      │
-└───────────────┘
+```mermaid
+flowchart TB
+    LB["Load Balancer"]
+
+    LB --> PostSvc["Post Service"]
+    LB --> FeedSvc["Feed Service"]
+    LB --> UserSvc["User Service"]
+
+    PostSvc --> PostCache["Post Cache (Redis)"]
+    FeedSvc --> FeedCache["Feed Cache (Redis)"]
+    UserSvc --> UserCache["User Cache (Redis)"]
+
+    PostCache --> PostDB["Post DB (Cassandra)"]
+    FeedCache --> FeedDB["Feed DB (Redis)"]
+    UserCache --> UserDB["User DB (PostgreSQL)"]
+
+    PostDB --> Media["Media Storage (S3)"]
 ```
 
 ### Components
@@ -252,26 +240,12 @@ When a celebrity with 10 million followers posts, you need 10 million writes. Th
 
 Combine both approaches based on user type:
 
-```
-┌─────────────────┐
-│    New Post     │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Is user famous? │
-│ (>10K followers)│
-└────────┬────────┘
-         │
-    ┌────┴────┐
-    │         │
-   YES        NO
-    │         │
-    ▼         ▼
-┌───────┐ ┌───────┐
-│ Pull  │ │ Push  │
-│ Model │ │ Model │
-└───────┘ └───────┘
+```mermaid
+flowchart TB
+    Post["New Post"]
+    Post --> Check{"Is user famous?<br/>(>10K followers)"}
+    Check -->|YES| Pull["Pull Model"]
+    Check -->|NO| Push["Push Model"]
 ```
 
 **How it works:**
@@ -352,72 +326,39 @@ CREATE TABLE following (
 
 > **Interviewer might ask**: "Walk me through what happens when a user creates a post."
 
-```
-┌──────────────┐
-│ User creates │
-│    post      │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│ Post Service │──────────────────────┐
-│ saves post   │                      │
-└──────┬───────┘                      │
-       │                              │
-       ▼                              ▼
-┌──────────────┐              ┌───────────────┐
-│ Message Queue│              │ Media Service │
-│  (Kafka)     │              │ upload to S3  │
-└──────┬───────┘              └───────────────┘
-       │
-       ▼
-┌──────────────┐
-│ Fanout       │
-│ Workers      │
-└──────┬───────┘
-       │
-       ├──────────────┬──────────────┐
-       ▼              ▼              ▼
-┌──────────┐   ┌──────────┐   ┌──────────┐
-│ User A's │   │ User B's │   │ User C's │
-│  Feed    │   │  Feed    │   │  Feed    │
-└──────────┘   └──────────┘   └──────────┘
+```mermaid
+flowchart TB
+    User["User creates post"]
+    User --> PostSvc["Post Service saves post"]
+
+    PostSvc --> MQ["Message Queue (Kafka)"]
+    PostSvc --> Media["Media Service upload to S3"]
+
+    MQ --> Fanout["Fanout Workers"]
+
+    Fanout --> FeedA["User A's Feed"]
+    Fanout --> FeedB["User B's Feed"]
+    Fanout --> FeedC["User C's Feed"]
 ```
 
 ### 2. Feed Reading Flow
 
-```
-┌──────────────┐
-│ User requests│
-│    feed      │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐     Cache Hit
-│ Feed Cache   │─────────────────────┐
-│   (Redis)    │                     │
-└──────┬───────┘                     │
-       │ Cache Miss                  │
-       ▼                             │
-┌──────────────┐                     │
-│ Feed Service │                     │
-│              │                     │
-│ 1. Get pre-  │                     │
-│    computed  │                     │
-│    feed      │                     │
-│              │                     │
-│ 2. Fetch     │                     │
-│    celebrity │                     │
-│    posts     │                     │
-│              │                     │
-│ 3. Merge &   │                     │
-│    rank      │                     │
-└──────┬───────┘                     │
-       │                             │
-       ▼                             ▼
-┌──────────────────────────────────────┐
-│           Return Feed                │
-└──────────────────────────────────────┘
+```mermaid
+flowchart TB
+    User["User requests feed"]
+    User --> Cache{"Feed Cache (Redis)"}
+
+    Cache -->|Cache Hit| Return["Return Feed"]
+    Cache -->|Cache Miss| FeedSvc["Feed Service"]
+
+    subgraph FeedSvc["Feed Service"]
+        F1["1. Get pre-computed feed"]
+        F2["2. Fetch celebrity posts"]
+        F3["3. Merge & rank"]
+        F1 --> F2 --> F3
+    end
+
+    FeedSvc --> Return
 ```
 
 ### 3. Handling the Celebrity Problem
@@ -436,25 +377,24 @@ When a celebrity with millions of followers posts, you have several options:
 
 ### 4. Cache Strategy
 
-```
-┌─────────────────────────────────────────┐
-│              Cache Layers               │
-├─────────────────────────────────────────┤
-│                                         │
-│  L1: CDN (Edge Cache)                   │
-│      - Static media                     │
-│      - TTL: 24 hours                    │
-│                                         │
-│  L2: Application Cache (Redis Cluster)  │
-│      - User feeds                       │
-│      - Hot posts                        │
-│      - TTL: 1 hour                      │
-│                                         │
-│  L3: Database Query Cache               │
-│      - Frequently accessed data         │
-│      - TTL: 5 minutes                   │
-│                                         │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph CacheLayers["Cache Layers"]
+        subgraph L1["L1: CDN (Edge Cache)"]
+            L1A["Static media"]
+            L1B["TTL: 24 hours"]
+        end
+        subgraph L2["L2: Application Cache (Redis Cluster)"]
+            L2A["User feeds"]
+            L2B["Hot posts"]
+            L2C["TTL: 1 hour"]
+        end
+        subgraph L3["L3: Database Query Cache"]
+            L3A["Frequently accessed data"]
+            L3B["TTL: 5 minutes"]
+        end
+    end
+    L1 --> L2 --> L3
 ```
 
 ---
@@ -531,15 +471,18 @@ Feature categories:
 
 ### Scalability Phases
 
-```
-Phase 1: Small scale (~1M users)
-└── Single server, simple push model, PostgreSQL
-
-Phase 2: Medium scale (~100M users)
-└── Hybrid push/pull, Redis for feeds, Cassandra for posts
-
-Phase 3: Large scale (~1B users)
-└── Sharded everything, ML ranking, CDN for media
+```mermaid
+flowchart TB
+    subgraph P1["Phase 1: Small scale (~1M users)"]
+        S1["Single server, simple push model, PostgreSQL"]
+    end
+    subgraph P2["Phase 2: Medium scale (~100M users)"]
+        S2["Hybrid push/pull, Redis for feeds, Cassandra for posts"]
+    end
+    subgraph P3["Phase 3: Large scale (~1B users)"]
+        S3["Sharded everything, ML ranking, CDN for media"]
+    end
+    P1 --> P2 --> P3
 ```
 
 ---

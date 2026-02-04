@@ -180,34 +180,21 @@ GET /v1/messages?user_id={user_id}&chat_id={chat_id}&before={timestamp}&limit={l
 
 ## High-Level Design
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Load Balancer                           │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │
-        ┌─────────────────────┼─────────────────────┐
-        │                     │                     │
-        ▼                     ▼                     ▼
-┌───────────────┐    ┌───────────────┐    ┌───────────────┐
-│   WebSocket   │    │   API Server  │    │  Presence     │
-│   Server      │    │   (REST)      │    │  Service      │
-└───────┬───────┘    └───────┬───────┘    └───────┬───────┘
-        │                    │                    │
-        └────────────────────┼────────────────────┘
-                             │
-                             ▼
-                    ┌───────────────┐
-                    │ Message Queue │
-                    │   (Kafka)     │
-                    └───────┬───────┘
-                            │
-        ┌───────────────────┼───────────────────┐
-        │                   │                   │
-        ▼                   ▼                   ▼
-┌───────────────┐   ┌───────────────┐   ┌───────────────┐
-│   Chat        │   │  Message DB   │   │  User/Session │
-│   Service     │   │  (Cassandra)  │   │  Cache (Redis)│
-└───────────────┘   └───────────────┘   └───────────────┘
+```mermaid
+flowchart TB
+    LB["Load Balancer"]
+
+    LB --> WS["WebSocket Server"]
+    LB --> API["API Server (REST)"]
+    LB --> PS["Presence Service"]
+
+    WS --> MQ["Message Queue (Kafka)"]
+    API --> MQ
+    PS --> MQ
+
+    MQ --> CS["Chat Service"]
+    MQ --> MDB["Message DB (Cassandra)"]
+    MQ --> Cache["User/Session Cache (Redis)"]
 ```
 
 ### Components
@@ -260,43 +247,31 @@ HTTP is request-response: the client must ask for data. But in a chat system, th
 
 ### WebSocket Architecture
 
-```
-┌──────────┐         ┌─────────────────┐         ┌──────────┐
-│  User A  │◄───────►│  WebSocket      │◄───────►│  User B  │
-│ (Client) │   WS    │  Server Cluster │   WS    │ (Client) │
-└──────────┘         └────────┬────────┘         └──────────┘
-                              │
-                              ▼
-                     ┌────────────────┐
-                     │ Service        │
-                     │ Discovery      │
-                     │ (user→server)  │
-                     └────────────────┘
+```mermaid
+flowchart LR
+    UserA["User A (Client)"] <-->|WS| WSCluster["WebSocket Server Cluster"]
+    WSCluster <-->|WS| UserB["User B (Client)"]
+    WSCluster --> SD["Service Discovery<br/>(user→server)"]
 ```
 
 ### Connection Flow
 
-```
 1. Client connects to Load Balancer
 2. LB routes to WebSocket server
 3. Server authenticates user (JWT/session)
 4. Register connection in Service Discovery
 5. Subscribe to user's message channels
 
-┌────────┐                              ┌────────────┐
-│ Client │                              │ WS Server  │
-└───┬────┘                              └─────┬──────┘
-    │                                         │
-    │─────── WebSocket Upgrade ──────────────►│
-    │                                         │
-    │◄────── 101 Switching Protocols ─────────│
-    │                                         │
-    │─────── Auth: JWT Token ────────────────►│
-    │                                         │
-    │◄────── Auth OK, Connected ──────────────│
-    │                                         │
-    │◄─────────── Messages ──────────────────►│
-    │                                         │
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WS as WS Server
+
+    Client->>WS: WebSocket Upgrade
+    WS-->>Client: 101 Switching Protocols
+    Client->>WS: Auth: JWT Token
+    WS-->>Client: Auth OK, Connected
+    Client<-->WS: Messages
 ```
 
 ---
@@ -414,37 +389,25 @@ TTL: 5 minutes (refreshed by heartbeat)
 
 > **Interviewer might ask**: "Walk me through what happens when User A sends a message to User B."
 
-```
-┌──────────┐                                           ┌──────────┐
-│  User A  │                                           │  User B  │
-└────┬─────┘                                           └────┬─────┘
-     │                                                      │
-     │──── Send Message ────►┌─────────────┐                │
-     │                       │ WS Server 1 │                │
-     │                       └──────┬──────┘                │
-     │                              │                       │
-     │                              ▼                       │
-     │                       ┌─────────────┐                │
-     │                       │ Chat Service│                │
-     │                       └──────┬──────┘                │
-     │                              │                       │
-     │              ┌───────────────┼───────────────┐       │
-     │              │               │               │       │
-     │              ▼               ▼               ▼       │
-     │       ┌──────────┐   ┌──────────┐   ┌──────────┐    │
-     │       │ Save to  │   │ Find B's │   │ Send ACK │    │
-     │       │ Cassandra│   │ WS Server│   │ to A     │    │
-     │       └──────────┘   └────┬─────┘   └────┬─────┘    │
-     │                           │              │          │
-     │◄────── ACK (sent) ────────┼──────────────┘          │
-     │                           │                         │
-     │                           ▼                         │
-     │                    ┌─────────────┐                  │
-     │                    │ WS Server 2 │──── Message ────►│
-     │                    └─────────────┘                  │
-     │                                                     │
-     │                           ◄────── ACK (delivered) ──│
-     │                                                     │
+```mermaid
+sequenceDiagram
+    participant UserA as User A
+    participant WS1 as WS Server 1
+    participant CS as Chat Service
+    participant Cass as Cassandra
+    participant WS2 as WS Server 2
+    participant UserB as User B
+
+    UserA->>WS1: Send Message
+    WS1->>CS: Forward
+    par Save & Respond
+        CS->>Cass: Save to Cassandra
+        CS-->>UserA: ACK (sent)
+    and Find & Deliver
+        CS->>WS2: Find B's WS Server
+        WS2->>UserB: Message
+        UserB-->>WS2: ACK (delivered)
+    end
 ```
 
 ### 2. Message Delivery Flow (Group Chat)
@@ -453,40 +416,17 @@ TTL: 5 minutes (refreshed by heartbeat)
 
 **The challenge**: One message → 500 deliveries. This is a **fan-out** problem.
 
-```
-┌──────────┐
-│  User A  │
-│  (sends) │
-└────┬─────┘
-     │
-     ▼
-┌─────────────┐
-│ WS Server   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│Chat Service │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│         Message Queue (Kafka)       │
-│  Topic: group-messages-{group_id}   │
-└─────────────────┬───────────────────┘
-                  │
-    ┌─────────────┼─────────────┐
-    │             │             │
-    ▼             ▼             ▼
-┌───────┐   ┌───────┐    ┌───────┐
-│User B │   │User C │    │User D │
-│(WS 2) │   │(WS 3) │    │(offline)
-└───────┘   └───────┘    └───────┘
-                              │
-                              ▼
-                         ┌───────────┐
-                         │Push Notif │
-                         └───────────┘
+```mermaid
+flowchart TB
+    UserA["User A (sends)"] --> WS["WS Server"]
+    WS --> CS["Chat Service"]
+    CS --> Kafka["Message Queue (Kafka)<br/>Topic: group-messages-{group_id}"]
+
+    Kafka --> UserB["User B (WS 2)"]
+    Kafka --> UserC["User C (WS 3)"]
+    Kafka --> UserD["User D (offline)"]
+
+    UserD --> Push["Push Notif"]
 ```
 
 **Why use Kafka for fan-out?**
@@ -505,41 +445,21 @@ TTL: 5 minutes (refreshed by heartbeat)
 - Status changes must propagate quickly
 - But we can't broadcast every change to everyone
 
+**User connects:**
+```mermaid
+flowchart LR
+    Client --> WS["WS Server"]
+    WS --> PS["Presence Service"]
+    PS --> Redis["Redis PUBLISH<br/>presence: user123=on"]
+    Redis --> Subscribers["Subscribed clients receive update<br/>User A's friends → 'User A is now online'"]
 ```
-┌─────────────────────────────────────────────────────────┐
-│                   Presence Architecture                  │
-└─────────────────────────────────────────────────────────┘
 
-User connects:
-┌────────┐    ┌─────────┐    ┌─────────┐    ┌─────────────┐
-│ Client │───►│ WS      │───►│ Presence│───►│ Redis       │
-│        │    │ Server  │    │ Service │    │ PUBLISH     │
-└────────┘    └─────────┘    └─────────┘    │ presence:   │
-                                            │ user123=on  │
-                                            └──────┬──────┘
-                                                   │
-              ┌────────────────────────────────────┘
-              │
-              ▼
-┌─────────────────────────────────────────────────────────┐
-│         Subscribed clients receive update               │
-│                                                         │
-│  User A's friends → "User A is now online"              │
-└─────────────────────────────────────────────────────────┘
-
-Heartbeat mechanism:
-┌────────┐  Heartbeat    ┌─────────┐
-│ Client │──(every 30s)─►│ Server  │
-└────────┘               └────┬────┘
-                              │
-                              ▼
-                        ┌──────────┐
-                        │  Redis   │
-                        │ EXPIRE   │
-                        │ 60s      │
-                        └──────────┘
-
-If heartbeat stops → TTL expires → User marked offline
+**Heartbeat mechanism:**
+```mermaid
+flowchart LR
+    Client -->|"Heartbeat (every 30s)"| Server
+    Server --> Redis["Redis EXPIRE 60s"]
+    Redis -.->|"If heartbeat stops → TTL expires"| Offline["User marked offline"]
 ```
 
 **Why heartbeat + TTL?**
@@ -551,59 +471,48 @@ If heartbeat stops → TTL expires → User marked offline
 
 > **Interviewer might ask**: "Users have phones, tablets, and laptops. How do you sync messages across devices?"
 
+```mermaid
+flowchart TB
+    subgraph Devices["User has multiple devices"]
+        Phone
+        Tablet
+        Laptop
+    end
+
+    Phone --> WS["WS Servers (different)"]
+    Tablet --> WS
+    Laptop --> WS
+
+    WS --> Sessions["User has 3 sessions in Redis"]
+    Sessions --> Delivery["Message delivery to ALL sessions"]
 ```
-User has multiple devices (phone, tablet, laptop):
 
-┌─────────┐  ┌─────────┐  ┌─────────┐
-│ Phone   │  │ Tablet  │  │ Laptop  │
-└────┬────┘  └────┬────┘  └────┬────┘
-     │            │            │
-     └────────────┼────────────┘
-                  │
-                  ▼
-           ┌─────────────┐
-           │ WS Servers  │
-           │ (different) │
-           └──────┬──────┘
-                  │
-                  ▼
-           ┌─────────────┐
-           │ User has    │
-           │ 3 sessions  │
-           │ in Redis    │
-           └──────┬──────┘
-                  │
-                  ▼
-    Message delivery to ALL sessions
-
-Sync strategy:
+**Sync strategy:**
 1. Each device maintains last_sync_timestamp
 2. On reconnect: fetch messages since last_sync
 3. Conflict resolution: server timestamp wins
-```
 
 ### 5. Message Status Tracking
 
+**Message states:**
+```mermaid
+flowchart LR
+    Sent --> Stored --> Delivered --> Read
 ```
-Message states:
-┌──────┐    ┌──────┐    ┌───────────┐    ┌──────┐
-│ Sent │───►│Stored│───►│ Delivered │───►│ Read │
-└──────┘    └──────┘    └───────────┘    └──────┘
 
-Storage:
-┌────────────────────────────────────────────────┐
-│  message_status table                          │
-│  ─────────────────────────────────────         │
-│  message_id | user_id | status | timestamp     │
-│  msg123     | user456 | delivered | 10:30:01   │
-│  msg123     | user456 | read      | 10:30:05   │
-└────────────────────────────────────────────────┘
+**Storage:**
 
-Read receipt flow:
-User B reads message →
-  Client sends ACK →
-    Update status →
-      Notify User A via WebSocket
+| message_id | user_id | status | timestamp |
+|------------|---------|--------|-----------|
+| msg123 | user456 | delivered | 10:30:01 |
+| msg123 | user456 | read | 10:30:05 |
+
+**Read receipt flow:**
+```mermaid
+flowchart LR
+    A["User B reads message"] --> B["Client sends ACK"]
+    B --> C["Update status"]
+    C --> D["Notify User A via WebSocket"]
 ```
 
 ---
@@ -645,11 +554,7 @@ Retry with exponential backoff + jitter:
 
 ### Offline Message Handling
 
-```
-┌──────────────────────────────────────────────────────┐
-│                Offline User Flow                      │
-└──────────────────────────────────────────────────────┘
-
+**Offline User Flow:**
 1. User B is offline
 2. Message arrives for B
 3. Check Redis: B has no active session
@@ -660,22 +565,12 @@ Retry with exponential backoff + jitter:
    - Fetch unread messages since last_sync
    - Receive new real-time messages
 
-┌─────────┐
-│ User A  │── Send ──►┌────────────┐
-└─────────┘           │ WS Server  │
-                      └─────┬──────┘
-                            │
-                            ▼
-                      ┌────────────┐
-                      │ B offline? │──YES──►┌────────────┐
-                      └─────┬──────┘        │ Push Notif │
-                           NO               │ Service    │
-                            │               └────────────┘
-                            ▼
-                      ┌────────────┐
-                      │ Deliver to │
-                      │ B's WS     │
-                      └────────────┘
+```mermaid
+flowchart TB
+    UserA["User A"] -->|Send| WS["WS Server"]
+    WS --> Check{"B offline?"}
+    Check -->|YES| Push["Push Notif Service"]
+    Check -->|NO| Deliver["Deliver to B's WS"]
 ```
 
 ---
@@ -703,15 +598,18 @@ Retry with exponential backoff + jitter:
 
 ### Scalability Phases
 
-```
-Phase 1: Small scale (~10K concurrent)
-└── Single WS server + Redis + PostgreSQL
-
-Phase 2: Medium scale (~1M concurrent)
-└── WS cluster + Redis pub/sub + Cassandra
-
-Phase 3: Large scale (~50M concurrent)
-└── Multiple DCs + Kafka + sharded everything
+```mermaid
+flowchart TB
+    subgraph P1["Phase 1: Small scale (~10K concurrent)"]
+        S1["Single WS server + Redis + PostgreSQL"]
+    end
+    subgraph P2["Phase 2: Medium scale (~1M concurrent)"]
+        S2["WS cluster + Redis pub/sub + Cassandra"]
+    end
+    subgraph P3["Phase 3: Large scale (~50M concurrent)"]
+        S3["Multiple DCs + Kafka + sharded everything"]
+    end
+    P1 --> P2 --> P3
 ```
 
 ---
