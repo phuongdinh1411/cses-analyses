@@ -637,81 +637,81 @@ main:
     - title: ⭐⭐⭐Minimum Cost Max Flow
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/minimum_cost_max_flow_analysis
 - title: B
-  url: /cses-analyses/problem_soulutions/Blue
+  url: /cses-analyses/problem_soulutions/Blue/
   children:
   - title: Summary
-    url: /cses-analyses/problem_soulutions/Blue
+    url: /cses-analyses/problem_soulutions/Blue/
   - title: Dynamic Array
-    url: /cses-analyses/problem_soulutions/Blue/Session%2001%20-%20Dynamic%20Array
+    url: /cses-analyses/problem_soulutions/Blue/Session%2001%20-%20Dynamic%20Array/
   - title: Algorithmic Complexity
-    url: /cses-analyses/problem_soulutions/Blue/Session%2002%20-%20Algorithmic%20Complexity
+    url: /cses-analyses/problem_soulutions/Blue/Session%2002%20-%20Algorithmic%20Complexity/
   - title: Sorting
-    url: /cses-analyses/problem_soulutions/Blue/Session%2003%20-%20Sorting
+    url: /cses-analyses/problem_soulutions/Blue/Session%2003%20-%20Sorting/
   - title: Stack and Queue
-    url: /cses-analyses/problem_soulutions/Blue/Session%2004%20-%20Stack%20and%20Queue
+    url: /cses-analyses/problem_soulutions/Blue/Session%2004%20-%20Stack%20and%20Queue/
   - title: String
-    url: /cses-analyses/problem_soulutions/Blue/Session%2005%20-%20String
+    url: /cses-analyses/problem_soulutions/Blue/Session%2005%20-%20String/
   - title: BFS
-    url: /cses-analyses/problem_soulutions/Blue/Session%2006%20-%20BFS
+    url: /cses-analyses/problem_soulutions/Blue/Session%2006%20-%20BFS/
   - title: DFS
-    url: /cses-analyses/problem_soulutions/Blue/Session%2007%20-%20DFS
+    url: /cses-analyses/problem_soulutions/Blue/Session%2007%20-%20DFS/
   - title: Heap
-    url: /cses-analyses/problem_soulutions/Blue/Session%2008%20-%20Heap
+    url: /cses-analyses/problem_soulutions/Blue/Session%2008%20-%20Heap/
   - title: Dijkstra
-    url: /cses-analyses/problem_soulutions/Blue/Session%2009%20-%20Dijkstra
+    url: /cses-analyses/problem_soulutions/Blue/Session%2009%20-%20Dijkstra/
   - title: Mid Term
-    url: /cses-analyses/problem_soulutions/Blue/Session%2010%20-%20Mid%20Term
+    url: /cses-analyses/problem_soulutions/Blue/Session%2010%20-%20Mid%20Term/
   - title: Bellman-Ford
-    url: /cses-analyses/problem_soulutions/Blue/Session%2011%20-%20Bellman-Ford
+    url: /cses-analyses/problem_soulutions/Blue/Session%2011%20-%20Bellman-Ford/
   - title: Floyd-Warshall
-    url: /cses-analyses/problem_soulutions/Blue/Session%2012%20-%20Floyd-Warshall
+    url: /cses-analyses/problem_soulutions/Blue/Session%2012%20-%20Floyd-Warshall/
   - title: Binary Search
-    url: /cses-analyses/problem_soulutions/Blue/Session%2013%20-%20Binary%20Search
+    url: /cses-analyses/problem_soulutions/Blue/Session%2013%20-%20Binary%20Search/
   - title: Binary Search Tree
-    url: /cses-analyses/problem_soulutions/Blue/Session%2014%20-%20Binary%20Search%20Tree
+    url: /cses-analyses/problem_soulutions/Blue/Session%2014%20-%20Binary%20Search%20Tree/
   - title: MAP TREEMAP DICT
-    url: /cses-analyses/problem_soulutions/Blue/Session%2015%20-%20MAP%20%E2%80%93%20TREEMAP%20-%20DICT
+    url: /cses-analyses/problem_soulutions/Blue/Session%2015%20-%20MAP%20%E2%80%93%20TREEMAP%20-%20DICT/
   - title: Prim
-    url: /cses-analyses/problem_soulutions/Blue/Session%2016%20-%20Prim
+    url: /cses-analyses/problem_soulutions/Blue/Session%2016%20-%20Prim/
   - title: Trie
-    url: /cses-analyses/problem_soulutions/Blue/Session%2017%20-%20Trie
+    url: /cses-analyses/problem_soulutions/Blue/Session%2017%20-%20Trie/
   - title: DSU
-    url: /cses-analyses/problem_soulutions/Blue/Session%2018%20-%20DSU
+    url: /cses-analyses/problem_soulutions/Blue/Session%2018%20-%20DSU/
   - title: Kruskal
-    url: /cses-analyses/problem_soulutions/Blue/Session%2019%20-%20Kruskal
+    url: /cses-analyses/problem_soulutions/Blue/Session%2019%20-%20Kruskal/
   - title: Final Exam
-    url: /cses-analyses/problem_soulutions/Blue/Final%20Exam
+    url: /cses-analyses/problem_soulutions/Blue/Final%20Exam/
 - title: O
-  url: /cses-analyses/problem_soulutions/Orange
+  url: /cses-analyses/problem_soulutions/Orange/
   children:
   - title: Summary
-    url: /cses-analyses/problem_soulutions/Orange
+    url: /cses-analyses/problem_soulutions/Orange/
   - title: Backtracking
-    url: /cses-analyses/problem_soulutions/Orange/Backtracking
+    url: /cses-analyses/problem_soulutions/Orange/Backtracking/
   - title: Bit Manipulation
-    url: /cses-analyses/problem_soulutions/Orange/Bit%20Manipulation
+    url: /cses-analyses/problem_soulutions/Orange/Bit%20Manipulation/
   - title: Divide and Conquer
-    url: /cses-analyses/problem_soulutions/Orange/Divide%20and%20conquer
+    url: /cses-analyses/problem_soulutions/Orange/Divide%20and%20conquer/
   - title: DP
-    url: /cses-analyses/problem_soulutions/Orange/dp
+    url: /cses-analyses/problem_soulutions/Orange/dp/
   - title: Final Term
-    url: /cses-analyses/problem_soulutions/Orange/Final%20term
+    url: /cses-analyses/problem_soulutions/Orange/Final%20term/
   - title: Greedy
-    url: /cses-analyses/problem_soulutions/Orange/Greedy
+    url: /cses-analyses/problem_soulutions/Orange/Greedy/
   - title: Hash Map
-    url: /cses-analyses/problem_soulutions/Orange/Hash%20Map
+    url: /cses-analyses/problem_soulutions/Orange/Hash%20Map/
   - title: Knuth-Morris-Pratt
-    url: /cses-analyses/problem_soulutions/Orange/Knuth-Morris-Pratt
+    url: /cses-analyses/problem_soulutions/Orange/Knuth-Morris-Pratt/
   - title: Midterm
-    url: /cses-analyses/problem_soulutions/Orange/Midterm
+    url: /cses-analyses/problem_soulutions/Orange/Midterm/
   - title: Number Theory
-    url: /cses-analyses/problem_soulutions/Orange/Number%20Theory
+    url: /cses-analyses/problem_soulutions/Orange/Number%20Theory/
   - title: Number Theory 2
-    url: /cses-analyses/problem_soulutions/Orange/Number%20Theory%202
+    url: /cses-analyses/problem_soulutions/Orange/Number%20Theory%202/
   - title: Segment Tree
-    url: /cses-analyses/problem_soulutions/Orange/Segment%20Tree
+    url: /cses-analyses/problem_soulutions/Orange/Segment%20Tree/
   - title: Topological Sort
-    url: /cses-analyses/problem_soulutions/Orange/Topological%20Sort
+    url: /cses-analyses/problem_soulutions/Orange/Topological%20Sort/
 - title: System Design
   url: /cses-analyses/system_design
   children:
