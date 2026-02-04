@@ -6,14 +6,14 @@ permalink: /problem_soulutions/Blue/Final Exam/
 
 # Final Exam
 
-This section contains final examination problems covering all topics from the Blue course curriculum.
+This section contains final examination problems covering all topics from the B course curriculum.
 
 ## Problems
 
 ### Three Distinct Permutations
 
 #### Problem Information
-- **Source:** Blue Course
+- **Source:** B Course
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -166,7 +166,7 @@ solution()
 ### Spiral Matrix Coordinates
 
 #### Problem Information
-- **Source:** Blue Course
+- **Source:** B Course
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -243,7 +243,7 @@ solution()
 ### Religion Groups
 
 #### Problem Information
-- **Source:** Blue Course
+- **Source:** B Course
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -350,7 +350,7 @@ solution()
 ### Connecting Freckles
 
 #### Problem Information
-- **Source:** Blue Course
+- **Source:** B Course
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -493,7 +493,7 @@ solution()
 ### Phone List Consistency
 
 #### Problem Information
-- **Source:** Blue Course
+- **Source:** B Course
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB

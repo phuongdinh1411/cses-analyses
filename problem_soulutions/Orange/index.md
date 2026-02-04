@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: "O - Orange Problems"
+title: "O Problems"
 permalink: /problem_soulutions/Orange/summary
 ---
 
-# O - Orange Problems
+# O Problems
 
-Welcome to the Orange problem set! This collection contains competitive programming problems organized by algorithmic techniques and concepts.
+This collection contains competitive programming problems organized by algorithmic techniques and concepts.
 
 ## Topics
 

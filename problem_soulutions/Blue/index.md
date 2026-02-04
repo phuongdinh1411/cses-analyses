@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: "B - Blue Problems"
+title: "B Problems"
 permalink: /problem_soulutions/Blue/summary
 ---
 
-# B - Blue Problems
+# B Problems
 
-Welcome to the Blue problem set! This collection contains competitive programming problems organized by algorithmic topics across 19 sessions plus a final exam.
+This collection contains competitive programming problems organized by algorithmic topics across 19 sessions plus a final exam.
 
 ## Sessions
 
