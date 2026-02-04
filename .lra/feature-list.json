@@ -118,9 +118,9 @@
         "Frame datacenter/machine ID assignment as discussion",
         "Add 'Interviewer might ask' about ID collision probability"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "19KB document"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Reduced from 648 to 560 lines. Removed ~88 lines of Python code. Added interview context, clock handling discussion, key phrases, common follow-ups."
     },
     {
       "id": "F008",
