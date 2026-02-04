@@ -190,6 +190,62 @@ It's okay to not know everything. Strong candidates:
 
 ---
 
+## Interview Transition Phrases
+
+Use these phrases to navigate smoothly through your interview.
+
+### Clarifying Requirements
+
+| Phrase | When to use |
+|--------|-------------|
+| "Before I start designing, let me make sure I understand the requirements..." | Opening |
+| "What's the expected scale? Are we talking thousands or millions of users?" | Scoping |
+| "Is consistency more important than availability for this use case?" | Trade-off setup |
+| "Should I focus on the happy path first, or edge cases?" | Prioritization |
+| "Are there any specific constraints I should know about?" | Constraints |
+
+### Proposing Trade-offs
+
+| Phrase | When to use |
+|--------|-------------|
+| "We have a few options here. Option A gives us X but costs us Y..." | Presenting alternatives |
+| "The trade-off here is between latency and consistency..." | Explaining tension |
+| "Given the requirements, I'd lean toward X because..." | Making a choice |
+| "If the requirements change, we might reconsider this decision..." | Showing flexibility |
+| "This is a classic CAP theorem situation..." | Referencing concepts |
+
+### Transitioning Between Topics
+
+| Phrase | When to use |
+|--------|-------------|
+| "Now that we have the high-level design, let me dive into..." | Moving to details |
+| "Before I go deeper, does this approach make sense?" | Checking alignment |
+| "Let me step back and think about how this scales..." | Shifting perspective |
+| "One thing we haven't discussed yet is..." | Introducing new topic |
+| "This connects to what I mentioned earlier about..." | Building connections |
+
+### Handling Unknowns
+
+| Phrase | When to use |
+|--------|-------------|
+| "I'm not certain about the exact number, but I can estimate..." | Acknowledging uncertainty |
+| "I haven't worked with X directly, but my understanding is..." | Admitting gaps |
+| "Let me think through this out loud..." | Buying time while reasoning |
+| "That's a great question. Let me reason through it..." | Responding to challenges |
+| "I'd want to validate this assumption with actual data..." | Being pragmatic |
+
+### Wrapping Up
+
+| Phrase | When to use |
+|--------|-------------|
+| "To summarize the key decisions..." | Concluding |
+| "The main trade-offs we made were..." | Recap |
+| "If we had more time, I'd also consider..." | Showing depth |
+| "Potential bottlenecks include X, and we could address them by..." | Proactive thinking |
+| "Questions for me before I continue?" | Inviting feedback |
+
+---
+
 ## Resources
 
 - [System Design Primer](https://github.com/donnemartin/system-design-primer)
