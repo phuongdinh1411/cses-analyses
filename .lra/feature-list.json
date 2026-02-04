@@ -84,9 +84,9 @@
         "Frame PSP integration as interview topic",
         "Add 'Interviewer might ask' about exactly-once semantics"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "43KB document, implementation code scattered throughout"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Reduced from 968 to 902 lines. Removed ~66 lines of Python code. Added interview context for idempotency, sync/async, reconciliation."
     },
     {
       "id": "F006",
