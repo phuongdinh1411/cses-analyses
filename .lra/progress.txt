@@ -40,3 +40,26 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 3 - 2026-02-04 - URL Shortener Transformation
+- Transformed design-url-shortener.md to interview style
+- Removed entire Implementation section (~340 lines of Python code)
+- Added interview context callouts before major sections:
+  - Short URL Generation
+  - Database Design
+  - URL Redirection Flow
+  - Deep Dive sections
+- Added "The Challenge" framing for key problems
+- Added "Why Not X?" discussions:
+  - Why not just use hash?
+  - Why not start with NoSQL?
+  - Why is predictability a problem?
+- Added "Interviewer might ask" prompts throughout
+- Added comprehensive Interview Tips section with:
+  - 45-minute approach breakdown
+  - Key phrases showing depth
+  - Common follow-up questions
+- Reduced document from 1105 to 764 lines
+- Completed F002
+
+---
+

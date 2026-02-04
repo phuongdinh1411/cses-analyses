@@ -20,9 +20,9 @@ A URL shortener service converts long URLs into short, memorable links that redi
 6. [Database Design](#database-design)
 7. [URL Redirection Flow](#url-redirection-flow)
 8. [Deep Dive](#deep-dive)
-9. [Implementation](#implementation)
-10. [Real-World Systems](#real-world-systems)
-11. [Key Takeaways](#key-takeaways)
+9. [Real-World Systems](#real-world-systems)
+10. [Key Takeaways](#key-takeaways)
+11. [Interview Tips](#interview-tips)
 
 ---
 
@@ -196,22 +196,30 @@ Prevent abuse by limiting requests per API key:
 
 ## Short URL Generation
 
-### Short Code Requirements
+> **Interview context**: After establishing the high-level design, the interviewer will ask: "How do you generate the short codes? What approach would you use?"
 
-- **Length**: Short enough to remember, long enough for uniqueness
-- **Characters**: [a-zA-Z0-9] = 62 characters
-- **Length calculation**:
+### The Challenge
+
+We need to convert long URLs into short, unique codes. This seems simple, but consider the constraints:
 
 ```
-62^6 = ~57 billion combinations
-62^7 = ~3.5 trillion combinations
+Requirements:
+- Must be unique (no collisions)
+- Should be short (6-7 characters ideal)
+- Ideally not predictable (security)
+- Must scale to billions of URLs
+- Should be fast to generate
 ```
 
-With 6 characters, we can support **57 billion** unique URLs.
+**The math**: Using 62 characters [a-zA-Z0-9]:
+- 62^6 = ~57 billion combinations
+- 62^7 = ~3.5 trillion combinations
 
-### Approach 1: Hash Function
+With 6 characters, we can support **57 billion** unique URLs - plenty for most use cases.
 
-Use MD5/SHA256 and take first N characters:
+### Option 1: Hash Function (MD5/SHA256)
+
+The most intuitive approach - hash the URL and take the first N characters:
 
 ```
 Long URL: https://example.com/long/path
@@ -219,48 +227,53 @@ MD5 Hash: 5d41402abc4b2a76b9719d911017c592
 Short Code: 5d4140 (first 6 characters)
 ```
 
-**Problems:**
-- **Collisions**: Different URLs may produce same prefix
-- **Solution**: Check database, re-hash with counter if collision
+#### Why Not Just Use This?
 
-```python
-def generate_short_code(long_url):
-    counter = 0
-    while True:
-        hash_input = long_url + str(counter)
-        hash_value = md5(hash_input).hexdigest()[:6]
-        if not database.exists(hash_value):
-            return hash_value
-        counter += 1
+> **Interviewer might ask**: "This seems simple. What's wrong with hashing?"
+
+**The collision problem**: Different URLs can produce the same 6-character prefix.
+
+```
+URL A: example.com/page1 → hash → "abc123..."
+URL B: example.com/page2 → hash → "abc123..." (collision!)
 ```
 
-### Approach 2: Base62 Encoding
+**Solutions to collisions**:
+1. Check database, re-hash with counter until unique
+2. Append user ID or timestamp to input
+
+**Trade-off**: Simple to understand, but collision handling adds latency and complexity at scale.
+
+### Option 2: Base62 Encoding of Auto-Increment ID
 
 Convert a unique integer ID to Base62:
 
 ```
-ID: 125,984,756
-Base62: "B3k9Zt"
+ID: 125,984,756  →  Base62: "B3k9Zt"
+
+Encoding: 0-9 (digits), a-z (10-35), A-Z (36-61)
 ```
 
-**Encoding:**
-```
-0-9:   0-9
-a-z:   10-35
-A-Z:   36-61
-```
+| Pros | Cons |
+|------|------|
+| No collisions (unique ID → unique code) | Predictable (sequential IDs visible) |
+| Easy to decode for debugging | Single point of failure (ID generator) |
+| Simple implementation | Requires distributed ID generation at scale |
 
-**Pros:**
-- No collisions (unique ID → unique code)
-- Easy to decode for debugging
+#### Why Not Just Use This?
 
-**Cons:**
-- Predictable (sequential IDs visible)
-- Requires unique ID generation
+> **Interviewer might ask**: "Why is predictability a problem?"
 
-### Approach 3: Key Generation Service (KGS)
+**Security concern**: If IDs are sequential, attackers can:
+- Enumerate all URLs by incrementing
+- Estimate your traffic/growth rate
+- Potentially access private links by guessing
 
-Pre-generate random keys and store in database:
+**When it's acceptable**: Internal tools where security isn't critical.
+
+### Option 3: Key Generation Service (KGS)
+
+Pre-generate random keys and store in a pool:
 
 ```
 ┌───────────────────────────────────────────────────────┐
@@ -269,11 +282,9 @@ Pre-generate random keys and store in database:
 │                                                        │
 │   ┌─────────────────┐      ┌─────────────────┐        │
 │   │  Unused Keys    │      │   Used Keys     │        │
-│   │                 │      │                 │        │
 │   │  abc123         │ ──►  │  xyz789         │        │
 │   │  def456         │      │  pqr321         │        │
 │   │  ghi789         │      │  ...            │        │
-│   │  ...            │      │                 │        │
 │   └─────────────────┘      └─────────────────┘        │
 │                                                        │
 │   Background process continuously generates new keys   │
@@ -281,36 +292,39 @@ Pre-generate random keys and store in database:
 ```
 
 **How it works:**
-1. KGS pre-generates millions of unique 6-character keys
-2. When a URL is shortened, grab a key from unused pool
-3. Move key to used pool atomically
-4. Background job replenishes unused pool
+1. KGS pre-generates millions of unique random keys offline
+2. When shortening, atomically move key from unused → used
+3. Background job continuously replenishes the pool
 
-**Pros:**
-- No collision handling
-- Fast (no computation at request time)
-- Non-predictable
+| Pros | Cons |
+|------|------|
+| No collision handling needed | Single point of failure |
+| Fast (no computation at request time) | Key synchronization complexity |
+| Non-predictable | Requires careful capacity planning |
 
-**Cons:**
-- Single point of failure (mitigate with replicas)
-- Key synchronization complexity
+> **Interviewer might ask**: "What if the KGS goes down?"
+
+**Mitigation strategies**:
+1. **Standby replicas**: Hot standby KGS instances
+2. **Key pre-fetching**: App servers cache a batch of keys locally
+3. **Fallback**: Temporarily use hash-based generation
 
 ### Approach Comparison
 
-| Approach | Collision | Predictable | Complexity | Performance |
-|----------|-----------|-------------|------------|-------------|
-| Hash + Collision Check | Possible | No | Medium | Medium |
-| Base62 + Auto-increment | None | Yes | Low | High |
-| KGS | None | No | High | High |
+| Approach | Collision | Predictable | Complexity | Best For |
+|----------|-----------|-------------|------------|----------|
+| Hash + Collision Check | Possible | No | Medium | Small scale |
+| Base62 + Auto-increment | None | Yes | Low | Internal tools |
+| KGS | None | No | High | Production at scale |
 
 ### Recommended: KGS with Range Allocation
 
-Combine KGS with the ID range approach:
+> **Interview context**: "For a production system at scale, I'd combine KGS with range allocation..."
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        KGS Coordinator                           │
-│                   (Allocates key ranges)                         │
+│                   (Allocates ID ranges)                          │
 └────────────────────────────┬────────────────────────────────────┘
                              │
          ┌───────────────────┼───────────────────┐
@@ -322,98 +336,107 @@ Combine KGS with the ID range approach:
     └─────────┘         └─────────┘         └─────────┘
 ```
 
-Each server gets a range of IDs, converts them to Base62 locally.
+**Why this works well:**
+- Each server generates IDs locally within its range (no coordination)
+- Coordinator only contacted when range exhausted (~infrequently)
+- Base62 encoding adds slight randomness to appearance
+- Scales horizontally by adding more servers with new ranges
 
 ---
 
 ## Database Design
 
-### Schema Design
+> **Interview context**: After discussing short code generation, the natural question is: "How do you store the URL mappings? What database would you use?"
 
-**URL Table:**
-```sql
-CREATE TABLE urls (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    short_code VARCHAR(10) UNIQUE NOT NULL,
-    long_url TEXT NOT NULL,
-    user_id BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP,
-    click_count BIGINT DEFAULT 0,
+### The Challenge
 
-    INDEX idx_short_code (short_code),
-    INDEX idx_user_id (user_id),
-    INDEX idx_expires_at (expires_at)
-);
-```
+We need to store URL mappings with these access patterns:
+- **Write**: Insert new short_code → long_url mapping
+- **Read**: Lookup long_url by short_code (very frequent, must be fast)
+- **Optional**: Track analytics, handle expiration
 
-**User Table:**
-```sql
-CREATE TABLE users (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    api_key VARCHAR(64) UNIQUE NOT NULL,
-    tier ENUM('free', 'premium') DEFAULT 'free',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+### Data Model
 
-**Analytics Table (Optional):**
-```sql
-CREATE TABLE analytics (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    url_id BIGINT NOT NULL,
-    clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    referrer TEXT,
-    country VARCHAR(2),
+The core data we need to store:
 
-    INDEX idx_url_id (url_id),
-    INDEX idx_clicked_at (clicked_at),
-    FOREIGN KEY (url_id) REFERENCES urls(id)
-);
-```
+| Field | Type | Purpose |
+|-------|------|---------|
+| short_code | VARCHAR(10) | Primary lookup key |
+| long_url | TEXT | Original URL |
+| user_id | BIGINT | Owner (optional) |
+| created_at | TIMESTAMP | For analytics |
+| expires_at | TIMESTAMP | TTL (optional) |
+| click_count | BIGINT | Analytics (optional) |
 
-### Database Choice
+### SQL vs NoSQL: The Trade-off Discussion
 
-| Type | Database | Use Case |
-|------|----------|----------|
-| SQL | MySQL/PostgreSQL | Strong consistency, complex queries |
-| NoSQL | DynamoDB/Cassandra | High write throughput, horizontal scaling |
-| NoSQL | MongoDB | Flexible schema, moderate scale |
+> **Interviewer might ask**: "Would you use SQL or NoSQL for this?"
 
-**Recommendation:** Start with MySQL, shard by short_code when needed.
+**Option 1: SQL (MySQL/PostgreSQL)**
 
-### Sharding Strategy
+| Pros | Cons |
+|------|------|
+| Strong consistency | Harder to scale horizontally |
+| ACID transactions | May need sharding at scale |
+| Familiar, well-understood | Single point of failure |
+| Good for complex queries | |
+
+**Option 2: NoSQL (DynamoDB/Cassandra)**
+
+| Pros | Cons |
+|------|------|
+| Easy horizontal scaling | Eventual consistency |
+| High write throughput | Limited query flexibility |
+| Built-in sharding | Higher operational complexity |
+
+#### Why Not Start with NoSQL?
+
+For most URL shorteners, **SQL is sufficient** because:
+1. Access pattern is simple (key-value lookup)
+2. Read-heavy workload (caching handles most reads)
+3. 3TB storage is manageable for modern SQL databases
+4. Easier to reason about consistency
+
+**Recommendation**: Start with MySQL, add read replicas, then shard if needed.
+
+### Sharding Strategy (When You Need It)
+
+> **Interviewer might ask**: "How would you scale the database when you hit billions of URLs?"
 
 **Option 1: Hash-based sharding on short_code**
-```
-Shard = hash(short_code) % num_shards
-```
+- `Shard = hash(short_code) % num_shards`
+- Evenly distributed load
+- Adding shards requires data migration
 
 **Option 2: Range-based sharding**
-```
-Shard 1: a-m
-Shard 2: n-z
-Shard 3: A-M
-Shard 4: N-Z0-9
-```
+- Shard 1: a-m, Shard 2: n-z, etc.
+- Simpler to understand
+- Risk of hot spots if key distribution is uneven
+
+**Recommended**: Hash-based sharding is more predictable for URL shorteners since short codes are randomly distributed.
 
 ---
 
 ## URL Redirection Flow
 
-### Redirect Types
+> **Interview context**: "Now let's discuss what happens when a user clicks a short link. This is the most frequent operation."
 
-| Code | Type | Caching | Use Case |
-|------|------|---------|----------|
-| **301** | Permanent | Browser caches | Reduce server load |
-| **302** | Temporary | No caching | Track every click |
+### The 301 vs 302 Decision
 
-**Trade-off:**
-- 301 reduces server load but loses analytics
-- 302 enables full analytics but higher load
+> **Interviewer might ask**: "Should you use 301 or 302 redirect?"
+
+This is a classic trade-off question:
+
+| Code | Type | Browser Behavior | Use Case |
+|------|------|------------------|----------|
+| **301** | Permanent | Caches redirect | Reduce server load, SEO |
+| **302** | Temporary | Always hits server | Track every click |
+
+**The trade-off**:
+- **301**: Browser caches the redirect → fewer server requests → lose analytics after first click
+- **302**: Every click hits your server → accurate analytics → higher load
+
+**Recommended**: Use **302** if analytics matter (most commercial services do), use **301** for static content or when you want to transfer SEO value.
 
 ### Redirection Flow
 
@@ -483,7 +506,11 @@ Shard 4: N-Z0-9
 
 ## Deep Dive
 
+> **Interview context**: "Let's dive deeper into some edge cases and scaling challenges..."
+
 ### Handling Hot URLs
+
+> **Interviewer might ask**: "What happens when a URL goes viral and gets millions of clicks per minute?"
 
 Some URLs (viral content) get massive traffic:
 
@@ -522,61 +549,41 @@ App Server 1              App Server 2
 
 ### Duplicate URL Detection
 
-Should `example.com/path` create new short URL if already exists?
+> **Interviewer might ask**: "If the same URL is shortened twice, should it get the same short code?"
 
-**Option 1: Always create new**
-- Pros: Simple, user gets unique URL
-- Cons: Database bloat
+**The options**:
 
-**Option 2: Return existing**
-- Pros: Save storage
-- Cons: Complex lookup, privacy concerns (different users same short URL)
+| Option | Pros | Cons |
+|--------|------|------|
+| Always create new | Simple, user gets unique URL | Database bloat |
+| Return existing globally | Save storage | Privacy concerns (users share links) |
+| Per-user deduplication | Balance of both | Slightly more complex |
 
 **Recommended: Per-user deduplication**
-```python
-def shorten_url(user_id, long_url):
-    # Check if user already shortened this URL
-    existing = db.find(user_id=user_id, long_url=long_url)
-    if existing:
-        return existing.short_code
-
-    # Create new short URL
-    short_code = generate_unique_code()
-    db.insert(short_code, long_url, user_id)
-    return short_code
-```
+- If the same user shortens the same URL, return existing short code
+- Different users get different short codes (privacy)
+- Requires composite index on (user_id, long_url)
 
 ### URL Expiration
 
-**Background cleanup job:**
-```python
-# Run periodically (e.g., every hour)
-def cleanup_expired_urls():
-    expired = db.query("""
-        SELECT short_code FROM urls
-        WHERE expires_at < NOW()
-        LIMIT 1000
-    """)
+> **Interviewer might ask**: "How do you handle URL expiration?"
 
-    for url in expired:
-        cache.delete(url.short_code)
-        db.delete(url.short_code)
-```
+**Two complementary strategies**:
 
-**Lazy expiration (check on access):**
-```python
-def redirect(short_code):
-    url = cache.get(short_code) or db.get(short_code)
+**1. Lazy expiration (on access)**
+- Check expiration when URL is accessed
+- Return 404 or 410 Gone if expired
+- Remove from cache
+- Pros: No background job needed, immediate
+- Cons: Expired URLs stay in database until accessed
 
-    if not url:
-        return 404
+**2. Background cleanup (batch)**
+- Periodic job scans for expired URLs
+- Deletes in batches (e.g., 1000 at a time)
+- Pros: Cleans up database, reclaims space
+- Cons: Eventual (not immediate)
 
-    if url.expires_at and url.expires_at < now():
-        cache.delete(short_code)
-        return 404  # or 410 Gone
-
-    return redirect_302(url.long_url)
-```
+**Recommended**: Use both - lazy for immediate user feedback, batch for database hygiene.
 
 ### Analytics
 
@@ -613,375 +620,29 @@ def redirect(short_code):
 
 ### Security Considerations
 
-**1. Malicious URLs:**
-```python
-def shorten_url(long_url):
-    # Check against blocklist
-    if is_malicious(long_url):
-        return error("URL blocked for safety")
+> **Interviewer might ask**: "What security concerns should we address?"
 
-    # Scan with Google Safe Browsing API
-    if not safe_browsing_check(long_url):
-        return error("Potentially unsafe URL")
+**1. Malicious URLs**
+- Check submitted URLs against blocklists
+- Integrate with Google Safe Browsing API
+- Scan for phishing, malware, spam patterns
+- Consider user reporting mechanism
 
-    return create_short_url(long_url)
-```
+**2. Rate Limiting**
+- Prevent abuse (bot-generated URLs)
+- Implement per-API-key limits (e.g., 100/day free, 10K/day premium)
+- Use sliding window or token bucket algorithm
+- Store counters in Redis for speed
 
-**2. Rate Limiting:**
-```python
-from redis import Redis
-
-def rate_limit(api_key, limit=100, window=86400):
-    key = f"rate:{api_key}:{today()}"
-    count = redis.incr(key)
-
-    if count == 1:
-        redis.expire(key, window)
-
-    if count > limit:
-        raise RateLimitExceeded()
-```
-
-**3. Preventing Enumeration:**
-- Use random/non-sequential short codes
+**3. Preventing Enumeration**
+- Use random short codes (not sequential)
 - Add CAPTCHA for bulk creation
 - Monitor for scraping patterns
-
----
-
-## Implementation
-
-### URL Shortening Service (Python)
-
-```python
-import hashlib
-import random
-import string
-import time
-from typing import Optional
-from dataclasses import dataclass
-from datetime import datetime, timedelta
-
-@dataclass
-class URLMapping:
-    short_code: str
-    long_url: str
-    user_id: Optional[int]
-    created_at: datetime
-    expires_at: Optional[datetime]
-    click_count: int = 0
-
-class URLShortener:
-    BASE62_CHARS = string.digits + string.ascii_lowercase + string.ascii_uppercase
-
-    def __init__(self, db, cache, kgs):
-        self.db = db
-        self.cache = cache
-        self.kgs = kgs  # Key Generation Service
-
-    # === Short Code Generation ===
-
-    def _base62_encode(self, num: int) -> str:
-        """Convert integer to Base62 string"""
-        if num == 0:
-            return self.BASE62_CHARS[0]
-
-        result = []
-        while num:
-            result.append(self.BASE62_CHARS[num % 62])
-            num //= 62
-        return ''.join(reversed(result))
-
-    def _base62_decode(self, code: str) -> int:
-        """Convert Base62 string to integer"""
-        num = 0
-        for char in code:
-            num = num * 62 + self.BASE62_CHARS.index(char)
-        return num
-
-    def _generate_code_hash(self, url: str, attempt: int = 0) -> str:
-        """Generate short code using MD5 hash"""
-        data = f"{url}{attempt}".encode()
-        hash_hex = hashlib.md5(data).hexdigest()
-        # Take first 6 characters
-        return hash_hex[:6]
-
-    def _generate_code_kgs(self) -> str:
-        """Get pre-generated key from KGS"""
-        return self.kgs.get_key()
-
-    # === Core Operations ===
-
-    def shorten(
-        self,
-        long_url: str,
-        user_id: Optional[int] = None,
-        custom_alias: Optional[str] = None,
-        expires_in_days: Optional[int] = None
-    ) -> URLMapping:
-        """Create a short URL"""
-
-        # Validate URL
-        if not self._is_valid_url(long_url):
-            raise ValueError("Invalid URL format")
-
-        # Check for malicious URL
-        if self._is_malicious(long_url):
-            raise ValueError("URL blocked for safety")
-
-        # Handle custom alias
-        if custom_alias:
-            if self.db.exists(custom_alias):
-                raise ValueError("Custom alias already taken")
-            short_code = custom_alias
-        else:
-            # Generate short code
-            short_code = self._generate_code_kgs()
-
-        # Calculate expiration
-        expires_at = None
-        if expires_in_days:
-            expires_at = datetime.utcnow() + timedelta(days=expires_in_days)
-
-        # Create mapping
-        mapping = URLMapping(
-            short_code=short_code,
-            long_url=long_url,
-            user_id=user_id,
-            created_at=datetime.utcnow(),
-            expires_at=expires_at
-        )
-
-        # Store in database
-        self.db.insert(mapping)
-
-        # Populate cache
-        self.cache.set(short_code, mapping, ttl=86400)
-
-        return mapping
-
-    def resolve(self, short_code: str) -> Optional[str]:
-        """Resolve short code to original URL"""
-
-        # Check cache first
-        mapping = self.cache.get(short_code)
-
-        if not mapping:
-            # Cache miss - query database
-            mapping = self.db.get(short_code)
-
-            if mapping:
-                # Populate cache
-                self.cache.set(short_code, mapping, ttl=86400)
-
-        if not mapping:
-            return None
-
-        # Check expiration
-        if mapping.expires_at and mapping.expires_at < datetime.utcnow():
-            self.cache.delete(short_code)
-            return None
-
-        # Async: increment click count
-        self._record_click_async(short_code)
-
-        return mapping.long_url
-
-    def delete(self, short_code: str, user_id: int) -> bool:
-        """Delete a short URL (owner only)"""
-        mapping = self.db.get(short_code)
-
-        if not mapping:
-            return False
-
-        if mapping.user_id != user_id:
-            raise PermissionError("Not authorized to delete this URL")
-
-        self.cache.delete(short_code)
-        self.db.delete(short_code)
-        return True
-
-    # === Helper Methods ===
-
-    def _is_valid_url(self, url: str) -> bool:
-        """Validate URL format"""
-        import re
-        pattern = re.compile(
-            r'^https?://'  # http:// or https://
-            r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain
-            r'localhost|'  # localhost
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # or IP
-            r'(?::\d+)?'  # optional port
-            r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-        return bool(pattern.match(url))
-
-    def _is_malicious(self, url: str) -> bool:
-        """Check URL against blocklist/Safe Browsing API"""
-        # Simplified - in production, use Google Safe Browsing API
-        blocklist = ['malware.com', 'phishing.net']
-        from urllib.parse import urlparse
-        domain = urlparse(url).netloc
-        return domain in blocklist
-
-    def _record_click_async(self, short_code: str):
-        """Record click event asynchronously"""
-        # In production, push to message queue
-        pass
-```
-
-### Key Generation Service
-
-```python
-import random
-import string
-import threading
-from queue import Queue
-
-class KeyGenerationService:
-    """Pre-generate unique short codes"""
-
-    CHARS = string.digits + string.ascii_lowercase + string.ascii_uppercase
-    KEY_LENGTH = 6
-    POOL_SIZE = 100000
-    REFILL_THRESHOLD = 10000
-
-    def __init__(self, db):
-        self.db = db
-        self.unused_keys = Queue()
-        self.lock = threading.Lock()
-
-        # Load existing unused keys from database
-        self._load_keys()
-
-        # Start background key generation
-        self._start_generator()
-
-    def get_key(self) -> str:
-        """Get a pre-generated key"""
-        if self.unused_keys.qsize() < self.REFILL_THRESHOLD:
-            self._trigger_refill()
-
-        return self.unused_keys.get(timeout=5)
-
-    def _generate_key(self) -> str:
-        """Generate a random key"""
-        return ''.join(random.choices(self.CHARS, k=self.KEY_LENGTH))
-
-    def _load_keys(self):
-        """Load unused keys from database"""
-        keys = self.db.get_unused_keys(limit=self.POOL_SIZE)
-        for key in keys:
-            self.unused_keys.put(key)
-
-    def _start_generator(self):
-        """Start background key generation thread"""
-        thread = threading.Thread(target=self._generate_keys_background, daemon=True)
-        thread.start()
-
-    def _generate_keys_background(self):
-        """Background process to generate keys"""
-        while True:
-            if self.unused_keys.qsize() < self.POOL_SIZE:
-                batch = []
-                while len(batch) < 1000:
-                    key = self._generate_key()
-                    if not self.db.key_exists(key):
-                        batch.append(key)
-
-                # Insert batch to database
-                self.db.insert_unused_keys(batch)
-
-                # Add to queue
-                for key in batch:
-                    self.unused_keys.put(key)
-
-            threading.Event().wait(1)  # Sleep 1 second
-
-    def _trigger_refill(self):
-        """Trigger async key generation"""
-        # In production, send message to key generator workers
-        pass
-```
-
-### FastAPI Web Server
-
-```python
-from fastapi import FastAPI, HTTPException, Request, Response
-from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, HttpUrl
-from typing import Optional
-import time
-
-app = FastAPI()
-
-# Rate limiter using Redis
-class RateLimiter:
-    def __init__(self, redis, limit=100, window=86400):
-        self.redis = redis
-        self.limit = limit
-        self.window = window
-
-    def is_allowed(self, api_key: str) -> bool:
-        key = f"rate:{api_key}:{int(time.time() // self.window)}"
-        count = self.redis.incr(key)
-        if count == 1:
-            self.redis.expire(key, self.window)
-        return count <= self.limit
-
-# Request/Response models
-class ShortenRequest(BaseModel):
-    long_url: HttpUrl
-    custom_alias: Optional[str] = None
-    expiration_days: Optional[int] = None
-
-class ShortenResponse(BaseModel):
-    short_url: str
-    long_url: str
-    created_at: str
-    expires_at: Optional[str] = None
-
-# Endpoints
-@app.post("/api/v1/shorten", response_model=ShortenResponse)
-async def shorten_url(request: ShortenRequest, api_key: str):
-    # Rate limiting
-    if not rate_limiter.is_allowed(api_key):
-        raise HTTPException(429, "Rate limit exceeded")
-
-    try:
-        mapping = url_shortener.shorten(
-            long_url=str(request.long_url),
-            custom_alias=request.custom_alias,
-            expires_in_days=request.expiration_days
-        )
-
-        return ShortenResponse(
-            short_url=f"https://short.ly/{mapping.short_code}",
-            long_url=mapping.long_url,
-            created_at=mapping.created_at.isoformat(),
-            expires_at=mapping.expires_at.isoformat() if mapping.expires_at else None
-        )
-    except ValueError as e:
-        raise HTTPException(400, str(e))
-
-@app.get("/{short_code}")
-async def redirect(short_code: str):
-    long_url = url_shortener.resolve(short_code)
-
-    if not long_url:
-        raise HTTPException(404, "Short URL not found")
-
-    # Use 302 to track clicks, 301 for permanent redirect
-    return RedirectResponse(url=long_url, status_code=302)
-
-@app.delete("/api/v1/url/{short_code}")
-async def delete_url(short_code: str, api_key: str):
-    user = get_user_by_api_key(api_key)
-
-    if url_shortener.delete(short_code, user.id):
-        return Response(status_code=204)
-
-    raise HTTPException(404, "URL not found")
-```
+- Consider adding check digits or signatures
+
+**4. URL Preview**
+- Show destination before redirecting (like LinkedIn)
+- Builds user trust, reduces phishing effectiveness
 
 ---
 
@@ -1030,75 +691,74 @@ async def delete_url(short_code: str, api_key: str):
 
 ## Key Takeaways
 
-### 1. Short Code Generation
+### Design Decisions Summary
 
-- **KGS (Key Generation Service)** is the most scalable approach
-- Pre-generate keys to avoid runtime computation
-- Base62 encoding provides ~57 billion combinations with 6 characters
+| Decision | Recommended | Why |
+|----------|-------------|-----|
+| **Short code generation** | KGS with range allocation | No collisions, non-predictable, scalable |
+| **Database** | MySQL → shard later | Simple to start, handles most scales |
+| **Redirect type** | 302 | Analytics over caching |
+| **Caching** | Redis with LRU | 80/20 rule, ~35GB handles most traffic |
+| **Duplicates** | Per-user dedup | Balance storage and privacy |
 
-### 2. Database Design
-
-- Start simple (single MySQL), shard when needed
-- Use consistent hashing for shard selection
-- Consider NoSQL for higher write throughput
-
-### 3. Caching is Critical
-
-- Cache hot URLs (20% of URLs = 80% of traffic)
-- Use read-through caching pattern
-- Consider local + distributed cache for hot URLs
-
-### 4. Redirect Type Matters
-
-- **301**: Better for SEO, browser caches
-- **302**: Better for analytics, server sees every request
-
-### 5. Trade-offs
+### Trade-offs to Discuss
 
 | Decision | Option A | Option B |
 |----------|----------|----------|
 | ID Generation | Sequential (predictable) | Random (secure) |
-| Redirect | 301 (cached) | 302 (trackable) |
+| Redirect | 301 (cached, SEO) | 302 (trackable) |
 | Storage | SQL (consistent) | NoSQL (scalable) |
 | Duplicates | Dedupe (save space) | Allow (privacy) |
 
-### 6. Production Checklist
-
-- [ ] Rate limiting to prevent abuse
-- [ ] URL validation and malware scanning
-- [ ] Expiration handling (lazy + batch cleanup)
-- [ ] Analytics pipeline (async, non-blocking)
-- [ ] Monitoring and alerting
-- [ ] Database backup and disaster recovery
-
-### 7. Scalability Roadmap
+### Scalability Phases
 
 ```
-Phase 1: Single Server
-├── MySQL + Redis
-├── ~1000 QPS
-└── ~1M URLs
+Phase 1: Single Server (~1K QPS, ~1M URLs)
+└── MySQL + Redis + single app server
 
-Phase 2: Horizontal Scaling
-├── Load balancer + multiple app servers
-├── MySQL primary + replicas
-├── Redis cluster
-├── ~10K QPS
-└── ~100M URLs
+Phase 2: Horizontal Scaling (~10K QPS, ~100M URLs)
+└── Load balancer + app servers + MySQL replicas + Redis cluster
 
-Phase 3: Distributed Architecture
-├── Multiple data centers
-├── Sharded databases
-├── CDN for static assets
-├── ~100K QPS
-└── ~10B URLs
+Phase 3: Distributed (~100K QPS, ~10B URLs)
+└── Multiple DCs + sharded DB + CDN
 ```
 
-### 8. Interview Discussion Points
+---
 
-1. **Why not just use hash?** Collision handling complexity
-2. **Why 62 characters?** URL-safe, case-sensitive (more combinations)
-3. **301 vs 302?** Trade-off between caching and analytics
-4. **How to handle hot URLs?** Multi-layer caching, replication
-5. **Expiration strategy?** Lazy deletion + batch cleanup
-6. **Custom domains?** DNS CNAME, SSL certificates per domain
+## Interview Tips
+
+### How to Approach (45 minutes)
+
+```
+1. CLARIFY (3-5 min)
+   "What's the expected scale? Do we need analytics? Custom domains?"
+
+2. HIGH-LEVEL DESIGN (5-7 min)
+   Draw the basic architecture: LB → App Servers → Cache → DB
+
+3. DEEP DIVE (25-30 min)
+   - Short code generation (hash vs base62 vs KGS)
+   - Database choice and sharding strategy
+   - Caching and hot URL handling
+   - 301 vs 302 trade-off
+
+4. WRAP UP (5 min)
+   - Discuss monitoring, security, and future scaling
+```
+
+### Key Phrases That Show Depth
+
+| Instead of... | Say... |
+|---------------|--------|
+| "We use Base62" | "Base62 gives us 62^6 = 57B combinations, but IDs are predictable. For security, KGS with random pre-generation is better." |
+| "We use Redis" | "We cache in Redis because 20% of URLs drive 80% of traffic. With ~35GB cache, we handle most reads without hitting the database." |
+| "We use 302" | "301 is better for SEO and reduces load, but we lose analytics after the first click. For a commercial service, 302 makes more sense." |
+
+### Common Follow-up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you handle hot URLs?" | Multi-layer caching, replicated cache entries |
+| "How do you prevent abuse?" | Rate limiting, CAPTCHA, blocklists |
+| "What about custom domains?" | DNS CNAME, SSL per domain, domain → account mapping |
+| "How do you handle expiration?" | Lazy check on read + background batch cleanup |
