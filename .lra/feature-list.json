@@ -101,9 +101,9 @@
         "Frame distributed crawling coordination as discussion",
         "Add 'Interviewer might ask' about handling dynamic content"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "76KB document - largest, most code-heavy document"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Reduced from 1892 to 1297 lines. Removed ~595 lines of Python code. Added interview context for URL frontier, politeness, duplicate detection (Bloom + SimHash), rate limiting, scaling, fault tolerance, and advanced topics."
     },
     {
       "id": "F007",

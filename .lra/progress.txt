@@ -108,3 +108,43 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 7 - 2026-02-04 - Web Crawler Transformation
+- Transformed design-web-crawler.md to interview style (largest document)
+- Removed ~595 lines of Python code including:
+  - URLFrontier class
+  - CrawlerWorker class
+  - DNSCache class
+  - RobotsCache class
+  - URLSeenFilter (Bloom Filter)
+  - URL normalization functions
+  - DomainRateLimiter and TokenBucket
+  - AdaptiveRateLimiter
+  - ContentProcessor and link extraction
+  - SimHashDetector
+  - ContentStore
+  - DomainShardRouter and ConsistentHashRing
+  - CrawlerAutoScaler
+  - RetryStrategy
+  - CrawlCheckpoint
+  - CrawlerMetrics
+  - SpiderTrapDetector
+  - JavaScriptRenderer and BrowserPool
+  - RecrawlScheduler
+  - CrawlCoordinator
+- Added interview context and discussions for:
+  - URL Frontier two-level design (priority + politeness)
+  - Why Bloom Filter for URL deduplication
+  - URL normalization rules
+  - Token bucket rate limiting
+  - Adaptive crawl rate
+  - SimHash for near-duplicate detection
+  - Domain-based sharding with consistent hashing
+  - Fault tolerance and checkpointing
+  - Spider trap detection strategies
+  - JS rendering decisions
+- Enhanced Interview Tips with "Key Phrases That Show Depth"
+- Reduced document from 1892 to 1297 lines
+- Completed F006
+
+---
+
