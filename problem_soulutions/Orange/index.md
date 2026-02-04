@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "O - Orange Problems"
-permalink: /problem_soulutions/Orange/
+permalink: /problem_soulutions/Orange/summary
 ---
 
 # O - Orange Problems
