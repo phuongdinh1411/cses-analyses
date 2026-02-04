@@ -1,229 +1,180 @@
-## 🎯 Welcome to the Ultimate CSES Learning Resource!
+# CSES Analyses & System Design
 
-This is the **most comprehensive** CSES problem set learning resource available. Everything you need to master competitive programming is here.
+A comprehensive learning resource for **competitive programming** and **system design interviews**.
 
-### 🌐 **Live Site: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
+## Live Site
 
-**📖 Browse all 240+ problems with interactive navigation, search, and comprehensive solutions!**
+**[https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
 
-## 📊 Overview
-This repository contains comprehensive analysis of all 240+ problems from the [CSES Problem Set](https://cses.fi/problemset/), organized by topic with detailed solutions, learning paths, and study materials.
+---
 
-## 🌐 Live Website
-This repository is automatically deployed to GitHub Pages, providing an interactive web interface for browsing all problems:
+## What's Inside
 
-- **🌐 Live Site**: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)
-- **📱 Responsive Design**: Works on desktop, tablet, and mobile
-- **🔍 Interactive Navigation**: Collapsible sidebar with all problem categories
-- **⚡ Fast Loading**: Optimized for quick access to any problem
-- **🎨 Modern UI**: Clean, readable interface with syntax highlighting
+### 1. CSES Problem Set (240+ Problems)
 
-### 🚀 Features of the Live Site
-- **Complete Problem Coverage**: All 240+ CSES problems with detailed solutions
-- **Interactive Navigation**: Drill-down menu to find any problem quickly
-- **Related Problems**: Cross-references between similar problems
-- **Code Examples**: Python implementations with syntax highlighting
-- **Problem Variations**: Extended problems for deeper learning
-- **Quick Reference**: Ultimate cheatsheet and algorithm guides
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+Complete analysis of all problems from the [CSES Problem Set](https://cses.fi/problemset/), organized by topic:
 
-## 🗂️ Complete Repository Structure
+| Category | Problems | Topics |
+|----------|----------|--------|
+| [Introductory Problems](problem_soulutions/introductory_problems/summary.md) | 25 | Basics, implementation |
+| [Sorting and Searching](problem_soulutions/sorting_and_searching/summary.md) | 35 | Binary search, two pointers |
+| [Dynamic Programming](problem_soulutions/dynamic_programming/summary.md) | 17 | Knapsack, grid DP, string DP |
+| [Graph Algorithms](problem_soulutions/graph_algorithms/summary.md) | 36 | DFS, BFS, shortest paths, SCC |
+| [Tree Algorithms](problem_soulutions/tree_algorithms/summary.md) | 15 | LCA, tree DP, binary lifting |
+| [Range Queries](problem_soulutions/range_queries/summary.md) | 20 | Segment tree, BIT, sparse table |
+| [String Algorithms](problem_soulutions/string_algorithms/summary.md) | 14 | KMP, Z-algorithm, suffix array |
+| [Geometry](problem_soulutions/geometry/summary.md) | 16 | Convex hull, line intersection |
+| [Advanced Graph](problem_soulutions/advanced_graph_problems/summary.md) | 28 | Max flow, matching, Euler path |
+| [Counting](problem_soulutions/counting_problems/summary.md) | 19 | Combinatorics, inclusion-exclusion |
+
+Each problem includes:
+- Step-by-step solution (brute force → optimal)
+- Time/space complexity analysis
+- Key insights and techniques
+- Edge cases and common mistakes
+- Related problems
+
+### 2. System Design (12 Guides)
+
+Interview-focused system design guides with trade-off discussions:
+
+| System | Key Concepts | Trade-offs |
+|--------|--------------|------------|
+| [URL Shortener](system_design/design-url-shortener.md) | Base62, key generation | Predictability vs security |
+| [Chat System](system_design/design-chat-system.md) | WebSocket, presence | Push vs pull |
+| [News Feed](system_design/design-news-feed.md) | Fan-out, ranking | Push vs pull vs hybrid |
+| [YouTube](system_design/design-youtube.md) | Transcoding, CDN, ABR | Storage cost vs latency |
+| [Search Autocomplete](system_design/design-search-autocomplete.md) | Trie, caching | Freshness vs latency |
+| [Payment System](system_design/design-payment-system.md) | Idempotency, reconciliation | Sync vs async |
+| [Web Crawler](system_design/design-web-crawler.md) | URL frontier, politeness | Breadth vs depth |
+| [Key-Value Store](system_design/design-key-value-store.md) | Consistent hashing, replication | Consistency vs availability |
+| [Unique ID Generator](system_design/design-unique-id-generator.md) | Snowflake, ULID | Sortability vs randomness |
+| [Consistent Hashing](system_design/consistent-hashing.md) | Hash ring, virtual nodes | Distribution vs complexity |
+| [Skills GraphRAG](system_design/design-skills-graphrag.md) | Graph + RAG, LLM | Latency vs accuracy |
+
+Each guide follows an **interview-style format**:
+- "Interview context" callouts for transitions
+- "Why not X?" sections for alternatives
+- "Interviewer might ask" prompts
+- Trade-off tables for decisions
+- Interview tips with key phrases
+
+### 3. Quick Reference
+
+- [Study Guide](quick_reference/study_guide.md) - Learning path and strategy
+- [Code Templates](quick_reference/code_templates.md) - Ready-to-use implementations
+- [Advanced Algorithms](quick_reference/advanced_algorithms.md) - Complex techniques
+- [Common Mistakes](quick_reference/common_mistakes.md) - Pitfalls to avoid
+
+---
+
+## Repository Structure
 
 ```
 cses_analyses/
-├── 📄 README.md                           # This comprehensive guide
-├── 📁 quick_reference/                    # Quick access guides
-│   ├── 📄 index.md                        # Quick reference overview
-│   ├── 🚀 ultimate_cheatsheet.md          # Complete quick reference guide
-│   ├── ⚠️ common_mistakes.md              # Avoid common pitfalls
-│   └── 🔬 advanced_algorithms.md          # Advanced algorithm techniques
-
-└── 📁 problem_soulutions/                  # Individual problem analyses (240+ problems)
-    ├── 📁 introductory_problems/          # 25 problems - Start here!
-    ├── 📁 sorting_and_searching/          # 35 problems - Master fundamentals
-    ├── 📁 dynamic_programming/            # 17 problems - Optimization techniques
-    ├── 📁 graph_algorithms/               # 36 problems - Network and path problems
-    ├── 📁 tree_algorithms/                # 15 problems - Hierarchical data structures
-    ├── 📁 string_algorithms/              # 14 problems - Text processing
-    ├── 📁 sliding_window/                 # 15 problems - Efficient subarray operations
-    ├── 📁 range_queries/                  # 20 problems - Data structure queries
-    ├── 📁 advanced_graph_problems/        # 28 problems - Complex graph algorithms
-    ├── 📁 counting_problems/              # 19 problems - Combinatorics and counting
-    └── 📁 geometry/                       # 16 problems - Computational geometry
+├── system_design/              # System design interview guides
+│   ├── index.md                # Overview and framework
+│   ├── TEMPLATE.md             # Template for new designs
+│   ├── design-youtube.md
+│   ├── design-chat-system.md
+│   ├── design-url-shortener.md
+│   └── ...
+├── problem_soulutions/         # CSES problem analyses
+│   ├── introductory_problems/
+│   ├── dynamic_programming/
+│   ├── graph_algorithms/
+│   └── ...
+├── quick_reference/            # Cheatsheets and guides
+└── _data/navigation.yml        # Site navigation
 ```
 
-## 🎯 Quick Reference Guides
-- **[Ultimate Cheatsheet](quick_reference/ultimate_cheatsheet.md)**: Complete quick reference guide with all algorithms, decision trees, visual aids, and templates
-- **[Common Mistakes](quick_reference/common_mistakes.md)**: Comprehensive error prevention
-- **[Advanced Algorithms](quick_reference/advanced_algorithms.md)**: Advanced algorithm techniques
-- **[Quick Reference Index](quick_reference/index.md)**: Overview of all quick reference materials
+---
 
-## 🎯 Complete Problem Solutions (240+ Problems)
+## System Design Interview Framework
 
-### 📁 Problem Categories
-- **[Introductory Problems](problem_soulutions/introductory_problems/summary.md)**: 25 problems - Start here!
-- **[Sorting and Searching](problem_soulutions/sorting_and_searching/summary.md)**: 35 problems - Master fundamentals
-- **[Dynamic Programming](problem_soulutions/dynamic_programming/summary.md)**: 17 problems - Optimization techniques
-- **[Graph Algorithms](problem_soulutions/graph_algorithms/summary.md)**: 36 problems - Network and path problems
-- **[Tree Algorithms](problem_soulutions/tree_algorithms/summary.md)**: 15 problems - Hierarchical data structures
-- **[String Algorithms](problem_soulutions/string_algorithms/summary.md)**: 14 problems - Text processing
-- **[Sliding Window](problem_soulutions/sliding_window/summary.md)**: 15 problems - Efficient subarray operations
-- **[Range Queries](problem_soulutions/range_queries/summary.md)**: 20 problems - Data structure queries
-- **[Advanced Graph Problems](problem_soulutions/advanced_graph_problems/summary.md)**: 28 problems - Complex graph algorithms
-- **[Counting Problems](problem_soulutions/counting_problems/summary.md)**: 19 problems - Combinatorics and counting
-- **[Geometry](problem_soulutions/geometry/summary.md)**: 16 problems - Computational geometry
+### 5-Step Approach (45 minutes)
 
-### 📋 Problem Analysis Features
-Each problem folder contains detailed analyses with:
-- 🎯 Quick summary and complexity analysis
-- 🚀 Step-by-step solution progression (brute force → optimal)
-- 💡 Key insights and reusable techniques
-- 🔧 Implementation with clean, commented code
-- ⚠️ Edge cases and common mistakes
-- 🔗 Related problems and resources
+1. **Requirements (5 min)** - Clarify scope, scale, constraints
+2. **Estimation (5 min)** - QPS, storage, bandwidth
+3. **High-Level Design (10 min)** - Components, data flow
+4. **Deep Dive (20 min)** - 2-3 key areas in detail
+5. **Wrap Up (5 min)** - Trade-offs, bottlenecks, improvements
 
-## 🎯 Algorithm Categories Covered
+### Key Phrases
 
-### 🎯 Dynamic Programming (17 problems)
-- **Coin Change Problems**: Unbounded knapsack, minimizing coins
-- **Grid Problems**: 2D DP, path counting, rectangle cutting
-- **String DP**: Edit distance, longest common subsequence
-- **Advanced DP**: State machines, bitmask DP, optimization
+| Instead of... | Say... |
+|---------------|--------|
+| "Use a database" | "Given the read-heavy workload, I'd use MySQL with read replicas" |
+| "Add caching" | "Add Redis with a TTL of X based on data staleness tolerance" |
+| "Scale horizontally" | "At this QPS, we need N servers assuming Y requests/server" |
 
-### 🌐 Graph Algorithms (36 problems)
-- **Traversal**: DFS, BFS, connected components
-- **Shortest Paths**: Dijkstra, Bellman-Ford, Floyd-Warshall
-- **Connectivity**: SCC, bridges, articulation points
-- **Advanced**: Topological sort, bipartite matching, flow
+---
 
-### 🌳 Tree Algorithms (15 problems)
-- **Traversal**: DFS, BFS, different orders
-- **Properties**: Diameter, height, subtree sizes
-- **Queries**: LCA, distance queries, subtree queries
-- **Advanced**: Binary lifting, rerooting, tree DP
+## Problem-Solving Framework
 
-### 🔍 Range Queries (20 problems)
-- **Static**: Prefix sums, sparse tables
-- **Dynamic**: Binary Indexed Tree, Segment Tree
-- **Advanced**: Lazy propagation, 2D queries
-- **Special**: XOR queries, range updates
+### Constraints → Algorithm
 
-### 📝 String Algorithms (14 problems)
-- **Pattern Matching**: KMP, Boyer-Moore, Z-algorithm
-- **Palindrome**: Manacher's algorithm, palindrome construction
-- **Advanced**: Suffix arrays, suffix automaton
-- **String Processing**: Rotation, border finding
+| Constraint | Complexity | Approach |
+|------------|------------|----------|
+| n ≤ 10 | O(n!) | Brute force, permutations |
+| n ≤ 20 | O(2^n) | Bitmask DP |
+| n ≤ 500 | O(n³) | Floyd-Warshall |
+| n ≤ 5000 | O(n²) | Standard DP |
+| n ≤ 10⁶ | O(n log n) | Sorting, binary search |
+| n ≤ 10⁸ | O(n) | Linear scan |
 
-### 👆 Sliding Window (15 problems)
-- **Fixed Size**: Window maintenance, efficient updates
-- **Variable Size**: Two pointers, optimization
-- **Advanced**: Complex window operations, statistics
+### Keywords → Algorithm
 
-### 🔢 Counting Problems (19 problems)
-- **Combinatorics**: Permutations, combinations, factorials
-- **Inclusion-Exclusion**: Set operations, counting
-- **Advanced**: Catalan numbers, advanced counting
-- **Game Theory**: Counting winning positions
+| Keyword | Algorithm |
+|---------|-----------|
+| "shortest path" | Dijkstra, BFS, Bellman-Ford |
+| "connected components" | DFS, Union-Find |
+| "minimum/maximum" | DP, greedy |
+| "substring/subsequence" | DP, sliding window |
+| "range query" | Segment tree, BIT |
+| "topological" | DFS, Kahn's algorithm |
 
-### 📐 Geometry (16 problems)
-- **Basic**: Point operations, line segments
-- **Polygons**: Area, point in polygon, convex hull
-- **Advanced**: Closest pair, geometric algorithms
-- **Computational**: Efficient geometric computations
+---
 
-## 🚀 Advanced Learning Resources
+## Local Development
 
-### 🔬 Advanced Algorithm Techniques
-- **State Compression DP**: Bitmask and advanced DP
-- **Digit DP**: Number theory and counting
-- **Convex Hull Trick**: Optimization problems
-- **Heavy-Light Decomposition**: Advanced tree algorithms
-- **Link-Cut Trees**: Dynamic tree operations
-- **Persistent Segment Trees**: Historical queries
-- **Fast Fourier Transform**: Polynomial operations
-- **Chinese Remainder Theorem**: Modular arithmetic
+```bash
+# Install Jekyll
+gem install bundler jekyll
 
-## 🚀 Problem-Solving Framework
+# Install dependencies
+bundle install
 
-### 📋 Complete Methodology
-1. **Problem Analysis**: Understand the problem completely
-2. **Algorithm Selection**: Choose the right approach
-3. **Implementation Strategy**: Plan your solution
-4. **Optimization**: Improve efficiency and correctness
-5. **Testing**: Verify your solution thoroughly
+# Run locally
+bundle exec jekyll serve
 
-### 🎯 Technique Identification
-- **Keywords → Algorithm**: Quick algorithm selection
-- **Constraints → Complexity**: Choose appropriate approach
-- **Pattern Recognition**: Identify familiar problems
-- **Edge Case Handling**: Consider all scenarios
+# Open http://localhost:4000/cses-analyses/
+```
 
-### 🔍 Keywords → Algorithm
-- **"maximum/minimum"** → Dynamic Programming
-- **"shortest path"** → Graph Algorithms
-- **"subtree/ancestor"** → Tree Algorithms
-- **"range/query"** → Range Queries
-- **"pattern/substring"** → String Algorithms
-- **"find/search"** → Binary Search
-- **"subarray/window"** → Sliding Window
+---
 
-### 📏 Constraints → Algorithm Choice
-- **n ≤ 10⁶**: O(n) or O(n log n) required
-- **n ≤ 10³**: O(n²) acceptable
-- **n ≤ 20**: O(2ⁿ) acceptable (bitmask)
-- **queries ≤ 10⁵**: O(log n) per query
+## Contributing
 
-## 🚀 Complete Code Library
+1. Fork the repository
+2. Create a feature branch
+3. Follow existing patterns (use TEMPLATE.md for system design)
+4. Submit a pull request
 
-### 💻 Algorithm Templates
-- **Binary Search**: Complete implementation
-- **DFS/BFS**: Graph traversal algorithms
-- **Dynamic Programming**: Various DP patterns
-- **Segment Trees**: Range query data structures
-- **String Algorithms**: Pattern matching and processing
-- **Advanced Techniques**: Complex algorithm implementations
+---
 
-### 💻 Optimization Techniques
-- **Fast I/O**: Efficient input/output
-- **Memory Optimization**: Reduce memory usage
-- **Algorithm Optimization**: Improve performance
-- **Code Optimization**: Write efficient code
+## Resources
 
-## 🚨 Common Pitfalls & Solutions
-
-### ⏰ Time Complexity Mistakes
-- **Nested loops**: O(n²) not O(n)
-- **String operations**: O(n) not O(1)
-- **List operations**: O(n) not O(1)
-
-### 💾 Memory Issues
-- **Large arrays**: Use sparse representation
-- **Recursion depth**: Use iterative approach
-- **String concatenation**: Use join() not +
-
-### ⚠️ Edge Cases
-- **Empty input**: Always check
-- **Single element**: Handle separately
-- **Negative numbers**: Check bounds
-- **Overflow**: Use modular arithmetic
-
-### 🌐 Online Resources
+### Competitive Programming
 - [CSES Problem Set](https://cses.fi/problemset/)
 - [LeetCode](https://leetcode.com/)
 - [Codeforces](https://codeforces.com/)
 - [AtCoder](https://atcoder.jp/)
 
-### 🎥 Video Tutorials
-- MIT OpenCourseWare Algorithms
-- Stanford CS161 Algorithms
-- Competitive Programming channels
-
-### 🛠️ Tools and Templates
-- **IDE Setup**: Optimize your development environment
-- **Code Templates**: Ready-to-use boilerplate
-- **Debugging Tools**: Efficient error finding
-- **Performance Tools**: Time and memory analysis
+### System Design
+- [System Design Primer](https://github.com/donnemartin/system-design-primer)
+- [Designing Data-Intensive Applications](https://dataintensive.net/)
+- [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
 
 ---
 
-**This is the ultimate resource for mastering the CSES problem set. Everything you need is here! 🏆**
+**Happy learning!**
