@@ -641,43 +641,43 @@ main:
   children:
   - title: Summary
     url: /cses-analyses/problem_soulutions/Blue
-  - title: Session 01 - Dynamic Array
+  - title: Dynamic Array
     url: /cses-analyses/problem_soulutions/Blue/Session 01 - Dynamic Array
-  - title: Session 02 - Algorithmic Complexity
+  - title: Algorithmic Complexity
     url: /cses-analyses/problem_soulutions/Blue/Session 02 - Algorithmic Complexity
-  - title: Session 03 - Sorting
+  - title: Sorting
     url: /cses-analyses/problem_soulutions/Blue/Session 03 - Sorting
-  - title: Session 04 - Stack and Queue
+  - title: Stack and Queue
     url: /cses-analyses/problem_soulutions/Blue/Session 04 - Stack and Queue
-  - title: Session 05 - String
+  - title: String
     url: /cses-analyses/problem_soulutions/Blue/Session 05 - String
-  - title: Session 06 - BFS
+  - title: BFS
     url: /cses-analyses/problem_soulutions/Blue/Session 06 - BFS
-  - title: Session 07 - DFS
+  - title: DFS
     url: /cses-analyses/problem_soulutions/Blue/Session 07 - DFS
-  - title: Session 08 - Heap
+  - title: Heap
     url: /cses-analyses/problem_soulutions/Blue/Session 08 - Heap
-  - title: Session 09 - Dijkstra
+  - title: Dijkstra
     url: /cses-analyses/problem_soulutions/Blue/Session 09 - Dijkstra
-  - title: Session 10 - Mid Term
+  - title: Mid Term
     url: /cses-analyses/problem_soulutions/Blue/Session 10 - Mid Term
-  - title: Session 11 - Bellman-Ford
+  - title: Bellman-Ford
     url: /cses-analyses/problem_soulutions/Blue/Session 11 - Bellman-Ford
-  - title: Session 12 - Floyd-Warshall
+  - title: Floyd-Warshall
     url: /cses-analyses/problem_soulutions/Blue/Session 12 - Floyd-Warshall
-  - title: Session 13 - Binary Search
+  - title: Binary Search
     url: /cses-analyses/problem_soulutions/Blue/Session 13 - Binary Search
-  - title: Session 14 - Binary Search Tree
+  - title: Binary Search Tree
     url: /cses-analyses/problem_soulutions/Blue/Session 14 - Binary Search Tree
-  - title: Session 15 - MAP TREEMAP DICT
+  - title: MAP TREEMAP DICT
     url: /cses-analyses/problem_soulutions/Blue/Session 15 - MAP – TREEMAP - DICT
-  - title: Session 16 - Prim
+  - title: Prim
     url: /cses-analyses/problem_soulutions/Blue/Session 16 - Prim
-  - title: Session 17 - Trie
+  - title: Trie
     url: /cses-analyses/problem_soulutions/Blue/Session 17 - Trie
-  - title: Session 18 - DSU
+  - title: DSU
     url: /cses-analyses/problem_soulutions/Blue/Session 18 - DSU
-  - title: Session 19 - Kruskal
+  - title: Kruskal
     url: /cses-analyses/problem_soulutions/Blue/Session 19 - Kruskal
   - title: Final Exam
     url: /cses-analyses/problem_soulutions/Blue/Final Exam
