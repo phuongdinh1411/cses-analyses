@@ -672,5 +672,77 @@ main:
     url: /cses-analyses/system_design/design-payment-system
   - title: Skills GraphRAG
     url: /cses-analyses/system_design/design-skills-graphrag
+- title: B
+  url: /cses-analyses/problem_soulutions/Blue
+  children:
+  - title: Session 01 - Dynamic Array
+    url: /cses-analyses/problem_soulutions/Blue/Session 01 - Dynamic Array
+  - title: Session 02 - Algorithmic Complexity
+    url: /cses-analyses/problem_soulutions/Blue/Session 02 - Algorithmic Complexity
+  - title: Session 03 - Sorting
+    url: /cses-analyses/problem_soulutions/Blue/Session 03 - Sorting
+  - title: Session 04 - Stack and Queue
+    url: /cses-analyses/problem_soulutions/Blue/Session 04 - Stack and Queue
+  - title: Session 05 - String
+    url: /cses-analyses/problem_soulutions/Blue/Session 05 - String
+  - title: Session 06 - BFS
+    url: /cses-analyses/problem_soulutions/Blue/Session 06 - BFS
+  - title: Session 07 - DFS
+    url: /cses-analyses/problem_soulutions/Blue/Session 07 - DFS
+  - title: Session 08 - Heap
+    url: /cses-analyses/problem_soulutions/Blue/Session 08 - Heap
+  - title: Session 09 - Dijkstra
+    url: /cses-analyses/problem_soulutions/Blue/Session 09 - Dijkstra
+  - title: Session 10 - Mid Term
+    url: /cses-analyses/problem_soulutions/Blue/Session 10 - Mid Term
+  - title: Session 11 - Bellman-Ford
+    url: /cses-analyses/problem_soulutions/Blue/Session 11 - Bellman-Ford
+  - title: Session 12 - Floyd-Warshall
+    url: /cses-analyses/problem_soulutions/Blue/Session 12 - Floyd-Warshall
+  - title: Session 13 - Binary Search
+    url: /cses-analyses/problem_soulutions/Blue/Session 13 - Binary Search
+  - title: Session 14 - Binary Search Tree
+    url: /cses-analyses/problem_soulutions/Blue/Session 14 - Binary Search Tree
+  - title: Session 15 - MAP TREEMAP DICT
+    url: /cses-analyses/problem_soulutions/Blue/Session 15 - MAP – TREEMAP - DICT
+  - title: Session 16 - Prim
+    url: /cses-analyses/problem_soulutions/Blue/Session 16 - Prim
+  - title: Session 17 - Trie
+    url: /cses-analyses/problem_soulutions/Blue/Session 17 - Trie
+  - title: Session 18 - DSU
+    url: /cses-analyses/problem_soulutions/Blue/Session 18 - DSU
+  - title: Session 19 - Kruskal
+    url: /cses-analyses/problem_soulutions/Blue/Session 19 - Kruskal
+  - title: Final Exam
+    url: /cses-analyses/problem_soulutions/Blue/Final Exam
+- title: O
+  url: /cses-analyses/problem_soulutions/Orange
+  children:
+  - title: Backtracking
+    url: /cses-analyses/problem_soulutions/Orange/Backtracking
+  - title: Bit Manipulation
+    url: /cses-analyses/problem_soulutions/Orange/Bit Manipulation
+  - title: Divide and Conquer
+    url: /cses-analyses/problem_soulutions/Orange/Divide and conquer
+  - title: DP
+    url: /cses-analyses/problem_soulutions/Orange/dp
+  - title: Final Term
+    url: /cses-analyses/problem_soulutions/Orange/Final term
+  - title: Greedy
+    url: /cses-analyses/problem_soulutions/Orange/Greedy
+  - title: Hash Map
+    url: /cses-analyses/problem_soulutions/Orange/Hash Map
+  - title: Knuth-Morris-Pratt
+    url: /cses-analyses/problem_soulutions/Orange/Knuth-Morris-Pratt
+  - title: Midterm
+    url: /cses-analyses/problem_soulutions/Orange/Midterm
+  - title: Number Theory
+    url: /cses-analyses/problem_soulutions/Orange/Number Theory
+  - title: Number Theory 2
+    url: /cses-analyses/problem_soulutions/Orange/Number Theory 2
+  - title: Segment Tree
+    url: /cses-analyses/problem_soulutions/Orange/Segment Tree
+  - title: Topological Sort
+    url: /cses-analyses/problem_soulutions/Orange/Topological Sort
 - title: About
   url: /cses-analyses/about
