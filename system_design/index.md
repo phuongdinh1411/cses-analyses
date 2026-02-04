@@ -47,6 +47,7 @@ These guides are designed to prepare you for system design interviews:
 | [Chat System](/cses-analyses/system_design/design-chat-system) | Real-time messaging with presence and delivery | WebSocket vs polling, push vs pull |
 | [News Feed](/cses-analyses/system_design/design-news-feed) | Push vs pull vs hybrid, celebrity problem | Fan-out trade-offs, real-time vs batch |
 | [Search Autocomplete](/cses-analyses/system_design/design-search-autocomplete) | Trie with cached top-K, multi-level caching | Freshness vs latency, memory vs CPU |
+| [YouTube](/cses-analyses/system_design/design-youtube) | Video upload, transcoding, CDN, streaming | Storage tiering, processing speed vs cost |
 
 ### Domain-Specific Systems
 
