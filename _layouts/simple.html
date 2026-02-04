@@ -849,66 +849,24 @@
                 }
             });
             
-            // Auto-expand current page's navigation and maintain state
+            // Auto-expand only the current page's parent navigation
             const currentPage = window.location.pathname;
             const allLinks = document.querySelectorAll('.nav__item a, .nav__sub-item a, .nav__sub-sub-item a');
-            
+
             allLinks.forEach(link => {
                 const href = link.getAttribute('href');
-                if (href === currentPage) {
+                if (href === currentPage || currentPage.startsWith(href) && href !== '/cses-analyses/') {
                     link.classList.add('active');
-                    
-                    // Expand all parent navigation items for the current page
+
+                    // Only expand the immediate parent section
                     let parent = link.parentElement.parentElement;
                     while (parent) {
-                        if (parent.classList.contains('nav__sub-items')) {
+                        if (parent.classList.contains('nav__sub-items') || parent.classList.contains('nav__sub-sub-items')) {
                             parent.classList.add('expanded');
-                            parent = parent.parentElement.parentElement;
-                        } else if (parent.classList.contains('nav__sub-sub-items')) {
-                            parent.classList.add('expanded');
-                            parent = parent.parentElement.parentElement;
-                        } else {
-                            parent = parent.parentElement;
                         }
+                        parent = parent.parentElement;
                     }
                 }
-            });
-            
-            // Store navigation state in localStorage
-            function saveNavigationState() {
-                const expandedItems = [];
-                document.querySelectorAll('.nav__sub-items.expanded, .nav__sub-sub-items.expanded').forEach(item => {
-                    expandedItems.push(item.className + ':' + item.closest('.nav__item, .nav__sub-item').querySelector('a').getAttribute('href'));
-                });
-                localStorage.setItem('csesNavigationState', JSON.stringify(expandedItems));
-            }
-            
-            // Restore navigation state from localStorage
-            function restoreNavigationState() {
-                const savedState = localStorage.getItem('csesNavigationState');
-                if (savedState) {
-                    const expandedItems = JSON.parse(savedState);
-                    expandedItems.forEach(itemInfo => {
-                        const [className, href] = itemInfo.split(':');
-                        const link = document.querySelector(`a[href="${href}"]`);
-                        if (link) {
-                            const parent = link.parentElement.parentElement;
-                            if (parent && parent.classList.contains(className.split(' ')[0])) {
-                                parent.classList.add('expanded');
-                            }
-                        }
-                    });
-                }
-            }
-            
-            // Restore state on page load
-            restoreNavigationState();
-            
-            // Save state when navigation changes
-            document.querySelectorAll('.nav__item a, .nav__sub-item a').forEach(link => {
-                link.addEventListener('click', function() {
-                    setTimeout(saveNavigationState, 100);
-                });
             });
             
             // Handle window resize
