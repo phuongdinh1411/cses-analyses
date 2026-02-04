@@ -16,9 +16,9 @@
         "Include 'Interviewer might ask' prompts",
         "Document when pseudocode is acceptable vs full implementation"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "Use design-key-value-store.md as reference - it has the best interview-style patterns"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Created .lra/interview-style-template.md with all patterns extracted from design-key-value-store.md"
     },
     {
       "id": "F002",
