@@ -25,12 +25,6 @@ A curated collection of algorithm problems with detailed solutions and analyses.
 | [Code Templates](/cses-analyses/quick_reference/code_templates) | Ready-to-use algorithm implementations |
 | [Common Mistakes](/cses-analyses/quick_reference/common_mistakes) | Pitfalls to avoid |
 
-## How to Use
-
-1. **Beginners**: Start with CSES Introductory Problems or B Session 01
-2. **Intermediate**: Work through graph algorithms and DP sections
-3. **Advanced**: Tackle O topics and system design
-
 ## External Resources
 
 - [Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources) - Curated LeetCode patterns and guides
