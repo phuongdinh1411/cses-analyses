@@ -2,17 +2,71 @@
 
 A comprehensive learning resource for **competitive programming** and **system design interviews**.
 
-## Live Site
-
-**[https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
+**Live Site: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
 
 ---
 
-## What's Inside
+## Table of Contents
 
-### 1. CSES Problem Set (240+ Problems)
+- [System Design](#system-design)
+- [CSES Problem Set](#cses-problem-set)
+- [Quick Reference](#quick-reference)
+- [Repository Structure](#repository-structure)
+- [Local Development](#local-development)
+- [Resources](#resources)
 
-Complete analysis of all problems from the [CSES Problem Set](https://cses.fi/problemset/), organized by topic:
+---
+
+## System Design
+
+### Available Guides (12 Topics)
+
+| System | Key Concepts | Trade-offs |
+|--------|--------------|------------|
+| [YouTube](system_design/design-youtube.md) | Transcoding, CDN, ABR streaming | Storage cost vs latency |
+| [Chat System](system_design/design-chat-system.md) | WebSocket, presence, delivery | Push vs pull |
+| [News Feed](system_design/design-news-feed.md) | Fan-out, ranking, caching | Push vs pull vs hybrid |
+| [URL Shortener](system_design/design-url-shortener.md) | Base62, key generation | Predictability vs security |
+| [Search Autocomplete](system_design/design-search-autocomplete.md) | Trie, multi-level caching | Freshness vs latency |
+| [Payment System](system_design/design-payment-system.md) | Idempotency, reconciliation | Sync vs async |
+| [Web Crawler](system_design/design-web-crawler.md) | URL frontier, politeness | Breadth vs depth |
+| [Key-Value Store](system_design/design-key-value-store.md) | Consistent hashing, replication | Consistency vs availability |
+| [Unique ID Generator](system_design/design-unique-id-generator.md) | Snowflake, ULID | Sortability vs randomness |
+| [Consistent Hashing](system_design/consistent-hashing.md) | Hash ring, virtual nodes | Distribution vs complexity |
+| [Skills GraphRAG](system_design/design-skills-graphrag.md) | Graph + RAG, LLM integration | Latency vs accuracy |
+
+### Interview Format
+
+Each guide follows an **interview-style format**:
+- **"Interview context"** - Transition phrases between topics
+- **"Why not X?"** - Discussion of alternatives considered
+- **"Interviewer might ask"** - Common follow-up questions
+- **Trade-off tables** - Decision rationale
+- **Interview tips** - Key phrases and approach
+
+### 5-Step Framework (45 minutes)
+
+| Step | Time | Focus |
+|------|------|-------|
+| 1. Requirements | 5 min | Clarify scope, scale, constraints |
+| 2. Estimation | 5 min | QPS, storage, bandwidth |
+| 3. High-Level Design | 10 min | Components, data flow, APIs |
+| 4. Deep Dive | 20 min | 2-3 key areas in detail |
+| 5. Wrap Up | 5 min | Trade-offs, bottlenecks, improvements |
+
+### Key Phrases
+
+| Instead of... | Say... |
+|---------------|--------|
+| "Use a database" | "Given the read-heavy workload, I'd use MySQL with read replicas" |
+| "Add caching" | "Add Redis with a TTL of X based on data staleness tolerance" |
+| "Scale horizontally" | "At this QPS, we need N servers assuming Y requests/server" |
+
+---
+
+## CSES Problem Set
+
+### Problem Categories (240+ Problems)
 
 | Category | Problems | Topics |
 |----------|----------|--------|
@@ -27,90 +81,13 @@ Complete analysis of all problems from the [CSES Problem Set](https://cses.fi/pr
 | [Advanced Graph](problem_soulutions/advanced_graph_problems/summary.md) | 28 | Max flow, matching, Euler path |
 | [Counting](problem_soulutions/counting_problems/summary.md) | 19 | Combinatorics, inclusion-exclusion |
 
-Each problem includes:
+### What's in Each Problem
+
 - Step-by-step solution (brute force → optimal)
 - Time/space complexity analysis
 - Key insights and techniques
 - Edge cases and common mistakes
 - Related problems
-
-### 2. System Design (12 Guides)
-
-Interview-focused system design guides with trade-off discussions:
-
-| System | Key Concepts | Trade-offs |
-|--------|--------------|------------|
-| [URL Shortener](system_design/design-url-shortener.md) | Base62, key generation | Predictability vs security |
-| [Chat System](system_design/design-chat-system.md) | WebSocket, presence | Push vs pull |
-| [News Feed](system_design/design-news-feed.md) | Fan-out, ranking | Push vs pull vs hybrid |
-| [YouTube](system_design/design-youtube.md) | Transcoding, CDN, ABR | Storage cost vs latency |
-| [Search Autocomplete](system_design/design-search-autocomplete.md) | Trie, caching | Freshness vs latency |
-| [Payment System](system_design/design-payment-system.md) | Idempotency, reconciliation | Sync vs async |
-| [Web Crawler](system_design/design-web-crawler.md) | URL frontier, politeness | Breadth vs depth |
-| [Key-Value Store](system_design/design-key-value-store.md) | Consistent hashing, replication | Consistency vs availability |
-| [Unique ID Generator](system_design/design-unique-id-generator.md) | Snowflake, ULID | Sortability vs randomness |
-| [Consistent Hashing](system_design/consistent-hashing.md) | Hash ring, virtual nodes | Distribution vs complexity |
-| [Skills GraphRAG](system_design/design-skills-graphrag.md) | Graph + RAG, LLM | Latency vs accuracy |
-
-Each guide follows an **interview-style format**:
-- "Interview context" callouts for transitions
-- "Why not X?" sections for alternatives
-- "Interviewer might ask" prompts
-- Trade-off tables for decisions
-- Interview tips with key phrases
-
-### 3. Quick Reference
-
-- [Study Guide](quick_reference/study_guide.md) - Learning path and strategy
-- [Code Templates](quick_reference/code_templates.md) - Ready-to-use implementations
-- [Advanced Algorithms](quick_reference/advanced_algorithms.md) - Complex techniques
-- [Common Mistakes](quick_reference/common_mistakes.md) - Pitfalls to avoid
-
----
-
-## Repository Structure
-
-```
-cses_analyses/
-├── system_design/              # System design interview guides
-│   ├── index.md                # Overview and framework
-│   ├── TEMPLATE.md             # Template for new designs
-│   ├── design-youtube.md
-│   ├── design-chat-system.md
-│   ├── design-url-shortener.md
-│   └── ...
-├── problem_soulutions/         # CSES problem analyses
-│   ├── introductory_problems/
-│   ├── dynamic_programming/
-│   ├── graph_algorithms/
-│   └── ...
-├── quick_reference/            # Cheatsheets and guides
-└── _data/navigation.yml        # Site navigation
-```
-
----
-
-## System Design Interview Framework
-
-### 5-Step Approach (45 minutes)
-
-1. **Requirements (5 min)** - Clarify scope, scale, constraints
-2. **Estimation (5 min)** - QPS, storage, bandwidth
-3. **High-Level Design (10 min)** - Components, data flow
-4. **Deep Dive (20 min)** - 2-3 key areas in detail
-5. **Wrap Up (5 min)** - Trade-offs, bottlenecks, improvements
-
-### Key Phrases
-
-| Instead of... | Say... |
-|---------------|--------|
-| "Use a database" | "Given the read-heavy workload, I'd use MySQL with read replicas" |
-| "Add caching" | "Add Redis with a TTL of X based on data staleness tolerance" |
-| "Scale horizontally" | "At this QPS, we need N servers assuming Y requests/server" |
-
----
-
-## Problem-Solving Framework
 
 ### Constraints → Algorithm
 
@@ -118,7 +95,7 @@ cses_analyses/
 |------------|------------|----------|
 | n ≤ 10 | O(n!) | Brute force, permutations |
 | n ≤ 20 | O(2^n) | Bitmask DP |
-| n ≤ 500 | O(n³) | Floyd-Warshall |
+| n ≤ 500 | O(n³) | Floyd-Warshall, matrix |
 | n ≤ 5000 | O(n²) | Standard DP |
 | n ≤ 10⁶ | O(n log n) | Sorting, binary search |
 | n ≤ 10⁸ | O(n) | Linear scan |
@@ -133,6 +110,38 @@ cses_analyses/
 | "substring/subsequence" | DP, sliding window |
 | "range query" | Segment tree, BIT |
 | "topological" | DFS, Kahn's algorithm |
+
+---
+
+## Quick Reference
+
+| Guide | Description |
+|-------|-------------|
+| [Study Guide](quick_reference/study_guide.md) | Learning path and strategy |
+| [Code Templates](quick_reference/code_templates.md) | Ready-to-use implementations |
+| [Advanced Algorithms](quick_reference/advanced_algorithms.md) | Complex techniques |
+| [Common Mistakes](quick_reference/common_mistakes.md) | Pitfalls to avoid |
+
+---
+
+## Repository Structure
+
+```
+cses_analyses/
+├── system_design/              # System design interview guides
+│   ├── index.md                # Overview and framework
+│   ├── TEMPLATE.md             # Template for new designs
+│   ├── design-youtube.md
+│   ├── design-chat-system.md
+│   └── ...
+├── problem_soulutions/         # CSES problem analyses
+│   ├── introductory_problems/
+│   ├── dynamic_programming/
+│   ├── graph_algorithms/
+│   └── ...
+├── quick_reference/            # Cheatsheets and guides
+└── _data/navigation.yml        # Site navigation
+```
 
 ---
 
@@ -153,16 +162,12 @@ bundle exec jekyll serve
 
 ---
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Follow existing patterns (use TEMPLATE.md for system design)
-4. Submit a pull request
-
----
-
 ## Resources
+
+### System Design
+- [System Design Primer](https://github.com/donnemartin/system-design-primer)
+- [Designing Data-Intensive Applications](https://dataintensive.net/)
+- [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
 
 ### Competitive Programming
 - [CSES Problem Set](https://cses.fi/problemset/)
@@ -170,11 +175,11 @@ bundle exec jekyll serve
 - [Codeforces](https://codeforces.com/)
 - [AtCoder](https://atcoder.jp/)
 
-### System Design
-- [System Design Primer](https://github.com/donnemartin/system-design-primer)
-- [Designing Data-Intensive Applications](https://dataintensive.net/)
-- [Google SRE Book](https://sre.google/sre-book/table-of-contents/)
-
 ---
 
-**Happy learning!**
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Follow existing patterns (use `TEMPLATE.md` for system design)
+4. Submit a pull request
