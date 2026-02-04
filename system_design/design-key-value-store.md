@@ -160,24 +160,12 @@ Calculations:
 
 ### Internal RPC (Node-to-Node)
 
-```python
-class KeyValueService:
-    def put(key: str, value: bytes, context: VectorClock) -> WriteResult:
-        """Write to local storage with conflict detection"""
-        pass
-
-    def get(key: str) -> GetResult:
-        """Read from local storage"""
-        pass
-
-    def replicate(key: str, value: bytes, context: VectorClock) -> AckResult:
-        """Accept replicated data from peer"""
-        pass
-
-    def handoff(key_range: Range, target_node: NodeId) -> HandoffResult:
-        """Transfer key range to another node"""
-        pass
-```
+| Operation | Purpose |
+|-----------|---------|
+| `put(key, value, context)` | Write to local storage with conflict detection |
+| `get(key)` | Read from local storage |
+| `replicate(key, value, context)` | Accept replicated data from peer |
+| `handoff(key_range, target_node)` | Transfer key range to another node |
 
 ---
 
@@ -233,26 +221,12 @@ For detailed explanation of consistent hashing, see [consistent-hashing.md](./co
 
 ### Key-to-Node Mapping
 
-```python
-def get_nodes_for_key(key: str, n_replicas: int = 3) -> List[Node]:
-    """
-    Returns N nodes responsible for the key:
-    1. Hash the key
-    2. Walk clockwise on ring
-    3. Return first N distinct physical nodes
-    """
-    hash_value = md5_hash(key)
-    nodes = []
+To find which nodes store a key:
 
-    for position in ring.walk_clockwise_from(hash_value):
-        physical_node = ring.get_physical_node(position)
-        if physical_node not in nodes:
-            nodes.append(physical_node)
-        if len(nodes) == n_replicas:
-            break
-
-    return nodes
-```
+1. **Hash the key**: `hash("user:123")` → position on ring
+2. **Walk clockwise**: Starting from that position
+3. **Collect N distinct physical nodes**: Skip virtual nodes pointing to same server
+4. **Return node list**: First node is coordinator, others are replicas
 
 ### Why Virtual Nodes?
 
@@ -775,55 +749,14 @@ Hinted handoff enables a **sloppy quorum** - writes succeed using *any* W health
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-#### Implementation
+#### How It Works
 
-```python
-class HintedHandoff:
-    def __init__(self, ring, write_quorum=2):
-        self.ring = ring
-        self.W = write_quorum
-        self.hint_store = {}  # node_id -> list of hints
-
-    def write(self, key, value, target_nodes):
-        """Write with hinted handoff support"""
-        successful_writes = 0
-
-        for node in target_nodes:
-            if node.is_healthy():
-                # Normal write
-                node.write(key, value)
-                successful_writes += 1
-            else:
-                # Node is down - use hinted handoff
-                hint_node = self.get_next_healthy_node(node)
-                hint = {
-                    "target_node": node.id,
-                    "key": key,
-                    "value": value,
-                    "timestamp": time.now()
-                }
-                hint_node.store_hint(hint)
-                successful_writes += 1  # Hint counts toward quorum
-
-        return successful_writes >= self.W
-
-    def on_node_recovered(self, recovered_node):
-        """Called when gossip detects node recovery"""
-        for hint_holder in self.get_nodes_with_hints_for(recovered_node):
-            hints = hint_holder.get_hints_for(recovered_node)
-            for hint in hints:
-                # Deliver hinted data
-                recovered_node.write(hint["key"], hint["value"])
-                hint_holder.delete_hint(hint)
-
-    def get_next_healthy_node(self, failed_node):
-        """Walk ring clockwise to find healthy node"""
-        position = self.ring.get_position(failed_node)
-        for node in self.ring.walk_clockwise_from(position):
-            if node.is_healthy() and node != failed_node:
-                return node
-        raise NoHealthyNodesError()
-```
+1. **Write attempt**: Target node A is down
+2. **Select hint holder**: Next healthy node on ring (D)
+3. **Store hint**: D stores the data + metadata about intended target (A)
+4. **Wait for recovery**: Gossip detects A is back
+5. **Deliver hint**: D sends stored data to A
+6. **Delete hint**: Once delivered, hint is removed
 
 #### Trade-offs
 
@@ -1037,78 +970,18 @@ Merkle Trees let us efficiently find which keys differ between two nodes:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-#### Implementation
+#### Recovery Process
 
-```python
-class PermanentFailureRecovery:
-    def __init__(self, ring, replication_factor=3):
-        self.ring = ring
-        self.N = replication_factor
+1. **Detect failure**: Gossip protocol marks node as permanently failed (down >10 min)
+2. **Update ring**: Remove failed node from membership
+3. **Find affected ranges**: Identify key ranges with < N replicas
+4. **Select new replica**: Next healthy node in ring not already holding data
+5. **Sync using Merkle tree**: Compare tree hashes to find differences
+6. **Transfer only diffs**: Stream only the differing keys (efficient!)
 
-    def handle_permanent_failure(self, failed_node):
-        """Handle permanent node failure"""
-
-        # 1. Update ring membership
-        self.ring.remove_node(failed_node)
-        self.broadcast_ring_update()
-
-        # 2. Find under-replicated key ranges
-        affected_ranges = self.get_ranges_owned_by(failed_node)
-
-        for key_range in affected_ranges:
-            # 3. Find nodes that have this data
-            existing_replicas = self.get_healthy_replicas(key_range)
-
-            if len(existing_replicas) < self.N:
-                # 4. Select new replica node
-                new_replica = self.select_new_replica(
-                    key_range,
-                    exclude=existing_replicas
-                )
-
-                # 5. Stream data using Merkle tree diff
-                self.stream_range(
-                    source=existing_replicas[0],
-                    target=new_replica,
-                    key_range=key_range
-                )
-
-    def select_new_replica(self, key_range, exclude):
-        """Find next node in ring not already holding this data"""
-        for node in self.ring.walk_clockwise_from(key_range.end):
-            if node not in exclude and node.is_healthy():
-                return node
-        raise InsufficientNodesError()
-
-    def stream_range(self, source, target, key_range):
-        """Efficiently sync data using Merkle trees"""
-
-        # Build Merkle trees for comparison
-        source_tree = source.get_merkle_tree(key_range)
-        target_tree = target.get_merkle_tree(key_range)
-
-        # Find differing ranges (O(log N))
-        diff_ranges = self.merkle_diff(source_tree, target_tree)
-
-        # Only transfer differing data
-        for diff_range in diff_ranges:
-            data = source.get_keys_in_range(diff_range)
-            target.write_batch(data)
-
-    def merkle_diff(self, tree1, tree2):
-        """Recursively find differing key ranges"""
-        if tree1.hash == tree2.hash:
-            return []  # Trees are identical
-
-        if tree1.is_leaf:
-            return [tree1.key_range]  # Found difference
-
-        # Recurse into children
-        diffs = []
-        diffs.extend(self.merkle_diff(tree1.left, tree2.left))
-        diffs.extend(self.merkle_diff(tree1.right, tree2.right))
-        return diffs
-```
+> **Interviewer might ask**: "Why use Merkle trees?"
+>
+> Merkle trees allow O(log N) comparison of datasets. Compare root hashes—if equal, data is identical. If different, recurse into children to find exactly which ranges differ. Much more efficient than comparing key-by-key.
 
 ---
 

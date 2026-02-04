@@ -188,3 +188,21 @@ Transform system design documents from solution-oriented to interview-style disc
 
 ---
 
+### Session 10 - 2026-02-04 - Key-Value Store Review
+- Reviewed and enhanced design-key-value-store.md (the template document)
+- Document already had good interview structure:
+  - 4 interview context callouts
+  - Comprehensive Interview Tips section
+  - Key phrases and follow-up questions
+- Removed ~127 lines of Python implementation code:
+  - HintedHandoff class
+  - PermanentFailureRecovery class
+  - KeyValueService RPC interface
+  - get_nodes_for_key function
+- Converted code sections to step-by-step explanations
+- Added "Interviewer might ask" for Merkle trees
+- Reduced document from 1678 to 1551 lines
+- Completed F009
+
+---
+
