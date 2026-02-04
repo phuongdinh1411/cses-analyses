@@ -182,9 +182,9 @@
         "Link to the 5-step framework appropriately",
         "Remove any references to implementation code"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "4KB document - landing page for system design section"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Added 'How to Use These Guides' section, 'Interview Mindset' section, updated guide descriptions to show key trade-offs, added News Feed guide that was missing, added interview tip to Deep Dive step."
     },
     {
       "id": "F012",
@@ -197,9 +197,9 @@
         "Include phrases for proposing trade-offs",
         "Include phrases for handling unknown areas gracefully"
       ],
-      "status": "pending",
-      "completed_at": null,
-      "notes": "Could be added to index.md or separate guide"
+      "status": "completed",
+      "completed_at": "2026-02-04",
+      "notes": "Added 'Interview Transition Phrases' section to index.md with 5 phrase tables: Clarifying Requirements, Proposing Trade-offs, Transitioning Between Topics, Handling Unknowns, Wrapping Up."
     },
     {
       "id": "F013",

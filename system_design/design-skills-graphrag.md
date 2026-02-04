@@ -704,580 +704,121 @@ RESPONSE:
 
 ### Entity Extraction Pipeline
 
-```python
-class SkillsEntityExtractor:
-    """Extract skills entities from various sources."""
+> **Interview context**: The entity extraction pipeline converts unstructured data (job descriptions, resumes) into structured graph data. This is where LLMs add significant value.
 
-    def __init__(self):
-        self.llm = OpenAI()
-        self.textkernel_client = TextkernelClient()
+**Key extraction steps:**
 
-    async def process_job_description(self, job_text: str) -> dict:
-        """Extract skills and requirements from job description."""
+1. **Job Description Processing**
+   - Extract job title, required skills, responsibilities
+   - Classify skill importance ("must-have" vs "nice-to-have")
+   - Identify certification requirements and experience levels
 
-        prompt = """
-        Extract structured information from this job description:
+2. **Resume Processing**
+   - Extract skills with proficiency levels
+   - Map experience to skills used
+   - Identify certifications and education
 
-        {text}
+3. **Entity Resolution**
+   - Match extracted skills to canonical taxonomy (Textkernel)
+   - Handle synonyms: "JS" → "JavaScript", "ML" → "Machine Learning"
+   - Merge duplicates with confidence scoring
 
-        Return JSON with:
-        - job_title: string
-        - required_skills: list of {{name, importance: "must"|"nice", level: "beginner"|"intermediate"|"expert"}}
-        - responsibilities: list of strings
-        - qualifications: list of strings
-        - certifications: list of strings
-        - experience_years: int or null
-        - education: string or null
-        """
+4. **Similarity Computation**
+   - Co-occurrence analysis: skills appearing together in job postings
+   - Jaccard similarity for relationship strength
+   - Threshold filtering (similarity > 0.3) to avoid noise
 
-        response = await self.llm.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt.format(text=job_text)}],
-            response_format={"type": "json_object"}
-        )
-
-        extracted = json.loads(response.choices[0].message.content)
-
-        # Enrich with Textkernel taxonomy IDs
-        enriched_skills = []
-        for skill in extracted['required_skills']:
-            tk_match = await self.textkernel_client.match_skill(skill['name'])
-            if tk_match:
-                skill['textkernel_id'] = tk_match['id']
-                skill['canonical_name'] = tk_match['canonical_name']
-            enriched_skills.append(skill)
-
-        extracted['required_skills'] = enriched_skills
-        return extracted
-
-    async def process_resume(self, resume_text: str) -> dict:
-        """Extract skills and experience from resume."""
-
-        prompt = """
-        Extract structured information from this resume:
-
-        {text}
-
-        Return JSON with:
-        - name: string
-        - skills: list of {{name, proficiency: 1-5, years_experience: float}}
-        - experience: list of {{title, company, duration_months, skills_used}}
-        - education: list of {{degree, field, institution}}
-        - certifications: list of {{name, provider, year}}
-        """
-
-        response = await self.llm.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt.format(text=resume_text)}],
-            response_format={"type": "json_object"}
-        )
-
-        return json.loads(response.choices[0].message.content)
-
-
-class GraphBuilder:
-    """Build and update the skills knowledge graph."""
-
-    def __init__(self, neo4j_driver):
-        self.driver = neo4j_driver
-        self.entity_resolver = EntityResolver()
-
-    def ingest_job(self, job_data: dict):
-        """Add job and its skills to the graph."""
-
-        with self.driver.session() as session:
-            # Create or merge profession
-            session.run("""
-                MERGE (p:Profession {name: $title})
-                SET p.updated_at = datetime()
-            """, title=job_data['job_title'])
-
-            # Add skills and relationships
-            for skill in job_data['required_skills']:
-                # Resolve skill to canonical form
-                canonical = self.entity_resolver.resolve_skill(skill['name'])
-
-                session.run("""
-                    MERGE (s:Skill {id: $skill_id})
-                    SET s.name = $name, s.updated_at = datetime()
-
-                    WITH s
-                    MATCH (p:Profession {name: $profession})
-                    MERGE (p)-[r:REQUIRES]->(s)
-                    SET r.importance = $importance,
-                        r.level = $level,
-                        r.count = coalesce(r.count, 0) + 1
-                """,
-                    skill_id=canonical['id'],
-                    name=canonical['name'],
-                    profession=job_data['job_title'],
-                    importance=skill['importance'],
-                    level=skill.get('level', 'intermediate')
-                )
-
-    def compute_skill_similarities(self):
-        """Compute and store skill similarity relationships."""
-
-        with self.driver.session() as session:
-            # Find skills that co-occur in professions
-            session.run("""
-                MATCH (s1:Skill)<-[:REQUIRES]-(p:Profession)-[:REQUIRES]->(s2:Skill)
-                WHERE id(s1) < id(s2)
-                WITH s1, s2, count(p) as cooccurrence
-                WHERE cooccurrence >= 3
-
-                // Calculate Jaccard similarity
-                MATCH (s1)<-[:REQUIRES]-(p1:Profession)
-                WITH s1, s2, cooccurrence, count(DISTINCT p1) as s1_count
-                MATCH (s2)<-[:REQUIRES]-(p2:Profession)
-                WITH s1, s2, cooccurrence, s1_count, count(DISTINCT p2) as s2_count
-
-                WITH s1, s2,
-                     toFloat(cooccurrence) / (s1_count + s2_count - cooccurrence) as similarity
-                WHERE similarity > 0.3
-
-                MERGE (s1)-[r:SIMILAR_TO]-(s2)
-                SET r.score = similarity, r.updated_at = datetime()
-            """)
-```
+> **Interviewer might ask**: "Why use LLMs for extraction instead of NER models?"
+>
+> LLMs handle the nuance of skill descriptions better. "3+ years Python experience" vs "Python preferred" encode different requirements. NER would need extensive training data to capture these distinctions.
 
 ---
 
-## 8. Implementation Details
+## 8. Scalability & Performance
 
-### Complete System Setup
-
-```python
-# main.py - Skills GraphRAG System
-
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Optional
-import asyncio
-
-app = FastAPI(title="Skills GraphRAG API")
-
-# Initialize components
-graph_rag = SkillsGraphRAG(
-    neo4j_uri="bolt://localhost:7687",
-    neo4j_auth=("neo4j", "password"),
-    openai_key="sk-..."
-)
-
-# Request/Response Models
-class QueryRequest(BaseModel):
-    query: str
-    context: Optional[dict] = None
-
-class SkillsGapRequest(BaseModel):
-    current_skills: List[str]
-    target_profession: str
-
-class CareerPathRequest(BaseModel):
-    current_profession: str
-    interests: Optional[List[str]] = None
-
-# API Endpoints
-@app.post("/query")
-async def natural_language_query(request: QueryRequest):
-    """Process natural language query about skills."""
-    try:
-        result = await graph_rag.query(request.query)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/skills-gap")
-async def analyze_skills_gap(request: SkillsGapRequest):
-    """Analyze skills gap for a target profession."""
-    try:
-        result = await graph_rag.analyze_skills_gap(
-            current_skills=request.current_skills,
-            target_profession=request.target_profession
-        )
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/career-paths")
-async def suggest_career_paths(request: CareerPathRequest):
-    """Suggest career paths from current profession."""
-    try:
-        result = await graph_rag.suggest_career_paths(
-            current_profession=request.current_profession,
-            interests=request.interests
-        )
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/skill/{skill_name}")
-async def get_skill_info(skill_name: str):
-    """Get detailed information about a skill."""
-    try:
-        result = await graph_rag.get_skill_details(skill_name)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/profession/{profession_name}/skills")
-async def get_profession_skills(profession_name: str):
-    """Get skills required for a profession."""
-    try:
-        result = await graph_rag.get_profession_skills(profession_name)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-```
-
-### Docker Compose Setup
-
-```yaml
-# docker-compose.yml
-
-version: '3.8'
-
-services:
-  neo4j:
-    image: neo4j:5.15.0
-    ports:
-      - "7474:7474"  # Browser
-      - "7687:7687"  # Bolt
-    environment:
-      - NEO4J_AUTH=neo4j/password
-      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
-    volumes:
-      - neo4j_data:/data
-      - neo4j_logs:/logs
-
-  api:
-    build: .
-    ports:
-      - "8000:8000"
-    environment:
-      - NEO4J_URI=bolt://neo4j:7687
-      - NEO4J_USER=neo4j
-      - NEO4J_PASSWORD=password
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    depends_on:
-      - neo4j
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-volumes:
-  neo4j_data:
-  neo4j_logs:
-  redis_data:
-```
-
----
-
-## 9. Scalability & Performance
+> **Interview context**: At scale, the main bottlenecks are graph queries, LLM calls, and entity extraction. Each requires different optimization strategies.
 
 ### Caching Strategy
 
-```python
-import redis
-from functools import wraps
-import hashlib
-import json
+**Multi-level caching** is essential for production GraphRAG systems:
 
-class GraphRAGCache:
-    """Multi-level caching for GraphRAG queries."""
+| Cache Level | What to Cache | TTL | Why |
+|-------------|---------------|-----|-----|
+| **L1 (In-memory)** | Hot queries | Session | Instant access for repeated queries |
+| **L2 (Redis)** | Graph query results | 1 hour | Graph data changes slowly |
+| **L3 (Redis)** | LLM responses | 24 hours | Expensive to regenerate |
+| **L4 (Persistent)** | Entity extractions | 7 days | Job descriptions don't change |
 
-    def __init__(self, redis_client: redis.Redis):
-        self.redis = redis_client
-        self.local_cache = {}  # L1 cache
-        self.ttl = {
-            'graph_query': 3600,      # 1 hour
-            'llm_response': 86400,    # 24 hours
-            'entity_extraction': 604800  # 7 days
-        }
+**Cache key strategy**: Hash the query + context to generate deterministic keys. Normalize queries before hashing to improve cache hit rates.
 
-    def cache_key(self, prefix: str, *args, **kwargs) -> str:
-        """Generate cache key from function arguments."""
-        content = json.dumps({'args': args, 'kwargs': kwargs}, sort_keys=True)
-        hash_val = hashlib.md5(content.encode()).hexdigest()
-        return f"{prefix}:{hash_val}"
-
-    def cached(self, prefix: str, ttl_key: str = 'graph_query'):
-        """Decorator for caching function results."""
-        def decorator(func):
-            @wraps(func)
-            async def wrapper(*args, **kwargs):
-                key = self.cache_key(prefix, *args, **kwargs)
-
-                # Check L1 cache
-                if key in self.local_cache:
-                    return self.local_cache[key]
-
-                # Check Redis
-                cached = self.redis.get(key)
-                if cached:
-                    result = json.loads(cached)
-                    self.local_cache[key] = result
-                    return result
-
-                # Execute function
-                result = await func(*args, **kwargs)
-
-                # Store in caches
-                self.redis.setex(key, self.ttl[ttl_key], json.dumps(result))
-                self.local_cache[key] = result
-
-                return result
-            return wrapper
-        return decorator
-
-
-# Usage
-cache = GraphRAGCache(redis.Redis())
-
-class CachedSkillsGraphRAG(SkillsGraphRAG):
-
-    @cache.cached('skills_gap')
-    async def analyze_skills_gap(self, current_skills: list, target_profession: str):
-        return await super().analyze_skills_gap(current_skills, target_profession)
-
-    @cache.cached('career_path')
-    async def suggest_career_paths(self, current_profession: str, interests: list):
-        return await super().suggest_career_paths(current_profession, interests)
-```
+> **Interviewer might ask**: "What about cache invalidation?"
+>
+> For skills data, time-based expiration usually suffices—the graph updates gradually. For user-specific queries (like skills gap analysis), we use user_id + timestamp in the cache key to ensure fresh results after profile updates.
 
 ### Query Optimization
 
-```cypher
-// Create composite indexes for common query patterns
-CREATE INDEX profession_skill_idx IF NOT EXISTS
-FOR ()-[r:REQUIRES]-() ON (r.importance, r.weight);
+**Key optimization strategies:**
 
-// Precompute skill clusters for faster similarity queries
-CALL gds.graph.project(
-    'skills-graph',
-    'Skill',
-    {SIMILAR_TO: {properties: 'score'}}
-)
-YIELD graphName, nodeCount, relationshipCount;
+1. **Indexing**: Composite indexes on frequently queried relationship properties
+2. **Clustering**: Pre-compute skill clusters using community detection (Louvain algorithm)
+3. **Caching hot paths**: Career path queries that traverse multiple hops
 
-CALL gds.louvain.write('skills-graph', {
-    writeProperty: 'cluster'
-})
-YIELD communityCount, modularity;
-
-// Use clusters for efficient recommendations
-MATCH (target:Skill {name: $skill_name})
-MATCH (similar:Skill)
-WHERE similar.cluster = target.cluster
-  AND similar <> target
-RETURN similar
-ORDER BY similar.popularity DESC
-LIMIT 10;
-```
+> **Interviewer might ask**: "How do you optimize graph queries at scale?"
+>
+> Three levels: (1) Proper indexing on node/relationship properties, (2) Pre-computed aggregations for expensive traversals, (3) Query result caching for repeated patterns. The goal is sub-100ms response times even for complex multi-hop queries.
 
 ---
 
-## 10. Advanced Features
+## 9. Advanced Features
 
-### 10.1 Trend Analysis
+### 9.1 Trend Analysis
 
-```python
-class SkillsTrendAnalyzer:
-    """Analyze skill trends over time."""
+**Growth rate computation** identifies rising and declining skills:
 
-    def __init__(self, driver):
-        self.driver = driver
+1. Compare skill mentions in recent vs older job postings (30-day vs 90-day windows)
+2. Classify as "rising" (>20% growth), "declining" (<-20%), or "stable"
+3. Store growth_rate and trend as node properties for fast filtering
 
-    def compute_growth_rates(self):
-        """Compute skill demand growth rates."""
+**Use cases:**
+- Surface "Skills to Watch" in career planning
+- Alert L&D teams about emerging skill gaps
+- Inform curriculum development priorities
 
-        with self.driver.session() as session:
-            session.run("""
-                MATCH (s:Skill)<-[r:REQUIRES]-(p:Profession)
-                WHERE r.created_at IS NOT NULL
+### 9.2 Personalized Recommendations
 
-                WITH s,
-                     count(CASE WHEN r.created_at > datetime() - duration('P30D')
-                           THEN 1 END) as recent_mentions,
-                     count(CASE WHEN r.created_at > datetime() - duration('P90D')
-                           AND r.created_at <= datetime() - duration('P30D')
-                           THEN 1 END) as older_mentions
+**Recommendation scoring formula:**
 
-                WHERE older_mentions > 0
-                SET s.growth_rate = toFloat(recent_mentions - older_mentions) / older_mentions,
-                    s.trend = CASE
-                        WHEN recent_mentions > older_mentions * 1.2 THEN 'rising'
-                        WHEN recent_mentions < older_mentions * 0.8 THEN 'declining'
-                        ELSE 'stable'
-                    END
-            """)
-
-    def get_trending_skills(self, industry: str = None, limit: int = 20) -> list:
-        """Get currently trending skills."""
-
-        with self.driver.session() as session:
-            query = """
-                MATCH (s:Skill)
-                WHERE s.growth_rate > 0.1
-            """
-
-            if industry:
-                query += """
-                    AND EXISTS {
-                        MATCH (s)<-[:REQUIRES]-(p:Profession)-[:BELONGS_TO]->(i:Industry)
-                        WHERE i.name = $industry
-                    }
-                """
-
-            query += """
-                RETURN s.name as skill,
-                       s.growth_rate as growth,
-                       s.trend as trend
-                ORDER BY s.growth_rate DESC
-                LIMIT $limit
-            """
-
-            result = session.run(query, industry=industry, limit=limit)
-            return [dict(r) for r in result]
+```
+score = (goal_relevance × 0.4) + (growth_rate × 0.3) + (popularity × 0.3)
 ```
 
-### 10.2 Personalized Recommendations
+| Factor | Weight | Why |
+|--------|--------|-----|
+| **Goal relevance** | 40% | Skills that lead to user's career goals |
+| **Growth rate** | 30% | Skills with increasing market demand |
+| **Popularity** | 30% | Skills with established job market presence |
 
-```python
-class PersonalizedRecommender:
-    """Generate personalized skill recommendations."""
+> **Interviewer might ask**: "How do you personalize recommendations?"
+>
+> We build a user context from their profile (current skills, experience, goals, interests) and use it to filter and rank the graph traversal results. The LLM then explains WHY each recommendation matters for this specific user.
 
-    def __init__(self, graph_rag: SkillsGraphRAG):
-        self.graph_rag = graph_rag
+### 9.3 Natural Language to Cypher (NL2Cypher)
 
-    async def recommend_for_user(self, user_profile: dict) -> dict:
-        """Generate personalized recommendations based on user profile."""
+**The challenge**: Convert questions like "What skills should I learn for machine learning?" into graph queries.
 
-        # Build user context
-        context = {
-            'current_skills': user_profile.get('skills', []),
-            'experience_years': user_profile.get('experience', 0),
-            'goals': user_profile.get('career_goals', []),
-            'interests': user_profile.get('interests', []),
-            'learning_style': user_profile.get('learning_style', 'self-paced')
-        }
+**Approach:**
+1. Provide graph schema to LLM as context
+2. Use few-shot examples of NL → Cypher conversions
+3. Validate generated Cypher syntax before execution
+4. Fall back to semantic search if Cypher generation fails
 
-        # Get skill recommendations
-        skill_recs = await self._get_skill_recommendations(context)
+**Schema provided to LLM:**
+- Node types: Skill, Profession, Category, Certification, LearningResource
+- Relationships: REQUIRES, SIMILAR_TO, PREREQUISITE_FOR, BELONGS_TO, VALIDATED_BY, TAUGHT_BY, TRANSITIONS_TO
 
-        # Get career path recommendations
-        career_recs = await self._get_career_recommendations(context)
-
-        # Get learning resource recommendations
-        learning_recs = await self._get_learning_recommendations(
-            skill_recs, context['learning_style']
-        )
-
-        return {
-            'skills_to_learn': skill_recs,
-            'career_paths': career_recs,
-            'learning_resources': learning_recs,
-            'personalization_factors': self._explain_recommendations(context)
-        }
-
-    async def _get_skill_recommendations(self, context: dict) -> list:
-        """Get personalized skill recommendations."""
-
-        query = """
-        // Match user's current skills
-        UNWIND $skills as skillName
-        MATCH (current:Skill)
-        WHERE current.name =~ ('(?i).*' + skillName + '.*')
-        WITH collect(current) as currentSkills
-
-        // Find skills that lead to user's goal professions
-        UNWIND $goals as goalName
-        MATCH (goal:Profession)
-        WHERE goal.name =~ ('(?i).*' + goalName + '.*')
-        MATCH (goal)-[:REQUIRES]->(needed:Skill)
-        WHERE NOT needed IN currentSkills
-
-        // Score by relevance to goals and market demand
-        WITH needed,
-             count(DISTINCT goal) as goal_relevance,
-             needed.growth_rate as growth,
-             needed.popularity as popularity
-
-        RETURN needed.name as skill,
-               needed.description as description,
-               goal_relevance,
-               growth,
-               popularity,
-               (goal_relevance * 0.4 + growth * 0.3 + popularity/100 * 0.3) as score
-        ORDER BY score DESC
-        LIMIT 10
-        """
-
-        with self.graph_rag.driver.session() as session:
-            result = session.run(query,
-                skills=context['current_skills'],
-                goals=context['goals']
-            )
-            return [dict(r) for r in result]
-```
-
-### 10.3 Natural Language to Cypher
-
-```python
-class NL2Cypher:
-    """Convert natural language to Cypher queries."""
-
-    SCHEMA_DESCRIPTION = """
-    Graph Schema:
-    - Nodes: Skill (name, type, description, popularity, growth_rate)
-    - Nodes: Profession (name, industry, seniority, avg_salary)
-    - Nodes: Category (name, parent_id)
-    - Nodes: Certification (name, provider, validity)
-    - Nodes: LearningResource (title, type, duration, provider)
-
-    - Relationships:
-      - (Profession)-[:REQUIRES {importance, weight}]->(Skill)
-      - (Skill)-[:SIMILAR_TO {score}]->(Skill)
-      - (Skill)-[:PREREQUISITE_FOR]->(Skill)
-      - (Skill)-[:BELONGS_TO]->(Category)
-      - (Skill)-[:VALIDATED_BY]->(Certification)
-      - (Skill)-[:TAUGHT_BY]->(LearningResource)
-      - (Profession)-[:TRANSITIONS_TO {difficulty}]->(Profession)
-    """
-
-    def __init__(self):
-        self.llm = OpenAI()
-
-    async def generate_cypher(self, natural_query: str) -> str:
-        """Generate Cypher query from natural language."""
-
-        prompt = f"""
-        Convert this natural language query to a Cypher query.
-
-        {self.SCHEMA_DESCRIPTION}
-
-        Natural Language Query: {natural_query}
-
-        Guidelines:
-        - Use case-insensitive regex for name matching: name =~ '(?i).*term.*'
-        - Always return relevant properties
-        - Use OPTIONAL MATCH for optional relationships
-        - Limit results to avoid overwhelming output
-
-        Return only the Cypher query, no explanation.
-        """
-
-        response = await self.llm.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        return response.choices[0].message.content.strip()
-```
+> **Interviewer might ask**: "What if the LLM generates invalid Cypher?"
+>
+> We validate syntax before execution and have fallback strategies: (1) retry with rephrased prompt, (2) fall back to predefined query templates, (3) use semantic search as last resort. Always return something useful rather than failing.
 
 ---
 
