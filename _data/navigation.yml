@@ -1,677 +1,641 @@
 main:
 - title: Home
   url: /cses-analyses/
-- title: Problem Categories
+- title: CSES
   url: /cses-analyses/problem_soulutions
   children:
   - title: Introductory Problems
     url: /cses-analyses/problem_soulutions/introductory_problems
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/introductory_problems/summary
-    - title: ⭐ Apple Division
+    - title: Apple Division
       url: /cses-analyses/problem_soulutions/introductory_problems/apple_division_analysis
-    - title: ⭐ Bit Strings
+    - title: Bit Strings
       url: /cses-analyses/problem_soulutions/introductory_problems/bit_strings_analysis
-    - title: ⭐ Coin Piles
+    - title: Coin Piles
       url: /cses-analyses/problem_soulutions/introductory_problems/coin_piles_analysis
-    - title: ⭐ Creating Strings
+    - title: Creating Strings
       url: /cses-analyses/problem_soulutions/introductory_problems/creating_strings_analysis
-    - title: ⭐ Increasing Array
+    - title: Increasing Array
       url: /cses-analyses/problem_soulutions/introductory_problems/increasing_array_analysis
-    - title: ⭐ Missing Number
+    - title: Missing Number
       url: /cses-analyses/problem_soulutions/introductory_problems/missing_number_analysis
-    - title: ⭐ Weird Algorithm
+    - title: Weird Algorithm
       url: /cses-analyses/problem_soulutions/introductory_problems/weird_algorithm_analysis
-    - title: ⭐⭐ Chessboard and Queens
+    - title: ⭐Chessboard and Queens
       url: /cses-analyses/problem_soulutions/introductory_problems/chessboard_and_queens_analysis
-    - title: ⭐⭐ Digit Queries
+    - title: ⭐Digit Queries
       url: /cses-analyses/problem_soulutions/introductory_problems/digit_queries_analysis
-    - title: ⭐⭐ Gray Code
+    - title: ⭐Gray Code
       url: /cses-analyses/problem_soulutions/introductory_problems/gray_code_analysis
-    - title: ⭐⭐ Grid Coloring I
+    - title: ⭐Grid Coloring I
       url: /cses-analyses/problem_soulutions/introductory_problems/grid_coloring_i_analysis
-    - title: ⭐⭐ Grid Path Description
+    - title: ⭐Grid Path Description
       url: /cses-analyses/problem_soulutions/introductory_problems/grid_path_description_analysis
-    - title: ⭐⭐ Knight Moves Grid
+    - title: ⭐Knight Moves Grid
       url: /cses-analyses/problem_soulutions/introductory_problems/knight_moves_grid_analysis
-    - title: ⭐⭐ Mex Grid Construction
+    - title: ⭐Mex Grid Construction
       url: /cses-analyses/problem_soulutions/introductory_problems/mex_grid_construction_analysis
-    - title: ⭐⭐ Number Spiral
+    - title: ⭐Number Spiral
       url: /cses-analyses/problem_soulutions/introductory_problems/number_spiral_analysis
-    - title: ⭐⭐ Palindrome Reorder
+    - title: ⭐Palindrome Reorder
       url: /cses-analyses/problem_soulutions/introductory_problems/palindrome_reorder_analysis
-    - title: ⭐⭐ Permutations
+    - title: ⭐Permutations
       url: /cses-analyses/problem_soulutions/introductory_problems/permutations_analysis
-    - title: ⭐⭐ Raab Game I
+    - title: ⭐Raab Game I
       url: /cses-analyses/problem_soulutions/introductory_problems/raab_game_i_analysis
-    - title: ⭐⭐ Repetitions
+    - title: ⭐Repetitions
       url: /cses-analyses/problem_soulutions/introductory_problems/repetitions_analysis
-    - title: ⭐⭐ String Reorder
+    - title: ⭐String Reorder
       url: /cses-analyses/problem_soulutions/introductory_problems/string_reorder_analysis
-    - title: ⭐⭐ Tower of Hanoi
+    - title: ⭐Tower of Hanoi
       url: /cses-analyses/problem_soulutions/introductory_problems/tower_of_hanoi_analysis
-    - title: ⭐⭐ Trailing Zeros
+    - title: ⭐Trailing Zeros
       url: /cses-analyses/problem_soulutions/introductory_problems/trailing_zeros_analysis
-    - title: ⭐⭐ Two Knights
+    - title: ⭐Two Knights
       url: /cses-analyses/problem_soulutions/introductory_problems/two_knights_analysis
-    - title: ⭐⭐⭐ Mex Grid Construction II
+    - title: ⭐⭐Mex Grid Construction II
       url: /cses-analyses/problem_soulutions/introductory_problems/mex_grid_construction_ii_analysis
-    - title: ⭐⭐⭐ Two Sets
+    - title: ⭐⭐Two Sets
       url: /cses-analyses/problem_soulutions/introductory_problems/two_sets_analysis
   - title: Sorting And Searching
     url: /cses-analyses/problem_soulutions/sorting_and_searching
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/sorting_and_searching/summary
-    - title: ⭐ Apartments
+    - title: Apartments
       url: /cses-analyses/problem_soulutions/sorting_and_searching/apartments_analysis
-    - title: ⭐ Collecting Numbers
+    - title: Collecting Numbers
       url: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_analysis
-    - title: ⭐ Distinct Numbers
+    - title: Distinct Numbers
       url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_numbers_analysis
-    - title: ⭐ Subarray Sums I
+    - title: Subarray Sums I
       url: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_i_analysis
-    - title: ⭐⭐ Array Division
+    - title: ⭐Array Division
       url: /cses-analyses/problem_soulutions/sorting_and_searching/array_division_analysis
-    - title: ⭐⭐ Collecting Numbers II
+    - title: ⭐Collecting Numbers II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/collecting_numbers_ii_analysis
-    - title: ⭐⭐ Distinct Values Subarrays
+    - title: ⭐Distinct Values Subarrays
       url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_values_subarrays_analysis
-    - title: ⭐⭐ Factory Machines
+    - title: ⭐Factory Machines
       url: /cses-analyses/problem_soulutions/sorting_and_searching/factory_machines_analysis
-    - title: ⭐⭐ Josephus Problem I
+    - title: ⭐Josephus Problem I
       url: /cses-analyses/problem_soulutions/sorting_and_searching/josephus_problem_i_analysis
-    - title: ⭐⭐ Maximum Subarray Sum
+    - title: ⭐Maximum Subarray Sum
       url: /cses-analyses/problem_soulutions/sorting_and_searching/maximum_subarray_sum_analysis
-    - title: ⭐⭐ Movie Festival - Interview
+    - title: ⭐Movie Festival - Interview
       url: /cses-analyses/problem_soulutions/sorting_and_searching/movie_festival_analysis
-    - title: ⭐⭐ Nearest Smaller Values
+    - title: ⭐Nearest Smaller Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/nearest_smaller_values_analysis
-    - title: ⭐⭐ Nested Ranges Check
+    - title: ⭐Nested Ranges Check
       url: /cses-analyses/problem_soulutions/sorting_and_searching/nested_ranges_check_analysis
-    - title: ⭐⭐ Playlist
+    - title: ⭐Playlist
       url: /cses-analyses/problem_soulutions/sorting_and_searching/playlist_analysis
-    - title: ⭐⭐ Reading Books
+    - title: ⭐Reading Books
       url: /cses-analyses/problem_soulutions/sorting_and_searching/reading_books_analysis
-    - title: ⭐⭐ Room Allocation
+    - title: ⭐Room Allocation
       url: /cses-analyses/problem_soulutions/sorting_and_searching/room_allocation_analysis
-    - title: ⭐⭐ Stick Lengths
+    - title: ⭐Stick Lengths
       url: /cses-analyses/problem_soulutions/sorting_and_searching/stick_lengths_analysis
-    - title: ⭐⭐ Subarray Divisibility
+    - title: ⭐Subarray Divisibility
       url: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_divisibility_analysis
-    - title: ⭐⭐ Subarray Sums II
+    - title: ⭐Subarray Sums II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/subarray_sums_ii_analysis
-    - title: ⭐⭐ Sum of Four Values
+    - title: ⭐Sum of Four Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/sum_of_four_values_analysis
-    - title: ⭐⭐ Sum of Three Values
+    - title: ⭐Sum of Three Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/sum_of_three_values_analysis
-    - title: ⭐⭐ Sum of Two Values
+    - title: ⭐Sum of Two Values
       url: /cses-analyses/problem_soulutions/sorting_and_searching/sum_of_two_values_analysis
-    - title: ⭐⭐ Tasks and Deadlines
+    - title: ⭐Tasks and Deadlines
       url: /cses-analyses/problem_soulutions/sorting_and_searching/tasks_and_deadlines_analysis
-    - title: ⭐⭐ Towers
+    - title: ⭐Towers
       url: /cses-analyses/problem_soulutions/sorting_and_searching/towers_analysis
-    - title: ⭐⭐ Traffic Lights
+    - title: ⭐Traffic Lights
       url: /cses-analyses/problem_soulutions/sorting_and_searching/traffic_lights_analysis
-    - title: ⭐⭐⭐ Distinct Values Subarrays II
+    - title: ⭐⭐Distinct Values Subarrays II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_values_subarrays_ii_analysis
-    - title: ⭐⭐⭐ Distinct Values Subsequences
+    - title: ⭐⭐Distinct Values Subsequences
       url: /cses-analyses/problem_soulutions/sorting_and_searching/distinct_values_subsequences_analysis
-    - title: ⭐⭐⭐ Josephus Problem II
+    - title: ⭐⭐Josephus Problem II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/josephus_problem_ii_analysis
-    - title: ⭐⭐⭐ Maximum Subarray Sum II
+    - title: ⭐⭐Maximum Subarray Sum II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/maximum_subarray_sum_ii_analysis
-    - title: ⭐⭐⭐ Missing Coin Sum
+    - title: ⭐⭐Missing Coin Sum
       url: /cses-analyses/problem_soulutions/sorting_and_searching/missing_coin_sum_analysis
-    - title: ⭐⭐⭐ Movie Festival II
+    - title: ⭐⭐Movie Festival II
       url: /cses-analyses/problem_soulutions/sorting_and_searching/movie_festival_ii_analysis
-    - title: ⭐⭐⭐ Nested Ranges Count
+    - title: ⭐⭐Nested Ranges Count
       url: /cses-analyses/problem_soulutions/sorting_and_searching/nested_ranges_count_analysis
-    - title: ⭐⭐ Concert Tickets
+    - title: ⭐Concert Tickets
       url: /cses-analyses/problem_soulutions/sorting_and_searching/concert_tickets_analysis
-    - title: ⭐⭐ Ferris Wheel
+    - title: ⭐Ferris Wheel
       url: /cses-analyses/problem_soulutions/sorting_and_searching/ferris_wheel_analysis
-    - title: ⭐⭐ Restaurant Customers
+    - title: ⭐Restaurant Customers
       url: /cses-analyses/problem_soulutions/sorting_and_searching/restaurant_customers_analysis
-    - title: ⭐⭐⭐ Ternary Search
+    - title: ⭐⭐Ternary Search
       url: /cses-analyses/problem_soulutions/sorting_and_searching/ternary_search_analysis
   - title: Dynamic Programming
     url: /cses-analyses/problem_soulutions/dynamic_programming
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/dynamic_programming/summary
-    - title: ⭐ Coin Combinations I
+    - title: Coin Combinations I
       url: /cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_i_analysis
-    - title: ⭐ Dice Combinations
+    - title: Dice Combinations
       url: /cses-analyses/problem_soulutions/dynamic_programming/dice_combinations_analysis
-    - title: ⭐⭐ Array Description
+    - title: ⭐Array Description
       url: /cses-analyses/problem_soulutions/dynamic_programming/array_description_analysis
-    - title: ⭐⭐ Book Shop
+    - title: ⭐Book Shop
       url: /cses-analyses/problem_soulutions/dynamic_programming/book_shop_analysis
-    - title: ⭐⭐ Coin Combinations II
+    - title: ⭐Coin Combinations II
       url: /cses-analyses/problem_soulutions/dynamic_programming/coin_combinations_ii_analysis
-    - title: ⭐⭐ Counting Towers
+    - title: ⭐Counting Towers
       url: /cses-analyses/problem_soulutions/dynamic_programming/counting_towers_analysis
-    - title: ⭐⭐ Grid Paths
+    - title: ⭐Grid Paths
       url: /cses-analyses/problem_soulutions/dynamic_programming/grid_paths_analysis
-    - title: ⭐⭐ Increasing Subsequence
+    - title: ⭐Increasing Subsequence
       url: /cses-analyses/problem_soulutions/dynamic_programming/increasing_subsequence_analysis
-    - title: ⭐⭐ Longest Common Subsequence
+    - title: ⭐Longest Common Subsequence
       url: /cses-analyses/problem_soulutions/dynamic_programming/longest_common_subsequence_analysis
-    - title: ⭐⭐ Minimizing Coins
+    - title: ⭐Minimizing Coins
       url: /cses-analyses/problem_soulutions/dynamic_programming/minimizing_coins_analysis
-    - title: ⭐⭐ Money Sums
+    - title: ⭐Money Sums
       url: /cses-analyses/problem_soulutions/dynamic_programming/money_sums_analysis
-    - title: ⭐⭐ Rectangle Cutting
+    - title: ⭐Rectangle Cutting
       url: /cses-analyses/problem_soulutions/dynamic_programming/rectangle_cutting_analysis
-    - title: ⭐⭐ Removing Digits
+    - title: ⭐Removing Digits
       url: /cses-analyses/problem_soulutions/dynamic_programming/removing_digits_analysis
-    - title: ⭐⭐⭐ Edit Distance
+    - title: ⭐⭐Edit Distance
       url: /cses-analyses/problem_soulutions/dynamic_programming/edit_distance_analysis
-    - title: ⭐⭐⭐ Minimal Grid Path
+    - title: ⭐⭐Minimal Grid Path
       url: /cses-analyses/problem_soulutions/dynamic_programming/minimal_grid_path_analysis
-    - title: ⭐⭐⭐ Removal Game
+    - title: ⭐⭐Removal Game
       url: /cses-analyses/problem_soulutions/dynamic_programming/removal_game_analysis
-    - title: ⭐⭐⭐ Two Sets II
+    - title: ⭐⭐Two Sets II
       url: /cses-analyses/problem_soulutions/dynamic_programming/two_sets_ii_analysis
-    - title: ⭐⭐⭐ SOS DP (Sum over Subsets)
+    - title: ⭐⭐SOS DP (Sum over Subsets)
       url: /cses-analyses/problem_soulutions/dynamic_programming/sos_dp_analysis
   - title: AtCoder DP
     url: /cses-analyses/problem_soulutions/dynamic_programming_at
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/summary
-    - title: ⭐ A - Frog 1
+    - title: A - Frog 1
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_1_analysis
-    - title: ⭐ B - Frog 2
+    - title: B - Frog 2
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_2_analysis
-    - title: ⭐ C - Vacation
+    - title: C - Vacation
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/vacation_analysis
-    - title: ⭐ D - Knapsack 1
+    - title: D - Knapsack 1
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/knapsack_1_analysis
-    - title: ⭐⭐ E - Knapsack 2
+    - title: ⭐E - Knapsack 2
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/knapsack_2_analysis
-    - title: ⭐⭐ G - Longest Path
+    - title: ⭐G - Longest Path
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/longest_path_analysis
-    - title: ⭐ H - Grid 1
+    - title: H - Grid 1
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/grid_1_analysis
-    - title: ⭐⭐ I - Coins
+    - title: ⭐I - Coins
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/coins_analysis
-    - title: ⭐⭐ J - Sushi
+    - title: ⭐J - Sushi
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/sushi_analysis
-    - title: ⭐⭐ K - Stones
+    - title: ⭐K - Stones
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/stones_analysis
-    - title: ⭐⭐ L - Deque
+    - title: ⭐L - Deque
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/deque_analysis
-    - title: ⭐⭐ M - Candies
+    - title: ⭐M - Candies
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/candies_analysis
-    - title: ⭐⭐ N - Slimes
+    - title: ⭐N - Slimes
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/slimes_analysis
-    - title: ⭐⭐⭐ O - Matching
+    - title: ⭐⭐O - Matching
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/matching_analysis
-    - title: ⭐⭐⭐ P - Independent Set
+    - title: ⭐⭐P - Independent Set
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/independent_set_analysis
-    - title: ⭐⭐⭐ Q - Flowers
+    - title: ⭐⭐Q - Flowers
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/flowers_analysis
-    - title: ⭐⭐⭐ R - Walk
+    - title: ⭐⭐R - Walk
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/walk_analysis
-    - title: ⭐⭐⭐ S - Digit Sum
+    - title: ⭐⭐S - Digit Sum
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/digit_sum_analysis
-    - title: ⭐⭐⭐ T - Permutation
+    - title: ⭐⭐T - Permutation
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/permutation_analysis
-    - title: ⭐⭐⭐ U - Grouping
+    - title: ⭐⭐U - Grouping
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/grouping_analysis
-    - title: ⭐⭐⭐ V - Subtree
+    - title: ⭐⭐V - Subtree
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/subtree_analysis
-    - title: ⭐⭐⭐ W - Intervals
+    - title: ⭐⭐W - Intervals
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/intervals_analysis
-    - title: ⭐⭐⭐ X - Tower
+    - title: ⭐⭐X - Tower
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/tower_analysis
-    - title: ⭐⭐⭐ Y - Grid 2
+    - title: ⭐⭐Y - Grid 2
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/grid_2_analysis
-    - title: ⭐⭐⭐ Z - Frog 3
+    - title: ⭐⭐Z - Frog 3
       url: /cses-analyses/problem_soulutions/dynamic_programming_at/frog_3_analysis
   - title: Graph Algorithms
     url: /cses-analyses/problem_soulutions/graph_algorithms
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/graph_algorithms/summary
-    - title: ⭐ Building Roads
+    - title: Building Roads
       url: /cses-analyses/problem_soulutions/graph_algorithms/building_roads_analysis
-    - title: ⭐ Counting Rooms
+    - title: Counting Rooms
       url: /cses-analyses/problem_soulutions/graph_algorithms/counting_rooms_analysis
-    - title: ⭐⭐ Building Teams
+    - title: ⭐Building Teams
       url: /cses-analyses/problem_soulutions/graph_algorithms/building_teams_analysis
-    - title: ⭐⭐ Coin Collector
+    - title: ⭐Coin Collector
       url: /cses-analyses/problem_soulutions/graph_algorithms/coin_collector_analysis
-    - title: ⭐⭐ Coordinate Compression
+    - title: ⭐Coordinate Compression
       url: /cses-analyses/problem_soulutions/graph_algorithms/coordinate_compression_analysis
-    - title: ⭐⭐ Cycle Finding
+    - title: ⭐Cycle Finding
       url: /cses-analyses/problem_soulutions/graph_algorithms/cycle_finding_analysis
-    - title: ⭐⭐ Distinct Routes
+    - title: ⭐Distinct Routes
       url: /cses-analyses/problem_soulutions/graph_algorithms/distinct_routes_analysis
-    - title: ⭐⭐ Download Speed
+    - title: ⭐Download Speed
       url: /cses-analyses/problem_soulutions/graph_algorithms/download_speed_analysis
-    - title: ⭐⭐ Flight Discount
+    - title: ⭐Flight Discount
       url: /cses-analyses/problem_soulutions/graph_algorithms/flight_discount_analysis
-    - title: ⭐⭐ Labyrinth
+    - title: ⭐Labyrinth
       url: /cses-analyses/problem_soulutions/graph_algorithms/labyrinth_analysis
-    - title: ⭐⭐ Mail Delivery
+    - title: ⭐Mail Delivery
       url: /cses-analyses/problem_soulutions/graph_algorithms/mail_delivery_analysis
-    - title: ⭐⭐ Message Route
+    - title: ⭐Message Route
       url: /cses-analyses/problem_soulutions/graph_algorithms/message_route_analysis
-    - title: ⭐⭐ Monsters
+    - title: ⭐Monsters
       url: /cses-analyses/problem_soulutions/graph_algorithms/monsters_analysis
-    - title: ⭐⭐ Planets Cycles
+    - title: ⭐Planets Cycles
       url: /cses-analyses/problem_soulutions/graph_algorithms/planets_cycles_analysis
-    - title: ⭐⭐ Planets Queries I
+    - title: ⭐Planets Queries I
       url: /cses-analyses/problem_soulutions/graph_algorithms/planets_queries_i_analysis
-    - title: ⭐⭐ Prefix Sum Queries
+    - title: ⭐Prefix Sum Queries
       url: /cses-analyses/problem_soulutions/graph_algorithms/prefix_sum_queries_analysis
-    - title: ⭐⭐ Road Construction
+    - title: ⭐Road Construction
       url: /cses-analyses/problem_soulutions/graph_algorithms/road_construction_analysis
-    - title: ⭐⭐ Road Reparation
+    - title: ⭐Road Reparation
       url: /cses-analyses/problem_soulutions/graph_algorithms/road_reparation_analysis
-    - title: ⭐⭐ Round Trip
+    - title: ⭐Round Trip
       url: /cses-analyses/problem_soulutions/graph_algorithms/round_trip_analysis
-    - title: ⭐⭐ School Dance
+    - title: ⭐School Dance
       url: /cses-analyses/problem_soulutions/graph_algorithms/school_dance_analysis
-    - title: ⭐⭐ Shortest Routes I
+    - title: ⭐Shortest Routes I
       url: /cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_i_analysis
-    - title: ⭐⭐ Topological Sorting
+    - title: ⭐Topological Sorting
       url: /cses-analyses/problem_soulutions/graph_algorithms/topological_sorting_analysis
-    - title: ⭐⭐⭐ De Bruijn Sequence
+    - title: ⭐⭐De Bruijn Sequence
       url: /cses-analyses/problem_soulutions/graph_algorithms/de_bruijn_sequence_analysis
-    - title: ⭐⭐⭐ Giant Pizza
+    - title: ⭐⭐Giant Pizza
       url: /cses-analyses/problem_soulutions/graph_algorithms/giant_pizza_analysis
-    - title: ⭐⭐⭐ Hamiltonian Flights
+    - title: ⭐⭐Hamiltonian Flights
       url: /cses-analyses/problem_soulutions/graph_algorithms/hamiltonian_flights_analysis
-    - title: ⭐⭐⭐ High Score
+    - title: ⭐⭐High Score
       url: /cses-analyses/problem_soulutions/graph_algorithms/high_score_analysis
-    - title: ⭐⭐⭐ Knights Tour
+    - title: ⭐⭐Knights Tour
       url: /cses-analyses/problem_soulutions/graph_algorithms/knights_tour_analysis
-    - title: ⭐⭐⭐ Planets Queries II
+    - title: ⭐⭐Planets Queries II
       url: /cses-analyses/problem_soulutions/graph_algorithms/planets_queries_ii_analysis
-    - title: ⭐⭐⭐ Planets and Kingdoms
+    - title: ⭐⭐Planets and Kingdoms
       url: /cses-analyses/problem_soulutions/graph_algorithms/planets_and_kingdoms_analysis
-    - title: ⭐⭐⭐ Police Chase
+    - title: ⭐⭐Police Chase
       url: /cses-analyses/problem_soulutions/graph_algorithms/police_chase_analysis
-    - title: ⭐⭐⭐ Road Construction II
+    - title: ⭐⭐Road Construction II
       url: /cses-analyses/problem_soulutions/graph_algorithms/road_construction_ii_analysis
-    - title: ⭐⭐⭐ Road Construction III
+    - title: ⭐⭐Road Construction III
       url: /cses-analyses/problem_soulutions/graph_algorithms/road_construction_iii_analysis
-    - title: ⭐⭐⭐ Shortest Routes II
+    - title: ⭐⭐Shortest Routes II
       url: /cses-analyses/problem_soulutions/graph_algorithms/shortest_routes_ii_analysis
-    - title: ⭐⭐⭐ Strongly Connected Components
+    - title: ⭐⭐Strongly Connected Components
       url: /cses-analyses/problem_soulutions/graph_algorithms/strongly_connected_components_analysis
-    - title: ⭐⭐⭐ Teleporters Path
+    - title: ⭐⭐Teleporters Path
       url: /cses-analyses/problem_soulutions/graph_algorithms/teleporters_path_analysis
-    - title: ⭐⭐⭐⭐ Road Construction IV
+    - title: ⭐⭐⭐Road Construction IV
       url: /cses-analyses/problem_soulutions/graph_algorithms/road_construction_iv_analysis
-    - title: ⭐⭐⭐ Articulation Points
+    - title: ⭐⭐Articulation Points
       url: /cses-analyses/problem_soulutions/graph_algorithms/articulation_points_analysis
-    - title: ⭐⭐⭐ Bridges (Cut Edges)
+    - title: ⭐⭐Bridges (Cut Edges)
       url: /cses-analyses/problem_soulutions/graph_algorithms/bridges_analysis
   - title: Tree Algorithms
     url: /cses-analyses/problem_soulutions/tree_algorithms
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/tree_algorithms/summary
-    - title: ⭐⭐ Company Queries I
+    - title: ⭐Company Queries I
       url: /cses-analyses/problem_soulutions/tree_algorithms/company_queries_i_analysis
-    - title: ⭐⭐ Company Queries II
+    - title: ⭐Company Queries II
       url: /cses-analyses/problem_soulutions/tree_algorithms/company_queries_ii_analysis
-    - title: ⭐⭐ Counting Paths
+    - title: ⭐Counting Paths
       url: /cses-analyses/problem_soulutions/tree_algorithms/counting_paths_analysis
-    - title: ⭐⭐ Distance Queries
+    - title: ⭐Distance Queries
       url: /cses-analyses/problem_soulutions/tree_algorithms/distance_queries_analysis
-    - title: ⭐⭐ Path Queries
+    - title: ⭐Path Queries
       url: /cses-analyses/problem_soulutions/tree_algorithms/path_queries_analysis
-    - title: ⭐⭐ Subordinates
+    - title: ⭐Subordinates
       url: /cses-analyses/problem_soulutions/tree_algorithms/subordinates_analysis
-    - title: ⭐⭐ Tree Diameter
+    - title: ⭐Tree Diameter
       url: /cses-analyses/problem_soulutions/tree_algorithms/tree_diameter_analysis
-    - title: ⭐⭐ Tree Distances I
+    - title: ⭐Tree Distances I
       url: /cses-analyses/problem_soulutions/tree_algorithms/tree_distances_i_analysis
-    - title: ⭐⭐⭐ Subtree Queries
+    - title: ⭐⭐Subtree Queries
       url: /cses-analyses/problem_soulutions/tree_algorithms/subtree_queries_analysis
-    - title: ⭐⭐⭐ Tree Distances II
+    - title: ⭐⭐Tree Distances II
       url: /cses-analyses/problem_soulutions/tree_algorithms/tree_distances_ii_analysis
-    - title: ⭐⭐⭐ Tree Matching
+    - title: ⭐⭐Tree Matching
       url: /cses-analyses/problem_soulutions/tree_algorithms/tree_matching_analysis
-    - title: ⭐⭐⭐ Distinct Colors
+    - title: ⭐⭐Distinct Colors
       url: /cses-analyses/problem_soulutions/tree_algorithms/distinct_colors_analysis
-    - title: ⭐⭐⭐ Finding a Centroid
+    - title: ⭐⭐Finding a Centroid
       url: /cses-analyses/problem_soulutions/tree_algorithms/finding_centroid_analysis
-    - title: ⭐⭐⭐ Fixed-Length Paths I
+    - title: ⭐⭐Fixed-Length Paths I
       url: /cses-analyses/problem_soulutions/tree_algorithms/fixed_length_paths_i_analysis
-    - title: ⭐⭐⭐ Fixed-Length Paths II
+    - title: ⭐⭐Fixed-Length Paths II
       url: /cses-analyses/problem_soulutions/tree_algorithms/fixed_length_paths_ii_analysis
-    - title: ⭐⭐⭐ Path Queries II
+    - title: ⭐⭐Path Queries II
       url: /cses-analyses/problem_soulutions/tree_algorithms/path_queries_ii_analysis
-    - title: ⭐⭐⭐ DSU on Trees (Sack)
+    - title: ⭐⭐DSU on Trees (Sack)
       url: /cses-analyses/problem_soulutions/tree_algorithms/dsu_on_tree_analysis
-    - title: ⭐⭐⭐ Rerooting DP
+    - title: ⭐⭐Rerooting DP
       url: /cses-analyses/problem_soulutions/tree_algorithms/rerooting_dp_analysis
   - title: Sliding Window
     url: /cses-analyses/problem_soulutions/sliding_window
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/sliding_window/summary
-    - title: ⭐ Fixed Length Subarray Sum
+    - title: Fixed Length Subarray Sum
       url: /cses-analyses/problem_soulutions/sliding_window/fixed_length_subarray_sum_analysis
-    - title: ⭐ Subarray Sums I
+    - title: Subarray Sums I
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_sums_i_analysis
-    - title: ⭐⭐ Longest Subarray with Sum
+    - title: ⭐Longest Subarray with Sum
       url: /cses-analyses/problem_soulutions/sliding_window/longest_subarray_with_sum_analysis
-    - title: ⭐⭐ Longest Substring Without Repeating Characters
+    - title: ⭐Longest Substring Without Repeating Characters
       url: /cses-analyses/problem_soulutions/sliding_window/longest_substring_without_repeating_analysis
-    - title: ⭐⭐ Maximum Subarray Sum
+    - title: ⭐Maximum Subarray Sum
       url: /cses-analyses/problem_soulutions/sliding_window/maximum_subarray_sum_analysis
-    - title: ⭐⭐ Minimum Subarray Sum
+    - title: ⭐Minimum Subarray Sum
       url: /cses-analyses/problem_soulutions/sliding_window/minimum_subarray_sum_analysis
-    - title: ⭐⭐ Shortest Subarray with Sum
+    - title: ⭐Shortest Subarray with Sum
       url: /cses-analyses/problem_soulutions/sliding_window/shortest_subarray_with_sum_analysis
-    - title: ⭐⭐ Sliding Window Advertisement
+    - title: ⭐Sliding Window Advertisement
       url: /cses-analyses/problem_soulutions/sliding_window/sliding_window_advertisement_analysis
-    - title: ⭐⭐ Subarray Distinct Values
+    - title: ⭐Subarray Distinct Values
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_distinct_values_analysis
-    - title: ⭐⭐ Subarray Sums II
+    - title: ⭐Subarray Sums II
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_sums_ii_analysis
-    - title: ⭐⭐ Subarray with Given Sum
+    - title: ⭐Subarray with Given Sum
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_with_given_sum_analysis
-    - title: ⭐⭐⭐ Minimum Window Substring
+    - title: ⭐⭐Minimum Window Substring
       url: /cses-analyses/problem_soulutions/sliding_window/minimum_window_substring_analysis
-    - title: ⭐⭐⭐ Subarray Maximums
+    - title: ⭐⭐Subarray Maximums
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_maximums_analysis
-    - title: ⭐⭐⭐ Subarray Minimums
+    - title: ⭐⭐Subarray Minimums
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_minimums_analysis
-    - title: ⭐⭐⭐ Subarray with K Distinct
+    - title: ⭐⭐Subarray with K Distinct
       url: /cses-analyses/problem_soulutions/sliding_window/subarray_with_k_distinct_analysis
   - title: Range Queries
     url: /cses-analyses/problem_soulutions/range_queries
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/range_queries/summary
-    - title: ⭐ Static Range Sum Queries
+    - title: Static Range Sum Queries
       url: /cses-analyses/problem_soulutions/range_queries/static_range_sum_queries_analysis
-    - title: ⭐⭐ Dynamic Range Sum Queries
+    - title: ⭐Dynamic Range Sum Queries
       url: /cses-analyses/problem_soulutions/range_queries/dynamic_range_sum_queries_analysis
-    - title: ⭐⭐ Forest Queries
+    - title: ⭐Forest Queries
       url: /cses-analyses/problem_soulutions/range_queries/forest_queries_analysis
-    - title: ⭐⭐ Hotel Queries
+    - title: ⭐Hotel Queries
       url: /cses-analyses/problem_soulutions/range_queries/hotel_queries_analysis
-    - title: ⭐⭐ List Removals
+    - title: ⭐List Removals
       url: /cses-analyses/problem_soulutions/range_queries/list_removals_analysis
-    - title: ⭐⭐ Pizzeria Queries
+    - title: ⭐Pizzeria Queries
       url: /cses-analyses/problem_soulutions/range_queries/pizzeria_queries_analysis
-    - title: ⭐⭐ Prefix Sum Queries
+    - title: ⭐Prefix Sum Queries
       url: /cses-analyses/problem_soulutions/range_queries/prefix_sum_queries_analysis
-    - title: ⭐⭐ Salary Queries
+    - title: ⭐Salary Queries
       url: /cses-analyses/problem_soulutions/range_queries/salary_queries_analysis
-    - title: ⭐⭐ Static Range Minimum Queries
+    - title: ⭐Static Range Minimum Queries
       url: /cses-analyses/problem_soulutions/range_queries/static_range_minimum_queries_analysis
-    - title: ⭐⭐ Subarray Sum Queries
+    - title: ⭐Subarray Sum Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_sum_queries_analysis
-    - title: ⭐⭐⭐ Range Interval Queries
+    - title: ⭐⭐Range Interval Queries
       url: /cses-analyses/problem_soulutions/range_queries/range_interval_queries_analysis
-    - title: ⭐⭐⭐ Range Update Queries
+    - title: ⭐⭐Range Update Queries
       url: /cses-analyses/problem_soulutions/range_queries/range_update_queries_analysis
-    - title: ⭐⭐⭐ Range Xor Queries
+    - title: ⭐⭐Range Xor Queries
       url: /cses-analyses/problem_soulutions/range_queries/range_xor_queries_analysis
-    - title: ⭐⭐⭐ Subarray Distinct Values Queries
+    - title: ⭐⭐Subarray Distinct Values Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_distinct_values_queries_analysis
-    - title: ⭐⭐⭐ Subarray Minimum Queries
+    - title: ⭐⭐Subarray Minimum Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_minimum_queries_analysis
-    - title: ⭐⭐⭐ Subarray OR Queries
+    - title: ⭐⭐Subarray OR Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_or_queries_analysis
-    - title: ⭐⭐⭐ Subarray XOR Queries
+    - title: ⭐⭐Subarray XOR Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_xor_queries_analysis
-    - title: ⭐⭐⭐ Visible Buildings Queries
+    - title: ⭐⭐Visible Buildings Queries
       url: /cses-analyses/problem_soulutions/range_queries/visible_buildings_queries_analysis
-    - title: ⭐⭐⭐⭐ Subarray Mode Queries
+    - title: ⭐⭐⭐Subarray Mode Queries
       url: /cses-analyses/problem_soulutions/range_queries/subarray_mode_queries_analysis
-    - title: ⭐⭐⭐ Subarray Maximums
+    - title: ⭐⭐Subarray Maximums
       url: /cses-analyses/problem_soulutions/range_queries/subarray_maximums_analysis
-    - title: ⭐⭐⭐ Li Chao Tree
+    - title: ⭐⭐Li Chao Tree
       url: /cses-analyses/problem_soulutions/range_queries/li_chao_tree_analysis
   - title: String Algorithms
     url: /cses-analyses/problem_soulutions/string_algorithms
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/string_algorithms/summary
-    - title: ⭐ Distinct Strings
+    - title: Distinct Strings
       url: /cses-analyses/problem_soulutions/string_algorithms/distinct_strings_analysis
-    - title: ⭐⭐ Finding Borders
+    - title: ⭐Finding Borders
       url: /cses-analyses/problem_soulutions/string_algorithms/finding_borders_analysis
-    - title: ⭐⭐ Finding Periods
+    - title: ⭐Finding Periods
       url: /cses-analyses/problem_soulutions/string_algorithms/finding_periods_analysis
-    - title: ⭐⭐ Longest Palindrome
+    - title: ⭐Longest Palindrome
       url: /cses-analyses/problem_soulutions/string_algorithms/longest_palindrome_analysis
-    - title: ⭐⭐ Pattern Positions
+    - title: ⭐Pattern Positions
       url: /cses-analyses/problem_soulutions/string_algorithms/pattern_positions_analysis
-    - title: ⭐⭐ Repeating Substring
+    - title: ⭐Repeating Substring
       url: /cses-analyses/problem_soulutions/string_algorithms/repeating_substring_analysis
-    - title: ⭐⭐ String Compression
+    - title: ⭐String Compression
       url: /cses-analyses/problem_soulutions/string_algorithms/string_compression_analysis
-    - title: ⭐⭐ String Functions
+    - title: ⭐String Functions
       url: /cses-analyses/problem_soulutions/string_algorithms/string_functions_analysis
-    - title: ⭐⭐ String Matching
+    - title: ⭐String Matching
       url: /cses-analyses/problem_soulutions/string_algorithms/string_matching_analysis
-    - title: ⭐⭐ String Rotation
+    - title: ⭐String Rotation
       url: /cses-analyses/problem_soulutions/string_algorithms/string_rotation_analysis
-    - title: ⭐⭐⭐ Minimal Rotation
+    - title: ⭐⭐Minimal Rotation
       url: /cses-analyses/problem_soulutions/string_algorithms/minimal_rotation_analysis
-    - title: ⭐⭐⭐ Required Substring
+    - title: ⭐⭐Required Substring
       url: /cses-analyses/problem_soulutions/string_algorithms/required_substring_analysis
-    - title: ⭐⭐⭐ Word Combinations
+    - title: ⭐⭐Word Combinations
       url: /cses-analyses/problem_soulutions/string_algorithms/word_combinations_analysis
-    - title: ⭐⭐⭐⭐ String Automaton
+    - title: ⭐⭐⭐String Automaton
       url: /cses-analyses/problem_soulutions/string_algorithms/string_automaton_analysis
-    - title: ⭐⭐⭐ Distinct Substrings
+    - title: ⭐⭐Distinct Substrings
       url: /cses-analyses/problem_soulutions/string_algorithms/distinct_substrings_analysis
-    - title: ⭐⭐⭐ Palindrome Queries
+    - title: ⭐⭐Palindrome Queries
       url: /cses-analyses/problem_soulutions/string_algorithms/palindrome_queries_analysis
-    - title: ⭐⭐⭐ String Transformation
+    - title: ⭐⭐String Transformation
       url: /cses-analyses/problem_soulutions/string_algorithms/string_transformation_analysis
-    - title: ⭐⭐⭐ Substring Order I
+    - title: ⭐⭐Substring Order I
       url: /cses-analyses/problem_soulutions/string_algorithms/substring_order_i_analysis
-    - title: ⭐⭐⭐ Substring Order II
+    - title: ⭐⭐Substring Order II
       url: /cses-analyses/problem_soulutions/string_algorithms/substring_order_ii_analysis
-    - title: ⭐⭐⭐⭐ Suffix Automaton
+    - title: ⭐⭐⭐Suffix Automaton
       url: /cses-analyses/problem_soulutions/string_algorithms/suffix_automaton_analysis
-    - title: ⭐⭐⭐⭐ Palindromic Tree (Eertree)
+    - title: ⭐⭐⭐Palindromic Tree (Eertree)
       url: /cses-analyses/problem_soulutions/string_algorithms/palindromic_tree_analysis
   - title: Geometry
     url: /cses-analyses/problem_soulutions/geometry
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/geometry/summary
-    - title: ⭐ All Manhattan Distances
+    - title: All Manhattan Distances
       url: /cses-analyses/problem_soulutions/geometry/all_manhattan_distances_analysis
-    - title: ⭐⭐ Area of Rectangles - Geometry
+    - title: ⭐Area of Rectangles - Geometry
       url: /cses-analyses/problem_soulutions/geometry/area_of_rectangles_analysis
-    - title: ⭐⭐ Line Segment Intersection - Geometry
+    - title: ⭐Line Segment Intersection - Geometry
       url: /cses-analyses/problem_soulutions/geometry/line_segment_intersection_analysis
-    - title: ⭐⭐ Line Segments Trace
+    - title: ⭐Line Segments Trace
       url: /cses-analyses/problem_soulutions/geometry/line_segments_trace_analysis
-    - title: ⭐⭐ Lines and Queries I
+    - title: ⭐Lines and Queries I
       url: /cses-analyses/problem_soulutions/geometry/lines_and_queries_i_analysis
-    - title: ⭐⭐ Maximum Manhattan Distance
+    - title: ⭐Maximum Manhattan Distance
       url: /cses-analyses/problem_soulutions/geometry/maximum_manhattan_distance_analysis
-    - title: ⭐⭐ Point Location Test - Geometry
+    - title: ⭐Point Location Test - Geometry
       url: /cses-analyses/problem_soulutions/geometry/point_location_test_analysis
-    - title: ⭐⭐ Polygon Area
+    - title: ⭐Polygon Area
       url: /cses-analyses/problem_soulutions/geometry/polygon_area_analysis
-    - title: ⭐⭐ Robot Path
+    - title: ⭐Robot Path
       url: /cses-analyses/problem_soulutions/geometry/robot_path_analysis
-    - title: ⭐⭐⭐ Convex Hull
+    - title: ⭐⭐Convex Hull
       url: /cses-analyses/problem_soulutions/geometry/convex_hull_analysis
-    - title: ⭐⭐⭐ Intersection Points
+    - title: ⭐⭐Intersection Points
       url: /cses-analyses/problem_soulutions/geometry/intersection_points_analysis
-    - title: ⭐⭐⭐ Lines and Queries II
+    - title: ⭐⭐Lines and Queries II
       url: /cses-analyses/problem_soulutions/geometry/lines_and_queries_ii_analysis
-    - title: ⭐⭐⭐ Minimum Euclidean Distance
+    - title: ⭐⭐Minimum Euclidean Distance
       url: /cses-analyses/problem_soulutions/geometry/minimum_euclidean_distance_analysis
-    - title: ⭐⭐⭐ Point in Polygon - Geometry
+    - title: ⭐⭐Point in Polygon - Geometry
       url: /cses-analyses/problem_soulutions/geometry/point_in_polygon_analysis
-    - title: ⭐⭐⭐ Polygon Lattice Points - Geometry
+    - title: ⭐⭐Polygon Lattice Points - Geometry
       url: /cses-analyses/problem_soulutions/geometry/polygon_lattice_points_analysis
-    - title: ⭐⭐⭐⭐ Half-Plane Intersection
+    - title: ⭐⭐⭐Half-Plane Intersection
       url: /cses-analyses/problem_soulutions/geometry/half_plane_intersection_analysis
-    - title: ⭐⭐⭐⭐ Rotating Calipers
+    - title: ⭐⭐⭐Rotating Calipers
       url: /cses-analyses/problem_soulutions/geometry/rotating_calipers_analysis
   - title: Counting Problems
     url: /cses-analyses/problem_soulutions/counting_problems
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/counting_problems/summary
-    - title: ⭐ Empty String
+    - title: Empty String
       url: /cses-analyses/problem_soulutions/counting_problems/empty_string_analysis
-    - title: ⭐⭐ All Letter Subgrid Count I
+    - title: ⭐All Letter Subgrid Count I
       url: /cses-analyses/problem_soulutions/counting_problems/all_letter_subgrid_count_i_analysis
-    - title: ⭐⭐ Border Subgrid Count I
+    - title: ⭐Border Subgrid Count I
       url: /cses-analyses/problem_soulutions/counting_problems/border_subgrid_count_i_analysis
-    - title: ⭐⭐ Collecting Numbers Distribution
+    - title: ⭐Collecting Numbers Distribution
       url: /cses-analyses/problem_soulutions/counting_problems/collecting_numbers_distribution_analysis
-    - title: ⭐⭐ Counting Bishops
+    - title: ⭐Counting Bishops
       url: /cses-analyses/problem_soulutions/counting_problems/counting_bishops_analysis
-    - title: ⭐⭐ Counting Combinations
+    - title: ⭐Counting Combinations
       url: /cses-analyses/problem_soulutions/counting_problems/counting_combinations_analysis
-    - title: ⭐⭐ Counting Permutations
+    - title: ⭐Counting Permutations
       url: /cses-analyses/problem_soulutions/counting_problems/counting_permutations_analysis
-    - title: ⭐⭐ Counting Reorders
+    - title: ⭐Counting Reorders
       url: /cses-analyses/problem_soulutions/counting_problems/counting_reorders_analysis
-    - title: ⭐⭐ Counting Sequences
+    - title: ⭐Counting Sequences
       url: /cses-analyses/problem_soulutions/counting_problems/counting_sequences_analysis
-    - title: ⭐⭐ Filled Subgrid Count I
+    - title: ⭐Filled Subgrid Count I
       url: /cses-analyses/problem_soulutions/counting_problems/filled_subgrid_count_i_analysis
-    - title: ⭐⭐ Grid Completion
+    - title: ⭐Grid Completion
       url: /cses-analyses/problem_soulutions/counting_problems/grid_completion_analysis
-    - title: ⭐⭐ Grid Paths II
+    - title: ⭐Grid Paths II
       url: /cses-analyses/problem_soulutions/counting_problems/grid_paths_ii_analysis
-    - title: ⭐⭐ Tree Traversals
+    - title: ⭐Tree Traversals
       url: /cses-analyses/problem_soulutions/counting_problems/tree_traversals_analysis
-    - title: ⭐⭐⭐ All Letter Subgrid Count II
+    - title: ⭐⭐All Letter Subgrid Count II
       url: /cses-analyses/problem_soulutions/counting_problems/all_letter_subgrid_count_ii_analysis
-    - title: ⭐⭐⭐ Border Subgrid Count II
+    - title: ⭐⭐Border Subgrid Count II
       url: /cses-analyses/problem_soulutions/counting_problems/border_subgrid_count_ii_analysis
-    - title: ⭐⭐⭐ Filled Subgrid Count II
+    - title: ⭐⭐Filled Subgrid Count II
       url: /cses-analyses/problem_soulutions/counting_problems/filled_subgrid_count_ii_analysis
-    - title: ⭐⭐⭐ Functional Graph Distribution
+    - title: ⭐⭐Functional Graph Distribution
       url: /cses-analyses/problem_soulutions/counting_problems/functional_graph_distribution_analysis
-    - title: ⭐⭐⭐ Permutation Inversions
+    - title: ⭐⭐Permutation Inversions
       url: /cses-analyses/problem_soulutions/counting_problems/permutation_inversions_analysis
-    - title: ⭐⭐⭐ Raab Game II
+    - title: ⭐⭐Raab Game II
       url: /cses-analyses/problem_soulutions/counting_problems/raab_game_ii_analysis
-    - title: ⭐⭐⭐ Tournament Graph Distribution
+    - title: ⭐⭐Tournament Graph Distribution
       url: /cses-analyses/problem_soulutions/counting_problems/tournament_graph_distribution_analysis
-    - title: ⭐⭐⭐ Möbius Function
+    - title: ⭐⭐Möbius Function
       url: /cses-analyses/problem_soulutions/counting_problems/mobius_function_analysis
-    - title: ⭐⭐⭐ Stirling Numbers
+    - title: ⭐⭐Stirling Numbers
       url: /cses-analyses/problem_soulutions/counting_problems/stirling_numbers_analysis
   - title: Advanced Graph Problems
     url: /cses-analyses/problem_soulutions/advanced_graph_problems
     children:
-    - title: 🟢 Summary
+    - title: Summary
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/summary
-    - title: ⭐⭐ Acyclic Graph Edges
+    - title: ⭐Acyclic Graph Edges
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/acyclic_graph_edges_analysis
-    - title: ⭐⭐ Course Schedule II
+    - title: ⭐Course Schedule II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
-    - title: ⭐⭐ Creating Offices
+    - title: ⭐Creating Offices
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/creating_offices_analysis
-    - title: ⭐⭐ Even Outdegree Edges
+    - title: ⭐Even Outdegree Edges
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/even_outdegree_edges_analysis
-    - title: ⭐⭐ Fixed Length Path Queries
+    - title: ⭐Fixed Length Path Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_path_queries_analysis
-    - title: ⭐⭐ Fixed Length Tour Queries
+    - title: ⭐Fixed Length Tour Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_tour_queries_analysis
-    - title: ⭐⭐ Fixed Length Trail Queries
+    - title: ⭐Fixed Length Trail Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_trail_queries_analysis
-    - title: ⭐⭐ Fixed Length Walk Queries
+    - title: ⭐Fixed Length Walk Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_walk_queries_analysis
-    - title: ⭐⭐ MST Edge Check
+    - title: ⭐MST Edge Check
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
-    - title: ⭐⭐ Nearest Shops
+    - title: ⭐Nearest Shops
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/nearest_shops_analysis
-    - title: ⭐⭐ New Flight Routes
+    - title: ⭐New Flight Routes
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/new_flight_routes_analysis
-    - title: ⭐⭐ Strongly Connected Edges
+    - title: ⭐Strongly Connected Edges
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/strongly_connected_edges_analysis
-    - title: ⭐⭐ Transfer Speeds Sum
+    - title: ⭐Transfer Speeds Sum
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/transfer_speeds_sum_analysis
-    - title: ⭐⭐ Tree Traversals
+    - title: ⭐Tree Traversals
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/tree_traversals_analysis
-    - title: ⭐⭐⭐ Fixed Length Circuit Queries
+    - title: ⭐⭐Fixed Length Circuit Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_circuit_queries_analysis
-    - title: ⭐⭐⭐ Fixed Length Cycle Queries
+    - title: ⭐⭐Fixed Length Cycle Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_cycle_queries_analysis
-    - title: ⭐⭐⭐ Fixed Length Hamiltonian Cycle Queries
+    - title: ⭐⭐Fixed Length Hamiltonian Cycle Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_cycle_queries_analysis
-    - title: ⭐⭐⭐ Fixed Length Hamiltonian Path Queries
+    - title: ⭐⭐Fixed Length Hamiltonian Path Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_analysis
-    - title: ⭐⭐⭐ Fixed Length Hamiltonian Tour Queries
+    - title: ⭐⭐Fixed Length Hamiltonian Tour Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_tour_queries_analysis
-    - title: ⭐⭐⭐ Fixed Length Hamiltonian Trail Queries
+    - title: ⭐⭐Fixed Length Hamiltonian Trail Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_trail_queries_analysis
-    - title: ⭐⭐⭐ Graph Girth
+    - title: ⭐⭐Graph Girth
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/graph_girth_analysis
-    - title: ⭐⭐⭐ Prüfer Code
+    - title: ⭐⭐Prüfer Code
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/prufer_code_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Eulerian Circuit Queries
+    - title: ⭐⭐⭐Fixed Length Eulerian Circuit Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_eulerian_circuit_queries_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Eulerian Trail Queries
+    - title: ⭐⭐⭐Fixed Length Eulerian Trail Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_eulerian_trail_queries_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Circuit Queries
+    - title: ⭐⭐⭐Fixed Length Hamiltonian Circuit Queries
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_circuit_queries_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Cycle Queries II
+    - title: ⭐⭐⭐Fixed Length Hamiltonian Cycle Queries II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_cycle_queries_ii_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Path Queries II
+    - title: ⭐⭐⭐Fixed Length Hamiltonian Path Queries II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_path_queries_ii_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Tour Queries II
+    - title: ⭐⭐⭐Fixed Length Hamiltonian Tour Queries II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_tour_queries_ii_analysis
-    - title: ⭐⭐⭐⭐ Fixed Length Hamiltonian Trail Queries II
+    - title: ⭐⭐⭐Fixed Length Hamiltonian Trail Queries II
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/fixed_length_hamiltonian_trail_queries_ii_analysis
-    - title: ⭐⭐⭐⭐ Minimum Cost Max Flow
+    - title: ⭐⭐⭐Minimum Cost Max Flow
       url: /cses-analyses/problem_soulutions/advanced_graph_problems/minimum_cost_max_flow_analysis
-- title: Quick Reference
-  url: /cses-analyses/quick_reference
-  children:
-  - title: 🗺️ Learning Roadmap
-    url: /cses-analyses/quick_reference/learning_roadmap
-  - title: 🔍 Pattern Recognition
-    url: /cses-analyses/quick_reference/pattern_recognition
-  - title: 💻 Code Templates
-    url: /cses-analyses/quick_reference/code_templates
-  - title: 🎯 Interview Patterns
-    url: /cses-analyses/quick_reference/interview_patterns
-  - title: 🚀 Ultimate Cheatsheet
-    url: /cses-analyses/quick_reference/ultimate_cheatsheet
-  - title: 🔬 Advanced Algorithms
-    url: /cses-analyses/quick_reference/advanced_algorithms
-  - title: ⚠️ Common Mistakes
-    url: /cses-analyses/quick_reference/common_mistakes
-- title: System Design
-  url: /cses-analyses/system_design
-  children:
-  - title: Overview
-    url: /cses-analyses/system_design
-  - title: Consistent Hashing
-    url: /cses-analyses/system_design/consistent-hashing
-  - title: Unique ID Generator
-    url: /cses-analyses/system_design/design-unique-id-generator
-  - title: Key-Value Store
-    url: /cses-analyses/system_design/design-key-value-store
-  - title: URL Shortener
-    url: /cses-analyses/system_design/design-url-shortener
-  - title: Web Crawler
-    url: /cses-analyses/system_design/design-web-crawler
-  - title: Payment System
-    url: /cses-analyses/system_design/design-payment-system
-  - title: Skills GraphRAG
-    url: /cses-analyses/system_design/design-skills-graphrag
 - title: B
   url: /cses-analyses/problem_soulutions/Blue
   children:
@@ -744,5 +708,47 @@ main:
     url: /cses-analyses/problem_soulutions/Orange/Segment Tree
   - title: Topological Sort
     url: /cses-analyses/problem_soulutions/Orange/Topological Sort
+- title: System Design
+  url: /cses-analyses/system_design
+  children:
+  - title: Overview
+    url: /cses-analyses/system_design
+  - title: Consistent Hashing
+    url: /cses-analyses/system_design/consistent-hashing
+  - title: Unique ID Generator
+    url: /cses-analyses/system_design/design-unique-id-generator
+  - title: Key-Value Store
+    url: /cses-analyses/system_design/design-key-value-store
+  - title: URL Shortener
+    url: /cses-analyses/system_design/design-url-shortener
+  - title: Web Crawler
+    url: /cses-analyses/system_design/design-web-crawler
+  - title: Payment System
+    url: /cses-analyses/system_design/design-payment-system
+  - title: Skills GraphRAG
+    url: /cses-analyses/system_design/design-skills-graphrag
+- title: Quick Reference
+  url: /cses-analyses/quick_reference
+  children:
+  - title: Learning Roadmap
+    url: /cses-analyses/quick_reference/learning_roadmap
+  - title: Pattern Recognition
+    url: /cses-analyses/quick_reference/pattern_recognition
+  - title: Code Templates
+    url: /cses-analyses/quick_reference/code_templates
+  - title: Interview Patterns
+    url: /cses-analyses/quick_reference/interview_patterns
+  - title: Ultimate Cheatsheet
+    url: /cses-analyses/quick_reference/ultimate_cheatsheet
+  - title: Advanced Algorithms
+    url: /cses-analyses/quick_reference/advanced_algorithms
+  - title: Common Mistakes
+    url: /cses-analyses/quick_reference/common_mistakes
+  - title: B Problems
+    url: /cses-analyses/problem_soulutions/Blue
+  - title: O Problems
+    url: /cses-analyses/problem_soulutions/Orange
+  - title: System Design
+    url: /cses-analyses/system_design
 - title: About
   url: /cses-analyses/about
