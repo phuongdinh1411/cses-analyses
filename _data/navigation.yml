@@ -735,6 +735,8 @@ main:
     url: /cses-analyses/system_design/design-news-feed
   - title: Chat System
     url: /cses-analyses/system_design/design-chat-system
+  - title: Search Autocomplete
+    url: /cses-analyses/system_design/design-search-autocomplete
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
