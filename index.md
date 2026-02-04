@@ -13,9 +13,9 @@ A curated collection of algorithm problems with detailed solutions and analyses.
 | Category | Description |
 |----------|-------------|
 | [CSES](/cses-analyses/problem_soulutions/introductory_problems/summary) | 200+ problems covering DP, graphs, trees, strings, geometry |
-| [B](/cses-analyses/problem_soulutions/Blue/) | 19 sessions: arrays, sorting, BFS/DFS, shortest paths, MST |
-| [O](/cses-analyses/problem_soulutions/Orange/) | Advanced topics: backtracking, segment trees, number theory |
-| [System Design](/cses-analyses/system_design/) | Distributed systems, scalability patterns, architecture |
+| [B](/cses-analyses/problem_soulutions/Blue/summary) | 19 sessions: arrays, sorting, BFS/DFS, shortest paths, MST |
+| [O](/cses-analyses/problem_soulutions/Orange/summary) | Advanced topics: backtracking, segment trees, number theory |
+| [System Design](/cses-analyses/system_design) | Distributed systems, scalability patterns, architecture |
 
 ## Quick Reference
 
