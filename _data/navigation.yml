@@ -1,7 +1,7 @@
 main:
 - title: Home
   url: /cses-analyses/
-- title: Learning
+- title: CSES
   url: /cses-analyses/problem_soulutions
   children:
   - title: Introductory Problems
