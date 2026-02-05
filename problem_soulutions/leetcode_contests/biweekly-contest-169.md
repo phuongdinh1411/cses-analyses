@@ -76,7 +76,7 @@ Now, all elements of `nums` are equal to 5. The minimum total moves is `2`.
 	- `1 <= nums[i] <= 100`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** Since we can only increase values, the optimal target is the maximum element in the array.
 
@@ -176,7 +176,7 @@ So there are 5 such subarrays.
 	- `1 <= target <= 10^9`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** With n <= 1000, we can use O(n^2) brute force to check all subarrays.
 
@@ -281,7 +281,7 @@ All elements in `nums` are equal, so it is already non-decreasing and the entire
 	- `-10^9 <= nums[i] <= 10^9`​​​​​​​
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** We can replace at most one element. Consider: (1) no replacement, (2) replace one element to bridge two non-decreasing segments.
 
@@ -407,7 +407,7 @@ So there are 5 such subarrays.
 	- `1 <= target <= 10^9`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** Transform the problem: assign +1 to target positions, -1 to non-target positions. A subarray has target as majority iff the sum of transformed values > 0.
 

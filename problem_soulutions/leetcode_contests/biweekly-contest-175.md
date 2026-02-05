@@ -50,7 +50,7 @@ Return the resulting string after performing the reversals.
 - `s` consists only of lowercase English letters and the special characters in `"!@#$%^&*()"`.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Separate letters and special characters, reverse each group, then reassemble.
 
@@ -122,7 +122,7 @@ Return the **minimum** value of `k` such that `nonPositive(nums, k) <= k^2`.
 - `1 <= nums[i] <= 10^5`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Binary search on k. For a given k, compute total operations needed.
 
@@ -192,7 +192,7 @@ One longest strictly increasing subsequence is `[5, 7]`. The bitwise AND is `5 A
 - `0 <= nums[i] <= 10^9`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** For AND to be non-zero, all elements must share at least one common bit set to 1.
 
@@ -265,7 +265,7 @@ The **value** of a subarray is defined as `sumArr * (sumArr + 1) / 2`, where `su
 - `1 <= k <= nums.length`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Use DP with prefix sums. The value function s*(s+1)/2 is convex, which affects the optimal partition strategy.
 

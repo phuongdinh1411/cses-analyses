@@ -61,7 +61,7 @@ Deleting `'1'` results in the largest possible even number which is equal to 22.
 - `s` consists only of the characters `'1'` and `'2'`.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** For a number to be even, it must end in '2'. To maximize the number, we want to keep as many digits as possible.
 
@@ -125,7 +125,7 @@ Return all valid **distinct** word squares, sorted in **ascending lexicographic*
 - All `words[i]` are **distinct**.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Build index structures for quick lookup by character positions, then enumerate valid combinations.
 
@@ -209,7 +209,7 @@ Return the **minimum** total cost to make `s` and `t` equal.
 - `1 <= flipCost, swapCost, crossCost <= 10^9`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Focus on positions where s[i] != t[i]. Classify mismatches as (0,1) or (1,0) type.
 
@@ -304,7 +304,7 @@ Return the **minimum total cost** to merge all lists into one.
 - `-10^9 <= lists[i][j] <= 10^9`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** With only up to 12 lists, we can use bitmask DP to try all merge orders.
 

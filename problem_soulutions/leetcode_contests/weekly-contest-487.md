@@ -59,7 +59,7 @@ Return the count of **Monobit** integers in the range `[0, n]` (inclusive).
 - `0 <= n <= 1000`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Monobit integers are either all 0s or all 1s in binary.
 
@@ -133,7 +133,7 @@ Alice removes `[3]`, leaving the array `[7]`. Since Bob cannot play a turn now, 
 - `1 <= nums[i] <= 10^5`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Think about how many total moves will be made.
 
@@ -200,7 +200,7 @@ Implement the `RideSharingSystem` class:
 - At most 1000 calls will be made in **total**.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** This is a classic queue-based system with FIFO matching.
 
@@ -299,7 +299,7 @@ Return the **maximum length** of the alternating subarray you can select.
 - `1 <= nums[i] <= 10^5`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Precompute alternating lengths from left and right, then try removing each element.
 

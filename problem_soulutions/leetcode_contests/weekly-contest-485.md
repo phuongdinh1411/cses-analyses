@@ -58,7 +58,7 @@ The score is `floor(v / c) = floor(4 / 2) = 2`.
 - `s` consists of lowercase English letters, spaces and digits.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Simple counting problem - count vowels and consonants separately.
 
@@ -119,7 +119,7 @@ Return the **maximum** achievable total capacity of the selected machines.
 - `1 <= budget <= 2 * 10^5`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** We can select 0, 1, or 2 machines. For 2 machines, we need cost[i] + cost[j] < budget.
 
@@ -222,7 +222,7 @@ Implement the `AuctionSystem` class:
 - At most `5 * 10^4` total calls.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Use nested dictionaries to track bids per item and per user, plus a sorted structure to efficiently find the highest bidder.
 
@@ -316,7 +316,7 @@ We can form the strings `"acb"`, `"aacb"`, `"accb"`, and `"aaccb"`. `"aacb"` is 
 - `s` contains lowercase English letters only.
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Greedily keep smaller characters at the front, but we must keep at least one of each character that appears.
 

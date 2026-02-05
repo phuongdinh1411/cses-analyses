@@ -81,7 +81,7 @@ Return the **lexicographically smallest** string that can be obtained after **ex
 	- `s` consists of lowercase English letters.
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** We must perform exactly one reverse operation. Try all possible reverses and pick the lexicographically smallest result.
 
@@ -207,7 +207,7 @@ There are no integers that have exactly 1 digit and whose digits sum to 10. Ther
 	- `1 <= sum <= 2 * 10^6`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** To maximize sum of squares, we want digits as large as possible since f(x)=x^2 is convex. Place 9s first, then fill remaining with what's needed.
 
@@ -463,7 +463,7 @@ Thus, after 3 operations `nums1` is transformed into `nums2`.
 	- `1 <= nums1[i], nums2[i] <= 10^5`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** We need to match each position in nums2 with a position in nums1. One element from nums1 must be duplicated (via append). Find optimal matching.
 
@@ -610,7 +610,7 @@ Every combination has a greatest common divisor of 2. Therefore, the answer is 0
 	- `1 <= mat[i][j] <= 150`
 
 <details markdown="1">
-<summary><strong>Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>Hints & Approach</strong></summary>
 
 **Key Insight:** Use DP with GCD as state. Since values are at most 150, there are at most 150 distinct GCD values possible.
 

@@ -210,7 +210,7 @@ Problem description text here...
 - `1 <= nums.length <= 10^5`
 
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** Brief description of the core idea.
 
@@ -260,7 +260,7 @@ Each problem should have a collapsible `<details>` section with:
 
 ```markdown
 <details markdown="1">
-<summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
+<summary><strong>💡 Hints & Approach</strong></summary>
 
 **Key Insight:** [Core algorithmic idea - what makes this problem solvable]
 
