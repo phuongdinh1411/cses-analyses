@@ -108,26 +108,26 @@ Try all possible paths of length k using DFS, tracking which edges we have used.
 
 ```python
 def brute_force(n, adj, a, b, k):
- """
- Check if Eulerian trail of length k exists from a to b.
+  """
+  Check if Eulerian trail of length k exists from a to b.
 
- Time: O(n^k) - exponential, only for small k
- Space: O(k) - recursion depth
- """
- def dfs(node, remaining, used_edges):
-  if remaining == 0:
-   return node == b
+  Time: O(n^k) - exponential, only for small k
+  Space: O(k) - recursion depth
+  """
+  def dfs(node, remaining, used_edges):
+    if remaining == 0:
+      return node == b
 
-  for next_node in range(n):
-   edge = (node, next_node)
-   if adj[node][next_node] and edge not in used_edges:
-    used_edges.add(edge)
-    if dfs(next_node, remaining - 1, used_edges):
-     return True
-    used_edges.remove(edge)
-  return False
+    for next_node in range(n):
+      edge = (node, next_node)
+      if adj[node][next_node] and edge not in used_edges:
+        used_edges.add(edge)
+        if dfs(next_node, remaining - 1, used_edges):
+          return True
+        used_edges.remove(edge)
+    return False
 
- return 1 if dfs(a - 1, k, set()) else 0
+  return 1 if dfs(a - 1, k, set()) else 0
 ```
 
 ### Complexity
@@ -166,76 +166,76 @@ If A is the adjacency matrix:
 
 ```python
 def matrix_mult(A, B, mod=None):
- """Multiply two matrices."""
- n = len(A)
- C = [[0] * n for _ in range(n)]
- for i in range(n):
-  for j in range(n):
-   for k in range(n):
-    C[i][j] += A[i][k] * B[k][j]
-    if mod:
-     C[i][j] %= mod
- return C
+  """Multiply two matrices."""
+  n = len(A)
+  C = [[0] * n for _ in range(n)]
+  for i in range(n):
+    for j in range(n):
+      for k in range(n):
+        C[i][j] += A[i][k] * B[k][j]
+        if mod:
+          C[i][j] %= mod
+  return C
 
 def matrix_pow(M, k, mod=None):
- """Compute M^k using binary exponentiation."""
- n = len(M)
- # Identity matrix
- result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+  """Compute M^k using binary exponentiation."""
+  n = len(M)
+  # Identity matrix
+  result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
 
- while k > 0:
-  if k & 1:
-   result = matrix_mult(result, M, mod)
-  M = matrix_mult(M, M, mod)
-  k >>= 1
+  while k > 0:
+    if k & 1:
+      result = matrix_mult(result, M, mod)
+    M = matrix_mult(M, M, mod)
+    k >>= 1
 
- return result
+  return result
 
 def solve(n, adj, queries):
- """
- Answer Eulerian trail queries using matrix exponentiation.
+  """
+  Answer Eulerian trail queries using matrix exponentiation.
 
- Time: O(n^3 log k) per unique k value
- Space: O(n^2)
- """
- results = []
- cache = {}  # Cache matrix powers
+  Time: O(n^3 log k) per unique k value
+  Space: O(n^2)
+  """
+  results = []
+  cache = {}  # Cache matrix powers
 
- for a, b, k in queries:
-  if k not in cache:
-   cache[k] = matrix_pow(adj, k)
+  for a, b, k in queries:
+    if k not in cache:
+      cache[k] = matrix_pow(adj, k)
 
-  # Check if path of length k exists (non-zero entry)
-  if cache[k][a-1][b-1] > 0:
-   results.append(1)
-  else:
-   results.append(0)
+    # Check if path of length k exists (non-zero entry)
+    if cache[k][a-1][b-1] > 0:
+      results.append(1)
+    else:
+      results.append(0)
 
- return results
+  return results
 
 # Main execution
 def main():
- import sys
- input_data = sys.stdin.read().split()
- idx = 0
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
 
- n, q = int(input_data[idx]), int(input_data[idx+1])
- idx += 2
+  n, q = int(input_data[idx]), int(input_data[idx+1])
+  idx += 2
 
- adj = []
- for i in range(n):
-  row = [int(input_data[idx+j]) for j in range(n)]
-  adj.append(row)
-  idx += n
+  adj = []
+  for i in range(n):
+    row = [int(input_data[idx+j]) for j in range(n)]
+    adj.append(row)
+    idx += n
 
- queries = []
- for _ in range(q):
-  a, b, k = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
-  queries.append((a, b, k))
-  idx += 3
+  queries = []
+  for _ in range(q):
+    a, b, k = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
+    queries.append((a, b, k))
+    idx += 3
 
- results = solve(n, adj, queries)
- print('\n'.join(map(str, results)))
+  results = solve(n, adj, queries)
+  print('\n'.join(map(str, results)))
 ```
 
 ### Complexity
@@ -290,7 +290,7 @@ Paths of length 2 from 1 to 3: 1->2->3
 ```python
 # WRONG - recomputes for every query
 for a, b, k in queries:
- result = matrix_pow(adj, k)  # Expensive!
+  result = matrix_pow(adj, k)  # Expensive!
 ```
 
 **Problem:** Same k value may appear multiple times.
@@ -348,34 +348,34 @@ For actually finding an Eulerian path (not just checking existence):
 
 ```python
 def find_eulerian_path(adj, n, start):
- """
- Find Eulerian path using Hierholzer's algorithm.
+  """
+  Find Eulerian path using Hierholzer's algorithm.
 
- Time: O(E) where E is number of edges
- Space: O(E) for storing the path
- """
- # Make a copy of adjacency list
- graph = [list(row) for row in adj]
- out_degree = [sum(row) for row in graph]
+  Time: O(E) where E is number of edges
+  Space: O(E) for storing the path
+  """
+  # Make a copy of adjacency list
+  graph = [list(row) for row in adj]
+  out_degree = [sum(row) for row in graph]
 
- stack = [start]
- path = []
+  stack = [start]
+  path = []
 
- while stack:
-  v = stack[-1]
-  if out_degree[v] == 0:
-   path.append(v)
-   stack.pop()
-  else:
-   # Find next edge
-   for u in range(n):
-    if graph[v][u] > 0:
-     graph[v][u] -= 1
-     out_degree[v] -= 1
-     stack.append(u)
-     break
+  while stack:
+    v = stack[-1]
+    if out_degree[v] == 0:
+      path.append(v)
+      stack.pop()
+    else:
+      # Find next edge
+      for u in range(n):
+        if graph[v][u] > 0:
+          graph[v][u] -= 1
+          out_degree[v] -= 1
+          stack.append(u)
+          break
 
- return path[::-1]  # Reverse to get correct order
+  return path[::-1]  # Reverse to get correct order
 ```
 
 ---

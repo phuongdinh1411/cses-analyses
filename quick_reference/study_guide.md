@@ -111,13 +111,13 @@ Phase 4: Advanced (Weeks 25-36)
 
 ```python
 def two_sum_sorted(arr, target):
-  left, right = 0, len(arr) - 1
-  while left < right:
-    s = arr[left] + arr[right]
-    if s == target: return [left, right]
-    elif s < target: left += 1
-    else: right -= 1
-  return [-1, -1]
+    left, right = 0, len(arr) - 1
+    while left < right:
+        s = arr[left] + arr[right]
+        if s == target: return [left, right]
+        elif s < target: left += 1
+        else: right -= 1
+    return [-1, -1]
 ```
 
 ### 2. Sliding Window
@@ -125,14 +125,14 @@ def two_sum_sorted(arr, target):
 
 ```python
 def longest_unique_substring(s):
-  seen = {}
-  left = max_len = 0
-  for right, char in enumerate(s):
-    if char in seen and seen[char] >= left:
-      left = seen[char] + 1
-    seen[char] = right
-    max_len = max(max_len, right - left + 1)
-  return max_len
+    seen = {}
+    left = max_len = 0
+    for right, char in enumerate(s):
+        if char in seen and seen[char] >= left:
+            left = seen[char] + 1
+        seen[char] = right
+        max_len = max(max_len, right - left + 1)
+    return max_len
 ```
 
 ### 3. Binary Search
@@ -140,11 +140,11 @@ def longest_unique_substring(s):
 
 ```python
 def binary_search_answer(lo, hi, is_feasible):
-  while lo < hi:
-    mid = (lo + hi) // 2
-    if is_feasible(mid): hi = mid
-    else: lo = mid + 1
-  return lo
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if is_feasible(mid): hi = mid
+        else: lo = mid + 1
+    return lo
 ```
 
 ### 4. BFS/DFS
@@ -152,17 +152,17 @@ def binary_search_answer(lo, hi, is_feasible):
 
 ```python
 def bfs(graph, start, target):
-  from collections import deque
-  visited = {start}
-  queue = deque([(start, 0)])
-  while queue:
-    node, dist = queue.popleft()
-    if node == target: return dist
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        visited.add(neighbor)
-        queue.append((neighbor, dist + 1))
-  return -1
+    from collections import deque
+    visited = {start}
+    queue = deque([(start, 0)])
+    while queue:
+        node, dist = queue.popleft()
+        if node == target: return dist
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, dist + 1))
+    return -1
 ```
 
 ### 5. Dynamic Programming
@@ -171,13 +171,13 @@ def bfs(graph, start, target):
 ```python
 # Coin Change
 def min_coins(coins, amount):
-  dp = [float('inf')] * (amount + 1)
-  dp[0] = 0
-  for i in range(1, amount + 1):
-    for coin in coins:
-      if coin <= i:
-        dp[i] = min(dp[i], dp[i - coin] + 1)
-  return dp[amount] if dp[amount] != float('inf') else -1
+    dp = [float('inf')] * (amount + 1)
+    dp[0] = 0
+    for i in range(1, amount + 1):
+        for coin in coins:
+            if coin <= i:
+                dp[i] = min(dp[i], dp[i - coin] + 1)
+    return dp[amount] if dp[amount] != float('inf') else -1
 ```
 
 ### 6. Backtracking
@@ -185,14 +185,14 @@ def min_coins(coins, amount):
 
 ```python
 def backtrack(path, choices, results):
-  if is_solution(path):
-    results.append(path.copy())
-    return
-  for choice in choices:
-    if is_valid(choice):
-      path.append(choice)
-      backtrack(path, remaining_choices, results)
-      path.pop()
+    if is_solution(path):
+        results.append(path.copy())
+        return
+    for choice in choices:
+        if is_valid(choice):
+            path.append(choice)
+            backtrack(path, remaining_choices, results)
+            path.pop()
 ```
 
 ### 7. Heap / Priority Queue
@@ -202,12 +202,12 @@ def backtrack(path, choices, results):
 import heapq
 # K-th largest: min-heap of size k
 def kth_largest(nums, k):
-  heap = nums[:k]
-  heapq.heapify(heap)
-  for num in nums[k:]:
-    if num > heap[0]:
-      heapq.heapreplace(heap, num)
-  return heap[0]
+    heap = nums[:k]
+    heapq.heapify(heap)
+    for num in nums[k:]:
+        if num > heap[0]:
+            heapq.heapreplace(heap, num)
+    return heap[0]
 ```
 
 ### 8. Union-Find
@@ -215,22 +215,22 @@ def kth_largest(nums, k):
 
 ```python
 class UnionFind:
-  def __init__(self, n):
-    self.parent = list(range(n))
-    self.rank = [0] * n
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
 
-  def find(self, x):
-    if self.parent[x] != x:
-      self.parent[x] = self.find(self.parent[x])
-    return self.parent[x]
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
 
-  def union(self, x, y):
-    px, py = self.find(x), self.find(y)
-    if px == py: return False
-    if self.rank[px] < self.rank[py]: px, py = py, px
-    self.parent[py] = px
-    if self.rank[px] == self.rank[py]: self.rank[px] += 1
-    return True
+    def union(self, x, y):
+        px, py = self.find(x), self.find(y)
+        if px == py: return False
+        if self.rank[px] < self.rank[py]: px, py = py, px
+        self.parent[py] = px
+        if self.rank[px] == self.rank[py]: self.rank[px] += 1
+        return True
 ```
 
 ### 9. Monotonic Stack
@@ -238,13 +238,13 @@ class UnionFind:
 
 ```python
 def next_greater(arr):
-  result = [-1] * len(arr)
-  stack = []
-  for i, num in enumerate(arr):
-    while stack and arr[stack[-1]] < num:
-      result[stack.pop()] = num
-    stack.append(i)
-  return result
+    result = [-1] * len(arr)
+    stack = []
+    for i, num in enumerate(arr):
+        while stack and arr[stack[-1]] < num:
+            result[stack.pop()] = num
+        stack.append(i)
+    return result
 ```
 
 ### 10. Trie
@@ -266,21 +266,21 @@ def next_greater(arr):
 ```python
 from collections import deque
 def topo_sort(n, edges):
-  graph = [[] for _ in range(n)]
-  indegree = [0] * n
-  for u, v in edges:
-    graph[u].append(v)
-    indegree[v] += 1
-  queue = deque([i for i in range(n) if indegree[i] == 0])
-  result = []
-  while queue:
-    node = queue.popleft()
-    result.append(node)
-    for neighbor in graph[node]:
-      indegree[neighbor] -= 1
-      if indegree[neighbor] == 0:
-        queue.append(neighbor)
-  return result if len(result) == n else []
+    graph = [[] for _ in range(n)]
+    indegree = [0] * n
+    for u, v in edges:
+        graph[u].append(v)
+        indegree[v] += 1
+    queue = deque([i for i in range(n) if indegree[i] == 0])
+    result = []
+    while queue:
+        node = queue.popleft()
+        result.append(node)
+        for neighbor in graph[node]:
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                queue.append(neighbor)
+    return result if len(result) == n else []
 ```
 
 ### 14. Bit Manipulation
@@ -301,15 +301,15 @@ x & ~(1 << i)  # Clear i-th bit
 MOD = 10**9 + 7
 
 def mod_pow(base, exp, mod=MOD):
-  result = 1
-  while exp > 0:
-    if exp & 1: result = result * base % mod
-    exp >>= 1
-    base = base * base % mod
-  return result
+    result = 1
+    while exp > 0:
+        if exp & 1: result = result * base % mod
+        exp >>= 1
+        base = base * base % mod
+    return result
 
 def mod_inv(a, mod=MOD):
-  return mod_pow(a, mod - 2, mod)
+    return mod_pow(a, mod - 2, mod)
 ```
 
 ---

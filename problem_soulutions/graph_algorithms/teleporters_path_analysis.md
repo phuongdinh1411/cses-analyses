@@ -222,60 +222,60 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- adj = defaultdict(list)
- in_deg = [0] * (n + 1)
- out_deg = [0] * (n + 1)
+  adj = defaultdict(list)
+  in_deg = [0] * (n + 1)
+  out_deg = [0] * (n + 1)
 
- for _ in range(m):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  adj[a].append(b)
-  out_deg[a] += 1
-  in_deg[b] += 1
+  for _ in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    adj[a].append(b)
+    out_deg[a] += 1
+    in_deg[b] += 1
 
- # Check Eulerian path conditions for this problem
- # Vertex 1 must be start: out_deg[1] - in_deg[1] = 1
- # Vertex n must be end: in_deg[n] - out_deg[n] = 1
- # All others: in_deg = out_deg
+  # Check Eulerian path conditions for this problem
+  # Vertex 1 must be start: out_deg[1] - in_deg[1] = 1
+  # Vertex n must be end: in_deg[n] - out_deg[n] = 1
+  # All others: in_deg = out_deg
 
- if out_deg[1] - in_deg[1] != 1:
-  print("IMPOSSIBLE")
-  return
+  if out_deg[1] - in_deg[1] != 1:
+    print("IMPOSSIBLE")
+    return
 
- if in_deg[n] - out_deg[n] != 1:
-  print("IMPOSSIBLE")
-  return
+  if in_deg[n] - out_deg[n] != 1:
+    print("IMPOSSIBLE")
+    return
 
- for v in range(2, n):
-  if in_deg[v] != out_deg[v]:
-   print("IMPOSSIBLE")
-   return
+  for v in range(2, n):
+    if in_deg[v] != out_deg[v]:
+      print("IMPOSSIBLE")
+      return
 
- # Hierholzer's algorithm (iterative to avoid stack overflow)
- path = []
- stack = [1]
+  # Hierholzer's algorithm (iterative to avoid stack overflow)
+  path = []
+  stack = [1]
 
- while stack:
-  u = stack[-1]
-  if adj[u]:
-   v = adj[u].pop()
-   stack.append(v)
-  else:
-   path.append(stack.pop())
+  while stack:
+    u = stack[-1]
+    if adj[u]:
+      v = adj[u].pop()
+      stack.append(v)
+    else:
+      path.append(stack.pop())
 
- path.reverse()
+  path.reverse()
 
- # Validate: path length should be m+1 and end at n
- if len(path) != m + 1 or path[-1] != n:
-  print("IMPOSSIBLE")
-  return
+  # Validate: path length should be m+1 and end at n
+  if len(path) != m + 1 or path[-1] != n:
+    print("IMPOSSIBLE")
+    return
 
- print(' '.join(map(str, path)))
+  print(' '.join(map(str, path)))
 
 solve()
 ```

@@ -33,157 +33,157 @@ For large numbers (up to 10^14), we need efficient factorization:
 
 ```python
 def largest_prime_divisor(n):
- """Find largest prime divisor, or -1 if only one prime divides n"""
- if n <= 1:
-  return -1
+  """Find largest prime divisor, or -1 if only one prime divides n"""
+  if n <= 1:
+    return -1
 
- primes = []
- temp = n
+  primes = []
+  temp = n
 
- # Trial division
- d = 2
- while d * d <= temp:
-  if temp % d == 0:
-   primes.append(d)
-   while temp % d == 0:
-    temp //= d
-  d += 1
+  # Trial division
+  d = 2
+  while d * d <= temp:
+    if temp % d == 0:
+      primes.append(d)
+      while temp % d == 0:
+        temp //= d
+    d += 1
 
- # If temp > 1, it's a prime factor
- if temp > 1:
-  primes.append(temp)
+  # If temp > 1, it's a prime factor
+  if temp > 1:
+    primes.append(temp)
 
- if len(primes) <= 1:
-  return -1
+  if len(primes) <= 1:
+    return -1
 
- return max(primes)
+  return max(primes)
 
 def solve():
- import sys
+  import sys
 
- for line in sys.stdin:
-  n = int(line.strip())
-  if n == 0:
-   break
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
 
-  print(largest_prime_divisor(n))
+    print(largest_prime_divisor(n))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
- import sys
+  import sys
 
- for line in sys.stdin:
-  n = int(line.strip())
-  if n == 0:
-   break
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
 
-  original = n
-  prime_factors = []
+    original = n
+    prime_factors = []
 
-  # Factor out 2
-  if n % 2 == 0:
-   prime_factors.append(2)
-   while n % 2 == 0:
-    n //= 2
+    # Factor out 2
+    if n % 2 == 0:
+      prime_factors.append(2)
+      while n % 2 == 0:
+        n //= 2
 
-  # Factor out odd numbers
-  i = 3
-  while i * i <= n:
-   if n % i == 0:
-    prime_factors.append(i)
-    while n % i == 0:
-     n //= i
-   i += 2
+    # Factor out odd numbers
+    i = 3
+    while i * i <= n:
+      if n % i == 0:
+        prime_factors.append(i)
+        while n % i == 0:
+          n //= i
+      i += 2
 
-  # Remaining prime
-  if n > 1:
-   prime_factors.append(n)
+    # Remaining prime
+    if n > 1:
+      prime_factors.append(n)
 
-  if len(prime_factors) <= 1:
-   print(-1)
-  else:
-   print(max(prime_factors))
+    if len(prime_factors) <= 1:
+      print(-1)
+    else:
+      print(max(prime_factors))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative with Early Exit
 
 ```python
 def largest_prime_divisor(n):
- if n <= 1:
-  return -1
+  if n <= 1:
+    return -1
 
- first_prime = None
- largest = None
+  first_prime = None
+  largest = None
 
- # Factor out 2
- if n % 2 == 0:
-  first_prime = 2
-  largest = 2
-  while n % 2 == 0:
-   n //= 2
+  # Factor out 2
+  if n % 2 == 0:
+    first_prime = 2
+    largest = 2
+    while n % 2 == 0:
+      n //= 2
 
- # Factor out odd numbers
- d = 3
- while d * d <= n:
-  if n % d == 0:
-   if first_prime is None:
-    first_prime = d
-   largest = d
-   while n % d == 0:
-    n //= d
-  d += 2
+  # Factor out odd numbers
+  d = 3
+  while d * d <= n:
+    if n % d == 0:
+      if first_prime is None:
+        first_prime = d
+      largest = d
+      while n % d == 0:
+        n //= d
+    d += 2
 
- # Remaining prime factor
- if n > 1:
-  if first_prime is None:
-   first_prime = n
-  largest = n
+  # Remaining prime factor
+  if n > 1:
+    if first_prime is None:
+      first_prime = n
+    largest = n
 
- # If only one prime found
- if first_prime == largest and n == 1:
-  # Check if there was only one prime
-  # Actually need to track count
-  pass
+  # If only one prime found
+  if first_prime == largest and n == 1:
+    # Check if there was only one prime
+    # Actually need to track count
+    pass
 
- # Re-implement with proper counting
- return largest if largest != first_prime or n > 1 else -1
+  # Re-implement with proper counting
+  return largest if largest != first_prime or n > 1 else -1
 
 def solve():
- while True:
-  n = int(input())
-  if n == 0:
-   break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-  primes = set()
-  temp = n
+    primes = set()
+    temp = n
 
-  d = 2
-  while d * d <= temp:
-   if temp % d == 0:
-    primes.add(d)
-    while temp % d == 0:
-     temp //= d
-   d += 1 if d == 2 else 2
+    d = 2
+    while d * d <= temp:
+      if temp % d == 0:
+        primes.add(d)
+        while temp % d == 0:
+          temp //= d
+      d += 1 if d == 2 else 2
 
-  if temp > 1:
-   primes.add(temp)
+    if temp > 1:
+      primes.add(temp)
 
-  if len(primes) <= 1:
-   print(-1)
-  else:
-   print(max(primes))
+    if len(primes) <= 1:
+      print(-1)
+    else:
+      print(max(primes))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

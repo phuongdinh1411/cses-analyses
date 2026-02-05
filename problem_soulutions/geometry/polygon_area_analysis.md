@@ -113,27 +113,27 @@ Decompose the polygon into triangles from a fixed vertex, then sum all triangle 
 
 ```python
 def polygon_area_triangles(vertices):
- """
- Calculate polygon area by triangle decomposition.
+  """
+  Calculate polygon area by triangle decomposition.
 
- Time: O(n)
- Space: O(1)
- """
- n = len(vertices)
- if n < 3:
-  return 0
+  Time: O(n)
+  Space: O(1)
+  """
+  n = len(vertices)
+  if n < 3:
+    return 0
 
- total = 0
- x0, y0 = vertices[0]
+  total = 0
+  x0, y0 = vertices[0]
 
- for i in range(1, n - 1):
-  x1, y1 = vertices[i]
-  x2, y2 = vertices[i + 1]
-  # Cross product gives twice the signed area
-  cross = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
-  total += cross
+  for i in range(1, n - 1):
+    x1, y1 = vertices[i]
+    x2, y2 = vertices[i + 1]
+    # Cross product gives twice the signed area
+    cross = (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0)
+    total += cross
 
- return abs(total)  # Return twice the area
+  return abs(total)  # Return twice the area
 ```
 
 ### Complexity
@@ -221,20 +221,20 @@ import sys
 input = sys.stdin.readline
 
 def solve():
- n = int(input())
- vertices = []
- for _ in range(n):
-  x, y = map(int, input().split())
-  vertices.append((x, y))
+  n = int(input())
+  vertices = []
+  for _ in range(n):
+    x, y = map(int, input().split())
+    vertices.append((x, y))
 
- # Shoelace formula
- area = 0
- for i in range(n):
-  j = (i + 1) % n
-  area += vertices[i][0] * vertices[j][1]
-  area -= vertices[j][0] * vertices[i][1]
+  # Shoelace formula
+  area = 0
+  for i in range(n):
+    j = (i + 1) % n
+    area += vertices[i][0] * vertices[j][1]
+    area -= vertices[j][0] * vertices[i][1]
 
- print(abs(area))
+  print(abs(area))
 
 solve()
 ```
@@ -260,12 +260,12 @@ solve()
 ```python
 # WRONG - misses last edge
 for i in range(n - 1):
- area += x[i] * y[i+1] - x[i+1] * y[i]
+  area += x[i] * y[i+1] - x[i+1] * y[i]
 
 # CORRECT - includes edge from last to first vertex
 for i in range(n):
- j = (i + 1) % n
- area += x[i] * y[j] - x[j] * y[i]
+  j = (i + 1) % n
+  area += x[i] * y[j] - x[j] * y[i]
 ```
 
 **Problem:** The polygon is closed; we need the edge from the last vertex back to the first.

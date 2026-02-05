@@ -114,22 +114,22 @@ Check every possible subarray and count those with sum equal to target.
 
 ```python
 def solve_brute_force(n, arr, target):
- """
- Check all O(n^2) subarrays.
+  """
+  Check all O(n^2) subarrays.
 
- Time: O(n^2) with prefix sums, O(n^3) without
- Space: O(n) for prefix sums
- """
- count = 0
- prefix = [0] * (n + 1)
- for i in range(n):
-  prefix[i + 1] = prefix[i] + arr[i]
+  Time: O(n^2) with prefix sums, O(n^3) without
+  Space: O(n) for prefix sums
+  """
+  count = 0
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + arr[i]
 
- for i in range(n):
-  for j in range(i, n):
-   if prefix[j + 1] - prefix[i] == target:
-    count += 1
- return count
+  for i in range(n):
+    for j in range(i, n):
+      if prefix[j + 1] - prefix[i] == target:
+        count += 1
+  return count
 ```
 
 ### Complexity
@@ -238,35 +238,35 @@ import sys
 from collections import defaultdict
 
 def solve(n, arr, target):
- """
- Count subarrays with sum equal to target.
+  """
+  Count subarrays with sum equal to target.
 
- Time: O(n) - single pass
- Space: O(n) - hash map for prefix sums
- """
- count = 0
- prefix_sum = 0
- prefix_count = defaultdict(int)
- prefix_count[0] = 1  # Empty prefix
+  Time: O(n) - single pass
+  Space: O(n) - hash map for prefix sums
+  """
+  count = 0
+  prefix_sum = 0
+  prefix_count = defaultdict(int)
+  prefix_count[0] = 1  # Empty prefix
 
- for num in arr:
-  prefix_sum += num
-  # How many previous prefixes give us target sum?
-  count += prefix_count[prefix_sum - target]
-  # Record current prefix
-  prefix_count[prefix_sum] += 1
+  for num in arr:
+    prefix_sum += num
+    # How many previous prefixes give us target sum?
+    count += prefix_count[prefix_sum - target]
+    # Record current prefix
+    prefix_count[prefix_sum] += 1
 
- return count
+  return count
 
 def main():
- input_data = sys.stdin.read().split()
- n = int(input_data[0])
- x = int(input_data[1])
- arr = list(map(int, input_data[2:2+n]))
- print(solve(n, arr, x))
+  input_data = sys.stdin.read().split()
+  n = int(input_data[0])
+  x = int(input_data[1])
+  arr = list(map(int, input_data[2:2+n]))
+  print(solve(n, arr, x))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -288,9 +288,9 @@ prefix_count = defaultdict(int)
 # prefix_count[0] = 1  <- Missing!
 
 for num in arr:
- prefix_sum += num
- count += prefix_count[prefix_sum - target]
- prefix_count[prefix_sum] += 1
+  prefix_sum += num
+  count += prefix_count[prefix_sum - target]
+  prefix_count[prefix_sum] += 1
 ```
 
 **Problem:** Misses subarrays starting from index 0. If `arr = [7]` and `target = 7`, the answer should be 1, but this returns 0.
@@ -306,9 +306,9 @@ for num in arr:
 ```python
 # WRONG - counts subarray of length 0
 for num in arr:
- prefix_sum += num
- prefix_count[prefix_sum] += 1  # Added first
- count += prefix_count[prefix_sum - target]  # Then checked
+  prefix_sum += num
+  prefix_count[prefix_sum] += 1  # Added first
+  count += prefix_count[prefix_sum - target]  # Then checked
 ```
 
 **Problem:** If `target = 0`, this incorrectly counts each element as a valid subarray (matching itself).
@@ -322,12 +322,12 @@ for num in arr:
 left = 0
 current_sum = 0
 for right in range(n):
- current_sum += arr[right]
- while current_sum > target and left <= right:
-  current_sum -= arr[left]
-  left += 1
- if current_sum == target:
-  count += 1
+  current_sum += arr[right]
+  while current_sum > target and left <= right:
+    current_sum -= arr[left]
+    left += 1
+  if current_sum == target:
+    count += 1
 ```
 
 **Problem:** Sliding window assumes shrinking reduces sum, which fails with negatives.

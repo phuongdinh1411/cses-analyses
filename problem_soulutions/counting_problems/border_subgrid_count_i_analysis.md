@@ -104,21 +104,21 @@ Check all possible combinations of 2 rows and 2 columns.
 
 ```python
 def count_subgrids_brute(n, grid):
- """
- Brute force: check all 4 corners for each subgrid.
+  """
+  Brute force: check all 4 corners for each subgrid.
 
- Time: O(n^4)
- Space: O(1)
- """
- count = 0
- for r1 in range(n):
-  for r2 in range(r1 + 1, n):
-   for c1 in range(n):
-    for c2 in range(c1 + 1, n):
-     if (grid[r1][c1] == '*' and grid[r1][c2] == '*' and
-      grid[r2][c1] == '*' and grid[r2][c2] == '*'):
-      count += 1
- return count
+  Time: O(n^4)
+  Space: O(1)
+  """
+  count = 0
+  for r1 in range(n):
+    for r2 in range(r1 + 1, n):
+      for c1 in range(n):
+        for c2 in range(c1 + 1, n):
+          if (grid[r1][c1] == '*' and grid[r1][c2] == '*' and
+            grid[r2][c1] == '*' and grid[r2][c2] == '*'):
+            count += 1
+  return count
 ```
 
 ### Complexity
@@ -219,34 +219,34 @@ Valid rectangles = C(2,2) = 2*1/2 = 1
 
 ```python
 def count_subgrids(n, grid):
- """
- Optimal solution: O(n^3) with pairwise row comparison.
+  """
+  Optimal solution: O(n^3) with pairwise row comparison.
 
- Time: O(n^3) - n^2 row pairs, O(n) to count matching columns
- Space: O(1)
- """
- count = 0
+  Time: O(n^3) - n^2 row pairs, O(n) to count matching columns
+  Space: O(1)
+  """
+  count = 0
 
- for r1 in range(n):
-  for r2 in range(r1 + 1, n):
-   # Count columns where both rows have '*'
-   k = 0
-   for c in range(n):
-    if grid[r1][c] == '*' and grid[r2][c] == '*':
-     k += 1
-   # Number of ways to choose 2 columns from k
-   count += k * (k - 1) // 2
+  for r1 in range(n):
+    for r2 in range(r1 + 1, n):
+      # Count columns where both rows have '*'
+      k = 0
+      for c in range(n):
+        if grid[r1][c] == '*' and grid[r2][c] == '*':
+          k += 1
+      # Number of ways to choose 2 columns from k
+      count += k * (k - 1) // 2
 
- return count
+  return count
 
 # Input handling
 def solve():
- n = int(input())
- grid = [input().strip() for _ in range(n)]
- print(count_subgrids(n, grid))
+  n = int(input())
+  grid = [input().strip() for _ in range(n)]
+  print(count_subgrids(n, grid))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -292,13 +292,13 @@ if __name__ == "__main__":
 ```python
 # WRONG - includes r1 == r2
 for r1 in range(n):
- for r2 in range(n):
-  ...
+  for r2 in range(n):
+    ...
 
 # CORRECT - only distinct pairs
 for r1 in range(n):
- for r2 in range(r1 + 1, n):
-  ...
+  for r2 in range(r1 + 1, n):
+    ...
 ```
 
 ---

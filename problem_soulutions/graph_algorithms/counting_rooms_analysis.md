@@ -116,31 +116,31 @@ BFS uses a queue to explore level-by-level. Good for finding shortest paths and 
 from collections import deque
 
 def count_rooms_bfs(n, m, grid):
- visited = [[False] * m for _ in range(n)]
- directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+  visited = [[False] * m for _ in range(n)]
+  directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
- def bfs(start_row, start_col):
-  queue = deque([(start_row, start_col)])
-  visited[start_row][start_col] = True
+  def bfs(start_row, start_col):
+    queue = deque([(start_row, start_col)])
+    visited[start_row][start_col] = True
 
-  while queue:
-   row, col = queue.popleft()
-   for dr, dc in directions:
-    new_row, new_col = row + dr, col + dc
-    if (0 <= new_row < n and 0 <= new_col < m and
-     not visited[new_row][new_col] and
-     grid[new_row][new_col] == '.'):
-     visited[new_row][new_col] = True
-     queue.append((new_row, new_col))
+    while queue:
+      row, col = queue.popleft()
+      for dr, dc in directions:
+        new_row, new_col = row + dr, col + dc
+        if (0 <= new_row < n and 0 <= new_col < m and
+          not visited[new_row][new_col] and
+          grid[new_row][new_col] == '.'):
+          visited[new_row][new_col] = True
+          queue.append((new_row, new_col))
 
- room_count = 0
- for i in range(n):
-  for j in range(m):
-   if grid[i][j] == '.' and not visited[i][j]:
-    bfs(i, j)
-    room_count += 1
+  room_count = 0
+  for i in range(n):
+    for j in range(m):
+      if grid[i][j] == '.' and not visited[i][j]:
+        bfs(i, j)
+        room_count += 1
 
- return room_count
+  return room_count
 
 # Read input
 n, m = map(int, input().split())
@@ -156,31 +156,31 @@ DFS explores as deep as possible before backtracking. Simpler to implement but w
 
 ```python
 def count_rooms_dfs(n, m, grid):
- visited = [[False] * m for _ in range(n)]
- directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+  visited = [[False] * m for _ in range(n)]
+  directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
- def dfs(start_row, start_col):
-  stack = [(start_row, start_col)]
-  visited[start_row][start_col] = True
+  def dfs(start_row, start_col):
+    stack = [(start_row, start_col)]
+    visited[start_row][start_col] = True
 
-  while stack:
-   row, col = stack.pop()
-   for dr, dc in directions:
-    new_row, new_col = row + dr, col + dc
-    if (0 <= new_row < n and 0 <= new_col < m and
-     not visited[new_row][new_col] and
-     grid[new_row][new_col] == '.'):
-     visited[new_row][new_col] = True
-     stack.append((new_row, new_col))
+    while stack:
+      row, col = stack.pop()
+      for dr, dc in directions:
+        new_row, new_col = row + dr, col + dc
+        if (0 <= new_row < n and 0 <= new_col < m and
+          not visited[new_row][new_col] and
+          grid[new_row][new_col] == '.'):
+          visited[new_row][new_col] = True
+          stack.append((new_row, new_col))
 
- room_count = 0
- for i in range(n):
-  for j in range(m):
-   if grid[i][j] == '.' and not visited[i][j]:
-    dfs(i, j)
-    room_count += 1
+  room_count = 0
+  for i in range(n):
+    for j in range(m):
+      if grid[i][j] == '.' and not visited[i][j]:
+        dfs(i, j)
+        room_count += 1
 
- return room_count
+  return room_count
 
 n, m = map(int, input().split())
 grid = [input().strip() for _ in range(n)]

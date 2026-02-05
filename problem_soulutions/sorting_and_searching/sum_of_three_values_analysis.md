@@ -93,15 +93,15 @@ Check all possible triplets using three nested loops.
 
 ```python
 def solve_brute_force(n, arr, target):
- """
- Check all triplets - O(n^3) time.
- """
- for i in range(n):
-  for j in range(i + 1, n):
-   for k in range(j + 1, n):
-    if arr[i] + arr[j] + arr[k] == target:
-     return (i + 1, j + 1, k + 1)  # 1-indexed
- return None
+  """
+  Check all triplets - O(n^3) time.
+  """
+  for i in range(n):
+    for j in range(i + 1, n):
+      for k in range(j + 1, n):
+        if arr[i] + arr[j] + arr[k] == target:
+          return (i + 1, j + 1, k + 1)  # 1-indexed
+  return None
 ```
 
 ### Complexity
@@ -181,57 +181,57 @@ Fix first = 1 (original idx 3), need pair summing to 7:
 
 ```python
 def solve(n, arr, target):
- """
- Optimal solution using sorting + two pointers.
+  """
+  Optimal solution using sorting + two pointers.
 
- Time: O(n^2) - sort is O(n log n), two-pointer search is O(n^2)
- Space: O(n) - for storing indexed array
- """
- # Store (value, original_index) pairs
- indexed = [(arr[i], i) for i in range(n)]
- indexed.sort()  # Sort by value
+  Time: O(n^2) - sort is O(n log n), two-pointer search is O(n^2)
+  Space: O(n) - for storing indexed array
+  """
+  # Store (value, original_index) pairs
+  indexed = [(arr[i], i) for i in range(n)]
+  indexed.sort()  # Sort by value
 
- for i in range(n - 2):
-  first_val = indexed[i][0]
-  remaining = target - first_val
+  for i in range(n - 2):
+    first_val = indexed[i][0]
+    remaining = target - first_val
 
-  left = i + 1
-  right = n - 1
+    left = i + 1
+    right = n - 1
 
-  while left < right:
-   current_sum = indexed[left][0] + indexed[right][0]
+    while left < right:
+      current_sum = indexed[left][0] + indexed[right][0]
 
-   if current_sum == remaining:
-    # Found triplet - get original 1-indexed positions
-    positions = [
-     indexed[i][1] + 1,
-     indexed[left][1] + 1,
-     indexed[right][1] + 1
-    ]
-    positions.sort()
-    return positions
-   elif current_sum < remaining:
-    left += 1
-   else:
-    right -= 1
+      if current_sum == remaining:
+        # Found triplet - get original 1-indexed positions
+        positions = [
+          indexed[i][1] + 1,
+          indexed[left][1] + 1,
+          indexed[right][1] + 1
+        ]
+        positions.sort()
+        return positions
+      elif current_sum < remaining:
+        left += 1
+      else:
+        right -= 1
 
- return None
+  return None
 
 
 def main():
- n, target = map(int, input().split())
- arr = list(map(int, input().split()))
+  n, target = map(int, input().split())
+  arr = list(map(int, input().split()))
 
- result = solve(n, arr, target)
+  result = solve(n, arr, target)
 
- if result:
-  print(*result)
- else:
-  print("IMPOSSIBLE")
+  if result:
+    print(*result)
+  else:
+    print("IMPOSSIBLE")
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -261,8 +261,8 @@ arr.sort()
 ```python
 # WRONG - may use same index twice
 for i in range(n):
- left = 0  # Should start at i + 1
- right = n - 1
+  left = 0  # Should start at i + 1
+  right = n - 1
 ```
 
 **Problem:** The left pointer might include index i, using the same element twice.

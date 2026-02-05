@@ -50,91 +50,91 @@ For each test case, print "Scenario #i:" followed by N lines with rank and emplo
 from collections import defaultdict, deque
 
 def solve():
- t = int(input())
+  t = int(input())
 
- for case in range(1, t + 1):
-  n, r = map(int, input().split())
+  for case in range(1, t + 1):
+    n, r = map(int, input().split())
 
-  # adj[v] contains subordinates of v
-  # in_degree tracks how many superiors each employee has
-  adj = defaultdict(list)
-  in_degree = [0] * n
+    # adj[v] contains subordinates of v
+    # in_degree tracks how many superiors each employee has
+    adj = defaultdict(list)
+    in_degree = [0] * n
 
-  for _ in range(r):
-   r1, r2 = map(int, input().split())
-   # r1 is lower than r2, so r2 -> r1
-   adj[r2].append(r1)
-   in_degree[r1] += 1
+    for _ in range(r):
+      r1, r2 = map(int, input().split())
+      # r1 is lower than r2, so r2 -> r1
+      adj[r2].append(r1)
+      in_degree[r1] += 1
 
-  # Compute ranks using modified topological sort
-  rank = [0] * n
-  queue = deque()
+    # Compute ranks using modified topological sort
+    rank = [0] * n
+    queue = deque()
 
-  # Start with bosses (no one above them)
-  for i in range(n):
-   if in_degree[i] == 0:
-    rank[i] = 1
-    queue.append(i)
+    # Start with bosses (no one above them)
+    for i in range(n):
+      if in_degree[i] == 0:
+        rank[i] = 1
+        queue.append(i)
 
-  while queue:
-   u = queue.popleft()
-   for v in adj[u]:
-    rank[v] = max(rank[v], rank[u] + 1)
-    in_degree[v] -= 1
-    if in_degree[v] == 0:
-     queue.append(v)
+    while queue:
+      u = queue.popleft()
+      for v in adj[u]:
+        rank[v] = max(rank[v], rank[u] + 1)
+        in_degree[v] -= 1
+        if in_degree[v] == 0:
+          queue.append(v)
 
-  # Create result list and sort
-  employees = [(rank[i], i) for i in range(n)]
-  employees.sort()
+    # Create result list and sort
+    employees = [(rank[i], i) for i in range(n)]
+    employees.sort()
 
-  print(f"Scenario #{case}:")
-  for r, idx in employees:
-   print(r, idx)
+    print(f"Scenario #{case}:")
+    for r, idx in employees:
+      print(r, idx)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
- t = int(input())
+  t = int(input())
 
- for case in range(1, t + 1):
-  n, r = map(int, input().split())
+  for case in range(1, t + 1):
+    n, r = map(int, input().split())
 
-  adj = [[] for _ in range(n)]
-  in_degree = [0] * n
+    adj = [[] for _ in range(n)]
+    in_degree = [0] * n
 
-  for _ in range(r):
-   r1, r2 = map(int, input().split())
-   adj[r2].append(r1)
-   in_degree[r1] += 1
+    for _ in range(r):
+      r1, r2 = map(int, input().split())
+      adj[r2].append(r1)
+      in_degree[r1] += 1
 
-  # DFS to compute ranks
-  rank = [0] * n
+    # DFS to compute ranks
+    rank = [0] * n
 
-  def dfs(u, current_rank):
-   rank[u] = max(rank[u], current_rank)
-   for v in adj[u]:
-    dfs(v, rank[u] + 1)
+    def dfs(u, current_rank):
+      rank[u] = max(rank[u], current_rank)
+      for v in adj[u]:
+        dfs(v, rank[u] + 1)
 
-  # Start DFS from all bosses
-  for i in range(n):
-   if in_degree[i] == 0:
-    dfs(i, 1)
+    # Start DFS from all bosses
+    for i in range(n):
+      if in_degree[i] == 0:
+        dfs(i, 1)
 
-  # Sort and output
-  result = sorted([(rank[i], i) for i in range(n)])
+    # Sort and output
+    result = sorted([(rank[i], i) for i in range(n)])
 
-  print(f"Scenario #{case}:")
-  for r, idx in result:
-   print(r, idx)
+    print(f"Scenario #{case}:")
+    for r, idx in result:
+      print(r, idx)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -183,65 +183,65 @@ import heapq
 from collections import defaultdict
 
 def solve():
- case_num = 0
+  case_num = 0
 
- try:
-  while True:
-   n = int(input())
-   case_num += 1
+  try:
+    while True:
+      n = int(input())
+      case_num += 1
 
-   # Read beverage names and create mapping
-   beverages = []
-   name_to_id = {}
+      # Read beverage names and create mapping
+      beverages = []
+      name_to_id = {}
 
-   for i in range(n):
-    name = input().strip()
-    beverages.append(name)
-    name_to_id[name] = i
+      for i in range(n):
+        name = input().strip()
+        beverages.append(name)
+        name_to_id[name] = i
 
-   # Build graph
-   graph = defaultdict(list)
-   in_degree = [0] * n
+      # Build graph
+      graph = defaultdict(list)
+      in_degree = [0] * n
 
-   m = int(input())
-   for _ in range(m):
-    line = input().split()
-    b1, b2 = line[0], line[1]
-    u, v = name_to_id[b1], name_to_id[b2]
-    graph[u].append(v)
-    in_degree[v] += 1
+      m = int(input())
+      for _ in range(m):
+        line = input().split()
+        b1, b2 = line[0], line[1]
+        u, v = name_to_id[b1], name_to_id[b2]
+        graph[u].append(v)
+        in_degree[v] += 1
 
-   # Read blank line
-   try:
-    input()
-   except:
+      # Read blank line
+      try:
+        input()
+      except:
+        pass
+
+      # Topological sort using min-heap (to get lexicographically smallest by input order)
+      heap = []
+      for i in range(n):
+        if in_degree[i] == 0:
+          heapq.heappush(heap, i)
+
+      result = []
+      while heap:
+        u = heapq.heappop(heap)
+        result.append(beverages[u])
+
+        for v in graph[u]:
+          in_degree[v] -= 1
+          if in_degree[v] == 0:
+            heapq.heappush(heap, v)
+
+      # Output
+      print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
+      print()
+
+  except EOFError:
     pass
 
-   # Topological sort using min-heap (to get lexicographically smallest by input order)
-   heap = []
-   for i in range(n):
-    if in_degree[i] == 0:
-     heapq.heappush(heap, i)
-
-   result = []
-   while heap:
-    u = heapq.heappop(heap)
-    result.append(beverages[u])
-
-    for v in graph[u]:
-     in_degree[v] -= 1
-     if in_degree[v] == 0:
-      heapq.heappush(heap, v)
-
-   # Output
-   print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
-   print()
-
- except EOFError:
-  pass
-
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
@@ -250,74 +250,74 @@ if __name__ == "__main__":
 import heapq
 
 def topological_sort(n, graph, in_degree):
- """Topological sort with tie-breaking by index (input order)"""
- result = []
- heap = [i for i in range(n) if in_degree[i] == 0]
- heapq.heapify(heap)
+  """Topological sort with tie-breaking by index (input order)"""
+  result = []
+  heap = [i for i in range(n) if in_degree[i] == 0]
+  heapq.heapify(heap)
 
- while heap:
-  u = heapq.heappop(heap)
-  result.append(u)
+  while heap:
+    u = heapq.heappop(heap)
+    result.append(u)
 
-  for v in graph[u]:
-   in_degree[v] -= 1
-   if in_degree[v] == 0:
-    heapq.heappush(heap, v)
+    for v in graph[u]:
+      in_degree[v] -= 1
+      if in_degree[v] == 0:
+        heapq.heappush(heap, v)
 
- return result
+  return result
 
 def solve():
- import sys
- input_data = sys.stdin.read().split('\n')
- idx = 0
- case_num = 0
+  import sys
+  input_data = sys.stdin.read().split('\n')
+  idx = 0
+  case_num = 0
 
- while idx < len(input_data):
-  try:
-   n = int(input_data[idx])
-  except:
-   break
+  while idx < len(input_data):
+    try:
+      n = int(input_data[idx])
+    except:
+      break
 
-  idx += 1
-  case_num += 1
+    idx += 1
+    case_num += 1
 
-  # Read beverages
-  beverages = []
-  name_to_id = {}
-  for i in range(n):
-   name = input_data[idx].strip()
-   beverages.append(name)
-   name_to_id[name] = i
-   idx += 1
+    # Read beverages
+    beverages = []
+    name_to_id = {}
+    for i in range(n):
+      name = input_data[idx].strip()
+      beverages.append(name)
+      name_to_id[name] = i
+      idx += 1
 
-  # Read constraints
-  m = int(input_data[idx])
-  idx += 1
+    # Read constraints
+    m = int(input_data[idx])
+    idx += 1
 
-  graph = [[] for _ in range(n)]
-  in_degree = [0] * n
+    graph = [[] for _ in range(n)]
+    in_degree = [0] * n
 
-  for _ in range(m):
-   parts = input_data[idx].split()
-   b1, b2 = parts[0], parts[1]
-   u, v = name_to_id[b1], name_to_id[b2]
-   graph[u].append(v)
-   in_degree[v] += 1
-   idx += 1
+    for _ in range(m):
+      parts = input_data[idx].split()
+      b1, b2 = parts[0], parts[1]
+      u, v = name_to_id[b1], name_to_id[b2]
+      graph[u].append(v)
+      in_degree[v] += 1
+      idx += 1
 
-  # Skip blank line
-  if idx < len(input_data) and input_data[idx].strip() == '':
-   idx += 1
+    # Skip blank line
+    if idx < len(input_data) and input_data[idx].strip() == '':
+      idx += 1
 
-  # Topological sort
-  order = topological_sort(n, graph, in_degree)
-  result = [beverages[i] for i in order]
+    # Topological sort
+    order = topological_sort(n, graph, in_degree)
+    result = [beverages[i] for i in order]
 
-  print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
-  print()
+    print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
+    print()
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -367,53 +367,53 @@ Key insight: The farthest affected settlement from any node must be one of the t
 from collections import deque
 
 def solve():
- n, m, d = map(int, input().split())
- affected = set(map(int, input().split()))
+  n, m, d = map(int, input().split())
+  affected = set(map(int, input().split()))
 
- adj = [[] for _ in range(n + 1)]
- for _ in range(n - 1):
-  a, b = map(int, input().split())
-  adj[a].append(b)
-  adj[b].append(a)
+  adj = [[] for _ in range(n + 1)]
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
- def bfs(start):
-  """Returns distances from start to all nodes"""
-  dist = [-1] * (n + 1)
-  dist[start] = 0
-  queue = deque([start])
+  def bfs(start):
+    """Returns distances from start to all nodes"""
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    queue = deque([start])
 
-  while queue:
-   u = queue.popleft()
-   for v in adj[u]:
-    if dist[v] == -1:
-     dist[v] = dist[u] + 1
-     queue.append(v)
+    while queue:
+      u = queue.popleft()
+      for v in adj[u]:
+        if dist[v] == -1:
+          dist[v] = dist[u] + 1
+          queue.append(v)
 
-  return dist
+    return dist
 
- # Find first endpoint: farthest affected node from any affected node
- first_affected = next(iter(affected))
- dist_from_first = bfs(first_affected)
+  # Find first endpoint: farthest affected node from any affected node
+  first_affected = next(iter(affected))
+  dist_from_first = bfs(first_affected)
 
- u = max(affected, key=lambda x: dist_from_first[x])
+  u = max(affected, key=lambda x: dist_from_first[x])
 
- # Find second endpoint: farthest affected node from u
- dist_from_u = bfs(u)
- v = max(affected, key=lambda x: dist_from_u[x])
+  # Find second endpoint: farthest affected node from u
+  dist_from_u = bfs(u)
+  v = max(affected, key=lambda x: dist_from_u[x])
 
- # Get distances from both endpoints
- dist_from_v = bfs(v)
+  # Get distances from both endpoints
+  dist_from_v = bfs(v)
 
- # Count settlements where max distance to affected is <= d
- result = 0
- for i in range(1, n + 1):
-  if max(dist_from_u[i], dist_from_v[i]) <= d:
-   result += 1
+  # Count settlements where max distance to affected is <= d
+  result = 0
+  for i in range(1, n + 1):
+    if max(dist_from_u[i], dist_from_v[i]) <= d:
+      result += 1
 
- print(result)
+  print(result)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
@@ -423,47 +423,47 @@ import sys
 sys.setrecursionlimit(200000)
 
 def solve():
- n, m, d = map(int, input().split())
- affected = list(map(int, input().split()))
- affected_set = set(affected)
+  n, m, d = map(int, input().split())
+  affected = list(map(int, input().split()))
+  affected_set = set(affected)
 
- adj = [[] for _ in range(n + 1)]
- for _ in range(n - 1):
-  a, b = map(int, input().split())
-  adj[a].append(b)
-  adj[b].append(a)
+  adj = [[] for _ in range(n + 1)]
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
- def dfs(start):
-  dist = [-1] * (n + 1)
-  dist[start] = 0
-  stack = [start]
+  def dfs(start):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    stack = [start]
 
-  while stack:
-   u = stack.pop()
-   for v in adj[u]:
-    if dist[v] == -1:
-     dist[v] = dist[u] + 1
-     stack.append(v)
+    while stack:
+      u = stack.pop()
+      for v in adj[u]:
+        if dist[v] == -1:
+          dist[v] = dist[u] + 1
+          stack.append(v)
 
-  return dist
+    return dist
 
- # Find diameter endpoints among affected nodes
- dist1 = dfs(affected[0])
- u = max(affected, key=lambda x: dist1[x])
+  # Find diameter endpoints among affected nodes
+  dist1 = dfs(affected[0])
+  u = max(affected, key=lambda x: dist1[x])
 
- dist_u = dfs(u)
- v = max(affected, key=lambda x: dist_u[x])
+  dist_u = dfs(u)
+  v = max(affected, key=lambda x: dist_u[x])
 
- dist_v = dfs(v)
+  dist_v = dfs(v)
 
- # Count valid positions
- count = sum(1 for i in range(1, n + 1)
-    if max(dist_u[i], dist_v[i]) <= d)
+  # Count valid positions
+  count = sum(1 for i in range(1, n + 1)
+        if max(dist_u[i], dist_v[i]) <= d)
 
- print(count)
+  print(count)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -518,58 +518,58 @@ Otherwise output a single word "Impossible" (without quotes).
 from collections import deque, defaultdict
 
 def solve():
- n = int(input())
- names = [input().strip() for _ in range(n)]
+  n = int(input())
+  names = [input().strip() for _ in range(n)]
 
- # Build graph
- graph = defaultdict(set)
- in_degree = {chr(ord('a') + i): 0 for i in range(26)}
+  # Build graph
+  graph = defaultdict(set)
+  in_degree = {chr(ord('a') + i): 0 for i in range(26)}
 
- # Compare adjacent names
- for i in range(n - 1):
-  s1, s2 = names[i], names[i + 1]
-  min_len = min(len(s1), len(s2))
+  # Compare adjacent names
+  for i in range(n - 1):
+    s1, s2 = names[i], names[i + 1]
+    min_len = min(len(s1), len(s2))
 
-  found = False
-  for j in range(min_len):
-   if s1[j] != s2[j]:
-    # s1[j] must come before s2[j] in the alphabet
-    if s2[j] not in graph[s1[j]]:
-     graph[s1[j]].add(s2[j])
-     in_degree[s2[j]] += 1
-    found = True
-    break
+    found = False
+    for j in range(min_len):
+      if s1[j] != s2[j]:
+        # s1[j] must come before s2[j] in the alphabet
+        if s2[j] not in graph[s1[j]]:
+          graph[s1[j]].add(s2[j])
+          in_degree[s2[j]] += 1
+        found = True
+        break
 
-  # If s1 is a prefix of s2, that's fine
-  # But if s2 is a prefix of s1, it's impossible
-  if not found and len(s1) > len(s2):
-   print("Impossible")
-   return
+    # If s1 is a prefix of s2, that's fine
+    # But if s2 is a prefix of s1, it's impossible
+    if not found and len(s1) > len(s2):
+      print("Impossible")
+      return
 
- # Topological sort using Kahn's algorithm
- queue = deque()
- for char in in_degree:
-  if in_degree[char] == 0:
-   queue.append(char)
+  # Topological sort using Kahn's algorithm
+  queue = deque()
+  for char in in_degree:
+    if in_degree[char] == 0:
+      queue.append(char)
 
- result = []
- while queue:
-  char = queue.popleft()
-  result.append(char)
+  result = []
+  while queue:
+    char = queue.popleft()
+    result.append(char)
 
-  for neighbor in graph[char]:
-   in_degree[neighbor] -= 1
-   if in_degree[neighbor] == 0:
-    queue.append(neighbor)
+    for neighbor in graph[char]:
+      in_degree[neighbor] -= 1
+      if in_degree[neighbor] == 0:
+        queue.append(neighbor)
 
- # Check if all characters are included (no cycle)
- if len(result) != 26:
-  print("Impossible")
- else:
-  print(''.join(result))
+  # Check if all characters are included (no cycle)
+  if len(result) != 26:
+    print("Impossible")
+  else:
+    print(''.join(result))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -622,104 +622,104 @@ Output N integers. The A-th integer is 0 if student A is the main boss, otherwis
 from collections import defaultdict
 
 def solve():
- n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
- adj = defaultdict(list)
+  adj = defaultdict(list)
 
- for u in range(k):
-  line = list(map(int, input().split()))
-  w = line[0]
-  for i in range(1, w + 1):
-   v = line[i] - 1  # 0-indexed
-   adj[u].append(v)
+  for u in range(k):
+    line = list(map(int, input().split()))
+    w = line[0]
+    for i in range(1, w + 1):
+      v = line[i] - 1  # 0-indexed
+      adj[u].append(v)
 
- # DFS-based topological sort
- WHITE, GRAY, BLACK = 0, 1, 2
- color = [WHITE] * n
- topo_order = []
+  # DFS-based topological sort
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * n
+  topo_order = []
 
- def dfs(u):
-  color[u] = GRAY
-  for v in adj[u]:
-   if color[v] == WHITE:
-    dfs(v)
-  color[u] = BLACK
-  topo_order.append(u)
+  def dfs(u):
+    color[u] = GRAY
+    for v in adj[u]:
+      if color[v] == WHITE:
+        dfs(v)
+    color[u] = BLACK
+    topo_order.append(u)
 
- for i in range(n):
-  if color[i] == WHITE:
-   dfs(i)
+  for i in range(n):
+    if color[i] == WHITE:
+      dfs(i)
 
- topo_order.reverse()
+  topo_order.reverse()
 
- # Assign bosses
- boss = [0] * n
- boss[topo_order[0]] = 0  # Main boss
+  # Assign bosses
+  boss = [0] * n
+  boss[topo_order[0]] = 0  # Main boss
 
- for i in range(1, n):
-  boss[topo_order[i]] = topo_order[i - 1] + 1  # 1-indexed output
+  for i in range(1, n):
+    boss[topo_order[i]] = topo_order[i - 1] + 1  # 1-indexed output
 
- for i in range(n):
-  print(boss[i])
+  for i in range(n):
+    print(boss[i])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
- n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
- adj = [[] for _ in range(n)]
+  adj = [[] for _ in range(n)]
 
- for u in range(k):
-  line = list(map(int, input().split()))
-  w = line[0]
-  for i in range(1, w + 1):
-   v = line[i] - 1
-   adj[u].append(v)
+  for u in range(k):
+    line = list(map(int, input().split()))
+    w = line[0]
+    for i in range(1, w + 1):
+      v = line[i] - 1
+      adj[u].append(v)
 
- # Iterative DFS for topological sort
- visited = [False] * n
- topo_order = []
+  # Iterative DFS for topological sort
+  visited = [False] * n
+  topo_order = []
 
- for start in range(n):
-  if visited[start]:
-   continue
+  for start in range(n):
+    if visited[start]:
+      continue
 
-  stack = [(start, False)]
+    stack = [(start, False)]
 
-  while stack:
-   node, processed = stack.pop()
+    while stack:
+      node, processed = stack.pop()
 
-   if processed:
-    topo_order.append(node)
-    continue
+      if processed:
+        topo_order.append(node)
+        continue
 
-   if visited[node]:
-    continue
+      if visited[node]:
+        continue
 
-   visited[node] = True
-   stack.append((node, True))
+      visited[node] = True
+      stack.append((node, True))
 
-   for neighbor in adj[node]:
-    if not visited[neighbor]:
-     stack.append((neighbor, False))
+      for neighbor in adj[node]:
+        if not visited[neighbor]:
+          stack.append((neighbor, False))
 
- topo_order.reverse()
+  topo_order.reverse()
 
- # Assign bosses based on topological order
- boss = [0] * n
- for i in range(1, n):
-  boss[topo_order[i]] = topo_order[i - 1] + 1
+  # Assign bosses based on topological order
+  boss = [0] * n
+  for i in range(1, n):
+    boss[topo_order[i]] = topo_order[i - 1] + 1
 
- for b in boss:
-  print(b)
+  for b in boss:
+    print(b)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -765,43 +765,43 @@ Since total allowed cells ≤ 10^5, use BFS on the sparse graph. Store allowed c
 from collections import deque
 
 def solve():
- x0, y0, x1, y1 = map(int, input().split())
- n = int(input())
+  x0, y0, x1, y1 = map(int, input().split())
+  n = int(input())
 
- allowed = set()
- allowed.add((x0, y0))
- allowed.add((x1, y1))
+  allowed = set()
+  allowed.add((x0, y0))
+  allowed.add((x1, y1))
 
- for _ in range(n):
-  r, a, b = map(int, input().split())
-  for c in range(a, b + 1):
-   allowed.add((r, c))
+  for _ in range(n):
+    r, a, b = map(int, input().split())
+    for c in range(a, b + 1):
+      allowed.add((r, c))
 
- # BFS
- dx = [0, 0, 1, -1, 1, -1, 1, -1]
- dy = [1, -1, 0, 0, 1, -1, -1, 1]
+  # BFS
+  dx = [0, 0, 1, -1, 1, -1, 1, -1]
+  dy = [1, -1, 0, 0, 1, -1, -1, 1]
 
- dist = {(x0, y0): 0}
- queue = deque([(x0, y0)])
+  dist = {(x0, y0): 0}
+  queue = deque([(x0, y0)])
 
- while queue:
-  x, y = queue.popleft()
+  while queue:
+    x, y = queue.popleft()
 
-  if (x, y) == (x1, y1):
-   print(dist[(x, y)])
-   return
+    if (x, y) == (x1, y1):
+      print(dist[(x, y)])
+      return
 
-  for i in range(8):
-   nx, ny = x + dx[i], y + dy[i]
+    for i in range(8):
+      nx, ny = x + dx[i], y + dy[i]
 
-   if (nx, ny) in allowed and (nx, ny) not in dist:
-    dist[(nx, ny)] = dist[(x, y)] + 1
-    queue.append((nx, ny))
+      if (nx, ny) in allowed and (nx, ny) not in dist:
+        dist[(nx, ny)] = dist[(x, y)] + 1
+        queue.append((nx, ny))
 
- print(-1)
+  print(-1)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
@@ -810,44 +810,44 @@ if __name__ == "__main__":
 from collections import deque
 
 def solve():
- x0, y0, x1, y1 = map(int, input().split())
- n = int(input())
+  x0, y0, x1, y1 = map(int, input().split())
+  n = int(input())
 
- allowed = set()
+  allowed = set()
 
- for _ in range(n):
-  r, a, b = map(int, input().split())
-  for c in range(a, b + 1):
-   allowed.add((r, c))
+  for _ in range(n):
+    r, a, b = map(int, input().split())
+    for c in range(a, b + 1):
+      allowed.add((r, c))
 
- # King moves: 8 directions
- directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+  # King moves: 8 directions
+  directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
- if (x0, y0) not in allowed or (x1, y1) not in allowed:
+  if (x0, y0) not in allowed or (x1, y1) not in allowed:
+    print(-1)
+    return
+
+  visited = set()
+  queue = deque([(x0, y0, 0)])
+  visited.add((x0, y0))
+
+  while queue:
+    x, y, d = queue.popleft()
+
+    if x == x1 and y == y1:
+      print(d)
+      return
+
+    for dx, dy in directions:
+      nx, ny = x + dx, y + dy
+      if (nx, ny) in allowed and (nx, ny) not in visited:
+        visited.add((nx, ny))
+        queue.append((nx, ny, d + 1))
+
   print(-1)
-  return
-
- visited = set()
- queue = deque([(x0, y0, 0)])
- visited.add((x0, y0))
-
- while queue:
-  x, y, d = queue.popleft()
-
-  if x == x1 and y == y1:
-   print(d)
-   return
-
-  for dx, dy in directions:
-   nx, ny = x + dx, y + dy
-   if (nx, ny) in allowed and (nx, ny) not in visited:
-    visited.add((nx, ny))
-    queue.append((nx, ny, d + 1))
-
- print(-1)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -893,40 +893,40 @@ import heapq
 from collections import defaultdict
 
 def solve():
- n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
- adj = defaultdict(list)
- in_degree = [0] * (n + 1)
+  adj = defaultdict(list)
+  in_degree = [0] * (n + 1)
 
- for _ in range(m):
-  x, y = map(int, input().split())
-  adj[x].append(y)
-  in_degree[y] += 1
+  for _ in range(m):
+    x, y = map(int, input().split())
+    adj[x].append(y)
+    in_degree[y] += 1
 
- # Min-heap for lexicographically smallest order
- heap = []
- for i in range(1, n + 1):
-  if in_degree[i] == 0:
-   heapq.heappush(heap, i)
+  # Min-heap for lexicographically smallest order
+  heap = []
+  for i in range(1, n + 1):
+    if in_degree[i] == 0:
+      heapq.heappush(heap, i)
 
- result = []
+  result = []
 
- while heap:
-  u = heapq.heappop(heap)
-  result.append(u)
+  while heap:
+    u = heapq.heappop(heap)
+    result.append(u)
 
-  for v in adj[u]:
-   in_degree[v] -= 1
-   if in_degree[v] == 0:
-    heapq.heappush(heap, v)
+    for v in adj[u]:
+      in_degree[v] -= 1
+      if in_degree[v] == 0:
+        heapq.heappush(heap, v)
 
- if len(result) < n:
-  print("Sandro fails.")
- else:
-  print(' '.join(map(str, result)))
+  if len(result) < n:
+    print("Sandro fails.")
+  else:
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Alternative
@@ -937,53 +937,53 @@ from collections import defaultdict
 sys.setrecursionlimit(20000)
 
 def solve():
- n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
- adj = defaultdict(list)
+  adj = defaultdict(list)
 
- for _ in range(m):
-  x, y = map(int, input().split())
-  adj[x].append(y)
+  for _ in range(m):
+    x, y = map(int, input().split())
+    adj[x].append(y)
 
- # Sort adjacency lists in reverse for lexicographic order with DFS
- for u in adj:
-  adj[u].sort(reverse=True)
+  # Sort adjacency lists in reverse for lexicographic order with DFS
+  for u in adj:
+    adj[u].sort(reverse=True)
 
- WHITE, GRAY, BLACK = 0, 1, 2
- color = [WHITE] * (n + 1)
- result = []
- has_cycle = False
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * (n + 1)
+  result = []
+  has_cycle = False
 
- def dfs(u):
-  nonlocal has_cycle
-  if has_cycle:
-   return
+  def dfs(u):
+    nonlocal has_cycle
+    if has_cycle:
+      return
 
-  color[u] = GRAY
+    color[u] = GRAY
 
-  for v in adj[u]:
-   if color[v] == GRAY:
-    has_cycle = True
-    return
-   if color[v] == WHITE:
-    dfs(v)
+    for v in adj[u]:
+      if color[v] == GRAY:
+        has_cycle = True
+        return
+      if color[v] == WHITE:
+        dfs(v)
 
-  color[u] = BLACK
-  result.append(u)
+    color[u] = BLACK
+    result.append(u)
 
- # Process vertices in order for lexicographic result
- for i in range(n, 0, -1):
-  if color[i] == WHITE:
-   dfs(i)
+  # Process vertices in order for lexicographic result
+  for i in range(n, 0, -1):
+    if color[i] == WHITE:
+      dfs(i)
 
- if has_cycle or len(result) < n:
-  print("Sandro fails.")
- else:
-  result.reverse()
-  print(' '.join(map(str, result)))
+  if has_cycle or len(result) < n:
+    print("Sandro fails.")
+  else:
+    result.reverse()
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ##### Complexity Analysis

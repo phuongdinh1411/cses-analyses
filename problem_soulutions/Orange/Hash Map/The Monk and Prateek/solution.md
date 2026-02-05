@@ -45,45 +45,45 @@ Print two integers: the value with maximum occurrences (or max value if all uniq
 
 ```python
 def digit_sum(n):
- total = 0
- while n:
-  total += n % 10
-  n //= 10
- return total
+  total = 0
+  while n:
+    total += n % 10
+    n //= 10
+  return total
 
 def r3gz3n(n):
- return n ^ digit_sum(n)
+  return n ^ digit_sum(n)
 
 def solve():
- n = int(input())
- numbers = list(map(int, input().split()))
+  n = int(input())
+  numbers = list(map(int, input().split()))
 
- hash_count = {}
- collisions = 0
- max_hash = float('-inf')
+  hash_count = {}
+  collisions = 0
+  max_hash = float('-inf')
 
- for num in numbers:
-  h = r3gz3n(num)
-  max_hash = max(max_hash, h)
+  for num in numbers:
+    h = r3gz3n(num)
+    max_hash = max(max_hash, h)
 
-  if h in hash_count:
-   collisions += 1
-   hash_count[h] += 1
+    if h in hash_count:
+      collisions += 1
+      hash_count[h] += 1
+    else:
+      hash_count[h] = 1
+
+  # Find most frequent hash value
+  if collisions == 0:
+    # All unique - return max hash value
+    print(max_hash, 0)
   else:
-   hash_count[h] = 1
-
- # Find most frequent hash value
- if collisions == 0:
-  # All unique - return max hash value
-  print(max_hash, 0)
- else:
-  # Find value with maximum count (smallest if tie)
-  max_count = max(hash_count.values())
-  most_frequent = min(h for h, c in hash_count.items() if c == max_count)
-  print(most_frequent, collisions)
+    # Find value with maximum count (smallest if tie)
+    max_count = max(hash_count.values())
+    most_frequent = min(h for h, c in hash_count.items() if c == max_count)
+    print(most_frequent, collisions)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution
@@ -92,27 +92,27 @@ if __name__ == "__main__":
 from collections import Counter
 
 def solve():
- n = int(input())
- nums = list(map(int, input().split()))
+  n = int(input())
+  nums = list(map(int, input().split()))
 
- def hash_func(x):
-  return x ^ sum(int(d) for d in str(x))
+  def hash_func(x):
+    return x ^ sum(int(d) for d in str(x))
 
- hashes = [hash_func(x) for x in nums]
- count = Counter(hashes)
+  hashes = [hash_func(x) for x in nums]
+  count = Counter(hashes)
 
- collisions = len(hashes) - len(count)
+  collisions = len(hashes) - len(count)
 
- if collisions == 0:
-  result = max(hashes)
- else:
-  max_freq = max(count.values())
-  result = min(h for h, c in count.items() if c == max_freq)
+  if collisions == 0:
+    result = max(hashes)
+  else:
+    max_freq = max(count.values())
+    result = min(h for h, c in count.items() if c == max_freq)
 
- print(result, collisions)
+  print(result, collisions)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### One-liner Style
@@ -121,22 +121,22 @@ if __name__ == "__main__":
 from collections import Counter
 
 def solve():
- n = int(input())
- nums = list(map(int, input().split()))
+  n = int(input())
+  nums = list(map(int, input().split()))
 
- h = lambda x: x ^ sum(map(int, str(x)))
- hashes = [h(x) for x in nums]
- cnt = Counter(hashes)
- colls = len(hashes) - len(cnt)
+  h = lambda x: x ^ sum(map(int, str(x)))
+  hashes = [h(x) for x in nums]
+  cnt = Counter(hashes)
+  colls = len(hashes) - len(cnt)
 
- if colls == 0:
-  print(max(hashes), 0)
- else:
-  mx = max(cnt.values())
-  print(min(k for k, v in cnt.items() if v == mx), colls)
+  if colls == 0:
+    print(max(hashes), 0)
+  else:
+    mx = max(cnt.values())
+    print(min(k for k, v in cnt.items() if v == mx), colls)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

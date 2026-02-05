@@ -35,104 +35,104 @@ Output N integers. The A-th integer is 0 if student A is the main boss, otherwis
 from collections import defaultdict
 
 def solve():
- n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
- adj = defaultdict(list)
+  adj = defaultdict(list)
 
- for u in range(k):
-  line = list(map(int, input().split()))
-  w = line[0]
-  for i in range(1, w + 1):
-   v = line[i] - 1  # 0-indexed
-   adj[u].append(v)
+  for u in range(k):
+    line = list(map(int, input().split()))
+    w = line[0]
+    for i in range(1, w + 1):
+      v = line[i] - 1  # 0-indexed
+      adj[u].append(v)
 
- # DFS-based topological sort
- WHITE, GRAY, BLACK = 0, 1, 2
- color = [WHITE] * n
- topo_order = []
+  # DFS-based topological sort
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * n
+  topo_order = []
 
- def dfs(u):
-  color[u] = GRAY
-  for v in adj[u]:
-   if color[v] == WHITE:
-    dfs(v)
-  color[u] = BLACK
-  topo_order.append(u)
+  def dfs(u):
+    color[u] = GRAY
+    for v in adj[u]:
+      if color[v] == WHITE:
+        dfs(v)
+    color[u] = BLACK
+    topo_order.append(u)
 
- for i in range(n):
-  if color[i] == WHITE:
-   dfs(i)
+  for i in range(n):
+    if color[i] == WHITE:
+      dfs(i)
 
- topo_order.reverse()
+  topo_order.reverse()
 
- # Assign bosses
- boss = [0] * n
- boss[topo_order[0]] = 0  # Main boss
+  # Assign bosses
+  boss = [0] * n
+  boss[topo_order[0]] = 0  # Main boss
 
- for i in range(1, n):
-  boss[topo_order[i]] = topo_order[i - 1] + 1  # 1-indexed output
+  for i in range(1, n):
+    boss[topo_order[i]] = topo_order[i - 1] + 1  # 1-indexed output
 
- for i in range(n):
-  print(boss[i])
+  for i in range(n):
+    print(boss[i])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution with Iterative DFS
 
 ```python
 def solve():
- n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
- adj = [[] for _ in range(n)]
+  adj = [[] for _ in range(n)]
 
- for u in range(k):
-  line = list(map(int, input().split()))
-  w = line[0]
-  for i in range(1, w + 1):
-   v = line[i] - 1
-   adj[u].append(v)
+  for u in range(k):
+    line = list(map(int, input().split()))
+    w = line[0]
+    for i in range(1, w + 1):
+      v = line[i] - 1
+      adj[u].append(v)
 
- # Iterative DFS for topological sort
- visited = [False] * n
- topo_order = []
+  # Iterative DFS for topological sort
+  visited = [False] * n
+  topo_order = []
 
- for start in range(n):
-  if visited[start]:
-   continue
+  for start in range(n):
+    if visited[start]:
+      continue
 
-  stack = [(start, False)]
+    stack = [(start, False)]
 
-  while stack:
-   node, processed = stack.pop()
+    while stack:
+      node, processed = stack.pop()
 
-   if processed:
-    topo_order.append(node)
-    continue
+      if processed:
+        topo_order.append(node)
+        continue
 
-   if visited[node]:
-    continue
+      if visited[node]:
+        continue
 
-   visited[node] = True
-   stack.append((node, True))
+      visited[node] = True
+      stack.append((node, True))
 
-   for neighbor in adj[node]:
-    if not visited[neighbor]:
-     stack.append((neighbor, False))
+      for neighbor in adj[node]:
+        if not visited[neighbor]:
+          stack.append((neighbor, False))
 
- topo_order.reverse()
+  topo_order.reverse()
 
- # Assign bosses based on topological order
- boss = [0] * n
- for i in range(1, n):
-  boss[topo_order[i]] = topo_order[i - 1] + 1
+  # Assign bosses based on topological order
+  boss = [0] * n
+  for i in range(1, n):
+    boss[topo_order[i]] = topo_order[i - 1] + 1
 
- for b in boss:
-  print(b)
+  for b in boss:
+    print(b)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

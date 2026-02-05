@@ -33,96 +33,96 @@ To count all proper suffixes that are also prefixes:
 
 ```python
 def compute_prefix(s):
- """KMP prefix function"""
- n = len(s)
- pi = [0] * n
+  """KMP prefix function"""
+  n = len(s)
+  pi = [0] * n
 
- for i in range(1, n):
-  j = pi[i - 1]
-  while j > 0 and s[i] != s[j]:
-   j = pi[j - 1]
-  if s[i] == s[j]:
-   j += 1
-  pi[i] = j
+  for i in range(1, n):
+    j = pi[i - 1]
+    while j > 0 and s[i] != s[j]:
+      j = pi[j - 1]
+    if s[i] == s[j]:
+      j += 1
+    pi[i] = j
 
- return pi
+  return pi
 
 def count_suffix_prefix(s):
- """Count proper suffixes that are also prefixes"""
- n = len(s)
- if n == 0:
-  return 0
+  """Count proper suffixes that are also prefixes"""
+  n = len(s)
+  if n == 0:
+    return 0
 
- pi = compute_prefix(s)
+  pi = compute_prefix(s)
 
- # Follow the chain from pi[n-1]
- count = 0
- length = pi[n - 1]
+  # Follow the chain from pi[n-1]
+  count = 0
+  length = pi[n - 1]
 
- while length > 0:
-  count += 1
-  length = pi[length - 1]
+  while length > 0:
+    count += 1
+    length = pi[length - 1]
 
- return count
+  return count
 
 def solve():
- t = int(input())
+  t = int(input())
 
- for case in range(1, t + 1):
-  s = input().strip()
-  result = count_suffix_prefix(s)
-  print(f"Case {case}: {result}")
+  for case in range(1, t + 1):
+    s = input().strip()
+    result = count_suffix_prefix(s)
+    print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution using Z-function
 
 ```python
 def z_function(s):
- """Z-function: z[i] = length of longest substring starting from i that matches prefix"""
- n = len(s)
- z = [0] * n
- z[0] = n
- l, r = 0, 0
+  """Z-function: z[i] = length of longest substring starting from i that matches prefix"""
+  n = len(s)
+  z = [0] * n
+  z[0] = n
+  l, r = 0, 0
 
- for i in range(1, n):
-  if i < r:
-   z[i] = min(r - i, z[i - l])
-  while i + z[i] < n and s[z[i]] == s[i + z[i]]:
-   z[i] += 1
-  if i + z[i] > r:
-   l, r = i, i + z[i]
+  for i in range(1, n):
+    if i < r:
+      z[i] = min(r - i, z[i - l])
+    while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+      z[i] += 1
+    if i + z[i] > r:
+      l, r = i, i + z[i]
 
- return z
+  return z
 
 def count_suffix_prefix_z(s):
- """Count using Z-function"""
- n = len(s)
- if n == 0:
-  return 0
+  """Count using Z-function"""
+  n = len(s)
+  if n == 0:
+    return 0
 
- z = z_function(s)
+  z = z_function(s)
 
- # A suffix starting at position i is also a prefix if z[i] == n - i
- count = 0
- for i in range(1, n):
-  if z[i] == n - i:
-   count += 1
+  # A suffix starting at position i is also a prefix if z[i] == n - i
+  count = 0
+  for i in range(1, n):
+    if z[i] == n - i:
+      count += 1
 
- return count
+  return count
 
 def solve():
- t = int(input())
+  t = int(input())
 
- for case in range(1, t + 1):
-  s = input().strip()
-  result = count_suffix_prefix_z(s)
-  print(f"Case {case}: {result}")
+  for case in range(1, t + 1):
+    s = input().strip()
+    result = count_suffix_prefix_z(s)
+    print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

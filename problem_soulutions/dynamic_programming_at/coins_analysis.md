@@ -206,27 +206,27 @@ i=3:     [0.056,    0.332,    0.468,    0.144]
 
 ```python
 def solve():
- n = int(input())
- p = list(map(float, input().split()))
+  n = int(input())
+  p = list(map(float, input().split()))
 
- # dp[j] = probability of exactly j heads
- dp = [0.0] * (n + 1)
- dp[0] = 1.0
+  # dp[j] = probability of exactly j heads
+  dp = [0.0] * (n + 1)
+  dp[0] = 1.0
 
- for i in range(n):
-  # Process backwards to avoid overwriting values we need
-  for j in range(i + 1, -1, -1):
-   if j > 0:
-    dp[j] = p[i] * dp[j - 1] + (1 - p[i]) * dp[j]
-   else:
-    dp[j] = (1 - p[i]) * dp[j]
+  for i in range(n):
+    # Process backwards to avoid overwriting values we need
+    for j in range(i + 1, -1, -1):
+      if j > 0:
+        dp[j] = p[i] * dp[j - 1] + (1 - p[i]) * dp[j]
+      else:
+        dp[j] = (1 - p[i]) * dp[j]
 
- # Sum probabilities where heads > tails (heads > n/2)
- result = sum(dp[j] for j in range(n // 2 + 1, n + 1))
- print(f"{result:.10f}")
+  # Sum probabilities where heads > tails (heads > n/2)
+  result = sum(dp[j] for j in range(n // 2 + 1, n + 1))
+  print(f"{result:.10f}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -245,8 +245,8 @@ if __name__ == "__main__":
 ```python
 # WRONG: Forward loop overwrites values before they're used
 for j in range(i + 2):
- if j > 0:
-  dp[j] = p[i] * dp[j - 1] + (1 - p[i]) * dp[j]
+  if j > 0:
+    dp[j] = p[i] * dp[j - 1] + (1 - p[i]) * dp[j]
 ```
 
 **Problem:** When updating dp[j], we need dp[j-1] from the PREVIOUS iteration. Forward loop overwrites dp[j-1] before we use it.

@@ -109,24 +109,24 @@ For each query, scan through all salaries and count those in range.
 
 ```python
 def solve_brute_force():
- import sys
- input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
- n, q = map(int, input().split())
- salaries = list(map(int, input().split()))
+  n, q = map(int, input().split())
+  salaries = list(map(int, input().split()))
 
- results = []
- for _ in range(q):
-  query = input().split()
-  if query[0] == '?':
-   a, b = int(query[1]), int(query[2])
-   count = sum(1 for s in salaries if a <= s <= b)
-   results.append(count)
-  else:  # '!'
-   k, x = int(query[1]), int(query[2])
-   salaries[k - 1] = x  # 1-indexed to 0-indexed
+  results = []
+  for _ in range(q):
+    query = input().split()
+    if query[0] == '?':
+      a, b = int(query[1]), int(query[2])
+      count = sum(1 for s in salaries if a <= s <= b)
+      results.append(count)
+    else:  # '!'
+      k, x = int(query[1]), int(query[2])
+      salaries[k - 1] = x  # 1-indexed to 0-indexed
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 ```
 
 ### Complexity
@@ -254,86 +254,86 @@ import sys
 from bisect import bisect_left
 
 def main():
- input = sys.stdin.readline
+  input = sys.stdin.readline
 
- n, q = map(int, input().split())
- salaries = list(map(int, input().split()))
+  n, q = map(int, input().split())
+  salaries = list(map(int, input().split()))
 
- # Read all queries first
- queries = []
- for _ in range(q):
-  line = input().split()
-  if line[0] == '?':
-   queries.append(('?', int(line[1]), int(line[2])))
-  else:
-   queries.append(('!', int(line[1]), int(line[2])))
+  # Read all queries first
+  queries = []
+  for _ in range(q):
+    line = input().split()
+    if line[0] == '?':
+      queries.append(('?', int(line[1]), int(line[2])))
+    else:
+      queries.append(('!', int(line[1]), int(line[2])))
 
- # Collect all values for coordinate compression
- all_values = set(salaries)
- for query in queries:
-  if query[0] == '?':
-   all_values.add(query[1])
-   all_values.add(query[2])
-  else:
-   all_values.add(query[2])
+  # Collect all values for coordinate compression
+  all_values = set(salaries)
+  for query in queries:
+    if query[0] == '?':
+      all_values.add(query[1])
+      all_values.add(query[2])
+    else:
+      all_values.add(query[2])
 
- # Create sorted list for compression
- sorted_values = sorted(all_values)
+  # Create sorted list for compression
+  sorted_values = sorted(all_values)
 
- # Compress function: map value to 1-indexed position
- def compress(val):
-  return bisect_left(sorted_values, val) + 1
+  # Compress function: map value to 1-indexed position
+  def compress(val):
+    return bisect_left(sorted_values, val) + 1
 
- # BIT implementation
- size = len(sorted_values) + 2
- bit = [0] * size
+  # BIT implementation
+  size = len(sorted_values) + 2
+  bit = [0] * size
 
- def update(i, delta):
-  while i < size:
-   bit[i] += delta
-   i += i & (-i)
+  def update(i, delta):
+    while i < size:
+      bit[i] += delta
+      i += i & (-i)
 
- def query(i):
-  total = 0
-  while i > 0:
-   total += bit[i]
-   i -= i & (-i)
-  return total
+  def query(i):
+    total = 0
+    while i > 0:
+      total += bit[i]
+      i -= i & (-i)
+    return total
 
- def range_query(l, r):
-  if l > r:
-   return 0
-  return query(r) - query(l - 1)
+  def range_query(l, r):
+    if l > r:
+      return 0
+    return query(r) - query(l - 1)
 
- # Initialize BIT with initial salaries
- current_salaries = salaries[:]
- for sal in salaries:
-  update(compress(sal), 1)
+  # Initialize BIT with initial salaries
+  current_salaries = salaries[:]
+  for sal in salaries:
+    update(compress(sal), 1)
 
- # Process queries
- results = []
- for q_type, a, b in queries:
-  if q_type == '?':
-   # Count salaries in range [a, b]
-   l = compress(a)
-   r = compress(b)
-   results.append(range_query(l, r))
-  else:
-   # Update salary of employee a to b
-   k, new_sal = a, b
-   old_sal = current_salaries[k - 1]
+  # Process queries
+  results = []
+  for q_type, a, b in queries:
+    if q_type == '?':
+      # Count salaries in range [a, b]
+      l = compress(a)
+      r = compress(b)
+      results.append(range_query(l, r))
+    else:
+      # Update salary of employee a to b
+      k, new_sal = a, b
+      old_sal = current_salaries[k - 1]
 
-   # Update BIT: remove old, add new
-   update(compress(old_sal), -1)
-   update(compress(new_sal), 1)
+      # Update BIT: remove old, add new
+      update(compress(old_sal), -1)
+      update(compress(new_sal), 1)
 
-   # Update current salary
-   current_salaries[k - 1] = new_sal
+      # Update current salary
+      current_salaries[k - 1] = new_sal
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -352,9 +352,9 @@ if __name__ == "__main__":
 ```python
 # WRONG - compressing on-the-fly
 def compress(val, sorted_values):
- sorted_values.append(val)
- sorted_values.sort()  # Expensive and changes indices!
- return sorted_values.index(val) + 1
+  sorted_values.append(val)
+  sorted_values.sort()  # Expensive and changes indices!
+  return sorted_values.index(val) + 1
 ```
 
 **Problem:** Coordinate compression must be done upfront with all values known.
@@ -365,11 +365,11 @@ def compress(val, sorted_values):
 ```python
 # WRONG
 def range_query(l, r):
- return query(r) - query(l)  # Missing element at l!
+  return query(r) - query(l)  # Missing element at l!
 
 # CORRECT
 def range_query(l, r):
- return query(r) - query(l - 1)  # Includes element at l
+  return query(r) - query(l - 1)  # Includes element at l
 ```
 
 **Problem:** BIT prefix sum is inclusive, so [l, r] = prefix(r) - prefix(l-1).

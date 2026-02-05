@@ -198,42 +198,42 @@ import sys
 sys.setrecursionlimit(1000000)
 
 def solve():
- n = int(input())
- plates = list(map(int, input().split()))
+  n = int(input())
+  plates = list(map(int, input().split()))
 
- # Count plates with 1, 2, 3 pieces
- c1 = sum(1 for a in plates if a == 1)
- c2 = sum(1 for a in plates if a == 2)
- c3 = sum(1 for a in plates if a == 3)
+  # Count plates with 1, 2, 3 pieces
+  c1 = sum(1 for a in plates if a == 1)
+  c2 = sum(1 for a in plates if a == 2)
+  c3 = sum(1 for a in plates if a == 3)
 
- memo = {}
+  memo = {}
 
- def dp(i, j, k):
-  """Expected operations with i 1-plates, j 2-plates, k 3-plates."""
-  if i == 0 and j == 0 and k == 0:
-   return 0.0
+  def dp(i, j, k):
+    """Expected operations with i 1-plates, j 2-plates, k 3-plates."""
+    if i == 0 and j == 0 and k == 0:
+      return 0.0
 
-  if (i, j, k) in memo:
-   return memo[(i, j, k)]
+    if (i, j, k) in memo:
+      return memo[(i, j, k)]
 
-  total = i + j + k
-  result = n  # Numerator starts with N
+    total = i + j + k
+    result = n  # Numerator starts with N
 
-  if i > 0:
-   result += i * dp(i - 1, j, k)
-  if j > 0:
-   result += j * dp(i + 1, j - 1, k)
-  if k > 0:
-   result += k * dp(i, j + 1, k - 1)
+    if i > 0:
+      result += i * dp(i - 1, j, k)
+    if j > 0:
+      result += j * dp(i + 1, j - 1, k)
+    if k > 0:
+      result += k * dp(i, j + 1, k - 1)
 
-  result /= total
-  memo[(i, j, k)] = result
-  return result
+    result /= total
+    memo[(i, j, k)] = result
+    return result
 
- print(f"{dp(c1, c2, c3):.15f}")
+  print(f"{dp(c1, c2, c3):.15f}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -252,11 +252,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - Infinite recursion
 def dp(i, j, k):
- result = 1
- result += (n - i - j - k) / n * dp(i, j, k)  # Self-reference!
- result += i / n * dp(i - 1, j, k)
- # ...
- return result
+  result = 1
+  result += (n - i - j - k) / n * dp(i, j, k)  # Self-reference!
+  result += i / n * dp(i - 1, j, k)
+  # ...
+  return result
 ```
 
 **Problem:** The recurrence references dp[i][j][k] on the right side, causing infinite recursion.
@@ -277,7 +277,7 @@ result /= (i + j + k)
 ```python
 # WRONG - Forgetting that 2->1 increases 1-count
 if j > 0:
- result += j * dp(i, j - 1, k)  # Should be dp(i + 1, j - 1, k)
+  result += j * dp(i, j - 1, k)  # Should be dp(i + 1, j - 1, k)
 ```
 
 **Problem:** When a 2-sushi plate loses one sushi, it becomes a 1-sushi plate, so i should increase.

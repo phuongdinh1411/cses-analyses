@@ -105,35 +105,35 @@ Try all possible sequences of transformations recursively until we reach the tar
 
 ```python
 def solve_brute_force(s: str, t: str, rules: list) -> int:
- """
- Brute force DFS solution.
+  """
+  Brute force DFS solution.
 
- Time: O(n! * m) where n = number of rules, m = string length
- Space: O(n) recursion depth
- """
- def dfs(current: str, depth: int, visited: set) -> int:
-  if current == t:
-   return depth
-  if depth > len(s) * 2 or current in visited:
-   return float('inf')
+  Time: O(n! * m) where n = number of rules, m = string length
+  Space: O(n) recursion depth
+  """
+  def dfs(current: str, depth: int, visited: set) -> int:
+    if current == t:
+      return depth
+    if depth > len(s) * 2 or current in visited:
+      return float('inf')
 
-  visited.add(current)
-  min_steps = float('inf')
+    visited.add(current)
+    min_steps = float('inf')
 
-  for pattern, replacement in rules:
-   pos = 0
-   while True:
-    pos = current.find(pattern, pos)
-    if pos == -1:
-     break
-    new_str = current[:pos] + replacement + current[pos + len(pattern):]
-    min_steps = min(min_steps, dfs(new_str, depth + 1, visited.copy()))
-    pos += 1
+    for pattern, replacement in rules:
+      pos = 0
+      while True:
+        pos = current.find(pattern, pos)
+        if pos == -1:
+          break
+        new_str = current[:pos] + replacement + current[pos + len(pattern):]
+        min_steps = min(min_steps, dfs(new_str, depth + 1, visited.copy()))
+        pos += 1
 
-  return min_steps
+    return min_steps
 
- result = dfs(s, 0, set())
- return result if result != float('inf') else -1
+  result = dfs(s, 0, set())
+  return result if result != float('inf') else -1
 ```
 
 ### Complexity
@@ -220,56 +220,56 @@ Level 2: dec, def, ...  <-- Found at level 2!
 from collections import deque
 
 def solve_bfs(s: str, t: str, rules: list) -> int:
- """
- Optimal BFS solution - finds shortest transformation path.
+  """
+  Optimal BFS solution - finds shortest transformation path.
 
- Time: O(S * R * L) where S = unique states, R = rules, L = string length
- Space: O(S) for visited set and queue
- """
- if s == t:
-  return 0
+  Time: O(S * R * L) where S = unique states, R = rules, L = string length
+  Space: O(S) for visited set and queue
+  """
+  if s == t:
+    return 0
 
- queue = deque([(s, 0)])
- visited = {s}
+  queue = deque([(s, 0)])
+  visited = {s}
 
- while queue:
-  current, dist = queue.popleft()
+  while queue:
+    current, dist = queue.popleft()
 
-  for pattern, replacement in rules:
-   pos = 0
-   while True:
-    pos = current.find(pattern, pos)
-    if pos == -1:
-     break
+    for pattern, replacement in rules:
+      pos = 0
+      while True:
+        pos = current.find(pattern, pos)
+        if pos == -1:
+          break
 
-    new_str = current[:pos] + replacement + current[pos + len(pattern):]
+        new_str = current[:pos] + replacement + current[pos + len(pattern):]
 
-    if new_str == t:
-     return dist + 1
+        if new_str == t:
+          return dist + 1
 
-    if new_str not in visited:
-     visited.add(new_str)
-     queue.append((new_str, dist + 1))
+        if new_str not in visited:
+          visited.add(new_str)
+          queue.append((new_str, dist + 1))
 
-    pos += 1
+        pos += 1
 
- return -1
+  return -1
 
 
 # Main function for competitive programming
 def main():
- s = input().strip()
- t = input().strip()
- n = int(input().strip())
- rules = []
- for _ in range(n):
-  parts = input().strip().split()
-  rules.append((parts[0], parts[1]))
+  s = input().strip()
+  t = input().strip()
+  n = int(input().strip())
+  rules = []
+  for _ in range(n):
+    parts = input().strip().split()
+    rules.append((parts[0], parts[1]))
 
- print(solve_bfs(s, t, rules))
+  print(solve_bfs(s, t, rules))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -289,7 +289,7 @@ if __name__ == "__main__":
 # WRONG - only finds first occurrence
 pos = current.find(pattern)
 if pos != -1:
- new_str = current[:pos] + replacement + current[pos + len(pattern):]
+  new_str = current[:pos] + replacement + current[pos + len(pattern):]
 ```
 
 **Problem:** A pattern may appear multiple times; each creates a different transformation.
@@ -300,8 +300,8 @@ if pos != -1:
 ```python
 # WRONG - missing base case
 def solve(s, t, rules):
- queue = deque([(s, 0)])
- # ... proceeds to BFS even if s == t
+  queue = deque([(s, 0)])
+  # ... proceeds to BFS even if s == t
 ```
 
 **Problem:** Wastes computation and may return wrong answer.
@@ -313,7 +313,7 @@ def solve(s, t, rules):
 # WRONG - adds to queue then checks
 queue.append((new_str, dist + 1))
 if new_str not in visited:  # Too late!
- visited.add(new_str)
+  visited.add(new_str)
 ```
 
 **Problem:** Same string gets added to queue multiple times, causing TLE.

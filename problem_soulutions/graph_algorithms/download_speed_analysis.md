@@ -230,88 +230,88 @@ Verification:
 from collections import deque
 
 def max_flow(n, edges):
- """
- Find maximum flow from node 1 to node n.
- Uses Edmonds-Karp algorithm (Ford-Fulkerson with BFS).
- """
- # Build adjacency list and capacity matrix
- # Using dict for capacity to handle parallel edges
- adj = [[] for _ in range(n + 1)]
- capacity = {}
+  """
+  Find maximum flow from node 1 to node n.
+  Uses Edmonds-Karp algorithm (Ford-Fulkerson with BFS).
+  """
+  # Build adjacency list and capacity matrix
+  # Using dict for capacity to handle parallel edges
+  adj = [[] for _ in range(n + 1)]
+  capacity = {}
 
- for u, v, c in edges:
-  # Add forward edge
-  if (u, v) not in capacity:
-   adj[u].append(v)
-   adj[v].append(u)  # Reverse edge for residual graph
-   capacity[(u, v)] = 0
-   capacity[(v, u)] = 0
-  capacity[(u, v)] += c  # Handle multiple edges between same nodes
+  for u, v, c in edges:
+    # Add forward edge
+    if (u, v) not in capacity:
+      adj[u].append(v)
+      adj[v].append(u)  # Reverse edge for residual graph
+      capacity[(u, v)] = 0
+      capacity[(v, u)] = 0
+    capacity[(u, v)] += c  # Handle multiple edges between same nodes
 
- def bfs():
-  """Find augmenting path using BFS. Returns (path, bottleneck)."""
-  parent = [-1] * (n + 1)
-  visited = [False] * (n + 1)
-  visited[1] = True
-  queue = deque([1])
+  def bfs():
+    """Find augmenting path using BFS. Returns (path, bottleneck)."""
+    parent = [-1] * (n + 1)
+    visited = [False] * (n + 1)
+    visited[1] = True
+    queue = deque([1])
 
-  while queue:
-   node = queue.popleft()
-   if node == n:
-    break
+    while queue:
+      node = queue.popleft()
+      if node == n:
+        break
 
-   for neighbor in adj[node]:
-    if not visited[neighbor] and capacity[(node, neighbor)] > 0:
-     visited[neighbor] = True
-     parent[neighbor] = node
-     queue.append(neighbor)
+      for neighbor in adj[node]:
+        if not visited[neighbor] and capacity[(node, neighbor)] > 0:
+          visited[neighbor] = True
+          parent[neighbor] = node
+          queue.append(neighbor)
 
-  # No path found
-  if parent[n] == -1:
-   return None, 0
+    # No path found
+    if parent[n] == -1:
+      return None, 0
 
-  # Reconstruct path and find bottleneck
-  path = []
-  bottleneck = float('inf')
-  current = n
+    # Reconstruct path and find bottleneck
+    path = []
+    bottleneck = float('inf')
+    current = n
 
-  while current != 1:
-   prev = parent[current]
-   path.append((prev, current))
-   bottleneck = min(bottleneck, capacity[(prev, current)])
-   current = prev
+    while current != 1:
+      prev = parent[current]
+      path.append((prev, current))
+      bottleneck = min(bottleneck, capacity[(prev, current)])
+      current = prev
 
-  return path, bottleneck
+    return path, bottleneck
 
- total_flow = 0
+  total_flow = 0
 
- while True:
-  path, bottleneck = bfs()
-  if path is None:
-   break
+  while True:
+    path, bottleneck = bfs()
+    if path is None:
+      break
 
-  # Update residual capacities
-  for u, v in path:
-   capacity[(u, v)] -= bottleneck
-   capacity[(v, u)] += bottleneck
+    # Update residual capacities
+    for u, v in path:
+      capacity[(u, v)] -= bottleneck
+      capacity[(v, u)] += bottleneck
 
-  total_flow += bottleneck
+    total_flow += bottleneck
 
- return total_flow
+  return total_flow
 
 
 def solve():
- n, m = map(int, input().split())
- edges = []
- for _ in range(m):
-  a, b, c = map(int, input().split())
-  edges.append((a, b, c))
+  n, m = map(int, input().split())
+  edges = []
+  for _ in range(m):
+    a, b, c = map(int, input().split())
+    edges.append((a, b, c))
 
- print(max_flow(n, edges))
+  print(max_flow(n, edges))
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Common Mistakes

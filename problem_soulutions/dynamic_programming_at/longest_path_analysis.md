@@ -174,54 +174,54 @@ from typing import List, Tuple
 sys.setrecursionlimit(200005)
 
 def solve(n: int, edges: List[Tuple[int, int]]) -> int:
- """
- Find longest path in DAG using DFS with memoization.
+  """
+  Find longest path in DAG using DFS with memoization.
 
- Time: O(V + E) - each vertex and edge visited once
- Space: O(V + E) - adjacency list and recursion stack
- """
- # Build adjacency list
- graph = [[] for _ in range(n + 1)]
- for u, v in edges:
-  graph[u].append(v)
+  Time: O(V + E) - each vertex and edge visited once
+  Space: O(V + E) - adjacency list and recursion stack
+  """
+  # Build adjacency list
+  graph = [[] for _ in range(n + 1)]
+  for u, v in edges:
+    graph[u].append(v)
 
- # dp[v] = longest path starting from v, -1 means unvisited
- dp = [-1] * (n + 1)
+  # dp[v] = longest path starting from v, -1 means unvisited
+  dp = [-1] * (n + 1)
 
- def dfs(v: int) -> int:
-  if dp[v] != -1:
-   return dp[v]
+  def dfs(v: int) -> int:
+    if dp[v] != -1:
+      return dp[v]
 
-  # Base case: sink vertex
-  if not graph[v]:
-   dp[v] = 0
-   return 0
+    # Base case: sink vertex
+    if not graph[v]:
+      dp[v] = 0
+      return 0
 
-  # Recurrence: try all neighbors
-  dp[v] = max(1 + dfs(u) for u in graph[v])
-  return dp[v]
+    # Recurrence: try all neighbors
+    dp[v] = max(1 + dfs(u) for u in graph[v])
+    return dp[v]
 
- # Compute for all vertices, return maximum
- return max(dfs(v) for v in range(1, n + 1))
+  # Compute for all vertices, return maximum
+  return max(dfs(v) for v in range(1, n + 1))
 
 
 def main():
- input_data = sys.stdin.read().split()
- idx = 0
- n, m = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- edges = []
- for _ in range(m):
-  u, v = int(input_data[idx]), int(input_data[idx + 1])
-  edges.append((u, v))
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
- print(solve(n, edges))
+  edges = []
+  for _ in range(m):
+    u, v = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((u, v))
+    idx += 2
+
+  print(solve(n, edges))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -252,38 +252,38 @@ from collections import deque
 from typing import List, Tuple
 
 def solve_topological(n: int, edges: List[Tuple[int, int]]) -> int:
- """
- Find longest path using topological sort + DP.
+  """
+  Find longest path using topological sort + DP.
 
- Time: O(V + E)
- Space: O(V + E)
- """
- graph = [[] for _ in range(n + 1)]
- in_degree = [0] * (n + 1)
+  Time: O(V + E)
+  Space: O(V + E)
+  """
+  graph = [[] for _ in range(n + 1)]
+  in_degree = [0] * (n + 1)
 
- for u, v in edges:
-  graph[u].append(v)
-  in_degree[v] += 1
+  for u, v in edges:
+    graph[u].append(v)
+    in_degree[v] += 1
 
- # Kahn's algorithm for topological sort
- queue = deque(v for v in range(1, n + 1) if in_degree[v] == 0)
- topo_order = []
+  # Kahn's algorithm for topological sort
+  queue = deque(v for v in range(1, n + 1) if in_degree[v] == 0)
+  topo_order = []
 
- while queue:
-  v = queue.popleft()
-  topo_order.append(v)
-  for u in graph[v]:
-   in_degree[u] -= 1
-   if in_degree[u] == 0:
-    queue.append(u)
+  while queue:
+    v = queue.popleft()
+    topo_order.append(v)
+    for u in graph[v]:
+      in_degree[u] -= 1
+      if in_degree[u] == 0:
+        queue.append(u)
 
- # DP in reverse topological order
- dp = [0] * (n + 1)
- for v in reversed(topo_order):
-  for u in graph[v]:
-   dp[v] = max(dp[v], 1 + dp[u])
+  # DP in reverse topological order
+  dp = [0] * (n + 1)
+  for v in reversed(topo_order):
+    for u in graph[v]:
+      dp[v] = max(dp[v], 1 + dp[u])
 
- return max(dp)
+  return max(dp)
 ```
 
 ### Complexity
@@ -302,16 +302,16 @@ def solve_topological(n: int, edges: List[Tuple[int, int]]) -> int:
 ```python
 # WRONG - infinite recursion for sink vertices
 def dfs(v):
- dp[v] = max(1 + dfs(u) for u in graph[v])  # crashes if graph[v] is empty
- return dp[v]
+  dp[v] = max(1 + dfs(u) for u in graph[v])  # crashes if graph[v] is empty
+  return dp[v]
 
 # CORRECT
 def dfs(v):
- if not graph[v]:
-  dp[v] = 0
-  return 0
- dp[v] = max(1 + dfs(u) for u in graph[v])
- return dp[v]
+  if not graph[v]:
+    dp[v] = 0
+    return 0
+  dp[v] = max(1 + dfs(u) for u in graph[v])
+  return dp[v]
 ```
 
 **Problem:** Empty max() raises ValueError in Python; undefined behavior in C++.
@@ -322,13 +322,13 @@ def dfs(v):
 ```python
 # WRONG - neighbors not computed yet
 for v in topo_order:
- for u in graph[v]:
-  dp[v] = max(dp[v], 1 + dp[u])  # dp[u] is still 0!
+  for u in graph[v]:
+    dp[v] = max(dp[v], 1 + dp[u])  # dp[u] is still 0!
 
 # CORRECT - reverse order so neighbors are computed first
 for v in reversed(topo_order):
- for u in graph[v]:
-  dp[v] = max(dp[v], 1 + dp[u])
+  for u in graph[v]:
+    dp[v] = max(dp[v], 1 + dp[u])
 ```
 
 **Problem:** In forward order, dp[u] for neighbors hasn't been computed.
@@ -339,7 +339,7 @@ for v in reversed(topo_order):
 ```python
 # WRONG - default recursion limit is ~1000
 def dfs(v):
- # ... may hit RecursionError for large graphs
+  # ... may hit RecursionError for large graphs
 
 # CORRECT - increase limit before running
 import sys

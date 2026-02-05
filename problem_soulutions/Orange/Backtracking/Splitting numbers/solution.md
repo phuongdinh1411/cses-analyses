@@ -38,87 +38,87 @@ For each test case, output a single line containing a(n) and b(n) separated by a
 
 ```python
 def solve():
- while True:
-  n = int(input())
-  if n == 0:
-   break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-  # Find all bit positions that are 1
-  one_positions = []
-  temp = n
-  pos = 0
-  while temp:
-   if temp & 1:
-    one_positions.append(pos)
-   temp >>= 1
-   pos += 1
+    # Find all bit positions that are 1
+    one_positions = []
+    temp = n
+    pos = 0
+    while temp:
+      if temp & 1:
+        one_positions.append(pos)
+      temp >>= 1
+      pos += 1
 
-  # Split into a and b
-  a = 0
-  b = 0
+    # Split into a and b
+    a = 0
+    b = 0
 
-  for i, bit_pos in enumerate(one_positions):
-   if i % 2 == 0:  # 1st, 3rd, 5th, ... (0-indexed: 0, 2, 4, ...)
-    a |= (1 << bit_pos)
-   else:           # 2nd, 4th, 6th, ... (0-indexed: 1, 3, 5, ...)
-    b |= (1 << bit_pos)
+    for i, bit_pos in enumerate(one_positions):
+      if i % 2 == 0:  # 1st, 3rd, 5th, ... (0-indexed: 0, 2, 4, ...)
+        a |= (1 << bit_pos)
+      else:           # 2nd, 4th, 6th, ... (0-indexed: 1, 3, 5, ...)
+        b |= (1 << bit_pos)
 
-  print(a, b)
+    print(a, b)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution (More Concise)
 
 ```python
 def split_number(n):
- a, b = 0, 0
- count = 0  # Count of 1-bits encountered
- bit_pos = 0
+  a, b = 0, 0
+  count = 0  # Count of 1-bits encountered
+  bit_pos = 0
 
- while n:
-  if n & 1:  # Current bit is 1
-   if count % 2 == 0:
-    a |= (1 << bit_pos)
-   else:
-    b |= (1 << bit_pos)
-   count += 1
-  n >>= 1
-  bit_pos += 1
+  while n:
+    if n & 1:  # Current bit is 1
+      if count % 2 == 0:
+        a |= (1 << bit_pos)
+      else:
+        b |= (1 << bit_pos)
+      count += 1
+    n >>= 1
+    bit_pos += 1
 
- return a, b
+  return a, b
 
 def solve():
- while True:
-  n = int(input())
-  if n == 0:
-   break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-  a, b = split_number(n)
-  print(a, b)
+    a, b = split_number(n)
+    print(a, b)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### One-liner Style Solution
 
 ```python
 def solve():
- while True:
-  n = int(input())
-  if n == 0:
-   break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-  bits = [(i, 1 << i) for i in range(32) if n & (1 << i)]
-  a = sum(val for i, (_, val) in enumerate(bits) if i % 2 == 0)
-  b = sum(val for i, (_, val) in enumerate(bits) if i % 2 == 1)
+    bits = [(i, 1 << i) for i in range(32) if n & (1 << i)]
+    a = sum(val for i, (_, val) in enumerate(bits) if i % 2 == 0)
+    b = sum(val for i, (_, val) in enumerate(bits) if i % 2 == 1)
 
-  print(a, b)
+    print(a, b)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

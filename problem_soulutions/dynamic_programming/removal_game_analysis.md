@@ -195,45 +195,45 @@ Player1's score = (13 + 3) / 2 = 8
 
 ```python
 def removal_game(n: int, arr: list) -> int:
- """
- Find maximum score for first player in removal game.
+  """
+  Find maximum score for first player in removal game.
 
- Args:
-  n: Length of array
-  arr: List of integers
+  Args:
+    n: Length of array
+    arr: List of integers
 
- Returns:
-  Maximum score achievable by first player
- """
- # dp[i][j] = max(current player's score - opponent's score) for arr[i..j]
- dp = [[0] * n for _ in range(n)]
+  Returns:
+    Maximum score achievable by first player
+  """
+  # dp[i][j] = max(current player's score - opponent's score) for arr[i..j]
+  dp = [[0] * n for _ in range(n)]
 
- # Base case: single elements
- for i in range(n):
-  dp[i][i] = arr[i]
+  # Base case: single elements
+  for i in range(n):
+    dp[i][i] = arr[i]
 
- # Fill by increasing length
- for length in range(2, n + 1):
-  for i in range(n - length + 1):
-   j = i + length - 1
-   take_left = arr[i] - dp[i + 1][j]
-   take_right = arr[j] - dp[i][j - 1]
-   dp[i][j] = max(take_left, take_right)
+  # Fill by increasing length
+  for length in range(2, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      take_left = arr[i] - dp[i + 1][j]
+      take_right = arr[j] - dp[i][j - 1]
+      dp[i][j] = max(take_left, take_right)
 
- # Calculate first player's actual score
- total_sum = sum(arr)
- diff = dp[0][n - 1]
- return (total_sum + diff) // 2
+  # Calculate first player's actual score
+  total_sum = sum(arr)
+  diff = dp[0][n - 1]
+  return (total_sum + diff) // 2
 
 
 def main():
- n = int(input())
- arr = list(map(int, input().split()))
- print(removal_game(n, arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(removal_game(n, arr))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ## Common Mistakes

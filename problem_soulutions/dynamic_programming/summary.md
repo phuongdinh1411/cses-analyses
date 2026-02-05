@@ -137,89 +137,89 @@ Welcome to the Dynamic Programming section! This category covers techniques for 
 ```python
 # Naive recursive approach - O(2^n)
 def fibonacci_naive(n):
- if n <= 1:
-  return n
- return fibonacci_naive(n-1) + fibonacci_naive(n-2)
+  if n <= 1:
+    return n
+  return fibonacci_naive(n-1) + fibonacci_naive(n-2)
 
 # Memoized approach - O(n)
 def fibonacci_memo(n, memo={}):
- if n in memo:
+  if n in memo:
+    return memo[n]
+  if n <= 1:
+    return n
+  memo[n] = fibonacci_memo(n-1, memo) + fibonacci_memo(n-2, memo)
   return memo[n]
- if n <= 1:
-  return n
- memo[n] = fibonacci_memo(n-1, memo) + fibonacci_memo(n-2, memo)
- return memo[n]
 
 # Bottom-up approach - O(n) time, O(1) space
 def fibonacci_dp(n):
- if n <= 1:
-  return n
- a, b = 0, 1
- for i in range(2, n + 1):
-  a, b = b, a + b
- return b
+  if n <= 1:
+    return n
+  a, b = 0, 1
+  for i in range(2, n + 1):
+    a, b = b, a + b
+  return b
 ```
 
 #### 2. Longest Common Subsequence (LCS)
 ```python
 def lcs(text1, text2):
- m, n = len(text1), len(text2)
- dp = [[0] * (n + 1) for _ in range(m + 1)]
- 
- for i in range(1, m + 1):
-  for j in range(1, n + 1):
-   if text1[i-1] == text2[j-1]:
-    dp[i][j] = dp[i-1][j-1] + 1
-   else:
-    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
- 
- return dp[m][n]
+  m, n = len(text1), len(text2)
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
+  
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if text1[i-1] == text2[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  
+  return dp[m][n]
 
 # Space-optimized version
 def lcs_optimized(text1, text2):
- if len(text1) < len(text2):
-  text1, text2 = text2, text1
- 
- prev = [0] * (len(text2) + 1)
- curr = [0] * (len(text2) + 1)
- 
- for i in range(1, len(text1) + 1):
-  for j in range(1, len(text2) + 1):
-   if text1[i-1] == text2[j-1]:
-    curr[j] = prev[j-1] + 1
-   else:
-    curr[j] = max(prev[j], curr[j-1])
-  prev, curr = curr, prev
- 
- return prev[len(text2)]
+  if len(text1) < len(text2):
+    text1, text2 = text2, text1
+  
+  prev = [0] * (len(text2) + 1)
+  curr = [0] * (len(text2) + 1)
+  
+  for i in range(1, len(text1) + 1):
+    for j in range(1, len(text2) + 1):
+      if text1[i-1] == text2[j-1]:
+        curr[j] = prev[j-1] + 1
+      else:
+        curr[j] = max(prev[j], curr[j-1])
+    prev, curr = curr, prev
+  
+  return prev[len(text2)]
 ```
 
 #### 3. Knapsack Problem
 ```python
 # 0/1 Knapsack - O(nW) time, O(nW) space
 def knapsack_01(weights, values, capacity):
- n = len(weights)
- dp = [[0] * (capacity + 1) for _ in range(n + 1)]
- 
- for i in range(1, n + 1):
-  for w in range(capacity + 1):
-   if weights[i-1] <= w:
-    dp[i][w] = max(dp[i-1][w], 
-       dp[i-1][w-weights[i-1]] + values[i-1])
-   else:
-    dp[i][w] = dp[i-1][w]
- 
- return dp[n][capacity]
+  n = len(weights)
+  dp = [[0] * (capacity + 1) for _ in range(n + 1)]
+  
+  for i in range(1, n + 1):
+    for w in range(capacity + 1):
+      if weights[i-1] <= w:
+        dp[i][w] = max(dp[i-1][w], 
+              dp[i-1][w-weights[i-1]] + values[i-1])
+      else:
+        dp[i][w] = dp[i-1][w]
+  
+  return dp[n][capacity]
 
 # Space-optimized version - O(nW) time, O(W) space
 def knapsack_01_optimized(weights, values, capacity):
- dp = [0] * (capacity + 1)
- 
- for i in range(len(weights)):
-  for w in range(capacity, weights[i] - 1, -1):
-   dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
- 
- return dp[capacity]
+  dp = [0] * (capacity + 1)
+  
+  for i in range(len(weights)):
+    for w in range(capacity, weights[i] - 1, -1):
+      dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
+  
+  return dp[capacity]
 ```
 
 ### Advanced DP Patterns
@@ -227,75 +227,75 @@ def knapsack_01_optimized(weights, values, capacity):
 #### 1. Digit DP
 ```python
 def count_numbers_with_digit_sum(n, target_sum):
- def digit_dp(pos, tight, sum_so_far, memo):
-  if pos == len(n):
-   return 1 if sum_so_far == target_sum else 0
+  def digit_dp(pos, tight, sum_so_far, memo):
+    if pos == len(n):
+      return 1 if sum_so_far == target_sum else 0
+    
+    if (pos, tight, sum_so_far) in memo:
+      return memo[(pos, tight, sum_so_far)]
+    
+    limit = int(n[pos]) if tight else 9
+    result = 0
+    
+    for digit in range(limit + 1):
+      new_tight = tight and (digit == limit)
+      new_sum = sum_so_far + digit
+      result += digit_dp(pos + 1, new_tight, new_sum, memo)
+    
+    memo[(pos, tight, sum_so_far)] = result
+    return result
   
-  if (pos, tight, sum_so_far) in memo:
-   return memo[(pos, tight, sum_so_far)]
-  
-  limit = int(n[pos]) if tight else 9
-  result = 0
-  
-  for digit in range(limit + 1):
-   new_tight = tight and (digit == limit)
-   new_sum = sum_so_far + digit
-   result += digit_dp(pos + 1, new_tight, new_sum, memo)
-  
-  memo[(pos, tight, sum_so_far)] = result
-  return result
- 
- return digit_dp(0, True, 0, {})
+  return digit_dp(0, True, 0, {})
 ```
 
 #### 2. Tree DP
 ```python
 def tree_diameter(tree):
- def dfs(node, parent):
-  max_depth1 = max_depth2 = 0
-  diameter = 0
-  
-  for child in tree[node]:
-   if child != parent:
-    child_depth, child_diameter = dfs(child, node)
-    diameter = max(diameter, child_diameter)
+  def dfs(node, parent):
+    max_depth1 = max_depth2 = 0
+    diameter = 0
     
-    if child_depth > max_depth1:
-     max_depth2 = max_depth1
-     max_depth1 = child_depth
-    elif child_depth > max_depth2:
-     max_depth2 = child_depth
+    for child in tree[node]:
+      if child != parent:
+        child_depth, child_diameter = dfs(child, node)
+        diameter = max(diameter, child_diameter)
+        
+        if child_depth > max_depth1:
+          max_depth2 = max_depth1
+          max_depth1 = child_depth
+        elif child_depth > max_depth2:
+          max_depth2 = child_depth
+    
+    diameter = max(diameter, max_depth1 + max_depth2)
+    return max_depth1 + 1, diameter
   
-  diameter = max(diameter, max_depth1 + max_depth2)
-  return max_depth1 + 1, diameter
- 
- return dfs(0, -1)[1]
+  return dfs(0, -1)[1]
 ```
 
 #### 3. Bitmask DP (TSP)
 ```python
 def tsp_bitmask(distances):
- n = len(distances)
- dp = [[float('inf')] * (1 << n) for _ in range(n)]
- dp[0][1] = 0  # Start at city 0
- 
- for mask in range(1 << n):
-  for u in range(n):
-   if not (mask & (1 << u)):
-    continue
-   for v in range(n):
-    if mask & (1 << v):
-     continue
-    new_mask = mask | (1 << v)
-    dp[v][new_mask] = min(dp[v][new_mask], 
-         dp[u][mask] + distances[u][v])
- 
- # Return to starting city
- result = float('inf')
- for u in range(1, n):
-  result = min(result, dp[u][(1 << n) - 1] + distances[u][0])
- 
- return result
+  n = len(distances)
+  dp = [[float('inf')] * (1 << n) for _ in range(n)]
+  dp[0][1] = 0  # Start at city 0
+  
+  for mask in range(1 << n):
+    for u in range(n):
+      if not (mask & (1 << u)):
+        continue
+      for v in range(n):
+        if mask & (1 << v):
+          continue
+        new_mask = mask | (1 << v)
+        dp[v][new_mask] = min(dp[v][new_mask], 
+                  dp[u][mask] + distances[u][v])
+  
+  # Return to starting city
+  result = float('inf')
+  for u in range(1, n):
+    result = min(result, dp[u][(1 << n) - 1] + distances[u][0])
+  
+  return result
 ```
 
 ### Practical Implementation Tips
@@ -348,62 +348,62 @@ def tsp_bitmask(distances):
 ```python
 # For DP with form: dp[i] = min(dp[j] + a[i] * b[j] + c[j])
 class ConvexHullTrick:
- def __init__(self):
-  self.lines = []
- 
- def add_line(self, m, b):
-  while len(self.lines) >= 2:
-   x1, y1 = self.lines[-2]
-   x2, y2 = self.lines[-1]
-   x3, y3 = m, b
-   
-   if (y2 - y1) * (x3 - x2) >= (y3 - y2) * (x2 - x1):
-    self.lines.pop()
-   else:
-    break
+  def __init__(self):
+    self.lines = []
   
-  self.lines.append((m, b))
- 
- def query(self, x):
-  while len(self.lines) >= 2:
-   if self.lines[0][0] * x + self.lines[0][1] <= \
-   self.lines[1][0] * x + self.lines[1][1]:
-    self.lines.pop(0)
-   else:
-    break
+  def add_line(self, m, b):
+    while len(self.lines) >= 2:
+      x1, y1 = self.lines[-2]
+      x2, y2 = self.lines[-1]
+      x3, y3 = m, b
+      
+      if (y2 - y1) * (x3 - x2) >= (y3 - y2) * (x2 - x1):
+        self.lines.pop()
+      else:
+        break
+    
+    self.lines.append((m, b))
   
-  return self.lines[0][0] * x + self.lines[0][1]
+  def query(self, x):
+    while len(self.lines) >= 2:
+      if self.lines[0][0] * x + self.lines[0][1] <= \
+      self.lines[1][0] * x + self.lines[1][1]:
+        self.lines.pop(0)
+      else:
+        break
+    
+    return self.lines[0][0] * x + self.lines[0][1]
 ```
 
 #### 2. Divide and Conquer Optimization
 ```python
 # For DP with form: dp[i][j] = min(dp[i-1][k] + cost(k, j))
 def divide_conquer_dp(n, m, cost_func):
- dp = [[float('inf')] * m for _ in range(n)]
- 
- # Base case
- for j in range(m):
-  dp[0][j] = cost_func(0, j)
- 
- def solve(l, r, opt_l, opt_r, i):
-  if l > r:
-   return
+  dp = [[float('inf')] * m for _ in range(n)]
   
-  mid = (l + r) // 2
-  best_k = opt_l
+  # Base case
+  for j in range(m):
+    dp[0][j] = cost_func(0, j)
   
-  for k in range(opt_l, min(mid, opt_r) + 1):
-   if dp[i-1][k] + cost_func(k, mid) < dp[i][mid]:
-    dp[i][mid] = dp[i-1][k] + cost_func(k, mid)
-    best_k = k
+  def solve(l, r, opt_l, opt_r, i):
+    if l > r:
+      return
+    
+    mid = (l + r) // 2
+    best_k = opt_l
+    
+    for k in range(opt_l, min(mid, opt_r) + 1):
+      if dp[i-1][k] + cost_func(k, mid) < dp[i][mid]:
+        dp[i][mid] = dp[i-1][k] + cost_func(k, mid)
+        best_k = k
+    
+    solve(l, mid - 1, opt_l, best_k, i)
+    solve(mid + 1, r, best_k, opt_r, i)
   
-  solve(l, mid - 1, opt_l, best_k, i)
-  solve(mid + 1, r, best_k, opt_r, i)
- 
- for i in range(1, n):
-  solve(0, m - 1, 0, m - 1, i)
- 
- return dp[n-1][m-1]
+  for i in range(1, n):
+    solve(0, m - 1, 0, m - 1, i)
+  
+  return dp[n-1][m-1]
 ```
 
 ### Debugging and Testing DP Solutions

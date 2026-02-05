@@ -150,45 +150,45 @@ from collections import defaultdict
 sys.setrecursionlimit(200005)
 
 def solve():
- n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
- adj = defaultdict(list)
- for _ in range(m):
-  a, b = map(int, input().split())
-  adj[a].append(b)
-  adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(m):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
- visited = [False] * (n + 1)
- parent = [-1] * (n + 1)
- cycle = []
+  visited = [False] * (n + 1)
+  parent = [-1] * (n + 1)
+  cycle = []
 
- def dfs(u):
-  visited[u] = True
-  for v in adj[u]:
-   if not visited[v]:
-    parent[v] = u
-    if dfs(v):
-     return True
-   elif v != parent[u]:
-    # Found cycle! Extract it
-    cycle.append(v)
-    curr = u
-    while curr != v:
-     cycle.append(curr)
-     curr = parent[curr]
-    cycle.append(v)
-    return True
-  return False
+  def dfs(u):
+    visited[u] = True
+    for v in adj[u]:
+      if not visited[v]:
+        parent[v] = u
+        if dfs(v):
+          return True
+      elif v != parent[u]:
+        # Found cycle! Extract it
+        cycle.append(v)
+        curr = u
+        while curr != v:
+          cycle.append(curr)
+          curr = parent[curr]
+        cycle.append(v)
+        return True
+    return False
 
- # Try DFS from each unvisited node (handles disconnected graphs)
- for start in range(1, n + 1):
-  if not visited[start]:
-   if dfs(start):
-    print(len(cycle))
-    print(*cycle)
-    return
+  # Try DFS from each unvisited node (handles disconnected graphs)
+  for start in range(1, n + 1):
+    if not visited[start]:
+      if dfs(start):
+        print(len(cycle))
+        print(*cycle)
+        return
 
- print("IMPOSSIBLE")
+  print("IMPOSSIBLE")
 
 solve()
 ```
@@ -199,9 +199,9 @@ The graph may have multiple connected components. A cycle can exist in any compo
 
 ```python
 for start in range(1, n + 1):
- if not visited[start]:
-  if dfs(start):  # Found cycle in this component
-   return
+  if not visited[start]:
+    if dfs(start):  # Found cycle in this component
+      return
 ```
 
 If no component contains a cycle, we output "IMPOSSIBLE".

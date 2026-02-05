@@ -37,57 +37,57 @@ Transitions:
 
 ```python
 def solve():
- n = int(input())
- k = int(input())
+  n = int(input())
+  k = int(input())
 
- # dp[i][0] = valid i-digit numbers ending with 0
- # dp[i][1] = valid i-digit numbers ending with non-zero
+  # dp[i][0] = valid i-digit numbers ending with 0
+  # dp[i][1] = valid i-digit numbers ending with non-zero
 
- # First digit cannot be 0 (would make it not N digits)
- # dp[1][0] = 0 (first digit can't be 0)
- # dp[1][1] = k-1 (digits 1 to k-1)
+  # First digit cannot be 0 (would make it not N digits)
+  # dp[1][0] = 0 (first digit can't be 0)
+  # dp[1][1] = k-1 (digits 1 to k-1)
 
- dp = [[0, 0] for _ in range(n + 1)]
- dp[1][0] = 0  # First digit cannot be 0
- dp[1][1] = k - 1  # First digit can be 1 to k-1
+  dp = [[0, 0] for _ in range(n + 1)]
+  dp[1][0] = 0  # First digit cannot be 0
+  dp[1][1] = k - 1  # First digit can be 1 to k-1
 
- for i in range(2, n + 1):
-  # Ending with 0: previous must end with non-zero
-  dp[i][0] = dp[i-1][1]
+  for i in range(2, n + 1):
+    # Ending with 0: previous must end with non-zero
+    dp[i][0] = dp[i-1][1]
 
-  # Ending with non-zero: previous can be anything
-  # (k-1) choices for the current non-zero digit
-  dp[i][1] = (dp[i-1][0] + dp[i-1][1]) * (k - 1)
+    # Ending with non-zero: previous can be anything
+    # (k-1) choices for the current non-zero digit
+    dp[i][1] = (dp[i-1][0] + dp[i-1][1]) * (k - 1)
 
- # Total valid N-digit numbers
- print(dp[n][0] + dp[n][1])
+  # Total valid N-digit numbers
+  print(dp[n][0] + dp[n][1])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Space Optimized Solution
 
 ```python
 def solve():
- n = int(input())
- k = int(input())
+  n = int(input())
+  k = int(input())
 
- # Only need previous state
- end_zero = 0      # Numbers ending with 0
- end_nonzero = k - 1  # Numbers ending with non-zero (first digit: 1 to k-1)
+  # Only need previous state
+  end_zero = 0      # Numbers ending with 0
+  end_nonzero = k - 1  # Numbers ending with non-zero (first digit: 1 to k-1)
 
- for i in range(2, n + 1):
-  new_end_zero = end_nonzero
-  new_end_nonzero = (end_zero + end_nonzero) * (k - 1)
+  for i in range(2, n + 1):
+    new_end_zero = end_nonzero
+    new_end_nonzero = (end_zero + end_nonzero) * (k - 1)
 
-  end_zero = new_end_zero
-  end_nonzero = new_end_nonzero
+    end_zero = new_end_zero
+    end_nonzero = new_end_nonzero
 
- print(end_zero + end_nonzero)
+  print(end_zero + end_nonzero)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

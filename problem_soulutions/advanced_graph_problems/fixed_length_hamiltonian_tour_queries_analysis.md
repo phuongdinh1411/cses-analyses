@@ -103,31 +103,31 @@ Try all possible paths from vertex 1, backtracking when we revisit a vertex.
 
 ```python
 def count_hamiltonian_paths_brute(n, adj):
- """
- Brute force DFS solution.
+  """
+  Brute force DFS solution.
 
- Time: O(n! * n) - all permutations
- Space: O(n) - recursion stack
- """
- MOD = 10**9 + 7
- count = 0
+  Time: O(n! * n) - all permutations
+  Space: O(n) - recursion stack
+  """
+  MOD = 10**9 + 7
+  count = 0
 
- def dfs(curr, visited):
-  nonlocal count
-  if len(visited) == n:
-   if curr == n - 1:  # 0-indexed, so n-1 is city n
-    count = (count + 1) % MOD
-   return
+  def dfs(curr, visited):
+    nonlocal count
+    if len(visited) == n:
+      if curr == n - 1:  # 0-indexed, so n-1 is city n
+        count = (count + 1) % MOD
+      return
 
-  for neighbor in adj[curr]:
-   if neighbor not in visited:
-    visited.add(neighbor)
-    dfs(neighbor, visited)
-    visited.remove(neighbor)
+    for neighbor in adj[curr]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        dfs(neighbor, visited)
+        visited.remove(neighbor)
 
- visited = {0}  # Start from vertex 0 (city 1)
- dfs(0, visited)
- return count
+  visited = {0}  # Start from vertex 0 (city 1)
+  dfs(0, visited)
+  return count
 ```
 
 ### Complexity
@@ -229,63 +229,63 @@ Answer = dp[1111][3] (all visited, at vertex 3/city 4)
 **Python:**
 ```python
 def count_hamiltonian_paths(n, edges):
- """
- Optimal Bitmask DP solution.
+  """
+  Optimal Bitmask DP solution.
 
- Time: O(2^n * n^2)
- Space: O(2^n * n)
- """
- MOD = 10**9 + 7
+  Time: O(2^n * n^2)
+  Space: O(2^n * n)
+  """
+  MOD = 10**9 + 7
 
- # Build adjacency list
- adj = [[] for _ in range(n)]
- for a, b in edges:
-  adj[a - 1].append(b - 1)  # Convert to 0-indexed
+  # Build adjacency list
+  adj = [[] for _ in range(n)]
+  for a, b in edges:
+    adj[a - 1].append(b - 1)  # Convert to 0-indexed
 
- # dp[mask][i] = count of paths with visited set 'mask' ending at vertex i
- dp = [[0] * n for _ in range(1 << n)]
+  # dp[mask][i] = count of paths with visited set 'mask' ending at vertex i
+  dp = [[0] * n for _ in range(1 << n)]
 
- # Base case: start at vertex 0 with only vertex 0 visited
- dp[1][0] = 1
+  # Base case: start at vertex 0 with only vertex 0 visited
+  dp[1][0] = 1
 
- # Process all masks in increasing order
- for mask in range(1 << n):
-  for i in range(n):
-   if dp[mask][i] == 0:
-    continue
-   if not (mask & (1 << i)):  # Vertex i must be in mask
-    continue
+  # Process all masks in increasing order
+  for mask in range(1 << n):
+    for i in range(n):
+      if dp[mask][i] == 0:
+        continue
+      if not (mask & (1 << i)):  # Vertex i must be in mask
+        continue
 
-   # Try extending to each neighbor
-   for j in adj[i]:
-    if not (mask & (1 << j)):  # j must not be visited
-     new_mask = mask | (1 << j)
-     dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD
+      # Try extending to each neighbor
+      for j in adj[i]:
+        if not (mask & (1 << j)):  # j must not be visited
+          new_mask = mask | (1 << j)
+          dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD
 
- # Answer: all vertices visited, ending at vertex n-1
- full_mask = (1 << n) - 1
- return dp[full_mask][n - 1]
+  # Answer: all vertices visited, ending at vertex n-1
+  full_mask = (1 << n) - 1
+  return dp[full_mask][n - 1]
 
 
 # Read input and solve
 def main():
- import sys
- input_data = sys.stdin.read().split()
- idx = 0
- n, m = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- edges = []
- for _ in range(m):
-  a, b = int(input_data[idx]), int(input_data[idx + 1])
-  edges.append((a, b))
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
- print(count_hamiltonian_paths(n, edges))
+  edges = []
+  for _ in range(m):
+    a, b = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((a, b))
+    idx += 2
+
+  print(count_hamiltonian_paths(n, edges))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -330,13 +330,13 @@ dp[1][0] = 1  # mask = 0001 means vertex 0 is visited
 ```python
 # WRONG - processing dp[mask][i] even if i not in mask
 for i in range(n):
- if dp[mask][i] > 0:
-  # process...
+  if dp[mask][i] > 0:
+    # process...
 
 # CORRECT - must verify i is in the visited set
 for i in range(n):
- if dp[mask][i] > 0 and (mask & (1 << i)):
-  # process...
+  if dp[mask][i] > 0 and (mask & (1 << i)):
+    # process...
 ```
 
 ### Mistake 4: Modular Arithmetic Overflow

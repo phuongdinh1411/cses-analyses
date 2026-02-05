@@ -53,27 +53,27 @@ If this count is odd, the element contributes to the final XOR. If even, it canc
 
 ```python
 def solve():
- t = int(input())
+  t = int(input())
 
- for _ in range(t):
-  n = int(input())
-  arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-  result = 0
+    result = 0
 
-  for i in range(n):
-   # Number of subarrays containing arr[i]
-   # (i+1) choices for left endpoint, (n-i) choices for right endpoint
-   count = (i + 1) * (n - i)
+    for i in range(n):
+      # Number of subarrays containing arr[i]
+      # (i+1) choices for left endpoint, (n-i) choices for right endpoint
+      count = (i + 1) * (n - i)
 
-   # Only XOR if count is odd
-   if count % 2 == 1:
-    result ^= arr[i]
+      # Only XOR if count is odd
+      if count % 2 == 1:
+        result ^= arr[i]
 
-  print(result)
+    print(result)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Optimized Observation
@@ -84,26 +84,26 @@ For arrays with odd length, elements at even indices (0, 2, 4, ...) appear an od
 
 ```python
 def solve_optimized():
- t = int(input())
+  t = int(input())
 
- for _ in range(t):
-  n = int(input())
-  arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-  # If n is even, result is always 0
-  if n % 2 == 0:
-   print(0)
-   continue
+    # If n is even, result is always 0
+    if n % 2 == 0:
+      print(0)
+      continue
 
-  # If n is odd, XOR elements at even indices
-  result = 0
-  for i in range(0, n, 2):
-   result ^= arr[i]
+    # If n is odd, XOR elements at even indices
+    result = 0
+    for i in range(0, n, 2):
+      result ^= arr[i]
 
-  print(result)
+    print(result)
 
 if __name__ == "__main__":
- solve_optimized()
+  solve_optimized()
 ```
 
 ### Complexity Analysis

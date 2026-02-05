@@ -279,53 +279,53 @@ misunderstanding the problem. Let me provide the standard algorithm:
 
 ```python
 def solve():
- n = int(input())
- t = list(map(int, input().split()))
+  n = int(input())
+  t = list(map(int, input().split()))
 
- # Convert to 0-indexed
- t = [x - 1 for x in t]
+  # Convert to 0-indexed
+  t = [x - 1 for x in t]
 
- answer = [0] * n
- visited = [False] * n
+  answer = [0] * n
+  visited = [False] * n
 
- for start in range(n):
-  if visited[start]:
-   continue
+  for start in range(n):
+    if visited[start]:
+      continue
 
-  # Traverse and record path
-  path = []
-  pos = {}  # node -> position in path
-  node = start
+    # Traverse and record path
+    path = []
+    pos = {}  # node -> position in path
+    node = start
 
-  while node not in pos and not visited[node]:
-   pos[node] = len(path)
-   path.append(node)
-   node = t[node]
+    while node not in pos and not visited[node]:
+      pos[node] = len(path)
+      path.append(node)
+      node = t[node]
 
-  if visited[node]:
-   # Hit a node with known answer
-   # Compute answers for nodes in path (backwards)
-   dist = answer[node] + 1
-   for i in range(len(path) - 1, -1, -1):
-    answer[path[i]] = dist
-    dist += 1
-    visited[path[i]] = True
-  else:
-   # Found a cycle: node is in current path
-   cycle_start = pos[node]
-   cycle_len = len(path) - cycle_start
+    if visited[node]:
+      # Hit a node with known answer
+      # Compute answers for nodes in path (backwards)
+      dist = answer[node] + 1
+      for i in range(len(path) - 1, -1, -1):
+        answer[path[i]] = dist
+        dist += 1
+        visited[path[i]] = True
+    else:
+      # Found a cycle: node is in current path
+      cycle_start = pos[node]
+      cycle_len = len(path) - cycle_start
 
-   # Nodes in cycle get cycle_len
-   for i in range(cycle_start, len(path)):
-    answer[path[i]] = cycle_len
-    visited[path[i]] = True
+      # Nodes in cycle get cycle_len
+      for i in range(cycle_start, len(path)):
+        answer[path[i]] = cycle_len
+        visited[path[i]] = True
 
-   # Tail nodes get distance_to_cycle + cycle_len
-   for i in range(cycle_start - 1, -1, -1):
-    answer[path[i]] = answer[path[i + 1]] + 1
-    visited[path[i]] = True
+      # Tail nodes get distance_to_cycle + cycle_len
+      for i in range(cycle_start - 1, -1, -1):
+        answer[path[i]] = answer[path[i + 1]] + 1
+        visited[path[i]] = True
 
- print(' '.join(map(str, answer)))
+  print(' '.join(map(str, answer)))
 
 solve()
 ```
@@ -336,23 +336,23 @@ Floyd's algorithm can find cycle length using O(1) extra space:
 
 ```python
 def floyd_cycle_length(start, next_node):
- """Find cycle length using Floyd's tortoise and hare."""
- # Phase 1: Find meeting point
- slow = fast = start
- while True:
-  slow = next_node[slow]
-  fast = next_node[next_node[fast]]
-  if slow == fast:
-   break
+  """Find cycle length using Floyd's tortoise and hare."""
+  # Phase 1: Find meeting point
+  slow = fast = start
+  while True:
+    slow = next_node[slow]
+    fast = next_node[next_node[fast]]
+    if slow == fast:
+      break
 
- # Phase 2: Find cycle length
- cycle_len = 1
- fast = next_node[slow]
- while fast != slow:
-  fast = next_node[fast]
-  cycle_len += 1
+  # Phase 2: Find cycle length
+  cycle_len = 1
+  fast = next_node[slow]
+  while fast != slow:
+    fast = next_node[fast]
+    cycle_len += 1
 
- return cycle_len
+  return cycle_len
 ```
 
 ## Visual: Rho-Shaped Graph Structure

@@ -111,47 +111,47 @@ For each node, remove it and check if all resulting components have size <= n/2.
 
 ```python
 def brute_force_centroid(n, edges):
- """
- Brute force: try removing each node and check component sizes.
+  """
+  Brute force: try removing each node and check component sizes.
 
- Time: O(n^2)
- Space: O(n)
- """
- from collections import defaultdict
+  Time: O(n^2)
+  Space: O(n)
+  """
+  from collections import defaultdict
 
- graph = defaultdict(list)
- for u, v in edges:
-  graph[u].append(v)
-  graph[v].append(u)
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
- def get_component_sizes(removed):
-  visited = set([removed])
-  sizes = []
+  def get_component_sizes(removed):
+    visited = set([removed])
+    sizes = []
 
-  for start in range(1, n + 1):
-   if start not in visited:
-    # BFS/DFS to find component size
-    size = 0
-    stack = [start]
-    while stack:
-     node = stack.pop()
-     if node in visited:
-      continue
-     visited.add(node)
-     size += 1
-     for neighbor in graph[node]:
-      if neighbor not in visited:
-       stack.append(neighbor)
-    sizes.append(size)
+    for start in range(1, n + 1):
+      if start not in visited:
+        # BFS/DFS to find component size
+        size = 0
+        stack = [start]
+        while stack:
+          node = stack.pop()
+          if node in visited:
+            continue
+          visited.add(node)
+          size += 1
+          for neighbor in graph[node]:
+            if neighbor not in visited:
+              stack.append(neighbor)
+        sizes.append(size)
 
-  return sizes
+    return sizes
 
- for node in range(1, n + 1):
-  sizes = get_component_sizes(node)
-  if all(s <= n // 2 for s in sizes):
-   return node
+  for node in range(1, n + 1):
+    sizes = get_component_sizes(node)
+    if all(s <= n // 2 for s in sizes):
+      return node
 
- return -1
+  return -1
 ```
 
 ### Complexity
@@ -268,64 +268,64 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def find_centroid(n, edges):
- """
- Find tree centroid using single DFS.
+  """
+  Find tree centroid using single DFS.
 
- Time: O(n) - one DFS pass
- Space: O(n) - adjacency list and subtree sizes
- """
- if n == 1:
-  return 1
+  Time: O(n) - one DFS pass
+  Space: O(n) - adjacency list and subtree sizes
+  """
+  if n == 1:
+    return 1
 
- # Build adjacency list
- graph = defaultdict(list)
- for u, v in edges:
-  graph[u].append(v)
-  graph[v].append(u)
+  # Build adjacency list
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
- subtree_size = [0] * (n + 1)
+  subtree_size = [0] * (n + 1)
 
- # DFS to compute subtree sizes
- def dfs(node, parent):
-  subtree_size[node] = 1
-  for child in graph[node]:
-   if child != parent:
-    dfs(child, node)
-    subtree_size[node] += subtree_size[child]
+  # DFS to compute subtree sizes
+  def dfs(node, parent):
+    subtree_size[node] = 1
+    for child in graph[node]:
+      if child != parent:
+        dfs(child, node)
+        subtree_size[node] += subtree_size[child]
 
- dfs(1, -1)
+  dfs(1, -1)
 
- # Find centroid
- def find(node, parent):
-  for child in graph[node]:
-   if child != parent:
-    # Check child subtree
-    if subtree_size[child] > n // 2:
-     return find(child, node)
-  # Check parent subtree
-  if n - subtree_size[node] > n // 2:
-   return find(parent, node)
-  return node
+  # Find centroid
+  def find(node, parent):
+    for child in graph[node]:
+      if child != parent:
+        # Check child subtree
+        if subtree_size[child] > n // 2:
+          return find(child, node)
+    # Check parent subtree
+    if n - subtree_size[node] > n // 2:
+      return find(parent, node)
+    return node
 
- return find(1, -1)
+  return find(1, -1)
 
 
 # Main input handling
 def main():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
 
- edges = []
- for _ in range(n - 1):
-  u = int(input_data[idx]); idx += 1
-  v = int(input_data[idx]); idx += 1
-  edges.append((u, v))
+  edges = []
+  for _ in range(n - 1):
+    u = int(input_data[idx]); idx += 1
+    v = int(input_data[idx]); idx += 1
+    edges.append((u, v))
 
- print(find_centroid(n, edges))
+  print(find_centroid(n, edges))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -344,10 +344,10 @@ if __name__ == "__main__":
 ```python
 # WRONG - Only checking child subtrees
 def is_centroid(node):
- for child in graph[node]:
-  if subtree_size[child] > n // 2:
-   return False
- return True  # Missing parent subtree check!
+  for child in graph[node]:
+    if subtree_size[child] > n // 2:
+      return False
+  return True  # Missing parent subtree check!
 ```
 
 **Problem:** When we root the tree, the "parent direction" also forms a component.

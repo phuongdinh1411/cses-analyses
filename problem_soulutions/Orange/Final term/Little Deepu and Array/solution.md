@@ -41,30 +41,30 @@ Key insight: If element A[i] > X, it gets decremented. So we count how many X va
 
 ```python
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
- m = int(input())
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
 
- hits = []
- for _ in range(m):
-  hits.append(int(input()))
+  hits = []
+  for _ in range(m):
+    hits.append(int(input()))
 
- # Sort hit thresholds
- hits.sort()
+  # Sort hit thresholds
+  hits.sort()
 
- # For each element, find how many hits affect it
- result = []
- for a in arr:
-  # Count how many X values are < a (element will be decremented for each)
-  # Binary search for position where hits[i] >= a
-  import bisect
-  count = bisect.bisect_left(hits, a)
-  result.append(a - count)
+  # For each element, find how many hits affect it
+  result = []
+  for a in arr:
+    # Count how many X values are < a (element will be decremented for each)
+    # Binary search for position where hits[i] >= a
+    import bisect
+    count = bisect.bisect_left(hits, a)
+    result.append(a - count)
 
- print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Optimized Solution with Preprocessing
@@ -73,26 +73,26 @@ if __name__ == "__main__":
 from bisect import bisect_left
 
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
- m = int(input())
- hits = [int(input()) for _ in range(m)]
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
+  hits = [int(input()) for _ in range(m)]
 
- # Sort hits for binary search
- hits.sort()
+  # Sort hits for binary search
+  hits.sort()
 
- # For each element, count hits where X < element
- # (element decreases by 1 for each such X)
- result = []
- for a in arr:
-  # Number of X values strictly less than a
-  decrements = bisect_left(hits, a)
-  result.append(a - decrements)
+  # For each element, count hits where X < element
+  # (element decreases by 1 for each such X)
+  result = []
+  for a in arr:
+    # Number of X values strictly less than a
+    decrements = bisect_left(hits, a)
+    result.append(a - decrements)
 
- print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution (Handling Duplicates)
@@ -101,23 +101,23 @@ if __name__ == "__main__":
 from bisect import bisect_left
 
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
- m = int(input())
- hits = sorted(int(input()) for _ in range(m))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
+  hits = sorted(int(input()) for _ in range(m))
 
- # Each HIT(X) decrements elements > X
- # So element A becomes A - (count of X where X < A)
- output = []
- for val in arr:
-  # How many hit values are strictly less than val
-  dec = bisect_left(hits, val)
-  output.append(str(val - dec))
+  # Each HIT(X) decrements elements > X
+  # So element A becomes A - (count of X where X < A)
+  output = []
+  for val in arr:
+    # How many hit values are strictly less than val
+    dec = bisect_left(hits, val)
+    output.append(str(val - dec))
 
- print(' '.join(output))
+  print(' '.join(output))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

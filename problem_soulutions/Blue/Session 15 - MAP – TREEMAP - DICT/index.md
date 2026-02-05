@@ -42,35 +42,35 @@ import math
 
 
 class Location:
- def __init__(self, r, k):
-  self.r = r
-  self.k = k
+  def __init__(self, r, k):
+    self.r = r
+    self.k = k
 
- def __lt__(self, other):
-  return self.r < other.r
+  def __lt__(self, other):
+    return self.r < other.r
 
 
 def solution():
- n, s = map(int, input().split())
- locations = []
- for i in range(n):
-  x, y, k = map(int, input().split())
-  locations.append(Location(math.sqrt(x*x + y*y), k))
+  n, s = map(int, input().split())
+  locations = []
+  for i in range(n):
+    x, y, k = map(int, input().split())
+    locations.append(Location(math.sqrt(x*x + y*y), k))
 
- locations.sort()
+  locations.sort()
 
- min_r = 0
- for i in range(n):
+  min_r = 0
+  for i in range(n):
+    if s >= 1000000:
+      print(round(min_r, 7))
+      return
+    s += locations[i].k
+    min_r = locations[i].r
+
   if s >= 1000000:
-   print(round(min_r, 7))
-   return
-  s += locations[i].k
-  min_r = locations[i].r
-
- if s >= 1000000:
-  print(round(min_r, 7))
- else:
-  print(-1)
+    print(round(min_r, 7))
+  else:
+    print(-1)
 
 
 solution()
@@ -110,24 +110,24 @@ Use a dictionary (hash map) to store frequency of each number seen so far. For e
 
 ```python
 def solution():
- n = int(input())
- a = list(map(int, input().split()))
+  n = int(input())
+  a = list(map(int, input().split()))
 
- pow2 = [2 ** i for i in range(61)]
+  pow2 = [2 ** i for i in range(61)]
 
- total = 0
- dic = {}
- for i in range(n):
-  for j in range(60):
-   if pow2[j] - a[i] in dic:
-    total += dic[pow2[j] - a[i]]
+  total = 0
+  dic = {}
+  for i in range(n):
+    for j in range(60):
+      if pow2[j] - a[i] in dic:
+        total += dic[pow2[j] - a[i]]
 
-  if a[i] in dic:
-   dic[a[i]] += 1
-  else:
-   dic[a[i]] = 1
+    if a[i] in dic:
+      dic[a[i]] += 1
+    else:
+      dic[a[i]] = 1
 
- print(total)
+  print(total)
 
 
 solution()
@@ -167,21 +167,21 @@ Use a dictionary to count occurrences of each name. Track the most frequent name
 
 ```python
 def solution():
- penguins = {}
- n_penguins = int(input())
- most_numerous_number = 0
- most_numerous_penguin = ''
- for i in range(n_penguins):
-  penguin = input().strip()
-  if penguins.get(penguin) is None:
-   penguins[penguin] = 1
-  else:
-   penguins[penguin] += 1
-  if penguins[penguin] > most_numerous_number:
-   most_numerous_number = penguins[penguin]
-   most_numerous_penguin = penguin
+  penguins = {}
+  n_penguins = int(input())
+  most_numerous_number = 0
+  most_numerous_penguin = ''
+  for i in range(n_penguins):
+    penguin = input().strip()
+    if penguins.get(penguin) is None:
+      penguins[penguin] = 1
+    else:
+      penguins[penguin] += 1
+    if penguins[penguin] > most_numerous_number:
+      most_numerous_number = penguins[penguin]
+      most_numerous_penguin = penguin
 
- print(most_numerous_penguin)
+  print(most_numerous_penguin)
 
 
 solution()
@@ -224,28 +224,28 @@ INF = int(1e9)
 
 
 def solution():
- players = {'Isenbaev': 0}
- n_teams = int(input())
- for i in range(n_teams):
-  players_line = input().split()
-  if players.get(players_line[0]) is None:
-   players[players_line[0]] = INF
-  min_proximity = players[players_line[0]]
-  min_index = 0
-  for j in range(1, len(players_line)):
-   if players.get(players_line[j]) is None:
-    players[players_line[j]] = INF
-   if min_proximity > players[players_line[j]]:
-    min_proximity = players[players_line[j]]
-    min_index = j
-  if min_proximity < INF:
-   for j in range(len(players_line)):
-    if j is not min_index and players[players_line[j]] > min_proximity:
-     players[players_line[j]] = min_proximity + 1
+  players = {'Isenbaev': 0}
+  n_teams = int(input())
+  for i in range(n_teams):
+    players_line = input().split()
+    if players.get(players_line[0]) is None:
+      players[players_line[0]] = INF
+    min_proximity = players[players_line[0]]
+    min_index = 0
+    for j in range(1, len(players_line)):
+      if players.get(players_line[j]) is None:
+        players[players_line[j]] = INF
+      if min_proximity > players[players_line[j]]:
+        min_proximity = players[players_line[j]]
+        min_index = j
+    if min_proximity < INF:
+      for j in range(len(players_line)):
+        if j is not min_index and players[players_line[j]] > min_proximity:
+          players[players_line[j]] = min_proximity + 1
 
- for key in sorted(players.keys()):
-  proximity = str(players[key]) if players[key] is not INF else 'undefined'
-  print(key + ' ' + proximity)
+  for key in sorted(players.keys()):
+    proximity = str(players[key]) if players[key] is not INF else 'undefined'
+    print(key + ' ' + proximity)
 
 
 solution()
@@ -293,39 +293,39 @@ Use dictionary to store user credentials and login state. Each user maps to [pas
 
 ```python
 def solution():
- n = int(input())
- users = {}
- for i in range(n):
-  operation_line = list(map(str, input().split()))
-  if operation_line[0] == 'register':
-   if users.get(operation_line[1]) is not None:
-    print('fail: user already exists')
-   else:
-    users[operation_line[1]] = [operation_line[2], 'out']
-    print('success: new user added')
+  n = int(input())
+  users = {}
+  for i in range(n):
+    operation_line = list(map(str, input().split()))
+    if operation_line[0] == 'register':
+      if users.get(operation_line[1]) is not None:
+        print('fail: user already exists')
+      else:
+        users[operation_line[1]] = [operation_line[2], 'out']
+        print('success: new user added')
 
-  if operation_line[0] == 'login':
-   user_identity = users.get(operation_line[1])
-   if user_identity is None:
-    print('fail: no such user')
-   else:
-    if user_identity[0] == operation_line[2]:
-     if user_identity[1] == 'out':
-      users.get(operation_line[1])[1] = 'in'
-      print('success: user logged in')
-     else:
-      print('fail: already logged in')
-    else:
-     print('fail: incorrect password')
-  if operation_line[0] == 'logout':
-   user_identity = users.get(operation_line[1])
-   if user_identity is None:
-    print('fail: no such user')
-   elif user_identity[1] == 'out':
-    print('fail: already logged out')
-   else:
-    user_identity[1] = 'out'
-    print('success: user logged out')
+    if operation_line[0] == 'login':
+      user_identity = users.get(operation_line[1])
+      if user_identity is None:
+        print('fail: no such user')
+      else:
+        if user_identity[0] == operation_line[2]:
+          if user_identity[1] == 'out':
+            users.get(operation_line[1])[1] = 'in'
+            print('success: user logged in')
+          else:
+            print('fail: already logged in')
+        else:
+          print('fail: incorrect password')
+    if operation_line[0] == 'logout':
+      user_identity = users.get(operation_line[1])
+      if user_identity is None:
+        print('fail: no such user')
+      elif user_identity[1] == 'out':
+        print('fail: already logged out')
+      else:
+        user_identity[1] = 'out'
+        print('success: user logged out')
 
 
 solution()
@@ -366,29 +366,29 @@ Use dictionary to count occurrences of each tree species. Calculate percentage =
 
 ```python
 def solution():
- n = int(input())
- input()
+  n = int(input())
+  input()
 
- for i in range(n):
-  population = {}
-  total = 0
-  while True:
-   try:
-    new_line = input()
-    if not new_line:
-     break
-   except:
-    break
-   if population.get(new_line) is None:
-    population[new_line] = 1
-   else:
-    population[new_line] += 1
+  for i in range(n):
+    population = {}
+    total = 0
+    while True:
+      try:
+        new_line = input()
+        if not new_line:
+          break
+      except:
+        break
+      if population.get(new_line) is None:
+        population[new_line] = 1
+      else:
+        population[new_line] += 1
 
-   total += 1
-  sorted_list = sorted(population.keys())
+      total += 1
+    sorted_list = sorted(population.keys())
 
-  for tree in sorted_list:
-   print(tree + ' ' + str(round(population.get(tree) * 100 / total, 4)))
+    for tree in sorted_list:
+      print(tree + ' ' + str(round(population.get(tree) * 100 / total, 4)))
 
 
 solution()
@@ -432,49 +432,49 @@ Use dictionary to map ingredient names to prices. Calculate total cost for each 
 
 ```python
 class Recipe:
- def __init__(self, name, cost):
-  self.name = name
-  self.cost = cost
+  def __init__(self, name, cost):
+    self.name = name
+    self.cost = cost
 
- def __lt__(self, other):
-  if self.cost < other.cost:
-   return True
-  elif self.cost == other.cost:
-   return self.name < other.name
-  return False
+  def __lt__(self, other):
+    if self.cost < other.cost:
+      return True
+    elif self.cost == other.cost:
+      return self.name < other.name
+    return False
 
 
 def solution():
- binders = int(input())
- for i in range(binders):
-  binder_name = input().strip().upper()
-  m, n, b = map(int, input().strip().split())
-  ingredients = {}
-  for j in range(m):
-   ingredient_name, ingredient_price = map(str, input().split())
-   ingredients[ingredient_name] = int(ingredient_price)
-  print(binder_name)
-  can_makes = []
-  for j in range(n):
-   recipe_name = input().strip()
-   k = int(input())
-   total_cost = 0
-   for x in range(k):
-    ingredient_name, quantity = map(str, input().split())
-    quantity = int(quantity)
-    total_cost += quantity * ingredients[ingredient_name]
+  binders = int(input())
+  for i in range(binders):
+    binder_name = input().strip().upper()
+    m, n, b = map(int, input().strip().split())
+    ingredients = {}
+    for j in range(m):
+      ingredient_name, ingredient_price = map(str, input().split())
+      ingredients[ingredient_name] = int(ingredient_price)
+    print(binder_name)
+    can_makes = []
+    for j in range(n):
+      recipe_name = input().strip()
+      k = int(input())
+      total_cost = 0
+      for x in range(k):
+        ingredient_name, quantity = map(str, input().split())
+        quantity = int(quantity)
+        total_cost += quantity * ingredients[ingredient_name]
 
-   if total_cost <= b:
-    can_makes.append(Recipe(recipe_name, total_cost))
+      if total_cost <= b:
+        can_makes.append(Recipe(recipe_name, total_cost))
 
-  if len(can_makes) == 0:
-   print('Too expensive!')
-  else:
-   can_makes.sort()
-   n_can_makes = len(can_makes)
-   for cm in range(n_can_makes):
-    print(can_makes[cm].name)
-  print()
+    if len(can_makes) == 0:
+      print('Too expensive!')
+    else:
+      can_makes.sort()
+      n_can_makes = len(can_makes)
+      for cm in range(n_can_makes):
+        print(can_makes[cm].name)
+    print()
 
 
 solution()

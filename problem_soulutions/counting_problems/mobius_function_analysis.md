@@ -143,54 +143,54 @@ Key observations:
 
 ```python
 def linear_sieve_mobius(n):
- """
- Compute Mobius function for all integers 1 to n.
- Time: O(n), Space: O(n)
- """
- mu = [0] * (n + 1)
- is_prime = [True] * (n + 1)
- primes = []
- mu[1] = 1
+  """
+  Compute Mobius function for all integers 1 to n.
+  Time: O(n), Space: O(n)
+  """
+  mu = [0] * (n + 1)
+  is_prime = [True] * (n + 1)
+  primes = []
+  mu[1] = 1
 
- for i in range(2, n + 1):
-  if is_prime[i]:
-   primes.append(i)
-   mu[i] = -1
+  for i in range(2, n + 1):
+    if is_prime[i]:
+      primes.append(i)
+      mu[i] = -1
 
-  for p in primes:
-   if i * p > n:
-    break
-   is_prime[i * p] = False
-   if i % p == 0:
-    mu[i * p] = 0
-    break
-   else:
-    mu[i * p] = -mu[i]
+    for p in primes:
+      if i * p > n:
+        break
+      is_prime[i * p] = False
+      if i % p == 0:
+        mu[i * p] = 0
+        break
+      else:
+        mu[i * p] = -mu[i]
 
- return mu, primes
+  return mu, primes
 
 
 def count_coprime_pairs(n):
- """Count pairs (a,b) with 1 <= a,b <= n and gcd(a,b) = 1."""
- mu, _ = linear_sieve_mobius(n)
- return sum(mu[d] * (n // d) ** 2 for d in range(1, n + 1))
+  """Count pairs (a,b) with 1 <= a,b <= n and gcd(a,b) = 1."""
+  mu, _ = linear_sieve_mobius(n)
+  return sum(mu[d] * (n // d) ** 2 for d in range(1, n + 1))
 
 
 def count_coprime_pairs_optimized(n):
- """Optimized O(sqrt(n)) using prefix sums."""
- mu, _ = linear_sieve_mobius(n)
- prefix_mu = [0] * (n + 2)
- for i in range(1, n + 1):
-  prefix_mu[i] = prefix_mu[i - 1] + mu[i]
+  """Optimized O(sqrt(n)) using prefix sums."""
+  mu, _ = linear_sieve_mobius(n)
+  prefix_mu = [0] * (n + 2)
+  for i in range(1, n + 1):
+    prefix_mu[i] = prefix_mu[i - 1] + mu[i]
 
- result, d = 0, 1
- while d <= n:
-  q = n // d
-  d_max = n // q
-  mu_sum = prefix_mu[d_max] - prefix_mu[d - 1]
-  result += mu_sum * q * q
-  d = d_max + 1
- return result
+  result, d = 0, 1
+  while d <= n:
+    q = n // d
+    d_max = n // q
+    mu_sum = prefix_mu[d_max] - prefix_mu[d - 1]
+    result += mu_sum * q * q
+    d = d_max + 1
+  return result
 ```
 
 ### Complexity
@@ -211,10 +211,10 @@ def count_coprime_pairs_optimized(n):
 ```python
 # WRONG
 for i in range(2, n + 1):
- if is_prime[i]:
-  mu[i] = -1
- else:
-  mu[i] = 0  # Wrong! 6=2*3 is square-free, mu[6]=1
+  if is_prime[i]:
+    mu[i] = -1
+  else:
+    mu[i] = 0  # Wrong! 6=2*3 is square-free, mu[6]=1
 ```
 
 **Fix:** Track square-free property during sieve.

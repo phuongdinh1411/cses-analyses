@@ -184,7 +184,7 @@ Suffix Links:
 ```python
 # WRONG: Assuming no clone is ever needed
 if p != -1 and trans[p][c] exists:
- link[cur] = trans[p][c]  # WRONG! May need clone
+  link[cur] = trans[p][c]  # WRONG! May need clone
 ```
 
 **Problem:** When `len[p] + 1 != len[q]`, we must clone state q.
@@ -193,10 +193,10 @@ if p != -1 and trans[p][c] exists:
 ```python
 q = trans[p][c]
 if len[p] + 1 == len[q]:
- link[cur] = q
+  link[cur] = q
 else:
- # Clone q into new state clone
- clone = create_clone(q)
+  # Clone q into new state clone
+  clone = create_clone(q)
 ```
 
 ### Mistake 2: Not Updating All Transitions to Clone
@@ -211,8 +211,8 @@ trans[p][c] = clone
 **Fix:** Walk up suffix links and update all:
 ```python
 while p != -1 and trans[p][c] == q:
- trans[p][c] = clone
- p = link[p]
+  trans[p][c] = clone
+  p = link[p]
 ```
 
 ### Mistake 3: Incorrect Suffix Link for Clone
@@ -282,10 +282,10 @@ Each state contributes `len[v] - len[link[v]]` unique substrings.
 
 ```python
 def count_distinct_substrings(sam):
- total = 0
- for state in range(1, sam.size):  # Skip initial state
-  total += sam.len[state] - sam.len[sam.link[state]]
- return total
+  total = 0
+  for state in range(1, sam.size):  # Skip initial state
+    total += sam.len[state] - sam.len[sam.link[state]]
+  return total
 ```
 
 ### 2. Longest Common Substring (LCS) of Two Strings
@@ -294,17 +294,17 @@ Build SAM on first string, then traverse with second string:
 
 ```python
 def lcs_two_strings(s, t):
- sam = build_sam(s)
- v, l, best = 0, 0, 0
- for c in t:
-  while v and c not in sam.trans[v]:
-   v = sam.link[v]
-   l = sam.len[v]
-  if c in sam.trans[v]:
-   v = sam.trans[v][c]
-   l += 1
-  best = max(best, l)
- return best
+  sam = build_sam(s)
+  v, l, best = 0, 0, 0
+  for c in t:
+    while v and c not in sam.trans[v]:
+      v = sam.link[v]
+      l = sam.len[v]
+    if c in sam.trans[v]:
+      v = sam.trans[v][c]
+      l += 1
+    best = max(best, l)
+  return best
 ```
 
 ### 3. LCS of Multiple Strings
@@ -317,93 +317,93 @@ For each state, track minimum occurrence length across all strings.
 
 ```python
 class SuffixAutomaton:
- """
- Suffix Automaton implementation.
+  """
+  Suffix Automaton implementation.
 
- Time: O(n) construction
- Space: O(n) states and transitions
- """
- def __init__(self):
-  self.size = 1
-  self.last = 0
-  self.len = [0]
-  self.link = [-1]
-  self.trans = [{}]
+  Time: O(n) construction
+  Space: O(n) states and transitions
+  """
+  def __init__(self):
+    self.size = 1
+    self.last = 0
+    self.len = [0]
+    self.link = [-1]
+    self.trans = [{}]
 
- def _add_state(self):
-  self.len.append(0)
-  self.link.append(-1)
-  self.trans.append({})
-  idx = self.size
-  self.size += 1
-  return idx
+  def _add_state(self):
+    self.len.append(0)
+    self.link.append(-1)
+    self.trans.append({})
+    idx = self.size
+    self.size += 1
+    return idx
 
- def add_char(self, c):
-  cur = self._add_state()
-  self.len[cur] = self.len[self.last] + 1
+  def add_char(self, c):
+    cur = self._add_state()
+    self.len[cur] = self.len[self.last] + 1
 
-  p = self.last
-  while p != -1 and c not in self.trans[p]:
-   self.trans[p][c] = cur
-   p = self.link[p]
+    p = self.last
+    while p != -1 and c not in self.trans[p]:
+      self.trans[p][c] = cur
+      p = self.link[p]
 
-  if p == -1:
-   self.link[cur] = 0
-  else:
-   q = self.trans[p][c]
-   if self.len[p] + 1 == self.len[q]:
-    self.link[cur] = q
-   else:
-    # Clone state q
-    clone = self._add_state()
-    self.len[clone] = self.len[p] + 1
-    self.link[clone] = self.link[q]
-    self.trans[clone] = self.trans[q].copy()
+    if p == -1:
+      self.link[cur] = 0
+    else:
+      q = self.trans[p][c]
+      if self.len[p] + 1 == self.len[q]:
+        self.link[cur] = q
+      else:
+        # Clone state q
+        clone = self._add_state()
+        self.len[clone] = self.len[p] + 1
+        self.link[clone] = self.link[q]
+        self.trans[clone] = self.trans[q].copy()
 
-    # Update transitions to point to clone
-    while p != -1 and self.trans[p].get(c) == q:
-     self.trans[p][c] = clone
-     p = self.link[p]
+        # Update transitions to point to clone
+        while p != -1 and self.trans[p].get(c) == q:
+          self.trans[p][c] = clone
+          p = self.link[p]
 
-    self.link[q] = clone
-    self.link[cur] = clone
+        self.link[q] = clone
+        self.link[cur] = clone
 
-  self.last = cur
+    self.last = cur
 
- def build(self, s):
-  for c in s:
-   self.add_char(c)
-  return self
+  def build(self, s):
+    for c in s:
+      self.add_char(c)
+    return self
 
- def count_distinct_substrings(self):
-  """Count number of distinct substrings."""
-  total = 0
-  for i in range(1, self.size):
-   total += self.len[i] - self.len[self.link[i]]
-  return total
+  def count_distinct_substrings(self):
+    """Count number of distinct substrings."""
+    total = 0
+    for i in range(1, self.size):
+      total += self.len[i] - self.len[self.link[i]]
+    return total
 
 
 def solve_distinct_substrings():
- """CSES: Distinct Substrings"""
- s = input().strip()
- sam = SuffixAutomaton().build(s)
- print(sam.count_distinct_substrings())
+  """CSES: Distinct Substrings"""
+  s = input().strip()
+  sam = SuffixAutomaton().build(s)
+  print(sam.count_distinct_substrings())
 
 
 def solve_lcs(s, t):
- """Longest Common Substring of two strings."""
- sam = SuffixAutomaton().build(s)
+  """Longest Common Substring of two strings."""
+  sam = SuffixAutomaton().build(s)
 
- v, length, best = 0, 0, 0
- for c in t:
-  while v != 0 and c not in sam.trans[v]:
-   v = sam.link[v]
-   length = sam.len[v]
-  if c in sam.trans[v]:
-   v = sam.trans[v][c]
-   length += 1
-  best = max(best, length)
- return best
+  v, length, best = 0, 0, 0
+  for c in t:
+    while v != 0 and c not in sam.trans[v]:
+      v = sam.link[v]
+      length = sam.len[v]
+    if c in sam.trans[v]:
+      v = sam.trans[v][c]
+      length += 1
+    best = max(best, length)
+  return best
 ```
 
 ---

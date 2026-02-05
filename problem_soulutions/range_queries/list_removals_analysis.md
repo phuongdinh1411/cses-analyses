@@ -135,22 +135,22 @@ Maintain the actual list and remove elements directly using Python's list or vec
 
 ```python
 def solve_brute_force():
- """
- Brute force: O(n) per removal due to shifting.
+  """
+  Brute force: O(n) per removal due to shifting.
 
- Time: O(n^2) total
- Space: O(n)
- """
- n = int(input())
- arr = list(map(int, input().split()))
+  Time: O(n^2) total
+  Space: O(n)
+  """
+  n = int(input())
+  arr = list(map(int, input().split()))
 
- results = []
- for _ in range(n):
-  p = int(input())
-  removed = arr.pop(p - 1)  # O(n) operation
-  results.append(removed)
+  results = []
+  for _ in range(n):
+    p = int(input())
+    removed = arr.pop(p - 1)  # O(n) operation
+    results.append(removed)
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 ```
 
 ### Complexity
@@ -285,65 +285,65 @@ from sys import stdin
 input = stdin.readline
 
 def solve():
- """
- Segment Tree solution for List Removals.
-
- Time: O(n log n)
- Space: O(n)
- """
- n = int(input())
- arr = list(map(int, input().split()))
-
- # Segment tree: stores count of active elements in each range
- # Size 4*n is safe upper bound for segment tree array
- tree = [0] * (4 * n)
-
- def build(v, tl, tr):
-  """Build segment tree. Each leaf starts with count 1."""
-  if tl == tr:
-   tree[v] = 1
-  else:
-   tm = (tl + tr) // 2
-   build(2 * v, tl, tm)
-   build(2 * v + 1, tm + 1, tr)
-   tree[v] = tree[2 * v] + tree[2 * v + 1]
-
- def find_kth_and_remove(v, tl, tr, k):
   """
-  Find the k-th active element and mark it as deleted.
-  Returns the index of the k-th active element.
+  Segment Tree solution for List Removals.
+
+  Time: O(n log n)
+  Space: O(n)
   """
-  # Decrease count as we will remove one element from this subtree
-  tree[v] -= 1
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-  if tl == tr:
-   # Reached leaf node, this is the k-th element
-   return tl
+  # Segment tree: stores count of active elements in each range
+  # Size 4*n is safe upper bound for segment tree array
+  tree = [0] * (4 * n)
 
-  tm = (tl + tr) // 2
-  left_count = tree[2 * v]
+  def build(v, tl, tr):
+    """Build segment tree. Each leaf starts with count 1."""
+    if tl == tr:
+      tree[v] = 1
+    else:
+      tm = (tl + tr) // 2
+      build(2 * v, tl, tm)
+      build(2 * v + 1, tm + 1, tr)
+      tree[v] = tree[2 * v] + tree[2 * v + 1]
 
-  if k <= left_count:
-   # k-th element is in the left subtree
-   return find_kth_and_remove(2 * v, tl, tm, k)
-  else:
-   # k-th element is in the right subtree
-   return find_kth_and_remove(2 * v + 1, tm + 1, tr, k - left_count)
+  def find_kth_and_remove(v, tl, tr, k):
+    """
+    Find the k-th active element and mark it as deleted.
+    Returns the index of the k-th active element.
+    """
+    # Decrease count as we will remove one element from this subtree
+    tree[v] -= 1
 
- # Build the tree
- build(1, 0, n - 1)
+    if tl == tr:
+      # Reached leaf node, this is the k-th element
+      return tl
 
- # Process queries
- results = []
- for _ in range(n):
-  p = int(input())
-  idx = find_kth_and_remove(1, 0, n - 1, p)
-  results.append(arr[idx])
+    tm = (tl + tr) // 2
+    left_count = tree[2 * v]
 
- print('\n'.join(map(str, results)))
+    if k <= left_count:
+      # k-th element is in the left subtree
+      return find_kth_and_remove(2 * v, tl, tm, k)
+    else:
+      # k-th element is in the right subtree
+      return find_kth_and_remove(2 * v + 1, tm + 1, tr, k - left_count)
+
+  # Build the tree
+  build(1, 0, n - 1)
+
+  # Process queries
+  results = []
+  for _ in range(n):
+    p = int(input())
+    idx = find_kth_and_remove(1, 0, n - 1, p)
+    results.append(arr[idx])
+
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -383,9 +383,9 @@ idx = find_kth_and_remove(1, 0, n - 1, p)
 ```python
 # WRONG: Not updating counts during traversal
 def find_kth(v, tl, tr, k):
- if tl == tr:
-  return tl
- # Missing: tree[v] -= 1
+  if tl == tr:
+    return tl
+  # Missing: tree[v] -= 1
 ```
 
 **Problem:** The tree counts become incorrect after removals.

@@ -49,84 +49,84 @@ Use a running XOR of the last min(k, i+1) bits of b.
 
 ```python
 def solve():
- n, k = map(int, input().split())
- s = input().strip()
+  n, k = map(int, input().split())
+  s = input().strip()
 
- b = []
- xor_sum = 0  # Running XOR of last k bits of b
+  b = []
+  xor_sum = 0  # Running XOR of last k bits of b
 
- for i in range(n):
-  # s[i] = xor of b[max(0,i-k+1)] to b[i]
-  # So b[i] = s[i] XOR (xor of b[max(0,i-k+1)] to b[i-1])
-  # The "xor of previous" is our running xor_sum
+  for i in range(n):
+    # s[i] = xor of b[max(0,i-k+1)] to b[i]
+    # So b[i] = s[i] XOR (xor of b[max(0,i-k+1)] to b[i-1])
+    # The "xor of previous" is our running xor_sum
 
-  bit = int(s[i]) ^ xor_sum
-  b.append(str(bit))
+    bit = int(s[i]) ^ xor_sum
+    b.append(str(bit))
 
-  # Update running XOR
-  xor_sum ^= bit
+    # Update running XOR
+    xor_sum ^= bit
 
-  # Remove contribution of b[i-k+1] if it exists (sliding window)
-  if i >= k - 1:
-   xor_sum ^= int(b[i - k + 1])
+    # Remove contribution of b[i-k+1] if it exists (sliding window)
+    if i >= k - 1:
+      xor_sum ^= int(b[i - k + 1])
 
- print(''.join(b))
+  print(''.join(b))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
- n, k = map(int, input().split())
- s = input().strip()
+  n, k = map(int, input().split())
+  s = input().strip()
 
- result = []
- window_xor = 0
+  result = []
+  window_xor = 0
 
- for i in range(n):
-  # Decode b[i]
-  # s[i] contains XOR of b[i-k+1..i], but we only have b[0..i-1]
-  # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
+  for i in range(n):
+    # Decode b[i]
+    # s[i] contains XOR of b[i-k+1..i], but we only have b[0..i-1]
+    # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
 
-  b_i = int(s[i]) ^ window_xor
-  result.append(b_i)
+    b_i = int(s[i]) ^ window_xor
+    result.append(b_i)
 
-  # Add b[i] to window
-  window_xor ^= b_i
+    # Add b[i] to window
+    window_xor ^= b_i
 
-  # Remove b[i-k+1] from window if window exceeds k
-  if i - k + 1 >= 0:
-   window_xor ^= result[i - k + 1]
+    # Remove b[i-k+1] from window if window exceeds k
+    if i - k + 1 >= 0:
+      window_xor ^= result[i - k + 1]
 
- print(''.join(map(str, result)))
+  print(''.join(map(str, result)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### One-liner Style
 
 ```python
 def solve():
- n, k = map(int, input().split())
- s = input().strip()
+  n, k = map(int, input().split())
+  s = input().strip()
 
- b = [0] * n
- xor = 0
+  b = [0] * n
+  xor = 0
 
- for i in range(n):
-  b[i] = int(s[i]) ^ xor
-  xor ^= b[i]
-  if i >= k - 1:
-   xor ^= b[i - k + 1]
+  for i in range(n):
+    b[i] = int(s[i]) ^ xor
+    xor ^= b[i]
+    if i >= k - 1:
+      xor ^= b[i - k + 1]
 
- print(''.join(map(str, b)))
+  print(''.join(map(str, b)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

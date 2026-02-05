@@ -242,37 +242,37 @@ Even layers (2,4,6...): Fill RIGHT then DOWN
 
 ```python
 def solve(y: int, x: int) -> int:
- """
- Find value at position (y, x) in the number spiral.
+  """
+  Find value at position (y, x) in the number spiral.
 
- Time: O(1)
- Space: O(1)
- """
- k = max(y, x)  # Layer number
+  Time: O(1)
+  Space: O(1)
+  """
+  k = max(y, x)  # Layer number
 
- if k % 2 == 1:  # Odd layer
-  if y >= x:
-   return (k - 1) * (k - 1) + y
-  else:
-   return k * k - y + 1
- else:  # Even layer
-  if y >= x:
-   return k * k - x + 1
-  else:
-   return (k - 1) * (k - 1) + x
+  if k % 2 == 1:  # Odd layer
+    if y >= x:
+      return (k - 1) * (k - 1) + y
+    else:
+      return k * k - y + 1
+  else:  # Even layer
+    if y >= x:
+      return k * k - x + 1
+    else:
+      return (k - 1) * (k - 1) + x
 
 
 def main():
- t = int(input())
- results = []
- for _ in range(t):
-  y, x = map(int, input().split())
-  results.append(solve(y, x))
- print('\n'.join(map(str, results)))
+  t = int(input())
+  results = []
+  for _ in range(t):
+    y, x = map(int, input().split())
+    results.append(solve(y, x))
+  print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -292,11 +292,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - Using same formula for all layers
 def solve_wrong(y, x):
- k = max(y, x)
- if y >= x:
-  return (k - 1) * (k - 1) + y  # Wrong for even layers!
- else:
-  return k * k - y + 1
+  k = max(y, x)
+  if y >= x:
+    return (k - 1) * (k - 1) + y  # Wrong for even layers!
+  else:
+    return k * k - y + 1
 ```
 
 **Problem:** The spiral alternates direction between odd and even layers. Using the same formula ignores this.
@@ -308,10 +308,10 @@ def solve_wrong(y, x):
 ```python
 # WRONG - Treating input as 0-indexed
 def solve_wrong(y, x):
- y += 1  # DON'T do this!
- x += 1
- k = max(y, x)
- # ...
+  y += 1  # DON'T do this!
+  x += 1
+  k = max(y, x)
+  # ...
 ```
 
 **Problem:** The problem uses 1-indexed coordinates. Adding 1 shifts all answers incorrectly.
@@ -329,7 +329,7 @@ def solve_wrong(y, x):
 ```python
 # WRONG - Using > instead of >=
 if y > x:  # Should be y >= x
- return (k - 1) * (k - 1) + y
+  return (k - 1) * (k - 1) + y
 ```
 
 **Problem:** When y == x (diagonal), the position belongs to a specific part of the L-shape depending on direction.

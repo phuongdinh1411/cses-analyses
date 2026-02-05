@@ -123,60 +123,60 @@ import heapq
 from typing import List, Tuple
 
 def flight_discount(n: int, flights: List[Tuple[int, int, int]]) -> int:
- """
- Find minimum cost from city 1 to city n with one 50% discount.
+  """
+  Find minimum cost from city 1 to city n with one 50% discount.
 
- Args:
-  n: number of cities (1-indexed)
-  flights: list of (from, to, cost) tuples
+  Args:
+    n: number of cities (1-indexed)
+    flights: list of (from, to, cost) tuples
 
- Returns:
-  Minimum cost to reach city n from city 1
- """
- INF = float('inf')
+  Returns:
+    Minimum cost to reach city n from city 1
+  """
+  INF = float('inf')
 
- # Build adjacency list
- adj = [[] for _ in range(n + 1)]
- for u, v, cost in flights:
-  adj[u].append((v, cost))
+  # Build adjacency list
+  adj = [[] for _ in range(n + 1)]
+  for u, v, cost in flights:
+    adj[u].append((v, cost))
 
- # dist[node][used] = minimum cost to reach node with coupon state
- dist = [[INF] * 2 for _ in range(n + 1)]
- dist[1][0] = 0
+  # dist[node][used] = minimum cost to reach node with coupon state
+  dist = [[INF] * 2 for _ in range(n + 1)]
+  dist[1][0] = 0
 
- # Priority queue: (cost, node, used_coupon)
- pq = [(0, 1, 0)]
+  # Priority queue: (cost, node, used_coupon)
+  pq = [(0, 1, 0)]
 
- while pq:
-  d, u, used = heapq.heappop(pq)
+  while pq:
+    d, u, used = heapq.heappop(pq)
 
-  # Skip if we've found a better path
-  if d > dist[u][used]:
-   continue
+    # Skip if we've found a better path
+    if d > dist[u][used]:
+      continue
 
-  for v, cost in adj[u]:
-   # Option 1: Don't use coupon on this edge
-   new_dist = d + cost
-   if new_dist < dist[v][used]:
-    dist[v][used] = new_dist
-    heapq.heappush(pq, (new_dist, v, used))
+    for v, cost in adj[u]:
+      # Option 1: Don't use coupon on this edge
+      new_dist = d + cost
+      if new_dist < dist[v][used]:
+        dist[v][used] = new_dist
+        heapq.heappush(pq, (new_dist, v, used))
 
-   # Option 2: Use coupon on this edge (if not already used)
-   if used == 0:
-    new_dist = d + cost // 2
-    if new_dist < dist[v][1]:
-     dist[v][1] = new_dist
-     heapq.heappush(pq, (new_dist, v, 1))
+      # Option 2: Use coupon on this edge (if not already used)
+      if used == 0:
+        new_dist = d + cost // 2
+        if new_dist < dist[v][1]:
+          dist[v][1] = new_dist
+          heapq.heappush(pq, (new_dist, v, 1))
 
- # Answer: best of reaching n with or without using coupon
- return min(dist[n][0], dist[n][1])
+  # Answer: best of reaching n with or without using coupon
+  return min(dist[n][0], dist[n][1])
 
 
 # Example usage
 if __name__ == "__main__":
- n, m = 3, 4
- flights = [(1, 2, 3), (2, 3, 6), (1, 3, 10), (2, 1, 1)]
- print(flight_discount(n, flights))  # Output: 5
+  n, m = 3, 4
+  flights = [(1, 2, 3), (2, 3, 6), (1, 3, 10), (2, 1, 1)]
+  print(flight_discount(n, flights))  # Output: 5
 ```
 
 ## Common Mistakes
@@ -202,41 +202,41 @@ Instead of state-space Dijkstra, we can:
 
 ```python
 def flight_discount_two_dijkstras(n, flights):
- """Alternative: Two Dijkstra runs + edge enumeration"""
- INF = float('inf')
+  """Alternative: Two Dijkstra runs + edge enumeration"""
+  INF = float('inf')
 
- # Forward graph and backward graph
- adj_fwd = [[] for _ in range(n + 1)]
- adj_bwd = [[] for _ in range(n + 1)]
+  # Forward graph and backward graph
+  adj_fwd = [[] for _ in range(n + 1)]
+  adj_bwd = [[] for _ in range(n + 1)]
 
- for u, v, cost in flights:
-  adj_fwd[u].append((v, cost))
-  adj_bwd[v].append((u, cost))
+  for u, v, cost in flights:
+    adj_fwd[u].append((v, cost))
+    adj_bwd[v].append((u, cost))
 
- def dijkstra(start, adj):
-  dist = [INF] * (n + 1)
-  dist[start] = 0
-  pq = [(0, start)]
-  while pq:
-   d, u = heapq.heappop(pq)
-   if d > dist[u]:
-    continue
-   for v, cost in adj[u]:
-    if d + cost < dist[v]:
-     dist[v] = d + cost
-     heapq.heappush(pq, (dist[v], v))
-  return dist
+  def dijkstra(start, adj):
+    dist = [INF] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
+    while pq:
+      d, u = heapq.heappop(pq)
+      if d > dist[u]:
+        continue
+      for v, cost in adj[u]:
+        if d + cost < dist[v]:
+          dist[v] = d + cost
+          heapq.heappush(pq, (dist[v], v))
+    return dist
 
- dist_from = dijkstra(1, adj_fwd)    # From city 1
- dist_to = dijkstra(n, adj_bwd)      # To city n (backward)
+  dist_from = dijkstra(1, adj_fwd)    # From city 1
+  dist_to = dijkstra(n, adj_bwd)      # To city n (backward)
 
- # Try discount on each edge
- ans = dist_from[n]  # No discount case
- for u, v, cost in flights:
-  if dist_from[u] < INF and dist_to[v] < INF:
-   ans = min(ans, dist_from[u] + cost // 2 + dist_to[v])
+  # Try discount on each edge
+  ans = dist_from[n]  # No discount case
+  for u, v, cost in flights:
+    if dist_from[u] < INF and dist_to[v] < INF:
+      ans = min(ans, dist_from[u] + cost // 2 + dist_to[v])
 
- return ans
+  return ans
 ```
 
 **Trade-offs:**

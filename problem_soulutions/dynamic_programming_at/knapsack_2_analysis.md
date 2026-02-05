@@ -212,34 +212,34 @@ Achievable combinations:
 
 ```python
 def solve():
- N, W = map(int, input().split())
- items = []
- for _ in range(N):
-  w, v = map(int, input().split())
-  items.append((w, v))
+  N, W = map(int, input().split())
+  items = []
+  for _ in range(N):
+    w, v = map(int, input().split())
+    items.append((w, v))
 
- # Maximum possible value
- max_value = sum(v for w, v in items)
+  # Maximum possible value
+  max_value = sum(v for w, v in items)
 
- # dp[v] = minimum weight to achieve value v
- INF = float('inf')
- dp = [INF] * (max_value + 1)
- dp[0] = 0
+  # dp[v] = minimum weight to achieve value v
+  INF = float('inf')
+  dp = [INF] * (max_value + 1)
+  dp[0] = 0
 
- # Process each item
- for weight, value in items:
-  # Iterate backwards to ensure each item used at most once
-  for v in range(max_value, value - 1, -1):
-   if dp[v - value] + weight < dp[v]:
-    dp[v] = dp[v - value] + weight
+  # Process each item
+  for weight, value in items:
+    # Iterate backwards to ensure each item used at most once
+    for v in range(max_value, value - 1, -1):
+      if dp[v - value] + weight < dp[v]:
+        dp[v] = dp[v - value] + weight
 
- # Find maximum value achievable within capacity W
- for v in range(max_value, -1, -1):
-  if dp[v] <= W:
-   print(v)
-   return
+  # Find maximum value achievable within capacity W
+  for v in range(max_value, -1, -1):
+    if dp[v] <= W:
+      print(v)
+      return
 
- print(0)
+  print(0)
 
 solve()
 ```
@@ -270,7 +270,7 @@ dp = [[0] * (W + 1) for _ in range(N + 1)]  # W can be 10^9!
 ```python
 # WRONG - Items can be used multiple times
 for v in range(value, max_value + 1):  # Forward iteration
- dp[v] = min(dp[v], dp[v - value] + weight)
+  dp[v] = min(dp[v], dp[v - value] + weight)
 ```
 
 **Problem:** Forward iteration uses updated dp values, allowing items to be picked multiple times.

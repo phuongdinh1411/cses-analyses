@@ -40,102 +40,102 @@ Strategy:
 
 ```python
 def solve():
- m, n = map(int, input().split())
- B = []
- for _ in range(m):
-  row = list(map(int, input().split()))
-  B.append(row)
+  m, n = map(int, input().split())
+  B = []
+  for _ in range(m):
+    row = list(map(int, input().split()))
+    B.append(row)
 
- # Initialize A with all 1s
- A = [[1] * n for _ in range(m)]
+  # Initialize A with all 1s
+  A = [[1] * n for _ in range(m)]
 
- # For each B[i][j] = 0, entire row i and column j of A must be 0
- for i in range(m):
-  for j in range(n):
-   if B[i][j] == 0:
-    # Set row i to all 0s
-    for k in range(n):
-     A[i][k] = 0
-    # Set column j to all 0s
-    for k in range(m):
-     A[k][j] = 0
+  # For each B[i][j] = 0, entire row i and column j of A must be 0
+  for i in range(m):
+    for j in range(n):
+      if B[i][j] == 0:
+        # Set row i to all 0s
+        for k in range(n):
+          A[i][k] = 0
+        # Set column j to all 0s
+        for k in range(m):
+          A[k][j] = 0
 
- # Verify: compute B' from A
- # B'[i][j] = (OR of row i) OR (OR of column j)?
- # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
- # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
+  # Verify: compute B' from A
+  # B'[i][j] = (OR of row i) OR (OR of column j)?
+  # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
+  # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
 
- # Precompute row OR and column OR
- row_or = [0] * m
- col_or = [0] * n
+  # Precompute row OR and column OR
+  row_or = [0] * m
+  col_or = [0] * n
 
- for i in range(m):
-  for j in range(n):
-   row_or[i] |= A[i][j]
-   col_or[j] |= A[i][j]
+  for i in range(m):
+    for j in range(n):
+      row_or[i] |= A[i][j]
+      col_or[j] |= A[i][j]
 
- # B'[i][j] = row_or[i] | col_or[j]
- valid = True
- for i in range(m):
-  for j in range(n):
-   computed = row_or[i] | col_or[j]
-   if computed != B[i][j]:
-    valid = False
-    break
-  if not valid:
-   break
+  # B'[i][j] = row_or[i] | col_or[j]
+  valid = True
+  for i in range(m):
+    for j in range(n):
+      computed = row_or[i] | col_or[j]
+      if computed != B[i][j]:
+        valid = False
+        break
+    if not valid:
+      break
 
- if valid:
-  print("YES")
-  for row in A:
-   print(' '.join(map(str, row)))
- else:
-  print("NO")
+  if valid:
+    print("YES")
+    for row in A:
+      print(' '.join(map(str, row)))
+  else:
+    print("NO")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
- m, n = map(int, input().split())
- B = [list(map(int, input().split())) for _ in range(m)]
+  m, n = map(int, input().split())
+  B = [list(map(int, input().split())) for _ in range(m)]
 
- # For B[i][j] = 0: row i and col j in A must be all 0s
- # For B[i][j] = 1: at least one of row i or col j in A must have a 1
+  # For B[i][j] = 0: row i and col j in A must be all 0s
+  # For B[i][j] = 1: at least one of row i or col j in A must have a 1
 
- zero_rows = set()
- zero_cols = set()
+  zero_rows = set()
+  zero_cols = set()
 
- for i in range(m):
-  for j in range(n):
-   if B[i][j] == 0:
-    zero_rows.add(i)
-    zero_cols.add(j)
+  for i in range(m):
+    for j in range(n):
+      if B[i][j] == 0:
+        zero_rows.add(i)
+        zero_cols.add(j)
 
- # Build A: 1 unless in zero_row or zero_col
- A = [[0 if i in zero_rows or j in zero_cols else 1
-  for j in range(n)] for i in range(m)]
+  # Build A: 1 unless in zero_row or zero_col
+  A = [[0 if i in zero_rows or j in zero_cols else 1
+    for j in range(n)] for i in range(m)]
 
- # Verify
- row_or = [any(A[i]) for i in range(m)]
- col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
+  # Verify
+  row_or = [any(A[i]) for i in range(m)]
+  col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
 
- for i in range(m):
-  for j in range(n):
-   expected = 1 if (row_or[i] or col_or[j]) else 0
-   if expected != B[i][j]:
-    print("NO")
-    return
+  for i in range(m):
+    for j in range(n):
+      expected = 1 if (row_or[i] or col_or[j]) else 0
+      if expected != B[i][j]:
+        print("NO")
+        return
 
- print("YES")
- for row in A:
-  print(' '.join(map(str, row)))
+  print("YES")
+  for row in A:
+    print(' '.join(map(str, row)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

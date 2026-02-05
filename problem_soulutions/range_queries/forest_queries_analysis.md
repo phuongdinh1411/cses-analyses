@@ -140,21 +140,21 @@ For each query, iterate through every cell in the rectangle and count trees.
 
 ```python
 def solve_brute_force(n, q, grid, queries):
- """
- Brute force: iterate through each rectangle.
+  """
+  Brute force: iterate through each rectangle.
 
- Time: O(q * n^2) per query in worst case
- Space: O(1) extra
- """
- results = []
- for y1, x1, y2, x2 in queries:
-  count = 0
-  for i in range(y1 - 1, y2):  # Convert to 0-indexed
-   for j in range(x1 - 1, x2):
-    if grid[i][j] == '*':
-     count += 1
-  results.append(count)
- return results
+  Time: O(q * n^2) per query in worst case
+  Space: O(1) extra
+  """
+  results = []
+  for y1, x1, y2, x2 in queries:
+    count = 0
+    for i in range(y1 - 1, y2):  # Convert to 0-indexed
+      for j in range(x1 - 1, x2):
+        if grid[i][j] == '*':
+          count += 1
+    results.append(count)
+  return results
 ```
 
 ### Complexity
@@ -248,34 +248,34 @@ import sys
 input = sys.stdin.readline
 
 def solve():
- n, q = map(int, input().split())
+  n, q = map(int, input().split())
 
- # Build prefix sum array (1-indexed, with 0-padding)
- prefix = [[0] * (n + 1) for _ in range(n + 1)]
+  # Build prefix sum array (1-indexed, with 0-padding)
+  prefix = [[0] * (n + 1) for _ in range(n + 1)]
 
- for i in range(1, n + 1):
-  row = input().strip()
-  for j in range(1, n + 1):
-   tree = 1 if row[j - 1] == '*' else 0
-   prefix[i][j] = (tree +
-      prefix[i - 1][j] +
-      prefix[i][j - 1] -
-      prefix[i - 1][j - 1])
+  for i in range(1, n + 1):
+    row = input().strip()
+    for j in range(1, n + 1):
+      tree = 1 if row[j - 1] == '*' else 0
+      prefix[i][j] = (tree +
+            prefix[i - 1][j] +
+            prefix[i][j - 1] -
+            prefix[i - 1][j - 1])
 
- # Answer queries
- results = []
- for _ in range(q):
-  y1, x1, y2, x2 = map(int, input().split())
-  count = (prefix[y2][x2] -
-    prefix[y1 - 1][x2] -
-    prefix[y2][x1 - 1] +
-    prefix[y1 - 1][x1 - 1])
-  results.append(count)
+  # Answer queries
+  results = []
+  for _ in range(q):
+    y1, x1, y2, x2 = map(int, input().split())
+    count = (prefix[y2][x2] -
+        prefix[y1 - 1][x2] -
+        prefix[y2][x1 - 1] +
+        prefix[y1 - 1][x1 - 1])
+    results.append(count)
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity

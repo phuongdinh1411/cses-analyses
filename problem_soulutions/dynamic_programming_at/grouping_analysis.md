@@ -105,40 +105,40 @@ Try all possible ways to partition N items. For each partition, compute the tota
 
 ```python
 def solve_brute_force(n, scores):
- """
- Brute force: enumerate all partitions.
+  """
+  Brute force: enumerate all partitions.
 
- Time: O(B(n) * n^2) where B(n) is Bell number
- Space: O(n)
- """
- def partition_score(groups):
-  total = 0
-  for group in groups:
-   for i in group:
-    for j in group:
-     if i < j:
-      total += scores[i][j]
-  return total
+  Time: O(B(n) * n^2) where B(n) is Bell number
+  Space: O(n)
+  """
+  def partition_score(groups):
+    total = 0
+    for group in groups:
+      for i in group:
+        for j in group:
+          if i < j:
+            total += scores[i][j]
+    return total
 
- def generate_partitions(items):
-  if not items:
-   yield []
-   return
-  first = items[0]
-  rest = items[1:]
-  for partition in generate_partitions(rest):
-   # Add first to each existing group
-   for i, group in enumerate(partition):
-    new_partition = [g[:] for g in partition]
-    new_partition[i].append(first)
-    yield new_partition
-   # Start new group with first
-   yield [[first]] + partition
+  def generate_partitions(items):
+    if not items:
+      yield []
+      return
+    first = items[0]
+    rest = items[1:]
+    for partition in generate_partitions(rest):
+      # Add first to each existing group
+      for i, group in enumerate(partition):
+        new_partition = [g[:] for g in partition]
+        new_partition[i].append(first)
+        yield new_partition
+      # Start new group with first
+      yield [[first]] + partition
 
- max_score = float('-inf')
- for partition in generate_partitions(list(range(n))):
-  max_score = max(max_score, partition_score(partition))
- return max_score
+  max_score = float('-inf')
+  for partition in generate_partitions(list(range(n))):
+    max_score = max(max_score, partition_score(partition))
+  return max_score
 ```
 
 ### Complexity
@@ -256,42 +256,42 @@ import sys
 input = sys.stdin.readline
 
 def solve():
- n = int(input())
- a = []
- for _ in range(n):
-  a.append(list(map(int, input().split())))
+  n = int(input())
+  a = []
+  for _ in range(n):
+    a.append(list(map(int, input().split())))
 
- # Precompute cost for each subset (if all in one group)
- cost = [0] * (1 << n)
- for mask in range(1 << n):
-  total = 0
-  for i in range(n):
-   if not (mask & (1 << i)):
-    continue
-   for j in range(i + 1, n):
-    if mask & (1 << j):
-     total += a[i][j]
-  cost[mask] = total
+  # Precompute cost for each subset (if all in one group)
+  cost = [0] * (1 << n)
+  for mask in range(1 << n):
+    total = 0
+    for i in range(n):
+      if not (mask & (1 << i)):
+        continue
+      for j in range(i + 1, n):
+        if mask & (1 << j):
+          total += a[i][j]
+    cost[mask] = total
 
- # dp[mask] = max score for optimal partition of mask
- dp = [0] * (1 << n)
+  # dp[mask] = max score for optimal partition of mask
+  dp = [0] * (1 << n)
 
- for mask in range(1 << n):
-  # Option 1: entire mask as one group
-  dp[mask] = cost[mask]
+  for mask in range(1 << n):
+    # Option 1: entire mask as one group
+    dp[mask] = cost[mask]
 
-  # Option 2: split into submask and complement
-  sub = mask
-  while sub > 0:
-   complement = mask ^ sub
-   if complement > 0:  # both parts non-empty
-    dp[mask] = max(dp[mask], dp[sub] + dp[complement])
-   sub = (sub - 1) & mask
+    # Option 2: split into submask and complement
+    sub = mask
+    while sub > 0:
+      complement = mask ^ sub
+      if complement > 0:  # both parts non-empty
+        dp[mask] = max(dp[mask], dp[sub] + dp[complement])
+      sub = (sub - 1) & mask
 
- print(dp[(1 << n) - 1])
+  print(dp[(1 << n) - 1])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -313,10 +313,10 @@ if __name__ == "__main__":
 # WRONG: may count empty partitions
 sub = mask
 while sub >= 0:  # includes sub=0
- dp[mask] = max(dp[mask], dp[sub] + dp[mask ^ sub])
- if sub == 0:
-  break
- sub = (sub - 1) & mask
+  dp[mask] = max(dp[mask], dp[sub] + dp[mask ^ sub])
+  if sub == 0:
+    break
+  sub = (sub - 1) & mask
 ```
 
 **Problem:** When sub=0, mask^sub = mask, causing double counting.
@@ -332,14 +332,14 @@ while sub >= 0:  # includes sub=0
 ```python
 # WRONG: misses some submasks
 for sub in range(1, mask):
- if (sub & mask) == sub:  # inefficient and may miss
-  ...
+  if (sub & mask) == sub:  # inefficient and may miss
+    ...
 
 # CORRECT: standard submask enumeration
 sub = mask
 while sub > 0:
- # process sub
- sub = (sub - 1) & mask
+  # process sub
+  sub = (sub - 1) & mask
 ```
 
 **Problem:** Linear iteration is O(2^N) per mask instead of O(submask count).

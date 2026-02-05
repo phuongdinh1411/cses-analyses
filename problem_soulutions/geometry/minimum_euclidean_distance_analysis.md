@@ -97,23 +97,23 @@ Check every pair of points and compute their squared distance.
 
 ```python
 def solve_brute_force(points):
- """
- Brute force solution - check all pairs.
+  """
+  Brute force solution - check all pairs.
 
- Time: O(n^2)
- Space: O(1)
- """
- n = len(points)
- min_dist = float('inf')
+  Time: O(n^2)
+  Space: O(1)
+  """
+  n = len(points)
+  min_dist = float('inf')
 
- for i in range(n):
-  for j in range(i + 1, n):
-   dx = points[i][0] - points[j][0]
-   dy = points[i][1] - points[j][1]
-   dist_sq = dx * dx + dy * dy
-   min_dist = min(min_dist, dist_sq)
+  for i in range(n):
+    for j in range(i + 1, n):
+      dx = points[i][0] - points[j][0]
+      dy = points[i][1] - points[j][1]
+      dist_sq = dx * dx + dy * dy
+      min_dist = min(min_dist, dist_sq)
 
- return min_dist
+  return min_dist
 ```
 
 ### Complexity
@@ -225,59 +225,59 @@ from functools import cmp_to_key
 sys.setrecursionlimit(300000)
 
 def solve():
- n = int(input())
- points = []
- for _ in range(n):
-  x, y = map(int, input().split())
-  points.append((x, y))
+  n = int(input())
+  points = []
+  for _ in range(n):
+    x, y = map(int, input().split())
+    points.append((x, y))
 
- def dist_sq(p1, p2):
-  """Calculate squared Euclidean distance."""
-  dx = p1[0] - p2[0]
-  dy = p1[1] - p2[1]
-  return dx * dx + dy * dy
+  def dist_sq(p1, p2):
+    """Calculate squared Euclidean distance."""
+    dx = p1[0] - p2[0]
+    dy = p1[1] - p2[1]
+    return dx * dx + dy * dy
 
- def closest_in_strip(strip, d):
-  """Find minimum distance in strip, given current minimum d."""
-  min_d = d
-  strip.sort(key=lambda p: p[1])  # Sort by y
+  def closest_in_strip(strip, d):
+    """Find minimum distance in strip, given current minimum d."""
+    min_d = d
+    strip.sort(key=lambda p: p[1])  # Sort by y
 
-  for i in range(len(strip)):
-   j = i + 1
-   while j < len(strip) and (strip[j][1] - strip[i][1])**2 < min_d:
-    min_d = min(min_d, dist_sq(strip[i], strip[j]))
-    j += 1
-  return min_d
+    for i in range(len(strip)):
+      j = i + 1
+      while j < len(strip) and (strip[j][1] - strip[i][1])**2 < min_d:
+        min_d = min(min_d, dist_sq(strip[i], strip[j]))
+        j += 1
+    return min_d
 
- def closest_pair(pts):
-  """Divide and conquer to find closest pair."""
-  n = len(pts)
+  def closest_pair(pts):
+    """Divide and conquer to find closest pair."""
+    n = len(pts)
 
-  # Base case: brute force for small inputs
-  if n <= 3:
-   min_d = float('inf')
-   for i in range(n):
-    for j in range(i + 1, n):
-     min_d = min(min_d, dist_sq(pts[i], pts[j]))
-   return min_d
+    # Base case: brute force for small inputs
+    if n <= 3:
+      min_d = float('inf')
+      for i in range(n):
+        for j in range(i + 1, n):
+          min_d = min(min_d, dist_sq(pts[i], pts[j]))
+      return min_d
 
-  mid = n // 2
-  mid_x = pts[mid][0]
+    mid = n // 2
+    mid_x = pts[mid][0]
 
-  # Recursively find minimum in each half
-  left_min = closest_pair(pts[:mid])
-  right_min = closest_pair(pts[mid:])
-  d = min(left_min, right_min)
+    # Recursively find minimum in each half
+    left_min = closest_pair(pts[:mid])
+    right_min = closest_pair(pts[mid:])
+    d = min(left_min, right_min)
 
-  # Build strip of points close to dividing line
-  strip = [p for p in pts if (p[0] - mid_x)**2 < d]
+    # Build strip of points close to dividing line
+    strip = [p for p in pts if (p[0] - mid_x)**2 < d]
 
-  # Find minimum in strip
-  return closest_in_strip(strip, d)
+    # Find minimum in strip
+    return closest_in_strip(strip, d)
 
- # Sort by x-coordinate
- points.sort()
- print(closest_pair(points))
+  # Sort by x-coordinate
+  points.sort()
+  print(closest_pair(points))
 
 solve()
 ```
@@ -311,8 +311,8 @@ dist = math.sqrt((x1-x2)**2 + (y1-y2)**2)
 ```python
 # WRONG - defeats purpose of algorithm
 for i in range(len(strip)):
- for j in range(i+1, len(strip)):  # No early termination!
-  min_d = min(min_d, dist_sq(strip[i], strip[j]))
+  for j in range(i+1, len(strip)):  # No early termination!
+    min_d = min(min_d, dist_sq(strip[i], strip[j]))
 ```
 
 **Problem:** This is O(n^2) in the strip, losing the efficiency gain.

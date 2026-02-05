@@ -109,19 +109,19 @@ For each query, iterate through all elements in the range and find the minimum.
 
 ```python
 def solve_brute_force(arr, queries):
- """
- Brute force solution - scan each range.
+  """
+  Brute force solution - scan each range.
 
- Time: O(q * n) per query set
- Space: O(1) auxiliary
- """
- results = []
- for l, r in queries:
-  min_val = float('inf')
-  for i in range(l - 1, r):  # Convert to 0-indexed
-   min_val = min(min_val, arr[i])
-  results.append(min_val)
- return results
+  Time: O(q * n) per query set
+  Space: O(1) auxiliary
+  """
+  results = []
+  for l, r in queries:
+    min_val = float('inf')
+    for i in range(l - 1, r):  # Convert to 0-indexed
+      min_val = min(min_val, arr[i])
+    results.append(min_val)
+  return results
 ```
 
 ### Complexity
@@ -252,47 +252,47 @@ import sys
 from math import log2
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n, q = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- arr = [int(input_data[idx + i]) for i in range(n)]
- idx += n
-
- # Precompute log values
- LOG = [0] * (n + 1)
- for i in range(2, n + 1):
-  LOG[i] = LOG[i // 2] + 1
-
- # Build sparse table
- K = LOG[n] + 1
- st = [[0] * K for _ in range(n)]
-
- # Initialize for length 1 (j = 0)
- for i in range(n):
-  st[i][0] = arr[i]
-
- # Build for lengths 2^j
- for j in range(1, K):
-  for i in range(n - (1 << j) + 1):
-   st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
-
- # Answer queries
- results = []
- for _ in range(q):
-  l, r = int(input_data[idx]) - 1, int(input_data[idx + 1]) - 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
-  length = r - l + 1
-  k = LOG[length]
-  ans = min(st[l][k], st[r - (1 << k) + 1][k])
-  results.append(ans)
+  arr = [int(input_data[idx + i]) for i in range(n)]
+  idx += n
 
- print('\n'.join(map(str, results)))
+  # Precompute log values
+  LOG = [0] * (n + 1)
+  for i in range(2, n + 1):
+    LOG[i] = LOG[i // 2] + 1
+
+  # Build sparse table
+  K = LOG[n] + 1
+  st = [[0] * K for _ in range(n)]
+
+  # Initialize for length 1 (j = 0)
+  for i in range(n):
+    st[i][0] = arr[i]
+
+  # Build for lengths 2^j
+  for j in range(1, K):
+    for i in range(n - (1 << j) + 1):
+      st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+
+  # Answer queries
+  results = []
+  for _ in range(q):
+    l, r = int(input_data[idx]) - 1, int(input_data[idx + 1]) - 1
+    idx += 2
+
+    length = r - l + 1
+    k = LOG[length]
+    ans = min(st[l][k], st[r - (1 << k) + 1][k])
+    results.append(ans)
+
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity

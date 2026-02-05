@@ -130,43 +130,43 @@ dp[k][k] = 0  for all k (a square needs no cuts)
 
 ```python
 def rectangle_cutting(a: int, b: int) -> int:
- """
- Find minimum cuts to divide an a x b rectangle into squares.
+  """
+  Find minimum cuts to divide an a x b rectangle into squares.
 
- Args:
-  a: width of rectangle
-  b: height of rectangle
+  Args:
+    a: width of rectangle
+    b: height of rectangle
 
- Returns:
-  Minimum number of cuts needed
- """
- # Initialize DP table with infinity
- INF = float('inf')
- dp = [[INF] * (b + 1) for _ in range(a + 1)]
+  Returns:
+    Minimum number of cuts needed
+  """
+  # Initialize DP table with infinity
+  INF = float('inf')
+  dp = [[INF] * (b + 1) for _ in range(a + 1)]
 
- # Fill DP table
- for i in range(1, a + 1):
-  for j in range(1, b + 1):
-   # Base case: square needs no cuts
-   if i == j:
-    dp[i][j] = 0
-    continue
+  # Fill DP table
+  for i in range(1, a + 1):
+    for j in range(1, b + 1):
+      # Base case: square needs no cuts
+      if i == j:
+        dp[i][j] = 0
+        continue
 
-   # Try all horizontal cuts (cut at row k)
-   for k in range(1, j):
-    dp[i][j] = min(dp[i][j], dp[i][k] + dp[i][j - k] + 1)
+      # Try all horizontal cuts (cut at row k)
+      for k in range(1, j):
+        dp[i][j] = min(dp[i][j], dp[i][k] + dp[i][j - k] + 1)
 
-   # Try all vertical cuts (cut at column k)
-   for k in range(1, i):
-    dp[i][j] = min(dp[i][j], dp[k][j] + dp[i - k][j] + 1)
+      # Try all vertical cuts (cut at column k)
+      for k in range(1, i):
+        dp[i][j] = min(dp[i][j], dp[k][j] + dp[i - k][j] + 1)
 
- return dp[a][b]
+  return dp[a][b]
 
 
 # Read input and solve
 if __name__ == "__main__":
- a, b = map(int, input().split())
- print(rectangle_cutting(a, b))
+  a, b = map(int, input().split())
+  print(rectangle_cutting(a, b))
 ```
 
 ## Common Mistakes
@@ -191,14 +191,14 @@ Each cut operation must be counted!
 ```python
 # Treating all rectangles the same, even squares
 for k in range(1, j):
- dp[i][j] = min(dp[i][j], dp[i][k] + dp[i][j - k] + 1)
+  dp[i][j] = min(dp[i][j], dp[i][k] + dp[i][j - k] + 1)
 ```
 
 **Correct:**
 ```python
 if i == j:
- dp[i][j] = 0
- continue  # Skip to next iteration
+  dp[i][j] = 0
+  continue  # Skip to next iteration
 ```
 
 Squares require 0 cuts - they're already the goal state!

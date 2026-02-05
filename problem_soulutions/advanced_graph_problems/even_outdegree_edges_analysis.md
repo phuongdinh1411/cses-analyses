@@ -198,76 +198,76 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- # Check if solution is possible
- if m % 2 == 1:
-  print("IMPOSSIBLE")
-  return
+  # Check if solution is possible
+  if m % 2 == 1:
+    print("IMPOSSIBLE")
+    return
 
- # Build adjacency list with edge indices
- # Each edge stored as (neighbor, edge_index, is_first)
- adj = defaultdict(list)
- edges = []
+  # Build adjacency list with edge indices
+  # Each edge stored as (neighbor, edge_index, is_first)
+  adj = defaultdict(list)
+  edges = []
 
- for i in range(m):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  edges.append([a, b])
-  adj[a].append((b, i, True))   # True = this is the "a" side
-  adj[b].append((a, i, False))  # False = this is the "b" side
+  for i in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    edges.append([a, b])
+    adj[a].append((b, i, True))   # True = this is the "a" side
+    adj[b].append((a, i, False))  # False = this is the "b" side
 
- visited = [False] * (n + 1)
- result = [None] * m  # result[i] = (from, to) for edge i
+  visited = [False] * (n + 1)
+  result = [None] * m  # result[i] = (from, to) for edge i
 
- def dfs(v, parent_edge_idx):
-  visited[v] = True
-  out_count = 0  # count of edges oriented outward from v
+  def dfs(v, parent_edge_idx):
+    visited[v] = True
+    out_count = 0  # count of edges oriented outward from v
 
-  for neighbor, edge_idx, is_a_side in adj[v]:
-   if result[edge_idx] is not None:
-    # Edge already oriented
-    if result[edge_idx][0] == v:
-     out_count += 1
-    continue
+    for neighbor, edge_idx, is_a_side in adj[v]:
+      if result[edge_idx] is not None:
+        # Edge already oriented
+        if result[edge_idx][0] == v:
+          out_count += 1
+        continue
 
-   if not visited[neighbor]:
-    # Tree edge - recurse first
-    child_out = dfs(neighbor, edge_idx)
+      if not visited[neighbor]:
+        # Tree edge - recurse first
+        child_out = dfs(neighbor, edge_idx)
 
-    # Orient based on child's parity
-    if child_out % 2 == 1:
-     # Child has odd out-count, point edge toward child
-     result[edge_idx] = (v, neighbor)
-     out_count += 1
+        # Orient based on child's parity
+        if child_out % 2 == 1:
+          # Child has odd out-count, point edge toward child
+          result[edge_idx] = (v, neighbor)
+          out_count += 1
+        else:
+          # Child has even out-count, point edge toward v
+          result[edge_idx] = (neighbor, v)
+      else:
+        # Back edge to ancestor - orient toward ancestor (v -> neighbor)
+        result[edge_idx] = (v, neighbor)
+        out_count += 1
+
+    return out_count
+
+  # Process all components
+  for v in range(1, n + 1):
+    if not visited[v] and adj[v]:
+      dfs(v, -1)
+
+  # Output results
+  for i in range(m):
+    if result[i]:
+      print(result[i][0], result[i][1])
     else:
-     # Child has even out-count, point edge toward v
-     result[edge_idx] = (neighbor, v)
-   else:
-    # Back edge to ancestor - orient toward ancestor (v -> neighbor)
-    result[edge_idx] = (v, neighbor)
-    out_count += 1
-
-  return out_count
-
- # Process all components
- for v in range(1, n + 1):
-  if not visited[v] and adj[v]:
-   dfs(v, -1)
-
- # Output results
- for i in range(m):
-  if result[i]:
-   print(result[i][0], result[i][1])
-  else:
-   # Self-loop or isolated edge
-   print(edges[i][0], edges[i][1])
+      # Self-loop or isolated edge
+      print(edges[i][0], edges[i][1])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -286,15 +286,15 @@ if __name__ == "__main__":
 ```python
 # WRONG - missing initial check
 def solve(n, m, edges):
- # Directly try to orient without checking m
- ...
+  # Directly try to orient without checking m
+  ...
 
 # CORRECT
 def solve(n, m, edges):
- if m % 2 == 1:
-  print("IMPOSSIBLE")
-  return
- ...
+  if m % 2 == 1:
+    print("IMPOSSIBLE")
+    return
+  ...
 ```
 
 **Problem:** If m is odd, no valid orientation exists.
@@ -305,7 +305,7 @@ def solve(n, m, edges):
 ```python
 # WRONG
 for neighbor, edge_idx in adj[v]:
- result[edge_idx] = (v, neighbor)  # May overwrite previous orientation!
+  result[edge_idx] = (v, neighbor)  # May overwrite previous orientation!
 ```
 
 **Problem:** Each undirected edge appears twice in the adjacency list.
@@ -316,7 +316,7 @@ for neighbor, edge_idx in adj[v]:
 ```python
 # WRONG - inverted logic
 if child_out % 2 == 0:  # Should be == 1
- result[edge_idx] = (v, neighbor)
+  result[edge_idx] = (v, neighbor)
 ```
 
 **Problem:** Inverted parity check leads to odd outdegrees.

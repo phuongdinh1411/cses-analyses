@@ -34,93 +34,93 @@ N is valid only if len(S) is divisible by P.
 
 ```python
 def compute_failure(s):
- """KMP failure function"""
- n = len(s)
- fail = [0] * n
+  """KMP failure function"""
+  n = len(s)
+  fail = [0] * n
 
- for i in range(1, n):
-  j = fail[i - 1]
-  while j > 0 and s[i] != s[j]:
-   j = fail[j - 1]
-  if s[i] == s[j]:
-   j += 1
-  fail[i] = j
+  for i in range(1, n):
+    j = fail[i - 1]
+    while j > 0 and s[i] != s[j]:
+      j = fail[j - 1]
+    if s[i] == s[j]:
+      j += 1
+    fail[i] = j
 
- return fail
+  return fail
 
 def solve():
- while True:
-  s = input().strip()
-  if s == '*':
-   break
+  while True:
+    s = input().strip()
+    if s == '*':
+      break
 
-  n = len(s)
-  fail = compute_failure(s)
+    n = len(s)
+    fail = compute_failure(s)
 
-  # Period of the string
-  period = n - fail[n - 1]
+    # Period of the string
+    period = n - fail[n - 1]
 
-  # Check if n is divisible by period
-  if n % period == 0:
-   print(n // period)
-  else:
-   print(1)
+    # Check if n is divisible by period
+    if n % period == 0:
+      print(n // period)
+    else:
+      print(1)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
- while True:
-  s = input().strip()
-  if s == '*':
-   break
+  while True:
+    s = input().strip()
+    if s == '*':
+      break
 
-  n = len(s)
+    n = len(s)
 
-  # Build KMP prefix function
-  pi = [0] * n
-  for i in range(1, n):
-   j = pi[i - 1]
-   while j > 0 and s[i] != s[j]:
-    j = pi[j - 1]
-   if s[i] == s[j]:
-    j += 1
-   pi[i] = j
+    # Build KMP prefix function
+    pi = [0] * n
+    for i in range(1, n):
+      j = pi[i - 1]
+      while j > 0 and s[i] != s[j]:
+        j = pi[j - 1]
+      if s[i] == s[j]:
+        j += 1
+      pi[i] = j
 
-  # The smallest period is n - pi[n-1]
-  # If n is divisible by this period, that's our answer
-  smallest_period = n - pi[n - 1]
+    # The smallest period is n - pi[n-1]
+    # If n is divisible by this period, that's our answer
+    smallest_period = n - pi[n - 1]
 
-  if n % smallest_period == 0:
-   print(n // smallest_period)
-  else:
-   print(1)  # String is not periodic, only 1st root exists
+    if n % smallest_period == 0:
+      print(n // smallest_period)
+    else:
+      print(1)  # String is not periodic, only 1st root exists
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### One-liner Style
 
 ```python
 def kmp_period(s):
- n = len(s)
- pi = [0] * n
- for i in range(1, n):
-  j = pi[i-1]
-  while j and s[i] != s[j]: j = pi[j-1]
-  pi[i] = j + (s[i] == s[j])
- p = n - pi[-1]
- return n // p if n % p == 0 else 1
+  n = len(s)
+  pi = [0] * n
+  for i in range(1, n):
+    j = pi[i-1]
+    while j and s[i] != s[j]: j = pi[j-1]
+    pi[i] = j + (s[i] == s[j])
+  p = n - pi[-1]
+  return n // p if n % p == 0 else 1
 
 while True:
- s = input().strip()
- if s == '*': break
- print(kmp_period(s))
+  s = input().strip()
+  if s == '*': break
+  print(kmp_period(s))
 ```
 
 ### Complexity Analysis

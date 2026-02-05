@@ -97,23 +97,23 @@ Try all possible subarrays with length in range [a, b] and compute their sums.
 
 ```python
 def solve_brute_force(n, a, b, arr):
- """
- Brute force solution - check all valid subarrays.
+  """
+  Brute force solution - check all valid subarrays.
 
- Time: O(n * b) or O(n^2) worst case
- Space: O(1)
- """
- max_sum = float('-inf')
+  Time: O(n * b) or O(n^2) worst case
+  Space: O(1)
+  """
+  max_sum = float('-inf')
 
- for i in range(n):
-  current_sum = 0
-  for j in range(i, min(i + b, n)):
-   current_sum += arr[j]
-   length = j - i + 1
-   if a <= length <= b:
-    max_sum = max(max_sum, current_sum)
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, min(i + b, n)):
+      current_sum += arr[j]
+      length = j - i + 1
+      if a <= length <= b:
+        max_sum = max(max_sum, current_sum)
 
- return max_sum
+  return max_sum
 ```
 
 ### Complexity
@@ -216,33 +216,33 @@ For j=5 (considering subarrays ending at index 4):
 from sortedcontainers import SortedList
 
 def solve_optimal(n, a, b, arr):
- """
- Optimal solution using prefix sums + sorted container (multiset).
+  """
+  Optimal solution using prefix sums + sorted container (multiset).
 
- Time: O(n log n) - each element inserted/removed once
- Space: O(n) - prefix array and multiset
- """
- # Build prefix sums
- prefix = [0] * (n + 1)
- for i in range(n):
-  prefix[i + 1] = prefix[i] + arr[i]
+  Time: O(n log n) - each element inserted/removed once
+  Space: O(n) - prefix array and multiset
+  """
+  # Build prefix sums
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + arr[i]
 
- # Multiset to track minimum prefix in valid window
- window = SortedList()
- max_sum = float('-inf')
+  # Multiset to track minimum prefix in valid window
+  window = SortedList()
+  max_sum = float('-inf')
 
- for j in range(a, n + 1):
-  # Add prefix[j-a] to window (now in valid range)
-  window.add(prefix[j - a])
+  for j in range(a, n + 1):
+    # Add prefix[j-a] to window (now in valid range)
+    window.add(prefix[j - a])
 
-  # Remove prefix[j-b-1] if out of range
-  if j > b:
-   window.remove(prefix[j - b - 1])
+    # Remove prefix[j-b-1] if out of range
+    if j > b:
+      window.remove(prefix[j - b - 1])
 
-  # Current best: prefix[j] - minimum in window
-  max_sum = max(max_sum, prefix[j] - window[0])
+    # Current best: prefix[j] - minimum in window
+    max_sum = max(max_sum, prefix[j] - window[0])
 
- return max_sum
+  return max_sum
 
 
 # CSES submission version (using list-based approach)
@@ -250,34 +250,34 @@ import sys
 from bisect import insort, bisect_left
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n, a, b = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
- idx += 3
- arr = [int(input_data[idx + i]) for i in range(n)]
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, a, b = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
+  idx += 3
+  arr = [int(input_data[idx + i]) for i in range(n)]
 
- # Build prefix sums
- prefix = [0] * (n + 1)
- for i in range(n):
-  prefix[i + 1] = prefix[i] + arr[i]
+  # Build prefix sums
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + arr[i]
 
- # Sorted list as multiset
- window = []
- max_sum = float('-inf')
+  # Sorted list as multiset
+  window = []
+  max_sum = float('-inf')
 
- for j in range(a, n + 1):
-  insort(window, prefix[j - a])
+  for j in range(a, n + 1):
+    insort(window, prefix[j - a])
 
-  if j > b:
-   pos = bisect_left(window, prefix[j - b - 1])
-   window.pop(pos)
+    if j > b:
+      pos = bisect_left(window, prefix[j - b - 1])
+      window.pop(pos)
 
-  max_sum = max(max_sum, prefix[j] - window[0])
+    max_sum = max(max_sum, prefix[j] - window[0])
 
- print(max_sum)
+  print(max_sum)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity

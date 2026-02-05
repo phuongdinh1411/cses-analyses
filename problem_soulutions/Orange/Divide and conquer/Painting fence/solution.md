@@ -37,36 +37,36 @@ import sys
 sys.setrecursionlimit(10000)
 
 def min_strokes(arr, left, right, painted_height):
- if left > right:
-  return 0
+  if left > right:
+    return 0
 
- # Find the plank with minimum height in range
- min_idx = left
- for i in range(left, right + 1):
-  if arr[i] < arr[min_idx]:
-   min_idx = i
+  # Find the plank with minimum height in range
+  min_idx = left
+  for i in range(left, right + 1):
+    if arr[i] < arr[min_idx]:
+      min_idx = i
 
- # Option 1: Paint all planks vertically
- vertical_strokes = right - left + 1
+  # Option 1: Paint all planks vertically
+  vertical_strokes = right - left + 1
 
- # Option 2: Paint horizontally up to minimum height, then divide
- min_height = arr[min_idx]
- horizontal_strokes = (min_height - painted_height)  # Paint up to min height
+  # Option 2: Paint horizontally up to minimum height, then divide
+  min_height = arr[min_idx]
+  horizontal_strokes = (min_height - painted_height)  # Paint up to min height
 
- # Recursively solve for left and right parts
- horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
- horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
+  # Recursively solve for left and right parts
+  horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
+  horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
 
- return min(vertical_strokes, horizontal_strokes)
+  return min(vertical_strokes, horizontal_strokes)
 
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
+  n = int(input())
+  arr = list(map(int, input().split()))
 
- print(min_strokes(arr, 0, n - 1, 0))
+  print(min_strokes(arr, 0, n - 1, 0))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Optimized Solution with Segment Tree (for finding minimum)
@@ -76,53 +76,53 @@ import sys
 sys.setrecursionlimit(10000)
 
 def build_segment_tree(arr, tree, node, start, end):
- if start == end:
-  tree[node] = (arr[start], start)
- else:
-  mid = (start + end) // 2
-  build_segment_tree(arr, tree, 2*node, start, mid)
-  build_segment_tree(arr, tree, 2*node+1, mid+1, end)
-  tree[node] = min(tree[2*node], tree[2*node+1])
+  if start == end:
+    tree[node] = (arr[start], start)
+  else:
+    mid = (start + end) // 2
+    build_segment_tree(arr, tree, 2*node, start, mid)
+    build_segment_tree(arr, tree, 2*node+1, mid+1, end)
+    tree[node] = min(tree[2*node], tree[2*node+1])
 
 def query_min(tree, node, start, end, l, r):
- if r < start or end < l:
-  return (float('inf'), -1)
- if l <= start and end <= r:
-  return tree[node]
- mid = (start + end) // 2
- left_min = query_min(tree, 2*node, start, mid, l, r)
- right_min = query_min(tree, 2*node+1, mid+1, end, l, r)
- return min(left_min, right_min)
+  if r < start or end < l:
+    return (float('inf'), -1)
+  if l <= start and end <= r:
+    return tree[node]
+  mid = (start + end) // 2
+  left_min = query_min(tree, 2*node, start, mid, l, r)
+  right_min = query_min(tree, 2*node+1, mid+1, end, l, r)
+  return min(left_min, right_min)
 
 def min_strokes(arr, tree, n, left, right, painted_height):
- if left > right:
-  return 0
+  if left > right:
+    return 0
 
- # Find minimum using segment tree
- min_val, min_idx = query_min(tree, 1, 0, n-1, left, right)
+  # Find minimum using segment tree
+  min_val, min_idx = query_min(tree, 1, 0, n-1, left, right)
 
- # Option 1: Vertical strokes
- vertical = right - left + 1
+  # Option 1: Vertical strokes
+  vertical = right - left + 1
 
- # Option 2: Horizontal strokes
- horizontal = (min_val - painted_height)
- horizontal += min_strokes(arr, tree, n, left, min_idx - 1, min_val)
- horizontal += min_strokes(arr, tree, n, min_idx + 1, right, min_val)
+  # Option 2: Horizontal strokes
+  horizontal = (min_val - painted_height)
+  horizontal += min_strokes(arr, tree, n, left, min_idx - 1, min_val)
+  horizontal += min_strokes(arr, tree, n, min_idx + 1, right, min_val)
 
- return min(vertical, horizontal)
+  return min(vertical, horizontal)
 
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
+  n = int(input())
+  arr = list(map(int, input().split()))
 
- # Build segment tree for range minimum query
- tree = [(float('inf'), -1)] * (4 * n)
- build_segment_tree(arr, tree, 1, 0, n-1)
+  # Build segment tree for range minimum query
+  tree = [(float('inf'), -1)] * (4 * n)
+  build_segment_tree(arr, tree, 1, 0, n-1)
 
- print(min_strokes(arr, tree, n, 0, n - 1, 0))
+  print(min_strokes(arr, tree, n, 0, n - 1, 0))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

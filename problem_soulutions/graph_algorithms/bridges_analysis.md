@@ -227,66 +227,66 @@ Bridges: (1,2), (2,3)
 from collections import defaultdict
 
 def find_bridges(n, edges):
- """
- Find all bridges in an undirected graph using Tarjan's algorithm.
+  """
+  Find all bridges in an undirected graph using Tarjan's algorithm.
 
- Time: O(V + E)
- Space: O(V + E)
+  Time: O(V + E)
+  Space: O(V + E)
 
- Args:
-  n: number of vertices (1-indexed)
-  edges: list of (u, v) tuples representing edges
+  Args:
+    n: number of vertices (1-indexed)
+    edges: list of (u, v) tuples representing edges
 
- Returns:
-  List of bridge edges as (u, v) tuples
- """
- graph = defaultdict(list)
- for u, v in edges:
-  graph[u].append(v)
-  graph[v].append(u)
+  Returns:
+    List of bridge edges as (u, v) tuples
+  """
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
- disc = [-1] * (n + 1)      # Discovery time
- low = [-1] * (n + 1)       # Low-link value
- timer = [0]                # Mutable timer for closure
- bridges = []
+  disc = [-1] * (n + 1)      # Discovery time
+  low = [-1] * (n + 1)       # Low-link value
+  timer = [0]                # Mutable timer for closure
+  bridges = []
 
- def dfs(v, parent):
-  disc[v] = low[v] = timer[0]
-  timer[0] += 1
+  def dfs(v, parent):
+    disc[v] = low[v] = timer[0]
+    timer[0] += 1
 
-  for u in graph[v]:
-   if u == parent:
-    continue       # Skip the edge we came from
+    for u in graph[v]:
+      if u == parent:
+        continue       # Skip the edge we came from
 
-   if disc[u] == -1:  # Tree edge (unvisited)
-    dfs(u, v)
-    low[v] = min(low[v], low[u])
+      if disc[u] == -1:  # Tree edge (unvisited)
+        dfs(u, v)
+        low[v] = min(low[v], low[u])
 
-    # Bridge condition
-    if low[u] > disc[v]:
-     bridges.append((v, u))
-   else:              # Back edge (already visited)
-    low[v] = min(low[v], disc[u])
+        # Bridge condition
+        if low[u] > disc[v]:
+          bridges.append((v, u))
+      else:              # Back edge (already visited)
+        low[v] = min(low[v], disc[u])
 
- # Handle disconnected components
- for v in range(1, n + 1):
-  if disc[v] == -1:
-   dfs(v, -1)
+  # Handle disconnected components
+  for v in range(1, n + 1):
+    if disc[v] == -1:
+      dfs(v, -1)
 
- return bridges
+  return bridges
 
 
 # Example usage
 if __name__ == "__main__":
- n, m = map(int, input().split())
- edges = []
- for _ in range(m):
-  a, b = map(int, input().split())
-  edges.append((a, b))
+  n, m = map(int, input().split())
+  edges = []
+  for _ in range(m):
+    a, b = map(int, input().split())
+    edges.append((a, b))
 
- result = find_bridges(n, edges)
- for u, v in result:
-  print(u, v)
+  result = find_bridges(n, edges)
+  for u, v in result:
+    print(u, v)
 ```
 
 ---
@@ -300,9 +300,9 @@ if __name__ == "__main__":
 ```python
 # WRONG: Using parent vertex check with multiple edges
 def dfs(v, parent):
- for u in graph[v]:
-  if u == parent:  # Skips ALL edges to parent!
-   continue
+  for u in graph[v]:
+    if u == parent:  # Skips ALL edges to parent!
+      continue
 ```
 
 **Problem:** If there are multiple edges between v and parent, we should only skip ONE of them. With the vertex-based check, we skip all.
@@ -312,9 +312,9 @@ def dfs(v, parent):
 ```python
 # CORRECT: Track edge index for multigraphs
 def dfs(v, parent_edge_idx):
- for idx, u in graph[v]:  # Store (neighbor, edge_idx)
-  if idx == parent_edge_idx:
-   continue
+  for idx, u in graph[v]:  # Store (neighbor, edge_idx)
+    if idx == parent_edge_idx:
+      continue
 ```
 
 ### Mistake 2: Using low[u] Instead of disc[u] for Back Edges
@@ -322,7 +322,7 @@ def dfs(v, parent_edge_idx):
 ```python
 # WRONG
 if disc[u] != -1:  # Back edge
- low[v] = min(low[v], low[u])  # Should be disc[u]!
+  low[v] = min(low[v], low[u])  # Should be disc[u]!
 ```
 
 **Problem:** Using `low[u]` can propagate incorrect values. Back edges connect to already-visited nodes; we should use their discovery time.
@@ -337,8 +337,8 @@ dfs(1, -1)
 
 # CORRECT: Start DFS from all unvisited vertices
 for v in range(1, n + 1):
- if disc[v] == -1:
-  dfs(v, -1)
+  if disc[v] == -1:
+    dfs(v, -1)
 ```
 
 ---
@@ -396,14 +396,14 @@ for v in range(1, n + 1):
 ```python
 # Bridge condition (strict inequality)
 if low[u] > disc[v]:
- bridges.append((v, u))
+  bridges.append((v, u))
 
 # Articulation point condition (non-strict for non-root)
 if parent != -1 and low[u] >= disc[v]:
- articulation_points.add(v)
+  articulation_points.add(v)
 # Special case: root is AP if it has more than one DFS child
 if parent == -1 and children > 1:
- articulation_points.add(v)
+  articulation_points.add(v)
 ```
 
 ---

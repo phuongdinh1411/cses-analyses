@@ -106,26 +106,26 @@ Use DFS to explore all possible tours of length k starting from node a.
 
 ```python
 def solve_brute_force(n, adj, queries):
- """
- Brute force DFS solution.
+  """
+  Brute force DFS solution.
 
- Time: O(q * n^k) - exponential in k
- Space: O(k) - recursion depth
- """
- def has_tour(start, k):
-  def dfs(node, remaining):
-   if remaining == 0:
-    return node == start
-   for next_node in range(n):
-    if adj[node][next_node] and dfs(next_node, remaining - 1):
-     return True
-   return False
-  return dfs(start, k)
+  Time: O(q * n^k) - exponential in k
+  Space: O(k) - recursion depth
+  """
+  def has_tour(start, k):
+    def dfs(node, remaining):
+      if remaining == 0:
+        return node == start
+      for next_node in range(n):
+        if adj[node][next_node] and dfs(next_node, remaining - 1):
+          return True
+      return False
+    return dfs(start, k)
 
- results = []
- for a, k in queries:
-  results.append(1 if has_tour(a - 1, k) else 0)
- return results
+  results = []
+  for a, k in queries:
+    results.append(1 if has_tour(a - 1, k) else 0)
+  return results
 ```
 
 ### Complexity
@@ -214,60 +214,60 @@ Diagonal elements = tours (cycles back to same node)
 
 ```python
 def solve_optimal(n, adj, queries):
- """
- Matrix exponentiation solution.
+  """
+  Matrix exponentiation solution.
 
- Time: O(n^3 * log(max_k) + q)
- Space: O(n^2)
- """
- def matrix_mult(A, B):
-  """Multiply two n x n matrices."""
-  C = [[0] * n for _ in range(n)]
-  for i in range(n):
-   for j in range(n):
-    for k in range(n):
-     C[i][j] += A[i][k] * B[k][j]
-    # Keep only existence info (prevent overflow)
-    C[i][j] = min(C[i][j], 1)
-  return C
+  Time: O(n^3 * log(max_k) + q)
+  Space: O(n^2)
+  """
+  def matrix_mult(A, B):
+    """Multiply two n x n matrices."""
+    C = [[0] * n for _ in range(n)]
+    for i in range(n):
+      for j in range(n):
+        for k in range(n):
+          C[i][j] += A[i][k] * B[k][j]
+        # Keep only existence info (prevent overflow)
+        C[i][j] = min(C[i][j], 1)
+    return C
 
- def matrix_power(M, p):
-  """Compute M^p using binary exponentiation."""
-  # Identity matrix
-  result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-  base = [row[:] for row in M]  # Copy
+  def matrix_power(M, p):
+    """Compute M^p using binary exponentiation."""
+    # Identity matrix
+    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    base = [row[:] for row in M]  # Copy
 
-  while p > 0:
-   if p & 1:
-    result = matrix_mult(result, base)
-   base = matrix_mult(base, base)
-   p >>= 1
+    while p > 0:
+      if p & 1:
+        result = matrix_mult(result, base)
+      base = matrix_mult(base, base)
+      p >>= 1
 
-  return result
+    return result
 
- # Group queries by k value to avoid recomputation
- from collections import defaultdict
- k_to_queries = defaultdict(list)
- for idx, (a, k) in enumerate(queries):
-  k_to_queries[k].append((idx, a))
+  # Group queries by k value to avoid recomputation
+  from collections import defaultdict
+  k_to_queries = defaultdict(list)
+  for idx, (a, k) in enumerate(queries):
+    k_to_queries[k].append((idx, a))
 
- results = [0] * len(queries)
- for k, query_list in k_to_queries.items():
-  Ak = matrix_power(adj, k)
-  for idx, a in query_list:
-   results[idx] = 1 if Ak[a-1][a-1] > 0 else 0
+  results = [0] * len(queries)
+  for k, query_list in k_to_queries.items():
+    Ak = matrix_power(adj, k)
+    for idx, a in query_list:
+      results[idx] = 1 if Ak[a-1][a-1] > 0 else 0
 
- return results
+  return results
 
 
 if __name__ == "__main__":
- import sys
- data = sys.stdin.read().split()
- ptr = 0
- n, q = int(data[ptr]), int(data[ptr+1]); ptr += 2
- adj = [[int(data[ptr + i*n + j]) for j in range(n)] for i in range(n)]; ptr += n*n
- queries = [(int(data[ptr+2*i]), int(data[ptr+2*i+1])) for i in range(q)]
- for r in solve_optimal(n, adj, queries): print(r)
+  import sys
+  data = sys.stdin.read().split()
+  ptr = 0
+  n, q = int(data[ptr]), int(data[ptr+1]); ptr += 2
+  adj = [[int(data[ptr + i*n + j]) for j in range(n)] for i in range(n)]; ptr += n*n
+  queries = [(int(data[ptr+2*i]), int(data[ptr+2*i+1])) for i in range(q)]
+  for r in solve_optimal(n, adj, queries): print(r)
 ```
 
 ### Complexity
@@ -300,7 +300,7 @@ C[i][j] = min(C[i][j], 1)  # Only need to know if > 0
 ```python
 # WRONG - what's A^0?
 if k == 0:
- return True  # Always a tour?
+  return True  # Always a tour?
 
 # CORRECT - A^0 = Identity matrix
 # A^0[i][i] = 1 (path of length 0 from i to i exists)

@@ -97,21 +97,21 @@ Generate all possible sequences by trying every value at each position recursive
 
 ```python
 def count_sequences_brute(n, k, mod=10**9+7):
- """
- Brute force: enumerate all sequences recursively.
+  """
+  Brute force: enumerate all sequences recursively.
 
- Time: O(n^k) - generates all sequences
- Space: O(k) - recursion depth
- """
- def count(pos):
-  if pos == k:
-   return 1
-  total = 0
-  for _ in range(n):
-   total = (total + count(pos + 1)) % mod
-  return total
+  Time: O(n^k) - generates all sequences
+  Space: O(k) - recursion depth
+  """
+  def count(pos):
+    if pos == k:
+      return 1
+    total = 0
+    for _ in range(n):
+      total = (total + count(pos + 1)) % mod
+    return total
 
- return count(0)
+  return count(0)
 ```
 
 ### Complexity
@@ -209,47 +209,47 @@ We square the base repeatedly and multiply when bit is 1:
 **Python:**
 ```python
 def count_sequences(n, k, mod=10**9+7):
- """
- Count sequences using binary exponentiation.
+  """
+  Count sequences using binary exponentiation.
 
- Time: O(log k)
- Space: O(1)
- """
- # Edge cases
- if k == 0:
-  return 1
- if n == 0:
-  return 0
+  Time: O(log k)
+  Space: O(1)
+  """
+  # Edge cases
+  if k == 0:
+    return 1
+  if n == 0:
+    return 0
 
- # Python's built-in pow handles modular exponentiation efficiently
- return pow(n, k, mod)
+  # Python's built-in pow handles modular exponentiation efficiently
+  return pow(n, k, mod)
 
 
 def count_sequences_manual(n, k, mod=10**9+7):
- """
- Manual implementation of binary exponentiation.
- """
- if k == 0:
-  return 1
- if n == 0:
-  return 0
+  """
+  Manual implementation of binary exponentiation.
+  """
+  if k == 0:
+    return 1
+  if n == 0:
+    return 0
 
- result = 1
- base = n % mod
+  result = 1
+  base = n % mod
 
- while k > 0:
-  if k & 1:  # If k is odd (last bit is 1)
-   result = (result * base) % mod
-  base = (base * base) % mod
-  k >>= 1  # Divide k by 2
+  while k > 0:
+    if k & 1:  # If k is odd (last bit is 1)
+      result = (result * base) % mod
+    base = (base * base) % mod
+    k >>= 1  # Divide k by 2
 
- return result
+  return result
 
 
 # Example usage
 if __name__ == "__main__":
- n, k = map(int, input().split())
- print(count_sequences(n, k))
+  n, k = map(int, input().split())
+  print(count_sequences(n, k))
 ```
 
 ### Complexity
@@ -273,10 +273,10 @@ if __name__ == "__main__":
 ```python
 # WRONG - too slow for k up to 10^6
 def slow_pow(n, k, mod):
- result = 1
- for _ in range(k):  # O(k) iterations!
-  result = (result * n) % mod
- return result
+  result = 1
+  for _ in range(k):  # O(k) iterations!
+    result = (result * n) % mod
+  return result
 ```
 
 **Problem:** O(k) is too slow when k can be 10^6.
@@ -287,7 +287,7 @@ def slow_pow(n, k, mod):
 ```python
 # WRONG - crashes or gives wrong answer for edge cases
 def count_sequences(n, k, mod):
- return pow(n, k, mod)  # What if n=0? k=0?
+  return pow(n, k, mod)  # What if n=0? k=0?
 ```
 
 **Problem:** n=0 should return 0 (no elements to choose), k=0 should return 1 (empty sequence).

@@ -180,53 +180,53 @@ Iteration 3:       [=]             L=4.81, R=5.19
 
 ```python
 def ternary_search_max_int(lo: int, hi: int, f) -> int:
- """
- Find x in [lo, hi] that maximizes f(x).
+  """
+  Find x in [lo, hi] that maximizes f(x).
 
- Time: O(log(hi - lo)) function evaluations
- Space: O(1)
- """
- while hi - lo > 2:
-  m1 = lo + (hi - lo) // 3
-  m2 = hi - (hi - lo) // 3
+  Time: O(log(hi - lo)) function evaluations
+  Space: O(1)
+  """
+  while hi - lo > 2:
+    m1 = lo + (hi - lo) // 3
+    m2 = hi - (hi - lo) // 3
 
-  if f(m1) < f(m2):
-   lo = m1  # Discard left third
-  else:
-   hi = m2  # Discard right third
+    if f(m1) < f(m2):
+      lo = m1  # Discard left third
+    else:
+      hi = m2  # Discard right third
 
- # Check remaining candidates (at most 3)
- best_x = lo
- best_val = f(lo)
- for x in range(lo + 1, hi + 1):
-  val = f(x)
-  if val > best_val:
-   best_val = val
-   best_x = x
+  # Check remaining candidates (at most 3)
+  best_x = lo
+  best_val = f(lo)
+  for x in range(lo + 1, hi + 1):
+    val = f(x)
+    if val > best_val:
+      best_val = val
+      best_x = x
 
- return best_x
+  return best_x
 
 
 def ternary_search_min_int(lo: int, hi: int, f) -> int:
- """Find x in [lo, hi] that minimizes f(x)."""
- while hi - lo > 2:
-  m1 = lo + (hi - lo) // 3
-  m2 = hi - (hi - lo) // 3
+  """Find x in [lo, hi] that minimizes f(x)."""
+  while hi - lo > 2:
+    m1 = lo + (hi - lo) // 3
+    m2 = hi - (hi - lo) // 3
 
-  if f(m1) > f(m2):
-   lo = m1  # Discard left third
-  else:
-   hi = m2  # Discard right third
+    if f(m1) > f(m2):
+      lo = m1  # Discard left third
+    else:
+      hi = m2  # Discard right third
 
- best_x = lo
- best_val = f(lo)
- for x in range(lo + 1, hi + 1):
-  val = f(x)
-  if val < best_val:
-   best_val = val
-   best_x = x
+  best_x = lo
+  best_val = f(lo)
+  for x in range(lo + 1, hi + 1):
+    val = f(x)
+    if val < best_val:
+      best_val = val
+      best_x = x
 
- return best_x
+  return best_x
 ```
 
 ---
@@ -246,54 +246,54 @@ def ternary_search_min_int(lo: int, hi: int, f) -> int:
 
 ```python
 def ternary_search_max_float(lo: float, hi: float, f,
-       eps: float = 1e-9) -> float:
- """
- Find x in [lo, hi] that maximizes f(x).
+              eps: float = 1e-9) -> float:
+  """
+  Find x in [lo, hi] that maximizes f(x).
 
- Time: O(log((hi-lo)/eps)) function evaluations
- Space: O(1)
- """
- while hi - lo > eps:
-  m1 = lo + (hi - lo) / 3
-  m2 = hi - (hi - lo) / 3
+  Time: O(log((hi-lo)/eps)) function evaluations
+  Space: O(1)
+  """
+  while hi - lo > eps:
+    m1 = lo + (hi - lo) / 3
+    m2 = hi - (hi - lo) / 3
 
-  if f(m1) < f(m2):
-   lo = m1
-  else:
-   hi = m2
+    if f(m1) < f(m2):
+      lo = m1
+    else:
+      hi = m2
 
- return (lo + hi) / 2
+  return (lo + hi) / 2
 
 
 def ternary_search_min_float(lo: float, hi: float, f,
-       eps: float = 1e-9) -> float:
- """Find x in [lo, hi] that minimizes f(x)."""
- while hi - lo > eps:
-  m1 = lo + (hi - lo) / 3
-  m2 = hi - (hi - lo) / 3
+              eps: float = 1e-9) -> float:
+  """Find x in [lo, hi] that minimizes f(x)."""
+  while hi - lo > eps:
+    m1 = lo + (hi - lo) / 3
+    m2 = hi - (hi - lo) / 3
 
-  if f(m1) > f(m2):
-   lo = m1
-  else:
-   hi = m2
+    if f(m1) > f(m2):
+      lo = m1
+    else:
+      hi = m2
 
- return (lo + hi) / 2
+  return (lo + hi) / 2
 
 
 # Alternative: Fixed iterations (more robust for floating-point)
 def ternary_search_max_iterations(lo: float, hi: float, f,
-        iterations: int = 200) -> float:
- """Fixed iteration version - avoids floating-point comparison issues."""
- for _ in range(iterations):
-  m1 = lo + (hi - lo) / 3
-  m2 = hi - (hi - lo) / 3
+                iterations: int = 200) -> float:
+  """Fixed iteration version - avoids floating-point comparison issues."""
+  for _ in range(iterations):
+    m1 = lo + (hi - lo) / 3
+    m2 = hi - (hi - lo) / 3
 
-  if f(m1) < f(m2):
-   lo = m1
-  else:
-   hi = m2
+    if f(m1) < f(m2):
+      lo = m1
+    else:
+      hi = m2
 
- return (lo + hi) / 2
+  return (lo + hi) / 2
 ```
 
 ---
@@ -305,13 +305,13 @@ def ternary_search_max_iterations(lo: float, hi: float, f,
 ```python
 # WRONG - May infinite loop or miss candidates
 while lo < hi:
- m1 = lo + (hi - lo) // 3
- m2 = hi - (hi - lo) // 3
- # When hi - lo = 2, m1 = m2, stuck!
+  m1 = lo + (hi - lo) // 3
+  m2 = hi - (hi - lo) // 3
+  # When hi - lo = 2, m1 = m2, stuck!
 
 # CORRECT - Stop when range is small enough
 while hi - lo > 2:
- # ...
+  # ...
 # Then check remaining candidates manually
 ```
 
@@ -325,14 +325,14 @@ while hi - lo > 2:
 ```python
 # WRONG - May never terminate due to floating-point errors
 while lo != hi:
- # ...
+  # ...
 
 # CORRECT - Use epsilon or fixed iterations
 while hi - lo > 1e-9:
- # ...
+  # ...
 # OR
 for _ in range(200):
- # ...
+  # ...
 ```
 
 ### Mistake 4: Wrong Comparison Direction
@@ -340,11 +340,11 @@ for _ in range(200):
 ```python
 # For MAXIMUM: eliminate the LOWER value's side
 if f(m1) < f(m2):
- lo = m1  # Correct: peak is toward higher value
+  lo = m1  # Correct: peak is toward higher value
 
 # For MINIMUM: eliminate the HIGHER value's side
 if f(m1) > f(m2):
- lo = m1  # Correct: trough is toward lower value
+  lo = m1  # Correct: trough is toward lower value
 ```
 
 ---
@@ -411,19 +411,19 @@ For integers, "derivative" means: is f(x) < f(x+1)? (increasing at x)
 
 ```python
 def binary_search_peak(lo: int, hi: int, f) -> int:
- """
- Find peak of unimodal function using binary search.
- Checks if function is increasing at midpoint.
- """
- while lo < hi:
-  mid = lo + (hi - lo) // 2
-  if f(mid) < f(mid + 1):
-   # Still increasing, peak is to the right
-   lo = mid + 1
-  else:
-   # Decreasing or at peak, peak is at mid or left
-   hi = mid
- return lo
+  """
+  Find peak of unimodal function using binary search.
+  Checks if function is increasing at midpoint.
+  """
+  while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if f(mid) < f(mid + 1):
+      # Still increasing, peak is to the right
+      lo = mid + 1
+    else:
+      # Decreasing or at peak, peak is at mid or left
+      hi = mid
+  return lo
 ```
 
 ### Which to Choose?
@@ -448,25 +448,25 @@ def binary_search_peak(lo: int, hi: int, f) -> int:
 
 ```python
 def factory_machines(n: int, t: int, times: list) -> int:
- """
- Find minimum time to produce t products.
- Uses binary search on answer (time), not ternary search.
- """
- def can_produce(time_limit: int) -> bool:
-  """Can we produce >= t products in given time?"""
-  total = sum(time_limit // machine_time for machine_time in times)
-  return total >= t
+  """
+  Find minimum time to produce t products.
+  Uses binary search on answer (time), not ternary search.
+  """
+  def can_produce(time_limit: int) -> bool:
+    """Can we produce >= t products in given time?"""
+    total = sum(time_limit // machine_time for machine_time in times)
+    return total >= t
 
- lo, hi = 0, min(times) * t
+  lo, hi = 0, min(times) * t
 
- while lo < hi:
-  mid = lo + (hi - lo) // 2
-  if can_produce(mid):
-   hi = mid  # Try to find smaller time
-  else:
-   lo = mid + 1  # Need more time
+  while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if can_produce(mid):
+      hi = mid  # Try to find smaller time
+    else:
+      lo = mid + 1  # Need more time
 
- return lo
+  return lo
 ```
 
 **Why not ternary search?** The function "products produced in time T" is monotonically increasing, not unimodal. We want the minimum T satisfying a threshold, which is binary search territory.

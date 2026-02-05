@@ -119,28 +119,28 @@ Process intervals sorted by right endpoint. For each position, propagate the max
 
 ```python
 def intervals_naive(n: int, intervals: list) -> int:
- """
- Naive DP solution - O(N + M) assuming intervals already grouped.
+  """
+  Naive DP solution - O(N + M) assuming intervals already grouped.
 
- Time: O(N + M)
- Space: O(N)
+  Time: O(N + M)
+  Space: O(N)
 
- Note: This works when N is small, but fails for the actual
- problem where we need range max queries efficiently.
- """
- intervals.sort(key=lambda x: x[1])  # Sort by right endpoint
+  Note: This works when N is small, but fails for the actual
+  problem where we need range max queries efficiently.
+  """
+  intervals.sort(key=lambda x: x[1])  # Sort by right endpoint
 
- dp = [0] * (n + 1)
- idx = 0
+  dp = [0] * (n + 1)
+  idx = 0
 
- for i in range(1, n + 1):
-  dp[i] = dp[i - 1]
-  while idx < len(intervals) and intervals[idx][1] == i:
-   l, r, score = intervals[idx]
-   dp[i] = max(dp[i], dp[l - 1] + score)
-   idx += 1
+  for i in range(1, n + 1):
+    dp[i] = dp[i - 1]
+    while idx < len(intervals) and intervals[idx][1] == i:
+      l, r, score = intervals[idx]
+      dp[i] = max(dp[i], dp[l - 1] + score)
+      idx += 1
 
- return dp[n]
+  return dp[n]
 ```
 
 ### Complexity
@@ -251,92 +251,92 @@ Best: Pick interval [3,5] = 30
 
 ```python
 class SegmentTree:
- """Segment Tree for Range Maximum Query with Point Update."""
+  """Segment Tree for Range Maximum Query with Point Update."""
 
- def __init__(self, n: int):
-  self.n = n
-  self.tree = [0] * (4 * n)
+  def __init__(self, n: int):
+    self.n = n
+    self.tree = [0] * (4 * n)
 
- def update(self, node: int, start: int, end: int, idx: int, val: int):
-  if start == end:
-   self.tree[node] = max(self.tree[node], val)
-   return
-  mid = (start + end) // 2
-  if idx <= mid:
-   self.update(2 * node, start, mid, idx, val)
-  else:
-   self.update(2 * node + 1, mid + 1, end, idx, val)
-  self.tree[node] = max(self.tree[2 * node], self.tree[2 * node + 1])
+  def update(self, node: int, start: int, end: int, idx: int, val: int):
+    if start == end:
+      self.tree[node] = max(self.tree[node], val)
+      return
+    mid = (start + end) // 2
+    if idx <= mid:
+      self.update(2 * node, start, mid, idx, val)
+    else:
+      self.update(2 * node + 1, mid + 1, end, idx, val)
+    self.tree[node] = max(self.tree[2 * node], self.tree[2 * node + 1])
 
- def query(self, node: int, start: int, end: int, l: int, r: int) -> int:
-  if r < start or end < l:
-   return 0
-  if l <= start and end <= r:
-   return self.tree[node]
-  mid = (start + end) // 2
-  left_max = self.query(2 * node, start, mid, l, r)
-  right_max = self.query(2 * node + 1, mid + 1, end, l, r)
-  return max(left_max, right_max)
+  def query(self, node: int, start: int, end: int, l: int, r: int) -> int:
+    if r < start or end < l:
+      return 0
+    if l <= start and end <= r:
+      return self.tree[node]
+    mid = (start + end) // 2
+    left_max = self.query(2 * node, start, mid, l, r)
+    right_max = self.query(2 * node + 1, mid + 1, end, l, r)
+    return max(left_max, right_max)
 
 
 def solve_intervals(n: int, m: int, intervals: list) -> int:
- """
- Optimal solution using Segment Tree for range max queries.
+  """
+  Optimal solution using Segment Tree for range max queries.
 
- Time: O(M log N) for M intervals with range [1, N]
- Space: O(N) for segment tree
+  Time: O(M log N) for M intervals with range [1, N]
+  Space: O(N) for segment tree
 
- Args:
-  n: Range size [1, N]
-  m: Number of intervals
-  intervals: List of (l, r, score) tuples
+  Args:
+    n: Range size [1, N]
+    m: Number of intervals
+    intervals: List of (l, r, score) tuples
 
- Returns:
-  Maximum achievable score
- """
- from collections import defaultdict
+  Returns:
+    Maximum achievable score
+  """
+  from collections import defaultdict
 
- # Group intervals by right endpoint
- by_right = defaultdict(list)
- for l, r, a in intervals:
-  by_right[r].append((l, a))
+  # Group intervals by right endpoint
+  by_right = defaultdict(list)
+  for l, r, a in intervals:
+    by_right[r].append((l, a))
 
- seg_tree = SegmentTree(n + 1)
+  seg_tree = SegmentTree(n + 1)
 
- for r in range(1, n + 1):
-  # Process all intervals ending at position r
-  for l, score in by_right[r]:
-   # Query max score achievable before position l
-   best_before = seg_tree.query(1, 0, n, 0, l - 1)
-   candidate = best_before + score
-   seg_tree.update(1, 0, n, r, candidate)
+  for r in range(1, n + 1):
+    # Process all intervals ending at position r
+    for l, score in by_right[r]:
+      # Query max score achievable before position l
+      best_before = seg_tree.query(1, 0, n, 0, l - 1)
+      candidate = best_before + score
+      seg_tree.update(1, 0, n, r, candidate)
 
-  # Propagate: dp[r] >= dp[r-1]
-  prev_max = seg_tree.query(1, 0, n, 0, r - 1)
-  seg_tree.update(1, 0, n, r, prev_max)
+    # Propagate: dp[r] >= dp[r-1]
+    prev_max = seg_tree.query(1, 0, n, 0, r - 1)
+    seg_tree.update(1, 0, n, r, prev_max)
 
- return seg_tree.query(1, 0, n, 0, n)
+  return seg_tree.query(1, 0, n, 0, n)
 
 
 def main():
- import sys
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- intervals = []
- for _ in range(m):
-  l = int(input_data[idx]); idx += 1
-  r = int(input_data[idx]); idx += 1
-  a = int(input_data[idx]); idx += 1
-  intervals.append((l, r, a))
+  intervals = []
+  for _ in range(m):
+    l = int(input_data[idx]); idx += 1
+    r = int(input_data[idx]); idx += 1
+    a = int(input_data[idx]); idx += 1
+    intervals.append((l, r, a))
 
- print(solve_intervals(n, m, intervals))
+  print(solve_intervals(n, m, intervals))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -355,10 +355,10 @@ if __name__ == "__main__":
 ```python
 # WRONG - Missing propagation
 for r in range(1, n + 1):
- for l, score in by_right[r]:
-  best = seg.query(0, l - 1)
-  seg.update(r, best + score)
- # Missing: seg.update(r, seg.query(0, r-1))
+  for l, score in by_right[r]:
+    best = seg.query(0, l - 1)
+    seg.update(r, best + score)
+  # Missing: seg.update(r, seg.query(0, r-1))
 ```
 
 **Problem:** Without propagation, dp[r] might be less than dp[r-1], breaking optimality.

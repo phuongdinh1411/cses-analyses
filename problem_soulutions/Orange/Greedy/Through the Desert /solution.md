@@ -44,152 +44,152 @@ For each segment between gas stations:
 
 ```python
 def solve():
- while True:
-  events = []
-
   while True:
-   line = input().split()
-   dist = int(line[0])
-   event_type = line[1]
+    events = []
 
-   if event_type == "Fuel":
-    consumption = int(line[3])
-    events.append((dist, "fuel", consumption))
+    while True:
+      line = input().split()
+      dist = int(line[0])
+      event_type = line[1]
 
-    if dist == 0 and consumption == 0:
-     return
+      if event_type == "Fuel":
+        consumption = int(line[3])
+        events.append((dist, "fuel", consumption))
 
-   elif event_type == "Leak":
-    events.append((dist, "leak", 0))
-   elif event_type == "Gas":
-    events.append((dist, "gas", 0))
-   elif event_type == "Mechanic":
-    events.append((dist, "mechanic", 0))
-   elif event_type == "Goal":
-    events.append((dist, "goal", 0))
-    break
+        if dist == 0 and consumption == 0:
+          return
 
-  # Simulate to find minimum tank size
-  # Binary search on tank capacity
+      elif event_type == "Leak":
+        events.append((dist, "leak", 0))
+      elif event_type == "Gas":
+        events.append((dist, "gas", 0))
+      elif event_type == "Mechanic":
+        events.append((dist, "mechanic", 0))
+      elif event_type == "Goal":
+        events.append((dist, "goal", 0))
+        break
 
-  def can_complete(tank_capacity):
-   fuel = tank_capacity
-   consumption = 0  # litres per 100 km
-   leak_rate = 0    # litres per km
-   prev_dist = 0
+    # Simulate to find minimum tank size
+    # Binary search on tank capacity
 
-   for dist, event, val in events:
-    delta = dist - prev_dist
+    def can_complete(tank_capacity):
+      fuel = tank_capacity
+      consumption = 0  # litres per 100 km
+      leak_rate = 0    # litres per km
+      prev_dist = 0
 
-    if delta > 0:
-     # Fuel used = (consumption/100) * delta + leak_rate * delta
-     fuel_used = (consumption / 100) * delta + leak_rate * delta
-     fuel -= fuel_used
+      for dist, event, val in events:
+        delta = dist - prev_dist
 
-     if fuel < -1e-9:
-      return False
+        if delta > 0:
+          # Fuel used = (consumption/100) * delta + leak_rate * delta
+          fuel_used = (consumption / 100) * delta + leak_rate * delta
+          fuel -= fuel_used
 
-    if event == "fuel":
-     consumption = val
-    elif event == "leak":
-     leak_rate += 1
-    elif event == "gas":
-     fuel = tank_capacity
-    elif event == "mechanic":
-     leak_rate = 0
-    elif event == "goal":
-     pass
+          if fuel < -1e-9:
+            return False
 
-    prev_dist = dist
+        if event == "fuel":
+          consumption = val
+        elif event == "leak":
+          leak_rate += 1
+        elif event == "gas":
+          fuel = tank_capacity
+        elif event == "mechanic":
+          leak_rate = 0
+        elif event == "goal":
+          pass
 
-   return fuel >= -1e-9
+        prev_dist = dist
 
-  # Binary search for minimum tank capacity
-  lo, hi = 0.0, 1e9
+      return fuel >= -1e-9
 
-  for _ in range(100):  # Enough iterations for precision
-   mid = (lo + hi) / 2
-   if can_complete(mid):
-    hi = mid
-   else:
-    lo = mid
+    # Binary search for minimum tank capacity
+    lo, hi = 0.0, 1e9
 
-  print(f"{hi:.3f}")
+    for _ in range(100):  # Enough iterations for precision
+      mid = (lo + hi) / 2
+      if can_complete(mid):
+        hi = mid
+      else:
+        lo = mid
+
+    print(f"{hi:.3f}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution - Segment Analysis
 
 ```python
 def solve():
- while True:
-  events = []
-
   while True:
-   parts = input().split()
-   dist = int(parts[0])
-   event = parts[1]
+    events = []
 
-   if event == "Fuel":
-    rate = int(parts[3])
-    if dist == 0 and rate == 0:
-     return
-    events.append((dist, "fuel", rate))
-   elif event == "Leak":
-    events.append((dist, "leak", 0))
-   elif event == "Gas":
-    events.append((dist, "gas", 0))
-   elif event == "Mechanic":
-    events.append((dist, "mech", 0))
-   elif event == "Goal":
-    events.append((dist, "goal", 0))
-    break
+    while True:
+      parts = input().split()
+      dist = int(parts[0])
+      event = parts[1]
 
-  # Find min tank by checking each segment between gas stations
-  # Tank must be large enough for worst segment
+      if event == "Fuel":
+        rate = int(parts[3])
+        if dist == 0 and rate == 0:
+          return
+        events.append((dist, "fuel", rate))
+      elif event == "Leak":
+        events.append((dist, "leak", 0))
+      elif event == "Gas":
+        events.append((dist, "gas", 0))
+      elif event == "Mechanic":
+        events.append((dist, "mech", 0))
+      elif event == "Goal":
+        events.append((dist, "goal", 0))
+        break
 
-  def simulate(capacity):
-   tank = capacity
-   cons = 0
-   leak = 0
-   pos = 0
+    # Find min tank by checking each segment between gas stations
+    # Tank must be large enough for worst segment
 
-   for d, e, v in events:
-    dist = d - pos
+    def simulate(capacity):
+      tank = capacity
+      cons = 0
+      leak = 0
+      pos = 0
 
-    if dist > 0:
-     usage = cons * dist / 100 + leak * dist
-     tank -= usage
-     if tank < -1e-9:
-      return False
+      for d, e, v in events:
+        dist = d - pos
 
-    if e == "fuel":
-     cons = v
-    elif e == "leak":
-     leak += 1
-    elif e == "gas":
-     tank = capacity
-    elif e == "mech":
-     leak = 0
+        if dist > 0:
+          usage = cons * dist / 100 + leak * dist
+          tank -= usage
+          if tank < -1e-9:
+            return False
 
-    pos = d
+        if e == "fuel":
+          cons = v
+        elif e == "leak":
+          leak += 1
+        elif e == "gas":
+          tank = capacity
+        elif e == "mech":
+          leak = 0
 
-   return True
+        pos = d
 
-  lo, hi = 0, 2e7
-  for _ in range(100):
-   mid = (lo + hi) / 2
-   if simulate(mid):
-    hi = mid
-   else:
-    lo = mid
+      return True
 
-  print(f"{hi:.3f}")
+    lo, hi = 0, 2e7
+    for _ in range(100):
+      mid = (lo + hi) / 2
+      if simulate(mid):
+        hi = mid
+      else:
+        lo = mid
+
+    print(f"{hi:.3f}")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

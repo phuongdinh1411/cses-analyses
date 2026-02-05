@@ -105,18 +105,18 @@ For each query, iterate through the range computing prefix sums.
 
 ```python
 def solve_brute_force(arr, queries):
- results = []
- for query in queries:
-  if query[0] == 1:  # Update
-   arr[query[1] - 1] = query[2]
-  else:  # Query
-   a, b = query[1], query[2]
-   max_prefix, curr = float('-inf'), 0
-   for i in range(a - 1, b):
-    curr += arr[i]
-    max_prefix = max(max_prefix, curr)
-   results.append(max_prefix)
- return results
+  results = []
+  for query in queries:
+    if query[0] == 1:  # Update
+      arr[query[1] - 1] = query[2]
+    else:  # Query
+      a, b = query[1], query[2]
+      max_prefix, curr = float('-inf'), 0
+      for i in range(a - 1, b):
+        curr += arr[i]
+        max_prefix = max(max_prefix, curr)
+      results.append(max_prefix)
+  return results
 ```
 
 **Complexity:** O(q * n) time, O(1) space - Too slow for constraints.
@@ -136,9 +136,9 @@ def solve_brute_force(arr, queries):
 
 ```python
 def merge(left, right):
- total = left.total + right.total
- max_prefix = max(left.max_prefix, left.total + right.max_prefix)
- return (total, max_prefix)
+  total = left.total + right.total
+  max_prefix = max(left.max_prefix, left.total + right.max_prefix)
+  return (total, max_prefix)
 ```
 
 ### Dry Run Example
@@ -171,61 +171,61 @@ Verify: arr[2..4] = [-1, 4, -2]
 import sys
 
 def solve():
- data = sys.stdin.read().split()
- idx = 0
- n, q = int(data[idx]), int(data[idx+1]); idx += 2
+  data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(data[idx]), int(data[idx+1]); idx += 2
 
- arr = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
- tree = [(0, float('-inf'))] * (4 * n)
+  arr = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
+  tree = [(0, float('-inf'))] * (4 * n)
 
- def merge(l, r):
-  return (l[0] + r[0], max(l[1], l[0] + r[1]))
+  def merge(l, r):
+    return (l[0] + r[0], max(l[1], l[0] + r[1]))
 
- def build(node, start, end):
-  if start == end:
-   tree[node] = (arr[start], arr[start])
-   return
-  mid = (start + end) // 2
-  build(2*node, start, mid)
-  build(2*node+1, mid+1, end)
-  tree[node] = merge(tree[2*node], tree[2*node+1])
+  def build(node, start, end):
+    if start == end:
+      tree[node] = (arr[start], arr[start])
+      return
+    mid = (start + end) // 2
+    build(2*node, start, mid)
+    build(2*node+1, mid+1, end)
+    tree[node] = merge(tree[2*node], tree[2*node+1])
 
- def update(node, start, end, pos, val):
-  if start == end:
-   tree[node] = (val, val)
-   return
-  mid = (start + end) // 2
-  if pos <= mid:
-   update(2*node, start, mid, pos, val)
-  else:
-   update(2*node+1, mid+1, end, pos, val)
-  tree[node] = merge(tree[2*node], tree[2*node+1])
+  def update(node, start, end, pos, val):
+    if start == end:
+      tree[node] = (val, val)
+      return
+    mid = (start + end) // 2
+    if pos <= mid:
+      update(2*node, start, mid, pos, val)
+    else:
+      update(2*node+1, mid+1, end, pos, val)
+    tree[node] = merge(tree[2*node], tree[2*node+1])
 
- def query(node, start, end, l, r):
-  if r < start or end < l:
-   return (0, float('-inf'))
-  if l <= start and end <= r:
-   return tree[node]
-  mid = (start + end) // 2
-  return merge(query(2*node, start, mid, l, r),
-     query(2*node+1, mid+1, end, l, r))
+  def query(node, start, end, l, r):
+    if r < start or end < l:
+      return (0, float('-inf'))
+    if l <= start and end <= r:
+      return tree[node]
+    mid = (start + end) // 2
+    return merge(query(2*node, start, mid, l, r),
+          query(2*node+1, mid+1, end, l, r))
 
- build(1, 1, n)
- results = []
+  build(1, 1, n)
+  results = []
 
- for _ in range(q):
-  t = int(data[idx]); idx += 1
-  if t == 1:
-   k, u = int(data[idx]), int(data[idx+1]); idx += 2
-   update(1, 1, n, k, u)
-  else:
-   a, b = int(data[idx]), int(data[idx+1]); idx += 2
-   results.append(query(1, 1, n, a, b)[1])
+  for _ in range(q):
+    t = int(data[idx]); idx += 1
+    if t == 1:
+      k, u = int(data[idx]), int(data[idx+1]); idx += 2
+      update(1, 1, n, k, u)
+    else:
+      a, b = int(data[idx]), int(data[idx+1]); idx += 2
+      results.append(query(1, 1, n, a, b)[1])
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -244,7 +244,7 @@ if __name__ == "__main__":
 ```python
 # WRONG
 def merge(left, right):
- return max(left, right)  # Finds max element, not max prefix sum
+  return max(left, right)  # Finds max element, not max prefix sum
 ```
 
 **Fix:** Store (total, max_prefix) tuple.

@@ -174,35 +174,35 @@ Total: x=1 operations of type 1
 
 ```python
 def can_empty_piles(a: int, b: int) -> str:
- """
- Check if both piles can be emptied.
+  """
+  Check if both piles can be emptied.
 
- Mathematical conditions:
- 1. (a + b) must be divisible by 3
- 2. a <= 2*b (ensures y >= 0)
- 3. b <= 2*a (ensures x >= 0)
+  Mathematical conditions:
+  1. (a + b) must be divisible by 3
+  2. a <= 2*b (ensures y >= 0)
+  3. b <= 2*a (ensures x >= 0)
 
- Time: O(1)
- Space: O(1)
- """
- if (a + b) % 3 != 0:
-  return "NO"
- if a > 2 * b:
-  return "NO"
- if b > 2 * a:
-  return "NO"
- return "YES"
+  Time: O(1)
+  Space: O(1)
+  """
+  if (a + b) % 3 != 0:
+    return "NO"
+  if a > 2 * b:
+    return "NO"
+  if b > 2 * a:
+    return "NO"
+  return "YES"
 
 
 def solve():
- t = int(input())
- for _ in range(t):
-  a, b = map(int, input().split())
-  print(can_empty_piles(a, b))
+  t = int(input())
+  for _ in range(t):
+    a, b = map(int, input().split())
+    print(can_empty_piles(a, b))
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -221,9 +221,9 @@ if __name__ == "__main__":
 ```python
 # WRONG - missing divisibility check
 def wrong_solution(a, b):
- if a <= 2*b and b <= 2*a:
-  return "YES"
- return "NO"
+  if a <= 2*b and b <= 2*a:
+    return "YES"
+  return "NO"
 
 # Test: (2, 2) would return YES but answer is NO
 # Because 2+2=4 is not divisible by 3
@@ -237,9 +237,9 @@ def wrong_solution(a, b):
 ```python
 # WRONG - only checking divisibility
 def wrong_solution(a, b):
- if (a + b) % 3 == 0:
-  return "YES"
- return "NO"
+  if (a + b) % 3 == 0:
+    return "YES"
+  return "NO"
 
 # Test: (0, 6) would return YES but answer is NO
 # Because x = (2*6-0)/3 = 4, y = (2*0-6)/3 = -2 < 0

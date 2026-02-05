@@ -42,13 +42,13 @@ growth_cent = 0
 
 a.sort(key=lambda x: -x)
 for i in range(12):
- if growth_cent >= k:
-  print(i)
-  exit()
- growth_cent += a[i]
- if growth_cent >= k:
-  print(i + 1)
-  exit()
+  if growth_cent >= k:
+    print(i)
+    exit()
+  growth_cent += a[i]
+  if growth_cent >= k:
+    print(i + 1)
+    exit()
 
 print('-1')
 ```
@@ -129,9 +129,9 @@ Extract and sort the unique x and y coordinates. Check that there are exactly 3 
 x = []
 y = []
 for i in range(8):
- xi, yi = map(int, input().split())
- x.append(xi)
- y.append(yi)
+  xi, yi = map(int, input().split())
+  x.append(xi)
+  y.append(yi)
 
 xtmp = sorted(x)
 ytmp = sorted(y)
@@ -139,27 +139,27 @@ ytmp = sorted(y)
 xdist_list = [xtmp[0]]
 ydist_list = [ytmp[0]]
 for i in range(1, 8):
- if xtmp[i] != xtmp[i-1]:
-  xdist_list.append(xtmp[i])
- if ytmp[i] != ytmp[i-1]:
-  ydist_list.append(ytmp[i])
+  if xtmp[i] != xtmp[i-1]:
+    xdist_list.append(xtmp[i])
+  if ytmp[i] != ytmp[i-1]:
+    ydist_list.append(ytmp[i])
 
 if len(xdist_list) != 3 or len(ydist_list) != 3:
- print('ugly')
- exit()
+  print('ugly')
+  exit()
 
 full_eight_points_set = []
 for i in range(3):
- for j in range(3):
-  if i != 1 or j != 1:
-   found = False
-   for k in range(8):
-    if x[k] == xdist_list[i] and y[k] == ydist_list[j]:
-     found = True
-     break
-   if not found:
-    print('ugly')
-    exit()
+  for j in range(3):
+    if i != 1 or j != 1:
+      found = False
+      for k in range(8):
+        if x[k] == xdist_list[i] and y[k] == ydist_list[j]:
+          found = True
+          break
+      if not found:
+        print('ugly')
+        exit()
 print('respectable')
 ```
 
@@ -205,13 +205,13 @@ highest_tower = 1
 current_tower_height = 1
 
 for i in range(1, n):
- if L[i] == L[i - 1]:
-  current_tower_height += 1
-  if current_tower_height > highest_tower:
-   highest_tower = current_tower_height
- else:
-  number_of_towers += 1
-  current_tower_height = 1
+  if L[i] == L[i - 1]:
+    current_tower_height += 1
+    if current_tower_height > highest_tower:
+      highest_tower = current_tower_height
+  else:
+    number_of_towers += 1
+    current_tower_height = 1
 
 print(highest_tower, number_of_towers, sep=' ')
 ```
@@ -254,8 +254,8 @@ c.sort()
 total_time = 0
 
 for i in range(n):
- total_time += c[i] * x
- x = x - 1 if x > 1 else 1
+  total_time += c[i] * x
+  x = x - 1 if x > 1 else 1
 
 print(total_time)
 ```
@@ -301,21 +301,21 @@ end_segment = 0
 
 i = 0
 while i < n - 1:
- if a[i] > a[i + 1]:
-  if found_decreasing_segment:
-   print('no')
-   exit()
-  start_segment = i
-  found_decreasing_segment = True
-  while i < n - 1 and a[i] > a[i + 1]:
-   i += 1
-  end_segment = i
-  if (end_segment < n - 1 and a[start_segment] > a[end_segment + 1]) \
-    or (start_segment > 0 and a[end_segment] < a[start_segment - 1]):
-   print('no')
-   exit()
- else:
-  i += 1
+  if a[i] > a[i + 1]:
+    if found_decreasing_segment:
+      print('no')
+      exit()
+    start_segment = i
+    found_decreasing_segment = True
+    while i < n - 1 and a[i] > a[i + 1]:
+      i += 1
+    end_segment = i
+    if (end_segment < n - 1 and a[start_segment] > a[end_segment + 1]) \
+        or (start_segment > 0 and a[end_segment] < a[start_segment - 1]):
+      print('no')
+      exit()
+  else:
+    i += 1
 
 print('yes')
 print(start_segment + 1, end_segment + 1, sep=' ')
@@ -360,10 +360,10 @@ bsorted = sorted(a, key=lambda x: -x)
 ranking_list = []
 
 for i in range(n):
- for j in range(n):
-  if a[i] == bsorted[j]:
-   ranking_list.append(j + 1)
-   break
+  for j in range(n):
+    if a[i] == bsorted[j]:
+      ranking_list.append(j + 1)
+      break
 print(*ranking_list, sep=' ')
 ```
 

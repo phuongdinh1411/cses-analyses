@@ -128,30 +128,30 @@ For each query, simply walk up the tree k times by following parent pointers.
 
 ```python
 def solve_brute_force(n, q, bosses, queries):
- """
- Brute force: walk up parent pointers k times.
+  """
+  Brute force: walk up parent pointers k times.
 
- Time: O(q * n) - worst case O(n) per query
- Space: O(n)
- """
- # parent[i] = direct boss of employee i (1-indexed)
- parent = [0] * (n + 1)
- parent[1] = 0  # root has no parent
- for i in range(2, n + 1):
-  parent[i] = bosses[i - 2]
+  Time: O(q * n) - worst case O(n) per query
+  Space: O(n)
+  """
+  # parent[i] = direct boss of employee i (1-indexed)
+  parent = [0] * (n + 1)
+  parent[1] = 0  # root has no parent
+  for i in range(2, n + 1):
+    parent[i] = bosses[i - 2]
 
- results = []
- for x, k in queries:
-  current = x
-  for _ in range(k):
-   if current == 0:  # reached beyond root
-    current = -1
-    break
-   current = parent[current]
+  results = []
+  for x, k in queries:
+    current = x
+    for _ in range(k):
+      if current == 0:  # reached beyond root
+        current = -1
+        break
+      current = parent[current]
 
-  results.append(current if current != 0 else -1)
+    results.append(current if current != 0 else -1)
 
- return results
+  return results
 ```
 
 ### Complexity
@@ -306,66 +306,66 @@ from typing import List, Tuple
 sys.setrecursionlimit(300000)
 
 def solve_binary_lifting(n: int, q: int, bosses: List[int], queries: List[Tuple[int, int]]) -> List[int]:
- """
- Binary lifting solution for k-th ancestor queries.
+  """
+  Binary lifting solution for k-th ancestor queries.
 
- Time: O((n + q) * log n) - O(n log n) preprocessing, O(log n) per query
- Space: O(n * log n) - binary lifting table
- """
- LOG = 18  # log2(2 * 10^5) < 18
+  Time: O((n + q) * log n) - O(n log n) preprocessing, O(log n) per query
+  Space: O(n * log n) - binary lifting table
+  """
+  LOG = 18  # log2(2 * 10^5) < 18
 
- # up[x][j] = 2^j-th ancestor of node x (0 means no ancestor)
- up = [[0] * LOG for _ in range(n + 1)]
+  # up[x][j] = 2^j-th ancestor of node x (0 means no ancestor)
+  up = [[0] * LOG for _ in range(n + 1)]
 
- # Base case: up[x][0] = parent[x]
- up[1][0] = 0  # root has no parent
- for i in range(2, n + 1):
-  up[i][0] = bosses[i - 2]
+  # Base case: up[x][0] = parent[x]
+  up[1][0] = 0  # root has no parent
+  for i in range(2, n + 1):
+    up[i][0] = bosses[i - 2]
 
- # Build table: up[x][j] = up[up[x][j-1]][j-1]
- for j in range(1, LOG):
-  for x in range(1, n + 1):
-   if up[x][j - 1] != 0:
-    up[x][j] = up[up[x][j - 1]][j - 1]
+  # Build table: up[x][j] = up[up[x][j-1]][j-1]
+  for j in range(1, LOG):
+    for x in range(1, n + 1):
+      if up[x][j - 1] != 0:
+        up[x][j] = up[up[x][j - 1]][j - 1]
 
- # Answer queries
- results = []
- for x, k in queries:
-  current = x
-  for j in range(LOG):
-   if current == 0:
-    break
-   if k & (1 << j):  # if bit j is set in k
-    current = up[current][j]
+  # Answer queries
+  results = []
+  for x, k in queries:
+    current = x
+    for j in range(LOG):
+      if current == 0:
+        break
+      if k & (1 << j):  # if bit j is set in k
+        current = up[current][j]
 
-  results.append(current if current != 0 else -1)
+    results.append(current if current != 0 else -1)
 
- return results
+  return results
 
 
 def main():
- """Main function to read input and output results."""
- input_data = sys.stdin.read().split()
- idx = 0
+  """Main function to read input and output results."""
+  input_data = sys.stdin.read().split()
+  idx = 0
 
- n, q = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- bosses = [int(input_data[idx + i]) for i in range(n - 1)]
- idx += n - 1
-
- queries = []
- for _ in range(q):
-  x, k = int(input_data[idx]), int(input_data[idx + 1])
-  queries.append((x, k))
+  n, q = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
- results = solve_binary_lifting(n, q, bosses, queries)
- print('\n'.join(map(str, results)))
+  bosses = [int(input_data[idx + i]) for i in range(n - 1)]
+  idx += n - 1
+
+  queries = []
+  for _ in range(q):
+    x, k = int(input_data[idx]), int(input_data[idx + 1])
+    queries.append((x, k))
+    idx += 2
+
+  results = solve_binary_lifting(n, q, bosses, queries)
+  print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -397,11 +397,11 @@ LOG = 18  # Handles k up to 2^18 > 2 * 10^5
 ```python
 # WRONG: Using 0-indexed parent array with 1-indexed nodes
 for i in range(2, n + 1):
- up[i][0] = bosses[i - 1]  # Index error!
+  up[i][0] = bosses[i - 1]  # Index error!
 
 # CORRECT: bosses has n-1 elements for nodes 2 to n
 for i in range(2, n + 1):
- up[i][0] = bosses[i - 2]  # bosses[0] is parent of node 2
+  up[i][0] = bosses[i - 2]  # bosses[0] is parent of node 2
 ```
 
 **Problem:** Input gives parents for nodes 2, 3, ..., n in order.
@@ -412,16 +412,16 @@ for i in range(2, n + 1):
 ```python
 # WRONG: Not checking for 0 during traversal
 for j in range(LOG):
- if k & (1 << j):
-  current = up[current][j]
+  if k & (1 << j):
+    current = up[current][j]
 # May access up[0][j] which is undefined
 
 # CORRECT: Stop when we reach 0
 for j in range(LOG):
- if current == 0:
-  break
- if k & (1 << j):
-  current = up[current][j]
+  if current == 0:
+    break
+  if k & (1 << j):
+    current = up[current][j]
 ```
 
 **Problem:** Once current becomes 0 (no ancestor), we must stop.

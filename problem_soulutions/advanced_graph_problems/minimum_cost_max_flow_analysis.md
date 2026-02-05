@@ -297,89 +297,89 @@ Check: source outgoing = 2+1=3, but paths found use 2.
 from collections import deque
 
 class MCMF:
- def __init__(self, n):
-  self.n = n
-  self.graph = [[] for _ in range(n)]
+  def __init__(self, n):
+    self.n = n
+    self.graph = [[] for _ in range(n)]
 
- def add_edge(self, u, v, cap, cost):
-  """Add edge u->v with capacity and cost per unit."""
-  # Forward edge: capacity=cap, cost=cost
-  # Backward edge: capacity=0, cost=-cost
-  self.graph[u].append([v, cap, cost, len(self.graph[v])])
-  self.graph[v].append([u, 0, -cost, len(self.graph[u]) - 1])
+  def add_edge(self, u, v, cap, cost):
+    """Add edge u->v with capacity and cost per unit."""
+    # Forward edge: capacity=cap, cost=cost
+    # Backward edge: capacity=0, cost=-cost
+    self.graph[u].append([v, cap, cost, len(self.graph[v])])
+    self.graph[v].append([u, 0, -cost, len(self.graph[u]) - 1])
 
- def spfa(self, source, sink, dist, parent, parent_edge):
-  """Find shortest path using SPFA. Returns True if path exists."""
-  INF = float('inf')
-  dist[:] = [INF] * self.n
-  dist[source] = 0
-  in_queue = [False] * self.n
-  in_queue[source] = True
-  queue = deque([source])
+  def spfa(self, source, sink, dist, parent, parent_edge):
+    """Find shortest path using SPFA. Returns True if path exists."""
+    INF = float('inf')
+    dist[:] = [INF] * self.n
+    dist[source] = 0
+    in_queue = [False] * self.n
+    in_queue[source] = True
+    queue = deque([source])
 
-  while queue:
-   u = queue.popleft()
-   in_queue[u] = False
+    while queue:
+      u = queue.popleft()
+      in_queue[u] = False
 
-   for i, (v, cap, cost, _) in enumerate(self.graph[u]):
-    if cap > 0 and dist[u] + cost < dist[v]:
-     dist[v] = dist[u] + cost
-     parent[v] = u
-     parent_edge[v] = i
-     if not in_queue[v]:
-      queue.append(v)
-      in_queue[v] = True
+      for i, (v, cap, cost, _) in enumerate(self.graph[u]):
+        if cap > 0 and dist[u] + cost < dist[v]:
+          dist[v] = dist[u] + cost
+          parent[v] = u
+          parent_edge[v] = i
+          if not in_queue[v]:
+            queue.append(v)
+            in_queue[v] = True
 
-  return dist[sink] != INF
+    return dist[sink] != INF
 
- def min_cost_max_flow(self, source, sink):
-  """Returns (max_flow, min_cost)."""
-  max_flow = 0
-  min_cost = 0
-  dist = [0] * self.n
-  parent = [-1] * self.n
-  parent_edge = [-1] * self.n
+  def min_cost_max_flow(self, source, sink):
+    """Returns (max_flow, min_cost)."""
+    max_flow = 0
+    min_cost = 0
+    dist = [0] * self.n
+    parent = [-1] * self.n
+    parent_edge = [-1] * self.n
 
-  while self.spfa(source, sink, dist, parent, parent_edge):
-   # Find bottleneck capacity
-   flow = float('inf')
-   v = sink
-   while v != source:
-    u = parent[v]
-    edge_idx = parent_edge[v]
-    flow = min(flow, self.graph[u][edge_idx][1])
-    v = u
+    while self.spfa(source, sink, dist, parent, parent_edge):
+      # Find bottleneck capacity
+      flow = float('inf')
+      v = sink
+      while v != source:
+        u = parent[v]
+        edge_idx = parent_edge[v]
+        flow = min(flow, self.graph[u][edge_idx][1])
+        v = u
 
-   # Update flow along path
-   v = sink
-   while v != source:
-    u = parent[v]
-    edge_idx = parent_edge[v]
-    rev_idx = self.graph[u][edge_idx][3]
-    self.graph[u][edge_idx][1] -= flow
-    self.graph[v][rev_idx][1] += flow
-    v = u
+      # Update flow along path
+      v = sink
+      while v != source:
+        u = parent[v]
+        edge_idx = parent_edge[v]
+        rev_idx = self.graph[u][edge_idx][3]
+        self.graph[u][edge_idx][1] -= flow
+        self.graph[v][rev_idx][1] += flow
+        v = u
 
-   max_flow += flow
-   min_cost += flow * dist[sink]
+      max_flow += flow
+      min_cost += flow * dist[sink]
 
-  return max_flow, min_cost
+    return max_flow, min_cost
 
 
 def solve():
- n, m = map(int, input().split())
- mcmf = MCMF(n)
+  n, m = map(int, input().split())
+  mcmf = MCMF(n)
 
- for _ in range(m):
-  u, v, cap, cost = map(int, input().split())
-  mcmf.add_edge(u - 1, v - 1, cap, cost)  # 0-indexed
+  for _ in range(m):
+    u, v, cap, cost = map(int, input().split())
+    mcmf.add_edge(u - 1, v - 1, cap, cost)  # 0-indexed
 
- flow, cost = mcmf.min_cost_max_flow(0, n - 1)
- print(flow, cost)
+  flow, cost = mcmf.min_cost_max_flow(0, n - 1)
+  print(flow, cost)
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ---

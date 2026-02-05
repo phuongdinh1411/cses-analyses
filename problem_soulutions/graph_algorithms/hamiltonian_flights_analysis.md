@@ -192,57 +192,57 @@ Answer: 1
 
 ```python
 def count_hamiltonian_paths(n: int, edges: list[tuple[int, int]]) -> int:
- """
- Count Hamiltonian paths from city 1 to city n.
+  """
+  Count Hamiltonian paths from city 1 to city n.
 
- Args:
-  n: number of cities (1-indexed in problem, 0-indexed internally)
-  edges: list of (a, b) representing flight from city a to city b (1-indexed)
+  Args:
+    n: number of cities (1-indexed in problem, 0-indexed internally)
+    edges: list of (a, b) representing flight from city a to city b (1-indexed)
 
- Returns:
-  Number of valid routes modulo 10^9 + 7
- """
- MOD = 10**9 + 7
+  Returns:
+    Number of valid routes modulo 10^9 + 7
+  """
+  MOD = 10**9 + 7
 
- # Build adjacency list (convert to 0-indexed)
- adj = [[] for _ in range(n)]
- for a, b in edges:
-  adj[a - 1].append(b - 1)
+  # Build adjacency list (convert to 0-indexed)
+  adj = [[] for _ in range(n)]
+  for a, b in edges:
+    adj[a - 1].append(b - 1)
 
- # dp[mask][v] = number of paths ending at v with visited set = mask
- dp = [[0] * n for _ in range(1 << n)]
+  # dp[mask][v] = number of paths ending at v with visited set = mask
+  dp = [[0] * n for _ in range(1 << n)]
 
- # Base case: start at city 0 (city 1 in problem), only city 0 visited
- dp[1][0] = 1
+  # Base case: start at city 0 (city 1 in problem), only city 0 visited
+  dp[1][0] = 1
 
- # Iterate over all masks in increasing order
- for mask in range(1, 1 << n):
-  for v in range(n):
-   # Skip if city v is not in current mask
-   if not (mask & (1 << v)):
-    continue
+  # Iterate over all masks in increasing order
+  for mask in range(1, 1 << n):
+    for v in range(n):
+      # Skip if city v is not in current mask
+      if not (mask & (1 << v)):
+        continue
 
-   # Skip if no paths reach this state
-   if dp[mask][v] == 0:
-    continue
+      # Skip if no paths reach this state
+      if dp[mask][v] == 0:
+        continue
 
-   # Try extending path to unvisited neighbors
-   for u in adj[v]:
-    # Check if city u is not visited
-    if not (mask & (1 << u)):
-     new_mask = mask | (1 << u)
-     dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
+      # Try extending path to unvisited neighbors
+      for u in adj[v]:
+        # Check if city u is not visited
+        if not (mask & (1 << u)):
+          new_mask = mask | (1 << u)
+          dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
 
- # Answer: all cities visited, at city n-1 (city n in problem)
- full_mask = (1 << n) - 1
- return dp[full_mask][n - 1]
+  # Answer: all cities visited, at city n-1 (city n in problem)
+  full_mask = (1 << n) - 1
+  return dp[full_mask][n - 1]
 
 
 # Example usage
 if __name__ == "__main__":
- n, m = 4, 6
- edges = [(1, 2), (1, 3), (2, 3), (2, 4), (3, 2), (3, 4)]
- print(count_hamiltonian_paths(n, edges))  # Output: 2
+  n, m = 4, 6
+  edges = [(1, 2), (1, 3), (2, 3), (2, 4), (3, 2), (3, 4)]
+  print(count_hamiltonian_paths(n, edges))  # Output: 2
 ```
 
 ## Common Mistakes
@@ -293,10 +293,10 @@ Since we process masks in increasing order, we only need the current row:
 # Memory-optimized version (harder to implement correctly)
 # Process masks by number of bits set (popcount)
 for num_bits in range(1, n + 1):
- for mask in range(1 << n):
-  if bin(mask).count('1') == num_bits:
-   # Process this mask
-   pass
+  for mask in range(1 << n):
+    if bin(mask).count('1') == num_bits:
+      # Process this mask
+      pass
 ```
 
 However, the standard O(2^n * n) space is usually acceptable for n <= 20.

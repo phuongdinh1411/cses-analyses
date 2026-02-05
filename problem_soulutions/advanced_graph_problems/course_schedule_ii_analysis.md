@@ -174,36 +174,36 @@ In-degree:  1:0  2:0  3:1  4:1  5:1
 from collections import deque
 
 def solve():
- n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
- adj = [[] for _ in range(n + 1)]
- in_degree = [0] * (n + 1)
+  adj = [[] for _ in range(n + 1)]
+  in_degree = [0] * (n + 1)
 
- for _ in range(m):
-  a, b = map(int, input().split())
-  adj[b].append(a)  # b must come before a
-  in_degree[a] += 1
+  for _ in range(m):
+    a, b = map(int, input().split())
+    adj[b].append(a)  # b must come before a
+    in_degree[a] += 1
 
- # Kahn's algorithm
- queue = deque()
- for i in range(1, n + 1):
-  if in_degree[i] == 0:
-   queue.append(i)
+  # Kahn's algorithm
+  queue = deque()
+  for i in range(1, n + 1):
+    if in_degree[i] == 0:
+      queue.append(i)
 
- result = []
- while queue:
-  node = queue.popleft()
-  result.append(node)
+  result = []
+  while queue:
+    node = queue.popleft()
+    result.append(node)
 
-  for neighbor in adj[node]:
-   in_degree[neighbor] -= 1
-   if in_degree[neighbor] == 0:
-    queue.append(neighbor)
+    for neighbor in adj[node]:
+      in_degree[neighbor] -= 1
+      if in_degree[neighbor] == 0:
+        queue.append(neighbor)
 
- if len(result) == n:
-  print(*result)
- else:
-  print("IMPOSSIBLE")
+  if len(result) == n:
+    print(*result)
+  else:
+    print("IMPOSSIBLE")
 
 solve()
 ```
@@ -264,42 +264,42 @@ import sys
 sys.setrecursionlimit(200005)
 
 def solve():
- n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
- adj = [[] for _ in range(n + 1)]
- for _ in range(m):
-  a, b = map(int, input().split())
-  adj[b].append(a)  # b must come before a
+  adj = [[] for _ in range(n + 1)]
+  for _ in range(m):
+    a, b = map(int, input().split())
+    adj[b].append(a)  # b must come before a
 
- state = [0] * (n + 1)  # 0: unvisited, 1: visiting, 2: visited
- result = []
- has_cycle = False
+  state = [0] * (n + 1)  # 0: unvisited, 1: visiting, 2: visited
+  result = []
+  has_cycle = False
 
- def dfs(node):
-  nonlocal has_cycle
+  def dfs(node):
+    nonlocal has_cycle
+    if has_cycle:
+      return
+
+    state[node] = 1  # visiting
+
+    for neighbor in adj[node]:
+      if state[neighbor] == 1:  # cycle detected
+        has_cycle = True
+        return
+      if state[neighbor] == 0:
+        dfs(neighbor)
+
+    state[node] = 2  # visited
+    result.append(node)
+
+  for i in range(1, n + 1):
+    if state[i] == 0:
+      dfs(i)
+
   if has_cycle:
-   return
-
-  state[node] = 1  # visiting
-
-  for neighbor in adj[node]:
-   if state[neighbor] == 1:  # cycle detected
-    has_cycle = True
-    return
-   if state[neighbor] == 0:
-    dfs(neighbor)
-
-  state[node] = 2  # visited
-  result.append(node)
-
- for i in range(1, n + 1):
-  if state[i] == 0:
-   dfs(i)
-
- if has_cycle:
-  print("IMPOSSIBLE")
- else:
-  print(*result[::-1])
+    print("IMPOSSIBLE")
+  else:
+    print(*result[::-1])
 
 solve()
 ```
@@ -345,8 +345,8 @@ dfs(1)
 
 # CORRECT - check all nodes
 for i in range(1, n + 1):
- if state[i] == 0:
-  dfs(i)
+  if state[i] == 0:
+    dfs(i)
 ```
 
 ### Mistake 4: Using Only Two States for Cycle Detection

@@ -109,26 +109,26 @@ Run a separate DFS from each vertex as root and compute the answer.
 
 ```python
 def solve_naive(n, m, edges):
- """
- Naive solution: DFS from each vertex.
- Time: O(N^2), Space: O(N)
- """
- graph = [[] for _ in range(n + 1)]
- for u, v in edges:
-  graph[u].append(v)
-  graph[v].append(u)
+  """
+  Naive solution: DFS from each vertex.
+  Time: O(N^2), Space: O(N)
+  """
+  graph = [[] for _ in range(n + 1)]
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
- def dfs(v, parent):
-  result = 1  # Just v itself painted black
-  for u in graph[v]:
-   if u != parent:
-    child_ways = dfs(u, v)
-    # For each child: either don't include it (1 way)
-    # or include it in (child_ways) ways
-    result = result * (child_ways + 1) % m
-  return result
+  def dfs(v, parent):
+    result = 1  # Just v itself painted black
+    for u in graph[v]:
+      if u != parent:
+        child_ways = dfs(u, v)
+        # For each child: either don't include it (1 way)
+        # or include it in (child_ways) ways
+        result = result * (child_ways + 1) % m
+    return result
 
- return [dfs(root, -1) for root in range(1, n + 1)]
+  return [dfs(root, -1) for root in range(1, n + 1)]
 ```
 
 ### Complexity
@@ -262,72 +262,72 @@ from collections import defaultdict
 sys.setrecursionlimit(200005)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- graph = defaultdict(list)
- for _ in range(n - 1):
-  x = int(input_data[idx]); idx += 1
-  y = int(input_data[idx]); idx += 1
-  graph[x].append(y)
-  graph[y].append(x)
+  graph = defaultdict(list)
+  for _ in range(n - 1):
+    x = int(input_data[idx]); idx += 1
+    y = int(input_data[idx]); idx += 1
+    graph[x].append(y)
+    graph[y].append(x)
 
- # dp[v] = ways to color subtree rooted at v (v is black)
- dp = [0] * (n + 1)
- # ans[v] = final answer when v is the root
- ans = [0] * (n + 1)
+  # dp[v] = ways to color subtree rooted at v (v is black)
+  dp = [0] * (n + 1)
+  # ans[v] = final answer when v is the root
+  ans = [0] * (n + 1)
 
- # Phase 1: DFS to compute dp[] (subtree answers)
- def dfs1(v, parent):
-  dp[v] = 1
-  for u in graph[v]:
-   if u != parent:
-    dfs1(u, v)
-    dp[v] = dp[v] * (dp[u] + 1) % m
+  # Phase 1: DFS to compute dp[] (subtree answers)
+  def dfs1(v, parent):
+    dp[v] = 1
+    for u in graph[v]:
+      if u != parent:
+        dfs1(u, v)
+        dp[v] = dp[v] * (dp[u] + 1) % m
 
- # Phase 2: Rerooting DFS
- def dfs2(v, parent, from_parent):
-  """
-  from_parent = contribution from parent's direction
-  (ways to extend upward from v)
-  """
-  children = [u for u in graph[v] if u != parent]
-  k = len(children)
+  # Phase 2: Rerooting DFS
+  def dfs2(v, parent, from_parent):
+    """
+    from_parent = contribution from parent's direction
+    (ways to extend upward from v)
+    """
+    children = [u for u in graph[v] if u != parent]
+    k = len(children)
 
-  # Compute prefix and suffix products for efficient child removal
-  # prefix[i] = product of (dp[children[0..i-1]] + 1)
-  # suffix[i] = product of (dp[children[i+1..k-1]] + 1)
-  prefix = [1] * (k + 1)
-  suffix = [1] * (k + 1)
+    # Compute prefix and suffix products for efficient child removal
+    # prefix[i] = product of (dp[children[0..i-1]] + 1)
+    # suffix[i] = product of (dp[children[i+1..k-1]] + 1)
+    prefix = [1] * (k + 1)
+    suffix = [1] * (k + 1)
 
-  for i in range(k):
-   prefix[i + 1] = prefix[i] * (dp[children[i]] + 1) % m
-  for i in range(k - 1, -1, -1):
-   suffix[i] = suffix[i + 1] * (dp[children[i]] + 1) % m
+    for i in range(k):
+      prefix[i + 1] = prefix[i] * (dp[children[i]] + 1) % m
+    for i in range(k - 1, -1, -1):
+      suffix[i] = suffix[i + 1] * (dp[children[i]] + 1) % m
 
-  # Final answer for v: all children + parent contribution
-  ans[v] = prefix[k] * (from_parent + 1) % m
+    # Final answer for v: all children + parent contribution
+    ans[v] = prefix[k] * (from_parent + 1) % m
 
-  # Propagate to each child
-  for i, u in enumerate(children):
-   # Contribution to child u from v's direction:
-   # = (from_parent + 1) * product of all OTHER children
-   siblings_product = prefix[i] * suffix[i + 1] % m
-   contribution_to_child = (from_parent + 1) * siblings_product % m
-   dfs2(u, v, contribution_to_child)
+    # Propagate to each child
+    for i, u in enumerate(children):
+      # Contribution to child u from v's direction:
+      # = (from_parent + 1) * product of all OTHER children
+      siblings_product = prefix[i] * suffix[i + 1] % m
+      contribution_to_child = (from_parent + 1) * siblings_product % m
+      dfs2(u, v, contribution_to_child)
 
- dfs1(1, -1)
- dfs2(1, -1, 0)  # from_parent = 0 for root (no parent)
+  dfs1(1, -1)
+  dfs2(1, -1, 0)  # from_parent = 0 for root (no parent)
 
- result = []
- for v in range(1, n + 1):
-  result.append(str(ans[v]))
- print('\n'.join(result))
+  result = []
+  for v in range(1, n + 1):
+    result.append(str(ans[v]))
+  print('\n'.join(result))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity

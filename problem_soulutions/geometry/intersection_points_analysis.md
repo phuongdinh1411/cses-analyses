@@ -93,24 +93,24 @@ Check every horizontal-vertical pair for intersection.
 
 ```python
 def solve_brute_force(n, segments):
- """
- Time: O(n^2), Space: O(n)
- """
- horizontal = []
- vertical = []
+  """
+  Time: O(n^2), Space: O(n)
+  """
+  horizontal = []
+  vertical = []
 
- for x1, y1, x2, y2 in segments:
-  if y1 == y2:
-   horizontal.append((min(x1, x2), max(x1, x2), y1))
-  else:
-   vertical.append((x1, min(y1, y2), max(y1, y2)))
+  for x1, y1, x2, y2 in segments:
+    if y1 == y2:
+      horizontal.append((min(x1, x2), max(x1, x2), y1))
+    else:
+      vertical.append((x1, min(y1, y2), max(y1, y2)))
 
- count = 0
- for hx1, hx2, hy in horizontal:
-  for vx, vy1, vy2 in vertical:
-   if hx1 <= vx <= hx2 and vy1 <= hy <= vy2:
-    count += 1
- return count
+  count = 0
+  for hx1, hx2, hy in horizontal:
+    for vx, vy1, vy2 in vertical:
+      if hx1 <= vx <= hx2 and vy1 <= hy <= vy2:
+        count += 1
+  return count
 ```
 
 ### Complexity
@@ -174,59 +174,59 @@ from bisect import bisect_left, bisect_right
 input = sys.stdin.readline
 
 def main():
- n = int(input())
- events = []
- all_y = set()
+  n = int(input())
+  events = []
+  all_y = set()
 
- for _ in range(n):
-  x1, y1, x2, y2 = map(int, input().split())
-  if y1 == y2:  # Horizontal
-   xmin, xmax = min(x1, x2), max(x1, x2)
-   events.append((xmax, 1, y1, y1))  # Query
-   all_y.add(y1)
-  else:  # Vertical
-   ymin, ymax = min(y1, y2), max(y1, y2)
-   events.append((x1, 0, ymin, ymax))  # Add
-   events.append((x1, 2, ymin, ymax))  # Remove
-   all_y.add(ymin)
-   all_y.add(ymax)
+  for _ in range(n):
+    x1, y1, x2, y2 = map(int, input().split())
+    if y1 == y2:  # Horizontal
+      xmin, xmax = min(x1, x2), max(x1, x2)
+      events.append((xmax, 1, y1, y1))  # Query
+      all_y.add(y1)
+    else:  # Vertical
+      ymin, ymax = min(y1, y2), max(y1, y2)
+      events.append((x1, 0, ymin, ymax))  # Add
+      events.append((x1, 2, ymin, ymax))  # Remove
+      all_y.add(ymin)
+      all_y.add(ymax)
 
- ys = sorted(all_y)
- y_idx = {y: i for i, y in enumerate(ys)}
- m = len(ys)
- tree = [0] * (m + 2)
+  ys = sorted(all_y)
+  y_idx = {y: i for i, y in enumerate(ys)}
+  m = len(ys)
+  tree = [0] * (m + 2)
 
- def update(i, d):
-  i += 1
-  while i <= m:
-   tree[i] += d
-   i += i & (-i)
+  def update(i, d):
+    i += 1
+    while i <= m:
+      tree[i] += d
+      i += i & (-i)
 
- def query(i):
-  i += 1
-  s = 0
-  while i > 0:
-   s += tree[i]
-   i -= i & (-i)
-  return s
+  def query(i):
+    i += 1
+    s = 0
+    while i > 0:
+      s += tree[i]
+      i -= i & (-i)
+    return s
 
- events.sort()
- ans = 0
+  events.sort()
+  ans = 0
 
- for x, t, a, b in events:
-  if t == 0:  # Add vertical
-   ai, bi = y_idx[a], y_idx[b]
-   for yi in range(ai, bi + 1):
-    update(yi, 1)
-  elif t == 1:  # Query horizontal
-   yi = y_idx[a]
-   ans += query(yi) - (query(yi - 1) if yi > 0 else 0)
-  else:  # Remove vertical
-   ai, bi = y_idx[a], y_idx[b]
-   for yi in range(ai, bi + 1):
-    update(yi, -1)
+  for x, t, a, b in events:
+    if t == 0:  # Add vertical
+      ai, bi = y_idx[a], y_idx[b]
+      for yi in range(ai, bi + 1):
+        update(yi, 1)
+    elif t == 1:  # Query horizontal
+      yi = y_idx[a]
+      ans += query(yi) - (query(yi - 1) if yi > 0 else 0)
+    else:  # Remove vertical
+      ai, bi = y_idx[a], y_idx[b]
+      for yi in range(ai, bi + 1):
+        update(yi, -1)
 
- print(ans)
+  print(ans)
 
 main()
 ```

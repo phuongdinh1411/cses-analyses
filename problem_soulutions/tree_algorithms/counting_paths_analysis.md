@@ -115,49 +115,49 @@ For each path, traverse from source to destination and increment counters.
 
 ```python
 def solve_brute_force(n, m, edges, paths):
- """
- Brute force: traverse each path and mark nodes.
+  """
+  Brute force: traverse each path and mark nodes.
 
- Time: O(m * n)
- Space: O(n)
- """
- from collections import defaultdict
+  Time: O(m * n)
+  Space: O(n)
+  """
+  from collections import defaultdict
 
- adj = defaultdict(list)
- for u, v in edges:
-  adj[u].append(v)
-  adj[v].append(u)
+  adj = defaultdict(list)
+  for u, v in edges:
+    adj[u].append(v)
+    adj[v].append(u)
 
- count = [0] * (n + 1)
+  count = [0] * (n + 1)
 
- def find_path(start, end):
-  """Find path from start to end using DFS."""
-  parent = {start: None}
-  stack = [start]
+  def find_path(start, end):
+    """Find path from start to end using DFS."""
+    parent = {start: None}
+    stack = [start]
 
-  while stack:
-   node = stack.pop()
-   if node == end:
-    break
-   for neighbor in adj[node]:
-    if neighbor not in parent:
-     parent[neighbor] = node
-     stack.append(neighbor)
+    while stack:
+      node = stack.pop()
+      if node == end:
+        break
+      for neighbor in adj[node]:
+        if neighbor not in parent:
+          parent[neighbor] = node
+          stack.append(neighbor)
 
-  # Reconstruct path
-  path = []
-  curr = end
-  while curr is not None:
-   path.append(curr)
-   curr = parent[curr]
-  return path
+    # Reconstruct path
+    path = []
+    curr = end
+    while curr is not None:
+      path.append(curr)
+      curr = parent[curr]
+    return path
 
- for a, b in paths:
-  path_nodes = find_path(a, b)
-  for node in path_nodes:
-   count[node] += 1
+  for a, b in paths:
+    path_nodes = find_path(a, b)
+    for node in path_nodes:
+      count[node] += 1
 
- return count[1:]
+  return count[1:]
 ```
 
 ### Complexity
@@ -314,110 +314,110 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve(n, m, edges, paths):
- """
- Optimal solution using difference array on tree.
+  """
+  Optimal solution using difference array on tree.
 
- Time: O((n + m) log n)
- Space: O(n log n) for LCA preprocessing
- """
- # Build adjacency list
- adj = defaultdict(list)
- for u, v in edges:
-  adj[u].append(v)
-  adj[v].append(u)
+  Time: O((n + m) log n)
+  Space: O(n log n) for LCA preprocessing
+  """
+  # Build adjacency list
+  adj = defaultdict(list)
+  for u, v in edges:
+    adj[u].append(v)
+    adj[v].append(u)
 
- # LCA preprocessing with binary lifting
- LOG = 18  # log2(2 * 10^5) ~ 18
- parent = [[0] * (n + 1) for _ in range(LOG)]
- depth = [0] * (n + 1)
+  # LCA preprocessing with binary lifting
+  LOG = 18  # log2(2 * 10^5) ~ 18
+  parent = [[0] * (n + 1) for _ in range(LOG)]
+  depth = [0] * (n + 1)
 
- # DFS to compute parent and depth
- def dfs_init(node, par, d):
-  parent[0][node] = par
-  depth[node] = d
-  for neighbor in adj[node]:
-   if neighbor != par:
-    dfs_init(neighbor, node, d + 1)
+  # DFS to compute parent and depth
+  def dfs_init(node, par, d):
+    parent[0][node] = par
+    depth[node] = d
+    for neighbor in adj[node]:
+      if neighbor != par:
+        dfs_init(neighbor, node, d + 1)
 
- dfs_init(1, 0, 0)
+  dfs_init(1, 0, 0)
 
- # Build sparse table for LCA
- for k in range(1, LOG):
-  for v in range(1, n + 1):
-   parent[k][v] = parent[k-1][parent[k-1][v]]
+  # Build sparse table for LCA
+  for k in range(1, LOG):
+    for v in range(1, n + 1):
+      parent[k][v] = parent[k-1][parent[k-1][v]]
 
- def lca(u, v):
-  # Bring u and v to same depth
-  if depth[u] < depth[v]:
-   u, v = v, u
+  def lca(u, v):
+    # Bring u and v to same depth
+    if depth[u] < depth[v]:
+      u, v = v, u
 
-  diff = depth[u] - depth[v]
-  for k in range(LOG):
-   if (diff >> k) & 1:
-    u = parent[k][u]
+    diff = depth[u] - depth[v]
+    for k in range(LOG):
+      if (diff >> k) & 1:
+        u = parent[k][u]
 
-  if u == v:
-   return u
+    if u == v:
+      return u
 
-  # Binary search for LCA
-  for k in range(LOG - 1, -1, -1):
-   if parent[k][u] != parent[k][v]:
-    u = parent[k][u]
-    v = parent[k][v]
+    # Binary search for LCA
+    for k in range(LOG - 1, -1, -1):
+      if parent[k][u] != parent[k][v]:
+        u = parent[k][u]
+        v = parent[k][v]
 
-  return parent[0][u]
+    return parent[0][u]
 
- # Difference array
- diff = [0] * (n + 1)
+  # Difference array
+  diff = [0] * (n + 1)
 
- for a, b in paths:
-  c = lca(a, b)
-  diff[a] += 1
-  diff[b] += 1
-  diff[c] -= 1
-  if parent[0][c] != 0:
-   diff[parent[0][c]] -= 1
+  for a, b in paths:
+    c = lca(a, b)
+    diff[a] += 1
+    diff[b] += 1
+    diff[c] -= 1
+    if parent[0][c] != 0:
+      diff[parent[0][c]] -= 1
 
- # DFS to compute subtree sums
- result = [0] * (n + 1)
+  # DFS to compute subtree sums
+  result = [0] * (n + 1)
 
- def dfs_sum(node, par):
-  result[node] = diff[node]
-  for neighbor in adj[node]:
-   if neighbor != par:
-    dfs_sum(neighbor, node)
-    result[node] += result[neighbor]
+  def dfs_sum(node, par):
+    result[node] = diff[node]
+    for neighbor in adj[node]:
+      if neighbor != par:
+        dfs_sum(neighbor, node)
+        result[node] += result[neighbor]
 
- dfs_sum(1, 0)
+  dfs_sum(1, 0)
 
- return result[1:]
+  return result[1:]
 
 
 def main():
- input_data = sys.stdin.read().split()
- idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
- n, m = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- edges = []
- for _ in range(n - 1):
-  u, v = int(input_data[idx]), int(input_data[idx + 1])
-  edges.append((u, v))
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
- paths = []
- for _ in range(m):
-  a, b = int(input_data[idx]), int(input_data[idx + 1])
-  paths.append((a, b))
-  idx += 2
+  edges = []
+  for _ in range(n - 1):
+    u, v = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((u, v))
+    idx += 2
 
- result = solve(n, m, edges, paths)
- print(' '.join(map(str, result)))
+  paths = []
+  for _ in range(m):
+    a, b = int(input_data[idx]), int(input_data[idx + 1])
+    paths.append((a, b))
+    idx += 2
+
+  result = solve(n, m, edges, paths)
+  print(' '.join(map(str, result)))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -450,9 +450,9 @@ diff[c] -= 1
 ```python
 # WRONG - If a == b, LCA logic might fail
 def lca(u, v):
- if u == v:
-  return u  # Must handle this case!
- # ... rest of LCA logic
+  if u == v:
+    return u  # Must handle this case!
+  # ... rest of LCA logic
 ```
 
 **Problem:** When start and end are the same node, the path is just that node.
@@ -464,10 +464,10 @@ def lca(u, v):
 ```python
 # WRONG - Top-down traversal
 def dfs_wrong(node, par):
- for neighbor in adj[node]:
-  if neighbor != par:
-   result[neighbor] += result[node]  # Wrong direction!
-   dfs_wrong(neighbor, node)
+  for neighbor in adj[node]:
+    if neighbor != par:
+      result[neighbor] += result[node]  # Wrong direction!
+      dfs_wrong(neighbor, node)
 ```
 
 **Problem:** Difference array on tree requires bottom-up aggregation.

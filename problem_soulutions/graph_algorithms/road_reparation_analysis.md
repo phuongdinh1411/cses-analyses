@@ -182,61 +182,61 @@ import sys
 from typing import List, Tuple
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- edges: List[Tuple[int, int, int]] = []
- for _ in range(m):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  c = int(input_data[idx]); idx += 1
-  edges.append((c, a, b))  # (weight, u, v) for easy sorting
+  edges: List[Tuple[int, int, int]] = []
+  for _ in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    c = int(input_data[idx]); idx += 1
+    edges.append((c, a, b))  # (weight, u, v) for easy sorting
 
- # Sort edges by weight
- edges.sort()
+  # Sort edges by weight
+  edges.sort()
 
- # Union-Find with path compression and union by rank
- parent = list(range(n + 1))
- rank = [0] * (n + 1)
+  # Union-Find with path compression and union by rank
+  parent = list(range(n + 1))
+  rank = [0] * (n + 1)
 
- def find(x: int) -> int:
-  if parent[x] != x:
-   parent[x] = find(parent[x])  # Path compression
-  return parent[x]
+  def find(x: int) -> int:
+    if parent[x] != x:
+      parent[x] = find(parent[x])  # Path compression
+    return parent[x]
 
- def union(x: int, y: int) -> bool:
-  px, py = find(x), find(y)
-  if px == py:
-   return False  # Same component, would create cycle
-  # Union by rank
-  if rank[px] < rank[py]:
-   px, py = py, px
-  parent[py] = px
-  if rank[px] == rank[py]:
-   rank[px] += 1
-  return True
+  def union(x: int, y: int) -> bool:
+    px, py = find(x), find(y)
+    if px == py:
+      return False  # Same component, would create cycle
+    # Union by rank
+    if rank[px] < rank[py]:
+      px, py = py, px
+    parent[py] = px
+    if rank[px] == rank[py]:
+      rank[px] += 1
+    return True
 
- # Kruskal's algorithm
- mst_cost = 0
- edges_added = 0
+  # Kruskal's algorithm
+  mst_cost = 0
+  edges_added = 0
 
- for weight, u, v in edges:
-  if union(u, v):
-   mst_cost += weight
-   edges_added += 1
-   if edges_added == n - 1:
-    break
+  for weight, u, v in edges:
+    if union(u, v):
+      mst_cost += weight
+      edges_added += 1
+      if edges_added == n - 1:
+        break
 
- # Check if all cities are connected
- if edges_added == n - 1:
-  print(mst_cost)
- else:
-  print("IMPOSSIBLE")
+  # Check if all cities are connected
+  if edges_added == n - 1:
+    print(mst_cost)
+  else:
+    print("IMPOSSIBLE")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ## Kruskal's vs Prim's Algorithm

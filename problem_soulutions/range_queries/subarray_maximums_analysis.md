@@ -108,19 +108,19 @@ For each query, iterate through the range and find the maximum element directly.
 
 ```python
 def solve_brute_force(n, arr, queries):
- """
- Brute force: scan each query range.
+  """
+  Brute force: scan each query range.
 
- Time: O(q * n) per query
- Space: O(1) auxiliary
- """
- results = []
- for l, r in queries:
-  max_val = arr[l - 1]  # Convert to 0-indexed
-  for i in range(l - 1, r):
-   max_val = max(max_val, arr[i])
-  results.append(max_val)
- return results
+  Time: O(q * n) per query
+  Space: O(1) auxiliary
+  """
+  results = []
+  for l, r in queries:
+    max_val = arr[l - 1]  # Convert to 0-indexed
+    for i in range(l - 1, r):
+      max_val = max(max_val, arr[i])
+    results.append(max_val)
+  return results
 ```
 
 ### Complexity
@@ -235,47 +235,47 @@ import sys
 from math import log2
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n, q = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
-
- arr = [int(input_data[idx + i]) for i in range(n)]
- idx += n
-
- # Precompute logs
- LOG = [0] * (n + 1)
- for i in range(2, n + 1):
-  LOG[i] = LOG[i // 2] + 1
-
- # Build sparse table
- K = LOG[n] + 1
- st = [[0] * K for _ in range(n)]
-
- # Base case: ranges of length 1
- for i in range(n):
-  st[i][0] = arr[i]
-
- # Fill for lengths 2^j
- for j in range(1, K):
-  for i in range(n - (1 << j) + 1):
-   st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
-
- # Answer queries
- results = []
- for _ in range(q):
-  l, r = int(input_data[idx]) - 1, int(input_data[idx + 1]) - 1  # 0-indexed
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
 
-  length = r - l + 1
-  k = LOG[length]
-  ans = max(st[l][k], st[r - (1 << k) + 1][k])
-  results.append(ans)
+  arr = [int(input_data[idx + i]) for i in range(n)]
+  idx += n
 
- print('\n'.join(map(str, results)))
+  # Precompute logs
+  LOG = [0] * (n + 1)
+  for i in range(2, n + 1):
+    LOG[i] = LOG[i // 2] + 1
+
+  # Build sparse table
+  K = LOG[n] + 1
+  st = [[0] * K for _ in range(n)]
+
+  # Base case: ranges of length 1
+  for i in range(n):
+    st[i][0] = arr[i]
+
+  # Fill for lengths 2^j
+  for j in range(1, K):
+    for i in range(n - (1 << j) + 1):
+      st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+
+  # Answer queries
+  results = []
+  for _ in range(q):
+    l, r = int(input_data[idx]) - 1, int(input_data[idx + 1]) - 1  # 0-indexed
+    idx += 2
+
+    length = r - l + 1
+    k = LOG[length]
+    ans = max(st[l][k], st[r - (1 << k) + 1][k])
+    results.append(ans)
+
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity

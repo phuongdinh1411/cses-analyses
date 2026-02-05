@@ -98,16 +98,16 @@ Compute Manhattan distance for every pair and sum them up.
 
 ```python
 def solve_brute_force(n, points):
- """
- Brute force: compute all pairwise distances.
- Time: O(n^2), Space: O(1)
- """
- total = 0
- for i in range(n):
-  for j in range(i + 1, n):
-   dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
-   total += dist
- return total
+  """
+  Brute force: compute all pairwise distances.
+  Time: O(n^2), Space: O(1)
+  """
+  total = 0
+  for i in range(n):
+    for j in range(i + 1, n):
+      dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+      total += dist
+  return total
 ```
 
 ### Complexity
@@ -198,54 +198,54 @@ Total = 4 + 4 = 8
 
 ```python
 def compute_pairwise_sum(coords):
- """
- Compute sum of |a[i] - a[j]| for all pairs i < j in a sorted array.
+  """
+  Compute sum of |a[i] - a[j]| for all pairs i < j in a sorted array.
 
- For element at index i in sorted array:
- - It's subtracted by (n-1-i) elements after it
- - It subtracts i elements before it
- - Net contribution: coords[i] * (2*i - n + 1)
+  For element at index i in sorted array:
+  - It's subtracted by (n-1-i) elements after it
+  - It subtracts i elements before it
+  - Net contribution: coords[i] * (2*i - n + 1)
 
- Or equivalently with prefix sums:
- - contribution[i] = coords[i] * i - prefix_sum[i-1]
- """
- coords.sort()
- n = len(coords)
- total = 0
- prefix_sum = 0
+  Or equivalently with prefix sums:
+  - contribution[i] = coords[i] * i - prefix_sum[i-1]
+  """
+  coords.sort()
+  n = len(coords)
+  total = 0
+  prefix_sum = 0
 
- for i in range(n):
-  # coords[i] is subtracted by all elements before (indices 0 to i-1)
-  # So it contributes: coords[i] * i - sum(coords[0:i])
-  total += coords[i] * i - prefix_sum
-  prefix_sum += coords[i]
+  for i in range(n):
+    # coords[i] is subtracted by all elements before (indices 0 to i-1)
+    # So it contributes: coords[i] * i - sum(coords[0:i])
+    total += coords[i] * i - prefix_sum
+    prefix_sum += coords[i]
 
- return total
+  return total
 
 
 def solve(n, points):
- """
- Optimal solution using decomposition and prefix sums.
- Time: O(n log n), Space: O(n)
- """
- x_coords = [p[0] for p in points]
- y_coords = [p[1] for p in points]
+  """
+  Optimal solution using decomposition and prefix sums.
+  Time: O(n log n), Space: O(n)
+  """
+  x_coords = [p[0] for p in points]
+  y_coords = [p[1] for p in points]
 
- return compute_pairwise_sum(x_coords) + compute_pairwise_sum(y_coords)
+  return compute_pairwise_sum(x_coords) + compute_pairwise_sum(y_coords)
 
 
 # Read input and solve
 def main():
- n = int(input())
- points = []
- for _ in range(n):
-  x, y = map(int, input().split())
-  points.append((x, y))
- print(solve(n, points))
+  n = int(input())
+  points = []
+  for _ in range(n):
+    x, y = map(int, input().split())
+    points.append((x, y))
+  print(solve(n, points))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 #### Complexity
@@ -269,17 +269,17 @@ if __name__ == "__main__":
 ```python
 # WRONG - formula only works for sorted arrays
 def wrong_approach(coords):
- total = 0
- prefix = 0
- for i, c in enumerate(coords):
-  total += c * i - prefix  # Assumes sorted!
-  prefix += c
- return total
+  total = 0
+  prefix = 0
+  for i, c in enumerate(coords):
+    total += c * i - prefix  # Assumes sorted!
+    prefix += c
+  return total
 
 # CORRECT - sort first
 def correct_approach(coords):
- coords.sort()  # Essential!
- # ... rest of computation
+  coords.sort()  # Essential!
+  # ... rest of computation
 ```
 
 **Problem:** The prefix sum formula assumes elements are in sorted order.
@@ -290,14 +290,14 @@ def correct_approach(coords):
 ```python
 # WRONG - only computing x-contribution
 def incomplete(points):
- x_coords = [p[0] for p in points]
- return compute_pairwise_sum(x_coords)
+  x_coords = [p[0] for p in points]
+  return compute_pairwise_sum(x_coords)
 
 # CORRECT - sum both contributions
 def complete(points):
- x_coords = [p[0] for p in points]
- y_coords = [p[1] for p in points]
- return compute_pairwise_sum(x_coords) + compute_pairwise_sum(y_coords)
+  x_coords = [p[0] for p in points]
+  y_coords = [p[1] for p in points]
+  return compute_pairwise_sum(x_coords) + compute_pairwise_sum(y_coords)
 ```
 
 ---

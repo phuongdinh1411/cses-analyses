@@ -97,25 +97,25 @@ Try to match the pattern at every possible starting position in the text.
 
 ```python
 def solve_brute_force(text, pattern):
- """
- Brute force solution - check every position.
+  """
+  Brute force solution - check every position.
 
- Time: O(n * m)
- Space: O(1)
- """
- n, m = len(text), len(pattern)
- count = 0
+  Time: O(n * m)
+  Space: O(1)
+  """
+  n, m = len(text), len(pattern)
+  count = 0
 
- for i in range(n - m + 1):
-  match = True
-  for j in range(m):
-   if text[i + j] != pattern[j]:
-    match = False
-    break
-  if match:
-   count += 1
+  for i in range(n - m + 1):
+    match = True
+    for j in range(m):
+      if text[i + j] != pattern[j]:
+        match = False
+        break
+    if match:
+      count += 1
 
- return count
+  return count
 ```
 
 ### Complexity
@@ -227,78 +227,78 @@ When mismatch at 'c' (i=4, j=2):
 
 ```python
 def build_lps(pattern):
- """
- Build Longest Proper Prefix Suffix array.
+  """
+  Build Longest Proper Prefix Suffix array.
 
- Time: O(m)
- Space: O(m)
- """
- m = len(pattern)
- lps = [0] * m
- length = 0  # Length of previous longest prefix suffix
- i = 1
+  Time: O(m)
+  Space: O(m)
+  """
+  m = len(pattern)
+  lps = [0] * m
+  length = 0  # Length of previous longest prefix suffix
+  i = 1
 
- while i < m:
-  if pattern[i] == pattern[length]:
-   length += 1
-   lps[i] = length
-   i += 1
-  else:
-   if length != 0:
-    # Use previously computed LPS value
-    length = lps[length - 1]
-   else:
-    lps[i] = 0
-    i += 1
+  while i < m:
+    if pattern[i] == pattern[length]:
+      length += 1
+      lps[i] = length
+      i += 1
+    else:
+      if length != 0:
+        # Use previously computed LPS value
+        length = lps[length - 1]
+      else:
+        lps[i] = 0
+        i += 1
 
- return lps
+  return lps
 
 
 def kmp_count(text, pattern):
- """
- Count pattern occurrences using KMP algorithm.
+  """
+  Count pattern occurrences using KMP algorithm.
 
- Time: O(n + m)
- Space: O(m)
- """
- n, m = len(text), len(pattern)
+  Time: O(n + m)
+  Space: O(m)
+  """
+  n, m = len(text), len(pattern)
 
- if m == 0:
-  return 0
- if m > n:
-  return 0
+  if m == 0:
+    return 0
+  if m > n:
+    return 0
 
- lps = build_lps(pattern)
- count = 0
- i = 0  # Index for text
- j = 0  # Index for pattern
+  lps = build_lps(pattern)
+  count = 0
+  i = 0  # Index for text
+  j = 0  # Index for pattern
 
- while i < n:
-  if text[i] == pattern[j]:
-   i += 1
-   j += 1
+  while i < n:
+    if text[i] == pattern[j]:
+      i += 1
+      j += 1
 
-  if j == m:
-   # Found a match
-   count += 1
-   j = lps[j - 1]  # Continue searching for overlapping matches
-  elif i < n and text[i] != pattern[j]:
-   if j != 0:
-    j = lps[j - 1]
-   else:
-    i += 1
+    if j == m:
+      # Found a match
+      count += 1
+      j = lps[j - 1]  # Continue searching for overlapping matches
+    elif i < n and text[i] != pattern[j]:
+      if j != 0:
+        j = lps[j - 1]
+      else:
+        i += 1
 
- return count
+  return count
 
 
 def solve():
- text = input().strip()
- pattern = input().strip()
- print(kmp_count(text, pattern))
+  text = input().strip()
+  pattern = input().strip()
+  print(kmp_count(text, pattern))
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -328,61 +328,61 @@ if __name__ == "__main__":
 
 ```python
 def z_algorithm(s):
- """
- Compute Z-array for string s.
+  """
+  Compute Z-array for string s.
 
- Time: O(n)
- Space: O(n)
- """
- n = len(s)
- z = [0] * n
- z[0] = n
- l, r = 0, 0
+  Time: O(n)
+  Space: O(n)
+  """
+  n = len(s)
+  z = [0] * n
+  z[0] = n
+  l, r = 0, 0
 
- for i in range(1, n):
-  if i < r:
-   z[i] = min(r - i, z[i - l])
+  for i in range(1, n):
+    if i < r:
+      z[i] = min(r - i, z[i - l])
 
-  while i + z[i] < n and s[z[i]] == s[i + z[i]]:
-   z[i] += 1
+    while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+      z[i] += 1
 
-  if i + z[i] > r:
-   l, r = i, i + z[i]
+    if i + z[i] > r:
+      l, r = i, i + z[i]
 
- return z
+  return z
 
 
 def z_count(text, pattern):
- """
- Count pattern occurrences using Z-algorithm.
+  """
+  Count pattern occurrences using Z-algorithm.
 
- Time: O(n + m)
- Space: O(n + m)
- """
- m = len(pattern)
- if m == 0:
-  return 0
+  Time: O(n + m)
+  Space: O(n + m)
+  """
+  m = len(pattern)
+  if m == 0:
+    return 0
 
- # Concatenate with separator
- combined = pattern + "$" + text
- z = z_algorithm(combined)
+  # Concatenate with separator
+  combined = pattern + "$" + text
+  z = z_algorithm(combined)
 
- count = 0
- for i in range(m + 1, len(combined)):
-  if z[i] == m:
-   count += 1
+  count = 0
+  for i in range(m + 1, len(combined)):
+    if z[i] == m:
+      count += 1
 
- return count
+  return count
 
 
 def solve():
- text = input().strip()
- pattern = input().strip()
- print(z_count(text, pattern))
+  text = input().strip()
+  pattern = input().strip()
+  print(z_count(text, pattern))
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -401,13 +401,13 @@ if __name__ == "__main__":
 ```python
 # WRONG - Not handling the case when length != 0
 while i < m:
- if pattern[i] == pattern[length]:
-  length += 1
-  lps[i] = length
-  i += 1
- else:
-  lps[i] = 0  # Should use lps[length-1] first!
-  i += 1
+  if pattern[i] == pattern[length]:
+    length += 1
+    lps[i] = length
+    i += 1
+  else:
+    lps[i] = 0  # Should use lps[length-1] first!
+    i += 1
 ```
 
 **Problem:** Missing the fallback to previous LPS value.
@@ -418,8 +418,8 @@ while i < m:
 ```python
 # WRONG - Resets j to 0 after finding match
 if j == m:
- count += 1
- j = 0  # Misses overlapping matches!
+  count += 1
+  j = 0  # Misses overlapping matches!
 ```
 
 **Problem:** Pattern "aa" in text "aaa" should find 2 matches, not 1.
@@ -430,7 +430,7 @@ if j == m:
 ```python
 # WRONG - Not checking bounds before comparison
 while s[z[i]] == s[i + z[i]]:  # May go out of bounds!
- z[i] += 1
+  z[i] += 1
 ```
 
 **Problem:** No bounds check leads to index error.

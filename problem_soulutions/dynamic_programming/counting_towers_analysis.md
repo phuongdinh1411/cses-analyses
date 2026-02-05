@@ -330,52 +330,52 @@ MERGED configurations (3 total):
 
 ```python
 def solve():
- MOD = 10**9 + 7
- MAX_N = 10**6 + 1
+  MOD = 10**9 + 7
+  MAX_N = 10**6 + 1
 
- # Precompute dp values for all N up to MAX_N
- # dp[i][0] = split state, dp[i][1] = merged state
- dp = [[0, 0] for _ in range(MAX_N)]
+  # Precompute dp values for all N up to MAX_N
+  # dp[i][0] = split state, dp[i][1] = merged state
+  dp = [[0, 0] for _ in range(MAX_N)]
 
- # Base case: N = 1
- dp[1][0] = 1  # Two separate blocks
- dp[1][1] = 1  # One horizontal block
+  # Base case: N = 1
+  dp[1][0] = 1  # Two separate blocks
+  dp[1][1] = 1  # One horizontal block
 
- # Fill DP table using recurrence
- for i in range(2, MAX_N):
-  dp[i][0] = (4 * dp[i-1][0] + dp[i-1][1]) % MOD
-  dp[i][1] = (dp[i-1][0] + 2 * dp[i-1][1]) % MOD
+  # Fill DP table using recurrence
+  for i in range(2, MAX_N):
+    dp[i][0] = (4 * dp[i-1][0] + dp[i-1][1]) % MOD
+    dp[i][1] = (dp[i-1][0] + 2 * dp[i-1][1]) % MOD
 
- # Process queries
- t = int(input())
- for _ in range(t):
-  n = int(input())
-  print((dp[n][0] + dp[n][1]) % MOD)
+  # Process queries
+  t = int(input())
+  for _ in range(t):
+    n = int(input())
+    print((dp[n][0] + dp[n][1]) % MOD)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Space-Optimized Version (O(1) Space per Query)
 
 ```python
 def count_towers(n):
- MOD = 10**9 + 7
+  MOD = 10**9 + 7
 
- if n == 1:
-  return 2
+  if n == 1:
+    return 2
 
- # Only need previous row values
- split_prev = 1  # dp[1][0]
- merged_prev = 1  # dp[1][1]
+  # Only need previous row values
+  split_prev = 1  # dp[1][0]
+  merged_prev = 1  # dp[1][1]
 
- for i in range(2, n + 1):
-  split_curr = (4 * split_prev + merged_prev) % MOD
-  merged_curr = (split_prev + 2 * merged_prev) % MOD
-  split_prev = split_curr
-  merged_prev = merged_curr
+  for i in range(2, n + 1):
+    split_curr = (4 * split_prev + merged_prev) % MOD
+    merged_curr = (split_prev + 2 * merged_prev) % MOD
+    split_prev = split_curr
+    merged_prev = merged_curr
 
- return (split_prev + merged_prev) % MOD
+  return (split_prev + merged_prev) % MOD
 ```
 
 ## Complexity Analysis
@@ -436,14 +436,14 @@ dp[1][1] = 1
 ```python
 # WRONG: Computing for each query separately O(T*N)
 for _ in range(t):
- n = int(input())
- # compute dp[1] to dp[n]...
+  n = int(input())
+  # compute dp[1] to dp[n]...
 
 # CORRECT: Precompute once, answer queries in O(1)
 # Precompute dp[1] to dp[MAX_N]
 for _ in range(t):
- n = int(input())
- print((dp[n][0] + dp[n][1]) % MOD)
+  n = int(input())
+  print((dp[n][0] + dp[n][1]) % MOD)
 ```
 
 ## Related Problems

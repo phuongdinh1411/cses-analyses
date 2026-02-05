@@ -186,33 +186,33 @@ from collections import defaultdict
 sys.setrecursionlimit(200005)
 
 def solve():
- MOD = 10**9 + 7
+  MOD = 10**9 + 7
 
- n = int(input())
+  n = int(input())
 
- # Build adjacency list
- graph = defaultdict(list)
- for _ in range(n - 1):
-  x, y = map(int, input().split())
-  graph[x].append(y)
-  graph[y].append(x)
+  # Build adjacency list
+  graph = defaultdict(list)
+  for _ in range(n - 1):
+    x, y = map(int, input().split())
+    graph[x].append(y)
+    graph[y].append(x)
 
- # dp[v][0] = ways with v white, dp[v][1] = ways with v black
- dp = [[1, 1] for _ in range(n + 1)]
+  # dp[v][0] = ways with v white, dp[v][1] = ways with v black
+  dp = [[1, 1] for _ in range(n + 1)]
 
- def dfs(v, parent):
-  for child in graph[v]:
-   if child == parent:
-    continue
-   dfs(child, v)
+  def dfs(v, parent):
+    for child in graph[v]:
+      if child == parent:
+        continue
+      dfs(child, v)
 
-   # If v is white, child can be white or black
-   dp[v][0] = dp[v][0] * (dp[child][0] + dp[child][1]) % MOD
-   # If v is black, child must be white
-   dp[v][1] = dp[v][1] * dp[child][0] % MOD
+      # If v is white, child can be white or black
+      dp[v][0] = dp[v][0] * (dp[child][0] + dp[child][1]) % MOD
+      # If v is black, child must be white
+      dp[v][1] = dp[v][1] * dp[child][0] % MOD
 
- dfs(1, -1)
- print((dp[1][0] + dp[1][1]) % MOD)
+  dfs(1, -1)
+  print((dp[1][0] + dp[1][1]) % MOD)
 
 solve()
 ```
@@ -246,15 +246,15 @@ dp[v][0] = dp[v][0] * (dp[child][0] + dp[child][1]) % MOD
 ```python
 # WRONG - infinite loop or wrong traversal
 def dfs(v):
- for child in graph[v]:
-  dfs(child)
+  for child in graph[v]:
+    dfs(child)
 
 # CORRECT
 def dfs(v, parent):
- for child in graph[v]:
-  if child == parent:
-   continue
-  dfs(child, v)
+  for child in graph[v]:
+    if child == parent:
+      continue
+    dfs(child, v)
 ```
 
 **Problem:** In an undirected tree, each edge appears twice. Without tracking parent, DFS goes back to parent.
@@ -278,7 +278,7 @@ dp[v][0] = dp[v][0] * (dp[child][0] + dp[child][1]) % MOD
 ```python
 # WRONG - default recursion limit is ~1000
 def dfs(v, parent):
- ...
+  ...
 
 # CORRECT - increase limit for N up to 10^5
 import sys

@@ -171,81 +171,81 @@ from collections import defaultdict
 sys.setrecursionlimit(200005)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
- m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
- adj = defaultdict(list)
- radj = defaultdict(list)
+  adj = defaultdict(list)
+  radj = defaultdict(list)
 
- for _ in range(m):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  adj[a].append(b)
-  radj[b].append(a)
+  for _ in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    adj[a].append(b)
+    radj[b].append(a)
 
- # Step 1: First DFS to get finish order
- visited = [False] * (n + 1)
- order = []
+  # Step 1: First DFS to get finish order
+  visited = [False] * (n + 1)
+  order = []
 
- def dfs1(u):
-  visited[u] = True
-  for v in adj[u]:
-   if not visited[v]:
-    dfs1(v)
-  order.append(u)
+  def dfs1(u):
+    visited[u] = True
+    for v in adj[u]:
+      if not visited[v]:
+        dfs1(v)
+    order.append(u)
 
- for i in range(1, n + 1):
-  if not visited[i]:
-   dfs1(i)
+  for i in range(1, n + 1):
+    if not visited[i]:
+      dfs1(i)
 
- # Step 2: Second DFS on reverse graph to find SCCs
- visited = [False] * (n + 1)
- comp = [0] * (n + 1)  # comp[node] = SCC id
- num_scc = 0
+  # Step 2: Second DFS on reverse graph to find SCCs
+  visited = [False] * (n + 1)
+  comp = [0] * (n + 1)  # comp[node] = SCC id
+  num_scc = 0
 
- def dfs2(u, scc_id):
-  visited[u] = True
-  comp[u] = scc_id
-  for v in radj[u]:
-   if not visited[v]:
-    dfs2(v, scc_id)
+  def dfs2(u, scc_id):
+    visited[u] = True
+    comp[u] = scc_id
+    for v in radj[u]:
+      if not visited[v]:
+        dfs2(v, scc_id)
 
- for u in reversed(order):
-  if not visited[u]:
-   dfs2(u, num_scc)
-   num_scc += 1
+  for u in reversed(order):
+    if not visited[u]:
+      dfs2(u, num_scc)
+      num_scc += 1
 
- # Special case: already strongly connected
- if num_scc == 1:
-  print(0)
-  return
+  # Special case: already strongly connected
+  if num_scc == 1:
+    print(0)
+    return
 
- # Step 3: Count in-degree and out-degree in condensation DAG
- in_deg = [0] * num_scc
- out_deg = [0] * num_scc
+  # Step 3: Count in-degree and out-degree in condensation DAG
+  in_deg = [0] * num_scc
+  out_deg = [0] * num_scc
 
- for u in range(1, n + 1):
-  for v in adj[u]:
-   if comp[u] != comp[v]:
-    out_deg[comp[u]] += 1
-    in_deg[comp[v]] += 1
+  for u in range(1, n + 1):
+    for v in adj[u]:
+      if comp[u] != comp[v]:
+        out_deg[comp[u]] += 1
+        in_deg[comp[v]] += 1
 
- # Count sources and sinks (use sets to avoid counting duplicates)
- has_in = [False] * num_scc
- has_out = [False] * num_scc
+  # Count sources and sinks (use sets to avoid counting duplicates)
+  has_in = [False] * num_scc
+  has_out = [False] * num_scc
 
- for u in range(1, n + 1):
-  for v in adj[u]:
-   if comp[u] != comp[v]:
-    has_out[comp[u]] = True
-    has_in[comp[v]] = True
+  for u in range(1, n + 1):
+    for v in adj[u]:
+      if comp[u] != comp[v]:
+        has_out[comp[u]] = True
+        has_in[comp[v]] = True
 
- sources = sum(1 for i in range(num_scc) if not has_in[i])
- sinks = sum(1 for i in range(num_scc) if not has_out[i])
+  sources = sum(1 for i in range(num_scc) if not has_in[i])
+  sinks = sum(1 for i in range(num_scc) if not has_out[i])
 
- print(max(sources, sinks))
+  print(max(sources, sinks))
 
 solve()
 ```

@@ -35,128 +35,128 @@ Modified LCS where we track consecutive matches:
 
 ```python
 def solve():
- while True:
-  k = int(input())
-  if k == 0:
-   break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-  s1 = input().strip()
-  s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-  n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-  # dp[i][j] = length of consecutive match ending at s1[i-1], s2[j-1]
-  # best[i][j] = best valid LCS length ending before or at (i,j)
-  dp = [[0] * (m + 1) for _ in range(n + 1)]
-  best = [[0] * (m + 1) for _ in range(n + 1)]
+    # dp[i][j] = length of consecutive match ending at s1[i-1], s2[j-1]
+    # best[i][j] = best valid LCS length ending before or at (i,j)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    best = [[0] * (m + 1) for _ in range(n + 1)]
 
-  result = 0
+    result = 0
 
-  for i in range(1, n + 1):
-   for j in range(1, m + 1):
-    # Update best from previous positions
-    best[i][j] = max(best[i-1][j], best[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        # Update best from previous positions
+        best[i][j] = max(best[i-1][j], best[i][j-1])
 
-    if s1[i-1] == s2[j-1]:
-     dp[i][j] = dp[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          dp[i][j] = dp[i-1][j-1] + 1
 
-     # If segment length >= k, it's valid
-     if dp[i][j] >= k:
-      # Can extend previous best by segment length
-      # best[i-dp[i][j]][j-dp[i][j]] + dp[i][j]
-      seg_start_i = i - dp[i][j]
-      seg_start_j = j - dp[i][j]
-      candidate = best[seg_start_i][seg_start_j] + dp[i][j]
-      best[i][j] = max(best[i][j], candidate)
-      result = max(result, best[i][j])
-    else:
-     dp[i][j] = 0
+          # If segment length >= k, it's valid
+          if dp[i][j] >= k:
+            # Can extend previous best by segment length
+            # best[i-dp[i][j]][j-dp[i][j]] + dp[i][j]
+            seg_start_i = i - dp[i][j]
+            seg_start_j = j - dp[i][j]
+            candidate = best[seg_start_i][seg_start_j] + dp[i][j]
+            best[i][j] = max(best[i][j], candidate)
+            result = max(result, best[i][j])
+        else:
+          dp[i][j] = 0
 
-  print(result)
+    print(result)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
- while True:
-  k = int(input())
-  if k == 0:
-   break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-  s1 = input().strip()
-  s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-  n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-  # match[i][j] = length of matching segment ending at i,j
-  match = [[0] * (m + 1) for _ in range(n + 1)]
+    # match[i][j] = length of matching segment ending at i,j
+    match = [[0] * (m + 1) for _ in range(n + 1)]
 
-  # dp[i][j] = max LCS with valid segments ending at or before i,j
-  dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # dp[i][j] = max LCS with valid segments ending at or before i,j
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
 
-  for i in range(1, n + 1):
-   for j in range(1, m + 1):
-    # Propagate best from neighbors
-    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        # Propagate best from neighbors
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    if s1[i-1] == s2[j-1]:
-     match[i][j] = match[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          match[i][j] = match[i-1][j-1] + 1
 
-     # Check all valid segment lengths >= k
-     for seg_len in range(k, match[i][j] + 1):
-      prev_i = i - seg_len
-      prev_j = j - seg_len
-      dp[i][j] = max(dp[i][j], dp[prev_i][prev_j] + seg_len)
+          # Check all valid segment lengths >= k
+          for seg_len in range(k, match[i][j] + 1):
+            prev_i = i - seg_len
+            prev_j = j - seg_len
+            dp[i][j] = max(dp[i][j], dp[prev_i][prev_j] + seg_len)
 
-  print(dp[n][m])
+    print(dp[n][m])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
- while True:
-  k = int(input())
-  if k == 0:
-   break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-  s1 = input().strip()
-  s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-  n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-  # match[i][j] = consecutive match length ending at i-1, j-1
-  match = [[0] * (m + 1) for _ in range(n + 1)]
-  dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # match[i][j] = consecutive match length ending at i-1, j-1
+    match = [[0] * (m + 1) for _ in range(n + 1)]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
 
-  for i in range(1, n + 1):
-   for j in range(1, m + 1):
-    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    if s1[i-1] == s2[j-1]:
-     match[i][j] = match[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          match[i][j] = match[i-1][j-1] + 1
 
-     if match[i][j] >= k:
-      # Use segment of exactly k or extend
-      start_i = i - k
-      start_j = j - k
-      dp[i][j] = max(dp[i][j], dp[start_i][start_j] + k)
+          if match[i][j] >= k:
+            # Use segment of exactly k or extend
+            start_i = i - k
+            start_j = j - k
+            dp[i][j] = max(dp[i][j], dp[start_i][start_j] + k)
 
-      # Or extend existing segment
-      if match[i][j] > k:
-       dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
+            # Or extend existing segment
+            if match[i][j] > k:
+              dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
 
-  print(dp[n][m])
+    print(dp[n][m])
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

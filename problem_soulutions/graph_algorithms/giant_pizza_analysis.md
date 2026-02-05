@@ -291,91 +291,91 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n, m = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
 
- # Build implication graph
- # Node indexing: variable i (1-indexed) -> positive: i-1, negative: n+i-1
- graph = defaultdict(list)
- reverse_graph = defaultdict(list)
+  # Build implication graph
+  # Node indexing: variable i (1-indexed) -> positive: i-1, negative: n+i-1
+  graph = defaultdict(list)
+  reverse_graph = defaultdict(list)
 
- def pos(i):
-  return i - 1
+  def pos(i):
+    return i - 1
 
- def neg(i):
-  return n + i - 1
+  def neg(i):
+    return n + i - 1
 
- def get_node(sign, var):
-  return pos(var) if sign == '+' else neg(var)
+  def get_node(sign, var):
+    return pos(var) if sign == '+' else neg(var)
 
- def get_negation(node):
-  if node < n:
-   return node + n
-  return node - n
+  def get_negation(node):
+    if node < n:
+      return node + n
+    return node - n
 
- for _ in range(m):
-  sign1, var1 = input_data[idx], int(input_data[idx + 1])
-  sign2, var2 = input_data[idx + 2], int(input_data[idx + 3])
-  idx += 4
+  for _ in range(m):
+    sign1, var1 = input_data[idx], int(input_data[idx + 1])
+    sign2, var2 = input_data[idx + 2], int(input_data[idx + 3])
+    idx += 4
 
-  # Clause: (lit1 OR lit2)
-  # Implications: NOT lit1 -> lit2, NOT lit2 -> lit1
-  a = get_node(sign1, var1)
-  b = get_node(sign2, var2)
-  not_a = get_negation(a)
-  not_b = get_negation(b)
+    # Clause: (lit1 OR lit2)
+    # Implications: NOT lit1 -> lit2, NOT lit2 -> lit1
+    a = get_node(sign1, var1)
+    b = get_node(sign2, var2)
+    not_a = get_negation(a)
+    not_b = get_negation(b)
 
-  graph[not_a].append(b)
-  graph[not_b].append(a)
-  reverse_graph[b].append(not_a)
-  reverse_graph[a].append(not_b)
+    graph[not_a].append(b)
+    graph[not_b].append(a)
+    reverse_graph[b].append(not_a)
+    reverse_graph[a].append(not_b)
 
- # Kosaraju's algorithm for SCC
- visited = [False] * (2 * n)
- order = []
+  # Kosaraju's algorithm for SCC
+  visited = [False] * (2 * n)
+  order = []
 
- def dfs1(node):
-  visited[node] = True
-  for neighbor in graph[node]:
-   if not visited[neighbor]:
-    dfs1(neighbor)
-  order.append(node)
+  def dfs1(node):
+    visited[node] = True
+    for neighbor in graph[node]:
+      if not visited[neighbor]:
+        dfs1(neighbor)
+    order.append(node)
 
- for i in range(2 * n):
-  if not visited[i]:
-   dfs1(i)
+  for i in range(2 * n):
+    if not visited[i]:
+      dfs1(i)
 
- visited = [False] * (2 * n)
- scc_id = [-1] * (2 * n)
- current_scc = 0
+  visited = [False] * (2 * n)
+  scc_id = [-1] * (2 * n)
+  current_scc = 0
 
- def dfs2(node, scc):
-  visited[node] = True
-  scc_id[node] = scc
-  for neighbor in reverse_graph[node]:
-   if not visited[neighbor]:
-    dfs2(neighbor, scc)
+  def dfs2(node, scc):
+    visited[node] = True
+    scc_id[node] = scc
+    for neighbor in reverse_graph[node]:
+      if not visited[neighbor]:
+        dfs2(neighbor, scc)
 
- for node in reversed(order):
-  if not visited[node]:
-   dfs2(node, current_scc)
-   current_scc += 1
+  for node in reversed(order):
+    if not visited[node]:
+      dfs2(node, current_scc)
+      current_scc += 1
 
- # Check satisfiability and build assignment
- result = []
- for i in range(n):
-  if scc_id[pos(i + 1)] == scc_id[neg(i + 1)]:
-   print("IMPOSSIBLE")
-   return
-  # If positive literal has larger SCC id, set to TRUE
-  if scc_id[pos(i + 1)] > scc_id[neg(i + 1)]:
-   result.append('+')
-  else:
-   result.append('-')
+  # Check satisfiability and build assignment
+  result = []
+  for i in range(n):
+    if scc_id[pos(i + 1)] == scc_id[neg(i + 1)]:
+      print("IMPOSSIBLE")
+      return
+    # If positive literal has larger SCC id, set to TRUE
+    if scc_id[pos(i + 1)] > scc_id[neg(i + 1)]:
+      result.append('+')
+    else:
+      result.append('-')
 
- print(' '.join(result))
+  print(' '.join(result))
 
 solve()
 ```

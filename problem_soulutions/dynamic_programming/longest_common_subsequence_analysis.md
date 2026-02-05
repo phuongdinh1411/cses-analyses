@@ -136,68 +136,68 @@ Final: dp[3][5] = 3 (LCS = "ACE")
 
 ```python
 def lcs_length(s1: str, s2: str) -> int:
- m, n = len(s1), len(s2)
- dp = [[0] * (n + 1) for _ in range(m + 1)]
+  m, n = len(s1), len(s2)
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
- for i in range(1, m + 1):
-  for j in range(1, n + 1):
-   if s1[i-1] == s2[j-1]:
-    dp[i][j] = dp[i-1][j-1] + 1
-   else:
-    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
- return dp[m][n]
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if s1[i-1] == s2[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  return dp[m][n]
 
 
 def lcs_string(s1: str, s2: str) -> str:
- m, n = len(s1), len(s2)
- dp = [[0] * (n + 1) for _ in range(m + 1)]
+  m, n = len(s1), len(s2)
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
- for i in range(1, m + 1):
-  for j in range(1, n + 1):
-   if s1[i-1] == s2[j-1]:
-    dp[i][j] = dp[i-1][j-1] + 1
-   else:
-    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if s1[i-1] == s2[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
- # Backtrack
- lcs = []
- i, j = m, n
- while i > 0 and j > 0:
-  if s1[i-1] == s2[j-1]:
-   lcs.append(s1[i-1])
-   i -= 1
-   j -= 1
-  elif dp[i-1][j] > dp[i][j-1]:
-   i -= 1
-  else:
-   j -= 1
- return ''.join(reversed(lcs))
+  # Backtrack
+  lcs = []
+  i, j = m, n
+  while i > 0 and j > 0:
+    if s1[i-1] == s2[j-1]:
+      lcs.append(s1[i-1])
+      i -= 1
+      j -= 1
+    elif dp[i-1][j] > dp[i][j-1]:
+      i -= 1
+    else:
+      j -= 1
+  return ''.join(reversed(lcs))
 
 
 if __name__ == "__main__":
- s1, s2 = input(), input()
- print(lcs_length(s1, s2))
+  s1, s2 = input(), input()
+  print(lcs_length(s1, s2))
 ```
 
 #### Space-Optimized Solution (Python)
 
 ```python
 def lcs_length_optimized(s1: str, s2: str) -> int:
- if len(s1) < len(s2):
-  s1, s2 = s2, s1
- m, n = len(s1), len(s2)
+  if len(s1) < len(s2):
+    s1, s2 = s2, s1
+  m, n = len(s1), len(s2)
 
- prev = [0] * (n + 1)
- curr = [0] * (n + 1)
+  prev = [0] * (n + 1)
+  curr = [0] * (n + 1)
 
- for i in range(1, m + 1):
-  for j in range(1, n + 1):
-   if s1[i-1] == s2[j-1]:
-    curr[j] = prev[j-1] + 1
-   else:
-    curr[j] = max(prev[j], curr[j-1])
-  prev, curr = curr, [0] * (n + 1)
- return prev[n]
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if s1[i-1] == s2[j-1]:
+        curr[j] = prev[j-1] + 1
+      else:
+        curr[j] = max(prev[j], curr[j-1])
+    prev, curr = curr, [0] * (n + 1)
+  return prev[n]
 ```
 
 ## Common Mistakes

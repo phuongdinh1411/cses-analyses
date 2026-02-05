@@ -101,20 +101,20 @@ Check all possible subarrays and track the minimum sum found.
 
 ```python
 def min_subarray_brute(arr):
- """
- Brute force: Check all subarrays.
- Time: O(n^2), Space: O(1)
- """
- n = len(arr)
- min_sum = float('inf')
+  """
+  Brute force: Check all subarrays.
+  Time: O(n^2), Space: O(1)
+  """
+  n = len(arr)
+  min_sum = float('inf')
 
- for i in range(n):
-  current_sum = 0
-  for j in range(i, n):
-   current_sum += arr[j]
-   min_sum = min(min_sum, current_sum)
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, n):
+      current_sum += arr[j]
+      min_sum = min(min_sum, current_sum)
 
- return min_sum
+  return min_sum
 ```
 
 ### Complexity
@@ -233,34 +233,34 @@ Minimum subarray: [-2, 1, -3] = -4
 
 ```python
 def min_subarray_sum(arr):
- """
- Modified Kadane's algorithm for minimum subarray sum.
+  """
+  Modified Kadane's algorithm for minimum subarray sum.
 
- Time: O(n) - single pass
- Space: O(1) - only two variables
- """
- if not arr:
-  return 0
+  Time: O(n) - single pass
+  Space: O(1) - only two variables
+  """
+  if not arr:
+    return 0
 
- current_min = global_min = arr[0]
+  current_min = global_min = arr[0]
 
- for i in range(1, len(arr)):
-  # Decide: extend current subarray or start new
-  current_min = min(arr[i], current_min + arr[i])
-  # Update global minimum
-  global_min = min(global_min, current_min)
+  for i in range(1, len(arr)):
+    # Decide: extend current subarray or start new
+    current_min = min(arr[i], current_min + arr[i])
+    # Update global minimum
+    global_min = min(global_min, current_min)
 
- return global_min
+  return global_min
 
 
 # CSES-style I/O
 def solve():
- n = int(input())
- arr = list(map(int, input().split()))
- print(min_subarray_sum(arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(min_subarray_sum(arr))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -289,7 +289,7 @@ current = max(arr[i], current + arr[i])
 ```python
 # WRONG - Crashes on empty array
 def min_subarray(arr):
- current_min = global_min = arr[0]  # IndexError if empty!
+  current_min = global_min = arr[0]  # IndexError if empty!
 ```
 
 **Problem:** No check for empty input.

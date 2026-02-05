@@ -40,63 +40,63 @@ sys.setrecursionlimit(100000)
 memo = {}
 
 def solve(n):
- if n == 0:
-  return 0
+  if n == 0:
+    return 0
 
- if n in memo:
-  return memo[n]
+  if n in memo:
+    return memo[n]
 
- # Either keep the coin or exchange it
- exchanged = solve(n // 2) + solve(n // 3) + solve(n // 4)
- result = max(n, exchanged)
+  # Either keep the coin or exchange it
+  exchanged = solve(n // 2) + solve(n // 3) + solve(n // 4)
+  result = max(n, exchanged)
 
- memo[n] = result
- return result
+  memo[n] = result
+  return result
 
 def main():
- try:
-  while True:
-   n = int(input())
-   print(solve(n))
- except EOFError:
-  pass
+  try:
+    while True:
+      n = int(input())
+      print(solve(n))
+  except EOFError:
+    pass
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Alternative Iterative Solution (Bottom-up)
 
 ```python
 def solve_iterative(n):
- if n < 12:
-  return n
+  if n < 12:
+    return n
 
- # Use dictionary for sparse memoization
- dp = {}
+  # Use dictionary for sparse memoization
+  dp = {}
 
- def get_value(x):
-  if x < 12:
-   return x
-  if x in dp:
-   return dp[x]
+  def get_value(x):
+    if x < 12:
+      return x
+    if x in dp:
+      return dp[x]
 
-  result = max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
-  dp[x] = result
-  return result
+    result = max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
+    dp[x] = result
+    return result
 
- return get_value(n)
+  return get_value(n)
 
 def main():
- try:
-  while True:
-   n = int(input())
-   print(solve_iterative(n))
- except EOFError:
-  pass
+  try:
+    while True:
+      n = int(input())
+      print(solve_iterative(n))
+  except EOFError:
+    pass
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity Analysis

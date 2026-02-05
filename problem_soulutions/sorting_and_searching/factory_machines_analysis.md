@@ -114,18 +114,18 @@ Try every possible time from 1 upward until we find one that produces enough pro
 
 ```python
 def solve_brute_force(machines, target):
- """
- Brute force: try each time linearly.
+  """
+  Brute force: try each time linearly.
 
- Time: O(answer * n)
- Space: O(1)
- """
- time = 1
- while True:
-  total = sum(time // m for m in machines)
-  if total >= target:
-   return time
-  time += 1
+  Time: O(answer * n)
+  Space: O(1)
+  """
+  time = 1
+  while True:
+    total = sum(time // m for m in machines)
+    if total >= target:
+      return time
+    time += 1
 ```
 
 ### Complexity
@@ -237,33 +237,33 @@ Binary search path:
 
 ```python
 def solve(n, target, machines):
- """
- Binary search on answer.
+  """
+  Binary search on answer.
 
- Time: O(n log(answer))
- Space: O(1)
- """
- def can_produce(time):
-  """Check if we can produce target products in given time."""
-  total = 0
-  for m in machines:
-   total += time // m
-   # Early exit optimization
-   if total >= target:
-    return True
-  return False
+  Time: O(n log(answer))
+  Space: O(1)
+  """
+  def can_produce(time):
+    """Check if we can produce target products in given time."""
+    total = 0
+    for m in machines:
+      total += time // m
+      # Early exit optimization
+      if total >= target:
+        return True
+    return False
 
- lo = 1
- hi = min(machines) * target
+  lo = 1
+  hi = min(machines) * target
 
- while lo < hi:
-  mid = (lo + hi) // 2
-  if can_produce(mid):
-   hi = mid
-  else:
-   lo = mid + 1
+  while lo < hi:
+    mid = (lo + hi) // 2
+    if can_produce(mid):
+      hi = mid
+    else:
+      lo = mid + 1
 
- return lo
+  return lo
 
 
 # Read input and solve
@@ -332,17 +332,17 @@ print(solve(n, t, machines))
 
 ```python
 def binary_search_on_answer(lo, hi, is_feasible):
- """
- Find minimum value where is_feasible returns True.
- Assumes: is_feasible is monotonic (False...False, True...True)
- """
- while lo < hi:
-  mid = (lo + hi) // 2
-  if is_feasible(mid):
-   hi = mid
-  else:
-   lo = mid + 1
- return lo
+  """
+  Find minimum value where is_feasible returns True.
+  Assumes: is_feasible is monotonic (False...False, True...True)
+  """
+  while lo < hi:
+    mid = (lo + hi) // 2
+    if is_feasible(mid):
+      hi = mid
+    else:
+      lo = mid + 1
+  return lo
 ```
 
 ---

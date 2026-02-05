@@ -200,88 +200,88 @@ Query x=1:
 
 ```python
 class LiChaoTree:
- """
- Li Chao Tree for minimum line queries.
+  """
+  Li Chao Tree for minimum line queries.
 
- Time: O(log N) per insert/query
- Space: O(N) where N = hi - lo + 1
- """
+  Time: O(log N) per insert/query
+  Space: O(N) where N = hi - lo + 1
+  """
 
- def __init__(self, lo: int, hi: int):
-  self.lo = lo
-  self.hi = hi
-  self.tree = {}  # node_id -> (m, b) representing y = mx + b
-  self.INF = float('inf')
+  def __init__(self, lo: int, hi: int):
+    self.lo = lo
+    self.hi = hi
+    self.tree = {}  # node_id -> (m, b) representing y = mx + b
+    self.INF = float('inf')
 
- def _eval(self, line, x):
-  """Evaluate line y = mx + b at point x."""
-  if line is None:
-   return self.INF
-  m, b = line
-  return m * x + b
+  def _eval(self, line, x):
+    """Evaluate line y = mx + b at point x."""
+    if line is None:
+      return self.INF
+    m, b = line
+    return m * x + b
 
- def insert(self, m: int, b: int):
-  """Insert line y = mx + b."""
-  self._insert(1, self.lo, self.hi, (m, b))
+  def insert(self, m: int, b: int):
+    """Insert line y = mx + b."""
+    self._insert(1, self.lo, self.hi, (m, b))
 
- def _insert(self, node: int, lo: int, hi: int, new_line):
-  if lo > hi:
-   return
+  def _insert(self, node: int, lo: int, hi: int, new_line):
+    if lo > hi:
+      return
 
-  mid = (lo + hi) // 2
-  cur_line = self.tree.get(node)
+    mid = (lo + hi) // 2
+    cur_line = self.tree.get(node)
 
-  # Determine winner at midpoint
-  new_better_at_mid = self._eval(new_line, mid) < self._eval(cur_line, mid)
+    # Determine winner at midpoint
+    new_better_at_mid = self._eval(new_line, mid) < self._eval(cur_line, mid)
 
-  if new_better_at_mid:
-   self.tree[node] = new_line
-   new_line, cur_line = cur_line, new_line
+    if new_better_at_mid:
+      self.tree[node] = new_line
+      new_line, cur_line = cur_line, new_line
 
-  if lo == hi or new_line is None:
-   return
+    if lo == hi or new_line is None:
+      return
 
-  # Determine which side the loser might still win
-  new_better_at_lo = self._eval(new_line, lo) < self._eval(cur_line, lo)
+    # Determine which side the loser might still win
+    new_better_at_lo = self._eval(new_line, lo) < self._eval(cur_line, lo)
 
-  if new_better_at_lo:
-   self._insert(2 * node, lo, mid, new_line)
-  else:
-   self._insert(2 * node + 1, mid + 1, hi, new_line)
+    if new_better_at_lo:
+      self._insert(2 * node, lo, mid, new_line)
+    else:
+      self._insert(2 * node + 1, mid + 1, hi, new_line)
 
- def query(self, x: int) -> int:
-  """Query minimum y-value at x."""
-  return self._query(1, self.lo, self.hi, x)
+  def query(self, x: int) -> int:
+    """Query minimum y-value at x."""
+    return self._query(1, self.lo, self.hi, x)
 
- def _query(self, node: int, lo: int, hi: int, x: int):
-  if lo > hi or node not in self.tree:
-   return self.INF
+  def _query(self, node: int, lo: int, hi: int, x: int):
+    if lo > hi or node not in self.tree:
+      return self.INF
 
-  mid = (lo + hi) // 2
-  cur_val = self._eval(self.tree.get(node), x)
+    mid = (lo + hi) // 2
+    cur_val = self._eval(self.tree.get(node), x)
 
-  if lo == hi:
-   return cur_val
+    if lo == hi:
+      return cur_val
 
-  if x <= mid:
-   return min(cur_val, self._query(2 * node, lo, mid, x))
-  else:
-   return min(cur_val, self._query(2 * node + 1, mid + 1, hi, x))
+    if x <= mid:
+      return min(cur_val, self._query(2 * node, lo, mid, x))
+    else:
+      return min(cur_val, self._query(2 * node + 1, mid + 1, hi, x))
 
 
 # Example usage
 if __name__ == "__main__":
- tree = LiChaoTree(0, 1000000)
+  tree = LiChaoTree(0, 1000000)
 
- # Insert lines: y = mx + b
- tree.insert(2, 1)      # y = 2x + 1
- tree.insert(-1, 10)    # y = -x + 10
- tree.insert(0, 5)      # y = 5 (horizontal)
+  # Insert lines: y = mx + b
+  tree.insert(2, 1)      # y = 2x + 1
+  tree.insert(-1, 10)    # y = -x + 10
+  tree.insert(0, 5)      # y = 5 (horizontal)
 
- # Query minimum at various x
- print(tree.query(0))   # min at x=0
- print(tree.query(5))   # min at x=5
- print(tree.query(10))  # min at x=10
+  # Query minimum at various x
+  print(tree.query(0))   # min at x=0
+  print(tree.query(5))   # min at x=5
+  print(tree.query(10))  # min at x=10
 ```
 
 ---
@@ -309,7 +309,7 @@ cur_val = self.tree[node].eval(x)  # KeyError if node doesn't exist
 # CORRECT: Check for existence
 cur_line = self.tree.get(node)
 if cur_line is None:
- return self.INF
+  return self.INF
 ```
 
 ---

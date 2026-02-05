@@ -113,21 +113,21 @@ Check all pairs and compute Manhattan distance for each.
 
 ```python
 def solve_brute_force(points):
- """
- Brute force: check all pairs.
+  """
+  Brute force: check all pairs.
 
- Time: O(n^2)
- Space: O(1)
- """
- n = len(points)
- max_dist = 0
+  Time: O(n^2)
+  Space: O(1)
+  """
+  n = len(points)
+  max_dist = 0
 
- for i in range(n):
-  for j in range(i + 1, n):
-   dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
-   max_dist = max(max_dist, dist)
+  for i in range(n):
+    for j in range(i + 1, n):
+      dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+      max_dist = max(max_dist, dist)
 
- return max_dist
+  return max_dist
 ```
 
 ### Complexity
@@ -207,28 +207,28 @@ import sys
 input = sys.stdin.readline
 
 def solve():
- """
- Optimal solution using rotated coordinates.
+  """
+  Optimal solution using rotated coordinates.
 
- Time: O(n)
- Space: O(1)
- """
- n = int(input())
+  Time: O(n)
+  Space: O(1)
+  """
+  n = int(input())
 
- min_u = min_v = float('inf')
- max_u = max_v = float('-inf')
+  min_u = min_v = float('inf')
+  max_u = max_v = float('-inf')
 
- for _ in range(n):
-  x, y = map(int, input().split())
-  u = x + y  # rotated coordinate 1
-  v = x - y  # rotated coordinate 2
+  for _ in range(n):
+    x, y = map(int, input().split())
+    u = x + y  # rotated coordinate 1
+    v = x - y  # rotated coordinate 2
 
-  min_u = min(min_u, u)
-  max_u = max(max_u, u)
-  min_v = min(min_v, v)
-  max_v = max(max_v, v)
+    min_u = min(min_u, u)
+    max_u = max(max_u, u)
+    min_v = min(min_v, v)
+    max_v = max(max_v, v)
 
- print(max(max_u - min_u, max_v - min_v))
+  print(max(max_u - min_u, max_v - min_v))
 
 solve()
 ```

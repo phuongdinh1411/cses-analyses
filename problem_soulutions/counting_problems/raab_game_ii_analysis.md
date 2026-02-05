@@ -117,28 +117,28 @@ Generate all possible sequences recursively and count valid ones.
 
 ```python
 def count_sequences_brute(n, k):
- """
- Brute force: enumerate all sequences.
+  """
+  Brute force: enumerate all sequences.
 
- Time: O(n * (n-1)^k) - exponential
- Space: O(k) - recursion depth
- """
- MOD = 10**9 + 7
+  Time: O(n * (n-1)^k) - exponential
+  Space: O(k) - recursion depth
+  """
+  MOD = 10**9 + 7
 
- def dfs(current_pos, moves_left):
-  if moves_left == 0:
-   return 1
+  def dfs(current_pos, moves_left):
+    if moves_left == 0:
+      return 1
 
-  count = 0
-  for next_pos in range(1, n + 1):
-   if next_pos != current_pos:
-    count = (count + dfs(next_pos, moves_left - 1)) % MOD
-  return count
+    count = 0
+    for next_pos in range(1, n + 1):
+      if next_pos != current_pos:
+        count = (count + dfs(next_pos, moves_left - 1)) % MOD
+    return count
 
- total = 0
- for start in range(1, n + 1):
-  total = (total + dfs(start, k)) % MOD
- return total
+  total = 0
+  for start in range(1, n + 1):
+    total = (total + dfs(start, k)) % MOD
+  return total
 ```
 
 ### Complexity
@@ -226,40 +226,40 @@ Formula: 3 * 2^(2-1) = 3 * 2 = 6
 
 ```python
 def count_sequences(n, k):
- """
- Optimal: use closed-form formula with modular exponentiation.
+  """
+  Optimal: use closed-form formula with modular exponentiation.
 
- Time: O(log k) - binary exponentiation
- Space: O(1)
- """
- MOD = 10**9 + 7
+  Time: O(log k) - binary exponentiation
+  Space: O(1)
+  """
+  MOD = 10**9 + 7
 
- # Edge case: single position, cannot make any moves
- if n == 1:
-  return 1 if k <= 1 else 0
+  # Edge case: single position, cannot make any moves
+  if n == 1:
+    return 1 if k <= 1 else 0
 
- # Formula: n * (n-1)^(k-1) for sequence length k
- # Or: n * (n-1)^k for k moves
- # Using built-in pow with modular arithmetic
- if k == 0:
-  return 0  # No sequence of length 0
+  # Formula: n * (n-1)^(k-1) for sequence length k
+  # Or: n * (n-1)^k for k moves
+  # Using built-in pow with modular arithmetic
+  if k == 0:
+    return 0  # No sequence of length 0
 
- return (n * pow(n - 1, k - 1, MOD)) % MOD
+  return (n * pow(n - 1, k - 1, MOD)) % MOD
 
 
 def count_moves(n, k):
- """
- Alternative: count sequences with exactly k moves.
+  """
+  Alternative: count sequences with exactly k moves.
 
- Time: O(log k)
- Space: O(1)
- """
- MOD = 10**9 + 7
+  Time: O(log k)
+  Space: O(1)
+  """
+  MOD = 10**9 + 7
 
- if n == 1:
-  return 0 if k > 0 else n
+  if n == 1:
+    return 0 if k > 0 else n
 
- return (n * pow(n - 1, k, MOD)) % MOD
+  return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
 ### Complexity
@@ -278,12 +278,12 @@ def count_moves(n, k):
 ```python
 # WRONG - overflow for large n, k
 def count_wrong(n, k):
- return n * (n - 1) ** k  # Overflow!
+  return n * (n - 1) ** k  # Overflow!
 
 # CORRECT - use modular arithmetic throughout
 def count_correct(n, k):
- MOD = 10**9 + 7
- return (n * pow(n - 1, k, MOD)) % MOD
+  MOD = 10**9 + 7
+  return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
 **Problem:** Python handles big integers, but the result must be modulo 10^9 + 7.
@@ -294,13 +294,13 @@ def count_correct(n, k):
 ```python
 # WRONG - returns non-zero for impossible case
 def count_wrong(n, k):
- return n * pow(n - 1, k, MOD)  # When n=1, this gives 1 * 0^k
+  return n * pow(n - 1, k, MOD)  # When n=1, this gives 1 * 0^k
 
 # CORRECT - explicitly handle edge case
 def count_correct(n, k):
- if n == 1 and k > 0:
-  return 0  # Cannot move anywhere
- return (n * pow(n - 1, k, MOD)) % MOD
+  if n == 1 and k > 0:
+    return 0  # Cannot move anywhere
+  return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
 **Problem:** With only one position, you cannot make any moves.

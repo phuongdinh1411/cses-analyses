@@ -102,31 +102,31 @@ Check every possible subgrid by iterating over all top-left corners and all dime
 
 ```python
 def count_uniform_subgrids_brute(grid):
- """
- Brute force: check every subgrid.
+  """
+  Brute force: check every subgrid.
 
- Time: O(n^2 * m^2 * n * m) worst case
- Space: O(1)
- """
- n, m = len(grid), len(grid[0])
- count = 0
+  Time: O(n^2 * m^2 * n * m) worst case
+  Space: O(1)
+  """
+  n, m = len(grid), len(grid[0])
+  count = 0
 
- for i in range(n):
-  for j in range(m):
-   for h in range(1, n - i + 1):
-    for w in range(1, m - j + 1):
-     letter = grid[i][j]
-     valid = True
-     for di in range(h):
-      for dj in range(w):
-       if grid[i + di][j + dj] != letter:
-        valid = False
-        break
-      if not valid:
-       break
-     if valid:
-      count += 1
- return count
+  for i in range(n):
+    for j in range(m):
+      for h in range(1, n - i + 1):
+        for w in range(1, m - j + 1):
+          letter = grid[i][j]
+          valid = True
+          for di in range(h):
+            for dj in range(w):
+              if grid[i + di][j + dj] != letter:
+                valid = False
+                break
+            if not valid:
+              break
+          if valid:
+            count += 1
+  return count
 ```
 
 ### Complexity
@@ -196,72 +196,72 @@ Counting rectangles at row 2:
 
 ```python
 def count_uniform_subgrids(grid):
- """
- Optimal solution using height arrays.
+  """
+  Optimal solution using height arrays.
 
- Time: O(n * m)
- Space: O(m)
- """
- if not grid or not grid[0]:
-  return 0
+  Time: O(n * m)
+  Space: O(m)
+  """
+  if not grid or not grid[0]:
+    return 0
 
- n, m = len(grid), len(grid[0])
- height = [0] * m  # height of consecutive same-letter cells
- prev_char = [''] * m  # letter at previous row
- total = 0
+  n, m = len(grid), len(grid[0])
+  height = [0] * m  # height of consecutive same-letter cells
+  prev_char = [''] * m  # letter at previous row
+  total = 0
 
- for i in range(n):
-  # Update heights for current row
-  for j in range(m):
-   if grid[i][j] == prev_char[j]:
-    height[j] += 1
-   else:
-    height[j] = 1
-    prev_char[j] = grid[i][j]
+  for i in range(n):
+    # Update heights for current row
+    for j in range(m):
+      if grid[i][j] == prev_char[j]:
+        height[j] += 1
+      else:
+        height[j] = 1
+        prev_char[j] = grid[i][j]
 
-  # Count rectangles ending at row i
-  j = 0
-  while j < m:
-   # Find segment of same letter
-   letter = grid[i][j]
-   start = j
-   min_height = height[j]
+    # Count rectangles ending at row i
+    j = 0
+    while j < m:
+      # Find segment of same letter
+      letter = grid[i][j]
+      start = j
+      min_height = height[j]
 
-   while j < m and grid[i][j] == letter:
-    min_height = min(min_height, height[j])
-    # Count rectangles with this cell as bottom-right
-    # Using stack approach for general case
-    j += 1
+      while j < m and grid[i][j] == letter:
+        min_height = min(min_height, height[j])
+        # Count rectangles with this cell as bottom-right
+        # Using stack approach for general case
+        j += 1
 
-   # For segment [start, j), count all uniform rectangles
-   total += count_segment_rectangles(height, start, j)
+      # For segment [start, j), count all uniform rectangles
+      total += count_segment_rectangles(height, start, j)
 
- return total
+  return total
 
 
 def count_segment_rectangles(height, start, end):
- """
- Count rectangles in a horizontal segment where all cells
- have the same letter. Uses monotonic stack.
- """
- count = 0
- stack = []  # (index, height)
+  """
+  Count rectangles in a horizontal segment where all cells
+  have the same letter. Uses monotonic stack.
+  """
+  count = 0
+  stack = []  # (index, height)
 
- for j in range(start, end + 1):
-  h = height[j] if j < end else 0
-  width = 0
+  for j in range(start, end + 1):
+    h = height[j] if j < end else 0
+    width = 0
 
-  while stack and stack[-1][1] >= h:
-   idx, prev_h = stack.pop()
-   width += (j - idx) if not stack else (j - stack[-1][0] - 1)
-   # Rectangles with height exactly prev_h
-   segment_width = j - idx
-   count += (prev_h - h) * segment_width * (segment_width + 1) // 2
+    while stack and stack[-1][1] >= h:
+      idx, prev_h = stack.pop()
+      width += (j - idx) if not stack else (j - stack[-1][0] - 1)
+      # Rectangles with height exactly prev_h
+      segment_width = j - idx
+      count += (prev_h - h) * segment_width * (segment_width + 1) // 2
 
-  if width > 0 or not stack:
-   stack.append((j - width if width else j, h))
+    if width > 0 or not stack:
+      stack.append((j - width if width else j, h))
 
- return count
+  return count
 ```
 
 #### Complexity
@@ -280,15 +280,15 @@ def count_segment_rectangles(height, start, end):
 ```python
 # WRONG
 for j in range(m):
- height[j] += 1  # Always incrementing
+  height[j] += 1  # Always incrementing
 
 # CORRECT
 for j in range(m):
- if grid[i][j] == prev_char[j]:
-  height[j] += 1
- else:
-  height[j] = 1  # Reset when letter changes
-  prev_char[j] = grid[i][j]
+  if grid[i][j] == prev_char[j]:
+    height[j] += 1
+  else:
+    height[j] = 1  # Reset when letter changes
+    prev_char[j] = grid[i][j]
 ```
 
 **Problem:** Heights must reset when the letter changes.
@@ -299,12 +299,12 @@ for j in range(m):
 ```python
 # WRONG
 while j < m and grid[i][j] == letter:
- process(j)
+  process(j)
 # Forgot to handle last element properly
 
 # CORRECT
 for j in range(start, end + 1):  # Include sentinel
- h = height[j] if j < end else 0  # Sentinel forces stack flush
+  h = height[j] if j < end else 0  # Sentinel forces stack flush
 ```
 
 **Problem:** Not properly closing out rectangles at segment end.

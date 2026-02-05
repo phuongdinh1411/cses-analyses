@@ -106,32 +106,32 @@ For every pair of nodes, compute the path length using BFS/DFS and count pairs w
 from collections import deque
 
 def solve_brute_force(n, k, edges):
- """
- Brute force: BFS from each node.
- Time: O(n^2)
- Space: O(n)
- """
- adj = [[] for _ in range(n + 1)]
- for a, b in edges:
-  adj[a].append(b)
-  adj[b].append(a)
+  """
+  Brute force: BFS from each node.
+  Time: O(n^2)
+  Space: O(n)
+  """
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
- count = 0
- for start in range(1, n + 1):
-  dist = [-1] * (n + 1)
-  dist[start] = 0
-  queue = deque([start])
-  while queue:
-   u = queue.popleft()
-   for v in adj[u]:
-    if dist[v] == -1:
-     dist[v] = dist[u] + 1
-     if dist[v] == k:
-      count += 1
-     if dist[v] < k:
-      queue.append(v)
+  count = 0
+  for start in range(1, n + 1):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    queue = deque([start])
+    while queue:
+      u = queue.popleft()
+      for v in adj[u]:
+        if dist[v] == -1:
+          dist[v] = dist[u] + 1
+          if dist[v] == k:
+            count += 1
+          if dist[v] < k:
+            queue.append(v)
 
- return count // 2
+  return count // 2
 ```
 
 ### Complexity
@@ -249,93 +249,93 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve(n, k, edges):
- """
- Centroid decomposition solution.
- Time: O(n log n)
- Space: O(n)
- """
- adj = [[] for _ in range(n + 1)]
- for a, b in edges:
-  adj[a].append(b)
-  adj[b].append(a)
+  """
+  Centroid decomposition solution.
+  Time: O(n log n)
+  Space: O(n)
+  """
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
- removed = [False] * (n + 1)
- subtree_size = [0] * (n + 1)
- result = 0
+  removed = [False] * (n + 1)
+  subtree_size = [0] * (n + 1)
+  result = 0
 
- def get_subtree_size(u, parent):
-  subtree_size[u] = 1
-  for v in adj[u]:
-   if v != parent and not removed[v]:
-    get_subtree_size(v, u)
-    subtree_size[u] += subtree_size[v]
+  def get_subtree_size(u, parent):
+    subtree_size[u] = 1
+    for v in adj[u]:
+      if v != parent and not removed[v]:
+        get_subtree_size(v, u)
+        subtree_size[u] += subtree_size[v]
 
- def get_centroid(u, parent, tree_size):
-  for v in adj[u]:
-   if v != parent and not removed[v]:
-    if subtree_size[v] > tree_size // 2:
-     return get_centroid(v, u, tree_size)
-  return u
+  def get_centroid(u, parent, tree_size):
+    for v in adj[u]:
+      if v != parent and not removed[v]:
+        if subtree_size[v] > tree_size // 2:
+          return get_centroid(v, u, tree_size)
+    return u
 
- def get_depths(u, parent, depth, depths):
-  if depth > k:
-   return
-  depths.append(depth)
-  for v in adj[u]:
-   if v != parent and not removed[v]:
-    get_depths(v, u, depth + 1, depths)
+  def get_depths(u, parent, depth, depths):
+    if depth > k:
+      return
+    depths.append(depth)
+    for v in adj[u]:
+      if v != parent and not removed[v]:
+        get_depths(v, u, depth + 1, depths)
 
- def count_paths(centroid):
-  nonlocal result
-  cnt = [0] * (k + 2)
-  cnt[0] = 1  # centroid itself at depth 0
+  def count_paths(centroid):
+    nonlocal result
+    cnt = [0] * (k + 2)
+    cnt[0] = 1  # centroid itself at depth 0
 
-  for neighbor in adj[centroid]:
-   if removed[neighbor]:
-    continue
+    for neighbor in adj[centroid]:
+      if removed[neighbor]:
+        continue
 
-   depths = []
-   get_depths(neighbor, centroid, 1, depths)
+      depths = []
+      get_depths(neighbor, centroid, 1, depths)
 
-   # Count paths combining this subtree with previous subtrees
-   for d in depths:
-    if k - d >= 0 and k - d <= k:
-     result += cnt[k - d]
+      # Count paths combining this subtree with previous subtrees
+      for d in depths:
+        if k - d >= 0 and k - d <= k:
+          result += cnt[k - d]
 
-   # Add depths from this subtree to cnt
-   for d in depths:
-    if d <= k:
-     cnt[d] += 1
+      # Add depths from this subtree to cnt
+      for d in depths:
+        if d <= k:
+          cnt[d] += 1
 
- def decompose(u):
-  get_subtree_size(u, -1)
-  centroid = get_centroid(u, -1, subtree_size[u])
-  removed[centroid] = True
+  def decompose(u):
+    get_subtree_size(u, -1)
+    centroid = get_centroid(u, -1, subtree_size[u])
+    removed[centroid] = True
 
-  count_paths(centroid)
+    count_paths(centroid)
 
-  for v in adj[centroid]:
-   if not removed[v]:
-    decompose(v)
+    for v in adj[centroid]:
+      if not removed[v]:
+        decompose(v)
 
- decompose(1)
- return result
+  decompose(1)
+  return result
 
 # Read input
 def main():
- input_data = sys.stdin.read().split()
- idx = 0
- n, k = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
- edges = []
- for _ in range(n - 1):
-  a, b = int(input_data[idx]), int(input_data[idx + 1])
-  edges.append((a, b))
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, k = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
- print(solve(n, k, edges))
+  edges = []
+  for _ in range(n - 1):
+    a, b = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((a, b))
+    idx += 2
+  print(solve(n, k, edges))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity

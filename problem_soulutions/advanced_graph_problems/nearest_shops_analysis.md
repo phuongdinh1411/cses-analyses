@@ -120,38 +120,38 @@ import heapq
 from typing import List, Tuple
 
 def solve_brute_force(n: int, edges: List[Tuple[int,int,int]],
-     shops: List[int], queries: List[int]) -> List[int]:
- """
- Brute force: Run Dijkstra for each query.
- Time: O(q * (n + m) log n)
- Space: O(n + m)
- """
- # Build adjacency list (0-indexed)
- adj = [[] for _ in range(n)]
- for a, b, w in edges:
-  adj[a-1].append((b-1, w))
-  adj[b-1].append((a-1, w))
+          shops: List[int], queries: List[int]) -> List[int]:
+  """
+  Brute force: Run Dijkstra for each query.
+  Time: O(q * (n + m) log n)
+  Space: O(n + m)
+  """
+  # Build adjacency list (0-indexed)
+  adj = [[] for _ in range(n)]
+  for a, b, w in edges:
+    adj[a-1].append((b-1, w))
+    adj[b-1].append((a-1, w))
 
- shop_set = set(s - 1 for s in shops)  # 0-indexed
+  shop_set = set(s - 1 for s in shops)  # 0-indexed
 
- def dijkstra(start: int) -> int:
-  dist = [float('inf')] * n
-  dist[start] = 0
-  pq = [(0, start)]
+  def dijkstra(start: int) -> int:
+    dist = [float('inf')] * n
+    dist[start] = 0
+    pq = [(0, start)]
 
-  while pq:
-   d, u = heapq.heappop(pq)
-   if d > dist[u]:
-    continue
-   if u in shop_set:
-    return d  # Found nearest shop
-   for v, w in adj[u]:
-    if dist[u] + w < dist[v]:
-     dist[v] = dist[u] + w
-     heapq.heappush(pq, (dist[v], v))
-  return -1
+    while pq:
+      d, u = heapq.heappop(pq)
+      if d > dist[u]:
+        continue
+      if u in shop_set:
+        return d  # Found nearest shop
+      for v, w in adj[u]:
+        if dist[u] + w < dist[v]:
+          dist[v] = dist[u] + w
+          heapq.heappush(pq, (dist[v], v))
+    return -1
 
- return [dijkstra(q - 1) for q in queries]
+  return [dijkstra(q - 1) for q in queries]
 ```
 
 ### Complexity
@@ -236,39 +236,39 @@ import heapq
 from typing import List, Tuple
 
 def solve_multi_source_dijkstra(n: int, edges: List[Tuple[int,int,int]],
-        shops: List[int], queries: List[int]) -> List[int]:
- """
- Multi-source Dijkstra: Start from all shops simultaneously.
- Time: O((n + m) log n + q)
- Space: O(n + m)
- """
- # Build adjacency list (0-indexed)
- adj = [[] for _ in range(n)]
- for a, b, w in edges:
-  adj[a-1].append((b-1, w))
-  adj[b-1].append((a-1, w))
+                shops: List[int], queries: List[int]) -> List[int]:
+  """
+  Multi-source Dijkstra: Start from all shops simultaneously.
+  Time: O((n + m) log n + q)
+  Space: O(n + m)
+  """
+  # Build adjacency list (0-indexed)
+  adj = [[] for _ in range(n)]
+  for a, b, w in edges:
+    adj[a-1].append((b-1, w))
+    adj[b-1].append((a-1, w))
 
- # Multi-source Dijkstra
- dist = [float('inf')] * n
- pq = []
+  # Multi-source Dijkstra
+  dist = [float('inf')] * n
+  pq = []
 
- # Initialize: all shops start at distance 0
- for shop in shops:
-  dist[shop - 1] = 0
-  heapq.heappush(pq, (0, shop - 1))
+  # Initialize: all shops start at distance 0
+  for shop in shops:
+    dist[shop - 1] = 0
+    heapq.heappush(pq, (0, shop - 1))
 
- # Standard Dijkstra relaxation
- while pq:
-  d, u = heapq.heappop(pq)
-  if d > dist[u]:
-   continue
-  for v, w in adj[u]:
-   if dist[u] + w < dist[v]:
-    dist[v] = dist[u] + w
-    heapq.heappush(pq, (dist[v], v))
+  # Standard Dijkstra relaxation
+  while pq:
+    d, u = heapq.heappop(pq)
+    if d > dist[u]:
+      continue
+    for v, w in adj[u]:
+      if dist[u] + w < dist[v]:
+        dist[v] = dist[u] + w
+        heapq.heappush(pq, (dist[v], v))
 
- # Answer queries in O(1) each
- return [dist[q - 1] if dist[q - 1] != float('inf') else -1 for q in queries]
+  # Answer queries in O(1) each
+  return [dist[q - 1] if dist[q - 1] != float('inf') else -1 for q in queries]
 ```
 
 ### Complexity
@@ -287,7 +287,7 @@ def solve_multi_source_dijkstra(n: int, edges: List[Tuple[int,int,int]],
 ```python
 # WRONG: TLE for large q
 for query in queries:
- answer = dijkstra(query)  # O((n+m) log n) each time!
+  answer = dijkstra(query)  # O((n+m) log n) each time!
 ```
 
 **Problem:** O(q * (n+m) log n) is too slow.
@@ -298,10 +298,10 @@ for query in queries:
 ```python
 # WRONG: May process same node multiple times
 while pq:
- d, u = heapq.heappop(pq)
- # Missing: if d > dist[u]: continue
- for v, w in adj[u]:
-  ...
+  d, u = heapq.heappop(pq)
+  # Missing: if d > dist[u]: continue
+  for v, w in adj[u]:
+    ...
 ```
 
 **Problem:** Without this check, we process outdated (larger) distances.
@@ -314,11 +314,11 @@ while pq:
 from collections import deque
 queue = deque(shops)
 while queue:
- u = queue.popleft()
- for v, w in adj[u]:
-  if dist[v] > dist[u] + w:  # BFS can't handle this correctly
-   dist[v] = dist[u] + w
-   queue.append(v)
+  u = queue.popleft()
+  for v, w in adj[u]:
+    if dist[v] > dist[u] + w:  # BFS can't handle this correctly
+      dist[v] = dist[u] + w
+      queue.append(v)
 ```
 
 **Problem:** BFS processes nodes in order added, not by distance.

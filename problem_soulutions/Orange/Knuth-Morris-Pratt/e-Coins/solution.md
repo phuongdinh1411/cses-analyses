@@ -35,116 +35,116 @@ This is a 2D coin change problem. Use BFS or DP:
 from collections import deque
 
 def solve():
- import sys
- input_data = sys.stdin.read().split('\n')
- idx = 0
+  import sys
+  input_data = sys.stdin.read().split('\n')
+  idx = 0
 
- n = int(input_data[idx])
- idx += 1
-
- for _ in range(n):
-  parts = input_data[idx].split()
-  m, S = int(parts[0]), int(parts[1])
+  n = int(input_data[idx])
   idx += 1
 
-  coins = []
-  for _ in range(m):
-   parts = input_data[idx].split()
-   coins.append((int(parts[0]), int(parts[1])))
-   idx += 1
+  for _ in range(n):
+    parts = input_data[idx].split()
+    m, S = int(parts[0]), int(parts[1])
+    idx += 1
 
-  target_sq = S * S
+    coins = []
+    for _ in range(m):
+      parts = input_data[idx].split()
+      coins.append((int(parts[0]), int(parts[1])))
+      idx += 1
 
-  # BFS to find minimum coins
-  # dist[x][y] = minimum coins to reach sum (x, y)
-  INF = float('inf')
-  dist = [[INF] * (S + 1) for _ in range(S + 1)]
-  dist[0][0] = 0
+    target_sq = S * S
 
-  queue = deque([(0, 0)])
+    # BFS to find minimum coins
+    # dist[x][y] = minimum coins to reach sum (x, y)
+    INF = float('inf')
+    dist = [[INF] * (S + 1) for _ in range(S + 1)]
+    dist[0][0] = 0
 
-  while queue:
-   x, y = queue.popleft()
+    queue = deque([(0, 0)])
 
-   for cx, cy in coins:
-    nx, ny = x + cx, y + cy
+    while queue:
+      x, y = queue.popleft()
 
-    if nx <= S and ny <= S and dist[nx][ny] == INF:
-     dist[nx][ny] = dist[x][y] + 1
+      for cx, cy in coins:
+        nx, ny = x + cx, y + cy
 
-     if nx * nx + ny * ny == target_sq:
-      print(dist[nx][ny])
+        if nx <= S and ny <= S and dist[nx][ny] == INF:
+          dist[nx][ny] = dist[x][y] + 1
+
+          if nx * nx + ny * ny == target_sq:
+            print(dist[nx][ny])
+            break
+
+          queue.append((nx, ny))
+      else:
+        continue
       break
-
-     queue.append((nx, ny))
-   else:
-    continue
-   break
-  else:
-   # Check all valid endpoints
-   found = False
-   for x in range(S + 1):
-    for y in range(S + 1):
-     if x * x + y * y == target_sq and dist[x][y] != INF:
-      print(dist[x][y])
-      found = True
-      break
-    if found:
-     break
-   if not found:
-    print("not possible")
+    else:
+      # Check all valid endpoints
+      found = False
+      for x in range(S + 1):
+        for y in range(S + 1):
+          if x * x + y * y == target_sq and dist[x][y] != INF:
+            print(dist[x][y])
+            found = True
+            break
+        if found:
+          break
+      if not found:
+        print("not possible")
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative DP Solution
 
 ```python
 def solve_case():
- line = input().split()
- m, S = int(line[0]), int(line[1])
+  line = input().split()
+  m, S = int(line[0]), int(line[1])
 
- coins = []
- for _ in range(m):
-  parts = input().split()
-  coins.append((int(parts[0]), int(parts[1])))
+  coins = []
+  for _ in range(m):
+    parts = input().split()
+    coins.append((int(parts[0]), int(parts[1])))
 
- target_sq = S * S
- INF = float('inf')
+  target_sq = S * S
+  INF = float('inf')
 
- # dp[x][y] = min coins to achieve sums (x, y)
- dp = [[INF] * (S + 1) for _ in range(S + 1)]
- dp[0][0] = 0
+  # dp[x][y] = min coins to achieve sums (x, y)
+  dp = [[INF] * (S + 1) for _ in range(S + 1)]
+  dp[0][0] = 0
 
- # Process like unbounded knapsack
- for cx, cy in coins:
+  # Process like unbounded knapsack
+  for cx, cy in coins:
+    for x in range(S + 1):
+      for y in range(S + 1):
+        if dp[x][y] < INF:
+          nx, ny = x + cx, y + cy
+          if nx <= S and ny <= S:
+            dp[nx][ny] = min(dp[nx][ny], dp[x][y] + 1)
+
+  # Find minimum among valid targets
+  ans = INF
   for x in range(S + 1):
-   for y in range(S + 1):
-    if dp[x][y] < INF:
-     nx, ny = x + cx, y + cy
-     if nx <= S and ny <= S:
-      dp[nx][ny] = min(dp[nx][ny], dp[x][y] + 1)
+    for y in range(S + 1):
+      if x * x + y * y == target_sq:
+        ans = min(ans, dp[x][y])
 
- # Find minimum among valid targets
- ans = INF
- for x in range(S + 1):
-  for y in range(S + 1):
-   if x * x + y * y == target_sq:
-    ans = min(ans, dp[x][y])
-
- if ans == INF:
-  print("not possible")
- else:
-  print(ans)
+  if ans == INF:
+    print("not possible")
+  else:
+    print(ans)
 
 def solve():
- n = int(input())
- for _ in range(n):
-  solve_case()
+  n = int(input())
+  for _ in range(n):
+    solve_case()
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -32,108 +32,108 @@ Use DP to find all achievable sums up to total/2.
 
 ```python
 def solve():
- n = int(input())
+  n = int(input())
 
- for _ in range(n):
-  m = int(input())
-  coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-  total = sum(coins)
-  target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-  # dp[i] = True if sum i is achievable
-  dp = [False] * (target + 1)
-  dp[0] = True
+    # dp[i] = True if sum i is achievable
+    dp = [False] * (target + 1)
+    dp[0] = True
 
-  for coin in coins:
-   # Process in reverse to avoid using same coin twice
-   for s in range(target, coin - 1, -1):
-    if dp[s - coin]:
-     dp[s] = True
+    for coin in coins:
+      # Process in reverse to avoid using same coin twice
+      for s in range(target, coin - 1, -1):
+        if dp[s - coin]:
+          dp[s] = True
 
-  # Find largest achievable sum <= target
-  for s in range(target, -1, -1):
-   if dp[s]:
-    best = s
-    break
+    # Find largest achievable sum <= target
+    for s in range(target, -1, -1):
+      if dp[s]:
+        best = s
+        break
 
-  # Minimum difference
-  print(total - 2 * best)
+    # Minimum difference
+    print(total - 2 * best)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution with Bitset
 
 ```python
 def solve():
- n = int(input())
+  n = int(input())
 
- for _ in range(n):
-  m = int(input())
-  coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-  total = sum(coins)
-  target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-  # Use integer as bitset for achievable sums
-  achievable = 1  # bit 0 set = sum 0 achievable
+    # Use integer as bitset for achievable sums
+    achievable = 1  # bit 0 set = sum 0 achievable
 
-  for coin in coins:
-   achievable |= (achievable << coin)
+    for coin in coins:
+      achievable |= (achievable << coin)
 
-  # Mask to only consider sums <= target
-  mask = (1 << (target + 1)) - 1
-  achievable &= mask
+    # Mask to only consider sums <= target
+    mask = (1 << (target + 1)) - 1
+    achievable &= mask
 
-  # Find highest set bit
-  best = achievable.bit_length() - 1
+    # Find highest set bit
+    best = achievable.bit_length() - 1
 
-  print(total - 2 * best)
+    print(total - 2 * best)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Recursive Solution with Memoization
 
 ```python
 def solve():
- n = int(input())
+  n = int(input())
 
- for _ in range(n):
-  m = int(input())
-  coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-  total = sum(coins)
-  target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-  memo = {}
+    memo = {}
 
-  def can_make(idx, remaining):
-   if remaining == 0:
-    return True
-   if idx == m or remaining < 0:
-    return False
+    def can_make(idx, remaining):
+      if remaining == 0:
+        return True
+      if idx == m or remaining < 0:
+        return False
 
-   if (idx, remaining) in memo:
-    return memo[(idx, remaining)]
+      if (idx, remaining) in memo:
+        return memo[(idx, remaining)]
 
-   result = can_make(idx + 1, remaining) or \
-     can_make(idx + 1, remaining - coins[idx])
+      result = can_make(idx + 1, remaining) or \
+          can_make(idx + 1, remaining - coins[idx])
 
-   memo[(idx, remaining)] = result
-   return result
+      memo[(idx, remaining)] = result
+      return result
 
-  # Find largest achievable sum
-  for s in range(target, -1, -1):
-   if can_make(0, s):
-    print(total - 2 * s)
-    break
+    # Find largest achievable sum
+    for s in range(target, -1, -1):
+      if can_make(0, s):
+        print(total - 2 * s)
+        break
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

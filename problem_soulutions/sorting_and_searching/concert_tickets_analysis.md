@@ -136,27 +136,27 @@ Output: 3, 8, -1
 from sortedcontainers import SortedList
 
 def solve():
- n, m = map(int, input().split())
- prices = list(map(int, input().split()))
- budgets = list(map(int, input().split()))
+  n, m = map(int, input().split())
+  prices = list(map(int, input().split()))
+  budgets = list(map(int, input().split()))
 
- tickets = SortedList(prices)
- results = []
+  tickets = SortedList(prices)
+  results = []
 
- for budget in budgets:
-  # bisect_right returns index of first element > budget
-  idx = tickets.bisect_right(budget)
+  for budget in budgets:
+    # bisect_right returns index of first element > budget
+    idx = tickets.bisect_right(budget)
 
-  if idx == 0:
-   # No ticket <= budget
-   results.append(-1)
-  else:
-   # Index idx-1 is largest element <= budget
-   ticket_price = tickets[idx - 1]
-   results.append(ticket_price)
-   tickets.remove(ticket_price)
+    if idx == 0:
+      # No ticket <= budget
+      results.append(-1)
+    else:
+      # Index idx-1 is largest element <= budget
+      ticket_price = tickets[idx - 1]
+      results.append(ticket_price)
+      tickets.remove(ticket_price)
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 solve()
 ```
@@ -167,23 +167,23 @@ solve()
 import bisect
 
 def solve():
- n, m = map(int, input().split())
- prices = list(map(int, input().split()))
- budgets = list(map(int, input().split()))
+  n, m = map(int, input().split())
+  prices = list(map(int, input().split()))
+  budgets = list(map(int, input().split()))
 
- tickets = sorted(prices)
- results = []
+  tickets = sorted(prices)
+  results = []
 
- for budget in budgets:
-  idx = bisect.bisect_right(tickets, budget) - 1
+  for budget in budgets:
+    idx = bisect.bisect_right(tickets, budget) - 1
 
-  if idx < 0:
-   results.append(-1)
-  else:
-   results.append(tickets[idx])
-   tickets.pop(idx)  # O(n) operation - slower!
+    if idx < 0:
+      results.append(-1)
+    else:
+      results.append(tickets[idx])
+      tickets.pop(idx)  # O(n) operation - slower!
 
- print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 solve()
 ```

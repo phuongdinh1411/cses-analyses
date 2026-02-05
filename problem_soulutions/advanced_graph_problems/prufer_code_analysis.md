@@ -102,27 +102,27 @@ Repeatedly find the smallest leaf, record its parent, and remove it from the tre
 
 ```python
 def encode_brute_force(n, edges):
- """
- Generate Prufer code by repeatedly finding smallest leaf.
- Time: O(n^2), Space: O(n)
- """
- adj = [set() for _ in range(n + 1)]
- for a, b in edges:
-  adj[a].add(b)
-  adj[b].add(a)
+  """
+  Generate Prufer code by repeatedly finding smallest leaf.
+  Time: O(n^2), Space: O(n)
+  """
+  adj = [set() for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].add(b)
+    adj[b].add(a)
 
- prufer = []
- for _ in range(n - 2):
-  # Find smallest leaf (node with degree 1)
-  for v in range(1, n + 1):
-   if len(adj[v]) == 1:
-    parent = next(iter(adj[v]))
-    prufer.append(parent)
-    adj[v].remove(parent)
-    adj[parent].remove(v)
-    break
+  prufer = []
+  for _ in range(n - 2):
+    # Find smallest leaf (node with degree 1)
+    for v in range(1, n + 1):
+      if len(adj[v]) == 1:
+        parent = next(iter(adj[v]))
+        prufer.append(parent)
+        adj[v].remove(parent)
+        adj[parent].remove(v)
+        break
 
- return prufer
+  return prufer
 ```
 
 ### Complexity
@@ -182,97 +182,97 @@ Final Prufer Code: [2, 3, 3]
 
 ```python
 def encode_optimal(n, edges):
- """
- Generate Prufer code in O(n) time.
- Time: O(n), Space: O(n)
- """
- adj = [[] for _ in range(n + 1)]
- degree = [0] * (n + 1)
+  """
+  Generate Prufer code in O(n) time.
+  Time: O(n), Space: O(n)
+  """
+  adj = [[] for _ in range(n + 1)]
+  degree = [0] * (n + 1)
 
- for a, b in edges:
-  adj[a].append(b)
-  adj[b].append(a)
-  degree[a] += 1
-  degree[b] += 1
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
+    degree[a] += 1
+    degree[b] += 1
 
- # Find first parent of each node (for leaf removal)
- parent = [0] * (n + 1)
- for v in range(1, n + 1):
-  if adj[v]:
-   parent[v] = adj[v][0]
+  # Find first parent of each node (for leaf removal)
+  parent = [0] * (n + 1)
+  for v in range(1, n + 1):
+    if adj[v]:
+      parent[v] = adj[v][0]
 
- prufer = []
- ptr = 1
- leaf = 0
+  prufer = []
+  ptr = 1
+  leaf = 0
 
- # Find first leaf
- while ptr <= n and degree[ptr] != 1:
-  ptr += 1
- leaf = ptr
-
- for _ in range(n - 2):
-  # Find parent of current leaf
-  p = 0
-  for neighbor in adj[leaf]:
-   if degree[neighbor] > 0:
-    p = neighbor
-    break
-
-  prufer.append(p)
-  degree[leaf] = 0
-  degree[p] -= 1
-
-  # Check if parent became a smaller leaf
-  if degree[p] == 1 and p < ptr:
-   leaf = p
-  else:
-   ptr += 1
-   while ptr <= n and degree[ptr] != 1:
+  # Find first leaf
+  while ptr <= n and degree[ptr] != 1:
     ptr += 1
-   leaf = ptr
+  leaf = ptr
 
- return prufer
+  for _ in range(n - 2):
+    # Find parent of current leaf
+    p = 0
+    for neighbor in adj[leaf]:
+      if degree[neighbor] > 0:
+        p = neighbor
+        break
+
+    prufer.append(p)
+    degree[leaf] = 0
+    degree[p] -= 1
+
+    # Check if parent became a smaller leaf
+    if degree[p] == 1 and p < ptr:
+      leaf = p
+    else:
+      ptr += 1
+      while ptr <= n and degree[ptr] != 1:
+        ptr += 1
+      leaf = ptr
+
+  return prufer
 
 
 def decode_optimal(n, prufer):
- """
- Reconstruct tree from Prufer code in O(n) time.
- Time: O(n), Space: O(n)
- """
- # Count occurrences (degree - 1 for each node)
- degree = [1] * (n + 1)
- degree[0] = 0
- for p in prufer:
-  degree[p] += 1
+  """
+  Reconstruct tree from Prufer code in O(n) time.
+  Time: O(n), Space: O(n)
+  """
+  # Count occurrences (degree - 1 for each node)
+  degree = [1] * (n + 1)
+  degree[0] = 0
+  for p in prufer:
+    degree[p] += 1
 
- edges = []
- ptr = 1
- leaf = 0
+  edges = []
+  ptr = 1
+  leaf = 0
 
- # Find first leaf (degree = 1)
- while ptr <= n and degree[ptr] != 1:
-  ptr += 1
- leaf = ptr
-
- for p in prufer:
-  edges.append((leaf, p))
-  degree[leaf] -= 1
-  degree[p] -= 1
-
-  if degree[p] == 1 and p < ptr:
-   leaf = p
-  else:
-   ptr += 1
-   while ptr <= n and degree[ptr] != 1:
+  # Find first leaf (degree = 1)
+  while ptr <= n and degree[ptr] != 1:
     ptr += 1
-   leaf = ptr
+  leaf = ptr
 
- # Add final edge between remaining two nodes
- remaining = [v for v in range(1, n + 1) if degree[v] == 1]
- if len(remaining) == 2:
-  edges.append((remaining[0], remaining[1]))
+  for p in prufer:
+    edges.append((leaf, p))
+    degree[leaf] -= 1
+    degree[p] -= 1
 
- return edges
+    if degree[p] == 1 and p < ptr:
+      leaf = p
+    else:
+      ptr += 1
+      while ptr <= n and degree[ptr] != 1:
+        ptr += 1
+      leaf = ptr
+
+  # Add final edge between remaining two nodes
+  remaining = [v for v in range(1, n + 1) if degree[v] == 1]
+  if len(remaining) == 2:
+    edges.append((remaining[0], remaining[1]))
+
+  return edges
 ```
 
 ### Complexity
@@ -314,8 +314,8 @@ ptr += 1  # Wrong! Parent might be smaller leaf
 ```python
 # WRONG - Missing final edge
 for p in prufer:
- edges.append((leaf, p))
- # ... update degrees
+  edges.append((leaf, p))
+  # ... update degrees
 return edges  # Missing one edge!
 ```
 

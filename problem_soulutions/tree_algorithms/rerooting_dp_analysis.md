@@ -231,56 +231,56 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
 
- if n == 1:
-  print(0)
-  return
+  if n == 1:
+    print(0)
+    return
 
- # Build adjacency list
- adj = defaultdict(list)
- for _ in range(n - 1):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  adj[a].append(b)
-  adj[b].append(a)
+  # Build adjacency list
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    adj[a].append(b)
+    adj[b].append(a)
 
- subtree_size = [0] * (n + 1)
- dp_down = [0] * (n + 1)
- answer = [0] * (n + 1)
+  subtree_size = [0] * (n + 1)
+  dp_down = [0] * (n + 1)
+  answer = [0] * (n + 1)
 
- # Pass 1: DFS down - compute subtree info
- def dfs_down(node, parent):
-  subtree_size[node] = 1
-  dp_down[node] = 0
+  # Pass 1: DFS down - compute subtree info
+  def dfs_down(node, parent):
+    subtree_size[node] = 1
+    dp_down[node] = 0
 
-  for child in adj[node]:
-   if child != parent:
-    dfs_down(child, node)
-    subtree_size[node] += subtree_size[child]
-    # Add child's contribution: distances in subtree + 1 edge per node
-    dp_down[node] += dp_down[child] + subtree_size[child]
+    for child in adj[node]:
+      if child != parent:
+        dfs_down(child, node)
+        subtree_size[node] += subtree_size[child]
+        # Add child's contribution: distances in subtree + 1 edge per node
+        dp_down[node] += dp_down[child] + subtree_size[child]
 
- # Pass 2: DFS up - propagate answers
- def dfs_up(node, parent, contribution_from_above):
-  # Total answer for this node as root
-  answer[node] = dp_down[node] + contribution_from_above
+  # Pass 2: DFS up - propagate answers
+  def dfs_up(node, parent, contribution_from_above):
+    # Total answer for this node as root
+    answer[node] = dp_down[node] + contribution_from_above
 
-  for child in adj[node]:
-   if child != parent:
-    # Remove child's contribution from current answer
-    # Then add 1 edge per node outside child's subtree
-    nodes_outside = n - subtree_size[child]
-    child_contribution = dp_down[child] + subtree_size[child]
-    new_contribution = (answer[node] - child_contribution) + nodes_outside
-    dfs_up(child, node, new_contribution)
+    for child in adj[node]:
+      if child != parent:
+        # Remove child's contribution from current answer
+        # Then add 1 edge per node outside child's subtree
+        nodes_outside = n - subtree_size[child]
+        child_contribution = dp_down[child] + subtree_size[child]
+        new_contribution = (answer[node] - child_contribution) + nodes_outside
+        dfs_up(child, node, new_contribution)
 
- dfs_down(1, 0)
- dfs_up(1, 0, 0)
+  dfs_down(1, 0)
+  dfs_up(1, 0, 0)
 
- print(' '.join(map(str, answer[1:n+1])))
+  print(' '.join(map(str, answer[1:n+1])))
 
 solve()
 ```
@@ -304,8 +304,8 @@ dfs_down(1, 0)  # Works but answer needs special case
 
 # CORRECT
 if n == 1:
- print(0)
- return
+  print(0)
+  return
 ```
 
 **Problem:** A single node has distance sum of 0, and DFS may behave unexpectedly.
@@ -332,12 +332,12 @@ new_contribution = (answer[node] - child_contribution) + nodes_outside
 ```python
 # WRONG - corrupts data needed for sibling calculations
 def dfs_up(node, parent, contrib):
- dp_down[node] += contrib  # NEVER modify dp_down!
- ...
+  dp_down[node] += contrib  # NEVER modify dp_down!
+  ...
 
 # CORRECT - use separate answer array
 def dfs_up(node, parent, contrib):
- answer[node] = dp_down[node] + contrib
+  answer[node] = dp_down[node] + contrib
 ```
 
 ---

@@ -121,22 +121,22 @@ Try all possible previous stones for each stone and take the minimum cost.
 
 ```python
 def frog3_brute_force(n, c, heights):
- """
- Brute force O(N^2) solution.
+  """
+  Brute force O(N^2) solution.
 
- Time: O(N^2)
- Space: O(N)
- """
- INF = float('inf')
- dp = [INF] * n
- dp[0] = 0
+  Time: O(N^2)
+  Space: O(N)
+  """
+  INF = float('inf')
+  dp = [INF] * n
+  dp[0] = 0
 
- for i in range(1, n):
-  for j in range(i):
-   cost = dp[j] + (heights[i] - heights[j]) ** 2 + c
-   dp[i] = min(dp[i], cost)
+  for i in range(1, n):
+    for j in range(i):
+      cost = dp[j] + (heights[i] - heights[j]) ** 2 + c
+      dp[i] = min(dp[i], cost)
 
- return dp[n - 1]
+  return dp[n - 1]
 ```
 
 ### Complexity
@@ -275,122 +275,122 @@ Lines added to Li Chao Tree:
 
 ```python
 class LiChaoTree:
- """
- Li Chao Tree for minimum line queries.
- Supports: add line y = mx + b, query min value at x.
- """
- def __init__(self, x_coords):
-  """Initialize with possible x coordinates."""
-  self.xs = sorted(set(x_coords))
-  self.n = len(self.xs)
-  self.size = 1
-  while self.size < self.n:
-   self.size *= 2
-  # Each node stores (slope, intercept) or None
-  self.lines = [None] * (2 * self.size)
+  """
+  Li Chao Tree for minimum line queries.
+  Supports: add line y = mx + b, query min value at x.
+  """
+  def __init__(self, x_coords):
+    """Initialize with possible x coordinates."""
+    self.xs = sorted(set(x_coords))
+    self.n = len(self.xs)
+    self.size = 1
+    while self.size < self.n:
+      self.size *= 2
+    # Each node stores (slope, intercept) or None
+    self.lines = [None] * (2 * self.size)
 
- def _eval(self, line, x):
-  """Evaluate line at point x. Returns inf if no line."""
-  if line is None:
-   return float('inf')
-  m, b = line
-  return m * x + b
+  def _eval(self, line, x):
+    """Evaluate line at point x. Returns inf if no line."""
+    if line is None:
+      return float('inf')
+    m, b = line
+    return m * x + b
 
- def add_line(self, m, b):
-  """Add line y = mx + b to the tree."""
-  self._update((m, b), 1, 0, self.n)
+  def add_line(self, m, b):
+    """Add line y = mx + b to the tree."""
+    self._update((m, b), 1, 0, self.n)
 
- def _update(self, line, node, left, right):
-  """Recursively insert line into tree."""
-  if right <= left:
-   return
-  if right - left == 1:
-   # Leaf node: keep better line at this x
-   if self._eval(line, self.xs[left]) < self._eval(self.lines[node], self.xs[left]):
-    self.lines[node] = line
-   return
+  def _update(self, line, node, left, right):
+    """Recursively insert line into tree."""
+    if right <= left:
+      return
+    if right - left == 1:
+      # Leaf node: keep better line at this x
+      if self._eval(line, self.xs[left]) < self._eval(self.lines[node], self.xs[left]):
+        self.lines[node] = line
+      return
 
-  mid = (left + right) // 2
-  mid_x = self.xs[mid]
+    mid = (left + right) // 2
+    mid_x = self.xs[mid]
 
-  # Compare at midpoint
-  if self._eval(line, mid_x) < self._eval(self.lines[node], mid_x):
-   line, self.lines[node] = self.lines[node], line
+    # Compare at midpoint
+    if self._eval(line, mid_x) < self._eval(self.lines[node], mid_x):
+      line, self.lines[node] = self.lines[node], line
 
-  # Recurse to appropriate half
-  if left < mid and self._eval(line, self.xs[left]) < self._eval(self.lines[node], self.xs[left]):
-   self._update(line, 2 * node, left, mid)
-  elif mid < right:
-   self._update(line, 2 * node + 1, mid, right)
+    # Recurse to appropriate half
+    if left < mid and self._eval(line, self.xs[left]) < self._eval(self.lines[node], self.xs[left]):
+      self._update(line, 2 * node, left, mid)
+    elif mid < right:
+      self._update(line, 2 * node + 1, mid, right)
 
- def query(self, x):
-  """Query minimum y value at point x."""
-  # Binary search to find position
-  pos = 0
-  lo, hi = 0, self.n - 1
-  while lo <= hi:
-   m = (lo + hi) // 2
-   if self.xs[m] <= x:
-    pos = m
-    lo = m + 1
-   else:
-    hi = m - 1
-  return self._query(x, 1, 0, self.n)
+  def query(self, x):
+    """Query minimum y value at point x."""
+    # Binary search to find position
+    pos = 0
+    lo, hi = 0, self.n - 1
+    while lo <= hi:
+      m = (lo + hi) // 2
+      if self.xs[m] <= x:
+        pos = m
+        lo = m + 1
+      else:
+        hi = m - 1
+    return self._query(x, 1, 0, self.n)
 
- def _query(self, x, node, left, right):
-  """Recursively query minimum at x."""
-  if right <= left or node >= 2 * self.size:
-   return float('inf')
+  def _query(self, x, node, left, right):
+    """Recursively query minimum at x."""
+    if right <= left or node >= 2 * self.size:
+      return float('inf')
 
-  result = self._eval(self.lines[node], x)
+    result = self._eval(self.lines[node], x)
 
-  if right - left == 1:
-   return result
+    if right - left == 1:
+      return result
 
-  mid = (left + right) // 2
-  if x < self.xs[min(mid, self.n - 1)]:
-   return min(result, self._query(x, 2 * node, left, mid))
-  else:
-   return min(result, self._query(x, 2 * node + 1, mid, right))
+    mid = (left + right) // 2
+    if x < self.xs[min(mid, self.n - 1)]:
+      return min(result, self._query(x, 2 * node, left, mid))
+    else:
+      return min(result, self._query(x, 2 * node + 1, mid, right))
 
 
 def frog3_cht(n, c, heights):
- """
- Convex Hull Trick solution using Li Chao Tree.
+  """
+  Convex Hull Trick solution using Li Chao Tree.
 
- Time: O(N log N)
- Space: O(N)
- """
- tree = LiChaoTree(heights)
- dp = [0] * n
+  Time: O(N log N)
+  Space: O(N)
+  """
+  tree = LiChaoTree(heights)
+  dp = [0] * n
 
- # Add line for stone 0: m = -2*h[0], b = dp[0] + h[0]^2 = h[0]^2
- tree.add_line(-2 * heights[0], heights[0] ** 2)
+  # Add line for stone 0: m = -2*h[0], b = dp[0] + h[0]^2 = h[0]^2
+  tree.add_line(-2 * heights[0], heights[0] ** 2)
 
- for i in range(1, n):
-  h = heights[i]
-  # Query minimum at x = h[i]
-  min_val = tree.query(h)
-  dp[i] = h * h + c + min_val
-  # Add new line for stone i
-  tree.add_line(-2 * h, dp[i] + h * h)
+  for i in range(1, n):
+    h = heights[i]
+    # Query minimum at x = h[i]
+    min_val = tree.query(h)
+    dp[i] = h * h + c + min_val
+    # Add new line for stone i
+    tree.add_line(-2 * h, dp[i] + h * h)
 
- return dp[n - 1]
+  return dp[n - 1]
 
 
 # Main solution for competitive programming
 def main():
- import sys
- input_data = sys.stdin.read().split()
- idx = 0
- n, c = int(input_data[idx]), int(input_data[idx + 1])
- idx += 2
- heights = [int(input_data[idx + i]) for i in range(n)]
- print(frog3_cht(n, c, heights))
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, c = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+  heights = [int(input_data[idx + i]) for i in range(n)]
+  print(frog3_cht(n, c, heights))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -427,14 +427,14 @@ tree.add_line(-2 * h[i], dp[i] + h[i] * h[i])
 ```python
 # WRONG - start loop from 0
 for i in range(n):
- min_val = tree.query(h[i])
- dp[i] = ...  # No line exists for i=0!
+  min_val = tree.query(h[i])
+  dp[i] = ...  # No line exists for i=0!
 
 # CORRECT - handle base case separately
 dp[0] = 0
 tree.add_line(-2 * h[0], h[0] * h[0])
 for i in range(1, n):
- ...
+  ...
 ```
 
 **Problem:** Must add the line for stone 0 before querying for stone 1.

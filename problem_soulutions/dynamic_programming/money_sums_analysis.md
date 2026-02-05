@@ -147,24 +147,24 @@ Achievable: {2, 4, 5, 6, 7, 9, 11}
 
 ```python
 def solve():
- n = int(input())
- coins = list(map(int, input().split()))
+  n = int(input())
+  coins = list(map(int, input().split()))
 
- max_sum = sum(coins)
- dp = [False] * (max_sum + 1)
- dp[0] = True
+  max_sum = sum(coins)
+  dp = [False] * (max_sum + 1)
+  dp[0] = True
 
- for coin in coins:
-  # Iterate in REVERSE to use each coin only once
-  for s in range(max_sum, coin - 1, -1):
-   if dp[s - coin]:
-    dp[s] = True
+  for coin in coins:
+    # Iterate in REVERSE to use each coin only once
+    for s in range(max_sum, coin - 1, -1):
+      if dp[s - coin]:
+        dp[s] = True
 
- # Collect all achievable sums (excluding 0)
- result = [s for s in range(1, max_sum + 1) if dp[s]]
+  # Collect all achievable sums (excluding 0)
+  result = [s for s in range(1, max_sum + 1) if dp[s]]
 
- print(len(result))
- print(' '.join(map(str, result)))
+  print(len(result))
+  print(' '.join(map(str, result)))
 
 solve()
 ```
@@ -185,9 +185,9 @@ Where S = x_1 + x_2 + ... + x_n <= 100 * 1000 = 100,000
 ```python
 # WRONG: Uses each coin multiple times
 for coin in coins:
- for s in range(coin, max_sum + 1):  # Forward = WRONG
-  if dp[s - coin]:
-   dp[s] = True
+  for s in range(coin, max_sum + 1):  # Forward = WRONG
+    if dp[s - coin]:
+      dp[s] = True
 ```
 
 This allows using the same coin multiple times because `dp[s-coin]` may have been updated in the current iteration.

@@ -202,26 +202,26 @@ dp[25]=6, dp[30]=7, dp[35]=5, dp[40]=6
 
 ```python
 def solve(n, blocks):
- """Tower stacking DP with (w+s) sorting."""
- blocks.sort(key=lambda x: x[0] + x[1])  # Sort by w + s
+  """Tower stacking DP with (w+s) sorting."""
+  blocks.sort(key=lambda x: x[0] + x[1])  # Sort by w + s
 
- max_val = sum(v for w, s, v in blocks)
- INF = float('inf')
- dp = [INF] * (max_val + 1)
- dp[0] = 0
+  max_val = sum(v for w, s, v in blocks)
+  INF = float('inf')
+  dp = [INF] * (max_val + 1)
+  dp[0] = 0
 
- for w, s, v in blocks:
-  for j in range(max_val, v - 1, -1):  # Reverse to avoid reuse
-   if dp[j - v] <= s:  # Can this block support weight above?
-    dp[j] = min(dp[j], dp[j - v] + w)
+  for w, s, v in blocks:
+    for j in range(max_val, v - 1, -1):  # Reverse to avoid reuse
+      if dp[j - v] <= s:  # Can this block support weight above?
+        dp[j] = min(dp[j], dp[j - v] + w)
 
- return max(j for j in range(max_val + 1) if dp[j] < INF)
+  return max(j for j in range(max_val + 1) if dp[j] < INF)
 
 
 if __name__ == "__main__":
- n = int(input())
- blocks = [tuple(map(int, input().split())) for _ in range(n)]
- print(solve(n, blocks))
+  n = int(input())
+  blocks = [tuple(map(int, input().split())) for _ in range(n)]
+  print(solve(n, blocks))
 ```
 
 ### Complexity
@@ -254,8 +254,8 @@ blocks.sort(key=lambda x: x[1])
 ```python
 # WRONG - forward iteration allows reusing blocks
 for j in range(v, max_val + 1):
- if dp[j - v] <= s:
-  dp[j] = min(dp[j], dp[j - v] + w)
+  if dp[j - v] <= s:
+    dp[j] = min(dp[j], dp[j - v] + w)
 ```
 
 **Problem:** Forward iteration can use the same block multiple times.
@@ -267,7 +267,7 @@ for j in range(v, max_val + 1):
 ```python
 # WRONG - comparing raw weight instead of tower weight
 if w <= s:  # This doesn't check accumulated weight!
- dp[j] = ...
+  dp[j] = ...
 ```
 
 **Problem:** We need to check if the current block can support the TOTAL weight of the tower above it, not just one block's weight.

@@ -329,14 +329,14 @@ Total: 5 distinct palindromic substrings
 ```python
 # WRONG: Not following suffix links properly
 def get_suffix_link(node, pos, s):
- return node.suffix_link  # Too simple!
+  return node.suffix_link  # Too simple!
 
 # CORRECT: Must verify the palindrome condition
 def get_suffix_link(node, pos, s):
- cur = node.suffix_link
- while pos - cur.length - 1 < 0 or s[pos - cur.length - 1] != s[pos]:
-  cur = cur.suffix_link
- return cur
+  cur = node.suffix_link
+  while pos - cur.length - 1 < 0 or s[pos - cur.length - 1] != s[pos]:
+    cur = cur.suffix_link
+  return cur
 ```
 
 **Problem:** Suffix links must point to valid palindromic suffixes.
@@ -406,94 +406,94 @@ even_root.suffix_link = odd_root  # Allows falling back to single chars
 
 ```python
 class PalindromicTree:
- def __init__(self):
-  self.nodes = []
-  # Node 0: even root (length 0)
-  # Node 1: odd root (length -1)
-  self.nodes.append({'len': 0, 'suffix': 1, 'children': {}})
-  self.nodes.append({'len': -1, 'suffix': 1, 'children': {}})
-  self.last = 1  # Start from odd root
-  self.s = ""
+  def __init__(self):
+    self.nodes = []
+    # Node 0: even root (length 0)
+    # Node 1: odd root (length -1)
+    self.nodes.append({'len': 0, 'suffix': 1, 'children': {}})
+    self.nodes.append({'len': -1, 'suffix': 1, 'children': {}})
+    self.last = 1  # Start from odd root
+    self.s = ""
 
- def _get_link(self, v, pos):
-  """Find node where we can extend with s[pos]."""
-  while True:
-   cur_len = self.nodes[v]['len']
-   if pos - cur_len - 1 >= 0 and self.s[pos - cur_len - 1] == self.s[pos]:
-    return v
-   v = self.nodes[v]['suffix']
+  def _get_link(self, v, pos):
+    """Find node where we can extend with s[pos]."""
+    while True:
+      cur_len = self.nodes[v]['len']
+      if pos - cur_len - 1 >= 0 and self.s[pos - cur_len - 1] == self.s[pos]:
+        return v
+      v = self.nodes[v]['suffix']
 
- def add(self, c):
-  """Add character c to the tree. Returns True if new palindrome created."""
-  pos = len(self.s)
-  self.s += c
+  def add(self, c):
+    """Add character c to the tree. Returns True if new palindrome created."""
+    pos = len(self.s)
+    self.s += c
 
-  # Find longest palindrome that can be extended
-  cur = self._get_link(self.last, pos)
+    # Find longest palindrome that can be extended
+    cur = self._get_link(self.last, pos)
 
-  if c in self.nodes[cur]['children']:
-   self.last = self.nodes[cur]['children'][c]
-   return False  # Palindrome already exists
+    if c in self.nodes[cur]['children']:
+      self.last = self.nodes[cur]['children'][c]
+      return False  # Palindrome already exists
 
-  # Create new node
-  new_node = len(self.nodes)
-  new_len = self.nodes[cur]['len'] + 2
-  self.nodes.append({
-   'len': new_len,
-   'suffix': 1,  # Will update below
-   'children': {}
-  })
-  self.nodes[cur]['children'][c] = new_node
+    # Create new node
+    new_node = len(self.nodes)
+    new_len = self.nodes[cur]['len'] + 2
+    self.nodes.append({
+      'len': new_len,
+      'suffix': 1,  # Will update below
+      'children': {}
+    })
+    self.nodes[cur]['children'][c] = new_node
 
-  # Find suffix link for new node
-  if new_len == 1:
-   self.nodes[new_node]['suffix'] = 0  # Single char -> even root
-  else:
-   suffix_parent = self._get_link(self.nodes[cur]['suffix'], pos)
-   self.nodes[new_node]['suffix'] = self.nodes[suffix_parent]['children'][c]
+    # Find suffix link for new node
+    if new_len == 1:
+      self.nodes[new_node]['suffix'] = 0  # Single char -> even root
+    else:
+      suffix_parent = self._get_link(self.nodes[cur]['suffix'], pos)
+      self.nodes[new_node]['suffix'] = self.nodes[suffix_parent]['children'][c]
 
-  self.last = new_node
-  return True  # New palindrome created
+    self.last = new_node
+    return True  # New palindrome created
 
- def count_distinct(self):
-  """Return count of distinct palindromic substrings."""
-  return len(self.nodes) - 2  # Exclude two roots
+  def count_distinct(self):
+    """Return count of distinct palindromic substrings."""
+    return len(self.nodes) - 2  # Exclude two roots
 
- def build(self, s):
-  """Build tree for entire string."""
-  for c in s:
-   self.add(c)
-  return self.count_distinct()
+  def build(self, s):
+    """Build tree for entire string."""
+    for c in s:
+      self.add(c)
+    return self.count_distinct()
 
 
 # Example usage
 def count_palindromic_substrings(s):
- """Count distinct palindromic substrings in s."""
- tree = PalindromicTree()
- return tree.build(s)
+  """Count distinct palindromic substrings in s."""
+  tree = PalindromicTree()
+  return tree.build(s)
 
 
 def get_longest_palindrome(s):
- """Find the longest palindromic substring."""
- tree = PalindromicTree()
- tree.build(s)
+  """Find the longest palindromic substring."""
+  tree = PalindromicTree()
+  tree.build(s)
 
- max_len = 0
- max_node = -1
- for i in range(2, len(tree.nodes)):
-  if tree.nodes[i]['len'] > max_len:
-   max_len = tree.nodes[i]['len']
-   max_node = i
+  max_len = 0
+  max_node = -1
+  for i in range(2, len(tree.nodes)):
+    if tree.nodes[i]['len'] > max_len:
+      max_len = tree.nodes[i]['len']
+      max_node = i
 
- # Reconstruct palindrome (simplified - returns length)
- return max_len
+  # Reconstruct palindrome (simplified - returns length)
+  return max_len
 
 
 # Test
 if __name__ == "__main__":
- s = "abaaba"
- print(f"Distinct palindromes in '{s}': {count_palindromic_substrings(s)}")
- print(f"Longest palindrome length: {get_longest_palindrome(s)}")
+  s = "abaaba"
+  print(f"Distinct palindromes in '{s}': {count_palindromic_substrings(s)}")
+  print(f"Longest palindrome length: {get_longest_palindrome(s)}")
 ```
 
 ---
@@ -506,9 +506,9 @@ The number of nodes (excluding roots) equals distinct palindromes.
 
 ```python
 def count_distinct(s):
- tree = PalindromicTree()
- tree.build(s)
- return tree.count_distinct()  # nodes - 2
+  tree = PalindromicTree()
+  tree.build(s)
+  return tree.count_distinct()  # nodes - 2
 ```
 
 ### 2. Longest Palindromic Substring
@@ -517,9 +517,9 @@ Track maximum length node during construction.
 
 ```python
 def longest_palindrome(s):
- tree = PalindromicTree()
- tree.build(s)
- return max(node['len'] for node in tree.nodes[2:])
+  tree = PalindromicTree()
+  tree.build(s)
+  return max(node['len'] for node in tree.nodes[2:])
 ```
 
 ### 3. Count Total Palindrome Occurrences
@@ -528,10 +528,10 @@ Use suffix links to propagate counts.
 
 ```python
 def count_occurrences(s):
- tree = PalindromicTree()
- tree.build(s)
- # Each node is visited once per occurrence
- # Propagate via suffix links in reverse order
+  tree = PalindromicTree()
+  tree.build(s)
+  # Each node is visited once per occurrence
+  # Propagate via suffix links in reverse order
 ```
 
 ---

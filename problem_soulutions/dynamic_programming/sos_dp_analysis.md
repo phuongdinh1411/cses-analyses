@@ -120,24 +120,24 @@ For each mask, enumerate all its subsets using the standard subset enumeration t
 
 ```python
 def sos_brute_force(n: int, A: list[int]) -> list[int]:
- """
- Brute force: enumerate all subsets of each mask.
+  """
+  Brute force: enumerate all subsets of each mask.
 
- Time: O(3^n) - each element belongs to 2^k supersets
- Space: O(2^n) for result array
- """
- size = 1 << n
- F = [0] * size
+  Time: O(3^n) - each element belongs to 2^k supersets
+  Space: O(2^n) for result array
+  """
+  size = 1 << n
+  F = [0] * size
 
- for mask in range(size):
-  submask = mask
-  while True:
-   F[mask] += A[submask]
-   if submask == 0:
-    break
-   submask = (submask - 1) & mask
+  for mask in range(size):
+    submask = mask
+    while True:
+      F[mask] += A[submask]
+      if submask == 0:
+        break
+      submask = (submask - 1) & mask
 
- return F
+  return F
 ```
 
 ### Complexity
@@ -280,21 +280,21 @@ Processing bit-by-bit for mask = 111 (binary):
 
 ```python
 def sos_dp(n: int, A: list[int]) -> list[int]:
- """
- SOS DP: Sum over Subsets in O(n * 2^n).
+  """
+  SOS DP: Sum over Subsets in O(n * 2^n).
 
- Time: O(n * 2^n)
- Space: O(2^n)
- """
- size = 1 << n
- dp = A[:]  # Copy input array
+  Time: O(n * 2^n)
+  Space: O(2^n)
+  """
+  size = 1 << n
+  dp = A[:]  # Copy input array
 
- for i in range(n):  # Process each bit
-  for mask in range(size):
-   if mask & (1 << i):  # If bit i is set
-    dp[mask] += dp[mask ^ (1 << i)]
+  for i in range(n):  # Process each bit
+    for mask in range(size):
+      if mask & (1 << i):  # If bit i is set
+        dp[mask] += dp[mask ^ (1 << i)]
 
- return dp
+  return dp
 ```
 
 ### Complexity
@@ -325,9 +325,9 @@ Compare to O(3^n): For n=20:
 ```python
 # WRONG: Processing masks before bits
 for mask in range(size):
- for i in range(n):  # Bits inside!
-  if mask & (1 << i):
-   dp[mask] += dp[mask ^ (1 << i)]
+  for i in range(n):  # Bits inside!
+    if mask & (1 << i):
+      dp[mask] += dp[mask ^ (1 << i)]
 ```
 
 **Problem:** The dp values for smaller masks haven't been computed correctly yet when needed.
@@ -338,11 +338,11 @@ for mask in range(size):
 ```python
 # SUBSET DP (sum over subsets of mask):
 if mask & (1 << i):
- dp[mask] += dp[mask ^ (1 << i)]
+  dp[mask] += dp[mask ^ (1 << i)]
 
 # SUPERSET DP (sum over supersets of mask):
 if not (mask & (1 << i)):
- dp[mask] += dp[mask | (1 << i)]
+  dp[mask] += dp[mask | (1 << i)]
 ```
 
 **Problem:** Using subset logic when superset is needed (or vice versa).
@@ -407,16 +407,16 @@ To compute sum over all **supersets** instead of subsets:
 
 ```python
 def superset_dp(n: int, A: list[int]) -> list[int]:
- """Sum over all supersets of each mask."""
- size = 1 << n
- dp = A[:]
+  """Sum over all supersets of each mask."""
+  size = 1 << n
+  dp = A[:]
 
- for i in range(n):
-  for mask in range(size):
-   if not (mask & (1 << i)):  # If bit i is NOT set
-    dp[mask] += dp[mask | (1 << i)]
+  for i in range(n):
+    for mask in range(size):
+      if not (mask & (1 << i)):  # If bit i is NOT set
+        dp[mask] += dp[mask | (1 << i)]
 
- return dp
+  return dp
 ```
 
 ---

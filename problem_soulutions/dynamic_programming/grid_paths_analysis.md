@@ -150,32 +150,32 @@ dp[3][3] = dp[2][3] + dp[3][2] = 2 + 2 = 4
 
 ```python
 def solve():
- MOD = 10**9 + 7
- n = int(input())
- grid = [input().strip() for _ in range(n)]
+  MOD = 10**9 + 7
+  n = int(input())
+  grid = [input().strip() for _ in range(n)]
 
- # Edge case: start or end is a trap
- if grid[0][0] == '*' or grid[n-1][n-1] == '*':
-  print(0)
-  return
+  # Edge case: start or end is a trap
+  if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+    print(0)
+    return
 
- # Initialize DP table
- dp = [[0] * n for _ in range(n)]
- dp[0][0] = 1
+  # Initialize DP table
+  dp = [[0] * n for _ in range(n)]
+  dp[0][0] = 1
 
- # Fill DP table row by row
- for i in range(n):
-  for j in range(n):
-   if grid[i][j] == '*':
-    dp[i][j] = 0
-   elif i == 0 and j == 0:
-    continue  # Already initialized
-   else:
-    from_top = dp[i-1][j] if i > 0 else 0
-    from_left = dp[i][j-1] if j > 0 else 0
-    dp[i][j] = (from_top + from_left) % MOD
+  # Fill DP table row by row
+  for i in range(n):
+    for j in range(n):
+      if grid[i][j] == '*':
+        dp[i][j] = 0
+      elif i == 0 and j == 0:
+        continue  # Already initialized
+      else:
+        from_top = dp[i-1][j] if i > 0 else 0
+        from_left = dp[i][j-1] if j > 0 else 0
+        dp[i][j] = (from_top + from_left) % MOD
 
- print(dp[n-1][n-1])
+  print(dp[n-1][n-1])
 
 solve()
 ```
@@ -186,26 +186,26 @@ The 2D solution uses O(n^2) space. Since we only need the previous row to comput
 
 ```python
 def solve_optimized():
- MOD = 10**9 + 7
- n = int(input())
- grid = [input().strip() for _ in range(n)]
+  MOD = 10**9 + 7
+  n = int(input())
+  grid = [input().strip() for _ in range(n)]
 
- if grid[0][0] == '*' or grid[n-1][n-1] == '*':
-  print(0)
-  return
+  if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+    print(0)
+    return
 
- # 1D DP array
- dp = [0] * n
- dp[0] = 1
+  # 1D DP array
+  dp = [0] * n
+  dp[0] = 1
 
- for i in range(n):
-  for j in range(n):
-   if grid[i][j] == '*':
-    dp[j] = 0
-   elif j > 0:
-    dp[j] = (dp[j] + dp[j-1]) % MOD
+  for i in range(n):
+    for j in range(n):
+      if grid[i][j] == '*':
+        dp[j] = 0
+      elif j > 0:
+        dp[j] = (dp[j] + dp[j-1]) % MOD
 
- print(dp[n-1])
+  print(dp[n-1])
 ```
 
 **Space optimization explanation:**

@@ -225,279 +225,279 @@ Welcome to the Range Queries section! This category covers efficient data struct
 #### 1. Segment Tree Implementation
 ```python
 class SegmentTree:
- def __init__(self, data, operation, default_value):
-  self.n = len(data)
-  self.operation = operation
-  self.default_value = default_value
-  self.tree = [default_value] * (4 * self.n)
-  self.build(data, 0, 0, self.n - 1)
- 
- def build(self, data, node, start, end):
-  if start == end:
-   self.tree[node] = data[start]
-  else:
-   mid = (start + end) // 2
-   self.build(data, 2 * node + 1, start, mid)
-   self.build(data, 2 * node + 2, mid + 1, end)
-   self.tree[node] = self.operation(
-    self.tree[2 * node + 1], 
-    self.tree[2 * node + 2]
-   )
- 
- def update(self, index, value):
-  self._update(0, 0, self.n - 1, index, value)
- 
- def _update(self, node, start, end, index, value):
-  if start == end:
-   self.tree[node] = value
-  else:
-   mid = (start + end) // 2
-   if index <= mid:
-    self._update(2 * node + 1, start, mid, index, value)
-   else:
-    self._update(2 * node + 2, mid + 1, end, index, value)
-   self.tree[node] = self.operation(
-    self.tree[2 * node + 1], 
-    self.tree[2 * node + 2]
-   )
- 
- def query(self, left, right):
-  return self._query(0, 0, self.n - 1, left, right)
- 
- def _query(self, node, start, end, left, right):
-  if right < start or end < left:
-   return self.default_value
+  def __init__(self, data, operation, default_value):
+    self.n = len(data)
+    self.operation = operation
+    self.default_value = default_value
+    self.tree = [default_value] * (4 * self.n)
+    self.build(data, 0, 0, self.n - 1)
   
-  if left <= start and end <= right:
-   return self.tree[node]
+  def build(self, data, node, start, end):
+    if start == end:
+      self.tree[node] = data[start]
+    else:
+      mid = (start + end) // 2
+      self.build(data, 2 * node + 1, start, mid)
+      self.build(data, 2 * node + 2, mid + 1, end)
+      self.tree[node] = self.operation(
+        self.tree[2 * node + 1], 
+        self.tree[2 * node + 2]
+      )
   
-  mid = (start + end) // 2
-  left_result = self._query(2 * node + 1, start, mid, left, right)
-  right_result = self._query(2 * node + 2, mid + 1, end, left, right)
-  return self.operation(left_result, right_result)
+  def update(self, index, value):
+    self._update(0, 0, self.n - 1, index, value)
+  
+  def _update(self, node, start, end, index, value):
+    if start == end:
+      self.tree[node] = value
+    else:
+      mid = (start + end) // 2
+      if index <= mid:
+        self._update(2 * node + 1, start, mid, index, value)
+      else:
+        self._update(2 * node + 2, mid + 1, end, index, value)
+      self.tree[node] = self.operation(
+        self.tree[2 * node + 1], 
+        self.tree[2 * node + 2]
+      )
+  
+  def query(self, left, right):
+    return self._query(0, 0, self.n - 1, left, right)
+  
+  def _query(self, node, start, end, left, right):
+    if right < start or end < left:
+      return self.default_value
+    
+    if left <= start and end <= right:
+      return self.tree[node]
+    
+    mid = (start + end) // 2
+    left_result = self._query(2 * node + 1, start, mid, left, right)
+    right_result = self._query(2 * node + 2, mid + 1, end, left, right)
+    return self.operation(left_result, right_result)
 
 # Usage examples
 def range_sum_segment_tree(data):
- return SegmentTree(data, lambda x, y: x + y, 0)
+  return SegmentTree(data, lambda x, y: x + y, 0)
 
 def range_min_segment_tree(data):
- return SegmentTree(data, min, float('inf'))
+  return SegmentTree(data, min, float('inf'))
 
 def range_max_segment_tree(data):
- return SegmentTree(data, max, float('-inf'))
+  return SegmentTree(data, max, float('-inf'))
 ```
 
 #### 2. Lazy Propagation Segment Tree
 ```python
 class LazySegmentTree:
- def __init__(self, data, operation, default_value, lazy_operation, lazy_default):
-  self.n = len(data)
-  self.operation = operation
-  self.default_value = default_value
-  self.lazy_operation = lazy_operation
-  self.lazy_default = lazy_default
-  self.tree = [default_value] * (4 * self.n)
-  self.lazy = [lazy_default] * (4 * self.n)
-  self.build(data, 0, 0, self.n - 1)
- 
- def build(self, data, node, start, end):
-  if start == end:
-   self.tree[node] = data[start]
-  else:
-   mid = (start + end) // 2
-   self.build(data, 2 * node + 1, start, mid)
-   self.build(data, 2 * node + 2, mid + 1, end)
-   self.tree[node] = self.operation(
-    self.tree[2 * node + 1], 
-    self.tree[2 * node + 2]
-   )
- 
- def push_lazy(self, node, start, end):
-  if self.lazy[node] != self.lazy_default:
-   # Apply lazy update to current node
-   self.tree[node] = self.lazy_operation(
-    self.tree[node], 
-    self.lazy[node], 
-    end - start + 1
-   )
-   
-   # Propagate to children if not leaf
-   if start != end:
-    self.lazy[2 * node + 1] = self.lazy_operation(
-     self.lazy[2 * node + 1], 
-     self.lazy[node], 
-     1
+  def __init__(self, data, operation, default_value, lazy_operation, lazy_default):
+    self.n = len(data)
+    self.operation = operation
+    self.default_value = default_value
+    self.lazy_operation = lazy_operation
+    self.lazy_default = lazy_default
+    self.tree = [default_value] * (4 * self.n)
+    self.lazy = [lazy_default] * (4 * self.n)
+    self.build(data, 0, 0, self.n - 1)
+  
+  def build(self, data, node, start, end):
+    if start == end:
+      self.tree[node] = data[start]
+    else:
+      mid = (start + end) // 2
+      self.build(data, 2 * node + 1, start, mid)
+      self.build(data, 2 * node + 2, mid + 1, end)
+      self.tree[node] = self.operation(
+        self.tree[2 * node + 1], 
+        self.tree[2 * node + 2]
+      )
+  
+  def push_lazy(self, node, start, end):
+    if self.lazy[node] != self.lazy_default:
+      # Apply lazy update to current node
+      self.tree[node] = self.lazy_operation(
+        self.tree[node], 
+        self.lazy[node], 
+        end - start + 1
+      )
+      
+      # Propagate to children if not leaf
+      if start != end:
+        self.lazy[2 * node + 1] = self.lazy_operation(
+          self.lazy[2 * node + 1], 
+          self.lazy[node], 
+          1
+        )
+        self.lazy[2 * node + 2] = self.lazy_operation(
+          self.lazy[2 * node + 2], 
+          self.lazy[node], 
+          1
+        )
+      
+      self.lazy[node] = self.lazy_default
+  
+  def range_update(self, left, right, value):
+    self._range_update(0, 0, self.n - 1, left, right, value)
+  
+  def _range_update(self, node, start, end, left, right, value):
+    self.push_lazy(node, start, end)
+    
+    if right < start or end < left:
+      return
+    
+    if left <= start and end <= right:
+      self.lazy[node] = value
+      self.push_lazy(node, start, end)
+      return
+    
+    mid = (start + end) // 2
+    self._range_update(2 * node + 1, start, mid, left, right, value)
+    self._range_update(2 * node + 2, mid + 1, end, left, right, value)
+    
+    self.push_lazy(2 * node + 1, start, mid)
+    self.push_lazy(2 * node + 2, mid + 1, end)
+    self.tree[node] = self.operation(
+      self.tree[2 * node + 1], 
+      self.tree[2 * node + 2]
     )
-    self.lazy[2 * node + 2] = self.lazy_operation(
-     self.lazy[2 * node + 2], 
-     self.lazy[node], 
-     1
-    )
-   
-   self.lazy[node] = self.lazy_default
- 
- def range_update(self, left, right, value):
-  self._range_update(0, 0, self.n - 1, left, right, value)
- 
- def _range_update(self, node, start, end, left, right, value):
-  self.push_lazy(node, start, end)
   
-  if right < start or end < left:
-   return
+  def range_query(self, left, right):
+    return self._range_query(0, 0, self.n - 1, left, right)
   
-  if left <= start and end <= right:
-   self.lazy[node] = value
-   self.push_lazy(node, start, end)
-   return
-  
-  mid = (start + end) // 2
-  self._range_update(2 * node + 1, start, mid, left, right, value)
-  self._range_update(2 * node + 2, mid + 1, end, left, right, value)
-  
-  self.push_lazy(2 * node + 1, start, mid)
-  self.push_lazy(2 * node + 2, mid + 1, end)
-  self.tree[node] = self.operation(
-   self.tree[2 * node + 1], 
-   self.tree[2 * node + 2]
-  )
- 
- def range_query(self, left, right):
-  return self._range_query(0, 0, self.n - 1, left, right)
- 
- def _range_query(self, node, start, end, left, right):
-  self.push_lazy(node, start, end)
-  
-  if right < start or end < left:
-   return self.default_value
-  
-  if left <= start and end <= right:
-   return self.tree[node]
-  
-  mid = (start + end) // 2
-  left_result = self._range_query(2 * node + 1, start, mid, left, right)
-  right_result = self._range_query(2 * node + 2, mid + 1, end, left, right)
-  return self.operation(left_result, right_result)
+  def _range_query(self, node, start, end, left, right):
+    self.push_lazy(node, start, end)
+    
+    if right < start or end < left:
+      return self.default_value
+    
+    if left <= start and end <= right:
+      return self.tree[node]
+    
+    mid = (start + end) // 2
+    left_result = self._range_query(2 * node + 1, start, mid, left, right)
+    right_result = self._range_query(2 * node + 2, mid + 1, end, left, right)
+    return self.operation(left_result, right_result)
 
 # Usage for range sum with range updates
 def range_sum_lazy_segment_tree(data):
- return LazySegmentTree(
-  data, 
-  lambda x, y: x + y,  # operation
-  0,                   # default_value
-  lambda x, y, size: x + y * size,  # lazy_operation
-  0                    # lazy_default
- )
+  return LazySegmentTree(
+    data, 
+    lambda x, y: x + y,  # operation
+    0,                   # default_value
+    lambda x, y, size: x + y * size,  # lazy_operation
+    0                    # lazy_default
+  )
 ```
 
 #### 3. Fenwick Tree (Binary Indexed Tree)
 ```python
 class FenwickTree:
- def __init__(self, size):
-  self.n = size
-  self.tree = [0] * (self.n + 1)
- 
- def update(self, index, delta):
-  index += 1  # 1-indexed
-  while index <= self.n:
-   self.tree[index] += delta
-   index += index & (-index)
- 
- def query(self, index):
-  index += 1  # 1-indexed
-  result = 0
-  while index > 0:
-   result += self.tree[index]
-   index -= index & (-index)
-  return result
- 
- def range_query(self, left, right):
-  return self.query(right) - self.query(left - 1)
- 
- def range_update(self, left, right, delta):
-  self.update(left, delta)
-  self.update(right + 1, -delta)
+  def __init__(self, size):
+    self.n = size
+    self.tree = [0] * (self.n + 1)
+  
+  def update(self, index, delta):
+    index += 1  # 1-indexed
+    while index <= self.n:
+      self.tree[index] += delta
+      index += index & (-index)
+  
+  def query(self, index):
+    index += 1  # 1-indexed
+    result = 0
+    while index > 0:
+      result += self.tree[index]
+      index -= index & (-index)
+    return result
+  
+  def range_query(self, left, right):
+    return self.query(right) - self.query(left - 1)
+  
+  def range_update(self, left, right, delta):
+    self.update(left, delta)
+    self.update(right + 1, -delta)
 
 class FenwickTree2D:
- def __init__(self, rows, cols):
-  self.rows = rows
-  self.cols = cols
-  self.tree = [[0] * (cols + 1) for _ in range(rows + 1)]
- 
- def update(self, row, col, delta):
-  row += 1
-  col += 1
-  i = row
-  while i <= self.rows:
-   j = col
-   while j <= self.cols:
-    self.tree[i][j] += delta
-    j += j & (-j)
-   i += i & (-i)
- 
- def query(self, row, col):
-  row += 1
-  col += 1
-  result = 0
-  i = row
-  while i > 0:
-   j = col
-   while j > 0:
-    result += self.tree[i][j]
-    j -= j & (-j)
-   i -= i & (-i)
-  return result
- 
- def range_query(self, row1, col1, row2, col2):
-  return (self.query(row2, col2) - 
-    self.query(row1 - 1, col2) - 
-    self.query(row2, col1 - 1) + 
-    self.query(row1 - 1, col1 - 1))
+  def __init__(self, rows, cols):
+    self.rows = rows
+    self.cols = cols
+    self.tree = [[0] * (cols + 1) for _ in range(rows + 1)]
+  
+  def update(self, row, col, delta):
+    row += 1
+    col += 1
+    i = row
+    while i <= self.rows:
+      j = col
+      while j <= self.cols:
+        self.tree[i][j] += delta
+        j += j & (-j)
+      i += i & (-i)
+  
+  def query(self, row, col):
+    row += 1
+    col += 1
+    result = 0
+    i = row
+    while i > 0:
+      j = col
+      while j > 0:
+        result += self.tree[i][j]
+        j -= j & (-j)
+      i -= i & (-i)
+    return result
+  
+  def range_query(self, row1, col1, row2, col2):
+    return (self.query(row2, col2) - 
+        self.query(row1 - 1, col2) - 
+        self.query(row2, col1 - 1) + 
+        self.query(row1 - 1, col1 - 1))
 ```
 
 #### 4. Sparse Table for Range Minimum/Maximum
 ```python
 class SparseTable:
- def __init__(self, data, operation, default_value):
-  self.n = len(data)
-  self.operation = operation
-  self.default_value = default_value
-  self.log = [0] * (self.n + 1)
+  def __init__(self, data, operation, default_value):
+    self.n = len(data)
+    self.operation = operation
+    self.default_value = default_value
+    self.log = [0] * (self.n + 1)
+    
+    # Precompute logarithms
+    for i in range(2, self.n + 1):
+      self.log[i] = self.log[i // 2] + 1
+    
+    # Build sparse table
+    self.k = self.log[self.n] + 1
+    self.st = [[default_value] * self.k for _ in range(self.n)]
+    
+    for i in range(self.n):
+      self.st[i][0] = data[i]
+    
+    for j in range(1, self.k):
+      for i in range(self.n - (1 << j) + 1):
+        self.st[i][j] = self.operation(
+          self.st[i][j - 1],
+          self.st[i + (1 << (j - 1))][j - 1]
+        )
   
-  # Precompute logarithms
-  for i in range(2, self.n + 1):
-   self.log[i] = self.log[i // 2] + 1
-  
-  # Build sparse table
-  self.k = self.log[self.n] + 1
-  self.st = [[default_value] * self.k for _ in range(self.n)]
-  
-  for i in range(self.n):
-   self.st[i][0] = data[i]
-  
-  for j in range(1, self.k):
-   for i in range(self.n - (1 << j) + 1):
-    self.st[i][j] = self.operation(
-     self.st[i][j - 1],
-     self.st[i + (1 << (j - 1))][j - 1]
+  def query(self, left, right):
+    length = right - left + 1
+    k = self.log[length]
+    return self.operation(
+      self.st[left][k],
+      self.st[right - (1 << k) + 1][k]
     )
- 
- def query(self, left, right):
-  length = right - left + 1
-  k = self.log[length]
-  return self.operation(
-   self.st[left][k],
-   self.st[right - (1 << k) + 1][k]
-  )
 
 # Usage examples
 def range_min_sparse_table(data):
- return SparseTable(data, min, float('inf'))
+  return SparseTable(data, min, float('inf'))
 
 def range_max_sparse_table(data):
- return SparseTable(data, max, float('-inf'))
+  return SparseTable(data, max, float('-inf'))
 
 def range_gcd_sparse_table(data):
- return SparseTable(data, gcd, 0)
+  return SparseTable(data, gcd, 0)
 ```
 
 ### Advanced Range Query Techniques
@@ -505,143 +505,143 @@ def range_gcd_sparse_table(data):
 #### 1. Mo's Algorithm for Offline Queries
 ```python
 class MoAlgorithm:
- def __init__(self, queries, array):
-  self.queries = queries
-  self.array = array
-  self.n = len(array)
-  self.block_size = int(self.n ** 0.5)
-  
-  # Sort queries by block, then by right endpoint
-  self.queries.sort(key=lambda q: (
-   q[0] // self.block_size,
-   q[1] if (q[0] // self.block_size) % 2 == 0 else -q[1]
-  ))
- 
- def solve(self):
-  current_l = 0
-  current_r = -1
-  current_ans = 0
-  results = [0] * len(self.queries)
-  
-  for i, (left, right) in enumerate(self.queries):
-   # Expand range
-   while current_l > left:
-    current_l -= 1
-    current_ans += self.add(current_l)
-   
-   while current_r < right:
-    current_r += 1
-    current_ans += self.add(current_r)
-   
-   # Contract range
-   while current_l < left:
-    current_ans -= self.remove(current_l)
-    current_l += 1
-   
-   while current_r > right:
-    current_ans -= self.remove(current_r)
-    current_r -= 1
-   
-   results[i] = current_ans
-  
-  return results
- 
- def add(self, index):
-  # Implement based on problem requirements
-  return self.array[index]
- 
- def remove(self, index):
-  # Implement based on problem requirements
-  return self.array[index]
-
-def distinct_elements_mo(array, queries):
- class DistinctElementsMo(MoAlgorithm):
   def __init__(self, queries, array):
-   super().__init__(queries, array)
-   self.freq = {}
-   self.distinct_count = 0
-  
-  def add(self, index):
-   element = self.array[index]
-   if self.freq.get(element, 0) == 0:
-    self.distinct_count += 1
-   self.freq[element] = self.freq.get(element, 0) + 1
-   return 0
-  
-  def remove(self, index):
-   element = self.array[index]
-   self.freq[element] -= 1
-   if self.freq[element] == 0:
-    self.distinct_count -= 1
-   return 0
+    self.queries = queries
+    self.array = array
+    self.n = len(array)
+    self.block_size = int(self.n ** 0.5)
+    
+    # Sort queries by block, then by right endpoint
+    self.queries.sort(key=lambda q: (
+      q[0] // self.block_size,
+      q[1] if (q[0] // self.block_size) % 2 == 0 else -q[1]
+    ))
   
   def solve(self):
-   current_l = 0
-   current_r = -1
-   results = [0] * len(self.queries)
-   
-   for i, (left, right) in enumerate(self.queries):
-    while current_l > left:
-     current_l -= 1
-     self.add(current_l)
+    current_l = 0
+    current_r = -1
+    current_ans = 0
+    results = [0] * len(self.queries)
     
-    while current_r < right:
-     current_r += 1
-     self.add(current_r)
+    for i, (left, right) in enumerate(self.queries):
+      # Expand range
+      while current_l > left:
+        current_l -= 1
+        current_ans += self.add(current_l)
+      
+      while current_r < right:
+        current_r += 1
+        current_ans += self.add(current_r)
+      
+      # Contract range
+      while current_l < left:
+        current_ans -= self.remove(current_l)
+        current_l += 1
+      
+      while current_r > right:
+        current_ans -= self.remove(current_r)
+        current_r -= 1
+      
+      results[i] = current_ans
     
-    while current_l < left:
-     self.remove(current_l)
-     current_l += 1
+    return results
+  
+  def add(self, index):
+    # Implement based on problem requirements
+    return self.array[index]
+  
+  def remove(self, index):
+    # Implement based on problem requirements
+    return self.array[index]
+
+def distinct_elements_mo(array, queries):
+  class DistinctElementsMo(MoAlgorithm):
+    def __init__(self, queries, array):
+      super().__init__(queries, array)
+      self.freq = {}
+      self.distinct_count = 0
     
-    while current_r > right:
-     self.remove(current_r)
-     current_r -= 1
+    def add(self, index):
+      element = self.array[index]
+      if self.freq.get(element, 0) == 0:
+        self.distinct_count += 1
+      self.freq[element] = self.freq.get(element, 0) + 1
+      return 0
     
-    results[i] = self.distinct_count
-   
-   return results
- 
- return DistinctElementsMo(queries, array).solve()
+    def remove(self, index):
+      element = self.array[index]
+      self.freq[element] -= 1
+      if self.freq[element] == 0:
+        self.distinct_count -= 1
+      return 0
+    
+    def solve(self):
+      current_l = 0
+      current_r = -1
+      results = [0] * len(self.queries)
+      
+      for i, (left, right) in enumerate(self.queries):
+        while current_l > left:
+          current_l -= 1
+          self.add(current_l)
+        
+        while current_r < right:
+          current_r += 1
+          self.add(current_r)
+        
+        while current_l < left:
+          self.remove(current_l)
+          current_l += 1
+        
+        while current_r > right:
+          self.remove(current_r)
+          current_r -= 1
+        
+        results[i] = self.distinct_count
+      
+      return results
+  
+  return DistinctElementsMo(queries, array).solve()
 ```
 
 #### 2. Coordinate Compression
 ```python
 def coordinate_compression(coordinates):
- """Compress coordinates to 0-based indices"""
- sorted_coords = sorted(set(coordinates))
- coord_map = {coord: idx for idx, coord in enumerate(sorted_coords)}
- return [coord_map[coord] for coord in coordinates], sorted_coords
+  """Compress coordinates to 0-based indices"""
+  sorted_coords = sorted(set(coordinates))
+  coord_map = {coord: idx for idx, coord in enumerate(sorted_coords)}
+  return [coord_map[coord] for coord in coordinates], sorted_coords
 
 def range_sum_with_compression(queries, coordinates):
- """Handle range queries with coordinate compression"""
- # Extract all unique coordinates
- all_coords = set()
- for query in queries:
-  all_coords.add(query[0])
-  all_coords.add(query[1])
- 
- # Compress coordinates
- sorted_coords = sorted(all_coords)
- coord_map = {coord: idx for idx, coord in enumerate(sorted_coords)}
- 
- # Build Fenwick tree
- n = len(sorted_coords)
- fenwick = FenwickTree(n)
- 
- results = []
- for query_type, *args in queries:
-  if query_type == 'update':
-   pos, value = args
-   compressed_pos = coord_map[pos]
-   fenwick.update(compressed_pos, value)
-  elif query_type == 'query':
-   left, right = args
-   compressed_left = coord_map[left]
-   compressed_right = coord_map[right]
-   result = fenwick.range_query(compressed_left, compressed_right)
-   results.append(result)
- 
- return results
+  """Handle range queries with coordinate compression"""
+  # Extract all unique coordinates
+  all_coords = set()
+  for query in queries:
+    all_coords.add(query[0])
+    all_coords.add(query[1])
+  
+  # Compress coordinates
+  sorted_coords = sorted(all_coords)
+  coord_map = {coord: idx for idx, coord in enumerate(sorted_coords)}
+  
+  # Build Fenwick tree
+  n = len(sorted_coords)
+  fenwick = FenwickTree(n)
+  
+  results = []
+  for query_type, *args in queries:
+    if query_type == 'update':
+      pos, value = args
+      compressed_pos = coord_map[pos]
+      fenwick.update(compressed_pos, value)
+    elif query_type == 'query':
+      left, right = args
+      compressed_left = coord_map[left]
+      compressed_right = coord_map[right]
+      result = fenwick.range_query(compressed_left, compressed_right)
+      results.append(result)
+  
+  return results
 ```
 
 ## Tips for Success

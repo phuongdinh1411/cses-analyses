@@ -160,71 +160,71 @@ import sys
 input = sys.stdin.readline
 
 def cross_product(o, a, b):
- """Calculate (a - o) x (b - o). Positive if counter-clockwise."""
- return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+  """Calculate (a - o) x (b - o). Positive if counter-clockwise."""
+  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
 def on_segment(p, a, b):
- """Check if point p lies on segment ab."""
- # Point must be collinear with segment
- if cross_product(a, b, p) != 0:
-  return False
- # Point must be within bounding box
- return (min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and
-   min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
+  """Check if point p lies on segment ab."""
+  # Point must be collinear with segment
+  if cross_product(a, b, p) != 0:
+    return False
+  # Point must be within bounding box
+  return (min(a[0], b[0]) <= p[0] <= max(a[0], b[0]) and
+      min(a[1], b[1]) <= p[1] <= max(a[1], b[1]))
 
 def point_in_polygon(polygon, point):
- """
- Determine if point is inside, outside, or on boundary of polygon.
- Uses ray casting algorithm.
+  """
+  Determine if point is inside, outside, or on boundary of polygon.
+  Uses ray casting algorithm.
 
- Time: O(n) per query
- Space: O(1)
- """
- n = len(polygon)
- px, py = point
+  Time: O(n) per query
+  Space: O(1)
+  """
+  n = len(polygon)
+  px, py = point
 
- # Check if point is on any edge
- for i in range(n):
-  a = polygon[i]
-  b = polygon[(i + 1) % n]
-  if on_segment(point, a, b):
-   return "BOUNDARY"
+  # Check if point is on any edge
+  for i in range(n):
+    a = polygon[i]
+    b = polygon[(i + 1) % n]
+    if on_segment(point, a, b):
+      return "BOUNDARY"
 
- # Ray casting: count crossings to the right
- crossings = 0
- for i in range(n):
-  x1, y1 = polygon[i]
-  x2, y2 = polygon[(i + 1) % n]
+  # Ray casting: count crossings to the right
+  crossings = 0
+  for i in range(n):
+    x1, y1 = polygon[i]
+    x2, y2 = polygon[(i + 1) % n]
 
-  # Ensure y1 <= y2 for consistent handling
-  if y1 > y2:
-   x1, y1, x2, y2 = x2, y2, x1, y1
+    # Ensure y1 <= y2 for consistent handling
+    if y1 > y2:
+      x1, y1, x2, y2 = x2, y2, x1, y1
 
-  # Check if ray at height py intersects this edge
-  # Use half-open interval [y1, y2) to avoid double-counting vertices
-  if y1 <= py < y2:
-   # Calculate x-coordinate of intersection
-   # x = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
-   # Check if intersection is to the right of point
-   # Rearranged to avoid division: (px - x1) * (y2 - y1) < (py - y1) * (x2 - x1)
-   if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
-    crossings += 1
+    # Check if ray at height py intersects this edge
+    # Use half-open interval [y1, y2) to avoid double-counting vertices
+    if y1 <= py < y2:
+      # Calculate x-coordinate of intersection
+      # x = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
+      # Check if intersection is to the right of point
+      # Rearranged to avoid division: (px - x1) * (y2 - y1) < (py - y1) * (x2 - x1)
+      if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
+        crossings += 1
 
- return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
+  return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
 
 def solve():
- n, m = map(int, input().split())
- polygon = [tuple(map(int, input().split())) for _ in range(n)]
+  n, m = map(int, input().split())
+  polygon = [tuple(map(int, input().split())) for _ in range(n)]
 
- results = []
- for _ in range(m):
-  point = tuple(map(int, input().split()))
-  results.append(point_in_polygon(polygon, point))
+  results = []
+  for _ in range(m):
+    point = tuple(map(int, input().split()))
+    results.append(point_in_polygon(polygon, point))
 
- print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity
@@ -244,7 +244,7 @@ if __name__ == "__main__":
 # WRONG - floating point precision issues
 x_intersect = x1 + (py - y1) * (x2 - x1) / (y2 - y1)
 if px < x_intersect:
- crossings += 1
+  crossings += 1
 ```
 
 **Problem:** Floating point errors can cause incorrect results near edges.
@@ -252,7 +252,7 @@ if px < x_intersect:
 ```python
 # CORRECT - integer arithmetic
 if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
- crossings += 1
+  crossings += 1
 ```
 
 ### Mistake 2: Double-Counting Vertices
@@ -260,7 +260,7 @@ if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
 ```python
 # WRONG - counts vertex twice when ray passes through it
 if y1 <= py <= y2:  # Closed interval
- # ...
+  # ...
 ```
 
 **Problem:** When the ray passes exactly through a vertex, both adjacent edges count it.
@@ -268,7 +268,7 @@ if y1 <= py <= y2:  # Closed interval
 ```python
 # CORRECT - vertex counted only once
 if y1 <= py < y2:  # Half-open interval
- # ...
+  # ...
 ```
 
 ### Mistake 3: Forgetting Boundary Check
@@ -277,7 +277,7 @@ if y1 <= py < y2:  # Half-open interval
 # WRONG - jumps straight to ray casting
 crossings = 0
 for i in range(n):
- # ray casting logic...
+  # ray casting logic...
 return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
 ```
 

@@ -43,72 +43,72 @@ Use binary search for O(n log n) LIS/LDS computation.
 import bisect
 
 def compute_lis_ending(arr):
- """For each i, compute length of LIS ending at i"""
- n = len(arr)
- lis = [0] * n
- tails = []
+  """For each i, compute length of LIS ending at i"""
+  n = len(arr)
+  lis = [0] * n
+  tails = []
 
- for i in range(n):
-  pos = bisect.bisect_left(tails, arr[i])
-  lis[i] = pos + 1
+  for i in range(n):
+    pos = bisect.bisect_left(tails, arr[i])
+    lis[i] = pos + 1
 
-  if pos == len(tails):
-   tails.append(arr[i])
-  else:
-   tails[pos] = arr[i]
+    if pos == len(tails):
+      tails.append(arr[i])
+    else:
+      tails[pos] = arr[i]
 
- return lis
+  return lis
 
 def compute_lds_starting(arr):
- """For each i, compute length of LDS starting at i"""
- n = len(arr)
- lds = [0] * n
- tails = []
+  """For each i, compute length of LDS starting at i"""
+  n = len(arr)
+  lds = [0] * n
+  tails = []
 
- # Process from right to left
- for i in range(n - 1, -1, -1):
-  pos = bisect.bisect_left(tails, arr[i])
-  lds[i] = pos + 1
+  # Process from right to left
+  for i in range(n - 1, -1, -1):
+    pos = bisect.bisect_left(tails, arr[i])
+    lds[i] = pos + 1
 
-  if pos == len(tails):
-   tails.append(arr[i])
-  else:
-   tails[pos] = arr[i]
+    if pos == len(tails):
+      tails.append(arr[i])
+    else:
+      tails[pos] = arr[i]
 
- return lds
+  return lds
 
 def solve():
- import sys
- data = sys.stdin.read().split()
- idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
- while idx < len(data):
-  n = int(data[idx])
-  idx += 1
+  while idx < len(data):
+    n = int(data[idx])
+    idx += 1
 
-  arr = []
-  for _ in range(n):
-   arr.append(int(data[idx]))
-   idx += 1
+    arr = []
+    for _ in range(n):
+      arr.append(int(data[idx]))
+      idx += 1
 
-  # Compute LIS ending at each position
-  lis = compute_lis_ending(arr)
+    # Compute LIS ending at each position
+    lis = compute_lis_ending(arr)
 
-  # Compute LDS starting at each position
-  lds = compute_lds_starting(arr)
+    # Compute LDS starting at each position
+    lds = compute_lds_starting(arr)
 
-  # Find max Wavio length
-  max_wavio = 0
-  for i in range(n):
-   # Wavio with peak at i
-   k = min(lis[i], lds[i])
-   wavio_len = 2 * k - 1
-   max_wavio = max(max_wavio, wavio_len)
+    # Find max Wavio length
+    max_wavio = 0
+    for i in range(n):
+      # Wavio with peak at i
+      k = min(lis[i], lds[i])
+      wavio_len = 2 * k - 1
+      max_wavio = max(max_wavio, wavio_len)
 
-  print(max_wavio)
+    print(max_wavio)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution with Detailed Comments
@@ -118,45 +118,45 @@ import bisect
 import sys
 
 def solve():
- input_data = sys.stdin.read().split()
- idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
- while idx < len(input_data):
-  n = int(input_data[idx])
-  idx += 1
+  while idx < len(input_data):
+    n = int(input_data[idx])
+    idx += 1
 
-  arr = [int(input_data[idx + i]) for i in range(n)]
-  idx += n
+    arr = [int(input_data[idx + i]) for i in range(n)]
+    idx += n
 
-  # LIS[i] = length of longest strictly increasing subsequence ending at i
-  LIS = [0] * n
-  tails = []
-  for i in range(n):
-   pos = bisect.bisect_left(tails, arr[i])
-   LIS[i] = pos + 1
-   if pos == len(tails):
-    tails.append(arr[i])
-   else:
-    tails[pos] = arr[i]
+    # LIS[i] = length of longest strictly increasing subsequence ending at i
+    LIS = [0] * n
+    tails = []
+    for i in range(n):
+      pos = bisect.bisect_left(tails, arr[i])
+      LIS[i] = pos + 1
+      if pos == len(tails):
+        tails.append(arr[i])
+      else:
+        tails[pos] = arr[i]
 
-  # LDS[i] = length of longest strictly decreasing subsequence starting at i
-  # Equivalent to LIS from right with negated values
-  LDS = [0] * n
-  tails = []
-  for i in range(n - 1, -1, -1):
-   pos = bisect.bisect_left(tails, arr[i])
-   LDS[i] = pos + 1
-   if pos == len(tails):
-    tails.append(arr[i])
-   else:
-    tails[pos] = arr[i]
+    # LDS[i] = length of longest strictly decreasing subsequence starting at i
+    # Equivalent to LIS from right with negated values
+    LDS = [0] * n
+    tails = []
+    for i in range(n - 1, -1, -1):
+      pos = bisect.bisect_left(tails, arr[i])
+      LDS[i] = pos + 1
+      if pos == len(tails):
+        tails.append(arr[i])
+      else:
+        tails[pos] = arr[i]
 
-  # Maximum Wavio length
-  result = max(2 * min(LIS[i], LDS[i]) - 1 for i in range(n))
-  print(result)
+    # Maximum Wavio length
+    result = max(2 * min(LIS[i], LDS[i]) - 1 for i in range(n))
+    print(result)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

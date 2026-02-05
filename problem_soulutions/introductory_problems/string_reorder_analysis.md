@@ -76,18 +76,18 @@ Simply sort all characters in the string and concatenate them.
 **Python:**
 ```python
 def solve_sorting(s):
- """
- Time: O(n log n) - sorting dominates
- Space: O(n) - storing sorted characters
- """
- return ''.join(sorted(s))
+  """
+  Time: O(n log n) - sorting dominates
+  Space: O(n) - storing sorted characters
+  """
+  return ''.join(sorted(s))
 
 def main():
- s = input().strip()
- print(solve_sorting(s))
+  s = input().strip()
+  print(solve_sorting(s))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -139,26 +139,26 @@ Result: "abcd"
 **Python:**
 ```python
 def solve_counting(s):
- """
- Counting sort: O(n) time, O(1) space.
- """
- freq = [0] * 26
- for c in s:
-  freq[ord(c) - ord('a')] += 1
+  """
+  Counting sort: O(n) time, O(1) space.
+  """
+  freq = [0] * 26
+  for c in s:
+    freq[ord(c) - ord('a')] += 1
 
- result = []
- for i in range(26):
-  if freq[i] > 0:
-   result.append(chr(ord('a') + i) * freq[i])
+  result = []
+  for i in range(26):
+    if freq[i] > 0:
+      result.append(chr(ord('a') + i) * freq[i])
 
- return ''.join(result)
+  return ''.join(result)
 
 def main():
- s = input().strip()
- print(solve_counting(s))
+  s = input().strip()
+  print(solve_counting(s))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -178,14 +178,14 @@ if __name__ == "__main__":
 # WRONG - O(n^2) due to string immutability
 result = ""
 for i in range(26):
- for j in range(freq[i]):
-  result += chr(ord('a') + i)
+  for j in range(freq[i]):
+    result += chr(ord('a') + i)
 
 # CORRECT - O(n) using list and join
 result = []
 for i in range(26):
- if freq[i] > 0:
-  result.append(chr(ord('a') + i) * freq[i])
+  if freq[i] > 0:
+    result.append(chr(ord('a') + i) * freq[i])
 return ''.join(result)
 ```
 

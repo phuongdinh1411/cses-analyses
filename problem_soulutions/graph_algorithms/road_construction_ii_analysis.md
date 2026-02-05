@@ -81,41 +81,41 @@ import sys
 from sys import stdin
 
 def solve():
- input = stdin.readline
- n, m = map(int, input().split())
+  input = stdin.readline
+  n, m = map(int, input().split())
 
- parent = list(range(n + 1))
- size = [1] * (n + 1)
- components = n
- max_size = 1
+  parent = list(range(n + 1))
+  size = [1] * (n + 1)
+  components = n
+  max_size = 1
 
- def find(x):
-  if parent[x] != x:
-   parent[x] = find(parent[x])
-  return parent[x]
+  def find(x):
+    if parent[x] != x:
+      parent[x] = find(parent[x])
+    return parent[x]
 
- def union(a, b):
-  nonlocal components, max_size
-  ra, rb = find(a), find(b)
-  if ra == rb:
-   return  # Already connected
+  def union(a, b):
+    nonlocal components, max_size
+    ra, rb = find(a), find(b)
+    if ra == rb:
+      return  # Already connected
 
-  # Union by size
-  if size[ra] < size[rb]:
-   ra, rb = rb, ra
-  parent[rb] = ra
-  size[ra] += size[rb]
+    # Union by size
+    if size[ra] < size[rb]:
+      ra, rb = rb, ra
+    parent[rb] = ra
+    size[ra] += size[rb]
 
-  components -= 1
-  max_size = max(max_size, size[ra])
+    components -= 1
+    max_size = max(max_size, size[ra])
 
- result = []
- for _ in range(m):
-  a, b = map(int, input().split())
-  union(a, b)
-  result.append(f"{components} {max_size}")
+  result = []
+  for _ in range(m):
+    a, b = map(int, input().split())
+    union(a, b)
+    result.append(f"{components} {max_size}")
 
- print('\n'.join(result))
+  print('\n'.join(result))
 
 solve()
 ```

@@ -42,55 +42,55 @@ import sys
 
 
 class input_tokenizer:
- __tokens = None
+  __tokens = None
 
- def has_next(self):
-  return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
- def next(self):
-  token = self.__tokens[-1]
-  self.__tokens.pop()
-  return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
- def __init__(self):
-  self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
- def __init__(self):
-  self.countWord = 0
-  self.child = dict()
+  def __init__(self):
+    self.countWord = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  if tmp.countWord > 0:
-   return False
- if len(tmp.child) > 0:
-  return False
- tmp.countWord += 1
- return True
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    if tmp.countWord > 0:
+      return False
+  if len(tmp.child) > 0:
+    return False
+  tmp.countWord += 1
+  return True
 
 
 def solution():
- root = Node()
- n = int(inp.next())
- duplicated = False
- for i in range(n):
-  s = inp.next()
-  if not add_word(root, s):
-   print('vulnerable')
-   duplicated = True
-   break
- if not duplicated:
-  print('non vulnerable')
+  root = Node()
+  n = int(inp.next())
+  duplicated = False
+  for i in range(n):
+    s = inp.next()
+    if not add_word(root, s):
+      print('vulnerable')
+      duplicated = True
+      break
+  if not duplicated:
+    print('non vulnerable')
 
 
 solution()
@@ -133,81 +133,81 @@ import sys
 
 
 class input_tokenizer:
- __tokens = None
+  __tokens = None
 
- def has_next(self):
-  return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
- def next(self):
-  token = self.__tokens[-1]
-  self.__tokens.pop()
-  return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
- def __init__(self):
-  self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
- def __init__(self, index, depth):
-  self.index = index
-  self.depth = depth
+  def __init__(self, index, depth):
+    self.index = index
+    self.depth = depth
 
- def __lt__(self, other):
-  return self.depth < other.depth
+  def __lt__(self, other):
+    return self.depth < other.depth
 
 
 def dfs(s, depth, n, curr, word, arr):
- stack = [[s, depth]]
+  stack = [[s, depth]]
 
- while True:
-  if len(stack) == 0:
-   break
-  s, depth = stack.pop()
-  if curr >= n:
-   return curr, word
+  while True:
+    if len(stack) == 0:
+      break
+    s, depth = stack.pop()
+    if curr >= n:
+      return curr, word
 
-  if arr[curr].depth == depth:
-   word[arr[curr].index] = s
-   curr += 1
-   continue
+    if arr[curr].depth == depth:
+      word[arr[curr].index] = s
+      curr += 1
+      continue
 
-  next_s = s + '0'
-  stack.append([next_s, depth + 1])
+    next_s = s + '0'
+    stack.append([next_s, depth + 1])
 
-  next_s = s + '1'
-  stack.append([next_s, depth + 1])
+    next_s = s + '1'
+    stack.append([next_s, depth + 1])
 
- return curr, word
+  return curr, word
 
 
 def solution():
- try:
-  n = int(inp.next())
-  arr = []
+  try:
+    n = int(inp.next())
+    arr = []
 
-  for i in range(n):
-   word_len = int(inp.next())
-   arr.append(Node(i, word_len))
+    for i in range(n):
+      word_len = int(inp.next())
+      arr.append(Node(i, word_len))
 
-  arr.sort()
+    arr.sort()
 
-  word = ['' for i in range(n)]
-  curr = 0
-  results = dfs('', 0, n, curr, word, arr)
+    word = ['' for i in range(n)]
+    curr = 0
+    results = dfs('', 0, n, curr, word, arr)
 
-  word = results[1]
-  curr = results[0]
+    word = results[1]
+    curr = results[0]
 
-  if curr < n:
-   print('NO')
-  else:
-   print('YES')
-   print(*word, sep='\n')
- except Exception as ex:
-  print(ex)
+    if curr < n:
+      print('NO')
+    else:
+      print('YES')
+      print(*word, sep='\n')
+  except Exception as ex:
+    print(ex)
 
 
 solution()
@@ -248,41 +248,41 @@ Build a Trie where each node stores the maximum weight seen in its subtree. When
 
 ```python
 class Node:
- def __init__(self):
-  self.maxWeight = 0
-  self.child = dict()
+  def __init__(self):
+    self.maxWeight = 0
+    self.child = dict()
 
 
 def add_word(root, s, weight):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  if tmp.maxWeight < weight:
-   tmp.maxWeight = weight
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    if tmp.maxWeight < weight:
+      tmp.maxWeight = weight
 
 
 def find_word_max_weight(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   return -1
-  tmp = tmp.child[ch]
- return tmp.maxWeight
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      return -1
+    tmp = tmp.child[ch]
+  return tmp.maxWeight
 
 
 def solution():
- n, q = map(int, input().split())
- root = Node()
- for i in range(n):
-  s, weight = map(str, input().strip().split())
-  weight = int(weight)
-  add_word(root, s, weight)
+  n, q = map(int, input().split())
+  root = Node()
+  for i in range(n):
+    s, weight = map(str, input().strip().split())
+    weight = int(weight)
+    add_word(root, s, weight)
 
- for i in range(q):
-  word = input().strip()
-  print(find_word_max_weight(root, word))
+  for i in range(q):
+    word = input().strip()
+    print(find_word_max_weight(root, word))
 
 
 solution()
@@ -328,58 +328,58 @@ import sys
 
 
 class input_tokenizer:
- __tokens = None
+  __tokens = None
 
- def has_next(self):
-  return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
- def next(self):
-  token = self.__tokens[-1]
-  self.__tokens.pop()
-  return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
- def __init__(self):
-  self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
- def __init__(self):
-  self.countWord = 0
-  self.child = dict()
+  def __init__(self):
+    self.countWord = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  if tmp.countWord > 0:
-   return False, s
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    if tmp.countWord > 0:
+      return False, s
 
- if len(tmp.child) > 0:
-  return False, s
- tmp.countWord += 1
- return 'GOOD SET'
+  if len(tmp.child) > 0:
+    return False, s
+  tmp.countWord += 1
+  return 'GOOD SET'
 
 
 def solution():
- root = Node()
- n = int(inp.next())
- duplicated = False
- for i in range(n):
-  s = inp.next()
-  result = add_word(root, s)
-  if not result[0]:
-   print('BAD SET')
-   print(result[1])
-   duplicated = True
-   break
- if not duplicated:
-  print('GOOD SET')
+  root = Node()
+  n = int(inp.next())
+  duplicated = False
+  for i in range(n):
+    s = inp.next()
+    result = add_word(root, s)
+    if not result[0]:
+      print('BAD SET')
+      print(result[1])
+      duplicated = True
+      break
+  if not duplicated:
+    print('GOOD SET')
 
 
 solution()
@@ -424,57 +424,57 @@ import sys
 
 
 class input_tokenizer:
- __tokens = None
+  __tokens = None
 
- def has_next(self):
-  return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
- def next(self):
-  token = self.__tokens[-1]
-  self.__tokens.pop()
-  return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
- def __init__(self):
-  self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
- def __init__(self):
-  self.countWord = 0
-  self.child = dict()
+  def __init__(self):
+    self.countWord = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  tmp.countWord += 1
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    tmp.countWord += 1
 
 
 def find_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   return 0
-  tmp = tmp.child[ch]
- return tmp.countWord
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      return 0
+    tmp = tmp.child[ch]
+  return tmp.countWord
 
 
 def solution():
- root = Node()
- n = int(inp.next())
- for i in range(n):
-  q = inp.next()
-  word = inp.next()
-  if q == 'add':
-   add_word(root, word)
-  if q == 'find':
-   print(find_word(root, word))
+  root = Node()
+  n = int(inp.next())
+  for i in range(n):
+    q = inp.next()
+    word = inp.next()
+    if q == 'add':
+      add_word(root, word)
+    if q == 'find':
+      print(find_word(root, word))
 
 
 solution()
@@ -518,39 +518,39 @@ Build a Trie with phone numbers. Check for prefix conflicts during insertion:
 
 ```python
 class Node:
- def __init__(self):
-  self.countWord = 0
-  self.child = dict()
+  def __init__(self):
+    self.countWord = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  if tmp.countWord > 0:
-   return False
- if len(tmp.child) > 0:
-  return False
- tmp.countWord += 1
- return True
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    if tmp.countWord > 0:
+      return False
+  if len(tmp.child) > 0:
+    return False
+  tmp.countWord += 1
+  return True
 
 
 def solution():
- T = int(input())
- for t in range(T):
-  root = Node()
-  n = int(input())
-  duplicated = False
-  for i in range(n):
-   s = input().strip()
-   if not add_word(root, s):
-    print('Case {}: NO'.format(t + 1))
-    duplicated = True
-    break
-  if not duplicated:
-   print('Case {}: YES'.format(t + 1))
+  T = int(input())
+  for t in range(T):
+    root = Node()
+    n = int(input())
+    duplicated = False
+    for i in range(n):
+      s = input().strip()
+      if not add_word(root, s):
+        print('Case {}: NO'.format(t + 1))
+        duplicated = True
+        break
+    if not duplicated:
+      print('Case {}: YES'.format(t + 1))
 
 
 solution()
@@ -592,48 +592,48 @@ Build a Trie with DNA strings. Each node tracks cumulative "weight" = sum of dep
 
 ```python
 class Node:
- def __init__(self):
-  self.maxWeight = 0
-  self.child = dict()
+  def __init__(self):
+    self.maxWeight = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- i = 1
- max_weight = 0
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
-  tmp.maxWeight += i
-  i += 1
-  if tmp.maxWeight > max_weight:
-   max_weight = tmp.maxWeight
- return max_weight
+  tmp = root
+  i = 1
+  max_weight = 0
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+    tmp.maxWeight += i
+    i += 1
+    if tmp.maxWeight > max_weight:
+      max_weight = tmp.maxWeight
+  return max_weight
 
 
 def find_word_max_weight(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   return -1
-  tmp = tmp.child[ch]
- return tmp.maxWeight
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      return -1
+    tmp = tmp.child[ch]
+  return tmp.maxWeight
 
 
 def solution():
- T = int(input())
- for t in range(T):
-  n = int(input())
-  root = Node()
-  max_weight = 0
-  for i in range(n):
-   s = input()
-   current_max_weight = add_word(root, s)
-   if max_weight < current_max_weight:
-    max_weight = current_max_weight
+  T = int(input())
+  for t in range(T):
+    n = int(input())
+    root = Node()
+    max_weight = 0
+    for i in range(n):
+      s = input()
+      current_max_weight = add_word(root, s)
+      if max_weight < current_max_weight:
+        max_weight = current_max_weight
 
-  print('Case {}: {}'.format(t + 1, max_weight))
+    print('Case {}: {}'.format(t + 1, max_weight))
 
 
 solution()
@@ -674,68 +674,68 @@ Build a Trie from all product names. For each query prefix, find the Trie node. 
 
 ```python
 class Node:
- def __init__(self):
-  self.child = dict()
-  self.word_count = 0
+  def __init__(self):
+    self.child = dict()
+    self.word_count = 0
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
- tmp.word_count += 1
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+  tmp.word_count += 1
 
 
 def find_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   return []
-  tmp = tmp.child[ch]
- return tmp
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      return []
+    tmp = tmp.child[ch]
+  return tmp
 
 
 def extract_words(found_node):
- result = []
+  result = []
 
- if found_node.child:
-  if found_node.word_count > 0:
-   result.append('')
-   if len(result) >= 3:
-    return result
+  if found_node.child:
+    if found_node.word_count > 0:
+      result.append('')
+      if len(result) >= 3:
+        return result
 
-  current_keys = sorted(list(found_node.child.keys()))
-  for k in current_keys:
-   for s in extract_words(found_node.child[k]):
-    result.append(k + s)
-    if len(result) >= 3:
-     return result
- else:
-  result.append('')
- return result
+    current_keys = sorted(list(found_node.child.keys()))
+    for k in current_keys:
+      for s in extract_words(found_node.child[k]):
+        result.append(k + s)
+        if len(result) >= 3:
+          return result
+  else:
+    result.append('')
+  return result
 
 
 def threeProductSuggestions(numProducts, repository, customerQuery):
- root = Node()
- for i in range(numProducts):
-  add_word(root, repository[i])
+  root = Node()
+  for i in range(numProducts):
+    add_word(root, repository[i])
 
- results = []
- for i in range(2, len(customerQuery) + 1):
-  current_query = customerQuery[:i]
-  found_node = find_word(root, current_query)
-  if not found_node:
-   break
+  results = []
+  for i in range(2, len(customerQuery) + 1):
+    current_query = customerQuery[:i]
+    found_node = find_word(root, current_query)
+    if not found_node:
+      break
 
-  result = extract_words(found_node)
-  for k in range(len(result)):
-   result[k] = current_query + result[k]
+    result = extract_words(found_node)
+    for k in range(len(result)):
+      result[k] = current_query + result[k]
 
-  results.append(result)
+    results.append(result)
 
- return results
+  return results
 
 
 numProducts = 5
@@ -784,67 +784,67 @@ import sys
 
 
 class input_tokenizer:
- __tokens = None
+  __tokens = None
 
- def has_next(self):
-  return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
- def next(self):
-  token = self.__tokens[-1]
-  self.__tokens.pop()
-  return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
- def __init__(self):
-  self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
- def __init__(self):
-  self.countWord = 0
-  self.child = dict()
+  def __init__(self):
+    self.countWord = 0
+    self.child = dict()
 
 
 def add_word(root, s):
- tmp = root
- for ch in s:
-  if ch not in tmp.child:
-   tmp.child[ch] = Node()
-  tmp = tmp.child[ch]
- if tmp.countWord > 0:
-  return False
- tmp.countWord += 1
- return True
+  tmp = root
+  for ch in s:
+    if ch not in tmp.child:
+      tmp.child[ch] = Node()
+    tmp = tmp.child[ch]
+  if tmp.countWord > 0:
+    return False
+  tmp.countWord += 1
+  return True
 
 
 def solution():
- while True:
-  P = int(inp.next())
-  S = int(inp.next())
-  P_words = []
-  S_words = []
-  root = Node()
-  if P == 0 and S == 0:
-   break
-  for i in range(P):
-   P_words.append(inp.next())
+  while True:
+    P = int(inp.next())
+    S = int(inp.next())
+    P_words = []
+    S_words = []
+    root = Node()
+    if P == 0 and S == 0:
+      break
+    for i in range(P):
+      P_words.append(inp.next())
 
-  for i in range(S):
-   S_words.append(inp.next())
+    for i in range(S):
+      S_words.append(inp.next())
 
-  total = 0
-  for i in range(P):
-   p_len = len(P_words[i])
-   for k in range(1, p_len + 1):
-    for j in range(S):
-     s_len = len(S_words[j])
-     for l in range(s_len):
-      new_word = P_words[i][:k] + S_words[j][l:s_len]
-      if add_word(root, new_word):
-       total += 1
-  print(total)
+    total = 0
+    for i in range(P):
+      p_len = len(P_words[i])
+      for k in range(1, p_len + 1):
+        for j in range(S):
+          s_len = len(S_words[j])
+          for l in range(s_len):
+            new_word = P_words[i][:k] + S_words[j][l:s_len]
+            if add_word(root, new_word):
+              total += 1
+    print(total)
 
 
 solution()

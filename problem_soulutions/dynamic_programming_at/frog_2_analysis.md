@@ -90,20 +90,20 @@ Try all possible jump sequences from stone 1 to stone N, computing the cost for 
 
 ```python
 def solve_brute_force(n, k, h):
- """
- Brute force recursive solution.
- Time: O(K^N) - exponential
- Space: O(N) - recursion stack
- """
- def min_cost(i):
-  if i == 0:
-   return 0
-  result = float('inf')
-  for j in range(1, min(k, i) + 1):
-   result = min(result, min_cost(i - j) + abs(h[i] - h[i - j]))
-  return result
+  """
+  Brute force recursive solution.
+  Time: O(K^N) - exponential
+  Space: O(N) - recursion stack
+  """
+  def min_cost(i):
+    if i == 0:
+      return 0
+    result = float('inf')
+    for j in range(1, min(k, i) + 1):
+      result = min(result, min_cost(i - j) + abs(h[i] - h[i - j]))
+    return result
 
- return min_cost(n - 1)
+  return min_cost(n - 1)
 ```
 
 ### Complexity
@@ -193,19 +193,19 @@ Heights: 10   30   40   50   20
 
 ```python
 def solve_optimal(n, k, h):
- """
- Bottom-up DP solution.
- Time: O(N*K)
- Space: O(N)
- """
- dp = [float('inf')] * n
- dp[0] = 0
+  """
+  Bottom-up DP solution.
+  Time: O(N*K)
+  Space: O(N)
+  """
+  dp = [float('inf')] * n
+  dp[0] = 0
 
- for i in range(1, n):
-  for j in range(1, min(k, i) + 1):
-   dp[i] = min(dp[i], dp[i - j] + abs(h[i] - h[i - j]))
+  for i in range(1, n):
+    for j in range(1, min(k, i) + 1):
+      dp[i] = min(dp[i], dp[i - j] + abs(h[i] - h[i - j]))
 
- return dp[n - 1]
+  return dp[n - 1]
 
 # Read input and solve
 n, k = map(int, input().split())
@@ -229,11 +229,11 @@ print(solve_optimal(n, k, h))
 ```python
 # WRONG - may access negative indices
 for j in range(1, k + 1):
- dp[i] = min(dp[i], dp[i - j] + ...)
+  dp[i] = min(dp[i], dp[i - j] + ...)
 
 # CORRECT - limit j to valid range
 for j in range(1, min(k, i) + 1):
- dp[i] = min(dp[i], dp[i - j] + ...)
+  dp[i] = min(dp[i], dp[i - j] + ...)
 ```
 
 **Problem:** When i < k, accessing dp[i-k] goes out of bounds.

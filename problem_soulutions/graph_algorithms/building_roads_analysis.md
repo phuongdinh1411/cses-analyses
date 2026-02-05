@@ -213,48 +213,48 @@ import sys
 from sys import stdin
 
 def solve():
- input = stdin.readline
- n, m = map(int, input().split())
+  input = stdin.readline
+  n, m = map(int, input().split())
 
- # Union-Find with path compression and union by rank
- parent = list(range(n + 1))
- rank = [0] * (n + 1)
+  # Union-Find with path compression and union by rank
+  parent = list(range(n + 1))
+  rank = [0] * (n + 1)
 
- def find(x):
-  if parent[x] != x:
-   parent[x] = find(parent[x])
-  return parent[x]
+  def find(x):
+    if parent[x] != x:
+      parent[x] = find(parent[x])
+    return parent[x]
 
- def union(x, y):
-  rx, ry = find(x), find(y)
-  if rx == ry:
-   return
-  if rank[rx] < rank[ry]:
-   rx, ry = ry, rx
-  parent[ry] = rx
-  if rank[rx] == rank[ry]:
-   rank[rx] += 1
+  def union(x, y):
+    rx, ry = find(x), find(y)
+    if rx == ry:
+      return
+    if rank[rx] < rank[ry]:
+      rx, ry = ry, rx
+    parent[ry] = rx
+    if rank[rx] == rank[ry]:
+      rank[rx] += 1
 
- # Process existing roads
- for _ in range(m):
-  a, b = map(int, input().split())
-  union(a, b)
+  # Process existing roads
+  for _ in range(m):
+    a, b = map(int, input().split())
+    union(a, b)
 
- # Find all component representatives
- components = []
- for i in range(1, n + 1):
-  if find(i) == i:
-   components.append(i)
+  # Find all component representatives
+  components = []
+  for i in range(1, n + 1):
+    if find(i) == i:
+      components.append(i)
 
- # Output roads connecting components
- k = len(components) - 1
- print(k)
- for i in range(k):
-  print(components[i], components[i + 1])
+  # Output roads connecting components
+  k = len(components) - 1
+  print(k)
+  for i in range(k):
+    print(components[i], components[i + 1])
 
 if __name__ == "__main__":
- sys.setrecursionlimit(200005)
- solve()
+  sys.setrecursionlimit(200005)
+  solve()
 ```
 
 ## Why Union-Find vs DFS?

@@ -101,29 +101,29 @@ Maintain an array of all children and mark eliminated ones. For each elimination
 
 ```python
 def josephus_brute_force(n):
- """
- Brute force: mark eliminated children.
+  """
+  Brute force: mark eliminated children.
 
- Time: O(n^2) - for each of n eliminations, may traverse O(n)
- Space: O(n) - boolean array
- """
- eliminated = [False] * n
- result = []
- current = 0
+  Time: O(n^2) - for each of n eliminations, may traverse O(n)
+  Space: O(n) - boolean array
+  """
+  eliminated = [False] * n
+  result = []
+  current = 0
 
- for _ in range(n):
-  count = 0
-  while count < 2:  # k = 2
-   if not eliminated[current]:
-    count += 1
-    if count == 2:
-     eliminated[current] = True
-     result.append(current + 1)  # 1-indexed
-   if count < 2:
+  for _ in range(n):
+    count = 0
+    while count < 2:  # k = 2
+      if not eliminated[current]:
+        count += 1
+        if count == 2:
+          eliminated[current] = True
+          result.append(current + 1)  # 1-indexed
+      if count < 2:
+        current = (current + 1) % n
     current = (current + 1) % n
-  current = (current + 1) % n
 
- return result
+  return result
 ```
 
 ### Complexity
@@ -224,21 +224,21 @@ Round 7: [7]                     Last one     Eliminate: 7
 
 ```python
 def solve():
- n = int(input())
- children = list(range(1, n + 1))
- result = []
- index = 0
+  n = int(input())
+  children = list(range(1, n + 1))
+  result = []
+  index = 0
 
- while children:
-  # Move to next position to eliminate (k=2 means skip 1)
-  index = (index + 1) % len(children)
-  result.append(children.pop(index))
+  while children:
+    # Move to next position to eliminate (k=2 means skip 1)
+    index = (index + 1) % len(children)
+    result.append(children.pop(index))
 
-  # Adjust index if we removed the last element
-  if index == len(children) and children:
-   index = 0
+    # Adjust index if we removed the last element
+    if index == len(children) and children:
+      index = 0
 
- print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 solve()
 ```
@@ -296,7 +296,7 @@ children.pop(index)
 # CORRECT
 children.pop(index)
 if index >= len(children):
- index = 0
+  index = 0
 # Or: don't adjust since pop shifts elements left
 ```
 
@@ -363,11 +363,11 @@ J(n, k) = (J(n-1, k) + k) % n
 For k=2 specifically:
 ```python
 def josephus_survivor(n):
- """Returns the survivor position (1-indexed) for k=2."""
- survivor = 0
- for i in range(2, n + 1):
-  survivor = (survivor + 2) % i
- return survivor + 1  # Convert to 1-indexed
+  """Returns the survivor position (1-indexed) for k=2."""
+  survivor = 0
+  for i in range(2, n + 1):
+    survivor = (survivor + 2) % i
+  return survivor + 1  # Convert to 1-indexed
 ```
 
 This runs in O(n) time and O(1) space but only gives the final survivor.

@@ -204,54 +204,54 @@ Result: "00" + "01110100" = "0001110100"
 
 ```python
 def solve():
- n = int(input())
+  n = int(input())
 
- if n == 1:
-  print("01")
-  return
+  if n == 1:
+    print("01")
+    return
 
- # Number of (n-1)-bit patterns (nodes)
- num_nodes = 1 << (n - 1)
- mask = num_nodes - 1  # Mask for (n-1) bits
+  # Number of (n-1)-bit patterns (nodes)
+  num_nodes = 1 << (n - 1)
+  mask = num_nodes - 1  # Mask for (n-1) bits
 
- # Each node has edges to node*2 % num_nodes (append 0)
- # and (node*2 + 1) % num_nodes (append 1)
- # We track which edges are used: edge_used[node][0] and edge_used[node][1]
- edge_used = [[False, False] for _ in range(num_nodes)]
+  # Each node has edges to node*2 % num_nodes (append 0)
+  # and (node*2 + 1) % num_nodes (append 1)
+  # We track which edges are used: edge_used[node][0] and edge_used[node][1]
+  edge_used = [[False, False] for _ in range(num_nodes)]
 
- # Hierholzer's algorithm
- stack = [0]  # Start from node 0 (all zeros)
- path = []
+  # Hierholzer's algorithm
+  stack = [0]  # Start from node 0 (all zeros)
+  path = []
 
- while stack:
-  node = stack[-1]
-  # Try edge 0, then edge 1
-  if not edge_used[node][0]:
-   edge_used[node][0] = True
-   next_node = (node << 1) & mask  # Append 0
-   stack.append(next_node)
-  elif not edge_used[node][1]:
-   edge_used[node][1] = True
-   next_node = ((node << 1) | 1) & mask  # Append 1
-   stack.append(next_node)
-  else:
-   path.append(stack.pop())
+  while stack:
+    node = stack[-1]
+    # Try edge 0, then edge 1
+    if not edge_used[node][0]:
+      edge_used[node][0] = True
+      next_node = (node << 1) & mask  # Append 0
+      stack.append(next_node)
+    elif not edge_used[node][1]:
+      edge_used[node][1] = True
+      next_node = ((node << 1) | 1) & mask  # Append 1
+      stack.append(next_node)
+    else:
+      path.append(stack.pop())
 
- # Reverse path to get correct order
- path.reverse()
+  # Reverse path to get correct order
+  path.reverse()
 
- # Build result: start with first node in binary, then append edge bits
- result = []
- # First node as (n-1)-bit string
- first_node = path[0]
- for i in range(n - 2, -1, -1):
-  result.append('0' if (first_node >> i) & 1 == 0 else '1')
+  # Build result: start with first node in binary, then append edge bits
+  result = []
+  # First node as (n-1)-bit string
+  first_node = path[0]
+  for i in range(n - 2, -1, -1):
+    result.append('0' if (first_node >> i) & 1 == 0 else '1')
 
- # For each edge in path, append the last bit of destination
- for i in range(1, len(path)):
-  result.append('1' if path[i] & 1 else '0')
+  # For each edge in path, append the last bit of destination
+  for i in range(1, len(path)):
+    result.append('1' if path[i] & 1 else '0')
 
- print(''.join(result))
+  print(''.join(result))
 
 solve()
 ```

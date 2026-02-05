@@ -167,69 +167,69 @@ Segment Tree for "abcba":     Each leaf: hash = (char - 'a' + 1)
 ```python
 import sys
 def solve():
- input = sys.stdin.readline
- MOD, BASE = 10**9 + 7, 31
- n, m = map(int, input().split())
- s = list(input().strip())
+  input = sys.stdin.readline
+  MOD, BASE = 10**9 + 7, 31
+  n, m = map(int, input().split())
+  s = list(input().strip())
 
- pw = [1] * (n + 1)
- for i in range(1, n + 1): pw[i] = pw[i-1] * BASE % MOD
- fwd, rev = [0] * (4 * n), [0] * (4 * n)
+  pw = [1] * (n + 1)
+  for i in range(1, n + 1): pw[i] = pw[i-1] * BASE % MOD
+  fwd, rev = [0] * (4 * n), [0] * (4 * n)
 
- def char_val(c): return ord(c) - ord('a') + 1
+  def char_val(c): return ord(c) - ord('a') + 1
 
- def build(node, lo, hi):
-  if lo == hi:
-   fwd[node] = rev[node] = char_val(s[lo])
-   return
-  mid = (lo + hi) // 2
-  build(2*node, lo, mid)
-  build(2*node+1, mid+1, hi)
-  right_len, left_len = hi - mid, mid - lo + 1
-  fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
-  rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
+  def build(node, lo, hi):
+    if lo == hi:
+      fwd[node] = rev[node] = char_val(s[lo])
+      return
+    mid = (lo + hi) // 2
+    build(2*node, lo, mid)
+    build(2*node+1, mid+1, hi)
+    right_len, left_len = hi - mid, mid - lo + 1
+    fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
+    rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
 
- def update(node, lo, hi, pos, val):
-  if lo == hi:
-   fwd[node] = rev[node] = val
-   return
-  mid = (lo + hi) // 2
-  if pos <= mid: update(2*node, lo, mid, pos, val)
-  else: update(2*node+1, mid+1, hi, pos, val)
-  right_len, left_len = hi - mid, mid - lo + 1
-  fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
-  rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
+  def update(node, lo, hi, pos, val):
+    if lo == hi:
+      fwd[node] = rev[node] = val
+      return
+    mid = (lo + hi) // 2
+    if pos <= mid: update(2*node, lo, mid, pos, val)
+    else: update(2*node+1, mid+1, hi, pos, val)
+    right_len, left_len = hi - mid, mid - lo + 1
+    fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD
+    rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD
 
- def query_fwd(node, lo, hi, l, r):
-  if r < lo or hi < l: return (0, 0)
-  if l <= lo and hi <= r: return (fwd[node], hi - lo + 1)
-  mid = (lo + hi) // 2
-  L, R = query_fwd(2*node, lo, mid, l, r), query_fwd(2*node+1, mid+1, hi, l, r)
-  if L[1] == 0: return R
-  if R[1] == 0: return L
-  return ((L[0] * pw[R[1]] + R[0]) % MOD, L[1] + R[1])
+  def query_fwd(node, lo, hi, l, r):
+    if r < lo or hi < l: return (0, 0)
+    if l <= lo and hi <= r: return (fwd[node], hi - lo + 1)
+    mid = (lo + hi) // 2
+    L, R = query_fwd(2*node, lo, mid, l, r), query_fwd(2*node+1, mid+1, hi, l, r)
+    if L[1] == 0: return R
+    if R[1] == 0: return L
+    return ((L[0] * pw[R[1]] + R[0]) % MOD, L[1] + R[1])
 
- def query_rev(node, lo, hi, l, r):
-  if r < lo or hi < l: return (0, 0)
-  if l <= lo and hi <= r: return (rev[node], hi - lo + 1)
-  mid = (lo + hi) // 2
-  L, R = query_rev(2*node, lo, mid, l, r), query_rev(2*node+1, mid+1, hi, l, r)
-  if L[1] == 0: return R
-  if R[1] == 0: return L
-  return ((R[0] * pw[L[1]] + L[0]) % MOD, L[1] + R[1])
+  def query_rev(node, lo, hi, l, r):
+    if r < lo or hi < l: return (0, 0)
+    if l <= lo and hi <= r: return (rev[node], hi - lo + 1)
+    mid = (lo + hi) // 2
+    L, R = query_rev(2*node, lo, mid, l, r), query_rev(2*node+1, mid+1, hi, l, r)
+    if L[1] == 0: return R
+    if R[1] == 0: return L
+    return ((R[0] * pw[L[1]] + L[0]) % MOD, L[1] + R[1])
 
- build(1, 0, n-1)
- results = []
- for _ in range(m):
-  q = input().split()
-  if q[0] == '1':
-   k, x = int(q[1]) - 1, q[2]
-   s[k] = x
-   update(1, 0, n-1, k, char_val(x))
-  else:
-   a, b = int(q[1]) - 1, int(q[2]) - 1
-   results.append("YES" if query_fwd(1,0,n-1,a,b)[0] == query_rev(1,0,n-1,a,b)[0] else "NO")
- print('\n'.join(results))
+  build(1, 0, n-1)
+  results = []
+  for _ in range(m):
+    q = input().split()
+    if q[0] == '1':
+      k, x = int(q[1]) - 1, q[2]
+      s[k] = x
+      update(1, 0, n-1, k, char_val(x))
+    else:
+      a, b = int(q[1]) - 1, int(q[2]) - 1
+      results.append("YES" if query_fwd(1,0,n-1,a,b)[0] == query_rev(1,0,n-1,a,b)[0] else "NO")
+  print('\n'.join(results))
 
 if __name__ == "__main__": solve()
 ```

@@ -96,21 +96,21 @@ Check every possible subarray and verify if all elements are distinct.
 
 ```python
 def solve_brute_force(n, arr):
- """
- Brute force solution - check all subarrays.
+  """
+  Brute force solution - check all subarrays.
 
- Time: O(n^3) - O(n^2) subarrays, O(n) to check each
- Space: O(n) - for the set
- """
- max_length = 0
+  Time: O(n^3) - O(n^2) subarrays, O(n) to check each
+  Space: O(n) - for the set
+  """
+  max_length = 0
 
- for i in range(n):
-  for j in range(i, n):
-   subarray = arr[i:j+1]
-   if len(subarray) == len(set(subarray)):
-    max_length = max(max_length, len(subarray))
+  for i in range(n):
+    for j in range(i, n):
+      subarray = arr[i:j+1]
+      if len(subarray) == len(set(subarray)):
+        max_length = max(max_length, len(subarray))
 
- return max_length
+  return max_length
 ```
 
 ### Complexity
@@ -217,39 +217,39 @@ Step-by-step window movement:
 
 ```python
 def solve(n, arr):
- """
- Optimal solution using sliding window with hash set.
+  """
+  Optimal solution using sliding window with hash set.
 
- Time: O(n) - each element added and removed at most once
- Space: O(n) - hash set storage
- """
- left = 0
- max_length = 0
- seen = set()
+  Time: O(n) - each element added and removed at most once
+  Space: O(n) - hash set storage
+  """
+  left = 0
+  max_length = 0
+  seen = set()
 
- for right in range(n):
-  # Shrink window until arr[right] is not a duplicate
-  while arr[right] in seen:
-   seen.remove(arr[left])
-   left += 1
+  for right in range(n):
+    # Shrink window until arr[right] is not a duplicate
+    while arr[right] in seen:
+      seen.remove(arr[left])
+      left += 1
 
-  # Add current element to window
-  seen.add(arr[right])
+    # Add current element to window
+    seen.add(arr[right])
 
-  # Update maximum length
-  max_length = max(max_length, right - left + 1)
+    # Update maximum length
+    max_length = max(max_length, right - left + 1)
 
- return max_length
+  return max_length
 
 
 def main():
- n = int(input())
- arr = list(map(int, input().split()))
- print(solve(n, arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(solve(n, arr))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -268,13 +268,13 @@ if __name__ == "__main__":
 ```python
 # WRONG - only removes one element
 if arr[right] in seen:
- seen.remove(arr[left])
- left += 1
+  seen.remove(arr[left])
+  left += 1
 
 # CORRECT - keeps removing until duplicate is gone
 while arr[right] in seen:
- seen.remove(arr[left])
- left += 1
+  seen.remove(arr[left])
+  left += 1
 ```
 
 **Problem:** The duplicate might not be at position `left`. We need to keep shrinking until the duplicate element is removed.
@@ -301,12 +301,12 @@ max_length = max(max_length, right - left + 1)
 # WRONG - add before removing duplicates
 seen.add(arr[right])
 while arr[right] in seen:  # Always true!
- ...
+  ...
 
 # CORRECT - remove duplicates first, then add
 while arr[right] in seen:
- seen.remove(arr[left])
- left += 1
+  seen.remove(arr[left])
+  left += 1
 seen.add(arr[right])
 ```
 

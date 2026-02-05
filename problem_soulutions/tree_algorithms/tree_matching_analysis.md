@@ -114,30 +114,30 @@ Try all possible subsets of edges and find the largest valid matching (no shared
 
 ```python
 def solve_brute_force(n, edges):
- """
- Brute force: try all edge subsets.
+  """
+  Brute force: try all edge subsets.
 
- Time: O(2^m * m) where m = n-1 edges
- Space: O(m)
- """
- from itertools import combinations
+  Time: O(2^m * m) where m = n-1 edges
+  Space: O(m)
+  """
+  from itertools import combinations
 
- def is_valid_matching(edge_subset):
-  used = set()
-  for a, b in edge_subset:
-   if a in used or b in used:
-    return False
-   used.add(a)
-   used.add(b)
-  return True
+  def is_valid_matching(edge_subset):
+    used = set()
+    for a, b in edge_subset:
+      if a in used or b in used:
+        return False
+      used.add(a)
+      used.add(b)
+    return True
 
- max_matching = 0
- for k in range(len(edges) + 1):
-  for subset in combinations(edges, k):
-   if is_valid_matching(subset):
-    max_matching = max(max_matching, len(subset))
+  max_matching = 0
+  for k in range(len(edges) + 1):
+    for subset in combinations(edges, k):
+      if is_valid_matching(subset):
+        max_matching = max(max_matching, len(subset))
 
- return max_matching
+  return max_matching
 ```
 
 ### Complexity
@@ -279,69 +279,69 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve(n, edges):
- """
- Tree DP for maximum matching.
+  """
+  Tree DP for maximum matching.
 
- Time: O(n) - single DFS traversal
- Space: O(n) - adjacency list and DP array
- """
- if n == 1:
-  return 0
+  Time: O(n) - single DFS traversal
+  Space: O(n) - adjacency list and DP array
+  """
+  if n == 1:
+    return 0
 
- # Build adjacency list
- adj = defaultdict(list)
- for a, b in edges:
-  adj[a].append(b)
-  adj[b].append(a)
+  # Build adjacency list
+  adj = defaultdict(list)
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
- # dp[node] = [unmatched_value, matched_value]
- dp = [[0, 0] for _ in range(n + 1)]
+  # dp[node] = [unmatched_value, matched_value]
+  dp = [[0, 0] for _ in range(n + 1)]
 
- def dfs(node, parent):
-  sum_children = 0
-  best_gain = float('-inf')
+  def dfs(node, parent):
+    sum_children = 0
+    best_gain = float('-inf')
 
-  for child in adj[node]:
-   if child != parent:
-    dfs(child, node)
+    for child in adj[node]:
+      if child != parent:
+        dfs(child, node)
 
-    # When unmatched, take best from each child
-    best_child = max(dp[child][0], dp[child][1])
-    sum_children += best_child
+        # When unmatched, take best from each child
+        best_child = max(dp[child][0], dp[child][1])
+        sum_children += best_child
 
-    # Gain if we match with this child instead
-    # We lose best_child but gain dp[child][0] + 1
-    gain = dp[child][0] + 1 - best_child
-    best_gain = max(best_gain, gain)
+        # Gain if we match with this child instead
+        # We lose best_child but gain dp[child][0] + 1
+        gain = dp[child][0] + 1 - best_child
+        best_gain = max(best_gain, gain)
 
-  dp[node][0] = sum_children
+    dp[node][0] = sum_children
 
-  # Can only match if we have children
-  if best_gain != float('-inf'):
-   dp[node][1] = sum_children + best_gain
-  else:
-   dp[node][1] = 0
+    # Can only match if we have children
+    if best_gain != float('-inf'):
+      dp[node][1] = sum_children + best_gain
+    else:
+      dp[node][1] = 0
 
- dfs(1, -1)
- return max(dp[1][0], dp[1][1])
+  dfs(1, -1)
+  return max(dp[1][0], dp[1][1])
 
 
 def main():
- input_data = sys.stdin.read().split()
- idx = 0
- n = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
 
- edges = []
- for _ in range(n - 1):
-  a = int(input_data[idx]); idx += 1
-  b = int(input_data[idx]); idx += 1
-  edges.append((a, b))
+  edges = []
+  for _ in range(n - 1):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    edges.append((a, b))
 
- print(solve(n, edges))
+  print(solve(n, edges))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -360,15 +360,15 @@ if __name__ == "__main__":
 ```python
 # WRONG - crashes on n=1
 def solve(n, edges):
- adj = build_adj(edges)
- dfs(1, -1)
- return max(dp[1])
+  adj = build_adj(edges)
+  dfs(1, -1)
+  return max(dp[1])
 
 # CORRECT
 def solve(n, edges):
- if n == 1:
-  return 0  # No edges, no matching possible
- # ... rest of solution
+  if n == 1:
+    return 0  # No edges, no matching possible
+  # ... rest of solution
 ```
 
 **Problem:** A single node has no edges to match.
@@ -382,8 +382,8 @@ dp[node][1] = dp[children[0]][0] + 1 + sum(max(dp[c]) for c in children[1:])
 
 # CORRECT - try all children, pick best
 for child in children:
- option = dp[node][0] - max(dp[child]) + dp[child][0] + 1
- dp[node][1] = max(dp[node][1], option)
+  option = dp[node][0] - max(dp[child]) + dp[child][0] + 1
+  dp[node][1] = max(dp[node][1], option)
 ```
 
 **Problem:** Not considering all children for matching.
@@ -394,9 +394,9 @@ for child in children:
 ```python
 # WRONG - may stack overflow for n=200000
 def dfs(node, parent):
- for child in adj[node]:
-  if child != parent:
-   dfs(child, node)  # Deep recursion
+  for child in adj[node]:
+    if child != parent:
+      dfs(child, node)  # Deep recursion
 ```
 
 **Problem:** Default Python recursion limit is ~1000.

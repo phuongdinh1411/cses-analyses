@@ -106,15 +106,15 @@ For each window position, scan all k elements to find the minimum.
 
 ```python
 def sliding_minimum_brute(arr, k):
- """
- Brute force: check all elements in each window.
- Time: O(n*k), Space: O(1)
- """
- n = len(arr)
- result = []
- for i in range(n - k + 1):
-  result.append(min(arr[i:i+k]))
- return result
+  """
+  Brute force: check all elements in each window.
+  Time: O(n*k), Space: O(1)
+  """
+  n = len(arr)
+  result = []
+  for i in range(n - k + 1):
+    result.append(min(arr[i:i+k]))
+  return result
 ```
 
 ### Complexity
@@ -232,47 +232,47 @@ Window 3: [4, 5, 3]     Deque indices: [4] -> min = arr[4] = 3
 from collections import deque
 
 def sliding_minimum(arr, k):
- """
- Optimal solution using monotonic deque.
- Time: O(n), Space: O(k)
- """
- n = len(arr)
- dq = deque()  # stores indices
- result = []
+  """
+  Optimal solution using monotonic deque.
+  Time: O(n), Space: O(k)
+  """
+  n = len(arr)
+  dq = deque()  # stores indices
+  result = []
 
- for i in range(n):
-  # Remove indices of larger elements from back
-  while dq and arr[dq[-1]] >= arr[i]:
-   dq.pop()
+  for i in range(n):
+    # Remove indices of larger elements from back
+    while dq and arr[dq[-1]] >= arr[i]:
+      dq.pop()
 
-  # Add current index
-  dq.append(i)
+    # Add current index
+    dq.append(i)
 
-  # Remove index if outside window
-  if dq[0] <= i - k:
-   dq.popleft()
+    # Remove index if outside window
+    if dq[0] <= i - k:
+      dq.popleft()
 
-  # Record minimum once window is complete
-  if i >= k - 1:
-   result.append(arr[dq[0]])
+    # Record minimum once window is complete
+    if i >= k - 1:
+      result.append(arr[dq[0]])
 
- return result
+  return result
 
 
 # CSES-style I/O
 def main():
- import sys
- input_data = sys.stdin.read().split()
- idx = 0
- n, k = int(input_data[idx]), int(input_data[idx+1])
- idx += 2
- arr = [int(input_data[idx+i]) for i in range(n)]
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, k = int(input_data[idx]), int(input_data[idx+1])
+  idx += 2
+  arr = [int(input_data[idx+i]) for i in range(n)]
 
- result = sliding_minimum(arr, k)
- print(' '.join(map(str, result)))
+  result = sliding_minimum(arr, k)
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -311,11 +311,11 @@ dq.append(i)
 ```python
 # WRONG - Creates decreasing deque (for maximum, not minimum)
 while dq and arr[dq[-1]] <= arr[i]:
- dq.pop()
+  dq.pop()
 
 # CORRECT - Increasing deque for minimum
 while dq and arr[dq[-1]] >= arr[i]:
- dq.pop()
+  dq.pop()
 ```
 
 **Problem:** Using `<=` gives you a decreasing deque, which tracks maximum, not minimum.
@@ -325,14 +325,14 @@ while dq and arr[dq[-1]] >= arr[i]:
 ```python
 # WRONG - Never removes expired elements
 for i in range(n):
- while dq and arr[dq[-1]] >= arr[i]:
-  dq.pop()
- dq.append(i)
- result.append(arr[dq[0]])  # May use element outside window!
+  while dq and arr[dq[-1]] >= arr[i]:
+    dq.pop()
+  dq.append(i)
+  result.append(arr[dq[0]])  # May use element outside window!
 
 # CORRECT - Check and remove expired front
 if dq[0] <= i - k:
- dq.popleft()
+  dq.popleft()
 ```
 
 ### Mistake 4: Off-by-One in Window Completion
@@ -340,11 +340,11 @@ if dq[0] <= i - k:
 ```python
 # WRONG - Starts output too early
 if i >= k:
- result.append(arr[dq[0]])
+  result.append(arr[dq[0]])
 
 # CORRECT - First complete window at index k-1
 if i >= k - 1:
- result.append(arr[dq[0]])
+  result.append(arr[dq[0]])
 ```
 
 ---

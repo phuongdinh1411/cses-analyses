@@ -115,27 +115,27 @@ Check every pair of ranges for containment relationship.
 
 ```python
 def brute_force(ranges):
- """
- Brute force: check all pairs.
+  """
+  Brute force: check all pairs.
 
- Time: O(n^2)
- Space: O(n)
- """
- n = len(ranges)
- contains = [0] * n
- contained_by = [0] * n
+  Time: O(n^2)
+  Space: O(n)
+  """
+  n = len(ranges)
+  contains = [0] * n
+  contained_by = [0] * n
 
- for i in range(n):
-  for j in range(n):
-   if i == j:
-    continue
-   # Check if range i contains range j
-   if ranges[i][0] <= ranges[j][0] and ranges[j][1] <= ranges[i][1]:
-    contains[i] += 1
-    contained_by[j] += 1
+  for i in range(n):
+    for j in range(n):
+      if i == j:
+        continue
+      # Check if range i contains range j
+      if ranges[i][0] <= ranges[j][0] and ranges[j][1] <= ranges[i][1]:
+        contains[i] += 1
+        contained_by[j] += 1
 
- # Divide by 2 since we count each relationship twice
- return contains, contained_by
+  # Divide by 2 since we count each relationship twice
+  return contains, contained_by
 ```
 
 ### Complexity
@@ -318,97 +318,97 @@ For ranges with **different starts**, we process in start order and use BIT on e
 
 ```python
 class FenwickTree:
- """Binary Indexed Tree for prefix sums."""
+  """Binary Indexed Tree for prefix sums."""
 
- def __init__(self, n):
-  self.n = n
-  self.tree = [0] * (n + 1)
+  def __init__(self, n):
+    self.n = n
+    self.tree = [0] * (n + 1)
 
- def update(self, i, delta=1):
-  """Add delta at position i (1-indexed)."""
-  while i <= self.n:
-   self.tree[i] += delta
-   i += i & (-i)  # Add lowest set bit
+  def update(self, i, delta=1):
+    """Add delta at position i (1-indexed)."""
+    while i <= self.n:
+      self.tree[i] += delta
+      i += i & (-i)  # Add lowest set bit
 
- def query(self, i):
-  """Sum of elements from 1 to i."""
-  total = 0
-  while i > 0:
-   total += self.tree[i]
-   i -= i & (-i)  # Remove lowest set bit
-  return total
+  def query(self, i):
+    """Sum of elements from 1 to i."""
+    total = 0
+    while i > 0:
+      total += self.tree[i]
+      i -= i & (-i)  # Remove lowest set bit
+    return total
 
 
 def solve(n, ranges):
- """
- Count nested ranges using sorting + Fenwick Tree.
+  """
+  Count nested ranges using sorting + Fenwick Tree.
 
- Time: O(n log n)
- Space: O(n)
- """
- # Coordinate compression for end values
- ends = sorted(set(r[1] for r in ranges))
- compress = {v: i + 1 for i, v in enumerate(ends)}  # 1-indexed
- m = len(ends)
+  Time: O(n log n)
+  Space: O(n)
+  """
+  # Coordinate compression for end values
+  ends = sorted(set(r[1] for r in ranges))
+  compress = {v: i + 1 for i, v in enumerate(ends)}  # 1-indexed
+  m = len(ends)
 
- contains = [0] * n
- contained_by = [0] * n
+  contains = [0] * n
+  contained_by = [0] * n
 
- # For "contained_by": sort by (start ASC, end DESC)
- # Ranges processed earlier have smaller/equal start
- # Among those with same start, larger end comes first
- indexed = [(ranges[i][0], -ranges[i][1], i) for i in range(n)]
- indexed.sort()
+  # For "contained_by": sort by (start ASC, end DESC)
+  # Ranges processed earlier have smaller/equal start
+  # Among those with same start, larger end comes first
+  indexed = [(ranges[i][0], -ranges[i][1], i) for i in range(n)]
+  indexed.sort()
 
- bit = FenwickTree(m)
+  bit = FenwickTree(m)
 
- for start, neg_end, idx in indexed:
-  end = -neg_end
-  comp_end = compress[end]
-  # Count ranges with start <= current.start and end >= current.end
-  # Those are ranges that CONTAIN the current range
-  # Query: total seen - count of ends < current end
-  # = count of ends >= current end
-  contained_by[idx] = bit.query(m) - bit.query(comp_end - 1)
-  bit.update(comp_end)
+  for start, neg_end, idx in indexed:
+    end = -neg_end
+    comp_end = compress[end]
+    # Count ranges with start <= current.start and end >= current.end
+    # Those are ranges that CONTAIN the current range
+    # Query: total seen - count of ends < current end
+    # = count of ends >= current end
+    contained_by[idx] = bit.query(m) - bit.query(comp_end - 1)
+    bit.update(comp_end)
 
- # For "contains": sort by (start DESC, end ASC)
- # Process in reverse start order
- indexed = [(-ranges[i][0], ranges[i][1], i) for i in range(n)]
- indexed.sort()
+  # For "contains": sort by (start DESC, end ASC)
+  # Process in reverse start order
+  indexed = [(-ranges[i][0], ranges[i][1], i) for i in range(n)]
+  indexed.sort()
 
- bit = FenwickTree(m)
+  bit = FenwickTree(m)
 
- for neg_start, end, idx in indexed:
-  comp_end = compress[end]
-  # Count ranges with start >= current.start and end <= current.end
-  # Those are ranges that current CONTAINS
-  # Query: count of ends <= current end
-  contains[idx] = bit.query(comp_end)
-  bit.update(comp_end)
+  for neg_start, end, idx in indexed:
+    comp_end = compress[end]
+    # Count ranges with start >= current.start and end <= current.end
+    # Those are ranges that current CONTAINS
+    # Query: count of ends <= current end
+    contains[idx] = bit.query(comp_end)
+    bit.update(comp_end)
 
- return contains, contained_by
+  return contains, contained_by
 
 
 def main():
- import sys
- input_data = sys.stdin.read().split()
- ptr = 0
- n = int(input_data[ptr]); ptr += 1
+  import sys
+  input_data = sys.stdin.read().split()
+  ptr = 0
+  n = int(input_data[ptr]); ptr += 1
 
- ranges = []
- for _ in range(n):
-  x = int(input_data[ptr]); ptr += 1
-  y = int(input_data[ptr]); ptr += 1
-  ranges.append((x, y))
+  ranges = []
+  for _ in range(n):
+    x = int(input_data[ptr]); ptr += 1
+    y = int(input_data[ptr]); ptr += 1
+    ranges.append((x, y))
 
- contains, contained_by = solve(n, ranges)
- print(' '.join(map(str, contains)))
- print(' '.join(map(str, contained_by)))
+  contains, contained_by = solve(n, ranges)
+  print(' '.join(map(str, contains)))
+  print(' '.join(map(str, contained_by)))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 #### Complexity

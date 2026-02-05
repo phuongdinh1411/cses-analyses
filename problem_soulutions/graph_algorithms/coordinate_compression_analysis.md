@@ -45,20 +45,20 @@ Compressed: [3, 0, 2, 0, 1]
 ### Python Solution
 ```python
 def compress(arr):
- """
- Compress array values to consecutive integers.
- Returns compressed array and mappings.
- """
- # Get sorted unique values
- sorted_unique = sorted(set(arr))
+  """
+  Compress array values to consecutive integers.
+  Returns compressed array and mappings.
+  """
+  # Get sorted unique values
+  sorted_unique = sorted(set(arr))
 
- # Create value -> compressed index mapping
- val_to_idx = {v: i for i, v in enumerate(sorted_unique)}
+  # Create value -> compressed index mapping
+  val_to_idx = {v: i for i, v in enumerate(sorted_unique)}
 
- # Compress the array
- compressed = [val_to_idx[v] for v in arr]
+  # Compress the array
+  compressed = [val_to_idx[v] for v in arr]
 
- return compressed, val_to_idx, sorted_unique
+  return compressed, val_to_idx, sorted_unique
 
 # Example usage
 arr = [1000000, 5, 999999, 5, 500000]
@@ -73,49 +73,49 @@ print(f"Mapping: {mapping}")        # {5: 0, 500000: 1, 999999: 2, 1000000: 3}
 
 ```python
 def count_in_range(arr, queries):
- """
- Count elements in range [l, r] for each query.
- Values can be up to 10^9.
- """
- # Compress values
- compressed, val_to_idx, sorted_vals = compress(arr)
- n_unique = len(sorted_vals)
+  """
+  Count elements in range [l, r] for each query.
+  Values can be up to 10^9.
+  """
+  # Compress values
+  compressed, val_to_idx, sorted_vals = compress(arr)
+  n_unique = len(sorted_vals)
 
- # Build frequency array on compressed values
- freq = [0] * n_unique
- for c in compressed:
-  freq[c] += 1
+  # Build frequency array on compressed values
+  freq = [0] * n_unique
+  for c in compressed:
+    freq[c] += 1
 
- # Build prefix sum for range queries
- prefix = [0] * (n_unique + 1)
- for i in range(n_unique):
-  prefix[i + 1] = prefix[i] + freq[i]
+  # Build prefix sum for range queries
+  prefix = [0] * (n_unique + 1)
+  for i in range(n_unique):
+    prefix[i + 1] = prefix[i] + freq[i]
 
- results = []
- for l, r in queries:
-  # Find compressed indices for l and r
-  l_idx = bisect.bisect_left(sorted_vals, l)
-  r_idx = bisect.bisect_right(sorted_vals, r)
-  results.append(prefix[r_idx] - prefix[l_idx])
+  results = []
+  for l, r in queries:
+    # Find compressed indices for l and r
+    l_idx = bisect.bisect_left(sorted_vals, l)
+    r_idx = bisect.bisect_right(sorted_vals, r)
+    results.append(prefix[r_idx] - prefix[l_idx])
 
- return results
+  return results
 ```
 
 ### 2. 2D Coordinate Compression
 
 ```python
 def compress_2d(points):
- """
- Compress both x and y coordinates independently.
- """
- xs = sorted(set(p[0] for p in points))
- ys = sorted(set(p[1] for p in points))
+  """
+  Compress both x and y coordinates independently.
+  """
+  xs = sorted(set(p[0] for p in points))
+  ys = sorted(set(p[1] for p in points))
 
- x_map = {x: i for i, x in enumerate(xs)}
- y_map = {y: i for i, y in enumerate(ys)}
+  x_map = {x: i for i, x in enumerate(xs)}
+  y_map = {y: i for i, y in enumerate(ys)}
 
- compressed_points = [(x_map[x], y_map[y]) for x, y in points]
- return compressed_points, len(xs), len(ys)
+  compressed_points = [(x_map[x], y_map[y]) for x, y in points]
+  return compressed_points, len(xs), len(ys)
 
 # Example: Points with coordinates up to 10^9
 points = [(1000000000, 1), (5, 999999999), (1000000000, 999999999)]
@@ -127,39 +127,39 @@ comp_points, w, h = compress_2d(points)
 
 ```python
 class SegmentTreeOnValues:
- """
- Segment tree indexed by values (after compression).
- Useful for: count of elements in value range, etc.
- """
- def __init__(self, arr):
-  self.compressed, self.mapping, self.original = compress(arr)
-  self.n = len(self.original)
-  self.tree = [0] * (4 * self.n)
+  """
+  Segment tree indexed by values (after compression).
+  Useful for: count of elements in value range, etc.
+  """
+  def __init__(self, arr):
+    self.compressed, self.mapping, self.original = compress(arr)
+    self.n = len(self.original)
+    self.tree = [0] * (4 * self.n)
 
-  # Insert compressed values
-  for c in self.compressed:
-   self._update(1, 0, self.n - 1, c, 1)
+    # Insert compressed values
+    for c in self.compressed:
+      self._update(1, 0, self.n - 1, c, 1)
 
- def _update(self, node, start, end, idx, delta):
-  if start == end:
-   self.tree[node] += delta
-  else:
-   mid = (start + end) // 2
-   if idx <= mid:
-    self._update(2 * node, start, mid, idx, delta)
-   else:
-    self._update(2 * node + 1, mid + 1, end, idx, delta)
-   self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+  def _update(self, node, start, end, idx, delta):
+    if start == end:
+      self.tree[node] += delta
+    else:
+      mid = (start + end) // 2
+      if idx <= mid:
+        self._update(2 * node, start, mid, idx, delta)
+      else:
+        self._update(2 * node + 1, mid + 1, end, idx, delta)
+      self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
- def count_in_range(self, l, r):
-  """Count elements with value in [l, r]."""
-  # Map to compressed indices
-  import bisect
-  l_idx = bisect.bisect_left(self.original, l)
-  r_idx = bisect.bisect_right(self.original, r) - 1
-  if l_idx > r_idx:
-   return 0
-  return self._query(1, 0, self.n - 1, l_idx, r_idx)
+  def count_in_range(self, l, r):
+    """Count elements with value in [l, r]."""
+    # Map to compressed indices
+    import bisect
+    l_idx = bisect.bisect_left(self.original, l)
+    r_idx = bisect.bisect_right(self.original, r) - 1
+    if l_idx > r_idx:
+      return 0
+    return self._query(1, 0, self.n - 1, l_idx, r_idx)
 ```
 
 ## Complexity Analysis

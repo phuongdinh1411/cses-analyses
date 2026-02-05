@@ -108,19 +108,19 @@ For each query, iterate through the range and find the minimum element.
 
 ```python
 def solve_brute_force(arr, queries):
- """
- Brute force solution - scan each query range.
+  """
+  Brute force solution - scan each query range.
 
- Time: O(q * n) per query
- Space: O(1)
- """
- results = []
- for l, r in queries:
-  min_val = arr[l - 1]  # Convert to 0-indexed
-  for i in range(l - 1, r):
-   min_val = min(min_val, arr[i])
-  results.append(min_val)
- return results
+  Time: O(q * n) per query
+  Space: O(1)
+  """
+  results = []
+  for l, r in queries:
+    min_val = arr[l - 1]  # Convert to 0-indexed
+    for i in range(l - 1, r):
+      min_val = min(min_val, arr[i])
+    results.append(min_val)
+  return results
 ```
 
 ### Complexity
@@ -233,67 +233,67 @@ Query [2,4] (indices 1-3, length 3):
 import math
 
 def solve_sparse_table(arr, queries):
- """
- Optimal solution using Sparse Table.
+  """
+  Optimal solution using Sparse Table.
 
- Time: O(n log n) preprocessing + O(1) per query
- Space: O(n log n)
- """
- n = len(arr)
- if n == 0:
-  return []
+  Time: O(n log n) preprocessing + O(1) per query
+  Space: O(n log n)
+  """
+  n = len(arr)
+  if n == 0:
+    return []
 
- # Calculate log values for O(1) query
- LOG = max(1, n.bit_length())
+  # Calculate log values for O(1) query
+  LOG = max(1, n.bit_length())
 
- # Build sparse table
- st = [[0] * LOG for _ in range(n)]
+  # Build sparse table
+  st = [[0] * LOG for _ in range(n)]
 
- # Base case: length 1
- for i in range(n):
-  st[i][0] = arr[i]
+  # Base case: length 1
+  for i in range(n):
+    st[i][0] = arr[i]
 
- # Fill for lengths 2^j
- for j in range(1, LOG):
-  for i in range(n - (1 << j) + 1):
-   st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
+  # Fill for lengths 2^j
+  for j in range(1, LOG):
+    for i in range(n - (1 << j) + 1):
+      st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1])
 
- # Precompute log2 values for O(1) lookup
- log2 = [0] * (n + 1)
- for i in range(2, n + 1):
-  log2[i] = log2[i // 2] + 1
+  # Precompute log2 values for O(1) lookup
+  log2 = [0] * (n + 1)
+  for i in range(2, n + 1):
+    log2[i] = log2[i // 2] + 1
 
- # Answer queries
- results = []
- for l, r in queries:
-  l -= 1  # Convert to 0-indexed
-  r -= 1
-  length = r - l + 1
-  k = log2[length]
-  results.append(min(st[l][k], st[r - (1 << k) + 1][k]))
+  # Answer queries
+  results = []
+  for l, r in queries:
+    l -= 1  # Convert to 0-indexed
+    r -= 1
+    length = r - l + 1
+    k = log2[length]
+    results.append(min(st[l][k], st[r - (1 << k) + 1][k]))
 
- return results
+  return results
 
 
 # Main function for CSES submission
 def main():
- import sys
- input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
- n, q = map(int, input().split())
- arr = list(map(int, input().split()))
+  n, q = map(int, input().split())
+  arr = list(map(int, input().split()))
 
- queries = []
- for _ in range(q):
-  a, b = map(int, input().split())
-  queries.append((a, b))
+  queries = []
+  for _ in range(q):
+    a, b = map(int, input().split())
+    queries.append((a, b))
 
- results = solve_sparse_table(arr, queries)
- print('\n'.join(map(str, results)))
+  results = solve_sparse_table(arr, queries)
+  print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity

@@ -137,37 +137,37 @@ Final: 4 vertices processed = n, valid topological order!
 from collections import deque
 
 def topological_sort_bfs(n, edges):
- """Kahn's algorithm for topological sorting."""
- # Build adjacency list and compute in-degrees
- adj = [[] for _ in range(n + 1)]
- in_degree = [0] * (n + 1)
+  """Kahn's algorithm for topological sorting."""
+  # Build adjacency list and compute in-degrees
+  adj = [[] for _ in range(n + 1)]
+  in_degree = [0] * (n + 1)
 
- for a, b in edges:
-  adj[a].append(b)
-  in_degree[b] += 1
+  for a, b in edges:
+    adj[a].append(b)
+    in_degree[b] += 1
 
- # Initialize queue with vertices having in-degree 0
- queue = deque()
- for i in range(1, n + 1):
-  if in_degree[i] == 0:
-   queue.append(i)
+  # Initialize queue with vertices having in-degree 0
+  queue = deque()
+  for i in range(1, n + 1):
+    if in_degree[i] == 0:
+      queue.append(i)
 
- result = []
+  result = []
 
- while queue:
-  node = queue.popleft()
-  result.append(node)
+  while queue:
+    node = queue.popleft()
+    result.append(node)
 
-  for neighbor in adj[node]:
-   in_degree[neighbor] -= 1
-   if in_degree[neighbor] == 0:
-    queue.append(neighbor)
+    for neighbor in adj[node]:
+      in_degree[neighbor] -= 1
+      if in_degree[neighbor] == 0:
+        queue.append(neighbor)
 
- # Cycle detection: if not all vertices processed
- if len(result) != n:
-  return None  # IMPOSSIBLE
+  # Cycle detection: if not all vertices processed
+  if len(result) != n:
+    return None  # IMPOSSIBLE
 
- return result
+  return result
 
 # Read input and solve
 n, m = map(int, input().split())
@@ -175,9 +175,9 @@ edges = [tuple(map(int, input().split())) for _ in range(m)]
 
 result = topological_sort_bfs(n, edges)
 if result:
- print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 else:
- print("IMPOSSIBLE")
+  print("IMPOSSIBLE")
 ```
 
 ## Approach 2: DFS-based Topological Sort
@@ -227,41 +227,41 @@ import sys
 sys.setrecursionlimit(200005)
 
 def topological_sort_dfs(n, edges):
- """DFS-based topological sorting with cycle detection."""
- adj = [[] for _ in range(n + 1)]
- for a, b in edges:
-  adj[a].append(b)
+  """DFS-based topological sorting with cycle detection."""
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
 
- WHITE, GRAY, BLACK = 0, 1, 2
- color = [WHITE] * (n + 1)
- result = []
- has_cycle = False
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * (n + 1)
+  result = []
+  has_cycle = False
 
- def dfs(node):
-  nonlocal has_cycle
-  if has_cycle:
-   return
+  def dfs(node):
+    nonlocal has_cycle
+    if has_cycle:
+      return
 
-  color[node] = GRAY
+    color[node] = GRAY
 
-  for neighbor in adj[node]:
-   if color[neighbor] == GRAY:
-    has_cycle = True
-    return
-   if color[neighbor] == WHITE:
-    dfs(neighbor)
+    for neighbor in adj[node]:
+      if color[neighbor] == GRAY:
+        has_cycle = True
+        return
+      if color[neighbor] == WHITE:
+        dfs(neighbor)
 
-  color[node] = BLACK
-  result.append(node)
+    color[node] = BLACK
+    result.append(node)
 
- for i in range(1, n + 1):
-  if color[i] == WHITE:
-   dfs(i)
-   if has_cycle:
-    return None
+  for i in range(1, n + 1):
+    if color[i] == WHITE:
+      dfs(i)
+      if has_cycle:
+        return None
 
- result.reverse()
- return result
+  result.reverse()
+  return result
 
 # Read input and solve
 n, m = map(int, input().split())
@@ -269,9 +269,9 @@ edges = [tuple(map(int, input().split())) for _ in range(m)]
 
 result = topological_sort_dfs(n, edges)
 if result:
- print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 else:
- print("IMPOSSIBLE")
+  print("IMPOSSIBLE")
 ```
 
 ## Dry Run Example

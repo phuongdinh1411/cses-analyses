@@ -122,21 +122,21 @@ Try every possible target length (from minimum to maximum stick length) and calc
 
 ```python
 def solve_brute_force(sticks):
- """
- Brute force: try all possible target lengths.
+  """
+  Brute force: try all possible target lengths.
 
- Time: O(n * (max - min))
- Space: O(1)
- """
- min_len = min(sticks)
- max_len = max(sticks)
- min_cost = float('inf')
+  Time: O(n * (max - min))
+  Space: O(1)
+  """
+  min_len = min(sticks)
+  max_len = max(sticks)
+  min_cost = float('inf')
 
- for target in range(min_len, max_len + 1):
-  cost = sum(abs(s - target) for s in sticks)
-  min_cost = min(min_cost, cost)
+  for target in range(min_len, max_len + 1):
+    cost = sum(abs(s - target) for s in sticks)
+    min_cost = min(min_cost, cost)
 
- return min_cost
+  return min_cost
 ```
 
 ### Complexity
@@ -224,27 +224,27 @@ Cost visualization:
 
 ```python
 def solve(sticks):
- """
- Optimal solution using median.
+  """
+  Optimal solution using median.
 
- Time: O(n log n) - dominated by sorting
- Space: O(n) - for sorted array (or O(1) if sorting in-place)
- """
- sticks.sort()
- n = len(sticks)
- median = sticks[n // 2]
+  Time: O(n log n) - dominated by sorting
+  Space: O(n) - for sorted array (or O(1) if sorting in-place)
+  """
+  sticks.sort()
+  n = len(sticks)
+  median = sticks[n // 2]
 
- return sum(abs(s - median) for s in sticks)
+  return sum(abs(s - median) for s in sticks)
 
 
 def main():
- n = int(input())
- sticks = list(map(int, input().split()))
- print(solve(sticks))
+  n = int(input())
+  sticks = list(map(int, input().split()))
+  print(solve(sticks))
 
 
 if __name__ == "__main__":
- main()
+  main()
 ```
 
 ### Complexity
@@ -285,9 +285,9 @@ cost = sum(abs(s - target) for s in sticks)
 ```python
 # WRONG
 def solve(sticks):
- n = len(sticks)
- median = sticks[n // 2]  # This is NOT the median!
- return sum(abs(s - median) for s in sticks)
+  n = len(sticks)
+  median = sticks[n // 2]  # This is NOT the median!
+  return sum(abs(s - median) for s in sticks)
 ```
 
 **Problem:** The middle element of an unsorted array is not the median.

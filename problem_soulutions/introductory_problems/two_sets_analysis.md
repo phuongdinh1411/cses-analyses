@@ -231,43 +231,43 @@ Result:
 
 ```python
 def two_sets(n: int) -> None:
- """
- Divide {1, 2, ..., n} into two sets with equal sum.
+  """
+  Divide {1, 2, ..., n} into two sets with equal sum.
 
- Time: O(n)
- Space: O(n) for storing the two sets
- """
- total_sum = n * (n + 1) // 2
+  Time: O(n)
+  Space: O(n) for storing the two sets
+  """
+  total_sum = n * (n + 1) // 2
 
- # Check if partition is possible
- if total_sum % 2 == 1:
-  print("NO")
-  return
+  # Check if partition is possible
+  if total_sum % 2 == 1:
+    print("NO")
+    return
 
- target = total_sum // 2
- set1 = []
- set2 = []
+  target = total_sum // 2
+  set1 = []
+  set2 = []
 
- # Greedy: assign from largest to smallest
- for i in range(n, 0, -1):
-  if i <= target:
-   set1.append(i)
-   target -= i
-  else:
-   set2.append(i)
+  # Greedy: assign from largest to smallest
+  for i in range(n, 0, -1):
+    if i <= target:
+      set1.append(i)
+      target -= i
+    else:
+      set2.append(i)
 
- # Output result
- print("YES")
- print(len(set1))
- print(*set1)
- print(len(set2))
- print(*set2)
+  # Output result
+  print("YES")
+  print(len(set1))
+  print(*set1)
+  print(len(set2))
+  print(*set2)
 
 
 # Main
 if __name__ == "__main__":
- n = int(input())
- two_sets(n)
+  n = int(input())
+  two_sets(n)
 ```
 
 ### Complexity
@@ -312,45 +312,45 @@ Then apply the n % 4 == 0 pattern for remaining numbers 4 to n.
 
 ```python
 def two_sets_pattern(n: int) -> None:
- """
- Pattern-based construction for Two Sets problem.
+  """
+  Pattern-based construction for Two Sets problem.
 
- Time: O(n)
- Space: O(n)
- """
- total_sum = n * (n + 1) // 2
+  Time: O(n)
+  Space: O(n)
+  """
+  total_sum = n * (n + 1) // 2
 
- if total_sum % 2 == 1:
-  print("NO")
-  return
+  if total_sum % 2 == 1:
+    print("NO")
+    return
 
- set1 = []
- set2 = []
+  set1 = []
+  set2 = []
 
- start = 1
+  start = 1
 
- # Handle n % 4 == 3 case specially
- if n % 4 == 3:
-  set1.extend([1, 2])
-  set2.append(3)
-  start = 4
+  # Handle n % 4 == 3 case specially
+  if n % 4 == 3:
+    set1.extend([1, 2])
+    set2.append(3)
+    start = 4
 
- # Process groups of 4
- for i in range(start, n + 1, 4):
-  # Group: i, i+1, i+2, i+3
-  set1.extend([i, i + 3])      # First and last
-  set2.extend([i + 1, i + 2])  # Middle two
+  # Process groups of 4
+  for i in range(start, n + 1, 4):
+    # Group: i, i+1, i+2, i+3
+    set1.extend([i, i + 3])      # First and last
+    set2.extend([i + 1, i + 2])  # Middle two
 
- print("YES")
- print(len(set1))
- print(*set1)
- print(len(set2))
- print(*set2)
+  print("YES")
+  print(len(set1))
+  print(*set1)
+  print(len(set2))
+  print(*set2)
 
 
 if __name__ == "__main__":
- n = int(input())
- two_sets_pattern(n)
+  n = int(input())
+  two_sets_pattern(n)
 ```
 
 ---
@@ -362,8 +362,8 @@ if __name__ == "__main__":
 ```python
 # WRONG - Only checking if n is even
 if n % 2 == 0:
- # This is incorrect! n=2 has sum 3 which is odd
- construct_partition()
+  # This is incorrect! n=2 has sum 3 which is odd
+  construct_partition()
 ```
 
 **Problem:** n=2 has total sum 3, which is odd and impossible to partition.
@@ -393,9 +393,9 @@ print(*set1)
 ```python
 # WRONG - Starting from 1
 for i in range(1, n + 1):
- if i <= target:
-  set1.append(i)
-  target -= i
+  if i <= target:
+    set1.append(i)
+    target -= i
 
 # This fails because small numbers fill up before we can add large ones
 ```

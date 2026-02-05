@@ -37,93 +37,93 @@ Simpler approach: directly compute remainders.
 
 ```python
 def solve():
- import sys
+  import sys
 
- for line in sys.stdin:
-  n = int(line.strip())
-  if n == 0:
-   continue
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      continue
 
-  # Find smallest repunit divisible by n
-  # repunit(k) = 111...1 (k ones) = (10^k - 1) / 9
+    # Find smallest repunit divisible by n
+    # repunit(k) = 111...1 (k ones) = (10^k - 1) / 9
 
-  remainder = 1 % n
-  count = 1
+    remainder = 1 % n
+    count = 1
 
-  while remainder != 0:
-   remainder = (remainder * 10 + 1) % n
-   count += 1
+    while remainder != 0:
+      remainder = (remainder * 10 + 1) % n
+      count += 1
 
-  print(count)
+    print(count)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Alternative Solution with Explanation
 
 ```python
 def min_repunit_digits(n):
- """
- Find minimum k such that 111...1 (k ones) is divisible by n.
+  """
+  Find minimum k such that 111...1 (k ones) is divisible by n.
 
- The number with k ones is: (10^k - 1) / 9
+  The number with k ones is: (10^k - 1) / 9
 
- We iterate: r_1 = 1, r_k = r_{k-1} * 10 + 1
- Stop when r_k ≡ 0 (mod n)
- """
- if n == 1:
-  return 1
+  We iterate: r_1 = 1, r_k = r_{k-1} * 10 + 1
+  Stop when r_k ≡ 0 (mod n)
+  """
+  if n == 1:
+    return 1
 
- remainder = 1
- digits = 1
+  remainder = 1
+  digits = 1
 
- while remainder % n != 0:
-  remainder = (remainder * 10 + 1) % n
-  digits += 1
+  while remainder % n != 0:
+    remainder = (remainder * 10 + 1) % n
+    digits += 1
 
- return digits
+  return digits
 
 def solve():
- import sys
- for line in sys.stdin:
-  line = line.strip()
-  if not line:
-   continue
-  n = int(line)
-  print(min_repunit_digits(n))
+  import sys
+  for line in sys.stdin:
+    line = line.strip()
+    if not line:
+      continue
+    n = int(line)
+    print(min_repunit_digits(n))
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Mathematical Insight Solution
 
 ```python
 def solve():
- """
- For n not divisible by 2 or 5, a repunit divisible by n always exists.
+  """
+  For n not divisible by 2 or 5, a repunit divisible by n always exists.
 
- By pigeonhole principle, since there are only n possible remainders,
- within n+1 iterations we must find a repeat, and since we start at 1,
- we'll eventually hit 0.
- """
- import sys
+  By pigeonhole principle, since there are only n possible remainders,
+  within n+1 iterations we must find a repeat, and since we start at 1,
+  we'll eventually hit 0.
+  """
+  import sys
 
- for line in sys.stdin:
-  n = int(line.strip())
+  for line in sys.stdin:
+    n = int(line.strip())
 
-  r = 1
-  k = 1
+    r = 1
+    k = 1
 
-  while r != 0:
-   r = (r * 10 + 1) % n
-   k += 1
+    while r != 0:
+      r = (r * 10 + 1) % n
+      k += 1
 
-  print(k)
+    print(k)
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ### Complexity Analysis

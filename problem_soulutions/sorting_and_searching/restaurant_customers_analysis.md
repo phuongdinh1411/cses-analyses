@@ -106,50 +106,50 @@ Maximum simultaneous customers: 2
 
 ```python
 def max_customers(customers):
- """
- Find maximum simultaneous customers using sweep line.
+  """
+  Find maximum simultaneous customers using sweep line.
 
- Args:
-  customers: list of (arrival, departure) tuples
+  Args:
+    customers: list of (arrival, departure) tuples
 
- Returns:
-  Maximum number of customers at any time
- """
- events = []
+  Returns:
+    Maximum number of customers at any time
+  """
+  events = []
 
- # Create events: (time, type)
- # type: -1 for departure, +1 for arrival
- # Using -1/+1 ensures departures sort before arrivals at same time
- for arrival, departure in customers:
-  events.append((arrival, 1))     # arrival = +1
-  events.append((departure, -1))  # departure = -1
+  # Create events: (time, type)
+  # type: -1 for departure, +1 for arrival
+  # Using -1/+1 ensures departures sort before arrivals at same time
+  for arrival, departure in customers:
+    events.append((arrival, 1))     # arrival = +1
+    events.append((departure, -1))  # departure = -1
 
- # Sort by time, then by type (departures first due to -1 < 1)
- events.sort()
+  # Sort by time, then by type (departures first due to -1 < 1)
+  events.sort()
 
- current = 0
- max_count = 0
+  current = 0
+  max_count = 0
 
- for time, delta in events:
-  current += delta
-  max_count = max(max_count, current)
+  for time, delta in events:
+    current += delta
+    max_count = max(max_count, current)
 
- return max_count
+  return max_count
 
 
 # CSES submission format
 def solve():
- n = int(input())
- customers = []
- for _ in range(n):
-  a, b = map(int, input().split())
-  customers.append((a, b))
+  n = int(input())
+  customers = []
+  for _ in range(n):
+    a, b = map(int, input().split())
+    customers.append((a, b))
 
- print(max_customers(customers))
+  print(max_customers(customers))
 
 
 if __name__ == "__main__":
- solve()
+  solve()
 ```
 
 ## Why Tie-Breaking Matters
