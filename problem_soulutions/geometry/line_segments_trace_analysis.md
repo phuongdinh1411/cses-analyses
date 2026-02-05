@@ -98,48 +98,48 @@ For each segment, check all other segments to find connections by comparing endp
 
 ```python
 def trace_brute_force(n, segments):
-  """
-  Brute force: check all pairs for connections.
+ """
+ Brute force: check all pairs for connections.
 
-  Time: O(n^2)
-  Space: O(n)
-  """
-  def connects(seg1, seg2):
-    """Check if two segments share an endpoint."""
-    p1, p2 = (seg1[0], seg1[1]), (seg1[2], seg1[3])
-    p3, p4 = (seg2[0], seg2[1]), (seg2[2], seg2[3])
-    return p1 in (p3, p4) or p2 in (p3, p4)
+ Time: O(n^2)
+ Space: O(n)
+ """
+ def connects(seg1, seg2):
+  """Check if two segments share an endpoint."""
+  p1, p2 = (seg1[0], seg1[1]), (seg1[2], seg1[3])
+  p3, p4 = (seg2[0], seg2[1]), (seg2[2], seg2[3])
+  return p1 in (p3, p4) or p2 in (p3, p4)
 
-  # Build adjacency list - O(n^2)
-  adj = [[] for _ in range(n)]
-  for i in range(n):
-    for j in range(i + 1, n):
-      if connects(segments[i], segments[j]):
-        adj[i].append(j)
-        adj[j].append(i)
+ # Build adjacency list - O(n^2)
+ adj = [[] for _ in range(n)]
+ for i in range(n):
+  for j in range(i + 1, n):
+   if connects(segments[i], segments[j]):
+    adj[i].append(j)
+    adj[j].append(i)
 
-  # Find starting segment (degree 1)
-  start = next((i for i in range(n) if len(adj[i]) == 1), 0)
+ # Find starting segment (degree 1)
+ start = next((i for i in range(n) if len(adj[i]) == 1), 0)
 
-  # Traverse and build path
-  path = []
-  visited = [False] * n
-  curr = start
+ # Traverse and build path
+ path = []
+ visited = [False] * n
+ curr = start
 
-  while curr != -1:
-    visited[curr] = True
-    x1, y1, x2, y2 = segments[curr]
+ while curr != -1:
+  visited[curr] = True
+  x1, y1, x2, y2 = segments[curr]
 
-    if not path:
-      path.extend([(x1, y1), (x2, y2)])
-    elif (x1, y1) == path[-1]:
-      path.append((x2, y2))
-    else:
-      path.append((x1, y1))
+  if not path:
+   path.extend([(x1, y1), (x2, y2)])
+  elif (x1, y1) == path[-1]:
+   path.append((x2, y2))
+  else:
+   path.append((x1, y1))
 
-    curr = next((nb for nb in adj[curr] if not visited[nb]), -1)
+  curr = next((nb for nb in adj[curr] if not visited[nb]), -1)
 
-  return path
+ return path
 ```
 
 ### Complexity
@@ -239,56 +239,56 @@ Trace path:
 
 ```python
 def trace_segments(n, segments):
-  """
-  Optimal solution using hash map for O(1) lookups.
+ """
+ Optimal solution using hash map for O(1) lookups.
 
-  Time: O(n) - single pass to build graph, single pass to traverse
-  Space: O(n) - hash map stores 2n points (at most)
-  """
-  # Build graph from segments
-  graph = {}
+ Time: O(n) - single pass to build graph, single pass to traverse
+ Space: O(n) - hash map stores 2n points (at most)
+ """
+ # Build graph from segments
+ graph = {}
 
-  for x1, y1, x2, y2 in segments:
-    p1, p2 = (x1, y1), (x2, y2)
+ for x1, y1, x2, y2 in segments:
+  p1, p2 = (x1, y1), (x2, y2)
 
-    if p1 not in graph:
-      graph[p1] = []
-    if p2 not in graph:
-      graph[p2] = []
+  if p1 not in graph:
+   graph[p1] = []
+  if p2 not in graph:
+   graph[p2] = []
 
-    graph[p1].append(p2)
-    graph[p2].append(p1)
+  graph[p1].append(p2)
+  graph[p2].append(p1)
 
-  # Find starting point (degree 1 vertex)
-  start = None
-  for point, neighbors in graph.items():
-    if len(neighbors) == 1:
-      start = point
-      break
+ # Find starting point (degree 1 vertex)
+ start = None
+ for point, neighbors in graph.items():
+  if len(neighbors) == 1:
+   start = point
+   break
 
-  if start is None:
-    return []  # Cycle or empty
+ if start is None:
+  return []  # Cycle or empty
 
-  # Traverse the path
-  path = [start]
-  visited = {start}
-  current = start
+ # Traverse the path
+ path = [start]
+ visited = {start}
+ current = start
 
-  while True:
-    next_point = None
-    for neighbor in graph[current]:
-      if neighbor not in visited:
-        next_point = neighbor
-        break
+ while True:
+  next_point = None
+  for neighbor in graph[current]:
+   if neighbor not in visited:
+    next_point = neighbor
+    break
 
-    if next_point is None:
-      break
+  if next_point is None:
+   break
 
-    path.append(next_point)
-    visited.add(next_point)
-    current = next_point
+  path.append(next_point)
+  visited.add(next_point)
+  current = next_point
 
-  return path
+ return path
 ```
 
 ### Complexity
@@ -310,9 +310,9 @@ path.append((x2, y2))  # Always adds second endpoint
 
 # CORRECT - check which endpoint connects
 if (x1, y1) == path[-1]:
-  path.append((x2, y2))
+ path.append((x2, y2))
 else:
-  path.append((x1, y1))
+ path.append((x1, y1))
 ```
 
 **Problem:** Segments may be given in any direction.
@@ -323,7 +323,7 @@ else:
 ```python
 # WRONG - floating point comparison issues
 if abs(p1[0] - p2[0]) < 1e-9 and abs(p1[1] - p2[1]) < 1e-9:
-  # Points are "equal"
+ # Points are "equal"
 
 # CORRECT - use integer coordinates
 if p1 == p2:  # Exact integer comparison
@@ -338,14 +338,14 @@ if p1 == p2:  # Exact integer comparison
 # WRONG - assumes linear path exists
 start = None
 for point, neighbors in graph.items():
-  if len(neighbors) == 1:
-    start = point
-    break
+ if len(neighbors) == 1:
+  start = point
+  break
 # start might be None if all points have degree 2!
 
 # CORRECT - handle cycle case
 if start is None:
-  start = next(iter(graph.keys()))  # Any point works for cycle
+ start = next(iter(graph.keys()))  # Any point works for cycle
 ```
 
 ---

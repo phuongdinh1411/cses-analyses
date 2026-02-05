@@ -162,34 +162,34 @@ Scanning left to right:
 
 ```python
 def solve():
-  """
-  Find longest consecutive character run in DNA string.
+ """
+ Find longest consecutive character run in DNA string.
 
-  Time: O(n) - single pass
-  Space: O(1) - only tracking two integers
-  """
-  s = input().strip()
+ Time: O(n) - single pass
+ Space: O(1) - only tracking two integers
+ """
+ s = input().strip()
 
-  if len(s) == 0:
-    print(0)
-    return
+ if len(s) == 0:
+  print(0)
+  return
 
-  max_length = 1
-  current_length = 1
+ max_length = 1
+ current_length = 1
 
-  for i in range(1, len(s)):
-    if s[i] == s[i - 1]:
-      current_length += 1
-    else:
-      max_length = max(max_length, current_length)
-      current_length = 1
+ for i in range(1, len(s)):
+  if s[i] == s[i - 1]:
+   current_length += 1
+  else:
+   max_length = max(max_length, current_length)
+   current_length = 1
 
-  # Don't forget the final comparison!
-  max_length = max(max_length, current_length)
-  print(max_length)
+ # Don't forget the final comparison!
+ max_length = max(max_length, current_length)
+ print(max_length)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -208,11 +208,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - Missing final comparison
 for i in range(1, len(s)):
-  if s[i] == s[i-1]:
-    current_length += 1
-  else:
-    max_length = max(max_length, current_length)
-    current_length = 1
+ if s[i] == s[i-1]:
+  current_length += 1
+ else:
+  max_length = max(max_length, current_length)
+  current_length = 1
 print(max_length)  # Bug: misses run at end of string!
 ```
 
@@ -225,8 +225,8 @@ print(max_length)  # Bug: misses run at end of string!
 ```python
 # WRONG - Starting from index 0
 for i in range(len(s)):
-  if s[i] == s[i-1]:  # s[-1] when i=0 - accesses last character!
-    ...
+ if s[i] == s[i-1]:  # s[-1] when i=0 - accesses last character!
+  ...
 ```
 
 **Problem:** When `i=0`, `s[i-1]` accesses `s[-1]` (the last character in Python), causing incorrect comparison.
@@ -239,7 +239,7 @@ for i in range(len(s)):
 # WRONG - Crashes on empty string
 s = input()
 for i in range(1, len(s)):  # This is fine
-  ...
+ ...
 print(max_length)  # But max_length was never set if len(s) <= 1
 ```
 

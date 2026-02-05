@@ -117,18 +117,18 @@ Generate the string character by character until we reach position k.
 
 ```python
 def solve_brute_force(k):
-  """
-  Brute force solution - generates string until position k.
+ """
+ Brute force solution - generates string until position k.
 
-  Time: O(k)
-  Space: O(k)
-  """
-  s = ""
-  num = 1
-  while len(s) < k:
-    s += str(num)
-    num += 1
-  return int(s[k - 1])
+ Time: O(k)
+ Space: O(k)
+ """
+ s = ""
+ num = 1
+ while len(s) < k:
+  s += str(num)
+  num += 1
+ return int(s[k - 1])
 ```
 
 ### Complexity
@@ -224,43 +224,43 @@ Digit Ranges:
 
 ```python
 def solve(k):
-  """
-  Optimal solution using digit counting by range.
+ """
+ Optimal solution using digit counting by range.
 
-  Time: O(log k) - number of digit lengths is O(log k)
-  Space: O(1) - only using a few variables
-  """
-  # Step 1: Find the digit length containing position k
-  digit_len = 1
-  count = 9  # 9 one-digit numbers
-  start = 1  # first number with current digit length
+ Time: O(log k) - number of digit lengths is O(log k)
+ Space: O(1) - only using a few variables
+ """
+ # Step 1: Find the digit length containing position k
+ digit_len = 1
+ count = 9  # 9 one-digit numbers
+ start = 1  # first number with current digit length
 
-  while k > digit_len * count:
-    k -= digit_len * count
-    digit_len += 1
-    count *= 10
-    start *= 10
+ while k > digit_len * count:
+  k -= digit_len * count
+  digit_len += 1
+  count *= 10
+  start *= 10
 
-  # Step 2: Find which number contains position k
-  # k is now 1-indexed position within the current digit-length range
-  number_index = (k - 1) // digit_len
-  num = start + number_index
+ # Step 2: Find which number contains position k
+ # k is now 1-indexed position within the current digit-length range
+ number_index = (k - 1) // digit_len
+ num = start + number_index
 
-  # Step 3: Find which digit within the number
-  digit_index = (k - 1) % digit_len
+ # Step 3: Find which digit within the number
+ digit_index = (k - 1) % digit_len
 
-  return int(str(num)[digit_index])
+ return int(str(num)[digit_index])
 
 
 def main():
-  q = int(input())
-  for _ in range(q):
-    k = int(input())
-    print(solve(k))
+ q = int(input())
+ for _ in range(q):
+  k = int(input())
+  print(solve(k))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -294,13 +294,13 @@ digit_index = (k - 1) % digit_len
 ```python
 # WRONG - confusing count vs total digits
 while k > count:  # count is number of numbers, not digits!
-  k -= count
-  ...
+ k -= count
+ ...
 
 # CORRECT - multiply count by digit_len to get total digits
 while k > digit_len * count:
-  k -= digit_len * count
-  ...
+ k -= digit_len * count
+ ...
 ```
 
 **Problem:** Mixing up "number of numbers" with "number of digits".

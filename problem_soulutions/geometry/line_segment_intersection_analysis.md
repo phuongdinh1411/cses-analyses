@@ -176,50 +176,50 @@ Step 3: Both conditions met -> Output "YES"
 **Python:**
 ```python
 def cross(o, a, b):
-  """
-  Compute cross product of vectors OA and OB.
-  Returns positive if B is counter-clockwise from A (relative to O).
-  """
-  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+ """
+ Compute cross product of vectors OA and OB.
+ Returns positive if B is counter-clockwise from A (relative to O).
+ """
+ return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
 def on_segment(p, q, r):
-  """Check if point q lies on segment pr (assuming collinear)."""
-  return (min(p[0], r[0]) <= q[0] <= max(p[0], r[0]) and
-      min(p[1], r[1]) <= q[1] <= max(p[1], r[1]))
+ """Check if point q lies on segment pr (assuming collinear)."""
+ return (min(p[0], r[0]) <= q[0] <= max(p[0], r[0]) and
+   min(p[1], r[1]) <= q[1] <= max(p[1], r[1]))
 
 def segments_intersect(p1, p2, p3, p4):
-  """
-  Check if segment p1-p2 intersects segment p3-p4.
+ """
+ Check if segment p1-p2 intersects segment p3-p4.
 
-  Time: O(1)
-  Space: O(1)
-  """
-  d1 = cross(p3, p4, p1)
-  d2 = cross(p3, p4, p2)
-  d3 = cross(p1, p2, p3)
-  d4 = cross(p1, p2, p4)
+ Time: O(1)
+ Space: O(1)
+ """
+ d1 = cross(p3, p4, p1)
+ d2 = cross(p3, p4, p2)
+ d3 = cross(p1, p2, p3)
+ d4 = cross(p1, p2, p4)
 
-  # General case: segments straddle each other
-  if ((d1 > 0 and d2 < 0) or (d1 < 0 and d2 > 0)) and \
-   ((d3 > 0 and d4 < 0) or (d3 < 0 and d4 > 0)):
-    return True
+ # General case: segments straddle each other
+ if ((d1 > 0 and d2 < 0) or (d1 < 0 and d2 > 0)) and \
+ ((d3 > 0 and d4 < 0) or (d3 < 0 and d4 > 0)):
+  return True
 
-  # Collinear cases: check if any endpoint lies on the other segment
-  if d1 == 0 and on_segment(p3, p1, p4): return True
-  if d2 == 0 and on_segment(p3, p2, p4): return True
-  if d3 == 0 and on_segment(p1, p3, p2): return True
-  if d4 == 0 and on_segment(p1, p4, p2): return True
+ # Collinear cases: check if any endpoint lies on the other segment
+ if d1 == 0 and on_segment(p3, p1, p4): return True
+ if d2 == 0 and on_segment(p3, p2, p4): return True
+ if d3 == 0 and on_segment(p1, p3, p2): return True
+ if d4 == 0 and on_segment(p1, p4, p2): return True
 
-  return False
+ return False
 
 # Read input and solve
 x1, y1, x2, y2 = map(int, input().split())
 x3, y3, x4, y4 = map(int, input().split())
 
 if segments_intersect((x1, y1), (x2, y2), (x3, y3), (x4, y4)):
-  print("YES")
+ print("YES")
 else:
-  print("NO")
+ print("NO")
 ```
 
 ### Complexity
@@ -238,11 +238,11 @@ else:
 ```python
 # WRONG - only handles general case
 def intersect_wrong(p1, p2, p3, p4):
-  d1 = cross(p3, p4, p1)
-  d2 = cross(p3, p4, p2)
-  d3 = cross(p1, p2, p3)
-  d4 = cross(p1, p2, p4)
-  return (d1 * d2 < 0) and (d3 * d4 < 0)  # Misses collinear!
+ d1 = cross(p3, p4, p1)
+ d2 = cross(p3, p4, p2)
+ d3 = cross(p1, p2, p3)
+ d4 = cross(p1, p2, p4)
+ return (d1 * d2 < 0) and (d3 * d4 < 0)  # Misses collinear!
 ```
 
 **Problem:** This misses cases where segments are collinear and overlap.
@@ -258,7 +258,7 @@ def intersect_wrong(p1, p2, p3, p4):
 ```python
 # WRONG - checking d1 * d2 <= 0 includes unintended cases
 if d1 * d2 <= 0 and d3 * d4 <= 0:  # Too permissive!
-  return True
+ return True
 ```
 
 **Problem:** This says "YES" even when segments don't actually touch in collinear cases.

@@ -116,28 +116,28 @@ Use dynamic programming to track all possible sums, then find the first missing 
 
 ```python
 def solve_brute_force(n, coins):
-  """
-  DP solution - works but too slow for large sums.
+ """
+ DP solution - works but too slow for large sums.
 
-  Time: O(n * S) where S = sum of coins
-  Space: O(S)
-  """
-  total = sum(coins)
-  dp = [False] * (total + 2)
-  dp[0] = True
+ Time: O(n * S) where S = sum of coins
+ Space: O(S)
+ """
+ total = sum(coins)
+ dp = [False] * (total + 2)
+ dp[0] = True
 
-  for coin in coins:
-    # Process backwards to avoid using same coin twice
-    for s in range(total, coin - 1, -1):
-      if dp[s - coin]:
-        dp[s] = True
+ for coin in coins:
+  # Process backwards to avoid using same coin twice
+  for s in range(total, coin - 1, -1):
+   if dp[s - coin]:
+    dp[s] = True
 
-  # Find first missing sum
-  for i in range(1, total + 2):
-    if not dp[i]:
-      return i
+ # Find first missing sum
+ for i in range(1, total + 2):
+  if not dp[i]:
+   return i
 
-  return total + 1
+ return total + 1
 ```
 
 ### Complexity
@@ -239,33 +239,33 @@ Reachable range after each coin:
 
 ```python
 def solve(n, coins):
-  """
-  Optimal greedy solution.
+ """
+ Optimal greedy solution.
 
-  Time: O(n log n) - dominated by sorting
-  Space: O(1) - only need one variable
-  """
-  coins.sort()
-  current_sum = 0
+ Time: O(n log n) - dominated by sorting
+ Space: O(1) - only need one variable
+ """
+ coins.sort()
+ current_sum = 0
 
-  for coin in coins:
-    # If coin is too large, we found a gap
-    if coin > current_sum + 1:
-      return current_sum + 1
-    current_sum += coin
+ for coin in coins:
+  # If coin is too large, we found a gap
+  if coin > current_sum + 1:
+   return current_sum + 1
+  current_sum += coin
 
-  # All coins processed, smallest missing is total + 1
-  return current_sum + 1
+ # All coins processed, smallest missing is total + 1
+ return current_sum + 1
 
 
 def main():
-  n = int(input())
-  coins = list(map(int, input().split()))
-  print(solve(n, coins))
+ n = int(input())
+ coins = list(map(int, input().split()))
+ print(solve(n, coins))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -284,12 +284,12 @@ if __name__ == "__main__":
 ```python
 # WRONG
 def solve_wrong(coins):
-  current_sum = 0
-  for coin in coins:  # NOT sorted!
-    if coin > current_sum + 1:
-      return current_sum + 1
-    current_sum += coin
-  return current_sum + 1
+ current_sum = 0
+ for coin in coins:  # NOT sorted!
+  if coin > current_sum + 1:
+   return current_sum + 1
+  current_sum += coin
+ return current_sum + 1
 
 # Input: [5, 1, 2]
 # Wrong output: 1 (because 5 > 0+1 immediately)
@@ -304,11 +304,11 @@ def solve_wrong(coins):
 ```python
 # WRONG
 if coin > current_sum:  # Should be current_sum + 1
-  return current_sum
+ return current_sum
 
 # CORRECT
 if coin > current_sum + 1:
-  return current_sum + 1
+ return current_sum + 1
 ```
 
 **Problem:** The condition checks if we can reach the NEXT sum (current_sum + 1), not the current one.
@@ -322,23 +322,23 @@ if coin > current_sum + 1:
 ```python
 # WRONG - missing the final return
 def solve_wrong(coins):
-  coins.sort()
-  current_sum = 0
-  for coin in coins:
-    if coin > current_sum + 1:
-      return current_sum + 1
-    current_sum += coin
-  # Missing: return current_sum + 1
+ coins.sort()
+ current_sum = 0
+ for coin in coins:
+  if coin > current_sum + 1:
+   return current_sum + 1
+  current_sum += coin
+ # Missing: return current_sum + 1
 
 # CORRECT
 def solve(coins):
-  coins.sort()
-  current_sum = 0
-  for coin in coins:
-    if coin > current_sum + 1:
-      return current_sum + 1
-    current_sum += coin
-  return current_sum + 1  # All coins processed
+ coins.sort()
+ current_sum = 0
+ for coin in coins:
+  if coin > current_sum + 1:
+   return current_sum + 1
+  current_sum += coin
+ return current_sum + 1  # All coins processed
 ```
 
 ---

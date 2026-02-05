@@ -38,96 +38,96 @@ Total = a1 × a2 × ... × aK (where aK is chocolates in smallest box)
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total = 0
+  total = 0
 
-    for _ in range(b):
-      line = list(map(int, input().split()))
-      k = line[0]
-      values = line[1:k+1]
+  for _ in range(b):
+   line = list(map(int, input().split()))
+   k = line[0]
+   values = line[1:k+1]
 
-      # Calculate chocolates from this box structure
-      # Product of all values
-      product = 1
-      for v in values:
-        product = (product * v) % n
+   # Calculate chocolates from this box structure
+   # Product of all values
+   product = 1
+   for v in values:
+    product = (product * v) % n
 
-      total = (total + product) % n
+   total = (total + product) % n
 
-    print(total)
+  print(total)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with Detailed Comments
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total_chocolates = 0
+  total_chocolates = 0
 
-    for _ in range(b):
-      parts = list(map(int, input().split()))
-      k = parts[0]
-      box_structure = parts[1:k+1]
+  for _ in range(b):
+   parts = list(map(int, input().split()))
+   k = parts[0]
+   box_structure = parts[1:k+1]
 
-      # The structure means:
-      # box_structure[0] boxes, each containing
-      # box_structure[1] boxes, each containing
-      # ... and so on
-      # Final value is chocolates in smallest box
+   # The structure means:
+   # box_structure[0] boxes, each containing
+   # box_structure[1] boxes, each containing
+   # ... and so on
+   # Final value is chocolates in smallest box
 
-      # Total from this box = product of all values
-      chocolates = 1
-      for val in box_structure:
-        chocolates *= val
-        chocolates %= n  # Keep modular to avoid overflow
+   # Total from this box = product of all values
+   chocolates = 1
+   for val in box_structure:
+    chocolates *= val
+    chocolates %= n  # Keep modular to avoid overflow
 
-      total_chocolates += chocolates
-      total_chocolates %= n
+   total_chocolates += chocolates
+   total_chocolates %= n
 
-    print(total_chocolates)
+  print(total_chocolates)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Recursive Interpretation
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total = 0
+  total = 0
 
-    for _ in range(b):
-      line = input().split()
-      k = int(line[0])
-      values = [int(line[i]) for i in range(1, k + 1)]
+  for _ in range(b):
+   line = input().split()
+   k = int(line[0])
+   values = [int(line[i]) for i in range(1, k + 1)]
 
-      # Nested boxes: multiply all levels
-      product = 1
-      for v in values:
-        product = (product * v) % n
+   # Nested boxes: multiply all levels
+   product = 1
+   for v in values:
+    product = (product * v) % n
 
-      total = (total + product) % n
+   total = (total + product) % n
 
-    print(total)
+  print(total)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

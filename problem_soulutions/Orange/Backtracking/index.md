@@ -45,48 +45,48 @@ Use DFS/backtracking to find all paths of exactly 8 consecutive emeralds. To avo
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    grid = []
-    for i in range(n):
-      grid.append(input().strip())
+ for _ in range(t):
+  n = int(input())
+  grid = []
+  for i in range(n):
+   grid.append(input().strip())
 
-    # Directions: up, down, left, right
-    dx = [-1, 1, 0, 0]
-    dy = [0, 0, -1, 1]
+  # Directions: up, down, left, right
+  dx = [-1, 1, 0, 0]
+  dy = [0, 0, -1, 1]
 
-    # Set to store unique octaves (as frozensets of positions)
-    octaves = set()
+  # Set to store unique octaves (as frozensets of positions)
+  octaves = set()
 
-    def dfs(x, y, path, visited):
-      if len(path) == 8:
-        # Store as frozenset to make it hashable and order-independent
-        octaves.add(frozenset(path))
-        return
+  def dfs(x, y, path, visited):
+   if len(path) == 8:
+    # Store as frozenset to make it hashable and order-independent
+    octaves.add(frozenset(path))
+    return
 
-      for i in range(4):
-        nx, ny = x + dx[i], y + dy[i]
-        if 0 <= nx < n and 0 <= ny < n and (nx, ny) not in visited and grid[nx][ny] == 'X':
-          visited.add((nx, ny))
-          path.append((nx, ny))
-          dfs(nx, ny, path, visited)
-          path.pop()
-          visited.remove((nx, ny))
+   for i in range(4):
+    nx, ny = x + dx[i], y + dy[i]
+    if 0 <= nx < n and 0 <= ny < n and (nx, ny) not in visited and grid[nx][ny] == 'X':
+     visited.add((nx, ny))
+     path.append((nx, ny))
+     dfs(nx, ny, path, visited)
+     path.pop()
+     visited.remove((nx, ny))
 
-    # Start DFS from each emerald
-    for i in range(n):
-      for j in range(n):
-        if grid[i][j] == 'X':
-          visited = {(i, j)}
-          path = [(i, j)]
-          dfs(i, j, path, visited)
+  # Start DFS from each emerald
+  for i in range(n):
+   for j in range(n):
+    if grid[i][j] == 'X':
+     visited = {(i, j)}
+     path = [(i, j)]
+     dfs(i, j, path, visited)
 
-    print(len(octaves))
+  print(len(octaves))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -129,28 +129,28 @@ You are given an original list of commands sent by Drazil and list received by D
 from math import comb
 
 def solve():
-  s1 = input().strip()
-  s2 = input().strip()
+ s1 = input().strip()
+ s2 = input().strip()
 
-  target = sum(1 if c == '+' else -1 for c in s1)
-  fixed = sum(1 if c == '+' else (-1 if c == '-' else 0) for c in s2)
-  q = s2.count('?')
+ target = sum(1 if c == '+' else -1 for c in s1)
+ fixed = sum(1 if c == '+' else (-1 if c == '-' else 0) for c in s2)
+ q = s2.count('?')
 
-  if q == 0:
-    print(1.0 if fixed == target else 0.0)
-    return
+ if q == 0:
+  print(1.0 if fixed == target else 0.0)
+  return
 
-  diff = target - fixed + q
-  if diff < 0 or diff % 2 != 0 or diff > 2 * q:
-    print(0.0)
-    return
+ diff = target - fixed + q
+ if diff < 0 or diff % 2 != 0 or diff > 2 * q:
+  print(0.0)
+  return
 
-  p = diff // 2
-  probability = comb(q, p) / (2 ** q)
-  print(f"{probability:.12f}")
+ p = diff // 2
+ probability = comb(q, p) / (2 ** q)
+ print(f"{probability:.12f}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -184,26 +184,26 @@ Generate all combinations of 6 numbers from the given set using backtracking. Si
 from itertools import combinations
 
 def solve():
-  first_case = True
+ first_case = True
 
-  while True:
-    line = input().split()
-    k = int(line[0])
+ while True:
+  line = input().split()
+  k = int(line[0])
 
-    if k == 0:
-      break
+  if k == 0:
+   break
 
-    numbers = list(map(int, line[1:k+1]))
+  numbers = list(map(int, line[1:k+1]))
 
-    if not first_case:
-      print()
-    first_case = False
+  if not first_case:
+   print()
+  first_case = False
 
-    for combo in combinations(numbers, 6):
-      print(' '.join(map(str, combo)))
+  for combo in combinations(numbers, 6):
+   print(' '.join(map(str, combo)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -235,23 +235,23 @@ Since we only have 5 numbers and need to choose 4 with specific positions, we ca
 from itertools import permutations
 
 def solve():
-  x = list(map(int, input().split()))
+ x = list(map(int, input().split()))
 
-  min_diff = float('inf')
-  best_indices = None
+ min_diff = float('inf')
+ best_indices = None
 
-  for perm in permutations(range(5), 4):
-    a, b, c, d = perm
-    diff = abs(x[a] / x[b] - x[c] / x[d])
+ for perm in permutations(range(5), 4):
+  a, b, c, d = perm
+  diff = abs(x[a] / x[b] - x[c] / x[d])
 
-    if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
-      min_diff = diff
-      best_indices = perm
+  if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
+   min_diff = diff
+   best_indices = perm
 
-  print(' '.join(map(str, best_indices)))
+ print(' '.join(map(str, best_indices)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -280,29 +280,29 @@ We define the operation of splitting a binary number n into two numbers a(n), b(
 
 ```python
 def solve():
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+ while True:
+  n = int(input())
+  if n == 0:
+   break
 
-    a, b = 0, 0
-    count = 0
-    bit_pos = 0
+  a, b = 0, 0
+  count = 0
+  bit_pos = 0
 
-    while n:
-      if n & 1:
-        if count % 2 == 0:
-          a |= (1 << bit_pos)
-        else:
-          b |= (1 << bit_pos)
-        count += 1
-      n >>= 1
-      bit_pos += 1
+  while n:
+   if n & 1:
+    if count % 2 == 0:
+     a |= (1 << bit_pos)
+    else:
+     b |= (1 << bit_pos)
+    count += 1
+   n >>= 1
+   bit_pos += 1
 
-    print(a, b)
+  print(a, b)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -333,42 +333,42 @@ Given two Boggle boards, find all PigEwu words common to both boards.
 
 ```python
 def solve():
-  VOWELS = set('AEIOUY')
-  DIRS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+ VOWELS = set('AEIOUY')
+ DIRS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
-  def count_vowels(word):
-    return sum(1 for c in word if c in VOWELS)
+ def count_vowels(word):
+  return sum(1 for c in word if c in VOWELS)
 
-  def find_words(board):
-    words = set()
-    visited = [[False] * 4 for _ in range(4)]
+ def find_words(board):
+  words = set()
+  visited = [[False] * 4 for _ in range(4)]
 
-    def dfs(r, c, path):
-      if len(path) == 4:
-        if count_vowels(path) == 2:
-          words.add(path)
-        return
+  def dfs(r, c, path):
+   if len(path) == 4:
+    if count_vowels(path) == 2:
+     words.add(path)
+    return
 
-      visited[r][c] = True
+   visited[r][c] = True
 
-      for dr, dc in DIRS:
-        nr, nc = r + dr, c + dc
-        if 0 <= nr < 4 and 0 <= nc < 4 and not visited[nr][nc]:
-          dfs(nr, nc, path + board[nr][nc])
+   for dr, dc in DIRS:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < 4 and 0 <= nc < 4 and not visited[nr][nc]:
+     dfs(nr, nc, path + board[nr][nc])
 
-      visited[r][c] = False
+   visited[r][c] = False
 
-    for i in range(4):
-      for j in range(4):
-        dfs(i, j, board[i][j])
+  for i in range(4):
+   for j in range(4):
+    dfs(i, j, board[i][j])
 
-    return words
+  return words
 
-  # Process boards and find common words
-  # ... (implementation continues)
+ # Process boards and find common words
+ # ... (implementation continues)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -397,29 +397,29 @@ Given N (length of bit strings) and H (Hamming distance), print all bit strings 
 from itertools import combinations
 
 def solve():
-  t = int(input())
-  input()
+ t = int(input())
+ input()
 
-  for case in range(t):
-    line = input().split()
-    n, h = int(line[0]), int(line[1])
+ for case in range(t):
+  line = input().split()
+  n, h = int(line[0]), int(line[1])
 
-    for positions in combinations(range(n), h):
-      bits = ['0'] * n
-      for pos in positions:
-        bits[pos] = '1'
-      print(''.join(bits))
+  for positions in combinations(range(n), h):
+   bits = ['0'] * n
+   for pos in positions:
+    bits[pos] = '1'
+   print(''.join(bits))
 
-    print()
+  print()
 
-    try:
-      if case < t - 1:
-        input()
-    except:
-      pass
+  try:
+   if case < t - 1:
+    input()
+  except:
+   pass
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis

@@ -129,25 +129,25 @@ Answer: max(dp) = 4
 
 ```python
 def lis_n_squared(arr):
-  """
-  O(n^2) DP solution for Longest Increasing Subsequence
+ """
+ O(n^2) DP solution for Longest Increasing Subsequence
 
-  Time: O(n^2)
-  Space: O(n)
-  """
-  n = len(arr)
-  if n == 0:
-    return 0
+ Time: O(n^2)
+ Space: O(n)
+ """
+ n = len(arr)
+ if n == 0:
+  return 0
 
-  # dp[i] = length of LIS ending at index i
-  dp = [1] * n
+ # dp[i] = length of LIS ending at index i
+ dp = [1] * n
 
-  for i in range(1, n):
-    for j in range(i):
-      if arr[j] < arr[i]:  # Strictly increasing
-        dp[i] = max(dp[i], dp[j] + 1)
+ for i in range(1, n):
+  for j in range(i):
+   if arr[j] < arr[i]:  # Strictly increasing
+    dp[i] = max(dp[i], dp[j] + 1)
 
-  return max(dp)
+ return max(dp)
 
 
 # Example
@@ -248,28 +248,28 @@ Note: `[2, 5, 6, 8]` is NOT necessarily a valid LIS from our array! The actual L
 import bisect
 
 def lis_nlogn(arr):
-  """
-  O(n log n) solution using binary search
+ """
+ O(n log n) solution using binary search
 
-  tails[i] = smallest ending element of all LIS of length i+1
+ tails[i] = smallest ending element of all LIS of length i+1
 
-  Time: O(n log n)
-  Space: O(n)
-  """
-  tails = []
+ Time: O(n log n)
+ Space: O(n)
+ """
+ tails = []
 
-  for num in arr:
-    # Find position where num should go
-    pos = bisect.bisect_left(tails, num)
+ for num in arr:
+  # Find position where num should go
+  pos = bisect.bisect_left(tails, num)
 
-    if pos == len(tails):
-      # num is larger than all elements in tails
-      tails.append(num)
-    else:
-      # Found a better (smaller) ending for length pos+1
-      tails[pos] = num
+  if pos == len(tails):
+   # num is larger than all elements in tails
+   tails.append(num)
+  else:
+   # Found a better (smaller) ending for length pos+1
+   tails[pos] = num
 
-  return len(tails)
+ return len(tails)
 
 
 # Example

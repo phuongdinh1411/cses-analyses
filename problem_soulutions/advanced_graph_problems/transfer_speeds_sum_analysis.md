@@ -181,72 +181,72 @@ Flow assignment:
 from collections import deque
 
 def max_flow(n, edges):
-  """
-  Edmonds-Karp algorithm for maximum flow.
+ """
+ Edmonds-Karp algorithm for maximum flow.
 
-  Time: O(V * E^2)
-  Space: O(V^2) for adjacency matrix
-  """
-  # Build adjacency matrix for capacities
-  capacity = [[0] * (n + 1) for _ in range(n + 1)]
-  adj = [[] for _ in range(n + 1)]
+ Time: O(V * E^2)
+ Space: O(V^2) for adjacency matrix
+ """
+ # Build adjacency matrix for capacities
+ capacity = [[0] * (n + 1) for _ in range(n + 1)]
+ adj = [[] for _ in range(n + 1)]
 
-  for a, b, c in edges:
-    capacity[a][b] += c  # Handle multiple edges
-    if b not in adj[a]:
-      adj[a].append(b)
-    if a not in adj[b]:
-      adj[b].append(a)  # Reverse edge for residual
+ for a, b, c in edges:
+  capacity[a][b] += c  # Handle multiple edges
+  if b not in adj[a]:
+   adj[a].append(b)
+  if a not in adj[b]:
+   adj[b].append(a)  # Reverse edge for residual
 
-  def bfs(source, sink, parent):
-    """Find augmenting path using BFS."""
-    visited = [False] * (n + 1)
-    queue = deque([source])
-    visited[source] = True
+ def bfs(source, sink, parent):
+  """Find augmenting path using BFS."""
+  visited = [False] * (n + 1)
+  queue = deque([source])
+  visited[source] = True
 
-    while queue:
-      u = queue.popleft()
-      for v in adj[u]:
-        if not visited[v] and capacity[u][v] > 0:
-          visited[v] = True
-          parent[v] = u
-          if v == sink:
-            return True
-          queue.append(v)
-    return False
+  while queue:
+   u = queue.popleft()
+   for v in adj[u]:
+    if not visited[v] and capacity[u][v] > 0:
+     visited[v] = True
+     parent[v] = u
+     if v == sink:
+      return True
+     queue.append(v)
+  return False
 
-  source, sink = 1, n
-  total_flow = 0
-  parent = [-1] * (n + 1)
+ source, sink = 1, n
+ total_flow = 0
+ parent = [-1] * (n + 1)
 
-  while bfs(source, sink, parent):
-    # Find bottleneck
-    path_flow = float('inf')
-    v = sink
-    while v != source:
-      u = parent[v]
-      path_flow = min(path_flow, capacity[u][v])
-      v = u
+ while bfs(source, sink, parent):
+  # Find bottleneck
+  path_flow = float('inf')
+  v = sink
+  while v != source:
+   u = parent[v]
+   path_flow = min(path_flow, capacity[u][v])
+   v = u
 
-    # Update capacities along path
-    v = sink
-    while v != source:
-      u = parent[v]
-      capacity[u][v] -= path_flow
-      capacity[v][u] += path_flow
-      v = u
+  # Update capacities along path
+  v = sink
+  while v != source:
+   u = parent[v]
+   capacity[u][v] -= path_flow
+   capacity[v][u] += path_flow
+   v = u
 
-    total_flow += path_flow
-    parent = [-1] * (n + 1)  # Reset parent
+  total_flow += path_flow
+  parent = [-1] * (n + 1)  # Reset parent
 
-  return total_flow
+ return total_flow
 
 # Read input
 n, m = map(int, input().split())
 edges = []
 for _ in range(m):
-  a, b, c = map(int, input().split())
-  edges.append((a, b, c))
+ a, b, c = map(int, input().split())
+ edges.append((a, b, c))
 
 print(max_flow(n, edges))
 ```
@@ -300,13 +300,13 @@ capacity[a][b] += c
 ```python
 # WRONG - Reuses stale parent information
 while bfs(source, sink, parent):
-  # ... process path ...
-  # parent array still has old values!
+ # ... process path ...
+ # parent array still has old values!
 
 # CORRECT - Reset before each BFS
 while bfs(source, sink, parent):
-  # ... process path ...
-  parent = [-1] * (n + 1)  # Reset!
+ # ... process path ...
+ parent = [-1] * (n + 1)  # Reset!
 ```
 
 ---

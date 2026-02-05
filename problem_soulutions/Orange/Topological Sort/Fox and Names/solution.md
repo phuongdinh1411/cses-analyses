@@ -41,58 +41,58 @@ Otherwise output a single word "Impossible" (without quotes).
 from collections import deque, defaultdict
 
 def solve():
-  n = int(input())
-  names = [input().strip() for _ in range(n)]
+ n = int(input())
+ names = [input().strip() for _ in range(n)]
 
-  # Build graph
-  graph = defaultdict(set)
-  in_degree = {chr(ord('a') + i): 0 for i in range(26)}
+ # Build graph
+ graph = defaultdict(set)
+ in_degree = {chr(ord('a') + i): 0 for i in range(26)}
 
-  # Compare adjacent names
-  for i in range(n - 1):
-    s1, s2 = names[i], names[i + 1]
-    min_len = min(len(s1), len(s2))
+ # Compare adjacent names
+ for i in range(n - 1):
+  s1, s2 = names[i], names[i + 1]
+  min_len = min(len(s1), len(s2))
 
-    found = False
-    for j in range(min_len):
-      if s1[j] != s2[j]:
-        # s1[j] must come before s2[j] in the alphabet
-        if s2[j] not in graph[s1[j]]:
-          graph[s1[j]].add(s2[j])
-          in_degree[s2[j]] += 1
-        found = True
-        break
+  found = False
+  for j in range(min_len):
+   if s1[j] != s2[j]:
+    # s1[j] must come before s2[j] in the alphabet
+    if s2[j] not in graph[s1[j]]:
+     graph[s1[j]].add(s2[j])
+     in_degree[s2[j]] += 1
+    found = True
+    break
 
-    # If s1 is a prefix of s2, that's fine
-    # But if s2 is a prefix of s1, it's impossible
-    if not found and len(s1) > len(s2):
-      print("Impossible")
-      return
+  # If s1 is a prefix of s2, that's fine
+  # But if s2 is a prefix of s1, it's impossible
+  if not found and len(s1) > len(s2):
+   print("Impossible")
+   return
 
-  # Topological sort using Kahn's algorithm
-  queue = deque()
-  for char in in_degree:
-    if in_degree[char] == 0:
-      queue.append(char)
+ # Topological sort using Kahn's algorithm
+ queue = deque()
+ for char in in_degree:
+  if in_degree[char] == 0:
+   queue.append(char)
 
-  result = []
-  while queue:
-    char = queue.popleft()
-    result.append(char)
+ result = []
+ while queue:
+  char = queue.popleft()
+  result.append(char)
 
-    for neighbor in graph[char]:
-      in_degree[neighbor] -= 1
-      if in_degree[neighbor] == 0:
-        queue.append(neighbor)
+  for neighbor in graph[char]:
+   in_degree[neighbor] -= 1
+   if in_degree[neighbor] == 0:
+    queue.append(neighbor)
 
-  # Check if all characters are included (no cycle)
-  if len(result) != 26:
-    print("Impossible")
-  else:
-    print(''.join(result))
+ # Check if all characters are included (no cycle)
+ if len(result) != 26:
+  print("Impossible")
+ else:
+  print(''.join(result))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

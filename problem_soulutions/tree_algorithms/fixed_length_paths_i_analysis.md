@@ -129,35 +129,35 @@ For each node, run a DFS to count all nodes at distance exactly k. Sum up and di
 
 ```python
 def solve_brute_force(n, k, edges):
-  """
-  Brute force: DFS from every node.
+ """
+ Brute force: DFS from every node.
 
-  Time: O(n^2)
-  Space: O(n)
-  """
-  from collections import defaultdict
+ Time: O(n^2)
+ Space: O(n)
+ """
+ from collections import defaultdict
 
-  graph = defaultdict(list)
-  for a, b in edges:
-    graph[a].append(b)
-    graph[b].append(a)
+ graph = defaultdict(list)
+ for a, b in edges:
+  graph[a].append(b)
+  graph[b].append(a)
 
-  count = 0
+ count = 0
 
-  def dfs(node, parent, depth):
-    nonlocal count
-    if depth == k:
-      count += 1
-      return
-    for neighbor in graph[node]:
-      if neighbor != parent:
-        dfs(neighbor, node, depth + 1)
+ def dfs(node, parent, depth):
+  nonlocal count
+  if depth == k:
+   count += 1
+   return
+  for neighbor in graph[node]:
+   if neighbor != parent:
+    dfs(neighbor, node, depth + 1)
 
-  for start in range(1, n + 1):
-    dfs(start, -1, 0)
+ for start in range(1, n + 1):
+  dfs(start, -1, 0)
 
-  # Each path counted twice (from both endpoints)
-  return count // 2
+ # Each path counted twice (from both endpoints)
+ return count // 2
 ```
 
 ### Complexity
@@ -283,108 +283,108 @@ import sys
 from collections import defaultdict
 
 def solve(n, k, edges):
+ """
+ Centroid Decomposition solution.
+
+ Time: O(n log n)
+ Space: O(n)
+ """
+ sys.setrecursionlimit(300000)
+
+ # Build adjacency list
+ graph = defaultdict(list)
+ for a, b in edges:
+  graph[a].append(b)
+  graph[b].append(a)
+
+ removed = [False] * (n + 1)
+ subtree_size = [0] * (n + 1)
+ answer = 0
+
+ def get_subtree_size(node, parent):
+  """Calculate subtree sizes for centroid finding."""
+  subtree_size[node] = 1
+  for neighbor in graph[node]:
+   if neighbor != parent and not removed[neighbor]:
+    get_subtree_size(neighbor, node)
+    subtree_size[node] += subtree_size[neighbor]
+
+ def find_centroid(node, parent, tree_size):
+  """Find centroid of the current tree."""
+  for neighbor in graph[node]:
+   if neighbor != parent and not removed[neighbor]:
+    if subtree_size[neighbor] > tree_size // 2:
+     return find_centroid(neighbor, node, tree_size)
+  return node
+
+ def count_paths(node, parent, dist, cnt):
   """
-  Centroid Decomposition solution.
-
-  Time: O(n log n)
-  Space: O(n)
+  Count paths and collect distances.
+  Returns list of distances from centroid for nodes in this subtree.
   """
-  sys.setrecursionlimit(300000)
+  nonlocal answer
 
-  # Build adjacency list
-  graph = defaultdict(list)
-  for a, b in edges:
-    graph[a].append(b)
-    graph[b].append(a)
+  if dist > k:
+   return []
 
-  removed = [False] * (n + 1)
-  subtree_size = [0] * (n + 1)
-  answer = 0
+  distances = [dist]
 
-  def get_subtree_size(node, parent):
-    """Calculate subtree sizes for centroid finding."""
-    subtree_size[node] = 1
-    for neighbor in graph[node]:
-      if neighbor != parent and not removed[neighbor]:
-        get_subtree_size(neighbor, node)
-        subtree_size[node] += subtree_size[neighbor]
+  # Count paths: current node pairs with nodes at distance (k - dist)
+  if k - dist >= 0 and k - dist < len(cnt):
+   answer += cnt[k - dist]
 
-  def find_centroid(node, parent, tree_size):
-    """Find centroid of the current tree."""
-    for neighbor in graph[node]:
-      if neighbor != parent and not removed[neighbor]:
-        if subtree_size[neighbor] > tree_size // 2:
-          return find_centroid(neighbor, node, tree_size)
-    return node
+  for neighbor in graph[node]:
+   if neighbor != parent and not removed[neighbor]:
+    distances.extend(count_paths(neighbor, node, dist + 1, cnt))
 
-  def count_paths(node, parent, dist, cnt):
-    """
-    Count paths and collect distances.
-    Returns list of distances from centroid for nodes in this subtree.
-    """
-    nonlocal answer
+  return distances
 
-    if dist > k:
-      return []
+ def solve_centroid(node):
+  """Process tree rooted at node using centroid decomposition."""
+  get_subtree_size(node, -1)
+  centroid = find_centroid(node, -1, subtree_size[node])
+  removed[centroid] = True
 
-    distances = [dist]
+  # cnt[d] = number of nodes at distance d from centroid (from processed subtrees)
+  cnt = [0] * (k + 2)
+  cnt[0] = 1  # centroid itself at distance 0
 
-    # Count paths: current node pairs with nodes at distance (k - dist)
-    if k - dist >= 0 and k - dist < len(cnt):
-      answer += cnt[k - dist]
+  for neighbor in graph[centroid]:
+   if not removed[neighbor]:
+    # Count paths and get distances for this subtree
+    distances = count_paths(neighbor, centroid, 1, cnt)
 
-    for neighbor in graph[node]:
-      if neighbor != parent and not removed[neighbor]:
-        distances.extend(count_paths(neighbor, node, dist + 1, cnt))
+    # Add these distances to cnt for future subtrees
+    for d in distances:
+     if d <= k:
+      cnt[d] += 1
 
-    return distances
+  # Recurse on subtrees
+  for neighbor in graph[centroid]:
+   if not removed[neighbor]:
+    solve_centroid(neighbor)
 
-  def solve_centroid(node):
-    """Process tree rooted at node using centroid decomposition."""
-    get_subtree_size(node, -1)
-    centroid = find_centroid(node, -1, subtree_size[node])
-    removed[centroid] = True
-
-    # cnt[d] = number of nodes at distance d from centroid (from processed subtrees)
-    cnt = [0] * (k + 2)
-    cnt[0] = 1  # centroid itself at distance 0
-
-    for neighbor in graph[centroid]:
-      if not removed[neighbor]:
-        # Count paths and get distances for this subtree
-        distances = count_paths(neighbor, centroid, 1, cnt)
-
-        # Add these distances to cnt for future subtrees
-        for d in distances:
-          if d <= k:
-            cnt[d] += 1
-
-    # Recurse on subtrees
-    for neighbor in graph[centroid]:
-      if not removed[neighbor]:
-        solve_centroid(neighbor)
-
-  solve_centroid(1)
-  return answer
+ solve_centroid(1)
+ return answer
 
 
 def main():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  k = int(input_data[idx]); idx += 1
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ k = int(input_data[idx]); idx += 1
 
-  edges = []
-  for _ in range(n - 1):
-    a = int(input_data[idx]); idx += 1
-    b = int(input_data[idx]); idx += 1
-    edges.append((a, b))
+ edges = []
+ for _ in range(n - 1):
+  a = int(input_data[idx]); idx += 1
+  b = int(input_data[idx]); idx += 1
+  edges.append((a, b))
 
-  print(solve(n, k, edges))
+ print(solve(n, k, edges))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -403,11 +403,11 @@ if __name__ == "__main__":
 ```python
 # WRONG: Counting paths within the same subtree
 for neighbor in graph[centroid]:
-  distances = get_all_distances(neighbor)
-  for d in distances:
-    answer += cnt[k - d]  # This counts paths within same subtree!
-  for d in distances:
-    cnt[d] += 1
+ distances = get_all_distances(neighbor)
+ for d in distances:
+  answer += cnt[k - d]  # This counts paths within same subtree!
+ for d in distances:
+  cnt[d] += 1
 ```
 
 **Problem:** If we add distances to cnt before processing all subtrees correctly, we might count paths that stay within the same subtree.
@@ -419,10 +419,10 @@ for neighbor in graph[centroid]:
 ```python
 # WRONG: Not properly handling the removed array
 def solve_centroid(node):
-  centroid = find_centroid(node)
-  removed[centroid] = True
-  # ... process ...
-  removed[centroid] = False  # DON'T do this!
+ centroid = find_centroid(node)
+ removed[centroid] = True
+ # ... process ...
+ removed[centroid] = False  # DON'T do this!
 ```
 
 **Problem:** The centroid should stay removed for the entire decomposition. Resetting it causes infinite recursion or incorrect counting.
@@ -434,7 +434,7 @@ def solve_centroid(node):
 ```python
 # WRONG: Not checking bounds
 def count_paths(node, parent, dist, cnt):
-  answer += cnt[k - dist]  # IndexError if dist > k!
+ answer += cnt[k - dist]  # IndexError if dist > k!
 ```
 
 **Problem:** When dist > k, we get k - dist < 0, causing index errors.

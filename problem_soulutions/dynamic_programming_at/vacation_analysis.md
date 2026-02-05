@@ -102,23 +102,23 @@ Try all valid activity sequences and track the maximum happiness.
 
 ```python
 def solve_brute_force(n, activities):
-  """
-  Brute force recursive solution.
+ """
+ Brute force recursive solution.
 
-  Time: O(3 * 2^(n-1)) - exponential
-  Space: O(n) - recursion stack
-  """
-  def helper(day, last):
-    if day == n:
-      return 0
+ Time: O(3 * 2^(n-1)) - exponential
+ Space: O(n) - recursion stack
+ """
+ def helper(day, last):
+  if day == n:
+   return 0
 
-    best = 0
-    for act in range(3):
-      if act != last:
-        best = max(best, activities[day][act] + helper(day + 1, act))
-    return best
+  best = 0
+  for act in range(3):
+   if act != last:
+    best = max(best, activities[day][act] + helper(day + 1, act))
+  return best
 
-  return helper(0, -1)  # -1 means no previous activity
+ return helper(0, -1)  # -1 means no previous activity
 ```
 
 ### Complexity
@@ -212,25 +212,25 @@ Optimal path: C(70) -> B(50) -> C(90) = 210
 
 ```python
 def solve_optimal(n, activities):
-  """
-  Bottom-up DP solution.
+ """
+ Bottom-up DP solution.
 
-  Time: O(n) - single pass through days
-  Space: O(n) - dp table with n rows
-  """
-  dp = [[0] * 3 for _ in range(n)]
+ Time: O(n) - single pass through days
+ Space: O(n) - dp table with n rows
+ """
+ dp = [[0] * 3 for _ in range(n)]
 
-  # Base case: day 0
-  for j in range(3):
-    dp[0][j] = activities[0][j]
+ # Base case: day 0
+ for j in range(3):
+  dp[0][j] = activities[0][j]
 
-  # Fill DP table
-  for i in range(1, n):
-    dp[i][0] = activities[i][0] + max(dp[i-1][1], dp[i-1][2])
-    dp[i][1] = activities[i][1] + max(dp[i-1][0], dp[i-1][2])
-    dp[i][2] = activities[i][2] + max(dp[i-1][0], dp[i-1][1])
+ # Fill DP table
+ for i in range(1, n):
+  dp[i][0] = activities[i][0] + max(dp[i-1][1], dp[i-1][2])
+  dp[i][1] = activities[i][1] + max(dp[i-1][0], dp[i-1][2])
+  dp[i][2] = activities[i][2] + max(dp[i-1][0], dp[i-1][1])
 
-  return max(dp[n-1])
+ return max(dp[n-1])
 
 # Read input and solve
 n = int(input())
@@ -244,22 +244,22 @@ Since we only need the previous day's values, we can reduce space to O(1):
 
 ```python
 def solve_space_optimized(n, activities):
-  """
-  Space-optimized DP using rolling variables.
+ """
+ Space-optimized DP using rolling variables.
 
-  Time: O(n)
-  Space: O(1)
-  """
-  prev_a, prev_b, prev_c = activities[0]
+ Time: O(n)
+ Space: O(1)
+ """
+ prev_a, prev_b, prev_c = activities[0]
 
-  for i in range(1, n):
-    a, b, c = activities[i]
-    curr_a = a + max(prev_b, prev_c)
-    curr_b = b + max(prev_a, prev_c)
-    curr_c = c + max(prev_a, prev_b)
-    prev_a, prev_b, prev_c = curr_a, curr_b, curr_c
+ for i in range(1, n):
+  a, b, c = activities[i]
+  curr_a = a + max(prev_b, prev_c)
+  curr_b = b + max(prev_a, prev_c)
+  curr_c = c + max(prev_a, prev_b)
+  prev_a, prev_b, prev_c = curr_a, curr_b, curr_c
 
-  return max(prev_a, prev_b, prev_c)
+ return max(prev_a, prev_b, prev_c)
 ```
 
 ### Complexity
@@ -278,7 +278,7 @@ def solve_space_optimized(n, activities):
 ```python
 # WRONG - dp[0] is uninitialized
 for i in range(1, n):
-  dp[i][0] = activities[i][0] + max(dp[i-1][1], dp[i-1][2])
+ dp[i][0] = activities[i][0] + max(dp[i-1][1], dp[i-1][2])
 ```
 
 **Problem:** First day's values are never set, causing wrong answers.

@@ -147,39 +147,39 @@ Construction:
 
 ```python
 def solve():
-  s = input().strip()
+ s = input().strip()
 
-  # Step 1: Count frequencies
-  freq = {}
-  for c in s:
-    freq[c] = freq.get(c, 0) + 1
+ # Step 1: Count frequencies
+ freq = {}
+ for c in s:
+  freq[c] = freq.get(c, 0) + 1
 
-  # Step 2: Check validity - count odd frequencies
-  odd_char = None
-  odd_count = 0
+ # Step 2: Check validity - count odd frequencies
+ odd_char = None
+ odd_count = 0
 
-  for char, count in freq.items():
-    if count % 2 == 1:
-      odd_count += 1
-      odd_char = char
+ for char, count in freq.items():
+  if count % 2 == 1:
+   odd_count += 1
+   odd_char = char
 
-  # More than one odd frequency -> impossible
-  if odd_count > 1:
-    print("NO SOLUTION")
-    return
+ # More than one odd frequency -> impossible
+ if odd_count > 1:
+  print("NO SOLUTION")
+  return
 
-  # Step 3: Build palindrome
-  left_half = []
+ # Step 3: Build palindrome
+ left_half = []
 
-  for char, count in freq.items():
-    # Add half of each character to left side
-    left_half.append(char * (count // 2))
+ for char, count in freq.items():
+  # Add half of each character to left side
+  left_half.append(char * (count // 2))
 
-  left = ''.join(left_half)
-  middle = odd_char if odd_char else ''
-  right = left[::-1]
+ left = ''.join(left_half)
+ middle = odd_char if odd_char else ''
+ right = left[::-1]
 
-  print(left + middle + right)
+ print(left + middle + right)
 
 solve()
 ```
@@ -200,10 +200,10 @@ solve()
 ```python
 # WRONG - Not checking odd count validity
 def solve_wrong(s):
-  freq = Counter(s)
-  # Directly trying to build palindrome without validation
-  left = ''.join(c * (freq[c] // 2) for c in freq)
-  return left + left[::-1]  # Loses characters with odd counts!
+ freq = Counter(s)
+ # Directly trying to build palindrome without validation
+ left = ''.join(c * (freq[c] // 2) for c in freq)
+ return left + left[::-1]  # Loses characters with odd counts!
 ```
 
 **Problem:** If a character has an odd count, one instance is lost when doing `count // 2 * 2`.

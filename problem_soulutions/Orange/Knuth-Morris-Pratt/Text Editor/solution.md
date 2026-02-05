@@ -29,108 +29,108 @@ Print the longest prefix of B that appears at least n times in A, or "IMPOSSIBLE
 
 ```python
 def count_occurrences(text, pattern):
-  """Count occurrences of pattern in text using KMP"""
-  if not pattern:
-    return len(text) + 1
+ """Count occurrences of pattern in text using KMP"""
+ if not pattern:
+  return len(text) + 1
 
-  # Build failure function for pattern
-  m = len(pattern)
-  fail = [0] * m
-  for i in range(1, m):
-    j = fail[i - 1]
-    while j > 0 and pattern[i] != pattern[j]:
-      j = fail[j - 1]
-    if pattern[i] == pattern[j]:
-      j += 1
-    fail[i] = j
+ # Build failure function for pattern
+ m = len(pattern)
+ fail = [0] * m
+ for i in range(1, m):
+  j = fail[i - 1]
+  while j > 0 and pattern[i] != pattern[j]:
+   j = fail[j - 1]
+  if pattern[i] == pattern[j]:
+   j += 1
+  fail[i] = j
 
-  # Search
-  count = 0
-  j = 0
-  for char in text:
-    while j > 0 and char != pattern[j]:
-      j = fail[j - 1]
-    if char == pattern[j]:
-      j += 1
-    if j == m:
-      count += 1
-      j = fail[j - 1]
+ # Search
+ count = 0
+ j = 0
+ for char in text:
+  while j > 0 and char != pattern[j]:
+   j = fail[j - 1]
+  if char == pattern[j]:
+   j += 1
+  if j == m:
+   count += 1
+   j = fail[j - 1]
 
-  return count
+ return count
 
 def solve():
-  A = input().strip()
-  B = input().strip()
-  n = int(input())
+ A = input().strip()
+ B = input().strip()
+ n = int(input())
 
-  # Binary search on prefix length
-  # Or linear search from longest to shortest
+ # Binary search on prefix length
+ # Or linear search from longest to shortest
 
-  result = ""
+ result = ""
 
-  # Try each prefix length from longest to shortest
-  for length in range(len(B), 0, -1):
-    prefix = B[:length]
-    if count_occurrences(A, prefix) >= n:
-      result = prefix
-      break
+ # Try each prefix length from longest to shortest
+ for length in range(len(B), 0, -1):
+  prefix = B[:length]
+  if count_occurrences(A, prefix) >= n:
+   result = prefix
+   break
 
-  if result:
-    print(result)
-  else:
-    print("IMPOSSIBLE")
+ if result:
+  print(result)
+ else:
+  print("IMPOSSIBLE")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Optimized Solution with Single KMP Pass
 
 ```python
 def solve():
-  A = input().strip()
-  B = input().strip()
-  n = int(input())
+ A = input().strip()
+ B = input().strip()
+ n = int(input())
 
-  # Build KMP failure function for B
-  m = len(B)
-  fail = [0] * m
-  for i in range(1, m):
-    j = fail[i - 1]
-    while j > 0 and B[i] != B[j]:
-      j = fail[j - 1]
-    if B[i] == B[j]:
-      j += 1
-    fail[i] = j
+ # Build KMP failure function for B
+ m = len(B)
+ fail = [0] * m
+ for i in range(1, m):
+  j = fail[i - 1]
+  while j > 0 and B[i] != B[j]:
+   j = fail[j - 1]
+  if B[i] == B[j]:
+   j += 1
+  fail[i] = j
 
-  # Count occurrences of each prefix length
-  # cnt[k] = number of times prefix of length k appears in A
-  cnt = [0] * (m + 1)
+ # Count occurrences of each prefix length
+ # cnt[k] = number of times prefix of length k appears in A
+ cnt = [0] * (m + 1)
 
-  j = 0
-  for char in A:
-    while j > 0 and char != B[j]:
-      j = fail[j - 1]
-    if j < m and char == B[j]:
-      j += 1
+ j = 0
+ for char in A:
+  while j > 0 and char != B[j]:
+   j = fail[j - 1]
+  if j < m and char == B[j]:
+   j += 1
 
-    # Prefix of length j matched here
-    cnt[j] += 1
+  # Prefix of length j matched here
+  cnt[j] += 1
 
-  # Propagate counts: if prefix of length k appears, so does prefix of length fail[k-1]
-  for k in range(m, 0, -1):
-    cnt[fail[k - 1]] += cnt[k]
+ # Propagate counts: if prefix of length k appears, so does prefix of length fail[k-1]
+ for k in range(m, 0, -1):
+  cnt[fail[k - 1]] += cnt[k]
 
-  # Find longest prefix with count >= n
-  for length in range(m, 0, -1):
-    if cnt[length] >= n:
-      print(B[:length])
-      return
+ # Find longest prefix with count >= n
+ for length in range(m, 0, -1):
+  if cnt[length] >= n:
+   print(B[:length])
+   return
 
-  print("IMPOSSIBLE")
+ print("IMPOSSIBLE")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

@@ -41,81 +41,81 @@ Generate all binary strings of length N with exactly H ones. This is equivalent 
 from itertools import permutations
 
 def solve():
-  t = int(input())
-  input()  # Read blank line after number of test cases
+ t = int(input())
+ input()  # Read blank line after number of test cases
 
-  for case in range(t):
-    line = input().split()
-    n, h = int(line[0]), int(line[1])
+ for case in range(t):
+  line = input().split()
+  n, h = int(line[0]), int(line[1])
 
-    # Create base string: (n-h) zeros followed by h ones
-    base = '0' * (n - h) + '1' * h
+  # Create base string: (n-h) zeros followed by h ones
+  base = '0' * (n - h) + '1' * h
 
-    # Generate all unique permutations in sorted order
-    seen = set()
-    results = []
+  # Generate all unique permutations in sorted order
+  seen = set()
+  results = []
 
-    for perm in permutations(base):
-      s = ''.join(perm)
-      if s not in seen:
-        seen.add(s)
-        results.append(s)
+  for perm in permutations(base):
+   s = ''.join(perm)
+   if s not in seen:
+    seen.add(s)
+    results.append(s)
 
-    results.sort()
-    for s in results:
-      print(s)
+  results.sort()
+  for s in results:
+   print(s)
 
-    print()  # Blank line between datasets
+  print()  # Blank line between datasets
 
-    # Try to read blank line between datasets
-    try:
-      if case < t - 1:
-        input()
-    except:
-      pass
+  # Try to read blank line between datasets
+  try:
+   if case < t - 1:
+    input()
+  except:
+   pass
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Optimized Solution using Backtracking
 
 ```python
 def solve():
-  t = int(input())
-  input()  # Read blank line
+ t = int(input())
+ input()  # Read blank line
 
-  for case in range(t):
-    line = input().split()
-    n, h = int(line[0]), int(line[1])
+ for case in range(t):
+  line = input().split()
+  n, h = int(line[0]), int(line[1])
 
-    def generate(pos, ones_left, current):
-      if pos == n:
-        if ones_left == 0:
-          print(current)
-        return
+  def generate(pos, ones_left, current):
+   if pos == n:
+    if ones_left == 0:
+     print(current)
+    return
 
-      remaining = n - pos
+   remaining = n - pos
 
-      # Place 0 if we can still place all remaining 1s
-      if remaining > ones_left:
-        generate(pos + 1, ones_left, current + '0')
+   # Place 0 if we can still place all remaining 1s
+   if remaining > ones_left:
+    generate(pos + 1, ones_left, current + '0')
 
-      # Place 1 if we still have 1s to place
-      if ones_left > 0:
-        generate(pos + 1, ones_left - 1, current + '1')
+   # Place 1 if we still have 1s to place
+   if ones_left > 0:
+    generate(pos + 1, ones_left - 1, current + '1')
 
-    generate(0, h, '')
-    print()
+  generate(0, h, '')
+  print()
 
-    try:
-      if case < t - 1:
-        input()
-    except:
-      pass
+  try:
+   if case < t - 1:
+    input()
+  except:
+   pass
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Using itertools.combinations
@@ -124,30 +124,30 @@ if __name__ == "__main__":
 from itertools import combinations
 
 def solve():
-  t = int(input())
-  input()
+ t = int(input())
+ input()
 
-  for case in range(t):
-    line = input().split()
-    n, h = int(line[0]), int(line[1])
+ for case in range(t):
+  line = input().split()
+  n, h = int(line[0]), int(line[1])
 
-    # Choose h positions out of n to be 1s
-    for positions in combinations(range(n), h):
-      bits = ['0'] * n
-      for pos in positions:
-        bits[pos] = '1'
-      print(''.join(bits))
+  # Choose h positions out of n to be 1s
+  for positions in combinations(range(n), h):
+   bits = ['0'] * n
+   for pos in positions:
+    bits[pos] = '1'
+   print(''.join(bits))
 
-    print()
+  print()
 
-    try:
-      if case < t - 1:
-        input()
-    except:
-      pass
+  try:
+   if case < t - 1:
+    input()
+  except:
+   pass
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

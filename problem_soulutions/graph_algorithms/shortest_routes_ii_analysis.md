@@ -113,12 +113,12 @@ dist = [[INF] * (n+1) for _ in range(n+1)]
 
 # Distance to self is 0
 for i in range(1, n+1):
-  dist[i][i] = 0
+ dist[i][i] = 0
 
 # Direct edges (take minimum if multiple edges)
 for a, b, c in edges:
-  dist[a][b] = min(dist[a][b], c)
-  dist[b][a] = min(dist[b][a], c)  # Bidirectional
+ dist[a][b] = min(dist[a][b], c)
+ dist[b][a] = min(dist[b][a], c)  # Bidirectional
 ```
 
 ## Visual Diagram: Path Improvement
@@ -225,40 +225,40 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n, m, q = map(int, input().split())
+ n, m, q = map(int, input().split())
 
-  INF = float('inf')
+ INF = float('inf')
 
-  # Initialize distance matrix
-  dist = [[INF] * (n + 1) for _ in range(n + 1)]
+ # Initialize distance matrix
+ dist = [[INF] * (n + 1) for _ in range(n + 1)]
 
-  # Distance to self is 0
+ # Distance to self is 0
+ for i in range(1, n + 1):
+  dist[i][i] = 0
+
+ # Read edges (take minimum if multiple edges between same nodes)
+ for _ in range(m):
+  a, b, c = map(int, input().split())
+  dist[a][b] = min(dist[a][b], c)
+  dist[b][a] = min(dist[b][a], c)
+
+ # Floyd-Warshall: k MUST be outermost loop
+ for k in range(1, n + 1):
   for i in range(1, n + 1):
-    dist[i][i] = 0
+   for j in range(1, n + 1):
+    if dist[i][k] != INF and dist[k][j] != INF:
+     dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-  # Read edges (take minimum if multiple edges between same nodes)
-  for _ in range(m):
-    a, b, c = map(int, input().split())
-    dist[a][b] = min(dist[a][b], c)
-    dist[b][a] = min(dist[b][a], c)
+ # Process queries
+ result = []
+ for _ in range(q):
+  a, b = map(int, input().split())
+  if dist[a][b] == INF:
+   result.append(-1)
+  else:
+   result.append(dist[a][b])
 
-  # Floyd-Warshall: k MUST be outermost loop
-  for k in range(1, n + 1):
-    for i in range(1, n + 1):
-      for j in range(1, n + 1):
-        if dist[i][k] != INF and dist[k][j] != INF:
-          dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
-
-  # Process queries
-  result = []
-  for _ in range(q):
-    a, b = map(int, input().split())
-    if dist[a][b] == INF:
-      result.append(-1)
-    else:
-      result.append(dist[a][b])
-
-  print('\n'.join(map(str, result)))
+ print('\n'.join(map(str, result)))
 
 solve()
 ```
@@ -270,10 +270,10 @@ Floyd-Warshall can detect negative cycles. After running the algorithm:
 ```python
 # Check for negative cycles
 def has_negative_cycle(dist, n):
-  for i in range(1, n + 1):
-    if dist[i][i] < 0:
-      return True
-  return False
+ for i in range(1, n + 1):
+  if dist[i][i] < 0:
+   return True
+ return False
 ```
 
 **Why?** If dist[i][i] < 0, there's a path from i back to i with negative total weight - a negative cycle!
@@ -293,15 +293,15 @@ If a negative cycle exists through node k:
 ```python
 # WRONG - will give incorrect results!
 for i in range(1, n + 1):
-  for j in range(1, n + 1):
-    for k in range(1, n + 1):
-      dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+ for j in range(1, n + 1):
+  for k in range(1, n + 1):
+   dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
 # CORRECT - k must be outermost
 for k in range(1, n + 1):
-  for i in range(1, n + 1):
-    for j in range(1, n + 1):
-      dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+ for i in range(1, n + 1):
+  for j in range(1, n + 1):
+   dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 ```
 
 ### 2. Integer Overflow with Infinity
@@ -312,7 +312,7 @@ dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
 # CORRECT - check for INF before adding
 if dist[i][k] != INF and dist[k][j] != INF:
-  dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+ dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 ```
 
 In C++, use `long long` and set INF = 1e18 (not INT_MAX which causes overflow).

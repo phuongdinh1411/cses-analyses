@@ -96,22 +96,22 @@ Iterate through the array. When an element is smaller than the previous, "simula
 
 ```python
 def solve_brute_force(n, arr):
-  """
-  Brute force: simulate the process.
+ """
+ Brute force: simulate the process.
 
-  Time: O(n)
-  Space: O(n) - copies the array
-  """
-  arr = arr.copy()  # Don't modify original
-  moves = 0
+ Time: O(n)
+ Space: O(n) - copies the array
+ """
+ arr = arr.copy()  # Don't modify original
+ moves = 0
 
-  for i in range(1, n):
-    if arr[i] < arr[i-1]:
-      diff = arr[i-1] - arr[i]
-      moves += diff
-      arr[i] = arr[i-1]
+ for i in range(1, n):
+  if arr[i] < arr[i-1]:
+   diff = arr[i-1] - arr[i]
+   moves += diff
+   arr[i] = arr[i-1]
 
-  return moves
+ return moves
 ```
 
 ### Complexity
@@ -206,33 +206,33 @@ Position 4: 7 > 5, update max = 7
 
 ```python
 def solve_optimal(n, arr):
-  """
-  Optimal solution using running maximum.
+ """
+ Optimal solution using running maximum.
 
-  Time: O(n) - single pass
-  Space: O(1) - only tracking max and moves
-  """
-  moves = 0
-  max_so_far = arr[0]
+ Time: O(n) - single pass
+ Space: O(1) - only tracking max and moves
+ """
+ moves = 0
+ max_so_far = arr[0]
 
-  for i in range(1, n):
-    if arr[i] < max_so_far:
-      moves += max_so_far - arr[i]
-    else:
-      max_so_far = arr[i]
+ for i in range(1, n):
+  if arr[i] < max_so_far:
+   moves += max_so_far - arr[i]
+  else:
+   max_so_far = arr[i]
 
-  return moves
+ return moves
 
 
 # CSES Input/Output format
 def main():
-  n = int(input())
-  arr = list(map(int, input().split()))
-  print(solve_optimal(n, arr))
+ n = int(input())
+ arr = list(map(int, input().split()))
+ print(solve_optimal(n, arr))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -256,8 +256,8 @@ if __name__ == "__main__":
 ```python
 # WRONG - processing right to left
 for i in range(n-1, 0, -1):
-  if arr[i] > arr[i-1]:  # Wrong comparison
-    moves += arr[i] - arr[i-1]
+ if arr[i] > arr[i-1]:  # Wrong comparison
+  moves += arr[i] - arr[i-1]
 ```
 
 **Problem:** We can only increase elements, so we must process left to right, raising elements to meet the running maximum.
@@ -268,9 +268,9 @@ for i in range(n-1, 0, -1):
 ```python
 # WRONG - not updating max when current is larger
 for i in range(1, n):
-  if arr[i] < max_so_far:
-    moves += max_so_far - arr[i]
-  # Missing: max_so_far = arr[i] when arr[i] >= max_so_far
+ if arr[i] < max_so_far:
+  moves += max_so_far - arr[i]
+ # Missing: max_so_far = arr[i] when arr[i] >= max_so_far
 ```
 
 **Problem:** If we don't update the maximum, we undercount required operations.

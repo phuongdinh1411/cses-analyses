@@ -114,55 +114,55 @@ Before attempting to find a circuit, verify that one exists by checking the nece
 
 ```python
 def check_eulerian_possible(n, edges):
-  """
-  Check if Eulerian circuit is possible.
+ """
+ Check if Eulerian circuit is possible.
 
-  Time: O(n + m)
-  Space: O(n + m)
-  """
-  from collections import defaultdict
+ Time: O(n + m)
+ Space: O(n + m)
+ """
+ from collections import defaultdict
 
-  graph = defaultdict(list)
-  degree = [0] * (n + 1)
+ graph = defaultdict(list)
+ degree = [0] * (n + 1)
 
-  for a, b in edges:
-    graph[a].append(b)
-    graph[b].append(a)
-    degree[a] += 1
-    degree[b] += 1
+ for a, b in edges:
+  graph[a].append(b)
+  graph[b].append(a)
+  degree[a] += 1
+  degree[b] += 1
 
-  # Check 1: All vertices must have even degree
-  for i in range(1, n + 1):
-    if degree[i] % 2 != 0:
-      return False
+ # Check 1: All vertices must have even degree
+ for i in range(1, n + 1):
+  if degree[i] % 2 != 0:
+   return False
 
-  # Check 2: Graph must be connected (only check vertices with edges)
-  start = -1
-  for i in range(1, n + 1):
-    if degree[i] > 0:
-      start = i
-      break
+ # Check 2: Graph must be connected (only check vertices with edges)
+ start = -1
+ for i in range(1, n + 1):
+  if degree[i] > 0:
+   start = i
+   break
 
-  if start == -1:
-    return True  # No edges, trivially true
+ if start == -1:
+  return True  # No edges, trivially true
 
-  visited = set()
-  stack = [start]
-  while stack:
-    node = stack.pop()
-    if node in visited:
-      continue
-    visited.add(node)
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        stack.append(neighbor)
+ visited = set()
+ stack = [start]
+ while stack:
+  node = stack.pop()
+  if node in visited:
+   continue
+  visited.add(node)
+  for neighbor in graph[node]:
+   if neighbor not in visited:
+    stack.append(neighbor)
 
-  # All vertices with edges must be visited
-  for i in range(1, n + 1):
-    if degree[i] > 0 and i not in visited:
-      return False
+ # All vertices with edges must be visited
+ for i in range(1, n + 1):
+  if degree[i] > 0 and i not in visited:
+   return False
 
-  return True
+ return True
 ```
 
 ### Complexity
@@ -241,88 +241,88 @@ Circuit: 1 -> 2 -> 3 -> 1
 
 ```python
 def find_eulerian_circuit(n, edges):
-  """
-  Find Eulerian circuit using Hierholzer's algorithm.
+ """
+ Find Eulerian circuit using Hierholzer's algorithm.
 
-  Time: O(m) - each edge processed once
-  Space: O(n + m) - adjacency list and stack
-  """
-  from collections import defaultdict
+ Time: O(m) - each edge processed once
+ Space: O(n + m) - adjacency list and stack
+ """
+ from collections import defaultdict
 
-  if not edges:
-    print(1)
-    return
+ if not edges:
+  print(1)
+  return
 
-  graph = defaultdict(list)
-  degree = [0] * (n + 1)
+ graph = defaultdict(list)
+ degree = [0] * (n + 1)
 
-  for a, b in edges:
-    graph[a].append(b)
-    graph[b].append(a)
-    degree[a] += 1
-    degree[b] += 1
+ for a, b in edges:
+  graph[a].append(b)
+  graph[b].append(a)
+  degree[a] += 1
+  degree[b] += 1
 
-  # Check even degree condition
-  for i in range(1, n + 1):
-    if degree[i] % 2 != 0:
-      print("IMPOSSIBLE")
-      return
+ # Check even degree condition
+ for i in range(1, n + 1):
+  if degree[i] % 2 != 0:
+   print("IMPOSSIBLE")
+   return
 
-  # Check connectivity
-  start = 1
-  if degree[1] == 0:
-    print("IMPOSSIBLE")
-    return
+ # Check connectivity
+ start = 1
+ if degree[1] == 0:
+  print("IMPOSSIBLE")
+  return
 
-  visited = set()
-  stack = [start]
-  while stack:
-    node = stack.pop()
-    if node in visited:
-      continue
-    visited.add(node)
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        stack.append(neighbor)
+ visited = set()
+ stack = [start]
+ while stack:
+  node = stack.pop()
+  if node in visited:
+   continue
+  visited.add(node)
+  for neighbor in graph[node]:
+   if neighbor not in visited:
+    stack.append(neighbor)
 
-  for i in range(1, n + 1):
-    if degree[i] > 0 and i not in visited:
-      print("IMPOSSIBLE")
-      return
+ for i in range(1, n + 1):
+  if degree[i] > 0 and i not in visited:
+   print("IMPOSSIBLE")
+   return
 
-  # Hierholzer's algorithm
-  # Use index-based adjacency for efficient edge removal
-  adj = defaultdict(list)
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ # Hierholzer's algorithm
+ # Use index-based adjacency for efficient edge removal
+ adj = defaultdict(list)
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  circuit = []
-  stack = [1]
+ circuit = []
+ stack = [1]
 
-  while stack:
-    v = stack[-1]
-    if adj[v]:
-      u = adj[v].pop()
-      # Remove the reverse edge
-      adj[u].remove(v)
-      stack.append(u)
-    else:
-      circuit.append(stack.pop())
+ while stack:
+  v = stack[-1]
+  if adj[v]:
+   u = adj[v].pop()
+   # Remove the reverse edge
+   adj[u].remove(v)
+   stack.append(u)
+  else:
+   circuit.append(stack.pop())
 
-  # Check if all edges were used
-  if len(circuit) != len(edges) + 1:
-    print("IMPOSSIBLE")
-    return
+ # Check if all edges were used
+ if len(circuit) != len(edges) + 1:
+  print("IMPOSSIBLE")
+  return
 
-  print(" ".join(map(str, circuit)))
+ print(" ".join(map(str, circuit)))
 
 # Input handling
 n, m = map(int, input().split())
 edges = []
 for _ in range(m):
-  a, b = map(int, input().split())
-  edges.append((a, b))
+ a, b = map(int, input().split())
+ edges.append((a, b))
 find_eulerian_circuit(n, edges)
 ```
 
@@ -342,8 +342,8 @@ find_eulerian_circuit(n, edges)
 ```python
 # WRONG - Only checks degrees
 for i in range(1, n + 1):
-  if degree[i] % 2 != 0:
-    return "IMPOSSIBLE"
+ if degree[i] % 2 != 0:
+  return "IMPOSSIBLE"
 return find_circuit()  # May fail on disconnected graph!
 ```
 

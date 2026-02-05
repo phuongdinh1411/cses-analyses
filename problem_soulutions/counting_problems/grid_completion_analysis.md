@@ -105,36 +105,36 @@ Try every possible value (1 to n) for each empty cell. After filling all cells, 
 
 ```python
 def solve_brute_force(n, grid):
-  """
-  Brute force: try all values, validate at the end.
+ """
+ Brute force: try all values, validate at the end.
 
-  Time: O(n^k * n^2) where k = empty cells
-  Space: O(k) for recursion
-  """
-  MOD = 10**9 + 7
-  empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
+ Time: O(n^k * n^2) where k = empty cells
+ Space: O(k) for recursion
+ """
+ MOD = 10**9 + 7
+ empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
 
-  def is_valid():
-    for i in range(n):
-      if len(set(grid[i])) != n:
-        return False
-      if len(set(grid[j][i] for j in range(n))) != n:
-        return False
-    return True
+ def is_valid():
+  for i in range(n):
+   if len(set(grid[i])) != n:
+    return False
+   if len(set(grid[j][i] for j in range(n))) != n:
+    return False
+  return True
 
-  def backtrack(idx):
-    if idx == len(empty):
-      return 1 if is_valid() else 0
+ def backtrack(idx):
+  if idx == len(empty):
+   return 1 if is_valid() else 0
 
-    r, c = empty[idx]
-    count = 0
-    for val in range(1, n + 1):
-      grid[r][c] = val
-      count = (count + backtrack(idx + 1)) % MOD
-    grid[r][c] = 0
-    return count
+  r, c = empty[idx]
+  count = 0
+  for val in range(1, n + 1):
+   grid[r][c] = val
+   count = (count + backtrack(idx + 1)) % MOD
+  grid[r][c] = 0
+  return count
 
-  return backtrack(0)
+ return backtrack(0)
 ```
 
 ### Complexity
@@ -211,53 +211,53 @@ Row 1: has {1}       Col 1: has {1}
 
 ```python
 def solve_optimized(n, grid):
-  """
-  Backtracking with early pruning.
+ """
+ Backtracking with early pruning.
 
-  Time: O(n! in worst case, much better with constraints)
-  Space: O(n) for tracking sets
-  """
-  MOD = 10**9 + 7
+ Time: O(n! in worst case, much better with constraints)
+ Space: O(n) for tracking sets
+ """
+ MOD = 10**9 + 7
 
-  # Track used values per row and column
-  row_used = [set() for _ in range(n)]
-  col_used = [set() for _ in range(n)]
+ # Track used values per row and column
+ row_used = [set() for _ in range(n)]
+ col_used = [set() for _ in range(n)]
 
-  # Initialize with pre-filled values
-  for i in range(n):
-    for j in range(n):
-      if grid[i][j] != 0:
-        row_used[i].add(grid[i][j])
-        col_used[j].add(grid[i][j])
+ # Initialize with pre-filled values
+ for i in range(n):
+  for j in range(n):
+   if grid[i][j] != 0:
+    row_used[i].add(grid[i][j])
+    col_used[j].add(grid[i][j])
 
-  # Find empty cells
-  empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
+ # Find empty cells
+ empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
 
-  def backtrack(idx):
-    if idx == len(empty):
-      return 1
+ def backtrack(idx):
+  if idx == len(empty):
+   return 1
 
-    r, c = empty[idx]
-    count = 0
+  r, c = empty[idx]
+  count = 0
 
-    for val in range(1, n + 1):
-      # Prune: check constraints before recursing
-      if val not in row_used[r] and val not in col_used[c]:
-        # Place value
-        row_used[r].add(val)
-        col_used[c].add(val)
-        grid[r][c] = val
+  for val in range(1, n + 1):
+   # Prune: check constraints before recursing
+   if val not in row_used[r] and val not in col_used[c]:
+    # Place value
+    row_used[r].add(val)
+    col_used[c].add(val)
+    grid[r][c] = val
 
-        count = (count + backtrack(idx + 1)) % MOD
+    count = (count + backtrack(idx + 1)) % MOD
 
-        # Backtrack
-        row_used[r].remove(val)
-        col_used[c].remove(val)
-        grid[r][c] = 0
+    # Backtrack
+    row_used[r].remove(val)
+    col_used[c].remove(val)
+    grid[r][c] = 0
 
-    return count
+  return count
 
-  return backtrack(0)
+ return backtrack(0)
 ```
 
 ### Complexity
@@ -289,7 +289,7 @@ count = (count + backtrack(idx + 1)) % MOD
 # WRONG - inefficient
 grid[r][c] = val
 if is_valid_so_far():  # Check AFTER placing
-  count += backtrack(idx + 1)
+ count += backtrack(idx + 1)
 grid[r][c] = 0
 ```
 
@@ -314,7 +314,7 @@ count = (count + backtrack(idx + 1)) % MOD  # At each addition
 ```python
 # WRONG - doesn't check if initial grid is valid
 def solve(n, grid):
-  # Start backtracking immediately...
+ # Start backtracking immediately...
 ```
 
 **Problem:** If pre-filled values already violate constraints, answer should be 0.

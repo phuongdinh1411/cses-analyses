@@ -42,43 +42,43 @@ INF = 1e18
 
 
 def gcd(x, y):
-  if y == 0:
-    return x
-  else:
-    return gcd(y, x % y)
+ if y == 0:
+  return x
+ else:
+  return gcd(y, x % y)
 
 
 def solution():
-  atmp, btmp = map(int, input().strip().split())
-  a = max(atmp, btmp)
-  b = min(atmp, btmp)
-  k = 0
+ atmp, btmp = map(int, input().strip().split())
+ a = max(atmp, btmp)
+ b = min(atmp, btmp)
+ k = 0
 
-  delta = a - b
-  min_lcm = INF
+ delta = a - b
+ min_lcm = INF
 
-  if delta == 0:
-    print(0)
-    exit(0)
+ if delta == 0:
+  print(0)
+  exit(0)
 
-  range_gcd = int(sqrt(delta)) + 1
-  for i in range(1, range_gcd):
-    if delta % i == 0:
-      k, min_lcm = getk(a, b, i, k, min_lcm)
-      k, min_lcm = getk(a, b, delta / i, k, min_lcm)
+ range_gcd = int(sqrt(delta)) + 1
+ for i in range(1, range_gcd):
+  if delta % i == 0:
+   k, min_lcm = getk(a, b, i, k, min_lcm)
+   k, min_lcm = getk(a, b, delta / i, k, min_lcm)
 
-  print('{0:.0f}'.format(k))
+ print('{0:.0f}'.format(k))
 
 
 def getk(a, b, i, k, min_lcm):
-  current_k = 0
-  if b % i > 0:
-    current_k = ((b // i) + 1) * i - b
-  lcm = (a + current_k) * (b + current_k) / i
-  if lcm < min_lcm:
-    min_lcm = lcm
-    k = current_k
-  return k, min_lcm
+ current_k = 0
+ if b % i > 0:
+  current_k = ((b // i) + 1) * i - b
+ lcm = (a + current_k) * (b + current_k) / i
+ if lcm < min_lcm:
+  min_lcm = lcm
+  k = current_k
+ return k, min_lcm
 
 
 solution()
@@ -118,31 +118,31 @@ Binary search on the answer (target energy level). For a given target, calculate
 
 ```python
 def check_possibility(_accumulators, max_value, n, k):
-  less = 0
-  more = 0
-  for i in range(n):
-    if _accumulators[i] > max_value:
-      more += _accumulators[i] - max_value
-    else:
-      less += max_value - _accumulators[i]
+ less = 0
+ more = 0
+ for i in range(n):
+  if _accumulators[i] > max_value:
+   more += _accumulators[i] - max_value
+  else:
+   less += max_value - _accumulators[i]
 
-  return more - k * more / 100 >= less
+ return more - k * more / 100 >= less
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  accumulators = list(map(int, input().strip().split()))
+ n, k = map(int, input().strip().split())
+ accumulators = list(map(int, input().strip().split()))
 
-  lo = 0
-  hi = 1000
-  for i in range(100):
-    mid = (lo + hi) / 2
-    if check_possibility(accumulators, mid, n, k):
-      lo = mid
-    else:
-      hi = mid
+ lo = 0
+ hi = 1000
+ for i in range(100):
+  mid = (lo + hi) / 2
+  if check_possibility(accumulators, mid, n, k):
+   lo = mid
+  else:
+   hi = mid
 
-  print('{0:.9f}'.format(lo))
+ print('{0:.9f}'.format(lo))
 
 
 solution()
@@ -183,28 +183,28 @@ Binary search on the answer (saw height H). For a given height, calculate total 
 ```python
 def check_possibility(_accumulators, max_value, n, k):
 
-  total = 0
-  for i in range(n):
-    if _accumulators[i] > max_value:
-      total += _accumulators[i] - max_value
+ total = 0
+ for i in range(n):
+  if _accumulators[i] > max_value:
+   total += _accumulators[i] - max_value
 
-  return total >= k
+ return total >= k
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  trees = list(map(int, input().strip().split()))
+ n, k = map(int, input().strip().split())
+ trees = list(map(int, input().strip().split()))
 
-  lo = 0
-  hi = int(2e9)
-  while lo < hi - 1:
-    mid = (lo + hi) // 2
-    if check_possibility(trees, mid, n, k):
-      lo = mid
-    else:
-      hi = mid
+ lo = 0
+ hi = int(2e9)
+ while lo < hi - 1:
+  mid = (lo + hi) // 2
+  if check_possibility(trees, mid, n, k):
+   lo = mid
+  else:
+   hi = mid
 
-  print(lo)
+ print(lo)
 
 
 solution()
@@ -244,30 +244,30 @@ Sort the array. For each element a[i], binary search for a[i] + k in the remaini
 
 ```python
 def binary_search(array, left, right, x):
-  while left <= right:
-    mid = (left + right) // 2
-    if x == array[mid]:
-      return True
-    elif x < array[mid]:
-      right = mid - 1
-    else:
-      left = mid + 1
+ while left <= right:
+  mid = (left + right) // 2
+  if x == array[mid]:
+   return True
+  elif x < array[mid]:
+   right = mid - 1
+  else:
+   left = mid + 1
 
-  return False
+ return False
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  random_numbers = list(map(int, input().strip().split()))
-  random_numbers.sort()
-  total = 0
-  n = len(random_numbers)
+ n, k = map(int, input().strip().split())
+ random_numbers = list(map(int, input().strip().split()))
+ random_numbers.sort()
+ total = 0
+ n = len(random_numbers)
 
-  for i in range(n):
-    if binary_search(random_numbers, i+ 1, n - 1, random_numbers[i] + k):
-      total += 1
+ for i in range(n):
+  if binary_search(random_numbers, i+ 1, n - 1, random_numbers[i] + k):
+   total += 1
 
-  print(total)
+ print(total)
 
 
 solution()
@@ -309,25 +309,25 @@ Two-pointer technique on sorted array. Sort friends by money amount. Use left an
 
 ```python
 def solution():
-  T = int(input())
-  for i in range(T):
-    n, m = map(int, input().strip().split())
-    friends = list(map(int, input().strip().split()))
-    friends.sort()
-    left = 0
-    right = n - 1
-    total = 0
-    while left < right:
-      if friends[left] + friends[right] == m:
-        left += 1
-        right -= 1
-        total += 1
-      if friends[left] + friends[right] > m:
-        right -= 1
-      if friends[left] + friends[right] < m:
-        left += 1
+ T = int(input())
+ for i in range(T):
+  n, m = map(int, input().strip().split())
+  friends = list(map(int, input().strip().split()))
+  friends.sort()
+  left = 0
+  right = n - 1
+  total = 0
+  while left < right:
+   if friends[left] + friends[right] == m:
+    left += 1
+    right -= 1
+    total += 1
+   if friends[left] + friends[right] > m:
+    right -= 1
+   if friends[left] + friends[right] < m:
+    left += 1
 
-    print(total)
+  print(total)
 
 
 solution()
@@ -372,39 +372,39 @@ epsilon = math.pow(10, -9)
 
 def calc_result(p, q, r, s, t, u, x):
 
-  return p * math.exp(-x) + q * math.sin(x) + r * math.cos(x) + s * math.tan(x) + t * math.pow(x, 2) + u
+ return p * math.exp(-x) + q * math.sin(x) + r * math.cos(x) + s * math.tan(x) + t * math.pow(x, 2) + u
 
 
 def solution():
-  while True:
-    try:
-      p, q, r, s, t, u= map(int, input().strip().split())
-      lo, hi = 0, 1
-      if -epsilon < calc_result(p, q, r, s, t, u, lo) < epsilon:
-        print(lo)
-        continue
-      if -epsilon < calc_result(p, q, r, s, t, u, hi) < epsilon:
-        print(hi)
-        continue
+ while True:
+  try:
+   p, q, r, s, t, u= map(int, input().strip().split())
+   lo, hi = 0, 1
+   if -epsilon < calc_result(p, q, r, s, t, u, lo) < epsilon:
+    print(lo)
+    continue
+   if -epsilon < calc_result(p, q, r, s, t, u, hi) < epsilon:
+    print(hi)
+    continue
 
-      has_solution = False
-      for i in range(1000):
-        x = (lo + hi) / 2
-        result = calc_result(p, q, r, s, t, u, x)
+   has_solution = False
+   for i in range(1000):
+    x = (lo + hi) / 2
+    result = calc_result(p, q, r, s, t, u, x)
 
-        if -epsilon < result < epsilon:
-          print('{0:.4f}'.format(x))
-          has_solution = True
-          break
-        if result * calc_result(p, q, r, s, t, u, lo) < 0:
-          hi = x
-        elif result * calc_result(p, q, r, s, t, u, hi) < 0:
-          lo = x
-      if not has_solution:
-        print('No solution')
+    if -epsilon < result < epsilon:
+     print('{0:.4f}'.format(x))
+     has_solution = True
+     break
+    if result * calc_result(p, q, r, s, t, u, lo) < 0:
+     hi = x
+    elif result * calc_result(p, q, r, s, t, u, hi) < 0:
+     lo = x
+   if not has_solution:
+    print('No solution')
 
-    except Exception as e:
-      break
+  except Exception as e:
+   break
 
 
 solution()
@@ -454,30 +454,30 @@ INF = float(1e9)
 
 
 def solution():
-  case = 1
-  while True:
-    N, Q = map(int, input().strip().split())
+ case = 1
+ while True:
+  N, Q = map(int, input().strip().split())
 
-    if N == 0:
-      break
+  if N == 0:
+   break
 
-    marbles = []
-    for i in range(N):
-      marbles.append(int(input().strip()))
+  marbles = []
+  for i in range(N):
+   marbles.append(int(input().strip()))
 
-    marbles.sort()
+  marbles.sort()
 
-    print('CASE# ' + str(case) + ':')
-    for i in range(Q):
-      q = int(input().strip())
-      result = bisect.bisect_left(marbles, q)
+  print('CASE# ' + str(case) + ':')
+  for i in range(Q):
+   q = int(input().strip())
+   result = bisect.bisect_left(marbles, q)
 
-      if 0 <= result < len(marbles) and marbles[result] == q:
-        print('{:d} found at {:d}'.format(q, result + 1))
-      else:
-        print('{:d} not found'.format(q))
+   if 0 <= result < len(marbles) and marbles[result] == q:
+    print('{:d} found at {:d}'.format(q, result + 1))
+   else:
+    print('{:d} not found'.format(q))
 
-    case += 1
+  case += 1
 
 
 solution()
@@ -524,27 +524,27 @@ from bisect import bisect_right
 
 
 def solution():
-  N = int(input())
-  lady_chimps = list(map(int, input().strip().split()))
-  Q = int(input())
-  queries = list(map(int, input().strip().split()))
+ N = int(input())
+ lady_chimps = list(map(int, input().strip().split()))
+ Q = int(input())
+ queries = list(map(int, input().strip().split()))
 
-  for q in queries:
-    upper_bound = bisect_right(lady_chimps, q)
-    shorter_index = -1
-    if upper_bound > 0:
-      for i in range(upper_bound - 1, -1, -1):
-        if lady_chimps[i] < q:
-          shorter_index = i
-          break
-    shorter = 'X'
-    taller = 'X'
-    if shorter_index != -1:
-      shorter = str(lady_chimps[shorter_index])
-    if upper_bound < N:
-      taller = str(lady_chimps[upper_bound])
+ for q in queries:
+  upper_bound = bisect_right(lady_chimps, q)
+  shorter_index = -1
+  if upper_bound > 0:
+   for i in range(upper_bound - 1, -1, -1):
+    if lady_chimps[i] < q:
+     shorter_index = i
+     break
+  shorter = 'X'
+  taller = 'X'
+  if shorter_index != -1:
+   shorter = str(lady_chimps[shorter_index])
+  if upper_bound < N:
+   taller = str(lady_chimps[upper_bound])
 
-    print(shorter, taller)
+  print(shorter, taller)
 
 
 solution()
@@ -587,36 +587,36 @@ Binary search on the answer (initial strength k). For each k, simulate: check if
 ```python
 def check_possibility(rungs, k, n):
 
-  remain = k
-  if rungs[0] > remain:
-    return False
-  if rungs[0] == remain:
-    remain -= 1
-  for i in range(1, n):
-    if rungs[i] - rungs[i - 1] > remain:
-      return False
-    if rungs[i] - rungs[i-1] == remain:
-      remain -= 1
+ remain = k
+ if rungs[0] > remain:
+  return False
+ if rungs[0] == remain:
+  remain -= 1
+ for i in range(1, n):
+  if rungs[i] - rungs[i - 1] > remain:
+   return False
+  if rungs[i] - rungs[i-1] == remain:
+   remain -= 1
 
-  return remain >= 0
+ return remain >= 0
 
 
 def solution():
-  T = int(input())
-  for i in range(T):
-    N = int(input())
-    rungs = list(map(int, input().strip().split()))
+ T = int(input())
+ for i in range(T):
+  N = int(input())
+  rungs = list(map(int, input().strip().split()))
 
-    lo = 0
-    hi = int(1e7)
-    while lo < hi - 1:
-      mid = (lo + hi) // 2
-      if check_possibility(rungs, mid, N):
-        hi = mid
-      else:
-        lo = mid
+  lo = 0
+  hi = int(1e7)
+  while lo < hi - 1:
+   mid = (lo + hi) // 2
+   if check_possibility(rungs, mid, N):
+    hi = mid
+   else:
+    lo = mid
 
-    print('Case {0}: {1}'.format(i + 1, hi))
+  print('Case {0}: {1}'.format(i + 1, hi))
 
 
 solution()

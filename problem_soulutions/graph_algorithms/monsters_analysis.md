@@ -152,86 +152,86 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n, m = map(int, input().split())
-  grid = [input().strip() for _ in range(n)]
+ n, m = map(int, input().split())
+ grid = [input().strip() for _ in range(n)]
 
-  # Directions: U, D, L, R
-  dirs = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+ # Directions: U, D, L, R
+ dirs = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
 
-  # Find player and monsters
-  player = None
-  monsters = []
-  for i in range(n):
-    for j in range(m):
-      if grid[i][j] == 'A':
-        player = (i, j)
-      elif grid[i][j] == 'M':
-        monsters.append((i, j))
+ # Find player and monsters
+ player = None
+ monsters = []
+ for i in range(n):
+  for j in range(m):
+   if grid[i][j] == 'A':
+    player = (i, j)
+   elif grid[i][j] == 'M':
+    monsters.append((i, j))
 
-  # Phase 1: Multi-source BFS from all monsters
-  INF = float('inf')
-  monster_time = [[INF] * m for _ in range(n)]
-  queue = deque()
+ # Phase 1: Multi-source BFS from all monsters
+ INF = float('inf')
+ monster_time = [[INF] * m for _ in range(n)]
+ queue = deque()
 
-  # Add ALL monsters to queue at time 0
-  for r, c in monsters:
-    monster_time[r][c] = 0
-    queue.append((r, c))
+ # Add ALL monsters to queue at time 0
+ for r, c in monsters:
+  monster_time[r][c] = 0
+  queue.append((r, c))
 
-  while queue:
-    r, c = queue.popleft()
-    for dr, dc, _ in dirs:
-      nr, nc = r + dr, c + dc
-      if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#':
-        if monster_time[nr][nc] == INF:
-          monster_time[nr][nc] = monster_time[r][c] + 1
-          queue.append((nr, nc))
+ while queue:
+  r, c = queue.popleft()
+  for dr, dc, _ in dirs:
+   nr, nc = r + dr, c + dc
+   if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#':
+    if monster_time[nr][nc] == INF:
+     monster_time[nr][nc] = monster_time[r][c] + 1
+     queue.append((nr, nc))
 
-  # Phase 2: Player BFS
-  player_time = [[INF] * m for _ in range(n)]
-  parent = [[None] * m for _ in range(n)]
-  pr, pc = player
-  player_time[pr][pc] = 0
-  queue = deque([(pr, pc)])
+ # Phase 2: Player BFS
+ player_time = [[INF] * m for _ in range(n)]
+ parent = [[None] * m for _ in range(n)]
+ pr, pc = player
+ player_time[pr][pc] = 0
+ queue = deque([(pr, pc)])
 
-  def is_boundary(r, c):
-    return r == 0 or r == n - 1 or c == 0 or c == m - 1
+ def is_boundary(r, c):
+  return r == 0 or r == n - 1 or c == 0 or c == m - 1
 
-  # Check if player starts on boundary
-  if is_boundary(pr, pc):
-    print("YES")
-    print(0)
-    return
+ # Check if player starts on boundary
+ if is_boundary(pr, pc):
+  print("YES")
+  print(0)
+  return
 
-  while queue:
-    r, c = queue.popleft()
-    for dr, dc, direction in dirs:
-      nr, nc = r + dr, c + dc
-      if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#':
-        new_time = player_time[r][c] + 1
-        # Key condition: player must arrive BEFORE monsters
-        if player_time[nr][nc] == INF and new_time < monster_time[nr][nc]:
-          player_time[nr][nc] = new_time
-          parent[nr][nc] = (r, c, direction)
+ while queue:
+  r, c = queue.popleft()
+  for dr, dc, direction in dirs:
+   nr, nc = r + dr, c + dc
+   if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#':
+    new_time = player_time[r][c] + 1
+    # Key condition: player must arrive BEFORE monsters
+    if player_time[nr][nc] == INF and new_time < monster_time[nr][nc]:
+     player_time[nr][nc] = new_time
+     parent[nr][nc] = (r, c, direction)
 
-          # Check if reached boundary
-          if is_boundary(nr, nc):
-            # Reconstruct path
-            path = []
-            curr = (nr, nc)
-            while parent[curr[0]][curr[1]] is not None:
-              pr, pc, d = parent[curr[0]][curr[1]]
-              path.append(d)
-              curr = (pr, pc)
-            path.reverse()
-            print("YES")
-            print(len(path))
-            print(''.join(path))
-            return
+     # Check if reached boundary
+     if is_boundary(nr, nc):
+      # Reconstruct path
+      path = []
+      curr = (nr, nc)
+      while parent[curr[0]][curr[1]] is not None:
+       pr, pc, d = parent[curr[0]][curr[1]]
+       path.append(d)
+       curr = (pr, pc)
+      path.reverse()
+      print("YES")
+      print(len(path))
+      print(''.join(path))
+      return
 
-          queue.append((nr, nc))
+     queue.append((nr, nc))
 
-  print("NO")
+ print("NO")
 
 solve()
 ```
@@ -252,12 +252,12 @@ solve()
 ```python
 # WRONG: BFS from each monster separately
 for monster in monsters:
-  bfs_from_single_source(monster)  # O(k * n * m) - too slow!
+ bfs_from_single_source(monster)  # O(k * n * m) - too slow!
 
 # CORRECT: Multi-source BFS
 for monster in monsters:
-  queue.append(monster)
-  monster_time[monster] = 0
+ queue.append(monster)
+ monster_time[monster] = 0
 bfs()  # O(n * m) - all monsters at once
 ```
 
@@ -276,9 +276,9 @@ if new_time < monster_time[nr][nc]:  # Player must arrive BEFORE
 ```python
 # Don't forget to check if player is already on boundary
 if is_boundary(player_row, player_col):
-  print("YES")
-  print(0)  # Empty path
-  return
+ print("YES")
+ print(0)  # Empty path
+ return
 ```
 
 ### 4. Not Handling Multiple Monsters Correctly

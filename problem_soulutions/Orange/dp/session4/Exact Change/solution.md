@@ -36,128 +36,128 @@ Since we need sum ≥ P, track sums up to some reasonable limit (P + max_coin or
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    price = int(input())
-    n = int(input())
-    coins = [int(input()) for _ in range(n)]
+ for _ in range(t):
+  price = int(input())
+  n = int(input())
+  coins = [int(input()) for _ in range(n)]
 
-    # Maximum sum we might need to consider
-    # At most price + max single coin (to avoid overpaying too much)
-    max_sum = min(price + max(coins), sum(coins))
+  # Maximum sum we might need to consider
+  # At most price + max single coin (to avoid overpaying too much)
+  max_sum = min(price + max(coins), sum(coins))
 
-    INF = float('inf')
+  INF = float('inf')
 
-    # dp[s] = minimum coins to achieve sum exactly s
-    dp = [INF] * (max_sum + 1)
-    dp[0] = 0
+  # dp[s] = minimum coins to achieve sum exactly s
+  dp = [INF] * (max_sum + 1)
+  dp[0] = 0
 
-    for coin in coins:
-      # Process in reverse (0/1 knapsack)
-      for s in range(max_sum, coin - 1, -1):
-        if dp[s - coin] != INF:
-          dp[s] = min(dp[s], dp[s - coin] + 1)
+  for coin in coins:
+   # Process in reverse (0/1 knapsack)
+   for s in range(max_sum, coin - 1, -1):
+    if dp[s - coin] != INF:
+     dp[s] = min(dp[s], dp[s - coin] + 1)
 
-    # Find minimum sum >= price with minimum coins
-    best_sum = -1
-    best_coins = INF
+  # Find minimum sum >= price with minimum coins
+  best_sum = -1
+  best_coins = INF
 
-    for s in range(price, max_sum + 1):
-      if dp[s] != INF:
-        if dp[s] < best_coins:
-          best_sum = s
-          best_coins = dp[s]
-          break  # First valid sum >= price with minimum coins
+  for s in range(price, max_sum + 1):
+   if dp[s] != INF:
+    if dp[s] < best_coins:
+     best_sum = s
+     best_coins = dp[s]
+     break  # First valid sum >= price with minimum coins
 
-    # Actually need to find minimum sum first, then minimum coins for that sum
-    # Re-interpret: find smallest sum >= price that is achievable
-    for s in range(price, max_sum + 1):
-      if dp[s] != INF:
-        print(s, dp[s])
-        break
+  # Actually need to find minimum sum first, then minimum coins for that sum
+  # Re-interpret: find smallest sum >= price that is achievable
+  for s in range(price, max_sum + 1):
+   if dp[s] != INF:
+    print(s, dp[s])
+    break
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution - Two Criteria Optimization
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    price = int(input())
-    n = int(input())
-    coins = [int(input()) for _ in range(n)]
+ for _ in range(t):
+  price = int(input())
+  n = int(input())
+  coins = [int(input()) for _ in range(n)]
 
-    total = sum(coins)
-    max_sum = total  # Could be smarter but safe
+  total = sum(coins)
+  max_sum = total  # Could be smarter but safe
 
-    INF = float('inf')
+  INF = float('inf')
 
-    # dp[s] = minimum number of coins to make sum s
-    dp = [INF] * (max_sum + 1)
-    dp[0] = 0
+  # dp[s] = minimum number of coins to make sum s
+  dp = [INF] * (max_sum + 1)
+  dp[0] = 0
 
-    for coin in coins:
-      for s in range(max_sum, coin - 1, -1):
-        if dp[s - coin] < INF:
-          dp[s] = min(dp[s], dp[s - coin] + 1)
+  for coin in coins:
+   for s in range(max_sum, coin - 1, -1):
+    if dp[s - coin] < INF:
+     dp[s] = min(dp[s], dp[s - coin] + 1)
 
-    # Find smallest achievable sum >= price
-    result_sum = -1
-    result_coins = -1
+  # Find smallest achievable sum >= price
+  result_sum = -1
+  result_coins = -1
 
-    for s in range(price, max_sum + 1):
-      if dp[s] < INF:
-        result_sum = s
-        result_coins = dp[s]
-        break
+  for s in range(price, max_sum + 1):
+   if dp[s] < INF:
+    result_sum = s
+    result_coins = dp[s]
+    break
 
-    print(result_sum, result_coins)
+  print(result_sum, result_coins)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    price = int(input())
-    n = int(input())
-    coins = [int(input()) for _ in range(n)]
+ for _ in range(t):
+  price = int(input())
+  n = int(input())
+  coins = [int(input()) for _ in range(n)]
 
-    # Limit search space
-    max_coin = max(coins)
-    limit = price + max_coin
+  # Limit search space
+  max_coin = max(coins)
+  limit = price + max_coin
 
-    INF = n + 1  # Can't use more than n coins
+  INF = n + 1  # Can't use more than n coins
 
-    dp = [INF] * (limit + 1)
-    dp[0] = 0
+  dp = [INF] * (limit + 1)
+  dp[0] = 0
 
-    for coin in coins:
-      for s in range(limit, coin - 1, -1):
-        if dp[s - coin] < INF:
-          dp[s] = min(dp[s], dp[s - coin] + 1)
+  for coin in coins:
+   for s in range(limit, coin - 1, -1):
+    if dp[s - coin] < INF:
+     dp[s] = min(dp[s], dp[s - coin] + 1)
 
-    # Find minimum achievable sum >= price
-    for s in range(price, limit + 1):
-      if dp[s] < INF:
-        print(s, dp[s])
-        break
+  # Find minimum achievable sum >= price
+  for s in range(price, limit + 1):
+   if dp[s] < INF:
+    print(s, dp[s])
+    break
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

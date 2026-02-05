@@ -112,15 +112,15 @@ For each query, iterate through the range and sum elements directly.
 
 ```python
 def solve_brute_force(n, arr, queries):
-  results = []
-  for query in queries:
-    if query[0] == 1:  # Update
-      k, u = query[1], query[2]
-      arr[k - 1] = u  # Convert to 0-indexed
-    else:  # Sum query
-      a, b = query[1], query[2]
-      results.append(sum(arr[a-1:b]))
-  return results
+ results = []
+ for query in queries:
+  if query[0] == 1:  # Update
+   k, u = query[1], query[2]
+   arr[k - 1] = u  # Convert to 0-indexed
+  else:  # Sum query
+   a, b = query[1], query[2]
+   results.append(sum(arr[a-1:b]))
+ return results
 ```
 
 ### Complexity
@@ -210,54 +210,54 @@ import sys
 from typing import List
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n, q = int(input_data[idx]), int(input_data[idx + 1])
-  idx += 2
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n, q = int(input_data[idx]), int(input_data[idx + 1])
+ idx += 2
 
-  arr = [0] + [int(input_data[idx + i]) for i in range(n)]  # 1-indexed
-  idx += n
+ arr = [0] + [int(input_data[idx + i]) for i in range(n)]  # 1-indexed
+ idx += n
 
-  # Build BIT
-  bit = [0] * (n + 1)
-  for i in range(1, n + 1):
-    bit[i] += arr[i]
-    j = i + (i & -i)
-    if j <= n:
-      bit[j] += bit[i]
+ # Build BIT
+ bit = [0] * (n + 1)
+ for i in range(1, n + 1):
+  bit[i] += arr[i]
+  j = i + (i & -i)
+  if j <= n:
+   bit[j] += bit[i]
 
-  def prefix_sum(r: int) -> int:
-    """Sum of elements [1, r]"""
-    total = 0
-    while r > 0:
-      total += bit[r]
-      r -= r & -r  # Remove lowest set bit
-    return total
+ def prefix_sum(r: int) -> int:
+  """Sum of elements [1, r]"""
+  total = 0
+  while r > 0:
+   total += bit[r]
+   r -= r & -r  # Remove lowest set bit
+  return total
 
-  def update(k: int, delta: int) -> None:
-    """Add delta to position k"""
-    while k <= n:
-      bit[k] += delta
-      k += k & -k  # Add lowest set bit
+ def update(k: int, delta: int) -> None:
+  """Add delta to position k"""
+  while k <= n:
+   bit[k] += delta
+   k += k & -k  # Add lowest set bit
 
-  results = []
-  for _ in range(q):
-    query_type = int(input_data[idx])
-    if query_type == 1:  # Update
-      k, u = int(input_data[idx + 1]), int(input_data[idx + 2])
-      delta = u - arr[k]
-      arr[k] = u
-      update(k, delta)
-      idx += 3
-    else:  # Sum query
-      a, b = int(input_data[idx + 1]), int(input_data[idx + 2])
-      results.append(prefix_sum(b) - prefix_sum(a - 1))
-      idx += 3
+ results = []
+ for _ in range(q):
+  query_type = int(input_data[idx])
+  if query_type == 1:  # Update
+   k, u = int(input_data[idx + 1]), int(input_data[idx + 2])
+   delta = u - arr[k]
+   arr[k] = u
+   update(k, delta)
+   idx += 3
+  else:  # Sum query
+   a, b = int(input_data[idx + 1]), int(input_data[idx + 2])
+   results.append(prefix_sum(b) - prefix_sum(a - 1))
+   idx += 3
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -285,73 +285,73 @@ import sys
 from typing import List
 
 class SegmentTree:
-  def __init__(self, arr: List[int]):
-    self.n = len(arr)
-    self.tree = [0] * (4 * self.n)
-    self._build(arr, 1, 0, self.n - 1)
+ def __init__(self, arr: List[int]):
+  self.n = len(arr)
+  self.tree = [0] * (4 * self.n)
+  self._build(arr, 1, 0, self.n - 1)
 
-  def _build(self, arr: List[int], node: int, start: int, end: int) -> None:
-    if start == end:
-      self.tree[node] = arr[start]
-    else:
-      mid = (start + end) // 2
-      self._build(arr, 2 * node, start, mid)
-      self._build(arr, 2 * node + 1, mid + 1, end)
-      self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+ def _build(self, arr: List[int], node: int, start: int, end: int) -> None:
+  if start == end:
+   self.tree[node] = arr[start]
+  else:
+   mid = (start + end) // 2
+   self._build(arr, 2 * node, start, mid)
+   self._build(arr, 2 * node + 1, mid + 1, end)
+   self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-  def update(self, idx: int, val: int) -> None:
-    self._update(1, 0, self.n - 1, idx, val)
+ def update(self, idx: int, val: int) -> None:
+  self._update(1, 0, self.n - 1, idx, val)
 
-  def _update(self, node: int, start: int, end: int, idx: int, val: int) -> None:
-    if start == end:
-      self.tree[node] = val
-    else:
-      mid = (start + end) // 2
-      if idx <= mid:
-        self._update(2 * node, start, mid, idx, val)
-      else:
-        self._update(2 * node + 1, mid + 1, end, idx, val)
-      self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+ def _update(self, node: int, start: int, end: int, idx: int, val: int) -> None:
+  if start == end:
+   self.tree[node] = val
+  else:
+   mid = (start + end) // 2
+   if idx <= mid:
+    self._update(2 * node, start, mid, idx, val)
+   else:
+    self._update(2 * node + 1, mid + 1, end, idx, val)
+   self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-  def query(self, l: int, r: int) -> int:
-    return self._query(1, 0, self.n - 1, l, r)
+ def query(self, l: int, r: int) -> int:
+  return self._query(1, 0, self.n - 1, l, r)
 
-  def _query(self, node: int, start: int, end: int, l: int, r: int) -> int:
-    if r < start or end < l:
-      return 0
-    if l <= start and end <= r:
-      return self.tree[node]
-    mid = (start + end) // 2
-    return (self._query(2 * node, start, mid, l, r) +
-        self._query(2 * node + 1, mid + 1, end, l, r))
+ def _query(self, node: int, start: int, end: int, l: int, r: int) -> int:
+  if r < start or end < l:
+   return 0
+  if l <= start and end <= r:
+   return self.tree[node]
+  mid = (start + end) // 2
+  return (self._query(2 * node, start, mid, l, r) +
+    self._query(2 * node + 1, mid + 1, end, l, r))
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n, q = int(input_data[idx]), int(input_data[idx + 1])
-  idx += 2
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n, q = int(input_data[idx]), int(input_data[idx + 1])
+ idx += 2
 
-  arr = [int(input_data[idx + i]) for i in range(n)]
-  idx += n
+ arr = [int(input_data[idx + i]) for i in range(n)]
+ idx += n
 
-  st = SegmentTree(arr)
-  results = []
+ st = SegmentTree(arr)
+ results = []
 
-  for _ in range(q):
-    query_type = int(input_data[idx])
-    if query_type == 1:  # Update (1-indexed input)
-      k, u = int(input_data[idx + 1]) - 1, int(input_data[idx + 2])
-      st.update(k, u)
-      idx += 3
-    else:  # Sum query (1-indexed input)
-      a, b = int(input_data[idx + 1]) - 1, int(input_data[idx + 2]) - 1
-      results.append(st.query(a, b))
-      idx += 3
+ for _ in range(q):
+  query_type = int(input_data[idx])
+  if query_type == 1:  # Update (1-indexed input)
+   k, u = int(input_data[idx + 1]) - 1, int(input_data[idx + 2])
+   st.update(k, u)
+   idx += 3
+  else:  # Sum query (1-indexed input)
+   a, b = int(input_data[idx + 1]) - 1, int(input_data[idx + 2]) - 1
+   results.append(st.query(a, b))
+   idx += 3
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ---
@@ -375,13 +375,13 @@ st.update(k - 1, u)  # Convert to 0-indexed
 ```python
 # WRONG: Using value instead of delta
 def update(k, new_value):
-  bit[k] = new_value  # BIT stores partial sums, not direct values!
+ bit[k] = new_value  # BIT stores partial sums, not direct values!
 
 # CORRECT: Update with delta
 def update(k, new_value):
-  delta = new_value - arr[k]
-  arr[k] = new_value
-  # Add delta to BIT nodes
+ delta = new_value - arr[k]
+ arr[k] = new_value
+ # Add delta to BIT nodes
 ```
 
 ### Mistake 4: Segment Tree Size

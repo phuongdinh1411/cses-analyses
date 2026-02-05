@@ -39,73 +39,73 @@ Answer: max(dp[h-1][j]) for all j.
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    h, w = map(int, input().split())
-    stones = []
-    for _ in range(h):
-      row = list(map(int, input().split()))
-      stones.append(row)
+ for _ in range(t):
+  h, w = map(int, input().split())
+  stones = []
+  for _ in range(h):
+   row = list(map(int, input().split()))
+   stones.append(row)
 
-    # dp[i][j] = max stones to reach (i, j)
-    dp = [[0] * w for _ in range(h)]
+  # dp[i][j] = max stones to reach (i, j)
+  dp = [[0] * w for _ in range(h)]
 
-    # Base case: first row
-    for j in range(w):
-      dp[0][j] = stones[0][j]
+  # Base case: first row
+  for j in range(w):
+   dp[0][j] = stones[0][j]
 
-    # Fill DP
-    for i in range(1, h):
-      for j in range(w):
-        # Can come from (i-1, j-1), (i-1, j), (i-1, j+1)
-        best = dp[i-1][j]  # directly above
+  # Fill DP
+  for i in range(1, h):
+   for j in range(w):
+    # Can come from (i-1, j-1), (i-1, j), (i-1, j+1)
+    best = dp[i-1][j]  # directly above
 
-        if j > 0:
-          best = max(best, dp[i-1][j-1])  # above-left
-        if j < w - 1:
-          best = max(best, dp[i-1][j+1])  # above-right
+    if j > 0:
+     best = max(best, dp[i-1][j-1])  # above-left
+    if j < w - 1:
+     best = max(best, dp[i-1][j+1])  # above-right
 
-        dp[i][j] = stones[i][j] + best
+    dp[i][j] = stones[i][j] + best
 
-    # Answer is max in last row
-    print(max(dp[h-1]))
+  # Answer is max in last row
+  print(max(dp[h-1]))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    h, w = map(int, input().split())
-    stones = []
-    for _ in range(h):
-      row = list(map(int, input().split()))
-      stones.append(row)
+ for _ in range(t):
+  h, w = map(int, input().split())
+  stones = []
+  for _ in range(h):
+   row = list(map(int, input().split()))
+   stones.append(row)
 
-    # Only need previous row
-    prev = stones[0][:]
+  # Only need previous row
+  prev = stones[0][:]
 
-    for i in range(1, h):
-      curr = [0] * w
-      for j in range(w):
-        best = prev[j]
-        if j > 0:
-          best = max(best, prev[j-1])
-        if j < w - 1:
-          best = max(best, prev[j+1])
-        curr[j] = stones[i][j] + best
-      prev = curr
+  for i in range(1, h):
+   curr = [0] * w
+   for j in range(w):
+    best = prev[j]
+    if j > 0:
+     best = max(best, prev[j-1])
+    if j < w - 1:
+     best = max(best, prev[j+1])
+    curr[j] = stones[i][j] + best
+   prev = curr
 
-    print(max(prev))
+  print(max(prev))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

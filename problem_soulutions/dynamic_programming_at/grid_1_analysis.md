@@ -100,17 +100,17 @@ Recursively explore all paths by trying both directions (right and down) at each
 
 ```python
 def solve_recursive(h, w, grid):
-  """Brute force recursive solution. TLE for large inputs."""
-  MOD = 10**9 + 7
+ """Brute force recursive solution. TLE for large inputs."""
+ MOD = 10**9 + 7
 
-  def count_paths(i, j):
-    if i >= h or j >= w or grid[i][j] == '#':
-      return 0
-    if i == h - 1 and j == w - 1:
-      return 1
-    return (count_paths(i + 1, j) + count_paths(i, j + 1)) % MOD
+ def count_paths(i, j):
+  if i >= h or j >= w or grid[i][j] == '#':
+   return 0
+  if i == h - 1 and j == w - 1:
+   return 1
+  return (count_paths(i + 1, j) + count_paths(i, j + 1)) % MOD
 
-  return count_paths(0, 0)
+ return count_paths(0, 0)
 ```
 
 ### Complexity
@@ -206,33 +206,33 @@ The wall at (1,1) blocks the path going down first then right.
 **Python Solution:**
 ```python
 def solve(h, w, grid):
-  """
-  Count paths in grid with obstacles.
+ """
+ Count paths in grid with obstacles.
 
-  Time: O(H * W)
-  Space: O(H * W)
-  """
-  MOD = 10**9 + 7
+ Time: O(H * W)
+ Space: O(H * W)
+ """
+ MOD = 10**9 + 7
 
-  # Handle edge case: start or end is a wall
-  if grid[0][0] == '#' or grid[h-1][w-1] == '#':
-    return 0
+ # Handle edge case: start or end is a wall
+ if grid[0][0] == '#' or grid[h-1][w-1] == '#':
+  return 0
 
-  dp = [[0] * w for _ in range(h)]
-  dp[0][0] = 1
+ dp = [[0] * w for _ in range(h)]
+ dp[0][0] = 1
 
-  for i in range(h):
-    for j in range(w):
-      if grid[i][j] == '#':
-        dp[i][j] = 0
-      elif i == 0 and j == 0:
-        continue  # Already initialized
-      else:
-        from_top = dp[i-1][j] if i > 0 else 0
-        from_left = dp[i][j-1] if j > 0 else 0
-        dp[i][j] = (from_top + from_left) % MOD
+ for i in range(h):
+  for j in range(w):
+   if grid[i][j] == '#':
+    dp[i][j] = 0
+   elif i == 0 and j == 0:
+    continue  # Already initialized
+   else:
+    from_top = dp[i-1][j] if i > 0 else 0
+    from_left = dp[i][j-1] if j > 0 else 0
+    dp[i][j] = (from_top + from_left) % MOD
 
-  return dp[h-1][w-1]
+ return dp[h-1][w-1]
 
 # Input handling
 h, w = map(int, input().split())
@@ -258,20 +258,20 @@ Since we only need the previous row to compute the current row, we can reduce sp
 **Python:**
 ```python
 def solve_optimized(h, w, grid):
-  MOD = 10**9 + 7
-  if grid[0][0] == '#' or grid[h-1][w-1] == '#':
-    return 0
-  dp = [0] * w
-  for i in range(h):
-    for j in range(w):
-      if grid[i][j] == '#':
-        dp[j] = 0
-      elif i == 0 and j == 0:
-        dp[j] = 1
-      else:
-        from_left = dp[j-1] if j > 0 else 0
-        dp[j] = (dp[j] + from_left) % MOD  # dp[j] has value from row above
-  return dp[w-1]
+ MOD = 10**9 + 7
+ if grid[0][0] == '#' or grid[h-1][w-1] == '#':
+  return 0
+ dp = [0] * w
+ for i in range(h):
+  for j in range(w):
+   if grid[i][j] == '#':
+    dp[j] = 0
+   elif i == 0 and j == 0:
+    dp[j] = 1
+   else:
+    from_left = dp[j-1] if j > 0 else 0
+    dp[j] = (dp[j] + from_left) % MOD  # dp[j] has value from row above
+ return dp[w-1]
 ```
 
 **Complexity:** Time O(H*W), Space O(W)
@@ -288,7 +288,7 @@ dp[0][0] = 1
 
 # CORRECT
 if grid[0][0] == '#' or grid[h-1][w-1] == '#':
-  return 0
+ return 0
 dp[0][0] = 1
 ```
 
@@ -297,11 +297,11 @@ dp[0][0] = 1
 ```python
 # WRONG - wall cell retains value from previous row
 if grid[i][j] == '#':
-  continue  # dp[j] keeps old value!
+ continue  # dp[j] keeps old value!
 
 # CORRECT - explicitly set to 0
 if grid[i][j] == '#':
-  dp[j] = 0
+ dp[j] = 0
 ```
 
 ---

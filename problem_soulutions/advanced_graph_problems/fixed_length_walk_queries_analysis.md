@@ -114,22 +114,22 @@ Try all possible walks of length k using depth-first search.
 
 ```python
 def solve_brute_force(n, adj, a, b, k):
-  """
-  Brute force using DFS.
+ """
+ Brute force using DFS.
 
-  Time: O(n^k) - exponential
-  Space: O(k) - recursion depth
-  """
-  def dfs(node, steps):
-    if steps == k:
-      return node == b
-    for next_node in range(n):
-      if adj[node][next_node] == 1:
-        if dfs(next_node, steps + 1):
-          return True
-    return False
+ Time: O(n^k) - exponential
+ Space: O(k) - recursion depth
+ """
+ def dfs(node, steps):
+  if steps == k:
+   return node == b
+  for next_node in range(n):
+   if adj[node][next_node] == 1:
+    if dfs(next_node, steps + 1):
+     return True
+  return False
 
-  return 1 if dfs(a, 0) else 0
+ return 1 if dfs(a, 0) else 0
 ```
 
 ### Complexity
@@ -214,82 +214,82 @@ Graph:           Matrix Powers:
 
 ```python
 def solve_optimal(n, adj, queries):
-  """
-  Optimal solution using matrix exponentiation.
+ """
+ Optimal solution using matrix exponentiation.
 
-  Time: O(n^3 * log(max_k) + q)
-  Space: O(n^2)
-  """
-  def matrix_mult(A, B):
-    """Multiply two n x n matrices."""
-    C = [[0] * n for _ in range(n)]
-    for i in range(n):
-      for j in range(n):
-        for k in range(n):
-          C[i][j] += A[i][k] * B[k][j]
-          # For existence check, cap at 1 to avoid overflow
-          if C[i][j] > 0:
-            C[i][j] = 1
-    return C
+ Time: O(n^3 * log(max_k) + q)
+ Space: O(n^2)
+ """
+ def matrix_mult(A, B):
+  """Multiply two n x n matrices."""
+  C = [[0] * n for _ in range(n)]
+  for i in range(n):
+   for j in range(n):
+    for k in range(n):
+     C[i][j] += A[i][k] * B[k][j]
+     # For existence check, cap at 1 to avoid overflow
+     if C[i][j] > 0:
+      C[i][j] = 1
+  return C
 
-  def matrix_power(M, k):
-    """Compute M^k using binary exponentiation."""
-    # Identity matrix
-    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+ def matrix_power(M, k):
+  """Compute M^k using binary exponentiation."""
+  # Identity matrix
+  result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
 
-    base = [row[:] for row in M]  # Copy matrix
+  base = [row[:] for row in M]  # Copy matrix
 
-    while k > 0:
-      if k % 2 == 1:
-        result = matrix_mult(result, base)
-      base = matrix_mult(base, base)
-      k //= 2
+  while k > 0:
+   if k % 2 == 1:
+    result = matrix_mult(result, base)
+   base = matrix_mult(base, base)
+   k //= 2
 
-    return result
+  return result
 
-  # Group queries by k value
-  from collections import defaultdict
-  k_to_queries = defaultdict(list)
-  for idx, (a, b, k) in enumerate(queries):
-    k_to_queries[k].append((idx, a - 1, b - 1))  # Convert to 0-indexed
+ # Group queries by k value
+ from collections import defaultdict
+ k_to_queries = defaultdict(list)
+ for idx, (a, b, k) in enumerate(queries):
+  k_to_queries[k].append((idx, a - 1, b - 1))  # Convert to 0-indexed
 
-  # Answer queries
-  answers = [0] * len(queries)
-  for k, query_list in k_to_queries.items():
-    Ak = matrix_power(adj, k)
-    for idx, a, b in query_list:
-      answers[idx] = 1 if Ak[a][b] > 0 else 0
+ # Answer queries
+ answers = [0] * len(queries)
+ for k, query_list in k_to_queries.items():
+  Ak = matrix_power(adj, k)
+  for idx, a, b in query_list:
+   answers[idx] = 1 if Ak[a][b] > 0 else 0
 
-  return answers
+ return answers
 
 
 # Main execution
 def main():
-  import sys
-  input_data = sys.stdin.read().split()
-  idx = 0
+ import sys
+ input_data = sys.stdin.read().split()
+ idx = 0
 
-  n, q = int(input_data[idx]), int(input_data[idx + 1])
-  idx += 2
+ n, q = int(input_data[idx]), int(input_data[idx + 1])
+ idx += 2
 
-  adj = []
-  for i in range(n):
-    row = [int(input_data[idx + j]) for j in range(n)]
-    adj.append(row)
-    idx += n
+ adj = []
+ for i in range(n):
+  row = [int(input_data[idx + j]) for j in range(n)]
+  adj.append(row)
+  idx += n
 
-  queries = []
-  for _ in range(q):
-    a, b, k = int(input_data[idx]), int(input_data[idx + 1]), int(input_data[idx + 2])
-    queries.append((a, b, k))
-    idx += 3
+ queries = []
+ for _ in range(q):
+  a, b, k = int(input_data[idx]), int(input_data[idx + 1]), int(input_data[idx + 2])
+  queries.append((a, b, k))
+  idx += 3
 
-  results = solve_optimal(n, adj, queries)
-  print('\n'.join(map(str, results)))
+ results = solve_optimal(n, adj, queries)
+ print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -311,7 +311,7 @@ C[i][j] += A[i][k] * B[k][j]
 
 # CORRECT - for existence check only
 if A[i][k] and B[k][j]:
-  C[i][j] = 1
+ C[i][j] = 1
 ```
 
 **Problem:** With large k, path counts can overflow even 64-bit integers.
@@ -322,15 +322,15 @@ if A[i][k] and B[k][j]:
 ```python
 # WRONG
 def matrix_power(M, k):
-  if k == 1:
-    return M
-  # What if k == 0?
+ if k == 1:
+  return M
+ # What if k == 0?
 
 # CORRECT
 def matrix_power(M, k):
-  result = identity_matrix()  # Start with I
-  while k > 0:
-    # ... binary exponentiation
+ result = identity_matrix()  # Start with I
+ while k > 0:
+  # ... binary exponentiation
 ```
 
 **Problem:** k=0 should return identity matrix (walk of length 0 from i to i).

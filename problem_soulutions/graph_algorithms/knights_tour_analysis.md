@@ -136,86 +136,86 @@ Example: Knight at position K, considering moves A, B, C
 
 ```python
 def solve_knights_tour(start_row: int, start_col: int) -> list:
-  """
-  Find knight's tour on 8x8 board starting from (start_row, start_col).
-  Uses Warnsdorff's heuristic for efficient solving.
-  Returns list of (row, col) tuples representing the tour.
-  """
-  N = 8
+ """
+ Find knight's tour on 8x8 board starting from (start_row, start_col).
+ Uses Warnsdorff's heuristic for efficient solving.
+ Returns list of (row, col) tuples representing the tour.
+ """
+ N = 8
 
-  # The 8 possible knight moves
-  MOVES = [
-    (-2, -1), (-2, +1), (-1, -2), (-1, +2),
-    (+1, -2), (+1, +2), (+2, -1), (+2, +1)
-  ]
+ # The 8 possible knight moves
+ MOVES = [
+  (-2, -1), (-2, +1), (-1, -2), (-1, +2),
+  (+1, -2), (+1, +2), (+2, -1), (+2, +1)
+ ]
 
-  board = [[-1] * N for _ in range(N)]
+ board = [[-1] * N for _ in range(N)]
 
-  def is_valid(r: int, c: int) -> bool:
-    """Check if position is on board and unvisited."""
-    return 0 <= r < N and 0 <= c < N and board[r][c] == -1
+ def is_valid(r: int, c: int) -> bool:
+  """Check if position is on board and unvisited."""
+  return 0 <= r < N and 0 <= c < N and board[r][c] == -1
 
-  def count_degree(r: int, c: int) -> int:
-    """Count available moves from position (Warnsdorff's degree)."""
-    count = 0
-    for dr, dc in MOVES:
-      if is_valid(r + dr, c + dc):
-        count += 1
-    return count
+ def count_degree(r: int, c: int) -> int:
+  """Count available moves from position (Warnsdorff's degree)."""
+  count = 0
+  for dr, dc in MOVES:
+   if is_valid(r + dr, c + dc):
+    count += 1
+  return count
 
-  def get_sorted_moves(r: int, c: int) -> list:
-    """Get valid moves sorted by degree (Warnsdorff's heuristic)."""
-    candidates = []
-    for dr, dc in MOVES:
-      nr, nc = r + dr, c + dc
-      if is_valid(nr, nc):
-        degree = count_degree(nr, nc)
-        candidates.append((degree, nr, nc))
-    # Sort by degree (fewest onward moves first)
-    candidates.sort()
-    return [(nr, nc) for _, nr, nc in candidates]
+ def get_sorted_moves(r: int, c: int) -> list:
+  """Get valid moves sorted by degree (Warnsdorff's heuristic)."""
+  candidates = []
+  for dr, dc in MOVES:
+   nr, nc = r + dr, c + dc
+   if is_valid(nr, nc):
+    degree = count_degree(nr, nc)
+    candidates.append((degree, nr, nc))
+  # Sort by degree (fewest onward moves first)
+  candidates.sort()
+  return [(nr, nc) for _, nr, nc in candidates]
 
-  def backtrack(r: int, c: int, move_num: int) -> bool:
-    """Recursive backtracking with Warnsdorff ordering."""
-    board[r][c] = move_num
+ def backtrack(r: int, c: int, move_num: int) -> bool:
+  """Recursive backtracking with Warnsdorff ordering."""
+  board[r][c] = move_num
 
-    # Base case: all squares visited
-    if move_num == N * N - 1:
-      return True
+  # Base case: all squares visited
+  if move_num == N * N - 1:
+   return True
 
-    # Try moves in Warnsdorff order (lowest degree first)
-    for nr, nc in get_sorted_moves(r, c):
-      if backtrack(nr, nc, move_num + 1):
-        return True
+  # Try moves in Warnsdorff order (lowest degree first)
+  for nr, nc in get_sorted_moves(r, c):
+   if backtrack(nr, nc, move_num + 1):
+    return True
 
-    # Backtrack
-    board[r][c] = -1
-    return False
+  # Backtrack
+  board[r][c] = -1
+  return False
 
-  # Solve and extract path
-  if backtrack(start_row, start_col, 0):
-    path = [None] * (N * N)
-    for r in range(N):
-      for c in range(N):
-        path[board[r][c]] = (r, c)
-    return path
-  return None
+ # Solve and extract path
+ if backtrack(start_row, start_col, 0):
+  path = [None] * (N * N)
+  for r in range(N):
+   for c in range(N):
+    path[board[r][c]] = (r, c)
+  return path
+ return None
 
 
 def print_tour(path: list) -> None:
-  """Print the tour as required by CSES."""
-  if path is None:
-    print("NO SOLUTION")
-    return
-  for r, c in path:
-    print(r + 1, c + 1)  # Convert to 1-indexed
+ """Print the tour as required by CSES."""
+ if path is None:
+  print("NO SOLUTION")
+  return
+ for r, c in path:
+  print(r + 1, c + 1)  # Convert to 1-indexed
 
 
 # Example usage
 if __name__ == "__main__":
-  y, x = map(int, input().split())
-  tour = solve_knights_tour(y - 1, x - 1)  # Convert to 0-indexed
-  print_tour(tour)
+ y, x = map(int, input().split())
+ tour = solve_knights_tour(y - 1, x - 1)  # Convert to 0-indexed
+ print_tour(tour)
 ```
 
 ### Complexity Analysis

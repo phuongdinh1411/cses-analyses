@@ -96,14 +96,14 @@ Generate all permutations and use a set to count unique ones. Only works for sma
 from itertools import permutations
 
 def count_reorders_brute(s):
-  """
-  Brute force: generate all permutations and count unique ones.
+ """
+ Brute force: generate all permutations and count unique ones.
 
-  Time: O(n! * n) - generates n! permutations, each of length n
-  Space: O(n! * n) - stores all unique permutations
-  """
-  unique = set(permutations(s))
-  return len(unique)
+ Time: O(n! * n) - generates n! permutations, each of length n
+ Space: O(n! * n) - stores all unique permutations
+ """
+ unique = set(permutations(s))
+ return len(unique)
 
 # Example
 print(count_reorders_brute("aabac"))  # Output: 20
@@ -188,32 +188,32 @@ Why divide by 3!?
 
 ```python
 def count_reorders(s):
-  """
-  Count distinct permutations using multinomial coefficient.
+ """
+ Count distinct permutations using multinomial coefficient.
 
-  Time: O(n + 26) = O(n)
-  Space: O(n) for factorial array
-  """
-  MOD = 10**9 + 7
-  n = len(s)
+ Time: O(n + 26) = O(n)
+ Space: O(n) for factorial array
+ """
+ MOD = 10**9 + 7
+ n = len(s)
 
-  # Precompute factorials
-  fact = [1] * (n + 1)
-  for i in range(1, n + 1):
-    fact[i] = fact[i-1] * i % MOD
+ # Precompute factorials
+ fact = [1] * (n + 1)
+ for i in range(1, n + 1):
+  fact[i] = fact[i-1] * i % MOD
 
-  # Count character frequencies
-  freq = {}
-  for c in s:
-    freq[c] = freq.get(c, 0) + 1
+ # Count character frequencies
+ freq = {}
+ for c in s:
+  freq[c] = freq.get(c, 0) + 1
 
-  # Compute n! / (c1! * c2! * ... * ck!)
-  result = fact[n]
-  for count in freq.values():
-    # Divide by count! using modular inverse
-    result = result * pow(fact[count], MOD - 2, MOD) % MOD
+ # Compute n! / (c1! * c2! * ... * ck!)
+ result = fact[n]
+ for count in freq.values():
+  # Divide by count! using modular inverse
+  result = result * pow(fact[count], MOD - 2, MOD) % MOD
 
-  return result
+ return result
 
 # Example usage
 print(count_reorders("aabac"))  # Output: 20
@@ -238,7 +238,7 @@ print(count_reorders("abcd"))   # Output: 24
 # WRONG - Integer division doesn't work with modular arithmetic
 result = fact[n]
 for count in freq.values():
-  result = result // fact[count]  # WRONG!
+ result = result // fact[count]  # WRONG!
 result %= MOD
 ```
 

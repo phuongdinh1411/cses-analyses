@@ -101,21 +101,21 @@ Check every possible subarray and count distinct elements using a set.
 
 ```python
 def count_subarrays_brute(arr, k):
-  """
-  Brute force: check all subarrays.
-  Time: O(n^2), Space: O(n)
-  """
-  n = len(arr)
-  count = 0
-  for i in range(n):
-    distinct = set()
-    for j in range(i, n):
-      distinct.add(arr[j])
-      if len(distinct) == k:
-        count += 1
-      elif len(distinct) > k:
-        break  # Optimization: no point continuing
-  return count
+ """
+ Brute force: check all subarrays.
+ Time: O(n^2), Space: O(n)
+ """
+ n = len(arr)
+ count = 0
+ for i in range(n):
+  distinct = set()
+  for j in range(i, n):
+   distinct.add(arr[j])
+   if len(distinct) == k:
+    count += 1
+   elif len(distinct) > k:
+    break  # Optimization: no point continuing
+ return count
 ```
 
 ### Complexity
@@ -211,58 +211,58 @@ Exactly(2) = 12 - 5 = 7
 
 ```python
 def subarrays_with_k_distinct(arr, k):
-  """
-  Count subarrays with exactly k distinct values.
-  Time: O(n), Space: O(k)
-  """
-  def at_most(k):
-    if k < 0:
-      return 0
-    count = {}
-    left = 0
-    result = 0
+ """
+ Count subarrays with exactly k distinct values.
+ Time: O(n), Space: O(k)
+ """
+ def at_most(k):
+  if k < 0:
+   return 0
+  count = {}
+  left = 0
+  result = 0
 
-    for right in range(len(arr)):
-      # Add right element
-      count[arr[right]] = count.get(arr[right], 0) + 1
+  for right in range(len(arr)):
+   # Add right element
+   count[arr[right]] = count.get(arr[right], 0) + 1
 
-      # Shrink window if too many distinct
-      while len(count) > k:
-        count[arr[left]] -= 1
-        if count[arr[left]] == 0:
-          del count[arr[left]]
-        left += 1
+   # Shrink window if too many distinct
+   while len(count) > k:
+    count[arr[left]] -= 1
+    if count[arr[left]] == 0:
+     del count[arr[left]]
+    left += 1
 
-      # Count all valid subarrays ending at right
-      result += right - left + 1
+   # Count all valid subarrays ending at right
+   result += right - left + 1
 
-    return result
+  return result
 
-  return at_most(k) - at_most(k - 1)
+ return at_most(k) - at_most(k - 1)
 
 
 # Alternative: Find longest subarray with exactly k distinct
 def longest_with_k_distinct(arr, k):
-  """
-  Find length of longest subarray with at most k distinct.
-  Time: O(n), Space: O(k)
-  """
-  count = {}
-  left = 0
-  max_len = 0
+ """
+ Find length of longest subarray with at most k distinct.
+ Time: O(n), Space: O(k)
+ """
+ count = {}
+ left = 0
+ max_len = 0
 
-  for right in range(len(arr)):
-    count[arr[right]] = count.get(arr[right], 0) + 1
+ for right in range(len(arr)):
+  count[arr[right]] = count.get(arr[right], 0) + 1
 
-    while len(count) > k:
-      count[arr[left]] -= 1
-      if count[arr[left]] == 0:
-        del count[arr[left]]
-      left += 1
+  while len(count) > k:
+   count[arr[left]] -= 1
+   if count[arr[left]] == 0:
+    del count[arr[left]]
+   left += 1
 
-    max_len = max(max_len, right - left + 1)
+  max_len = max(max_len, right - left + 1)
 
-  return max_len
+ return max_len
 ```
 
 ### Complexity
@@ -281,13 +281,13 @@ def longest_with_k_distinct(arr, k):
 ```python
 # WRONG - crashes when k = 0
 def at_most(k):
-  # ... code assumes k >= 0
+ # ... code assumes k >= 0
 
 # CORRECT
 def at_most(k):
-  if k < 0:
-    return 0
-  # ... rest of code
+ if k < 0:
+  return 0
+ # ... rest of code
 ```
 
 **Problem:** When k=1, we call atMost(0), which should return 0.
@@ -298,7 +298,7 @@ def at_most(k):
 ```python
 # WRONG - only counts when exactly k distinct
 if len(count) == k:
-  result += right - left + 1
+ result += right - left + 1
 
 # CORRECT - counts when at most k distinct
 # No condition needed; the while loop ensures len(count) <= k
@@ -317,7 +317,7 @@ left += 1
 # CORRECT - remove entry when count reaches 0
 count[arr[left]] -= 1
 if count[arr[left]] == 0:
-  del count[arr[left]]
+ del count[arr[left]]
 left += 1
 ```
 

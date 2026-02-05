@@ -103,18 +103,18 @@ Generate all substrings, remove duplicates, sort them, and return the k-th one.
 
 ```python
 def brute_force(s, k):
-  """
-  Time: O(n^2 log n) for generation and sorting
-  Space: O(n^2) to store all substrings
-  """
-  substrings = set()
-  n = len(s)
-  for i in range(n):
-    for j in range(i + 1, n + 1):
-      substrings.add(s[i:j])
+ """
+ Time: O(n^2 log n) for generation and sorting
+ Space: O(n^2) to store all substrings
+ """
+ substrings = set()
+ n = len(s)
+ for i in range(n):
+  for j in range(i + 1, n + 1):
+   substrings.add(s[i:j])
 
-  sorted_subs = sorted(substrings)
-  return sorted_subs[k - 1]
+ sorted_subs = sorted(substrings)
+ return sorted_subs[k - 1]
 ```
 
 ### Complexity
@@ -204,81 +204,81 @@ For k=3: Find suffix 1, extract "aba"
 
 ```python
 def build_suffix_array(s):
-  """Build suffix array using O(n log n) algorithm."""
-  n = len(s)
-  sa = list(range(n))
-  rank = [ord(c) for c in s]
-  tmp = [0] * n
-  k = 1
+ """Build suffix array using O(n log n) algorithm."""
+ n = len(s)
+ sa = list(range(n))
+ rank = [ord(c) for c in s]
+ tmp = [0] * n
+ k = 1
 
-  while k < n:
-    def key(i):
-      return (rank[i], rank[i + k] if i + k < n else -1)
-    sa.sort(key=key)
+ while k < n:
+  def key(i):
+   return (rank[i], rank[i + k] if i + k < n else -1)
+  sa.sort(key=key)
 
-    tmp[sa[0]] = 0
-    for i in range(1, n):
-      tmp[sa[i]] = tmp[sa[i-1]]
-      if key(sa[i]) != key(sa[i-1]):
-        tmp[sa[i]] += 1
-    rank = tmp[:]
-    k *= 1
+  tmp[sa[0]] = 0
+  for i in range(1, n):
+   tmp[sa[i]] = tmp[sa[i-1]]
+   if key(sa[i]) != key(sa[i-1]):
+    tmp[sa[i]] += 1
+  rank = tmp[:]
+  k *= 1
 
-  return sa
+ return sa
 
 def build_lcp(s, sa):
-  """Build LCP array using Kasai's algorithm - O(n)."""
-  n = len(s)
-  rank = [0] * n
-  for i in range(n):
-    rank[sa[i]] = i
+ """Build LCP array using Kasai's algorithm - O(n)."""
+ n = len(s)
+ rank = [0] * n
+ for i in range(n):
+  rank[sa[i]] = i
 
-  lcp = [0] * n
-  h = 0
-  for i in range(n):
-    if rank[i] > 0:
-      j = sa[rank[i] - 1]
-      while i + h < n and j + h < n and s[i + h] == s[j + h]:
-        h += 1
-      lcp[rank[i]] = h
-      if h > 0:
-        h -= 1
-  return lcp
+ lcp = [0] * n
+ h = 0
+ for i in range(n):
+  if rank[i] > 0:
+   j = sa[rank[i] - 1]
+   while i + h < n and j + h < n and s[i + h] == s[j + h]:
+    h += 1
+   lcp[rank[i]] = h
+   if h > 0:
+    h -= 1
+ return lcp
 
 def solve(s, k):
-  """
-  Find k-th lexicographically smallest distinct substring.
+ """
+ Find k-th lexicographically smallest distinct substring.
 
-  Time: O(n log n) for SA + O(n) for LCP + O(log n) for query
-  Space: O(n)
-  """
-  n = len(s)
-  sa = build_suffix_array(s)
-  lcp = build_lcp(s, sa)
+ Time: O(n log n) for SA + O(n) for LCP + O(log n) for query
+ Space: O(n)
+ """
+ n = len(s)
+ sa = build_suffix_array(s)
+ lcp = build_lcp(s, sa)
 
-  # Build cumulative count of new substrings
-  cum = []
-  total = 0
-  for i in range(n):
-    new_count = (n - sa[i]) - lcp[i]
-    total += new_count
-    cum.append(total)
+ # Build cumulative count of new substrings
+ cum = []
+ total = 0
+ for i in range(n):
+  new_count = (n - sa[i]) - lcp[i]
+  total += new_count
+  cum.append(total)
 
-  # Binary search for the suffix containing k-th substring
-  lo, hi = 0, n - 1
-  while lo < hi:
-    mid = (lo + hi) // 2
-    if cum[mid] < k:
-      lo = mid + 1
-    else:
-      hi = mid
+ # Binary search for the suffix containing k-th substring
+ lo, hi = 0, n - 1
+ while lo < hi:
+  mid = (lo + hi) // 2
+  if cum[mid] < k:
+   lo = mid + 1
+  else:
+   hi = mid
 
-  # Calculate substring length
-  prev_cum = cum[lo - 1] if lo > 0 else 0
-  offset = k - prev_cum  # Position within this suffix's new substrings
-  length = lcp[lo] + offset
+ # Calculate substring length
+ prev_cum = cum[lo - 1] if lo > 0 else 0
+ offset = k - prev_cum  # Position within this suffix's new substrings
+ length = lcp[lo] + offset
 
-  return s[sa[lo]:sa[lo] + length]
+ return s[sa[lo]:sa[lo] + length]
 
 # Main
 s = input().strip()

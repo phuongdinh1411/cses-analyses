@@ -124,25 +124,25 @@ Required (0 to m-1):     Fill remaining (> m):
 
 ```python
 def mex_grid_construction(n: int, m: int) -> None:
-  """
-  Construct n x n grid where each row has MEX = m.
-  Time: O(n^2), Space: O(n^2)
-  """
-  if m > n:
-    print("IMPOSSIBLE")
-    return
+ """
+ Construct n x n grid where each row has MEX = m.
+ Time: O(n^2), Space: O(n^2)
+ """
+ if m > n:
+  print("IMPOSSIBLE")
+  return
 
-  filler = m + 1
-  for row in range(n):
-    current_row = list(range(m))  # Values 0 to m-1
-    for _ in range(m, n):
-      current_row.append(filler)
-      filler += 1
-    print(*current_row)
+ filler = m + 1
+ for row in range(n):
+  current_row = list(range(m))  # Values 0 to m-1
+  for _ in range(m, n):
+   current_row.append(filler)
+   filler += 1
+  print(*current_row)
 
 if __name__ == "__main__":
-  n, m = map(int, input().split())
-  mex_grid_construction(n, m)
+ n, m = map(int, input().split())
+ mex_grid_construction(n, m)
 ```
 
 ### Complexity
@@ -161,13 +161,13 @@ if __name__ == "__main__":
 ```python
 # WRONG
 def wrong(n, m):
-  for row in range(n):
-    print(*list(range(m)) + [m+1]*(n-m))  # Crashes if m > n
+ for row in range(n):
+  print(*list(range(m)) + [m+1]*(n-m))  # Crashes if m > n
 
 # CORRECT
 if m > n:
-  print("IMPOSSIBLE")
-  return
+ print("IMPOSSIBLE")
+ return
 ```
 
 ### Mistake 2: Including m in the Row

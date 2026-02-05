@@ -33,95 +33,95 @@ Use KMP failure function:
 
 ```python
 def solve():
-  s = input().strip()
-  n = len(s)
+ s = input().strip()
+ n = len(s)
 
-  if n < 3:
-    print("Just a legend")
-    return
+ if n < 3:
+  print("Just a legend")
+  return
 
-  # Build KMP failure function
-  fail = [0] * n
-  for i in range(1, n):
-    j = fail[i - 1]
-    while j > 0 and s[i] != s[j]:
-      j = fail[j - 1]
-    if s[i] == s[j]:
-      j += 1
-    fail[i] = j
+ # Build KMP failure function
+ fail = [0] * n
+ for i in range(1, n):
+  j = fail[i - 1]
+  while j > 0 and s[i] != s[j]:
+   j = fail[j - 1]
+  if s[i] == s[j]:
+   j += 1
+  fail[i] = j
 
-  # Find all valid prefix-suffix lengths
-  prefix_suffix_lens = set()
-  length = fail[n - 1]
-  while length > 0:
-    prefix_suffix_lens.add(length)
-    length = fail[length - 1]
+ # Find all valid prefix-suffix lengths
+ prefix_suffix_lens = set()
+ length = fail[n - 1]
+ while length > 0:
+  prefix_suffix_lens.add(length)
+  length = fail[length - 1]
 
-  # Find lengths that appear in the middle (positions 1 to n-2)
-  middle_lens = set()
-  for i in range(n - 2):  # Exclude last position
-    if fail[i] > 0:
-      middle_lens.add(fail[i])
+ # Find lengths that appear in the middle (positions 1 to n-2)
+ middle_lens = set()
+ for i in range(n - 2):  # Exclude last position
+  if fail[i] > 0:
+   middle_lens.add(fail[i])
 
-  # Find longest length that is both prefix-suffix AND appears in middle
-  valid_lens = prefix_suffix_lens & middle_lens
+ # Find longest length that is both prefix-suffix AND appears in middle
+ valid_lens = prefix_suffix_lens & middle_lens
 
-  if not valid_lens:
-    print("Just a legend")
-  else:
-    max_len = max(valid_lens)
-    print(s[:max_len])
+ if not valid_lens:
+  print("Just a legend")
+ else:
+  max_len = max(valid_lens)
+  print(s[:max_len])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-  s = input().strip()
-  n = len(s)
+ s = input().strip()
+ n = len(s)
 
-  # KMP failure function
-  pi = [0] * n
-  for i in range(1, n):
-    j = pi[i - 1]
-    while j > 0 and s[i] != s[j]:
-      j = pi[j - 1]
-    if s[i] == s[j]:
-      j += 1
-    pi[i] = j
+ # KMP failure function
+ pi = [0] * n
+ for i in range(1, n):
+  j = pi[i - 1]
+  while j > 0 and s[i] != s[j]:
+   j = pi[j - 1]
+  if s[i] == s[j]:
+   j += 1
+  pi[i] = j
 
-  # Count occurrences of each prefix (by its length)
-  cnt = [0] * (n + 1)
-  for i in range(n):
-    cnt[pi[i]] += 1
+ # Count occurrences of each prefix (by its length)
+ cnt = [0] * (n + 1)
+ for i in range(n):
+  cnt[pi[i]] += 1
 
-  # Accumulate: prefix of length k includes prefix of length pi[k-1]
-  for i in range(n - 1, 0, -1):
-    cnt[pi[i - 1]] += cnt[i]
+ # Accumulate: prefix of length k includes prefix of length pi[k-1]
+ for i in range(n - 1, 0, -1):
+  cnt[pi[i - 1]] += cnt[i]
 
-  # Find valid prefix-suffix that appears >= 3 times
-  # (start, end, middle)
-  length = pi[n - 1]
-  while length > 0:
-    # cnt[length] >= 2 means it appears at least twice besides being suffix
-    # But we need it to appear in the middle
-    # Check if this prefix appears at position other than 0 and n-length
-    if cnt[length] >= 3:
-      print(s[:length])
-      return
-    # Or if it appears as a prefix of the suffix prefix
-    if cnt[length] >= 2 and pi[length - 1] > 0:
-      print(s[:pi[length - 1]])
-      return
-    length = pi[length - 1]
+ # Find valid prefix-suffix that appears >= 3 times
+ # (start, end, middle)
+ length = pi[n - 1]
+ while length > 0:
+  # cnt[length] >= 2 means it appears at least twice besides being suffix
+  # But we need it to appear in the middle
+  # Check if this prefix appears at position other than 0 and n-length
+  if cnt[length] >= 3:
+   print(s[:length])
+   return
+  # Or if it appears as a prefix of the suffix prefix
+  if cnt[length] >= 2 and pi[length - 1] > 0:
+   print(s[:pi[length - 1]])
+   return
+  length = pi[length - 1]
 
-  print("Just a legend")
+ print("Just a legend")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

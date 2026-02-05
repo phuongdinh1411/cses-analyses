@@ -156,50 +156,50 @@ When (2,6) is dequeued: FOUND! Backtrack to get path.
 from collections import deque
 
 def solve():
-  n, m = map(int, input().split())
-  grid = [input().strip() for _ in range(n)]
+ n, m = map(int, input().split())
+ grid = [input().strip() for _ in range(n)]
 
-  # Find start and end
-  start = end = None
-  for i in range(n):
-    for j in range(m):
-      if grid[i][j] == 'A':
-        start = (i, j)
-      elif grid[i][j] == 'B':
-        end = (i, j)
+ # Find start and end
+ start = end = None
+ for i in range(n):
+  for j in range(m):
+   if grid[i][j] == 'A':
+    start = (i, j)
+   elif grid[i][j] == 'B':
+    end = (i, j)
 
-  # Direction vectors: (dr, dc, char)
-  directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
+ # Direction vectors: (dr, dc, char)
+ directions = [(-1, 0, 'U'), (1, 0, 'D'), (0, -1, 'L'), (0, 1, 'R')]
 
-  # BFS
-  queue = deque([start])
-  parent = {start: None}  # Maps cell -> (parent_cell, direction)
+ # BFS
+ queue = deque([start])
+ parent = {start: None}  # Maps cell -> (parent_cell, direction)
 
-  while queue:
-    r, c = queue.popleft()
+ while queue:
+  r, c = queue.popleft()
 
-    if (r, c) == end:
-      # Reconstruct path
-      path = []
-      curr = end
-      while parent[curr] is not None:
-        prev, direction = parent[curr]
-        path.append(direction)
-        curr = prev
-      path.reverse()
+  if (r, c) == end:
+   # Reconstruct path
+   path = []
+   curr = end
+   while parent[curr] is not None:
+    prev, direction = parent[curr]
+    path.append(direction)
+    curr = prev
+   path.reverse()
 
-      print("YES")
-      print(len(path))
-      print(''.join(path))
-      return
+   print("YES")
+   print(len(path))
+   print(''.join(path))
+   return
 
-    for dr, dc, direction in directions:
-      nr, nc = r + dr, c + dc
-      if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#' and (nr, nc) not in parent:
-        parent[(nr, nc)] = ((r, c), direction)
-        queue.append((nr, nc))
+  for dr, dc, direction in directions:
+   nr, nc = r + dr, c + dc
+   if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != '#' and (nr, nc) not in parent:
+    parent[(nr, nc)] = ((r, c), direction)
+    queue.append((nr, nc))
 
-  print("NO")
+ print("NO")
 
 solve()
 ```

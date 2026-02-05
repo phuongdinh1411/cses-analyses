@@ -104,24 +104,24 @@ After each move, linearly scan all previous positions to check for a match.
 
 ```python
 def robot_path_brute_force(commands: str) -> int:
-  """
-  Brute force: O(n^2) time checking all previous positions.
-  """
-  x, y = 0, 0
-  visited = [(0, 0)]
+ """
+ Brute force: O(n^2) time checking all previous positions.
+ """
+ x, y = 0, 0
+ visited = [(0, 0)]
 
-  directions = {'U': (0, 1), 'D': (0, -1), 'L': (-1, 0), 'R': (1, 0)}
+ directions = {'U': (0, 1), 'D': (0, -1), 'L': (-1, 0), 'R': (1, 0)}
 
-  for i, cmd in enumerate(commands):
-    dx, dy = directions[cmd]
-    x, y = x + dx, y + dy
+ for i, cmd in enumerate(commands):
+  dx, dy = directions[cmd]
+  x, y = x + dx, y + dy
 
-    # Linear search for cycle
-    if (x, y) in visited:  # O(n) search in list
-      return i + 1
-    visited.append((x, y))
+  # Linear search for cycle
+  if (x, y) in visited:  # O(n) search in list
+   return i + 1
+  visited.append((x, y))
 
-  return len(commands)  # No cycle found
+ return len(commands)  # No cycle found
 ```
 
 ### Complexity
@@ -203,26 +203,26 @@ Path: (0,0) -> (0,1) -> (1,1) -> (1,0) -> (0,0)
 
 ```python
 def robot_path(commands: str) -> int:
-  """
-  Optimal solution using hash set for O(1) lookup.
+ """
+ Optimal solution using hash set for O(1) lookup.
 
-  Time: O(n) - single pass through commands
-  Space: O(n) - hash set stores visited positions
-  """
-  x, y = 0, 0
-  visited = {(0, 0)}
+ Time: O(n) - single pass through commands
+ Space: O(n) - hash set stores visited positions
+ """
+ x, y = 0, 0
+ visited = {(0, 0)}
 
-  directions = {'U': (0, 1), 'D': (0, -1), 'L': (-1, 0), 'R': (1, 0)}
+ directions = {'U': (0, 1), 'D': (0, -1), 'L': (-1, 0), 'R': (1, 0)}
 
-  for i, cmd in enumerate(commands):
-    dx, dy = directions[cmd]
-    x, y = x + dx, y + dy
+ for i, cmd in enumerate(commands):
+  dx, dy = directions[cmd]
+  x, y = x + dx, y + dy
 
-    if (x, y) in visited:
-      return i + 1  # Cycle found at step i+1
-    visited.add((x, y))
+  if (x, y) in visited:
+   return i + 1  # Cycle found at step i+1
+  visited.add((x, y))
 
-  return len(commands)  # No cycle
+ return len(commands)  # No cycle
 ```
 
 ### Complexity
@@ -242,9 +242,9 @@ def robot_path(commands: str) -> int:
 # WRONG - starting position not tracked
 visited = set()  # Empty!
 for cmd in commands:
-  # ...
-  if (x, y) in visited:  # Will miss returning to origin
-    return steps
+ # ...
+ if (x, y) in visited:  # Will miss returning to origin
+  return steps
 ```
 
 **Problem:** The robot starts at (0,0). If it returns to origin, we miss the cycle.
@@ -255,9 +255,9 @@ for cmd in commands:
 ```python
 # WRONG
 for i, cmd in enumerate(commands):
-  # process move
-  if (x, y) in visited:
-    return i  # Should be i + 1
+ # process move
+ if (x, y) in visited:
+  return i  # Should be i + 1
 ```
 
 **Problem:** Step count should be 1-indexed (after 1st move, 2nd move, etc.).

@@ -109,24 +109,24 @@ Process each operation directly on the array without any data structure.
 
 ```python
 def brute_force(arr, queries):
-  """
-  Brute force solution - direct array manipulation.
+ """
+ Brute force solution - direct array manipulation.
 
-  Time: O(q * n) per query
-  Space: O(1) extra
-  """
-  results = []
+ Time: O(q * n) per query
+ Space: O(1) extra
+ """
+ results = []
 
-  for query in queries:
-    if query[0] == 1:  # Range update
-      l, r, v = query[1] - 1, query[2] - 1, query[3]
-      for i in range(l, r + 1):
-        arr[i] = v
-    else:  # Range query
-      l, r = query[1] - 1, query[2] - 1
-      results.append(sum(arr[l:r + 1]))
+ for query in queries:
+  if query[0] == 1:  # Range update
+   l, r, v = query[1] - 1, query[2] - 1, query[3]
+   for i in range(l, r + 1):
+    arr[i] = v
+  else:  # Range query
+   l, r = query[1] - 1, query[2] - 1
+   results.append(sum(arr[l:r + 1]))
 
-  return results
+ return results
 ```
 
 ### Complexity
@@ -216,91 +216,91 @@ Before Update:       After Update (lazy shown):
 
 ```python
 class LazySegmentTree:
-  """
-  Segment Tree with Lazy Propagation for range set updates and range sum queries.
+ """
+ Segment Tree with Lazy Propagation for range set updates and range sum queries.
 
-  Time: O(log n) per operation
-  Space: O(n)
-  """
+ Time: O(log n) per operation
+ Space: O(n)
+ """
 
-  def __init__(self, arr):
-    self.n = len(arr)
-    self.tree = [0] * (4 * self.n)
-    self.lazy = [None] * (4 * self.n)
-    self._build(arr, 1, 0, self.n - 1)
+ def __init__(self, arr):
+  self.n = len(arr)
+  self.tree = [0] * (4 * self.n)
+  self.lazy = [None] * (4 * self.n)
+  self._build(arr, 1, 0, self.n - 1)
 
-  def _build(self, arr, node, start, end):
-    if start == end:
-      self.tree[node] = arr[start]
-    else:
-      mid = (start + end) // 2
-      self._build(arr, 2 * node, start, mid)
-      self._build(arr, 2 * node + 1, mid + 1, end)
-      self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+ def _build(self, arr, node, start, end):
+  if start == end:
+   self.tree[node] = arr[start]
+  else:
+   mid = (start + end) // 2
+   self._build(arr, 2 * node, start, mid)
+   self._build(arr, 2 * node + 1, mid + 1, end)
+   self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-  def _push(self, node, start, end):
-    """Push lazy value to current node and propagate to children."""
-    if self.lazy[node] is not None:
-      self.tree[node] = self.lazy[node] * (end - start + 1)
-      if start != end:
-        self.lazy[2 * node] = self.lazy[node]
-        self.lazy[2 * node + 1] = self.lazy[node]
-      self.lazy[node] = None
+ def _push(self, node, start, end):
+  """Push lazy value to current node and propagate to children."""
+  if self.lazy[node] is not None:
+   self.tree[node] = self.lazy[node] * (end - start + 1)
+   if start != end:
+    self.lazy[2 * node] = self.lazy[node]
+    self.lazy[2 * node + 1] = self.lazy[node]
+   self.lazy[node] = None
 
-  def update_range(self, l, r, val):
-    """Set all elements in [l, r] to val (0-indexed)."""
-    self._update(1, 0, self.n - 1, l, r, val)
+ def update_range(self, l, r, val):
+  """Set all elements in [l, r] to val (0-indexed)."""
+  self._update(1, 0, self.n - 1, l, r, val)
 
-  def _update(self, node, start, end, l, r, val):
-    self._push(node, start, end)
+ def _update(self, node, start, end, l, r, val):
+  self._push(node, start, end)
 
-    if r < start or end < l:  # No overlap
-      return
+  if r < start or end < l:  # No overlap
+   return
 
-    if l <= start and end <= r:  # Complete overlap
-      self.lazy[node] = val
-      self._push(node, start, end)
-      return
+  if l <= start and end <= r:  # Complete overlap
+   self.lazy[node] = val
+   self._push(node, start, end)
+   return
 
-    # Partial overlap - recurse
-    mid = (start + end) // 2
-    self._update(2 * node, start, mid, l, r, val)
-    self._update(2 * node + 1, mid + 1, end, l, r, val)
-    self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
+  # Partial overlap - recurse
+  mid = (start + end) // 2
+  self._update(2 * node, start, mid, l, r, val)
+  self._update(2 * node + 1, mid + 1, end, l, r, val)
+  self.tree[node] = self.tree[2 * node] + self.tree[2 * node + 1]
 
-  def query_range(self, l, r):
-    """Get sum of elements in [l, r] (0-indexed)."""
-    return self._query(1, 0, self.n - 1, l, r)
+ def query_range(self, l, r):
+  """Get sum of elements in [l, r] (0-indexed)."""
+  return self._query(1, 0, self.n - 1, l, r)
 
-  def _query(self, node, start, end, l, r):
-    self._push(node, start, end)
+ def _query(self, node, start, end, l, r):
+  self._push(node, start, end)
 
-    if r < start or end < l:  # No overlap
-      return 0
+  if r < start or end < l:  # No overlap
+   return 0
 
-    if l <= start and end <= r:  # Complete overlap
-      return self.tree[node]
+  if l <= start and end <= r:  # Complete overlap
+   return self.tree[node]
 
-    # Partial overlap - recurse
-    mid = (start + end) // 2
-    left_sum = self._query(2 * node, start, mid, l, r)
-    right_sum = self._query(2 * node + 1, mid + 1, end, l, r)
-    return left_sum + right_sum
+  # Partial overlap - recurse
+  mid = (start + end) // 2
+  left_sum = self._query(2 * node, start, mid, l, r)
+  right_sum = self._query(2 * node + 1, mid + 1, end, l, r)
+  return left_sum + right_sum
 
 
 def solve(n, arr, queries):
-  st = LazySegmentTree(arr)
-  results = []
+ st = LazySegmentTree(arr)
+ results = []
 
-  for query in queries:
-    if query[0] == 1:  # Range update
-      l, r, v = query[1] - 1, query[2] - 1, query[3]
-      st.update_range(l, r, v)
-    else:  # Range query
-      l, r = query[1] - 1, query[2] - 1
-      results.append(st.query_range(l, r))
+ for query in queries:
+  if query[0] == 1:  # Range update
+   l, r, v = query[1] - 1, query[2] - 1, query[3]
+   st.update_range(l, r, v)
+  else:  # Range query
+   l, r = query[1] - 1, query[2] - 1
+   results.append(st.query_range(l, r))
 
-  return results
+ return results
 ```
 
 ### Complexity
@@ -319,11 +319,11 @@ def solve(n, arr, queries):
 ```python
 # WRONG
 def _update(self, node, start, end, l, r, val):
-  if r < start or end < l:
-    return
-  # Missing push() here!
-  if l <= start and end <= r:
-    ...
+ if r < start or end < l:
+  return
+ # Missing push() here!
+ if l <= start and end <= r:
+  ...
 ```
 
 **Problem:** Children may have stale values from previous lazy updates.
@@ -334,8 +334,8 @@ def _update(self, node, start, end, l, r, val):
 ```python
 # WRONG
 def _query(self, node, start, end, l, r):
-  if l <= start and end <= r:
-    return self.tree[node]  # May be stale!
+ if l <= start and end <= r:
+  return self.tree[node]  # May be stale!
 ```
 
 **Problem:** The node value might not reflect pending lazy updates.

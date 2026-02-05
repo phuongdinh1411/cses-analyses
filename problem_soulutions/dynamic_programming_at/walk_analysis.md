@@ -116,26 +116,26 @@ Use standard DP where dp[step][vertex] = number of ways to reach vertex in exact
 
 ```python
 def solve_naive(n, k, adj):
-  """
-  Naive DP solution - O(N^2 * K), times out for large K.
+ """
+ Naive DP solution - O(N^2 * K), times out for large K.
 
-  Time: O(N^2 * K)
-  Space: O(N)
-  """
-  MOD = 10**9 + 7
+ Time: O(N^2 * K)
+ Space: O(N)
+ """
+ MOD = 10**9 + 7
 
-  # dp[v] = number of ways to be at vertex v
-  dp = [1] * n  # Can start from any vertex
+ # dp[v] = number of ways to be at vertex v
+ dp = [1] * n  # Can start from any vertex
 
-  for _ in range(k):
-    new_dp = [0] * n
-    for v in range(n):
-      for u in range(n):
-        if adj[u][v]:  # Edge from u to v
-          new_dp[v] = (new_dp[v] + dp[u]) % MOD
-    dp = new_dp
+ for _ in range(k):
+  new_dp = [0] * n
+  for v in range(n):
+   for u in range(n):
+    if adj[u][v]:  # Edge from u to v
+     new_dp[v] = (new_dp[v] + dp[u]) % MOD
+  dp = new_dp
 
-  return sum(dp) % MOD
+ return sum(dp) % MOD
 ```
 
 ### Complexity
@@ -259,63 +259,63 @@ Total: 6 walks
 
 ```python
 def matrix_multiply(A, B, mod):
-  """Multiply two N x N matrices modulo mod."""
-  n = len(A)
-  C = [[0] * n for _ in range(n)]
-  for i in range(n):
-    for k in range(n):
-      if A[i][k] == 0:
-        continue
-      for j in range(n):
-        C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % mod
-  return C
+ """Multiply two N x N matrices modulo mod."""
+ n = len(A)
+ C = [[0] * n for _ in range(n)]
+ for i in range(n):
+  for k in range(n):
+   if A[i][k] == 0:
+    continue
+   for j in range(n):
+    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % mod
+ return C
 
 
 def matrix_power(M, p, mod):
-  """Compute M^p using binary exponentiation."""
-  n = len(M)
-  # Initialize result as identity matrix
-  result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-  base = [row[:] for row in M]  # Copy matrix
+ """Compute M^p using binary exponentiation."""
+ n = len(M)
+ # Initialize result as identity matrix
+ result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+ base = [row[:] for row in M]  # Copy matrix
 
-  while p > 0:
-    if p & 1:
-      result = matrix_multiply(result, base, mod)
-    base = matrix_multiply(base, base, mod)
-    p >>= 1
+ while p > 0:
+  if p & 1:
+   result = matrix_multiply(result, base, mod)
+  base = matrix_multiply(base, base, mod)
+  p >>= 1
 
-  return result
+ return result
 
 
 def solve():
-  """
-  Matrix exponentiation solution for Walk problem.
+ """
+ Matrix exponentiation solution for Walk problem.
 
-  Time: O(N^3 * log K)
-  Space: O(N^2)
-  """
-  MOD = 10**9 + 7
+ Time: O(N^3 * log K)
+ Space: O(N^2)
+ """
+ MOD = 10**9 + 7
 
-  n, k = map(int, input().split())
-  adj = []
-  for _ in range(n):
-    row = list(map(int, input().split()))
-    adj.append(row)
+ n, k = map(int, input().split())
+ adj = []
+ for _ in range(n):
+  row = list(map(int, input().split()))
+  adj.append(row)
 
-  # Compute adjacency matrix to the K-th power
-  result = matrix_power(adj, k, MOD)
+ # Compute adjacency matrix to the K-th power
+ result = matrix_power(adj, k, MOD)
 
-  # Sum all entries to get total number of walks
-  total = 0
-  for i in range(n):
-    for j in range(n):
-      total = (total + result[i][j]) % MOD
+ # Sum all entries to get total number of walks
+ total = 0
+ for i in range(n):
+  for j in range(n):
+   total = (total + result[i][j]) % MOD
 
-  print(total)
+ print(total)
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity

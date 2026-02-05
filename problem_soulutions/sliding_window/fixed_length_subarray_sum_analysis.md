@@ -102,20 +102,20 @@ Check every possible window of size k by calculating each sum independently.
 **Python:**
 ```python
 def max_sum_brute_force(arr, k):
-  """
-  Brute force: calculate each window sum independently.
+ """
+ Brute force: calculate each window sum independently.
 
-  Time: O(n * k)
-  Space: O(1)
-  """
-  n = len(arr)
-  max_sum = float('-inf')
+ Time: O(n * k)
+ Space: O(1)
+ """
+ n = len(arr)
+ max_sum = float('-inf')
 
-  for i in range(n - k + 1):
-    window_sum = sum(arr[i:i+k])
-    max_sum = max(max_sum, window_sum)
+ for i in range(n - k + 1):
+  window_sum = sum(arr[i:i+k])
+  max_sum = max(max_sum, window_sum)
 
-  return max_sum
+ return max_sum
 ```
 
 ### Complexity
@@ -197,33 +197,33 @@ Window 4:          [###]   sum = 0 - (-3) + 2 = 5  <-- MAX
 **Python:**
 ```python
 def max_sum_sliding_window(arr, k):
-  """
-  Optimal sliding window solution.
+ """
+ Optimal sliding window solution.
 
-  Time: O(n) - single pass
-  Space: O(1) - constant extra space
-  """
-  n = len(arr)
+ Time: O(n) - single pass
+ Space: O(1) - constant extra space
+ """
+ n = len(arr)
 
-  # Calculate initial window sum
-  current_sum = sum(arr[:k])
-  max_sum = current_sum
+ # Calculate initial window sum
+ current_sum = sum(arr[:k])
+ max_sum = current_sum
 
-  # Slide the window
-  for i in range(k, n):
-    current_sum = current_sum - arr[i - k] + arr[i]
-    max_sum = max(max_sum, current_sum)
+ # Slide the window
+ for i in range(k, n):
+  current_sum = current_sum - arr[i - k] + arr[i]
+  max_sum = max(max_sum, current_sum)
 
-  return max_sum
+ return max_sum
 
 # Main program for CSES-style input
 def main():
-  n, k = map(int, input().split())
-  arr = list(map(int, input().split()))
-  print(max_sum_sliding_window(arr, k))
+ n, k = map(int, input().split())
+ arr = list(map(int, input().split()))
+ print(max_sum_sliding_window(arr, k))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -242,11 +242,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - goes out of bounds
 for i in range(k, n + 1):  # n + 1 causes index error
-  current_sum = current_sum - arr[i - k] + arr[i]
+ current_sum = current_sum - arr[i - k] + arr[i]
 
 # CORRECT
 for i in range(k, n):  # stops at n - 1
-  current_sum = current_sum - arr[i - k] + arr[i]
+ current_sum = current_sum - arr[i - k] + arr[i]
 ```
 
 **Problem:** Accessing arr[n] when array indices go from 0 to n-1.
@@ -258,7 +258,7 @@ for i in range(k, n):  # stops at n - 1
 # WRONG - starts max_sum at 0
 max_sum = 0
 for i in range(k, n):
-  # ...misses comparing with initial window
+ # ...misses comparing with initial window
 
 # CORRECT
 current_sum = sum(arr[:k])

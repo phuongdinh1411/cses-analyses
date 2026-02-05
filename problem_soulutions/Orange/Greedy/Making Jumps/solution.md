@@ -35,125 +35,125 @@ This is a backtracking/DFS problem. We need to:
 
 ```python
 def solve():
-  # Knight move offsets
-  moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-      (1, -2), (1, 2), (2, -1), (2, 1)]
+ # Knight move offsets
+ moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+   (1, -2), (1, 2), (2, -1), (2, 1)]
 
-  case_num = 0
+ case_num = 0
 
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+ while True:
+  n = int(input())
+  if n == 0:
+   break
 
-    case_num += 1
+  case_num += 1
 
-    # Read board configuration
-    rows = []
-    total_squares = 0
+  # Read board configuration
+  rows = []
+  total_squares = 0
 
-    for i in range(n):
-      offset, count = map(int, input().split())
-      rows.append((offset, count))
-      total_squares += count
+  for i in range(n):
+   offset, count = map(int, input().split())
+   rows.append((offset, count))
+   total_squares += count
 
-    # Create board: board[r] contains set of valid columns for row r
-    board = []
-    for offset, count in rows:
-      board.append(set(range(offset, offset + count)))
+  # Create board: board[r] contains set of valid columns for row r
+  board = []
+  for offset, count in rows:
+   board.append(set(range(offset, offset + count)))
 
-    # Find starting position (first cell in first row)
-    start_r, start_c = 0, rows[0][0]
+  # Find starting position (first cell in first row)
+  start_r, start_c = 0, rows[0][0]
 
-    # DFS with backtracking to find maximum reachable
-    max_reached = [0]
+  # DFS with backtracking to find maximum reachable
+  max_reached = [0]
 
-    def is_valid(r, c):
-      return 0 <= r < n and c in board[r]
+  def is_valid(r, c):
+   return 0 <= r < n and c in board[r]
 
-    def dfs(r, c, visited):
-      max_reached[0] = max(max_reached[0], len(visited))
+  def dfs(r, c, visited):
+   max_reached[0] = max(max_reached[0], len(visited))
 
-      for dr, dc in moves:
-        nr, nc = r + dr, c + dc
-        if is_valid(nr, nc) and (nr, nc) not in visited:
-          visited.add((nr, nc))
-          dfs(nr, nc, visited)
-          visited.remove((nr, nc))
+   for dr, dc in moves:
+    nr, nc = r + dr, c + dc
+    if is_valid(nr, nc) and (nr, nc) not in visited:
+     visited.add((nr, nc))
+     dfs(nr, nc, visited)
+     visited.remove((nr, nc))
 
-    visited = {(start_r, start_c)}
-    dfs(start_r, start_c, visited)
+  visited = {(start_r, start_c)}
+  dfs(start_r, start_c, visited)
 
-    unreachable = total_squares - max_reached[0]
-    print(f"Case {case_num}, {unreachable} squares can not be reached.")
+  unreachable = total_squares - max_reached[0]
+  print(f"Case {case_num}, {unreachable} squares can not be reached.")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Optimized Solution with Pruning
 
 ```python
 def solve():
-  moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-      (1, -2), (1, 2), (2, -1), (2, 1)]
+ moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+   (1, -2), (1, 2), (2, -1), (2, 1)]
 
-  case_num = 0
+ case_num = 0
 
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+ while True:
+  n = int(input())
+  if n == 0:
+   break
 
-    case_num += 1
+  case_num += 1
 
-    # Read board
-    rows = []
-    total_squares = 0
-    max_col = 0
+  # Read board
+  rows = []
+  total_squares = 0
+  max_col = 0
 
-    for i in range(n):
-      offset, count = map(int, input().split())
-      rows.append((offset, count))
-      total_squares += count
-      max_col = max(max_col, offset + count)
+  for i in range(n):
+   offset, count = map(int, input().split())
+   rows.append((offset, count))
+   total_squares += count
+   max_col = max(max_col, offset + count)
 
-    # Create 2D grid for faster lookup
-    # grid[r][c] = True if cell exists
-    grid = [[False] * max_col for _ in range(n)]
-    for r, (offset, count) in enumerate(rows):
-      for c in range(offset, offset + count):
-        grid[r][c] = True
+  # Create 2D grid for faster lookup
+  # grid[r][c] = True if cell exists
+  grid = [[False] * max_col for _ in range(n)]
+  for r, (offset, count) in enumerate(rows):
+   for c in range(offset, offset + count):
+    grid[r][c] = True
 
-    start_r, start_c = 0, rows[0][0]
-    max_reached = [0]
+  start_r, start_c = 0, rows[0][0]
+  max_reached = [0]
 
-    def is_valid(r, c):
-      return 0 <= r < n and 0 <= c < max_col and grid[r][c]
+  def is_valid(r, c):
+   return 0 <= r < n and 0 <= c < max_col and grid[r][c]
 
-    def dfs(r, c, count, visited):
-      max_reached[0] = max(max_reached[0], count)
+  def dfs(r, c, count, visited):
+   max_reached[0] = max(max_reached[0], count)
 
-      # Early termination if we've reached all squares
-      if count == total_squares:
-        return
+   # Early termination if we've reached all squares
+   if count == total_squares:
+    return
 
-      for dr, dc in moves:
-        nr, nc = r + dr, c + dc
-        if is_valid(nr, nc) and not visited[nr][nc]:
-          visited[nr][nc] = True
-          dfs(nr, nc, count + 1, visited)
-          visited[nr][nc] = False
+   for dr, dc in moves:
+    nr, nc = r + dr, c + dc
+    if is_valid(nr, nc) and not visited[nr][nc]:
+     visited[nr][nc] = True
+     dfs(nr, nc, count + 1, visited)
+     visited[nr][nc] = False
 
-    visited = [[False] * max_col for _ in range(n)]
-    visited[start_r][start_c] = True
-    dfs(start_r, start_c, 1, visited)
+  visited = [[False] * max_col for _ in range(n)]
+  visited[start_r][start_c] = True
+  dfs(start_r, start_c, 1, visited)
 
-    unreachable = total_squares - max_reached[0]
-    print(f"Case {case_num}, {unreachable} squares can not be reached.")
+  unreachable = total_squares - max_reached[0]
+  print(f"Case {case_num}, {unreachable} squares can not be reached.")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

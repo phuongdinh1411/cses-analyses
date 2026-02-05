@@ -107,22 +107,22 @@ For each flower, check all previous flowers with smaller heights and take the ma
 
 ```python
 def solve_brute_force(n, heights, beauties):
-  """
-  Brute force O(n^2) solution.
+ """
+ Brute force O(n^2) solution.
 
-  Time: O(n^2)
-  Space: O(n)
-  """
-  dp = [0] * n
+ Time: O(n^2)
+ Space: O(n)
+ """
+ dp = [0] * n
 
-  for i in range(n):
-    max_prev = 0
-    for j in range(i):
-      if heights[j] < heights[i]:
-        max_prev = max(max_prev, dp[j])
-    dp[i] = beauties[i] + max_prev
+ for i in range(n):
+  max_prev = 0
+  for j in range(i):
+   if heights[j] < heights[i]:
+    max_prev = max(max_prev, dp[j])
+  dp[i] = beauties[i] + max_prev
 
-  return max(dp)
+ return max(dp)
 ```
 
 ### Complexity
@@ -243,75 +243,75 @@ Best path: F1 -> F3 with total beauty 60
 
 ```python
 class SegmentTree:
-  """Segment tree for range maximum queries and point updates."""
+ """Segment tree for range maximum queries and point updates."""
 
-  def __init__(self, n):
-    self.n = n
-    self.size = 1
-    while self.size < n:
-      self.size *= 2
-    self.tree = [0] * (2 * self.size)
+ def __init__(self, n):
+  self.n = n
+  self.size = 1
+  while self.size < n:
+   self.size *= 2
+  self.tree = [0] * (2 * self.size)
 
-  def update(self, pos, value):
-    """Update position pos with value (keeping maximum)."""
-    pos += self.size
-    self.tree[pos] = max(self.tree[pos], value)
-    while pos > 1:
-      pos //= 2
-      self.tree[pos] = max(self.tree[2 * pos], self.tree[2 * pos + 1])
+ def update(self, pos, value):
+  """Update position pos with value (keeping maximum)."""
+  pos += self.size
+  self.tree[pos] = max(self.tree[pos], value)
+  while pos > 1:
+   pos //= 2
+   self.tree[pos] = max(self.tree[2 * pos], self.tree[2 * pos + 1])
 
-  def query(self, left, right):
-    """Query maximum in range [left, right)."""
-    result = 0
-    left += self.size
-    right += self.size
-    while left < right:
-      if left & 1:
-        result = max(result, self.tree[left])
-        left += 1
-      if right & 1:
-        right -= 1
-        result = max(result, self.tree[right])
-      left //= 2
-      right //= 2
-    return result
+ def query(self, left, right):
+  """Query maximum in range [left, right)."""
+  result = 0
+  left += self.size
+  right += self.size
+  while left < right:
+   if left & 1:
+    result = max(result, self.tree[left])
+    left += 1
+   if right & 1:
+    right -= 1
+    result = max(result, self.tree[right])
+   left //= 2
+   right //= 2
+  return result
 
 
 def solve(n, heights, beauties):
-  """
-  Weighted LIS using segment tree.
+ """
+ Weighted LIS using segment tree.
 
-  Time: O(n log n)
-  Space: O(n)
-  """
-  seg_tree = SegmentTree(n + 1)
-  answer = 0
+ Time: O(n log n)
+ Space: O(n)
+ """
+ seg_tree = SegmentTree(n + 1)
+ answer = 0
 
-  for i in range(n):
-    h = heights[i]
-    a = beauties[i]
+ for i in range(n):
+  h = heights[i]
+  a = beauties[i]
 
-    # Query max beauty for heights < h
-    best_prev = seg_tree.query(0, h)
-    current = a + best_prev
+  # Query max beauty for heights < h
+  best_prev = seg_tree.query(0, h)
+  current = a + best_prev
 
-    # Update segment tree at position h
-    seg_tree.update(h, current)
-    answer = max(answer, current)
+  # Update segment tree at position h
+  seg_tree.update(h, current)
+  answer = max(answer, current)
 
-  return answer
+ return answer
 
 
 # Read input and solve
 def main():
-  n = int(input())
-  heights = list(map(int, input().split()))
-  beauties = list(map(int, input().split()))
-  print(solve(n, heights, beauties))
+ n = int(input())
+ heights = list(map(int, input().split()))
+ beauties = list(map(int, input().split()))
+ print(solve(n, heights, beauties))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity

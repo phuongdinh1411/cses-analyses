@@ -253,113 +253,113 @@ Welcome to the Graph Algorithms section! This category covers fundamental and ad
 ```python
 # Recursive DFS
 def dfs_recursive(graph, start, visited=None):
-  if visited is None:
-    visited = set()
-  
-  visited.add(start)
-  print(start)  # Process node
-  
-  for neighbor in graph[start]:
-    if neighbor not in visited:
-      dfs_recursive(graph, neighbor, visited)
-  
-  return visited
+ if visited is None:
+  visited = set()
+ 
+ visited.add(start)
+ print(start)  # Process node
+ 
+ for neighbor in graph[start]:
+  if neighbor not in visited:
+   dfs_recursive(graph, neighbor, visited)
+ 
+ return visited
 
 # Iterative DFS with stack
 def dfs_iterative(graph, start):
-  visited = set()
-  stack = [start]
-  
-  while stack:
-    node = stack.pop()
-    if node not in visited:
-      visited.add(node)
-      print(node)  # Process node
-      
-      # Add neighbors in reverse order for same traversal as recursive
-      for neighbor in reversed(graph[node]):
-        if neighbor not in visited:
-          stack.append(neighbor)
-  
-  return visited
+ visited = set()
+ stack = [start]
+ 
+ while stack:
+  node = stack.pop()
+  if node not in visited:
+   visited.add(node)
+   print(node)  # Process node
+   
+   # Add neighbors in reverse order for same traversal as recursive
+   for neighbor in reversed(graph[node]):
+    if neighbor not in visited:
+     stack.append(neighbor)
+ 
+ return visited
 
 # DFS with path tracking
 def dfs_with_path(graph, start, target):
-  def dfs_helper(node, path, visited):
-    if node == target:
-      return path + [node]
-    
-    visited.add(node)
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        result = dfs_helper(neighbor, path + [node], visited)
-        if result:
-          return result
-    
-    visited.remove(node)
-    return None
+ def dfs_helper(node, path, visited):
+  if node == target:
+   return path + [node]
   
-  return dfs_helper(start, [], set())
+  visited.add(node)
+  for neighbor in graph[node]:
+   if neighbor not in visited:
+    result = dfs_helper(neighbor, path + [node], visited)
+    if result:
+     return result
+  
+  visited.remove(node)
+  return None
+ 
+ return dfs_helper(start, [], set())
 ```
 
 #### 2. Breadth-First Search (BFS)
 ```python
 # Basic BFS
 def bfs(graph, start):
-  visited = set()
-  queue = deque([start])
-  visited.add(start)
+ visited = set()
+ queue = deque([start])
+ visited.add(start)
+ 
+ while queue:
+  node = queue.popleft()
+  print(node)  # Process node
   
-  while queue:
-    node = queue.popleft()
-    print(node)  # Process node
-    
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        visited.add(neighbor)
-        queue.append(neighbor)
-  
-  return visited
+  for neighbor in graph[node]:
+   if neighbor not in visited:
+    visited.add(neighbor)
+    queue.append(neighbor)
+ 
+ return visited
 
 # BFS with distance tracking
 def bfs_with_distance(graph, start):
-  visited = set()
-  queue = deque([(start, 0)])
-  visited.add(start)
-  distances = {start: 0}
+ visited = set()
+ queue = deque([(start, 0)])
+ visited.add(start)
+ distances = {start: 0}
+ 
+ while queue:
+  node, dist = queue.popleft()
   
-  while queue:
-    node, dist = queue.popleft()
-    
-    for neighbor in graph[node]:
-      if neighbor not in visited:
-        visited.add(neighbor)
-        distances[neighbor] = dist + 1
-        queue.append((neighbor, dist + 1))
-  
-  return distances
+  for neighbor in graph[node]:
+   if neighbor not in visited:
+    visited.add(neighbor)
+    distances[neighbor] = dist + 1
+    queue.append((neighbor, dist + 1))
+ 
+ return distances
 
 # BFS for shortest path
 def bfs_shortest_path(graph, start, target):
-  if start == target:
-    return [start]
+ if start == target:
+  return [start]
+ 
+ visited = set()
+ queue = deque([(start, [start])])
+ visited.add(start)
+ 
+ while queue:
+  node, path = queue.popleft()
   
-  visited = set()
-  queue = deque([(start, [start])])
-  visited.add(start)
-  
-  while queue:
-    node, path = queue.popleft()
-    
-    for neighbor in graph[node]:
-      if neighbor == target:
-        return path + [neighbor]
-      
-      if neighbor not in visited:
-        visited.add(neighbor)
-        queue.append((neighbor, path + [neighbor]))
-  
-  return None  # No path found
+  for neighbor in graph[node]:
+   if neighbor == target:
+    return path + [neighbor]
+   
+   if neighbor not in visited:
+    visited.add(neighbor)
+    queue.append((neighbor, path + [neighbor]))
+ 
+ return None  # No path found
 ```
 
 #### 3. Dijkstra's Algorithm
@@ -367,122 +367,122 @@ def bfs_shortest_path(graph, start, target):
 import heapq
 
 def dijkstra(graph, start):
-  distances = {node: float('inf') for node in graph}
-  distances[start] = 0
-  pq = [(0, start)]
-  visited = set()
+ distances = {node: float('inf') for node in graph}
+ distances[start] = 0
+ pq = [(0, start)]
+ visited = set()
+ 
+ while pq:
+  current_dist, node = heapq.heappop(pq)
   
-  while pq:
-    current_dist, node = heapq.heappop(pq)
-    
-    if node in visited:
-      continue
-    
-    visited.add(node)
-    
-    for neighbor, weight in graph[node]:
-      if neighbor not in visited:
-        new_dist = current_dist + weight
-        if new_dist < distances[neighbor]:
-          distances[neighbor] = new_dist
-          heapq.heappush(pq, (new_dist, neighbor))
+  if node in visited:
+   continue
   
-  return distances
+  visited.add(node)
+  
+  for neighbor, weight in graph[node]:
+   if neighbor not in visited:
+    new_dist = current_dist + weight
+    if new_dist < distances[neighbor]:
+     distances[neighbor] = new_dist
+     heapq.heappush(pq, (new_dist, neighbor))
+ 
+ return distances
 
 # Dijkstra with path reconstruction
 def dijkstra_with_path(graph, start, target):
-  distances = {node: float('inf') for node in graph}
-  distances[start] = 0
-  previous = {node: None for node in graph}
-  pq = [(0, start)]
-  visited = set()
+ distances = {node: float('inf') for node in graph}
+ distances[start] = 0
+ previous = {node: None for node in graph}
+ pq = [(0, start)]
+ visited = set()
+ 
+ while pq:
+  current_dist, node = heapq.heappop(pq)
   
-  while pq:
-    current_dist, node = heapq.heappop(pq)
-    
-    if node in visited:
-      continue
-    
-    visited.add(node)
-    
-    if node == target:
-      break
-    
-    for neighbor, weight in graph[node]:
-      if neighbor not in visited:
-        new_dist = current_dist + weight
-        if new_dist < distances[neighbor]:
-          distances[neighbor] = new_dist
-          previous[neighbor] = node
-          heapq.heappush(pq, (new_dist, neighbor))
+  if node in visited:
+   continue
   
-  # Reconstruct path
-  if distances[target] == float('inf'):
-    return None, float('inf')
+  visited.add(node)
   
-  path = []
-  node = target
-  while node is not None:
-    path.append(node)
-    node = previous[node]
+  if node == target:
+   break
   
-  return path[::-1], distances[target]
+  for neighbor, weight in graph[node]:
+   if neighbor not in visited:
+    new_dist = current_dist + weight
+    if new_dist < distances[neighbor]:
+     distances[neighbor] = new_dist
+     previous[neighbor] = node
+     heapq.heappush(pq, (new_dist, neighbor))
+ 
+ # Reconstruct path
+ if distances[target] == float('inf'):
+  return None, float('inf')
+ 
+ path = []
+ node = target
+ while node is not None:
+  path.append(node)
+  node = previous[node]
+ 
+ return path[::-1], distances[target]
 ```
 
 #### 4. Floyd-Warshall Algorithm
 ```python
 def floyd_warshall(graph):
-  n = len(graph)
-  dist = [[float('inf')] * n for _ in range(n)]
-  
-  # Initialize distances
+ n = len(graph)
+ dist = [[float('inf')] * n for _ in range(n)]
+ 
+ # Initialize distances
+ for i in range(n):
+  dist[i][i] = 0
+  for j, weight in graph[i]:
+   dist[i][j] = weight
+ 
+ # Floyd-Warshall algorithm
+ for k in range(n):
   for i in range(n):
-    dist[i][i] = 0
-    for j, weight in graph[i]:
-      dist[i][j] = weight
-  
-  # Floyd-Warshall algorithm
-  for k in range(n):
-    for i in range(n):
-      for j in range(n):
-        if dist[i][k] + dist[k][j] < dist[i][j]:
-          dist[i][j] = dist[i][k] + dist[k][j]
-  
-  return dist
+   for j in range(n):
+    if dist[i][k] + dist[k][j] < dist[i][j]:
+     dist[i][j] = dist[i][k] + dist[k][j]
+ 
+ return dist
 
 # Floyd-Warshall with path reconstruction
 def floyd_warshall_with_path(graph):
-  n = len(graph)
-  dist = [[float('inf')] * n for _ in range(n)]
-  next_node = [[None] * n for _ in range(n)]
-  
-  # Initialize
+ n = len(graph)
+ dist = [[float('inf')] * n for _ in range(n)]
+ next_node = [[None] * n for _ in range(n)]
+ 
+ # Initialize
+ for i in range(n):
+  dist[i][i] = 0
+  for j, weight in graph[i]:
+   dist[i][j] = weight
+   next_node[i][j] = j
+ 
+ # Floyd-Warshall
+ for k in range(n):
   for i in range(n):
-    dist[i][i] = 0
-    for j, weight in graph[i]:
-      dist[i][j] = weight
-      next_node[i][j] = j
+   for j in range(n):
+    if dist[i][k] + dist[k][j] < dist[i][j]:
+     dist[i][j] = dist[i][k] + dist[k][j]
+     next_node[i][j] = next_node[i][k]
+ 
+ def get_path(i, j):
+  if next_node[i][j] is None:
+   return []
   
-  # Floyd-Warshall
-  for k in range(n):
-    for i in range(n):
-      for j in range(n):
-        if dist[i][k] + dist[k][j] < dist[i][j]:
-          dist[i][j] = dist[i][k] + dist[k][j]
-          next_node[i][j] = next_node[i][k]
+  path = [i]
+  while i != j:
+   i = next_node[i][j]
+   path.append(i)
   
-  def get_path(i, j):
-    if next_node[i][j] is None:
-      return []
-    
-    path = [i]
-    while i != j:
-      i = next_node[i][j]
-      path.append(i)
-    
-    return path
-  
-  return dist, get_path
+  return path
+ 
+ return dist, get_path
 ```
 
 ### Advanced Graph Algorithms
@@ -490,132 +490,132 @@ def floyd_warshall_with_path(graph):
 #### 1. Strongly Connected Components (Kosaraju's)
 ```python
 def kosaraju_scc(graph):
-  n = len(graph)
-  visited = [False] * n
-  order = []
-  
-  # First pass: get finish times
-  def dfs1(node):
-    visited[node] = True
-    for neighbor in graph[node]:
-      if not visited[neighbor]:
-        dfs1(neighbor)
-    order.append(node)
-  
-  for i in range(n):
-    if not visited[i]:
-      dfs1(i)
-  
-  # Reverse graph
-  reversed_graph = [[] for _ in range(n)]
-  for i in range(n):
-    for j in graph[i]:
-      reversed_graph[j].append(i)
-  
-  # Second pass: find SCCs
-  visited = [False] * n
-  sccs = []
-  
-  def dfs2(node, component):
-    visited[node] = True
-    component.append(node)
-    for neighbor in reversed_graph[node]:
-      if not visited[neighbor]:
-        dfs2(neighbor, component)
-  
-  for node in reversed(order):
-    if not visited[node]:
-      component = []
-      dfs2(node, component)
-      sccs.append(component)
-  
-  return sccs
+ n = len(graph)
+ visited = [False] * n
+ order = []
+ 
+ # First pass: get finish times
+ def dfs1(node):
+  visited[node] = True
+  for neighbor in graph[node]:
+   if not visited[neighbor]:
+    dfs1(neighbor)
+  order.append(node)
+ 
+ for i in range(n):
+  if not visited[i]:
+   dfs1(i)
+ 
+ # Reverse graph
+ reversed_graph = [[] for _ in range(n)]
+ for i in range(n):
+  for j in graph[i]:
+   reversed_graph[j].append(i)
+ 
+ # Second pass: find SCCs
+ visited = [False] * n
+ sccs = []
+ 
+ def dfs2(node, component):
+  visited[node] = True
+  component.append(node)
+  for neighbor in reversed_graph[node]:
+   if not visited[neighbor]:
+    dfs2(neighbor, component)
+ 
+ for node in reversed(order):
+  if not visited[node]:
+   component = []
+   dfs2(node, component)
+   sccs.append(component)
+ 
+ return sccs
 ```
 
 #### 2. Minimum Spanning Tree (Kruskal's)
 ```python
 class UnionFind:
-  def __init__(self, n):
-    self.parent = list(range(n))
-    self.rank = [0] * n
+ def __init__(self, n):
+  self.parent = list(range(n))
+  self.rank = [0] * n
+ 
+ def find(self, x):
+  if self.parent[x] != x:
+   self.parent[x] = self.find(self.parent[x])
+  return self.parent[x]
+ 
+ def union(self, x, y):
+  px, py = self.find(x), self.find(y)
+  if px == py:
+   return False
   
-  def find(self, x):
-    if self.parent[x] != x:
-      self.parent[x] = self.find(self.parent[x])
-    return self.parent[x]
+  if self.rank[px] < self.rank[py]:
+   px, py = py, px
   
-  def union(self, x, y):
-    px, py = self.find(x), self.find(y)
-    if px == py:
-      return False
-    
-    if self.rank[px] < self.rank[py]:
-      px, py = py, px
-    
-    self.parent[py] = px
-    if self.rank[px] == self.rank[py]:
-      self.rank[px] += 1
-    
-    return True
+  self.parent[py] = px
+  if self.rank[px] == self.rank[py]:
+   self.rank[px] += 1
+  
+  return True
 
 def kruskal_mst(edges, n):
-  edges.sort(key=lambda x: x[2])  # Sort by weight
-  uf = UnionFind(n)
-  mst = []
-  total_weight = 0
-  
-  for u, v, weight in edges:
-    if uf.union(u, v):
-      mst.append((u, v, weight))
-      total_weight += weight
-      if len(mst) == n - 1:
-        break
-  
-  return mst, total_weight
+ edges.sort(key=lambda x: x[2])  # Sort by weight
+ uf = UnionFind(n)
+ mst = []
+ total_weight = 0
+ 
+ for u, v, weight in edges:
+  if uf.union(u, v):
+   mst.append((u, v, weight))
+   total_weight += weight
+   if len(mst) == n - 1:
+    break
+ 
+ return mst, total_weight
 ```
 
 #### 3. Network Flow (Ford-Fulkerson)
 ```python
 def ford_fulkerson(graph, source, sink):
-  def bfs_path(graph, source, sink, parent):
-    visited = [False] * len(graph)
-    queue = deque([source])
-    visited[source] = True
-    
-    while queue:
-      u = queue.popleft()
-      for v, capacity in enumerate(graph[u]):
-        if not visited[v] and capacity > 0:
-          visited[v] = True
-          parent[v] = u
-          if v == sink:
-            return True
-          queue.append(v)
-    
-    return False
+ def bfs_path(graph, source, sink, parent):
+  visited = [False] * len(graph)
+  queue = deque([source])
+  visited[source] = True
   
-  n = len(graph)
-  parent = [-1] * n
-  max_flow = 0
+  while queue:
+   u = queue.popleft()
+   for v, capacity in enumerate(graph[u]):
+    if not visited[v] and capacity > 0:
+     visited[v] = True
+     parent[v] = u
+     if v == sink:
+      return True
+     queue.append(v)
   
-  while bfs_path(graph, source, sink, parent):
-    path_flow = float('inf')
-    s = sink
-    
-    while s != source:
-      path_flow = min(path_flow, graph[parent[s]][s])
-      s = parent[s]
-    
-    max_flow += path_flow
-    v = sink
-    
-    while v != source:
-      u = parent[v]
-      graph[u][v] -= path_flow
-      graph[v][u] += path_flow
-      v = parent[v]
+  return False
+ 
+ n = len(graph)
+ parent = [-1] * n
+ max_flow = 0
+ 
+ while bfs_path(graph, source, sink, parent):
+  path_flow = float('inf')
+  s = sink
   
-  return max_flow
+  while s != source:
+   path_flow = min(path_flow, graph[parent[s]][s])
+   s = parent[s]
+  
+  max_flow += path_flow
+  v = sink
+  
+  while v != source:
+   u = parent[v]
+   graph[u][v] -= path_flow
+   graph[v][u] += path_flow
+   v = parent[v]
+ 
+ return max_flow
 ```
 
 ### Graph Representation Examples
@@ -623,52 +623,52 @@ def ford_fulkerson(graph, source, sink):
 #### 1. Adjacency List Implementation
 ```python
 class Graph:
-  def __init__(self, vertices):
-    self.vertices = vertices
-    self.adj_list = [[] for _ in range(vertices)]
-  
-  def add_edge(self, u, v, weight=1):
-    self.adj_list[u].append((v, weight))
-    # For undirected graph, also add reverse edge
-    # self.adj_list[v].append((u, weight))
-  
-  def get_neighbors(self, vertex):
-    return self.adj_list[vertex]
-  
-  def has_edge(self, u, v):
-    return any(neighbor == v for neighbor, _ in self.adj_list[u])
-  
-  def get_weight(self, u, v):
-    for neighbor, weight in self.adj_list[u]:
-      if neighbor == v:
-        return weight
-    return float('inf')
+ def __init__(self, vertices):
+  self.vertices = vertices
+  self.adj_list = [[] for _ in range(vertices)]
+ 
+ def add_edge(self, u, v, weight=1):
+  self.adj_list[u].append((v, weight))
+  # For undirected graph, also add reverse edge
+  # self.adj_list[v].append((u, weight))
+ 
+ def get_neighbors(self, vertex):
+  return self.adj_list[vertex]
+ 
+ def has_edge(self, u, v):
+  return any(neighbor == v for neighbor, _ in self.adj_list[u])
+ 
+ def get_weight(self, u, v):
+  for neighbor, weight in self.adj_list[u]:
+   if neighbor == v:
+    return weight
+  return float('inf')
 ```
 
 #### 2. Adjacency Matrix Implementation
 ```python
 class GraphMatrix:
-  def __init__(self, vertices):
-    self.vertices = vertices
-    self.matrix = [[0] * vertices for _ in range(vertices)]
-  
-  def add_edge(self, u, v, weight=1):
-    self.matrix[u][v] = weight
-    # For undirected graph, also set reverse edge
-    # self.matrix[v][u] = weight
-  
-  def has_edge(self, u, v):
-    return self.matrix[u][v] != 0
-  
-  def get_weight(self, u, v):
-    return self.matrix[u][v] if self.matrix[u][v] != 0 else float('inf')
-  
-  def get_neighbors(self, vertex):
-    neighbors = []
-    for i in range(self.vertices):
-      if self.matrix[vertex][i] != 0:
-        neighbors.append((i, self.matrix[vertex][i]))
-    return neighbors
+ def __init__(self, vertices):
+  self.vertices = vertices
+  self.matrix = [[0] * vertices for _ in range(vertices)]
+ 
+ def add_edge(self, u, v, weight=1):
+  self.matrix[u][v] = weight
+  # For undirected graph, also set reverse edge
+  # self.matrix[v][u] = weight
+ 
+ def has_edge(self, u, v):
+  return self.matrix[u][v] != 0
+ 
+ def get_weight(self, u, v):
+  return self.matrix[u][v] if self.matrix[u][v] != 0 else float('inf')
+ 
+ def get_neighbors(self, vertex):
+  neighbors = []
+  for i in range(self.vertices):
+   if self.matrix[vertex][i] != 0:
+    neighbors.append((i, self.matrix[vertex][i]))
+  return neighbors
 ```
 
 ### Advanced Graph Techniques
@@ -676,112 +676,112 @@ class GraphMatrix:
 #### 1. Binary Lifting for LCA
 ```python
 class BinaryLifting:
-  def __init__(self, tree, root=0):
-    self.n = len(tree)
-    self.log = 20  # Adjust based on max depth
-    self.up = [[-1] * self.n for _ in range(self.log)]
-    self.depth = [0] * self.n
-    
-    self.dfs(tree, root, -1)
-    
-    for k in range(1, self.log):
-      for v in range(self.n):
-        if self.up[k-1][v] != -1:
-          self.up[k][v] = self.up[k-1][self.up[k-1][v]]
+ def __init__(self, tree, root=0):
+  self.n = len(tree)
+  self.log = 20  # Adjust based on max depth
+  self.up = [[-1] * self.n for _ in range(self.log)]
+  self.depth = [0] * self.n
   
-  def dfs(self, tree, v, p):
-    self.up[0][v] = p
-    for u in tree[v]:
-      if u != p:
-        self.depth[u] = self.depth[v] + 1
-        self.dfs(tree, u, v)
+  self.dfs(tree, root, -1)
   
-  def lca(self, u, v):
-    if self.depth[u] < self.depth[v]:
-      u, v = v, u
-    
-    # Bring u to same depth as v
-    for k in range(self.log-1, -1, -1):
-      if self.depth[u] - (1 << k) >= self.depth[v]:
-        u = self.up[k][u]
-    
-    if u == v:
-      return u
-    
-    # Find LCA
-    for k in range(self.log-1, -1, -1):
-      if self.up[k][u] != -1 and self.up[k][u] != self.up[k][v]:
-        u = self.up[k][u]
-        v = self.up[k][v]
-    
-    return self.up[0][u]
+  for k in range(1, self.log):
+   for v in range(self.n):
+    if self.up[k-1][v] != -1:
+     self.up[k][v] = self.up[k-1][self.up[k-1][v]]
+ 
+ def dfs(self, tree, v, p):
+  self.up[0][v] = p
+  for u in tree[v]:
+   if u != p:
+    self.depth[u] = self.depth[v] + 1
+    self.dfs(tree, u, v)
+ 
+ def lca(self, u, v):
+  if self.depth[u] < self.depth[v]:
+   u, v = v, u
   
-  def kth_ancestor(self, v, k):
-    for i in range(self.log):
-      if k & (1 << i):
-        v = self.up[i][v]
-        if v == -1:
-          break
-    return v
+  # Bring u to same depth as v
+  for k in range(self.log-1, -1, -1):
+   if self.depth[u] - (1 << k) >= self.depth[v]:
+    u = self.up[k][u]
+  
+  if u == v:
+   return u
+  
+  # Find LCA
+  for k in range(self.log-1, -1, -1):
+   if self.up[k][u] != -1 and self.up[k][u] != self.up[k][v]:
+    u = self.up[k][u]
+    v = self.up[k][v]
+  
+  return self.up[0][u]
+ 
+ def kth_ancestor(self, v, k):
+  for i in range(self.log):
+   if k & (1 << i):
+    v = self.up[i][v]
+    if v == -1:
+     break
+  return v
 ```
 
 #### 2. Heavy-Light Decomposition
 ```python
 class HeavyLightDecomposition:
-  def __init__(self, tree, root=0):
-    self.n = len(tree)
-    self.tree = tree
-    self.root = root
-    self.parent = [-1] * self.n
-    self.depth = [0] * self.n
-    self.size = [0] * self.n
-    self.heavy = [-1] * self.n
-    self.head = [0] * self.n
-    self.pos = [0] * self.n
-    self.cur_pos = 0
-    
-    self.dfs1(root)
-    self.dfs2(root, root)
+ def __init__(self, tree, root=0):
+  self.n = len(tree)
+  self.tree = tree
+  self.root = root
+  self.parent = [-1] * self.n
+  self.depth = [0] * self.n
+  self.size = [0] * self.n
+  self.heavy = [-1] * self.n
+  self.head = [0] * self.n
+  self.pos = [0] * self.n
+  self.cur_pos = 0
   
-  def dfs1(self, v):
-    self.size[v] = 1
-    for u in self.tree[v]:
-      if u != self.parent[v]:
-        self.parent[u] = v
-        self.depth[u] = self.depth[v] + 1
-        self.dfs1(u)
-        self.size[v] += self.size[u]
-        if self.heavy[v] == -1 or self.size[u] > self.size[self.heavy[v]]:
-          self.heavy[v] = u
+  self.dfs1(root)
+  self.dfs2(root, root)
+ 
+ def dfs1(self, v):
+  self.size[v] = 1
+  for u in self.tree[v]:
+   if u != self.parent[v]:
+    self.parent[u] = v
+    self.depth[u] = self.depth[v] + 1
+    self.dfs1(u)
+    self.size[v] += self.size[u]
+    if self.heavy[v] == -1 or self.size[u] > self.size[self.heavy[v]]:
+     self.heavy[v] = u
+ 
+ def dfs2(self, v, h):
+  self.head[v] = h
+  self.pos[v] = self.cur_pos
+  self.cur_pos += 1
   
-  def dfs2(self, v, h):
-    self.head[v] = h
-    self.pos[v] = self.cur_pos
-    self.cur_pos += 1
-    
-    if self.heavy[v] != -1:
-      self.dfs2(self.heavy[v], h)
-    
-    for u in self.tree[v]:
-      if u != self.parent[v] and u != self.heavy[v]:
-        self.dfs2(u, u)
+  if self.heavy[v] != -1:
+   self.dfs2(self.heavy[v], h)
   
-  def query_path(self, u, v):
-    res = 0
-    while self.head[u] != self.head[v]:
-      if self.depth[self.head[u]] > self.depth[self.head[v]]:
-        u, v = v, u
-      
-      # Query segment tree from pos[head[v]] to pos[v]
-      # res = max(res, seg_tree.query(self.pos[self.head[v]], self.pos[v]))
-      v = self.parent[self.head[v]]
-    
-    if self.depth[u] > self.depth[v]:
-      u, v = v, u
-    
-    # Query segment tree from pos[u] to pos[v]
-    # res = max(res, seg_tree.query(self.pos[u], self.pos[v]))
-    return res
+  for u in self.tree[v]:
+   if u != self.parent[v] and u != self.heavy[v]:
+    self.dfs2(u, u)
+ 
+ def query_path(self, u, v):
+  res = 0
+  while self.head[u] != self.head[v]:
+   if self.depth[self.head[u]] > self.depth[self.head[v]]:
+    u, v = v, u
+   
+   # Query segment tree from pos[head[v]] to pos[v]
+   # res = max(res, seg_tree.query(self.pos[self.head[v]], self.pos[v]))
+   v = self.parent[self.head[v]]
+  
+  if self.depth[u] > self.depth[v]:
+   u, v = v, u
+  
+  # Query segment tree from pos[u] to pos[v]
+  # res = max(res, seg_tree.query(self.pos[u], self.pos[v]))
+  return res
 ```
 
 ### Graph Problem Patterns
@@ -789,94 +789,94 @@ class HeavyLightDecomposition:
 #### 1. Cycle Detection
 ```python
 def has_cycle_directed(graph):
-  WHITE, GRAY, BLACK = 0, 1, 2
-  color = [WHITE] * len(graph)
+ WHITE, GRAY, BLACK = 0, 1, 2
+ color = [WHITE] * len(graph)
+ 
+ def dfs(node):
+  if color[node] == GRAY:
+   return True  # Back edge found
+  if color[node] == BLACK:
+   return False
   
-  def dfs(node):
-    if color[node] == GRAY:
-      return True  # Back edge found
-    if color[node] == BLACK:
-      return False
-    
-    color[node] = GRAY
-    for neighbor in graph[node]:
-      if dfs(neighbor):
-        return True
-    
-    color[node] = BLACK
-    return False
+  color[node] = GRAY
+  for neighbor in graph[node]:
+   if dfs(neighbor):
+    return True
   
-  for i in range(len(graph)):
-    if color[i] == WHITE:
-      if dfs(i):
-        return True
-  
+  color[node] = BLACK
   return False
+ 
+ for i in range(len(graph)):
+  if color[i] == WHITE:
+   if dfs(i):
+    return True
+ 
+ return False
 
 def has_cycle_undirected(graph):
-  visited = [False] * len(graph)
-  
-  def dfs(node, parent):
-    visited[node] = True
-    for neighbor in graph[node]:
-      if not visited[neighbor]:
-        if dfs(neighbor, node):
-          return True
-      elif neighbor != parent:
-        return True
-    return False
-  
-  for i in range(len(graph)):
-    if not visited[i]:
-      if dfs(i, -1):
-        return True
-  
+ visited = [False] * len(graph)
+ 
+ def dfs(node, parent):
+  visited[node] = True
+  for neighbor in graph[node]:
+   if not visited[neighbor]:
+    if dfs(neighbor, node):
+     return True
+   elif neighbor != parent:
+    return True
   return False
+ 
+ for i in range(len(graph)):
+  if not visited[i]:
+   if dfs(i, -1):
+    return True
+ 
+ return False
 ```
 
 #### 2. Topological Sort
 ```python
 def topological_sort_kahn(graph):
-  n = len(graph)
-  in_degree = [0] * n
+ n = len(graph)
+ in_degree = [0] * n
+ 
+ # Calculate in-degrees
+ for i in range(n):
+  for j in graph[i]:
+   in_degree[j] += 1
+ 
+ # Find all vertices with no incoming edges
+ queue = deque([i for i in range(n) if in_degree[i] == 0])
+ result = []
+ 
+ while queue:
+  u = queue.popleft()
+  result.append(u)
   
-  # Calculate in-degrees
-  for i in range(n):
-    for j in graph[i]:
-      in_degree[j] += 1
-  
-  # Find all vertices with no incoming edges
-  queue = deque([i for i in range(n) if in_degree[i] == 0])
-  result = []
-  
-  while queue:
-    u = queue.popleft()
-    result.append(u)
-    
-    for v in graph[u]:
-      in_degree[v] -= 1
-      if in_degree[v] == 0:
-        queue.append(v)
-  
-  return result if len(result) == n else None  # Cycle detected
+  for v in graph[u]:
+   in_degree[v] -= 1
+   if in_degree[v] == 0:
+    queue.append(v)
+ 
+ return result if len(result) == n else None  # Cycle detected
 
 def topological_sort_dfs(graph):
-  n = len(graph)
-  visited = [False] * n
-  stack = []
-  
-  def dfs(node):
-    visited[node] = True
-    for neighbor in graph[node]:
-      if not visited[neighbor]:
-        dfs(neighbor)
-    stack.append(node)
-  
-  for i in range(n):
-    if not visited[i]:
-      dfs(i)
-  
-  return stack[::-1]
+ n = len(graph)
+ visited = [False] * n
+ stack = []
+ 
+ def dfs(node):
+  visited[node] = True
+  for neighbor in graph[node]:
+   if not visited[neighbor]:
+    dfs(neighbor)
+  stack.append(node)
+ 
+ for i in range(n):
+  if not visited[i]:
+   dfs(i)
+ 
+ return stack[::-1]
 ```
 
 ## Tips for Success

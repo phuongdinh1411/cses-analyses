@@ -44,16 +44,16 @@ The minimum number of moves for Tower of Hanoi with N disks is **2^N - 1**.
 MOD = 10**9 + 7
 
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    # Tower of Hanoi formula: 2^n - 1
-    result = (pow(2, n, MOD) - 1) % MOD
-    print(result)
+ for _ in range(t):
+  n = int(input())
+  # Tower of Hanoi formula: 2^n - 1
+  result = (pow(2, n, MOD) - 1) % MOD
+  print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Solution with Fast Modular Exponentiation
@@ -62,41 +62,41 @@ if __name__ == "__main__":
 MOD = 10**9 + 7
 
 def mod_pow(base, exp, mod):
-  """Fast modular exponentiation"""
-  result = 1
-  base %= mod
+ """Fast modular exponentiation"""
+ result = 1
+ base %= mod
 
-  while exp > 0:
-    if exp % 2 == 1:
-      result = (result * base) % mod
-    exp //= 2
-    base = (base * base) % mod
+ while exp > 0:
+  if exp % 2 == 1:
+   result = (result * base) % mod
+  exp //= 2
+  base = (base * base) % mod
 
-  return result
+ return result
 
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    result = (mod_pow(2, n, MOD) - 1 + MOD) % MOD
-    print(result)
+ for _ in range(t):
+  n = int(input())
+  result = (mod_pow(2, n, MOD) - 1 + MOD) % MOD
+  print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### One-liner Solution
 
 ```python
 def solve():
-  M = 10**9 + 7
-  t = int(input())
-  for _ in range(t):
-    print((pow(2, int(input()), M) - 1) % M)
+ M = 10**9 + 7
+ t = int(input())
+ for _ in range(t):
+  print((pow(2, int(input()), M) - 1) % M)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

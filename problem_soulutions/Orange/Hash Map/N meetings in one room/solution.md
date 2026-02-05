@@ -35,64 +35,64 @@ This is the classic Activity Selection problem. Greedy approach:
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    starts = list(map(int, input().split()))
-    ends = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  starts = list(map(int, input().split()))
+  ends = list(map(int, input().split()))
 
-    # Create list of (end_time, start_time, original_index)
-    meetings = [(ends[i], starts[i], i + 1) for i in range(n)]
+  # Create list of (end_time, start_time, original_index)
+  meetings = [(ends[i], starts[i], i + 1) for i in range(n)]
 
-    # Sort by end time
-    meetings.sort()
+  # Sort by end time
+  meetings.sort()
 
-    result = []
-    last_end = -1
+  result = []
+  last_end = -1
 
-    for end, start, idx in meetings:
-      if start > last_end:
-        result.append(idx)
-        last_end = end
+  for end, start, idx in meetings:
+   if start > last_end:
+    result.append(idx)
+    last_end = end
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    starts = list(map(int, input().split()))
-    ends = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  starts = list(map(int, input().split()))
+  ends = list(map(int, input().split()))
 
-    # Create meetings with 1-based index
-    meetings = []
-    for i in range(n):
-      meetings.append((ends[i], starts[i], i + 1))
+  # Create meetings with 1-based index
+  meetings = []
+  for i in range(n):
+   meetings.append((ends[i], starts[i], i + 1))
 
-    # Sort by end time, then by start time
-    meetings.sort(key=lambda x: (x[0], x[1]))
+  # Sort by end time, then by start time
+  meetings.sort(key=lambda x: (x[0], x[1]))
 
-    selected = []
-    prev_end = 0
+  selected = []
+  prev_end = 0
 
-    for end, start, idx in meetings:
-      if start >= prev_end:
-        selected.append(idx)
-        prev_end = end
+  for end, start, idx in meetings:
+   if start >= prev_end:
+    selected.append(idx)
+    prev_end = end
 
-    print(' '.join(map(str, selected)))
+  print(' '.join(map(str, selected)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

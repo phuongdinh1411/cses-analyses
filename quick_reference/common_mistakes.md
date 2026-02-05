@@ -16,8 +16,8 @@ permalink: /quick_reference/common_mistakes
 ```python
 # Wrong: O(n)
 for i in range(n):
-    for j in range(n):
-        # operations
+  for j in range(n):
+    # operations
 ```
 **Fix**: Look for ways to reduce nested loops
 
@@ -68,15 +68,15 @@ dp = [0] * n  # if only current row needed
 ```python
 # Wrong: Stack overflow for large n
 def factorial(n):
-    if n <= 1: return 1
-    return n * factorial(n-1)
+  if n <= 1: return 1
+  return n * factorial(n-1)
 
 # Correct: Iterative
 def factorial(n):
-    result = 1
-    for i in range(1, n+1):
-        result *= i
-    return result
+  result = 1
+  for i in range(1, n+1):
+    result *= i
+  return result
 ```
 
 ### ❌ String Concatenation in Loops
@@ -87,7 +87,7 @@ def factorial(n):
 # Wrong: O(n²)
 result = ""
 for i in range(n):
-    result += str(i)
+  result += str(i)
 
 # Correct: O(n)
 result = "".join(str(i) for i in range(n))
@@ -102,13 +102,13 @@ result = "".join(str(i) for i in range(n))
 ```python
 # Wrong: Crashes on empty array
 def max_element(arr):
-    return max(arr)
+  return max(arr)
 
 # Correct: Handle empty case
 def max_element(arr):
-    if not arr:
-        return None
-    return max(arr)
+  if not arr:
+    return None
+  return max(arr)
 ```
 
 ### ❌ Single Element
@@ -118,13 +118,13 @@ def max_element(arr):
 ```python
 # Wrong: May fail for single element
 def find_second_max(arr):
-    return sorted(arr)[-2]
+  return sorted(arr)[-2]
 
 # Correct: Handle single element
 def find_second_max(arr):
-    if len(arr) < 2:
-        return None
-    return sorted(arr)[-2]
+  if len(arr) < 2:
+    return None
+  return sorted(arr)[-2]
 ```
 
 ### ❌ Negative Numbers
@@ -134,13 +134,13 @@ def find_second_max(arr):
 ```python
 # Wrong: May fail with negatives
 def sqrt_floor(n):
-    return int(n ** 0.5)
+  return int(n ** 0.5)
 
 # Correct: Handle negatives
 def sqrt_floor(n):
-    if n < 0:
-        return None
-    return int(n ** 0.5)
+  if n < 0:
+    return None
+  return int(n ** 0.5)
 ```
 
 ### ❌ Integer Overflow
@@ -150,17 +150,17 @@ def sqrt_floor(n):
 ```python
 # Wrong: Overflow for large numbers
 def factorial(n):
-    result = 1
-    for i in range(1, n+1):
-        result *= i
-    return result
+  result = 1
+  for i in range(1, n+1):
+    result *= i
+  return result
 
 # Correct: Use modular arithmetic
 def factorial_mod(n, mod):
-    result = 1
-    for i in range(1, n+1):
-        result = (result * i) % mod
-    return result
+  result = 1
+  for i in range(1, n+1):
+    result = (result * i) % mod
+  return result
 ```
 
 ## 🔍 Algorithm Selection Mistakes
@@ -172,21 +172,21 @@ def factorial_mod(n, mod):
 ```python
 # Wrong: O(n²) for large n
 def find_pair_sum(arr, target):
-    for i in range(len(arr)):
-        for j in range(i+1, len(arr)):
-            if arr[i] + arr[j] == target:
-                return (i, j)
-    return None
+  for i in range(len(arr)):
+    for j in range(i+1, len(arr)):
+      if arr[i] + arr[j] == target:
+        return (i, j)
+  return None
 
 # Correct: O(n) with hash set
 def find_pair_sum(arr, target):
-    seen = set()
-    for i, num in enumerate(arr):
-        complement = target - num
-        if complement in seen:
-            return (arr.index(complement), i)
-        seen.add(num)
-    return None
+  seen = set()
+  for i, num in enumerate(arr):
+    complement = target - num
+    if complement in seen:
+      return (arr.index(complement), i)
+    seen.add(num)
+  return None
 ```
 
 ### ❌ Over-engineering Simple Problems
@@ -196,15 +196,15 @@ def find_pair_sum(arr, target):
 ```python
 # Wrong: Complex DP for simple problem
 def sum_array(arr):
-    dp = [0] * len(arr)
-    dp[0] = arr[0]
-    for i in range(1, len(arr)):
-        dp[i] = dp[i-1] + arr[i]
-    return dp[-1]
+  dp = [0] * len(arr)
+  dp[0] = arr[0]
+  for i in range(1, len(arr)):
+    dp[i] = dp[i-1] + arr[i]
+  return dp[-1]
 
 # Correct: Simple solution
 def sum_array(arr):
-    return sum(arr)
+  return sum(arr)
 ```
 
 ## 🔢 Mathematical Mistakes
@@ -216,13 +216,13 @@ def sum_array(arr):
 ```python
 # Wrong: Division by zero
 def average(arr):
-    return sum(arr) / len(arr)
+  return sum(arr) / len(arr)
 
 # Correct: Check for empty array
 def average(arr):
-    if not arr:
-        return 0
-    return sum(arr) / len(arr)
+  if not arr:
+    return 0
+  return sum(arr) / len(arr)
 ```
 
 ### ❌ Floating Point Precision
@@ -232,11 +232,11 @@ def average(arr):
 ```python
 # Wrong: Floating point comparison
 def is_equal(a, b):
-    return abs(a - b) < 1e-9
+  return abs(a - b) < 1e-9
 
 # Correct: Integer comparison
 def is_equal(a, b):
-    return a == b
+  return a == b
 ```
 
 ### ❌ Modulo with Negative Numbers
@@ -246,11 +246,11 @@ def is_equal(a, b):
 ```python
 # Wrong: Incorrect for negative numbers
 def mod(a, m):
-    return a % m
+  return a % m
 
 # Correct: Handle negatives
 def mod(a, m):
-    return ((a % m) + m) % m
+  return ((a % m) + m) % m
 ```
 
 ## 🎯 Prevention Strategies

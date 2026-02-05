@@ -164,29 +164,29 @@ Difference: |9 - 7| = 2
 
 ```python
 def solve():
-  n = int(input())
-  weights = list(map(int, input().split()))
+ n = int(input())
+ weights = list(map(int, input().split()))
 
-  total = sum(weights)
-  min_diff = total  # worst case: all in one group
+ total = sum(weights)
+ min_diff = total  # worst case: all in one group
 
-  # Enumerate all 2^n subsets
-  for mask in range(1 << n):
-    group1_sum = 0
+ # Enumerate all 2^n subsets
+ for mask in range(1 << n):
+  group1_sum = 0
 
-    # Calculate sum for Group 1 (bits that are set)
-    for i in range(n):
-      if mask & (1 << i):
-        group1_sum += weights[i]
+  # Calculate sum for Group 1 (bits that are set)
+  for i in range(n):
+   if mask & (1 << i):
+    group1_sum += weights[i]
 
-    # Group 2 sum is total - group1_sum
-    group2_sum = total - group1_sum
+  # Group 2 sum is total - group1_sum
+  group2_sum = total - group1_sum
 
-    # Update minimum difference
-    diff = abs(group1_sum - group2_sum)
-    min_diff = min(min_diff, diff)
+  # Update minimum difference
+  diff = abs(group1_sum - group2_sum)
+  min_diff = min(min_diff, diff)
 
-  print(min_diff)
+ print(min_diff)
 
 solve()
 ```

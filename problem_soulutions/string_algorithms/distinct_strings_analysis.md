@@ -93,20 +93,20 @@ Generate all substrings and store them in a set to count unique ones.
 
 ```python
 def count_distinct_brute(s):
-  """
-  Brute force using a set to store all substrings.
+ """
+ Brute force using a set to store all substrings.
 
-  Time: O(n^3) for generation + hashing
-  Space: O(n^2) to store all substrings
-  """
-  n = len(s)
-  substrings = set()
+ Time: O(n^3) for generation + hashing
+ Space: O(n^2) to store all substrings
+ """
+ n = len(s)
+ substrings = set()
 
-  for i in range(n):
-    for j in range(i + 1, n + 1):
-      substrings.add(s[i:j])
+ for i in range(n):
+  for j in range(i + 1, n + 1):
+   substrings.add(s[i:j])
 
-  return len(substrings)
+ return len(substrings)
 ```
 
 ### Complexity
@@ -191,55 +191,55 @@ Sorted Suffixes:      Length:   LCP with prev:   New substrings:
 
 ```python
 def build_suffix_array(s):
-  """Build suffix array using O(n log n) algorithm."""
-  n = len(s)
-  suffixes = [(s[i:], i) for i in range(n)]
-  suffixes.sort()
-  return [idx for _, idx in suffixes]
+ """Build suffix array using O(n log n) algorithm."""
+ n = len(s)
+ suffixes = [(s[i:], i) for i in range(n)]
+ suffixes.sort()
+ return [idx for _, idx in suffixes]
 
 def build_lcp_array(s, sa):
-  """Kasai's algorithm for LCP array in O(n)."""
-  n = len(s)
-  rank = [0] * n
-  lcp = [0] * n
+ """Kasai's algorithm for LCP array in O(n)."""
+ n = len(s)
+ rank = [0] * n
+ lcp = [0] * n
 
-  for i, suffix_idx in enumerate(sa):
-    rank[suffix_idx] = i
+ for i, suffix_idx in enumerate(sa):
+  rank[suffix_idx] = i
 
-  k = 0
-  for i in range(n):
-    if rank[i] == 0:
-      k = 0
-      continue
+ k = 0
+ for i in range(n):
+  if rank[i] == 0:
+   k = 0
+   continue
 
-    j = sa[rank[i] - 1]
-    while i + k < n and j + k < n and s[i + k] == s[j + k]:
-      k += 1
+  j = sa[rank[i] - 1]
+  while i + k < n and j + k < n and s[i + k] == s[j + k]:
+   k += 1
 
-    lcp[rank[i]] = k
-    if k > 0:
-      k -= 1
+  lcp[rank[i]] = k
+  if k > 0:
+   k -= 1
 
-  return lcp
+ return lcp
 
 def count_distinct_substrings(s):
-  """
-  Count distinct substrings using Suffix Array + LCP.
+ """
+ Count distinct substrings using Suffix Array + LCP.
 
-  Time: O(n log n) for suffix array, O(n) for LCP
-  Space: O(n) for arrays
-  """
-  n = len(s)
-  if n == 0:
-    return 0
+ Time: O(n log n) for suffix array, O(n) for LCP
+ Space: O(n) for arrays
+ """
+ n = len(s)
+ if n == 0:
+  return 0
 
-  sa = build_suffix_array(s)
-  lcp = build_lcp_array(s, sa)
+ sa = build_suffix_array(s)
+ lcp = build_lcp_array(s, sa)
 
-  total = n * (n + 1) // 2
-  duplicates = sum(lcp)
+ total = n * (n + 1) // 2
+ duplicates = sum(lcp)
 
-  return total - duplicates
+ return total - duplicates
 
 # Read input and solve
 s = input().strip()

@@ -181,38 +181,38 @@ import sys
 from math import gcd
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
 
-  vertices = []
-  for _ in range(n):
-    x = int(input_data[idx]); idx += 1
-    y = int(input_data[idx]); idx += 1
-    vertices.append((x, y))
+ vertices = []
+ for _ in range(n):
+  x = int(input_data[idx]); idx += 1
+  y = int(input_data[idx]); idx += 1
+  vertices.append((x, y))
 
-  # Calculate 2*Area using Shoelace formula (keep as integer)
-  area2 = 0
-  for i in range(n):
-    j = (i + 1) % n
-    area2 += vertices[i][0] * vertices[j][1]
-    area2 -= vertices[j][0] * vertices[i][1]
-  area2 = abs(area2)
+ # Calculate 2*Area using Shoelace formula (keep as integer)
+ area2 = 0
+ for i in range(n):
+  j = (i + 1) % n
+  area2 += vertices[i][0] * vertices[j][1]
+  area2 -= vertices[j][0] * vertices[i][1]
+ area2 = abs(area2)
 
-  # Count boundary lattice points
-  boundary = 0
-  for i in range(n):
-    j = (i + 1) % n
-    dx = abs(vertices[j][0] - vertices[i][0])
-    dy = abs(vertices[j][1] - vertices[i][1])
-    boundary += gcd(dx, dy)
+ # Count boundary lattice points
+ boundary = 0
+ for i in range(n):
+  j = (i + 1) % n
+  dx = abs(vertices[j][0] - vertices[i][0])
+  dy = abs(vertices[j][1] - vertices[i][1])
+  boundary += gcd(dx, dy)
 
-  # Pick's theorem: A = I + B/2 - 1
-  # Rearranged: I = A - B/2 + 1
-  # Using 2A to avoid floating point: 2I = 2A - B + 2
-  interior = (area2 - boundary + 2) // 2
+ # Pick's theorem: A = I + B/2 - 1
+ # Rearranged: I = A - B/2 + 1
+ # Using 2A to avoid floating point: 2I = 2A - B + 2
+ interior = (area2 - boundary + 2) // 2
 
-  print(interior, boundary)
+ print(interior, boundary)
 
 solve()
 ```

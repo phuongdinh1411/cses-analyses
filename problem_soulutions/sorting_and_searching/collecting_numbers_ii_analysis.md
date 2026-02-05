@@ -164,66 +164,66 @@ Pos:    2   1   4   0   3         Pos:    1   2   4   0   3
 
 ```python
 def solve():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  n, m = map(int, input().split())
-  arr = list(map(int, input().split()))
+ n, m = map(int, input().split())
+ arr = list(map(int, input().split()))
 
-  # pos[value] = index (0-indexed)
-  pos = [0] * (n + 2)  # Extra space to avoid boundary checks
-  for i in range(n):
-    pos[arr[i]] = i
+ # pos[value] = index (0-indexed)
+ pos = [0] * (n + 2)  # Extra space to avoid boundary checks
+ for i in range(n):
+  pos[arr[i]] = i
 
-  def is_break(x):
-    """Check if there's a break between value x and x+1."""
-    if x < 1 or x >= n:
-      return 0
-    return 1 if pos[x] > pos[x + 1] else 0
+ def is_break(x):
+  """Check if there's a break between value x and x+1."""
+  if x < 1 or x >= n:
+   return 0
+  return 1 if pos[x] > pos[x + 1] else 0
 
-  # Calculate initial rounds
-  rounds = 1
-  for x in range(1, n):
-    rounds += is_break(x)
+ # Calculate initial rounds
+ rounds = 1
+ for x in range(1, n):
+  rounds += is_break(x)
 
-  results = []
+ results = []
 
-  for _ in range(m):
-    a, b = map(int, input().split())
-    a -= 1  # Convert to 0-indexed
-    b -= 1
+ for _ in range(m):
+  a, b = map(int, input().split())
+  a -= 1  # Convert to 0-indexed
+  b -= 1
 
-    if a > b:
-      a, b = b, a
+  if a > b:
+   a, b = b, a
 
-    valA = arr[a]
-    valB = arr[b]
+  valA = arr[a]
+  valB = arr[b]
 
-    # Values whose break status might change
-    affected = set()
-    for v in [valA - 1, valA, valB - 1, valB]:
-      if 1 <= v < n:
-        affected.add(v)
+  # Values whose break status might change
+  affected = set()
+  for v in [valA - 1, valA, valB - 1, valB]:
+   if 1 <= v < n:
+    affected.add(v)
 
-    # Remove old breaks
-    for v in affected:
-      rounds -= is_break(v)
+  # Remove old breaks
+  for v in affected:
+   rounds -= is_break(v)
 
-    # Perform swap
-    arr[a], arr[b] = arr[b], arr[a]
-    pos[valA] = b
-    pos[valB] = a
+  # Perform swap
+  arr[a], arr[b] = arr[b], arr[a]
+  pos[valA] = b
+  pos[valB] = a
 
-    # Add new breaks
-    for v in affected:
-      rounds += is_break(v)
+  # Add new breaks
+  for v in affected:
+   rounds += is_break(v)
 
-    results.append(rounds)
+  results.append(rounds)
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -260,8 +260,8 @@ affected = {valA - 1, valA, valB - 1, valB}
 # CORRECT: Use a set to deduplicate affected break points
 affected = set()
 for v in [valA - 1, valA, valB - 1, valB]:
-  if 1 <= v < n:
-    affected.add(v)
+ if 1 <= v < n:
+  affected.add(v)
 ```
 
 **Problem:** When swapped values are consecutive (like 2 and 3), valA and valB-1 might be the same.

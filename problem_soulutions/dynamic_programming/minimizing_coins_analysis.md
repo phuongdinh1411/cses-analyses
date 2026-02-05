@@ -169,43 +169,43 @@ dp:    [0] [1] [2] [1] [1] [2] [2]
 
 ```python
 def minimizing_coins(n, x, coins):
-  """
-  Find minimum coins to make sum x.
+ """
+ Find minimum coins to make sum x.
 
-  Args:
-    n: number of coin types
-    x: target sum
-    coins: list of coin values
+ Args:
+  n: number of coin types
+  x: target sum
+  coins: list of coin values
 
-  Returns:
-    Minimum coins needed, or -1 if impossible
-  """
-  INF = float('inf')
+ Returns:
+  Minimum coins needed, or -1 if impossible
+ """
+ INF = float('inf')
 
-  # dp[i] = minimum coins to make sum i
-  dp = [INF] * (x + 1)
-  dp[0] = 0  # Base case: 0 coins for sum 0
+ # dp[i] = minimum coins to make sum i
+ dp = [INF] * (x + 1)
+ dp[0] = 0  # Base case: 0 coins for sum 0
 
-  # Build up solutions for sums 1 to x
-  for i in range(1, x + 1):
-    for coin in coins:
-      if coin <= i and dp[i - coin] != INF:
-        dp[i] = min(dp[i], dp[i - coin] + 1)
+ # Build up solutions for sums 1 to x
+ for i in range(1, x + 1):
+  for coin in coins:
+   if coin <= i and dp[i - coin] != INF:
+    dp[i] = min(dp[i], dp[i - coin] + 1)
 
-  # Convert infinity to -1 for impossible case
-  return dp[x] if dp[x] != INF else -1
+ # Convert infinity to -1 for impossible case
+ return dp[x] if dp[x] != INF else -1
 
 
 def main():
-  line1 = input().split()
-  n, x = int(line1[0]), int(line1[1])
-  coins = list(map(int, input().split()))
+ line1 = input().split()
+ n, x = int(line1[0]), int(line1[1])
+ coins = list(map(int, input().split()))
 
-  print(minimizing_coins(n, x, coins))
+ print(minimizing_coins(n, x, coins))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Common Mistakes

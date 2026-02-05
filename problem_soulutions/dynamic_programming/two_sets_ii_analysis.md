@@ -130,37 +130,37 @@ Final answer = 8 / 2 = 4
 
 ```python
 def two_sets_ii(n: int) -> int:
-  MOD = 10**9 + 7
+ MOD = 10**9 + 7
 
-  # Calculate total sum
-  total = n * (n + 1) // 2
+ # Calculate total sum
+ total = n * (n + 1) // 2
 
-  # If odd, impossible to partition equally
-  if total % 2 == 1:
-    return 0
+ # If odd, impossible to partition equally
+ if total % 2 == 1:
+  return 0
 
-  target = total // 2
+ target = total // 2
 
-  # dp[s] = number of ways to achieve sum s
-  dp = [0] * (target + 1)
-  dp[0] = 1  # One way to form sum 0
+ # dp[s] = number of ways to achieve sum s
+ dp = [0] * (target + 1)
+ dp[0] = 1  # One way to form sum 0
 
-  # Process each number from 1 to n
-  for i in range(1, n + 1):
-    # Iterate in reverse to avoid using same number twice
-    for s in range(target, i - 1, -1):
-      dp[s] = (dp[s] + dp[s - i]) % MOD
+ # Process each number from 1 to n
+ for i in range(1, n + 1):
+  # Iterate in reverse to avoid using same number twice
+  for s in range(target, i - 1, -1):
+   dp[s] = (dp[s] + dp[s - i]) % MOD
 
-  # Divide by 2 to account for symmetry (A,B) = (B,A)
-  # Use modular inverse: inv(2) = 2^(MOD-2) mod MOD
-  inv2 = pow(2, MOD - 2, MOD)
-  return (dp[target] * inv2) % MOD
+ # Divide by 2 to account for symmetry (A,B) = (B,A)
+ # Use modular inverse: inv(2) = 2^(MOD-2) mod MOD
+ inv2 = pow(2, MOD - 2, MOD)
+ return (dp[target] * inv2) % MOD
 
 
 # Example usage
 if __name__ == "__main__":
-  n = int(input())
-  print(two_sets_ii(n))
+ n = int(input())
+ print(two_sets_ii(n))
 ```
 
 ## Common Mistakes

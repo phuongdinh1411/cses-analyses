@@ -32,43 +32,43 @@ Since total allowed cells ≤ 10^5, use BFS on the sparse graph. Store allowed c
 from collections import deque
 
 def solve():
-  x0, y0, x1, y1 = map(int, input().split())
-  n = int(input())
+ x0, y0, x1, y1 = map(int, input().split())
+ n = int(input())
 
-  allowed = set()
-  allowed.add((x0, y0))
-  allowed.add((x1, y1))
+ allowed = set()
+ allowed.add((x0, y0))
+ allowed.add((x1, y1))
 
-  for _ in range(n):
-    r, a, b = map(int, input().split())
-    for c in range(a, b + 1):
-      allowed.add((r, c))
+ for _ in range(n):
+  r, a, b = map(int, input().split())
+  for c in range(a, b + 1):
+   allowed.add((r, c))
 
-  # BFS
-  dx = [0, 0, 1, -1, 1, -1, 1, -1]
-  dy = [1, -1, 0, 0, 1, -1, -1, 1]
+ # BFS
+ dx = [0, 0, 1, -1, 1, -1, 1, -1]
+ dy = [1, -1, 0, 0, 1, -1, -1, 1]
 
-  dist = {(x0, y0): 0}
-  queue = deque([(x0, y0)])
+ dist = {(x0, y0): 0}
+ queue = deque([(x0, y0)])
 
-  while queue:
-    x, y = queue.popleft()
+ while queue:
+  x, y = queue.popleft()
 
-    if (x, y) == (x1, y1):
-      print(dist[(x, y)])
-      return
+  if (x, y) == (x1, y1):
+   print(dist[(x, y)])
+   return
 
-    for i in range(8):
-      nx, ny = x + dx[i], y + dy[i]
+  for i in range(8):
+   nx, ny = x + dx[i], y + dy[i]
 
-      if (nx, ny) in allowed and (nx, ny) not in dist:
-        dist[(nx, ny)] = dist[(x, y)] + 1
-        queue.append((nx, ny))
+   if (nx, ny) in allowed and (nx, ny) not in dist:
+    dist[(nx, ny)] = dist[(x, y)] + 1
+    queue.append((nx, ny))
 
-  print(-1)
+ print(-1)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with Set Operations
@@ -77,44 +77,44 @@ if __name__ == "__main__":
 from collections import deque
 
 def solve():
-  x0, y0, x1, y1 = map(int, input().split())
-  n = int(input())
+ x0, y0, x1, y1 = map(int, input().split())
+ n = int(input())
 
-  allowed = set()
+ allowed = set()
 
-  for _ in range(n):
-    r, a, b = map(int, input().split())
-    for c in range(a, b + 1):
-      allowed.add((r, c))
+ for _ in range(n):
+  r, a, b = map(int, input().split())
+  for c in range(a, b + 1):
+   allowed.add((r, c))
 
-  # King moves: 8 directions
-  directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+ # King moves: 8 directions
+ directions = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
-  if (x0, y0) not in allowed or (x1, y1) not in allowed:
-    print(-1)
-    return
-
-  visited = set()
-  queue = deque([(x0, y0, 0)])
-  visited.add((x0, y0))
-
-  while queue:
-    x, y, d = queue.popleft()
-
-    if x == x1 and y == y1:
-      print(d)
-      return
-
-    for dx, dy in directions:
-      nx, ny = x + dx, y + dy
-      if (nx, ny) in allowed and (nx, ny) not in visited:
-        visited.add((nx, ny))
-        queue.append((nx, ny, d + 1))
-
+ if (x0, y0) not in allowed or (x1, y1) not in allowed:
   print(-1)
+  return
+
+ visited = set()
+ queue = deque([(x0, y0, 0)])
+ visited.add((x0, y0))
+
+ while queue:
+  x, y, d = queue.popleft()
+
+  if x == x1 and y == y1:
+   print(d)
+   return
+
+  for dx, dy in directions:
+   nx, ny = x + dx, y + dy
+   if (nx, ny) in allowed and (nx, ny) not in visited:
+    visited.add((nx, ny))
+    queue.append((nx, ny, d + 1))
+
+ print(-1)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

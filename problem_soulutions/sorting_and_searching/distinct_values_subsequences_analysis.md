@@ -108,25 +108,25 @@ Check every possible subarray and count distinct elements using a set.
 
 ```python
 def count_subarrays_brute(arr, k):
-  """
-  Brute force solution - check all subarrays.
+ """
+ Brute force solution - check all subarrays.
 
-  Time: O(n^2)
-  Space: O(n)
-  """
-  n = len(arr)
-  count = 0
+ Time: O(n^2)
+ Space: O(n)
+ """
+ n = len(arr)
+ count = 0
 
-  for i in range(n):
-    distinct = set()
-    for j in range(i, n):
-      distinct.add(arr[j])
-      if len(distinct) <= k:
-        count += 1
-      else:
-        break  # Further extension only adds more distinct
+ for i in range(n):
+  distinct = set()
+  for j in range(i, n):
+   distinct.add(arr[j])
+   if len(distinct) <= k:
+    count += 1
+   else:
+    break  # Further extension only adds more distinct
 
-  return count
+ return count
 ```
 
 ### Complexity
@@ -253,47 +253,47 @@ right=4:      [3, 1, 1] distinct={3,1}  count+=3  total=10
 
 ```python
 def count_subarrays_optimal(arr, k):
-  """
-  Optimal solution using sliding window.
+ """
+ Optimal solution using sliding window.
 
-  Time: O(n) - each element added and removed at most once
-  Space: O(min(n, k)) - hash map stores at most k+1 distinct elements
-  """
-  n = len(arr)
-  freq = {}
-  left = 0
-  count = 0
+ Time: O(n) - each element added and removed at most once
+ Space: O(min(n, k)) - hash map stores at most k+1 distinct elements
+ """
+ n = len(arr)
+ freq = {}
+ left = 0
+ count = 0
 
-  for right in range(n):
-    # Add arr[right] to window
-    freq[arr[right]] = freq.get(arr[right], 0) + 1
+ for right in range(n):
+  # Add arr[right] to window
+  freq[arr[right]] = freq.get(arr[right], 0) + 1
 
-    # Shrink window while we have more than k distinct values
-    while len(freq) > k:
-      freq[arr[left]] -= 1
-      if freq[arr[left]] == 0:
-        del freq[arr[left]]
-      left += 1
+  # Shrink window while we have more than k distinct values
+  while len(freq) > k:
+   freq[arr[left]] -= 1
+   if freq[arr[left]] == 0:
+    del freq[arr[left]]
+   left += 1
 
-    # All subarrays ending at right with start in [left, right] are valid
-    count += right - left + 1
+  # All subarrays ending at right with start in [left, right] are valid
+  count += right - left + 1
 
-  return count
+ return count
 
 
 def solve():
-  import sys
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  k = int(input_data[idx]); idx += 1
-  arr = [int(input_data[idx + i]) for i in range(n)]
+ import sys
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ k = int(input_data[idx]); idx += 1
+ arr = [int(input_data[idx + i]) for i in range(n)]
 
-  print(count_subarrays_optimal(arr, k))
+ print(count_subarrays_optimal(arr, k))
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -322,7 +322,7 @@ left += 1
 # CORRECT - delete entry when frequency becomes 0
 freq[arr[left]] -= 1
 if freq[arr[left]] == 0:
-  del freq[arr[left]]
+ del freq[arr[left]]
 left += 1
 ```
 
@@ -380,7 +380,7 @@ count += right - left + 1
 To count subarrays with **exactly K** distinct values:
 ```python
 def exactly_k_distinct(arr, k):
-  return at_most_k_distinct(arr, k) - at_most_k_distinct(arr, k - 1)
+ return at_most_k_distinct(arr, k) - at_most_k_distinct(arr, k - 1)
 ```
 
 ---

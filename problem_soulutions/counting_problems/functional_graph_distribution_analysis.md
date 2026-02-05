@@ -109,21 +109,21 @@ Generate all possible functional graphs by trying every combination of edge assi
 
 ```python
 def count_functional_graphs_brute(n, mod=10**9+7):
-  """
-  Brute force: enumerate all functional graphs.
+ """
+ Brute force: enumerate all functional graphs.
 
-  Time: O(n^n) - generates all combinations
-  Space: O(n) - recursion depth
-  """
-  def generate(node):
-    if node == n:
-      return 1
-    count = 0
-    for target in range(n):
-      count = (count + generate(node + 1)) % mod
-    return count
+ Time: O(n^n) - generates all combinations
+ Space: O(n) - recursion depth
+ """
+ def generate(node):
+  if node == n:
+   return 1
+  count = 0
+  for target in range(n):
+   count = (count + generate(node + 1)) % mod
+  return count
 
-  return generate(0)
+ return generate(0)
 ```
 
 ### Complexity
@@ -203,34 +203,34 @@ Binary Exponentiation for 3^3:
 **Python:**
 ```python
 def count_functional_graphs(n, mod=10**9+7):
-  """
-  Optimal solution using modular exponentiation.
+ """
+ Optimal solution using modular exponentiation.
 
-  Time: O(log n)
-  Space: O(1)
-  """
-  return pow(n, n, mod)
+ Time: O(log n)
+ Space: O(1)
+ """
+ return pow(n, n, mod)
 
 
 def count_functional_graphs_manual(n, mod=10**9+7):
-  """
-  Manual implementation of modular exponentiation.
-  Useful for understanding or languages without built-in mod pow.
-  """
-  if n == 0:
-    return 1
+ """
+ Manual implementation of modular exponentiation.
+ Useful for understanding or languages without built-in mod pow.
+ """
+ if n == 0:
+  return 1
 
-  result = 1
-  base = n % mod
-  exp = n
+ result = 1
+ base = n % mod
+ exp = n
 
-  while exp > 0:
-    if exp & 1:  # exp is odd
-      result = (result * base) % mod
-    exp >>= 1
-    base = (base * base) % mod
+ while exp > 0:
+  if exp & 1:  # exp is odd
+   result = (result * base) % mod
+  exp >>= 1
+  base = (base * base) % mod
 
-  return result
+ return result
 
 
 # Main
@@ -269,7 +269,7 @@ result = pow(2, n, mod)
 ```python
 # WRONG - 0^0 needs special handling
 def solve(n):
-  return pow(n, n, mod)  # 0^0 is undefined mathematically
+ return pow(n, n, mod)  # 0^0 is undefined mathematically
 ```
 
 **Problem:** Edge case for n = 0 (depends on problem interpretation).
@@ -278,9 +278,9 @@ def solve(n):
 ```python
 # CORRECT
 def solve(n, mod=10**9+7):
-  if n == 0:
-    return 1
-  return pow(n, n, mod)
+ if n == 0:
+  return 1
+ return pow(n, n, mod)
 ```
 
 ### Mistake 4: Using Slow Exponentiation
@@ -289,7 +289,7 @@ def solve(n, mod=10**9+7):
 # WRONG - O(n) time, too slow
 result = 1
 for _ in range(n):
-  result = (result * n) % mod
+ result = (result * n) % mod
 ```
 
 **Problem:** Linear time is too slow for n up to 10^6.

@@ -209,28 +209,28 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n = int(input())
-  a = list(map(int, input().split()))
+ n = int(input())
+ a = list(map(int, input().split()))
 
-  # dp[i][j] = max score difference for current player on interval [i, j]
-  dp = [[0] * n for _ in range(n)]
+ # dp[i][j] = max score difference for current player on interval [i, j]
+ dp = [[0] * n for _ in range(n)]
 
-  # Base case: single elements
-  for i in range(n):
-    dp[i][i] = a[i]
+ # Base case: single elements
+ for i in range(n):
+  dp[i][i] = a[i]
 
-  # Fill by increasing interval length
-  for length in range(2, n + 1):
-    for i in range(n - length + 1):
-      j = i + length - 1
-      take_left = a[i] - dp[i + 1][j]
-      take_right = a[j] - dp[i][j - 1]
-      dp[i][j] = max(take_left, take_right)
+ # Fill by increasing interval length
+ for length in range(2, n + 1):
+  for i in range(n - length + 1):
+   j = i + length - 1
+   take_left = a[i] - dp[i + 1][j]
+   take_right = a[j] - dp[i][j - 1]
+   dp[i][j] = max(take_left, take_right)
 
-  print(dp[0][n - 1])
+ print(dp[0][n - 1])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity
@@ -269,8 +269,8 @@ dp[i][j] = max(a[i] + dp[i+1][j], a[j] + dp[i][j-1])
 ```python
 # WRONG - Iterating by i, j directly
 for i in range(n):
-  for j in range(i, n):
-    # dp[i+1][j] may not be computed yet!
+ for j in range(i, n):
+  # dp[i+1][j] may not be computed yet!
 ```
 
 **Problem:** When computing dp[i][j], we need dp[i+1][j] and dp[i][j-1] to be ready.

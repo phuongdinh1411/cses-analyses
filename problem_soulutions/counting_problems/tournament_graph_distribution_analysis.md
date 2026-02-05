@@ -107,17 +107,17 @@ Generate all possible edge direction assignments and count them.
 
 ```python
 def count_tournaments_brute(n):
-  """
-  Brute force: enumerate all edge directions.
+ """
+ Brute force: enumerate all edge directions.
 
-  Time: O(2^(n^2))
-  Space: O(n^2)
-  """
-  if n <= 1:
-    return 1
+ Time: O(2^(n^2))
+ Space: O(n^2)
+ """
+ if n <= 1:
+  return 1
 
-  num_edges = n * (n - 1) // 2
-  return 2 ** num_edges  # Simplified enumeration count
+ num_edges = n * (n - 1) // 2
+ return 2 ** num_edges  # Simplified enumeration count
 ```
 
 ### Complexity
@@ -201,46 +201,46 @@ After iter 3:  0      1     64       256
 
 ```python
 def count_tournaments(n: int, mod: int = 10**9 + 7) -> int:
-  """
-  Count tournament graphs using modular exponentiation.
+ """
+ Count tournament graphs using modular exponentiation.
 
-  Time: O(log(n^2)) = O(log n)
-  Space: O(1)
-  """
-  if n <= 1:
-    return 1
+ Time: O(log(n^2)) = O(log n)
+ Space: O(1)
+ """
+ if n <= 1:
+  return 1
 
-  exponent = n * (n - 1) // 2
-  return pow(2, exponent, mod)
+ exponent = n * (n - 1) // 2
+ return pow(2, exponent, mod)
 
 
 def mod_pow(base: int, exp: int, mod: int) -> int:
-  """
-  Binary exponentiation: compute base^exp mod m.
+ """
+ Binary exponentiation: compute base^exp mod m.
 
-  Time: O(log exp)
-  Space: O(1)
-  """
-  result = 1
-  base %= mod
+ Time: O(log exp)
+ Space: O(1)
+ """
+ result = 1
+ base %= mod
 
-  while exp > 0:
-    if exp & 1:  # If exp is odd
-      result = result * base % mod
-    base = base * base % mod
-    exp >>= 1
+ while exp > 0:
+  if exp & 1:  # If exp is odd
+   result = result * base % mod
+  base = base * base % mod
+  exp >>= 1
 
-  return result
+ return result
 
 
 # Main solution
 def solve():
-  n = int(input())
-  print(count_tournaments(n))
+ n = int(input())
+ print(count_tournaments(n))
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -264,13 +264,13 @@ if __name__ == "__main__":
 ```python
 # WRONG - crashes or wrong for n=0 or n=1
 def count_tournaments(n):
-  return pow(2, n * (n-1) // 2, MOD)
+ return pow(2, n * (n-1) // 2, MOD)
 
 # CORRECT - handle edge cases
 def count_tournaments(n):
-  if n <= 1:
-    return 1
-  return pow(2, n * (n-1) // 2, MOD)
+ if n <= 1:
+  return 1
+ return pow(2, n * (n-1) // 2, MOD)
 ```
 
 **Problem:** n=0 or n=1 should return 1 (one trivial tournament).

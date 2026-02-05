@@ -52,121 +52,121 @@ Precompute all anagrammatic primes up to 10^7.
 
 ```python
 def solve():
-  # Precompute all anagrammatic primes up to 10^7
-  MAX = 10**7
+ # Precompute all anagrammatic primes up to 10^7
+ MAX = 10**7
 
-  def is_prime(n):
-    if n < 2:
-      return False
-    if n == 2:
-      return True
-    if n % 2 == 0:
-      return False
-    for i in range(3, int(n**0.5) + 1, 2):
-      if n % i == 0:
-        return False
-    return True
+ def is_prime(n):
+  if n < 2:
+   return False
+  if n == 2:
+   return True
+  if n % 2 == 0:
+   return False
+  for i in range(3, int(n**0.5) + 1, 2):
+   if n % i == 0:
+    return False
+  return True
 
-  def get_permutations(n):
-    from itertools import permutations
-    digits = str(n)
-    perms = set()
-    for p in permutations(digits):
-      if p[0] != '0':  # No leading zeros
-        perms.add(int(''.join(p)))
-    return perms
+ def get_permutations(n):
+  from itertools import permutations
+  digits = str(n)
+  perms = set()
+  for p in permutations(digits):
+   if p[0] != '0':  # No leading zeros
+    perms.add(int(''.join(p)))
+  return perms
 
-  def is_anagrammatic_prime(n):
-    perms = get_permutations(n)
-    return all(is_prime(p) for p in perms)
+ def is_anagrammatic_prime(n):
+  perms = get_permutations(n)
+  return all(is_prime(p) for p in perms)
 
-  # Find all anagrammatic primes
-  anagrammatic = []
+ # Find all anagrammatic primes
+ anagrammatic = []
 
-  # Single digit primes are anagrammatic
-  for p in [2, 3, 5, 7]:
-    anagrammatic.append(p)
+ # Single digit primes are anagrammatic
+ for p in [2, 3, 5, 7]:
+  anagrammatic.append(p)
 
-  # For multi-digit, check candidates
-  # Multi-digit anagrammatic primes: 11, R2 (11 is prime)
-  # After checking: 2, 3, 5, 7, 11, R19, R23, ... repunits
+ # For multi-digit, check candidates
+ # Multi-digit anagrammatic primes: 11, R2 (11 is prime)
+ # After checking: 2, 3, 5, 7, 11, R19, R23, ... repunits
 
-  # Actually, let's just check small numbers
-  for n in range(10, 1000):
-    if is_anagrammatic_prime(n):
-      anagrammatic.append(n)
+ # Actually, let's just check small numbers
+ for n in range(10, 1000):
+  if is_anagrammatic_prime(n):
+   anagrammatic.append(n)
 
-  # For larger numbers, only repdigit 1s (repunits) could work
-  # But 111 = 3 * 37, 1111 = 11 * 101, etc.
-  # Check repunits
-  for length in range(3, 8):
-    repunit = int('1' * length)
-    if is_prime(repunit):
-      anagrammatic.append(repunit)
+ # For larger numbers, only repdigit 1s (repunits) could work
+ # But 111 = 3 * 37, 1111 = 11 * 101, etc.
+ # Check repunits
+ for length in range(3, 8):
+  repunit = int('1' * length)
+  if is_prime(repunit):
+   anagrammatic.append(repunit)
 
-  anagrammatic.sort()
+ anagrammatic.sort()
 
-  # For each query
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ # For each query
+ import sys
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    # Find next power of 10 > n
-    power = 1
-    while power <= n:
-      power *= 10
+  # Find next power of 10 > n
+  power = 1
+  while power <= n:
+   power *= 10
 
-    # Find smallest anagrammatic prime in (n, power)
-    result = 0
-    for p in anagrammatic:
-      if p > n and p < power:
-        result = p
-        break
+  # Find smallest anagrammatic prime in (n, power)
+  result = 0
+  for p in anagrammatic:
+   if p > n and p < power:
+    result = p
+    break
 
-    print(result)
+  print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Precomputed Solution
 
 ```python
 def solve():
-  # Known anagrammatic primes up to 10^7
-  # Single digits: 2, 3, 5, 7
-  # Two digits: 11
-  # Beyond that: only R2 = 11 works in reasonable range
-  # R19 = 1111111111111111111 (19 ones) is prime but > 10^7
+ # Known anagrammatic primes up to 10^7
+ # Single digits: 2, 3, 5, 7
+ # Two digits: 11
+ # Beyond that: only R2 = 11 works in reasonable range
+ # R19 = 1111111111111111111 (19 ones) is prime but > 10^7
 
-  # For this problem, anagrammatic primes are: 2, 3, 5, 7, 11
-  # After 11, next would be a repunit prime but those are very large
+ # For this problem, anagrammatic primes are: 2, 3, 5, 7, 11
+ # After 11, next would be a repunit prime but those are very large
 
-  anagrammatic = [2, 3, 5, 7, 11]
+ anagrammatic = [2, 3, 5, 7, 11]
 
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ import sys
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    # Next power of 10
-    limit = 10
-    while limit <= n:
-      limit *= 10
+  # Next power of 10
+  limit = 10
+  while limit <= n:
+   limit *= 10
 
-    result = 0
-    for p in anagrammatic:
-      if n < p < limit:
-        result = p
-        break
+  result = 0
+  for p in anagrammatic:
+   if n < p < limit:
+    result = p
+    break
 
-    print(result)
+  print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -220,129 +220,129 @@ Strategy: On the way there, use all rocks. On return, only big rocks remain. The
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    parts = input().split()
-    n, d = int(parts[0]), int(parts[1])
+ for case in range(1, t + 1):
+  parts = input().split()
+  n, d = int(parts[0]), int(parts[1])
 
-    rocks = []
-    for i in range(n):
-      rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
-      rock_type = rock[0]
-      dist = int(rock[2:])
-      rocks.append((dist, rock_type))
+  rocks = []
+  for i in range(n):
+   rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
+   rock_type = rock[0]
+   dist = int(rock[2:])
+   rocks.append((dist, rock_type))
 
-    rocks.sort()
+  rocks.sort()
 
-    # Add banks
-    positions = [0]  # left bank
-    big_positions = [0]
+  # Add banks
+  positions = [0]  # left bank
+  big_positions = [0]
 
-    for dist, rock_type in rocks:
-      positions.append(dist)
-      if rock_type == 'B':
-        big_positions.append(dist)
+  for dist, rock_type in rocks:
+   positions.append(dist)
+   if rock_type == 'B':
+    big_positions.append(dist)
 
-    positions.append(d)  # right bank
-    big_positions.append(d)
+  positions.append(d)  # right bank
+  big_positions.append(d)
 
-    # Max jump going (using all rocks)
-    max_jump_go = 0
-    for i in range(1, len(positions)):
-      max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
+  # Max jump going (using all rocks)
+  max_jump_go = 0
+  for i in range(1, len(positions)):
+   max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
 
-    # Max jump returning (only big rocks)
-    max_jump_return = 0
-    for i in range(1, len(big_positions)):
-      max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
+  # Max jump returning (only big rocks)
+  max_jump_return = 0
+  for i in range(1, len(big_positions)):
+   max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
 
-    result = max(max_jump_go, max_jump_return)
-    print(f"Case {case}: {result}")
+  result = max(max_jump_go, max_jump_return)
+  print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    line = input().split()
-    n, d = int(line[0]), int(line[1])
+ for case in range(1, t + 1):
+  line = input().split()
+  n, d = int(line[0]), int(line[1])
 
-    rocks = []
-    idx = 2
-    while len(rocks) < n:
-      if idx < len(line):
-        rocks.append(line[idx])
-        idx += 1
-      else:
-        rocks.extend(input().split())
+  rocks = []
+  idx = 2
+  while len(rocks) < n:
+   if idx < len(line):
+    rocks.append(line[idx])
+    idx += 1
+   else:
+    rocks.extend(input().split())
 
-    # Parse rocks
-    parsed = []
-    for rock in rocks:
-      rock_type = rock[0]
-      pos = int(rock.split('-')[1])
-      parsed.append((pos, rock_type))
+  # Parse rocks
+  parsed = []
+  for rock in rocks:
+   rock_type = rock[0]
+   pos = int(rock.split('-')[1])
+   parsed.append((pos, rock_type))
 
-    parsed.sort()
+  parsed.sort()
 
-    # Calculate jumps
-    all_pos = [0] + [p for p, _ in parsed] + [d]
-    big_pos = [0] + [p for p, t in parsed if t == 'B'] + [d]
+  # Calculate jumps
+  all_pos = [0] + [p for p, _ in parsed] + [d]
+  big_pos = [0] + [p for p, t in parsed if t == 'B'] + [d]
 
-    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-    max_return = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
+  max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
+  max_return = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
 
-    print(f"Case {case}: {max(max_go, max_return)}")
+  print(f"Case {case}: {max(max_go, max_return)}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Input Parsing Variant
 
 ```python
 def solve():
-  import sys
-  data = sys.stdin.read().split()
-  idx = 0
+ import sys
+ data = sys.stdin.read().split()
+ idx = 0
 
-  t = int(data[idx])
-  idx += 1
+ t = int(data[idx])
+ idx += 1
 
-  for case in range(1, t + 1):
-    n = int(data[idx])
-    d = int(data[idx + 1])
-    idx += 2
+ for case in range(1, t + 1):
+  n = int(data[idx])
+  d = int(data[idx + 1])
+  idx += 2
 
-    rocks = []
-    for _ in range(n):
-      rock = data[idx]
-      idx += 1
-      rock_type = rock[0]
-      pos = int(rock[2:])
-      rocks.append((pos, rock_type))
+  rocks = []
+  for _ in range(n):
+   rock = data[idx]
+   idx += 1
+   rock_type = rock[0]
+   pos = int(rock[2:])
+   rocks.append((pos, rock_type))
 
-    rocks.sort()
+  rocks.sort()
 
-    # All positions for going
-    all_pos = [0] + [p for p, _ in rocks] + [d]
-    # Big rocks only for return
-    big_pos = [0] + [p for p, t in rocks if t == 'B'] + [d]
+  # All positions for going
+  all_pos = [0] + [p for p, _ in rocks] + [d]
+  # Big rocks only for return
+  big_pos = [0] + [p for p, t in rocks if t == 'B'] + [d]
 
-    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-    max_ret = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
+  max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
+  max_ret = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
 
-    print(f"Case {case}: {max(max_go, max_ret)}")
+  print(f"Case {case}: {max(max_go, max_ret)}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -391,112 +391,112 @@ These are exactly the numerators of irreducible fractions m/n.
 
 ```python
 def euler_totient(n):
-  """Calculate Euler's totient function φ(n)"""
-  result = n
-  p = 2
+ """Calculate Euler's totient function φ(n)"""
+ result = n
+ p = 2
 
-  while p * p <= n:
-    if n % p == 0:
-      # Remove all factors of p
-      while n % p == 0:
-        n //= p
-      # Apply formula
-      result -= result // p
+ while p * p <= n:
+  if n % p == 0:
+   # Remove all factors of p
+   while n % p == 0:
+    n //= p
+   # Apply formula
+   result -= result // p
 
-    p += 1
+  p += 1
 
-  # If n > 1, then it's a prime factor
-  if n > 1:
-    result -= result // n
+ # If n > 1, then it's a prime factor
+ if n > 1:
+  result -= result // n
 
-  return result
+ return result
 
 def solve():
-  import sys
+ import sys
 
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    print(euler_totient(n))
+  print(euler_totient(n))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def phi(n):
-  """Euler's totient using prime factorization"""
-  result = n
-  d = 2
+ """Euler's totient using prime factorization"""
+ result = n
+ d = 2
 
-  while d * d <= n:
-    if n % d == 0:
-      result -= result // d
-      while n % d == 0:
-        n //= d
-    d += 1
+ while d * d <= n:
+  if n % d == 0:
+   result -= result // d
+   while n % d == 0:
+    n //= d
+  d += 1
 
-  if n > 1:
-    result -= result // n
+ if n > 1:
+  result -= result // n
 
-  return result
+ return result
 
 def solve():
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
-    print(phi(n))
+ import sys
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
+  print(phi(n))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Optimized
 
 ```python
 def euler_phi(n):
-  if n == 1:
-    return 1
+ if n == 1:
+  return 1
 
-  result = n
-  temp = n
+ result = n
+ temp = n
 
-  # Check for factor 2
-  if temp % 2 == 0:
-    result -= result // 2
-    while temp % 2 == 0:
-      temp //= 2
+ # Check for factor 2
+ if temp % 2 == 0:
+  result -= result // 2
+  while temp % 2 == 0:
+   temp //= 2
 
-  # Check odd factors
-  i = 3
-  while i * i <= temp:
-    if temp % i == 0:
-      result -= result // i
-      while temp % i == 0:
-        temp //= i
-    i += 2
+ # Check odd factors
+ i = 3
+ while i * i <= temp:
+  if temp % i == 0:
+   result -= result // i
+   while temp % i == 0:
+    temp //= i
+  i += 2
 
-  # Remaining prime factor
-  if temp > 1:
-    result -= result // temp
+ # Remaining prime factor
+ if temp > 1:
+  result -= result // temp
 
-  return result
+ return result
 
 def solve():
-  while True:
-    n = int(input())
-    if n == 0:
-      break
-    print(euler_phi(n))
+ while True:
+  n = int(input())
+  if n == 0:
+   break
+  print(euler_phi(n))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -543,157 +543,157 @@ For large numbers (up to 10^14), we need efficient factorization:
 
 ```python
 def largest_prime_divisor(n):
-  """Find largest prime divisor, or -1 if only one prime divides n"""
-  if n <= 1:
-    return -1
+ """Find largest prime divisor, or -1 if only one prime divides n"""
+ if n <= 1:
+  return -1
 
-  primes = []
-  temp = n
+ primes = []
+ temp = n
 
-  # Trial division
-  d = 2
-  while d * d <= temp:
-    if temp % d == 0:
-      primes.append(d)
-      while temp % d == 0:
-        temp //= d
-    d += 1
+ # Trial division
+ d = 2
+ while d * d <= temp:
+  if temp % d == 0:
+   primes.append(d)
+   while temp % d == 0:
+    temp //= d
+  d += 1
 
-  # If temp > 1, it's a prime factor
-  if temp > 1:
-    primes.append(temp)
+ # If temp > 1, it's a prime factor
+ if temp > 1:
+  primes.append(temp)
 
-  if len(primes) <= 1:
-    return -1
+ if len(primes) <= 1:
+  return -1
 
-  return max(primes)
+ return max(primes)
 
 def solve():
-  import sys
+ import sys
 
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    print(largest_prime_divisor(n))
+  print(largest_prime_divisor(n))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-  import sys
+ import sys
 
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    original = n
-    prime_factors = []
+  original = n
+  prime_factors = []
 
-    # Factor out 2
-    if n % 2 == 0:
-      prime_factors.append(2)
-      while n % 2 == 0:
-        n //= 2
+  # Factor out 2
+  if n % 2 == 0:
+   prime_factors.append(2)
+   while n % 2 == 0:
+    n //= 2
 
-    # Factor out odd numbers
-    i = 3
-    while i * i <= n:
-      if n % i == 0:
-        prime_factors.append(i)
-        while n % i == 0:
-          n //= i
-      i += 2
+  # Factor out odd numbers
+  i = 3
+  while i * i <= n:
+   if n % i == 0:
+    prime_factors.append(i)
+    while n % i == 0:
+     n //= i
+   i += 2
 
-    # Remaining prime
-    if n > 1:
-      prime_factors.append(n)
+  # Remaining prime
+  if n > 1:
+   prime_factors.append(n)
 
-    if len(prime_factors) <= 1:
-      print(-1)
-    else:
-      print(max(prime_factors))
+  if len(prime_factors) <= 1:
+   print(-1)
+  else:
+   print(max(prime_factors))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def largest_prime_divisor(n):
-  if n <= 1:
-    return -1
+ if n <= 1:
+  return -1
 
-  first_prime = None
-  largest = None
+ first_prime = None
+ largest = None
 
-  # Factor out 2
-  if n % 2 == 0:
-    first_prime = 2
-    largest = 2
-    while n % 2 == 0:
-      n //= 2
+ # Factor out 2
+ if n % 2 == 0:
+  first_prime = 2
+  largest = 2
+  while n % 2 == 0:
+   n //= 2
 
-  # Factor out odd numbers
-  d = 3
-  while d * d <= n:
-    if n % d == 0:
-      if first_prime is None:
-        first_prime = d
-      largest = d
-      while n % d == 0:
-        n //= d
-    d += 2
+ # Factor out odd numbers
+ d = 3
+ while d * d <= n:
+  if n % d == 0:
+   if first_prime is None:
+    first_prime = d
+   largest = d
+   while n % d == 0:
+    n //= d
+  d += 2
 
-  # Remaining prime factor
-  if n > 1:
-    if first_prime is None:
-      first_prime = n
-    largest = n
+ # Remaining prime factor
+ if n > 1:
+  if first_prime is None:
+   first_prime = n
+  largest = n
 
-  # If only one prime found
-  if first_prime == largest and n == 1:
-    # Check if there was only one prime
-    # Actually need to track count
-    pass
+ # If only one prime found
+ if first_prime == largest and n == 1:
+  # Check if there was only one prime
+  # Actually need to track count
+  pass
 
-  # Re-implement with proper counting
-  return largest if largest != first_prime or n > 1 else -1
+ # Re-implement with proper counting
+ return largest if largest != first_prime or n > 1 else -1
 
 def solve():
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+ while True:
+  n = int(input())
+  if n == 0:
+   break
 
-    primes = set()
-    temp = n
+  primes = set()
+  temp = n
 
-    d = 2
-    while d * d <= temp:
-      if temp % d == 0:
-        primes.add(d)
-        while temp % d == 0:
-          temp //= d
-      d += 1 if d == 2 else 2
+  d = 2
+  while d * d <= temp:
+   if temp % d == 0:
+    primes.add(d)
+    while temp % d == 0:
+     temp //= d
+   d += 1 if d == 2 else 2
 
-    if temp > 1:
-      primes.add(temp)
+  if temp > 1:
+   primes.add(temp)
 
-    if len(primes) <= 1:
-      print(-1)
-    else:
-      print(max(primes))
+  if len(primes) <= 1:
+   print(-1)
+  else:
+   print(max(primes))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -739,176 +739,176 @@ This is an inversion count problem! Use merge sort or BIT/Fenwick tree.
 
 ```python
 def solve():
-  import sys
-  from collections import defaultdict
+ import sys
+ from collections import defaultdict
 
-  input = sys.stdin.readline
+ input = sys.stdin.readline
 
-  n = int(input())
-  a = list(map(int, input().split()))
+ n = int(input())
+ a = list(map(int, input().split()))
 
-  # Compute L[i] = f(1, i, a[i])
-  L = [0] * n
-  count_left = defaultdict(int)
-  for i in range(n):
-    count_left[a[i]] += 1
-    L[i] = count_left[a[i]]
+ # Compute L[i] = f(1, i, a[i])
+ L = [0] * n
+ count_left = defaultdict(int)
+ for i in range(n):
+  count_left[a[i]] += 1
+  L[i] = count_left[a[i]]
 
-  # Compute R[j] = f(j, n, a[j])
-  R = [0] * n
-  count_right = defaultdict(int)
-  for j in range(n - 1, -1, -1):
-    count_right[a[j]] += 1
-    R[j] = count_right[a[j]]
+ # Compute R[j] = f(j, n, a[j])
+ R = [0] * n
+ count_right = defaultdict(int)
+ for j in range(n - 1, -1, -1):
+  count_right[a[j]] += 1
+  R[j] = count_right[a[j]]
 
-  # Count pairs (i, j) where i < j and L[i] > R[j]
-  # This is inversion count: count pairs where L[i] > R[j] for i < j
+ # Count pairs (i, j) where i < j and L[i] > R[j]
+ # This is inversion count: count pairs where L[i] > R[j] for i < j
 
-  # Use merge sort or BIT
-  # BIT approach: process from right to left
-  # For each j, count how many i < j have L[i] > R[j]
+ # Use merge sort or BIT
+ # BIT approach: process from right to left
+ # For each j, count how many i < j have L[i] > R[j]
 
-  # Compress R values (they're at most n)
-  # BIT[x] = count of positions j seen so far with R[j] = x
+ # Compress R values (they're at most n)
+ # BIT[x] = count of positions j seen so far with R[j] = x
 
-  # Process from left to right:
-  # For position i, we want to count j > i with R[j] < L[i]
-  # Process from right to left:
-  # At position i, count positions j > i (already processed) with R[j] < L[i]
+ # Process from left to right:
+ # For position i, we want to count j > i with R[j] < L[i]
+ # Process from right to left:
+ # At position i, count positions j > i (already processed) with R[j] < L[i]
 
-  max_val = n + 1
-  BIT = [0] * (max_val + 1)
+ max_val = n + 1
+ BIT = [0] * (max_val + 1)
 
-  def update(idx, delta=1):
-    while idx <= max_val:
-      BIT[idx] += delta
-      idx += idx & (-idx)
+ def update(idx, delta=1):
+  while idx <= max_val:
+   BIT[idx] += delta
+   idx += idx & (-idx)
 
-  def query(idx):
-    total = 0
-    while idx > 0:
-      total += BIT[idx]
-      idx -= idx & (-idx)
-    return total
+ def query(idx):
+  total = 0
+  while idx > 0:
+   total += BIT[idx]
+   idx -= idx & (-idx)
+  return total
 
-  result = 0
+ result = 0
 
-  # Process from right to left
-  for i in range(n - 1, -1, -1):
-    # Count j > i (already in BIT) with R[j] < L[i]
-    if L[i] > 1:
-      result += query(L[i] - 1)
+ # Process from right to left
+ for i in range(n - 1, -1, -1):
+  # Count j > i (already in BIT) with R[j] < L[i]
+  if L[i] > 1:
+   result += query(L[i] - 1)
 
-    # Add R[i] to BIT
-    update(R[i])
+  # Add R[i] to BIT
+  update(R[i])
 
-  print(result)
+ print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  import sys
-  from collections import defaultdict
+ import sys
+ from collections import defaultdict
 
-  input = sys.stdin.readline
+ input = sys.stdin.readline
 
-  n = int(input())
-  a = list(map(int, input().split()))
+ n = int(input())
+ a = list(map(int, input().split()))
 
-  # Compute L and R
-  L = [0] * n
-  R = [0] * n
+ # Compute L and R
+ L = [0] * n
+ R = [0] * n
 
-  cnt = defaultdict(int)
-  for i in range(n):
-    cnt[a[i]] += 1
-    L[i] = cnt[a[i]]
+ cnt = defaultdict(int)
+ for i in range(n):
+  cnt[a[i]] += 1
+  L[i] = cnt[a[i]]
 
-  cnt.clear()
-  for j in range(n - 1, -1, -1):
-    cnt[a[j]] += 1
-    R[j] = cnt[a[j]]
+ cnt.clear()
+ for j in range(n - 1, -1, -1):
+  cnt[a[j]] += 1
+  R[j] = cnt[a[j]]
 
-  # Count inversions: pairs (i, j) with i < j and L[i] > R[j]
-  def merge_count(arr, temp, left, mid, right):
-    i = left
-    j = mid + 1
-    k = left
-    count = 0
+ # Count inversions: pairs (i, j) with i < j and L[i] > R[j]
+ def merge_count(arr, temp, left, mid, right):
+  i = left
+  j = mid + 1
+  k = left
+  count = 0
 
-    while i <= mid and j <= right:
-      if arr[i][0] <= arr[j][0]:
-        temp[k] = arr[i]
-        i += 1
-      else:
-        temp[k] = arr[j]
-        count += (mid - i + 1)
-        j += 1
-      k += 1
+  while i <= mid and j <= right:
+   if arr[i][0] <= arr[j][0]:
+    temp[k] = arr[i]
+    i += 1
+   else:
+    temp[k] = arr[j]
+    count += (mid - i + 1)
+    j += 1
+   k += 1
 
-    while i <= mid:
-      temp[k] = arr[i]
-      i += 1
-      k += 1
+  while i <= mid:
+   temp[k] = arr[i]
+   i += 1
+   k += 1
 
-    while j <= right:
-      temp[k] = arr[j]
-      j += 1
-      k += 1
+  while j <= right:
+   temp[k] = arr[j]
+   j += 1
+   k += 1
 
-    for i in range(left, right + 1):
-      arr[i] = temp[i]
+  for i in range(left, right + 1):
+   arr[i] = temp[i]
 
-    return count
+  return count
 
-  def merge_sort_count(arr, temp, left, right):
-    count = 0
-    if left < right:
-      mid = (left + right) // 2
-      count += merge_sort_count(arr, temp, left, mid)
-      count += merge_sort_count(arr, temp, mid + 1, right)
-      count += merge_count(arr, temp, left, mid, right)
-    return count
+ def merge_sort_count(arr, temp, left, right):
+  count = 0
+  if left < right:
+   mid = (left + right) // 2
+   count += merge_sort_count(arr, temp, left, mid)
+   count += merge_sort_count(arr, temp, mid + 1, right)
+   count += merge_count(arr, temp, left, mid, right)
+  return count
 
-  # Create pairs (R[j], original_index) but we need L[i] > R[j]
-  # Actually need: pairs where earlier L > later R
+ # Create pairs (R[j], original_index) but we need L[i] > R[j]
+ # Actually need: pairs where earlier L > later R
 
-  # Use modified approach: create array where arr[i] = (L[i], R[i])
-  # ... this gets complex, BIT is cleaner
+ # Use modified approach: create array where arr[i] = (L[i], R[i])
+ # ... this gets complex, BIT is cleaner
 
-  # Stick with BIT solution
-  max_val = n + 1
-  BIT = [0] * (max_val + 2)
+ # Stick with BIT solution
+ max_val = n + 1
+ BIT = [0] * (max_val + 2)
 
-  def update(idx):
-    idx += 1
-    while idx <= max_val + 1:
-      BIT[idx] += 1
-      idx += idx & (-idx)
+ def update(idx):
+  idx += 1
+  while idx <= max_val + 1:
+   BIT[idx] += 1
+   idx += idx & (-idx)
 
-  def query(idx):
-    idx += 1
-    total = 0
-    while idx > 0:
-      total += BIT[idx]
-      idx -= idx & (-idx)
-    return total
+ def query(idx):
+  idx += 1
+  total = 0
+  while idx > 0:
+   total += BIT[idx]
+   idx -= idx & (-idx)
+  return total
 
-  result = 0
-  for i in range(n - 1, -1, -1):
-    if L[i] > 1:
-      result += query(L[i] - 2)  # R[j] < L[i] means R[j] <= L[i]-1
-    update(R[i] - 1)
+ result = 0
+ for i in range(n - 1, -1, -1):
+  if L[i] > 1:
+   result += query(L[i] - 2)  # R[j] < L[i] means R[j] <= L[i]-1
+  update(R[i] - 1)
 
-  print(result)
+ print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -954,99 +954,99 @@ For each test case: "N C: p1 p2 ... pk" followed by a blank line, where p1...pk 
 
 ```python
 def sieve(n):
-  """Sieve of Eratosthenes - returns primes up to n, including 1"""
-  is_prime = [True] * (n + 1)
-  is_prime[0] = False
-  if n >= 1:
-    is_prime[1] = True  # Treat 1 as prime for this problem
+ """Sieve of Eratosthenes - returns primes up to n, including 1"""
+ is_prime = [True] * (n + 1)
+ is_prime[0] = False
+ if n >= 1:
+  is_prime[1] = True  # Treat 1 as prime for this problem
 
-  for i in range(2, int(n**0.5) + 1):
-    if is_prime[i]:
-      for j in range(i*i, n + 1, i):
-        is_prime[j] = False
+ for i in range(2, int(n**0.5) + 1):
+  if is_prime[i]:
+   for j in range(i*i, n + 1, i):
+    is_prime[j] = False
 
-  return [i for i in range(n + 1) if is_prime[i]]
+ return [i for i in range(n + 1) if is_prime[i]]
 
 def solve():
-  # Precompute primes up to 1000
-  all_primes = sieve(1000)
+ # Precompute primes up to 1000
+ all_primes = sieve(1000)
 
-  import sys
-  for line in sys.stdin:
-    parts = line.split()
-    if len(parts) < 2:
-      continue
+ import sys
+ for line in sys.stdin:
+  parts = line.split()
+  if len(parts) < 2:
+   continue
 
-    n, c = int(parts[0]), int(parts[1])
+  n, c = int(parts[0]), int(parts[1])
 
-    # Get primes <= n
-    primes = [p for p in all_primes if p <= n]
-    length = len(primes)
+  # Get primes <= n
+  primes = [p for p in all_primes if p <= n]
+  length = len(primes)
 
-    # Determine how many to print
-    if length % 2 == 0:
-      count = 2 * c
-    else:
-      count = 2 * c - 1
+  # Determine how many to print
+  if length % 2 == 0:
+   count = 2 * c
+  else:
+   count = 2 * c - 1
 
-    # If count exceeds list, print all
-    if count >= length:
-      result = primes
-    else:
-      # Find center elements
-      start = (length - count) // 2
-      result = primes[start:start + count]
+  # If count exceeds list, print all
+  if count >= length:
+   result = primes
+  else:
+   # Find center elements
+   start = (length - count) // 2
+   result = primes[start:start + count]
 
-    print(f"{n} {c}:", ' '.join(map(str, result)))
-    print()
+  print(f"{n} {c}:", ' '.join(map(str, result)))
+  print()
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  # Sieve including 1 as "prime"
-  MAX_N = 1000
-  is_prime = [True] * (MAX_N + 1)
-  is_prime[0] = False
+ # Sieve including 1 as "prime"
+ MAX_N = 1000
+ is_prime = [True] * (MAX_N + 1)
+ is_prime[0] = False
 
-  for i in range(2, int(MAX_N**0.5) + 1):
-    if is_prime[i]:
-      for j in range(i*i, MAX_N + 1, i):
-        is_prime[j] = False
+ for i in range(2, int(MAX_N**0.5) + 1):
+  if is_prime[i]:
+   for j in range(i*i, MAX_N + 1, i):
+    is_prime[j] = False
 
-  primes = [1] + [i for i in range(2, MAX_N + 1) if is_prime[i]]
+ primes = [1] + [i for i in range(2, MAX_N + 1) if is_prime[i]]
 
-  import sys
-  for line in sys.stdin:
-    try:
-      n, c = map(int, line.split())
-    except:
-      continue
+ import sys
+ for line in sys.stdin:
+  try:
+   n, c = map(int, line.split())
+  except:
+   continue
 
-    # Find primes up to n
-    idx = 0
-    while idx < len(primes) and primes[idx] <= n:
-      idx += 1
-    prime_list = primes[:idx]
-    L = len(prime_list)
+  # Find primes up to n
+  idx = 0
+  while idx < len(primes) and primes[idx] <= n:
+   idx += 1
+  prime_list = primes[:idx]
+  L = len(prime_list)
 
-    # Calculate center range
-    center_count = 2 * c if L % 2 == 0 else 2 * c - 1
-    center_count = min(center_count, L)
+  # Calculate center range
+  center_count = 2 * c if L % 2 == 0 else 2 * c - 1
+  center_count = min(center_count, L)
 
-    start = (L - center_count) // 2
-    end = start + center_count
+  start = (L - center_count) // 2
+  end = start + center_count
 
-    result = prime_list[start:end]
-    print(f"{n} {c}:", ' '.join(map(str, result)))
-    print()
+  result = prime_list[start:end]
+  print(f"{n} {c}:", ' '.join(map(str, result)))
+  print()
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -1101,111 +1101,111 @@ Since pairs (x,y) and (y,x) are different unless x=y, and the only coprime pair 
 
 ```python
 def solve():
-  MAX = 50001
+ MAX = 50001
 
-  # Compute Euler's totient for all numbers up to MAX
-  phi = list(range(MAX))
+ # Compute Euler's totient for all numbers up to MAX
+ phi = list(range(MAX))
 
-  for i in range(2, MAX):
-    if phi[i] == i:  # i is prime
-      for j in range(i, MAX, i):
-        phi[j] -= phi[j] // i
+ for i in range(2, MAX):
+  if phi[i] == i:  # i is prime
+   for j in range(i, MAX, i):
+    phi[j] -= phi[j] // i
 
-  # Precompute prefix sums
-  prefix = [0] * MAX
-  for i in range(1, MAX):
-    prefix[i] = prefix[i-1] + phi[i]
+ # Precompute prefix sums
+ prefix = [0] * MAX
+ for i in range(1, MAX):
+  prefix[i] = prefix[i-1] + phi[i]
 
-  # Answer for N is 2 * prefix[N] - 1
-  # Because pairs (x,y) with gcd=1 counted twice except (1,1)
+ # Answer for N is 2 * prefix[N] - 1
+ # Because pairs (x,y) with gcd=1 counted twice except (1,1)
 
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
+ import sys
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
 
-    # Count coprime pairs (x, y) with 1 <= x, y <= n
-    # = 2 * sum(phi[1..n]) - 1
-    result = 2 * prefix[n] - 1
-    print(result)
+  # Count coprime pairs (x, y) with 1 <= x, y <= n
+  # = 2 * sum(phi[1..n]) - 1
+  result = 2 * prefix[n] - 1
+  print(result)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  MAX = 50001
+ MAX = 50001
 
-  # Sieve to compute phi
-  phi = list(range(MAX))
+ # Sieve to compute phi
+ phi = list(range(MAX))
 
-  for i in range(2, MAX):
-    if phi[i] == i:  # i is prime
-      for j in range(i, MAX, i):
-        phi[j] = phi[j] // i * (i - 1)
+ for i in range(2, MAX):
+  if phi[i] == i:  # i is prime
+   for j in range(i, MAX, i):
+    phi[j] = phi[j] // i * (i - 1)
 
-  # Prefix sum of phi values
-  total = [0] * MAX
-  for i in range(1, MAX):
-    total[i] = total[i-1] + phi[i]
+ # Prefix sum of phi values
+ total = [0] * MAX
+ for i in range(1, MAX):
+  total[i] = total[i-1] + phi[i]
 
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+ while True:
+  n = int(input())
+  if n == 0:
+   break
 
-    # Coprime pairs in [1,N] x [1,N]
-    # For each k, phi[k] counts numbers in [1,k-1] coprime with k
-    # Plus 1 for the pair (k, k) when k=1
+  # Coprime pairs in [1,N] x [1,N]
+  # For each k, phi[k] counts numbers in [1,k-1] coprime with k
+  # Plus 1 for the pair (k, k) when k=1
 
-    # Total coprime ordered pairs = 2 * sum(phi[1..N]) - 1
-    print(2 * total[n] - 1)
+  # Total coprime ordered pairs = 2 * sum(phi[1..N]) - 1
+  print(2 * total[n] - 1)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-  MAX = 50001
+ MAX = 50001
 
-  # Linear sieve for phi
-  phi = [0] * MAX
-  phi[1] = 1
+ # Linear sieve for phi
+ phi = [0] * MAX
+ phi[1] = 1
 
-  for i in range(2, MAX):
-    if phi[i] == 0:  # i is prime
-      phi[i] = i - 1
-      for j in range(2 * i, MAX, i):
-        if phi[j] == 0:
-          phi[j] = j
-        phi[j] = phi[j] // i * (i - 1)
+ for i in range(2, MAX):
+  if phi[i] == 0:  # i is prime
+   phi[i] = i - 1
+   for j in range(2 * i, MAX, i):
+    if phi[j] == 0:
+     phi[j] = j
+    phi[j] = phi[j] // i * (i - 1)
 
-  # Handle remaining unset values
-  for i in range(2, MAX):
-    if phi[i] == 0:
-      phi[i] = i - 1  # i is prime
+ # Handle remaining unset values
+ for i in range(2, MAX):
+  if phi[i] == 0:
+   phi[i] = i - 1  # i is prime
 
-  # Cumulative sum
-  cumsum = [0] * MAX
-  for i in range(1, MAX):
-    cumsum[i] = cumsum[i-1] + phi[i]
+ # Cumulative sum
+ cumsum = [0] * MAX
+ for i in range(1, MAX):
+  cumsum[i] = cumsum[i-1] + phi[i]
 
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
-    print(2 * cumsum[n] - 1)
+ import sys
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   break
+  print(2 * cumsum[n] - 1)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis

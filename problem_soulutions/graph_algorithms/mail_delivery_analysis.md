@@ -215,56 +215,56 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  m = int(input_data[idx]); idx += 1
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ m = int(input_data[idx]); idx += 1
 
-  if m == 0:
-    print(1)
-    return
+ if m == 0:
+  print(1)
+  return
 
-  # Adjacency list storing (neighbor, edge_index)
-  adj = defaultdict(list)
-  degree = [0] * (n + 1)
+ # Adjacency list storing (neighbor, edge_index)
+ adj = defaultdict(list)
+ degree = [0] * (n + 1)
 
-  for i in range(m):
-    a = int(input_data[idx]); idx += 1
-    b = int(input_data[idx]); idx += 1
-    adj[a].append([b, i])
-    adj[b].append([a, i])
-    degree[a] += 1
-    degree[b] += 1
+ for i in range(m):
+  a = int(input_data[idx]); idx += 1
+  b = int(input_data[idx]); idx += 1
+  adj[a].append([b, i])
+  adj[b].append([a, i])
+  degree[a] += 1
+  degree[b] += 1
 
-  # Check 1: All vertices must have even degree
-  for v in range(1, n + 1):
-    if degree[v] % 2 == 1:
-      print("IMPOSSIBLE")
-      return
+ # Check 1: All vertices must have even degree
+ for v in range(1, n + 1):
+  if degree[v] % 2 == 1:
+   print("IMPOSSIBLE")
+   return
 
-  # Check 2: All edges must be in same component (containing vertex 1)
-  # We'll verify this by checking if we use all m edges
+ # Check 2: All edges must be in same component (containing vertex 1)
+ # We'll verify this by checking if we use all m edges
 
-  used = [False] * m  # Track which edges are used
-  result = []
+ used = [False] * m  # Track which edges are used
+ result = []
 
-  def dfs(u):
-    while adj[u]:
-      v, edge_idx = adj[u].pop()
-      if not used[edge_idx]:
-        used[edge_idx] = True
-        dfs(v)
-    result.append(u)
+ def dfs(u):
+  while adj[u]:
+   v, edge_idx = adj[u].pop()
+   if not used[edge_idx]:
+    used[edge_idx] = True
+    dfs(v)
+  result.append(u)
 
-  dfs(1)
+ dfs(1)
 
-  # Check if all edges were used
-  if len(result) != m + 1:
-    print("IMPOSSIBLE")
-    return
+ # Check if all edges were used
+ if len(result) != m + 1:
+  print("IMPOSSIBLE")
+  return
 
-  result.reverse()
-  print(' '.join(map(str, result)))
+ result.reverse()
+ print(' '.join(map(str, result)))
 
 solve()
 ```

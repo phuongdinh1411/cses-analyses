@@ -86,19 +86,19 @@ Step 4: Process 1 (index 3)
 ### Python Implementation
 ```python
 def solve():
-  n, x = map(int, input().split())
-  arr = list(map(int, input().split()))
+ n, x = map(int, input().split())
+ arr = list(map(int, input().split()))
 
-  seen = {}  # value -> index
+ seen = {}  # value -> index
 
-  for i, num in enumerate(arr):
-    complement = x - num
-    if complement in seen:
-      print(seen[complement] + 1, i + 1)
-      return
-    seen[num] = i
+ for i, num in enumerate(arr):
+  complement = x - num
+  if complement in seen:
+   print(seen[complement] + 1, i + 1)
+   return
+  seen[num] = i
 
-  print("IMPOSSIBLE")
+ print("IMPOSSIBLE")
 
 solve()
 ```
@@ -158,28 +158,28 @@ If sum > target: move R left  (decrease sum)
 ### Python Implementation
 ```python
 def solve():
-  n, x = map(int, input().split())
-  arr = list(map(int, input().split()))
+ n, x = map(int, input().split())
+ arr = list(map(int, input().split()))
 
-  # Create (value, original_index) pairs
-  indexed = [(arr[i], i) for i in range(n)]
-  indexed.sort()
+ # Create (value, original_index) pairs
+ indexed = [(arr[i], i) for i in range(n)]
+ indexed.sort()
 
-  left, right = 0, n - 1
+ left, right = 0, n - 1
 
-  while left < right:
-    current_sum = indexed[left][0] + indexed[right][0]
+ while left < right:
+  current_sum = indexed[left][0] + indexed[right][0]
 
-    if current_sum == x:
-      i1, i2 = indexed[left][1], indexed[right][1]
-      print(min(i1, i2) + 1, max(i1, i2) + 1)
-      return
-    elif current_sum < x:
-      left += 1
-    else:
-      right -= 1
+  if current_sum == x:
+   i1, i2 = indexed[left][1], indexed[right][1]
+   print(min(i1, i2) + 1, max(i1, i2) + 1)
+   return
+  elif current_sum < x:
+   left += 1
+  else:
+   right -= 1
 
-  print("IMPOSSIBLE")
+ print("IMPOSSIBLE")
 
 solve()
 ```
@@ -233,11 +233,11 @@ Output: 1 2
 ```python
 # WRONG: allows same element twice
 if arr[i] + arr[i] == x:
-  return (i, i)  # Invalid!
+ return (i, i)  # Invalid!
 
 # CORRECT: ensure distinct indices
 if complement in seen and seen[complement] != i:
-  return (seen[complement], i)
+ return (seen[complement], i)
 ```
 
 ### 2. 0-indexed vs 1-indexed Output
@@ -253,8 +253,8 @@ print(i + 1, j + 1)
 ```python
 # WRONG: no fallback
 for i, num in enumerate(arr):
-  if complement in seen:
-    return ...
+ if complement in seen:
+  return ...
 
 # CORRECT: explicit IMPOSSIBLE output
 print("IMPOSSIBLE")
@@ -265,11 +265,11 @@ print("IMPOSSIBLE")
 # WRONG: might match element with itself when x = 2*arr[i]
 seen[num] = i
 if complement in seen:  # Could find itself!
-  ...
+ ...
 
 # CORRECT: check first, then add
 if complement in seen:
-  ...
+ ...
 seen[num] = i
 ```
 

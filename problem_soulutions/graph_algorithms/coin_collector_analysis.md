@@ -214,81 +214,81 @@ from collections import defaultdict
 sys.setrecursionlimit(200005)
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  m = int(input_data[idx]); idx += 1
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ m = int(input_data[idx]); idx += 1
 
-  coins = [0] * (n + 1)
-  for i in range(1, n + 1):
-    coins[i] = int(input_data[idx]); idx += 1
+ coins = [0] * (n + 1)
+ for i in range(1, n + 1):
+  coins[i] = int(input_data[idx]); idx += 1
 
-  # Build graph and transpose
-  graph = defaultdict(list)
-  transpose = defaultdict(list)
+ # Build graph and transpose
+ graph = defaultdict(list)
+ transpose = defaultdict(list)
 
-  for _ in range(m):
-    a = int(input_data[idx]); idx += 1
-    b = int(input_data[idx]); idx += 1
-    graph[a].append(b)
-    transpose[b].append(a)
+ for _ in range(m):
+  a = int(input_data[idx]); idx += 1
+  b = int(input_data[idx]); idx += 1
+  graph[a].append(b)
+  transpose[b].append(a)
 
-  # Step 1: First DFS - get finish order
-  visited = [False] * (n + 1)
-  finish_stack = []
+ # Step 1: First DFS - get finish order
+ visited = [False] * (n + 1)
+ finish_stack = []
 
-  def dfs1(node):
-    visited[node] = True
-    for neighbor in graph[node]:
-      if not visited[neighbor]:
-        dfs1(neighbor)
-    finish_stack.append(node)
+ def dfs1(node):
+  visited[node] = True
+  for neighbor in graph[node]:
+   if not visited[neighbor]:
+    dfs1(neighbor)
+  finish_stack.append(node)
 
-  for i in range(1, n + 1):
-    if not visited[i]:
-      dfs1(i)
+ for i in range(1, n + 1):
+  if not visited[i]:
+   dfs1(i)
 
-  # Step 2: Second DFS on transpose - find SCCs
-  visited = [False] * (n + 1)
-  scc_id = [0] * (n + 1)
-  scc_count = 0
+ # Step 2: Second DFS on transpose - find SCCs
+ visited = [False] * (n + 1)
+ scc_id = [0] * (n + 1)
+ scc_count = 0
 
-  def dfs2(node, scc):
-    visited[node] = True
-    scc_id[node] = scc
-    for neighbor in transpose[node]:
-      if not visited[neighbor]:
-        dfs2(neighbor, scc)
+ def dfs2(node, scc):
+  visited[node] = True
+  scc_id[node] = scc
+  for neighbor in transpose[node]:
+   if not visited[neighbor]:
+    dfs2(neighbor, scc)
 
-  while finish_stack:
-    node = finish_stack.pop()
-    if not visited[node]:
-      dfs2(node, scc_count)
-      scc_count += 1
+ while finish_stack:
+  node = finish_stack.pop()
+  if not visited[node]:
+   dfs2(node, scc_count)
+   scc_count += 1
 
-  # Step 3: Build condensed DAG
-  scc_coins = [0] * scc_count
-  for i in range(1, n + 1):
-    scc_coins[scc_id[i]] += coins[i]
+ # Step 3: Build condensed DAG
+ scc_coins = [0] * scc_count
+ for i in range(1, n + 1):
+  scc_coins[scc_id[i]] += coins[i]
 
-  # Build DAG edges (use set to avoid duplicates)
-  dag = defaultdict(set)
-  for u in range(1, n + 1):
-    for v in graph[u]:
-      if scc_id[u] != scc_id[v]:
-        dag[scc_id[u]].add(scc_id[v])
+ # Build DAG edges (use set to avoid duplicates)
+ dag = defaultdict(set)
+ for u in range(1, n + 1):
+  for v in graph[u]:
+   if scc_id[u] != scc_id[v]:
+    dag[scc_id[u]].add(scc_id[v])
 
-  # Step 4: DP on DAG
-  # SCCs are numbered in reverse topological order by Kosaraju's
-  # So process from scc_count-1 down to 0
-  dp = [0] * scc_count
+ # Step 4: DP on DAG
+ # SCCs are numbered in reverse topological order by Kosaraju's
+ # So process from scc_count-1 down to 0
+ dp = [0] * scc_count
 
-  for scc in range(scc_count - 1, -1, -1):
-    dp[scc] = scc_coins[scc]
-    for child in dag[scc]:
-      dp[scc] = max(dp[scc], scc_coins[scc] + dp[child])
+ for scc in range(scc_count - 1, -1, -1):
+  dp[scc] = scc_coins[scc]
+  for child in dag[scc]:
+   dp[scc] = max(dp[scc], scc_coins[scc] + dp[child])
 
-  print(max(dp))
+ print(max(dp))
 
 solve()
 ```

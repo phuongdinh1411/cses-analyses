@@ -190,33 +190,33 @@ Arrow shows optimal move to force opponent into L position
 
 ```python
 def solve():
-  """
-  Game Theory DP solution for Stones problem.
+ """
+ Game Theory DP solution for Stones problem.
 
-  Time: O(N * K) - check K moves for each of N positions
-  Space: O(N) - dp array
-  """
-  line1 = input().split()
-  n, k = int(line1[0]), int(line1[1])
-  moves = list(map(int, input().split()))
+ Time: O(N * K) - check K moves for each of N positions
+ Space: O(N) - dp array
+ """
+ line1 = input().split()
+ n, k = int(line1[0]), int(line1[1])
+ moves = list(map(int, input().split()))
 
-  # dp[i] = True if position i is winning for player to move
-  dp = [False] * (n + 1)
+ # dp[i] = True if position i is winning for player to move
+ dp = [False] * (n + 1)
 
-  # Base case: dp[0] = False (no moves = lose)
-  # Already initialized to False
+ # Base case: dp[0] = False (no moves = lose)
+ # Already initialized to False
 
-  for i in range(1, n + 1):
-    for move in moves:
-      if move <= i and not dp[i - move]:
-        # Found a move to losing position -> this is winning
-        dp[i] = True
-        break
+ for i in range(1, n + 1):
+  for move in moves:
+   if move <= i and not dp[i - move]:
+    # Found a move to losing position -> this is winning
+    dp[i] = True
+    break
 
-  print("First" if dp[n] else "Second")
+ print("First" if dp[n] else "Second")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -249,15 +249,15 @@ dp[0] = False  # 0 stones = can't move = you LOSE
 ```python
 # INEFFICIENT (still correct, but slower)
 for move in moves:
-  if move <= i and not dp[i - move]:
-    dp[i] = True
-    # Missing break - continues checking unnecessarily
+ if move <= i and not dp[i - move]:
+  dp[i] = True
+  # Missing break - continues checking unnecessarily
 
 # CORRECT
 for move in moves:
-  if move <= i and not dp[i - move]:
-    dp[i] = True
-    break  # One losing successor is enough
+ if move <= i and not dp[i - move]:
+  dp[i] = True
+  break  # One losing successor is enough
 ```
 
 **Problem:** Once we find ONE move to a losing position, we know this is winning - no need to check more.

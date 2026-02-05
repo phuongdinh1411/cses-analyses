@@ -117,80 +117,80 @@ from collections import deque
 EPS = 1e-9
 
 class HalfPlane:
-  def __init__(self, p, q):
-    self.p = p
-    self.d = (q[0] - p[0], q[1] - p[1])
-    self.angle = atan2(self.d[1], self.d[0])
+ def __init__(self, p, q):
+  self.p = p
+  self.d = (q[0] - p[0], q[1] - p[1])
+  self.angle = atan2(self.d[1], self.d[0])
 
-  def side(self, point):
-    return self.d[0] * (point[1] - self.p[1]) - self.d[1] * (point[0] - self.p[0])
+ def side(self, point):
+  return self.d[0] * (point[1] - self.p[1]) - self.d[1] * (point[0] - self.p[0])
 
-  def inside(self, point):
-    return self.side(point) > -EPS
+ def inside(self, point):
+  return self.side(point) > -EPS
 
 def line_intersection(h1, h2):
-  cross = h1.d[0] * h2.d[1] - h1.d[1] * h2.d[0]
-  if abs(cross) < EPS:
-    return None
-  dx, dy = h2.p[0] - h1.p[0], h2.p[1] - h1.p[1]
-  t = (dx * h2.d[1] - dy * h2.d[0]) / cross
-  return (h1.p[0] + t * h1.d[0], h1.p[1] + t * h1.d[1])
+ cross = h1.d[0] * h2.d[1] - h1.d[1] * h2.d[0]
+ if abs(cross) < EPS:
+  return None
+ dx, dy = h2.p[0] - h1.p[0], h2.p[1] - h1.p[1]
+ t = (dx * h2.d[1] - dy * h2.d[0]) / cross
+ return (h1.p[0] + t * h1.d[0], h1.p[1] + t * h1.d[1])
 
 def half_plane_intersection(half_planes):
-  """Returns vertices (CCW) or empty list. Time: O(n log n), Space: O(n)"""
-  if not half_planes:
-    return []
+ """Returns vertices (CCW) or empty list. Time: O(n log n), Space: O(n)"""
+ if not half_planes:
+  return []
 
-  half_planes.sort(key=lambda h: h.angle)
+ half_planes.sort(key=lambda h: h.angle)
 
-  # Remove parallel duplicates, keep most restrictive
-  unique = [half_planes[0]]
-  for hp in half_planes[1:]:
-    if abs(hp.angle - unique[-1].angle) > EPS:
-      unique.append(hp)
-    elif hp.side(unique[-1].p) < 0:
-      unique[-1] = hp
-  half_planes = unique
+ # Remove parallel duplicates, keep most restrictive
+ unique = [half_planes[0]]
+ for hp in half_planes[1:]:
+  if abs(hp.angle - unique[-1].angle) > EPS:
+   unique.append(hp)
+  elif hp.side(unique[-1].p) < 0:
+   unique[-1] = hp
+ half_planes = unique
 
-  if len(half_planes) < 3:
-    return []
+ if len(half_planes) < 3:
+  return []
 
-  dq = deque()
-  for hp in half_planes:
-    while len(dq) >= 2:
-      pt = line_intersection(dq[-1], dq[-2])
-      if pt and not hp.inside(pt):
-        dq.pop()
-      else:
-        break
-    while len(dq) >= 2:
-      pt = line_intersection(dq[0], dq[1])
-      if pt and not hp.inside(pt):
-        dq.popleft()
-      else:
-        break
-    dq.append(hp)
+ dq = deque()
+ for hp in half_planes:
+  while len(dq) >= 2:
+   pt = line_intersection(dq[-1], dq[-2])
+   if pt and not hp.inside(pt):
+    dq.pop()
+   else:
+    break
+  while len(dq) >= 2:
+   pt = line_intersection(dq[0], dq[1])
+   if pt and not hp.inside(pt):
+    dq.popleft()
+   else:
+    break
+  dq.append(hp)
 
-  # Final cleanup
-  while len(dq) >= 3:
-    pt = line_intersection(dq[-1], dq[-2])
-    if pt and not dq[0].inside(pt):
-      dq.pop()
-    else:
-      break
-  while len(dq) >= 3:
-    pt = line_intersection(dq[0], dq[1])
-    if pt and not dq[-1].inside(pt):
-      dq.popleft()
-    else:
-      break
+ # Final cleanup
+ while len(dq) >= 3:
+  pt = line_intersection(dq[-1], dq[-2])
+  if pt and not dq[0].inside(pt):
+   dq.pop()
+  else:
+   break
+ while len(dq) >= 3:
+  pt = line_intersection(dq[0], dq[1])
+  if pt and not dq[-1].inside(pt):
+   dq.popleft()
+  else:
+   break
 
-  if len(dq) < 3:
-    return []
+ if len(dq) < 3:
+  return []
 
-  dq_list = list(dq)
-  return [line_intersection(dq_list[i], dq_list[(i+1) % len(dq_list)])
-      for i in range(len(dq_list))]
+ dq_list = list(dq)
+ return [line_intersection(dq_list[i], dq_list[(i+1) % len(dq_list)])
+   for i in range(len(dq_list))]
 ```
 
 ---
@@ -209,7 +209,7 @@ vertices.append(pt)  # pt could be None!
 # CORRECT
 pt = line_intersection(h1, h2)
 if pt is not None:
-  vertices.append(pt)
+ vertices.append(pt)
 ```
 
 ### Mistake 2: Forgetting Final Cleanup

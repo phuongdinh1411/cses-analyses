@@ -35,26 +35,26 @@ In the single line print the answer to the problem - the maximum total income th
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  a = list(map(int, input().split()))
+ n, k = map(int, input().split())
+ a = list(map(int, input().split()))
 
-  # Flip negative numbers starting from smallest (most negative)
-  for i in range(n):
-    if a[i] < 0 and k > 0:
-      a[i] = -a[i]
-      k -= 1
+ # Flip negative numbers starting from smallest (most negative)
+ for i in range(n):
+  if a[i] < 0 and k > 0:
+   a[i] = -a[i]
+   k -= 1
 
-  # Sort again to find the minimum element
-  a.sort()
+ # Sort again to find the minimum element
+ a.sort()
 
-  # If k is odd, flip the smallest element
-  if k % 2 == 1:
-    a[0] = -a[0]
+ # If k is odd, flip the smallest element
+ if k % 2 == 1:
+  a[0] = -a[0]
 
-  print(sum(a))
+ print(sum(a))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

@@ -272,243 +272,243 @@ Welcome to the Sorting and Searching section! This category covers fundamental a
 #### 1. Comparison-Based Sorting
 ```python
 def quick_sort(arr, low=0, high=None):
-  """Quick Sort - Average O(n log n), Worst O(n²)"""
-  if high is None:
-    high = len(arr) - 1
+ """Quick Sort - Average O(n log n), Worst O(n²)"""
+ if high is None:
+  high = len(arr) - 1
+ 
+ if low < high:
+  # Partition the array
+  pivot_index = partition(arr, low, high)
   
-  if low < high:
-    # Partition the array
-    pivot_index = partition(arr, low, high)
-    
-    # Recursively sort elements before and after partition
-    quick_sort(arr, low, pivot_index - 1)
-    quick_sort(arr, pivot_index + 1, high)
+  # Recursively sort elements before and after partition
+  quick_sort(arr, low, pivot_index - 1)
+  quick_sort(arr, pivot_index + 1, high)
 
 def partition(arr, low, high):
-  """Lomuto partition scheme"""
-  pivot = arr[high]
-  i = low - 1
-  
-  for j in range(low, high):
-    if arr[j] <= pivot:
-      i += 1
-      arr[i], arr[j] = arr[j], arr[i]
-  
-  arr[i + 1], arr[high] = arr[high], arr[i + 1]
-  return i + 1
+ """Lomuto partition scheme"""
+ pivot = arr[high]
+ i = low - 1
+ 
+ for j in range(low, high):
+  if arr[j] <= pivot:
+   i += 1
+   arr[i], arr[j] = arr[j], arr[i]
+ 
+ arr[i + 1], arr[high] = arr[high], arr[i + 1]
+ return i + 1
 
 def merge_sort(arr):
-  """Merge Sort - O(n log n) guaranteed"""
-  if len(arr) <= 1:
-    return arr
-  
-  mid = len(arr) // 2
-  left = merge_sort(arr[:mid])
-  right = merge_sort(arr[mid:])
-  
-  return merge(left, right)
+ """Merge Sort - O(n log n) guaranteed"""
+ if len(arr) <= 1:
+  return arr
+ 
+ mid = len(arr) // 2
+ left = merge_sort(arr[:mid])
+ right = merge_sort(arr[mid:])
+ 
+ return merge(left, right)
 
 def merge(left, right):
-  """Merge two sorted arrays"""
-  result = []
-  i = j = 0
-  
-  while i < len(left) and j < len(right):
-    if left[i] <= right[j]:
-      result.append(left[i])
-      i += 1
-    else:
-      result.append(right[j])
-      j += 1
-  
-  result.extend(left[i:])
-  result.extend(right[j:])
-  return result
+ """Merge two sorted arrays"""
+ result = []
+ i = j = 0
+ 
+ while i < len(left) and j < len(right):
+  if left[i] <= right[j]:
+   result.append(left[i])
+   i += 1
+  else:
+   result.append(right[j])
+   j += 1
+ 
+ result.extend(left[i:])
+ result.extend(right[j:])
+ return result
 
 def heap_sort(arr):
-  """Heap Sort - O(n log n) guaranteed"""
-  n = len(arr)
-  
-  # Build max heap
-  for i in range(n // 2 - 1, -1, -1):
-    heapify(arr, n, i)
-  
-  # Extract elements from heap one by one
-  for i in range(n - 1, 0, -1):
-    arr[0], arr[i] = arr[i], arr[0]  # Swap
-    heapify(arr, i, 0)
+ """Heap Sort - O(n log n) guaranteed"""
+ n = len(arr)
+ 
+ # Build max heap
+ for i in range(n // 2 - 1, -1, -1):
+  heapify(arr, n, i)
+ 
+ # Extract elements from heap one by one
+ for i in range(n - 1, 0, -1):
+  arr[0], arr[i] = arr[i], arr[0]  # Swap
+  heapify(arr, i, 0)
 
 def heapify(arr, n, i):
-  """Heapify subtree rooted at index i"""
-  largest = i
-  left = 2 * i + 1
-  right = 2 * i + 2
-  
-  if left < n and arr[left] > arr[largest]:
-    largest = left
-  
-  if right < n and arr[right] > arr[largest]:
-    largest = right
-  
-  if largest != i:
-    arr[i], arr[largest] = arr[largest], arr[i]
-    heapify(arr, n, largest)
+ """Heapify subtree rooted at index i"""
+ largest = i
+ left = 2 * i + 1
+ right = 2 * i + 2
+ 
+ if left < n and arr[left] > arr[largest]:
+  largest = left
+ 
+ if right < n and arr[right] > arr[largest]:
+  largest = right
+ 
+ if largest != i:
+  arr[i], arr[largest] = arr[largest], arr[i]
+  heapify(arr, n, largest)
 ```
 
 #### 2. Non-Comparison Sorting
 ```python
 def counting_sort(arr, max_val=None):
-  """Counting Sort - O(n + k) where k is range"""
-  if max_val is None:
-    max_val = max(arr)
-  
-  count = [0] * (max_val + 1)
-  
-  # Count occurrences
-  for num in arr:
-    count[num] += 1
-  
-  # Reconstruct sorted array
-  result = []
-  for i in range(max_val + 1):
-    result.extend([i] * count[i])
-  
-  return result
+ """Counting Sort - O(n + k) where k is range"""
+ if max_val is None:
+  max_val = max(arr)
+ 
+ count = [0] * (max_val + 1)
+ 
+ # Count occurrences
+ for num in arr:
+  count[num] += 1
+ 
+ # Reconstruct sorted array
+ result = []
+ for i in range(max_val + 1):
+  result.extend([i] * count[i])
+ 
+ return result
 
 def radix_sort(arr):
-  """Radix Sort - O(d * (n + k)) where d is number of digits"""
-  if not arr:
-    return arr
-  
-  # Find maximum number to determine number of digits
-  max_num = max(arr)
-  exp = 1
-  
-  while max_num // exp > 0:
-    counting_sort_by_digit(arr, exp)
-    exp *= 10
+ """Radix Sort - O(d * (n + k)) where d is number of digits"""
+ if not arr:
+  return arr
+ 
+ # Find maximum number to determine number of digits
+ max_num = max(arr)
+ exp = 1
+ 
+ while max_num // exp > 0:
+  counting_sort_by_digit(arr, exp)
+  exp *= 10
 
 def counting_sort_by_digit(arr, exp):
-  """Counting sort for specific digit position"""
-  n = len(arr)
-  output = [0] * n
-  count = [0] * 10
-  
-  # Count occurrences of each digit
-  for i in range(n):
-    index = (arr[i] // exp) % 10
-    count[index] += 1
-  
-  # Change count[i] to position of next occurrence
-  for i in range(1, 10):
-    count[i] += count[i - 1]
-  
-  # Build output array
-  for i in range(n - 1, -1, -1):
-    index = (arr[i] // exp) % 10
-    output[count[index] - 1] = arr[i]
-    count[index] -= 1
-  
-  # Copy output back to original array
-  for i in range(n):
-    arr[i] = output[i]
+ """Counting sort for specific digit position"""
+ n = len(arr)
+ output = [0] * n
+ count = [0] * 10
+ 
+ # Count occurrences of each digit
+ for i in range(n):
+  index = (arr[i] // exp) % 10
+  count[index] += 1
+ 
+ # Change count[i] to position of next occurrence
+ for i in range(1, 10):
+  count[i] += count[i - 1]
+ 
+ # Build output array
+ for i in range(n - 1, -1, -1):
+  index = (arr[i] // exp) % 10
+  output[count[index] - 1] = arr[i]
+  count[index] -= 1
+ 
+ # Copy output back to original array
+ for i in range(n):
+  arr[i] = output[i]
 
 def bucket_sort(arr):
-  """Bucket Sort - O(n + k) average case"""
-  if not arr:
-    return arr
-  
-  # Create buckets
-  n = len(arr)
-  max_val = max(arr)
-  min_val = min(arr)
-  bucket_range = (max_val - min_val) / n
-  buckets = [[] for _ in range(n)]
-  
-  # Distribute elements into buckets
-  for num in arr:
-    bucket_index = min(int((num - min_val) / bucket_range), n - 1)
-    buckets[bucket_index].append(num)
-  
-  # Sort individual buckets and concatenate
-  result = []
-  for bucket in buckets:
-    bucket.sort()  # Use any sorting algorithm
-    result.extend(bucket)
-  
-  return result
+ """Bucket Sort - O(n + k) average case"""
+ if not arr:
+  return arr
+ 
+ # Create buckets
+ n = len(arr)
+ max_val = max(arr)
+ min_val = min(arr)
+ bucket_range = (max_val - min_val) / n
+ buckets = [[] for _ in range(n)]
+ 
+ # Distribute elements into buckets
+ for num in arr:
+  bucket_index = min(int((num - min_val) / bucket_range), n - 1)
+  buckets[bucket_index].append(num)
+ 
+ # Sort individual buckets and concatenate
+ result = []
+ for bucket in buckets:
+  bucket.sort()  # Use any sorting algorithm
+  result.extend(bucket)
+ 
+ return result
 ```
 
 #### 3. Binary Search Variations
 ```python
 def binary_search(arr, target):
-  """Standard binary search"""
-  left, right = 0, len(arr) - 1
-  
-  while left <= right:
-    mid = (left + right) // 2
-    if arr[mid] == target:
-      return mid
-    elif arr[mid] < target:
-      left = mid + 1
-    else:
-      right = mid - 1
-  
-  return -1
+ """Standard binary search"""
+ left, right = 0, len(arr) - 1
+ 
+ while left <= right:
+  mid = (left + right) // 2
+  if arr[mid] == target:
+   return mid
+  elif arr[mid] < target:
+   left = mid + 1
+  else:
+   right = mid - 1
+ 
+ return -1
 
 def lower_bound(arr, target):
-  """Find first position where target can be inserted"""
-  left, right = 0, len(arr)
-  
-  while left < right:
-    mid = (left + right) // 2
-    if arr[mid] < target:
-      left = mid + 1
-    else:
-      right = mid
-  
-  return left
+ """Find first position where target can be inserted"""
+ left, right = 0, len(arr)
+ 
+ while left < right:
+  mid = (left + right) // 2
+  if arr[mid] < target:
+   left = mid + 1
+  else:
+   right = mid
+ 
+ return left
 
 def upper_bound(arr, target):
-  """Find last position where target can be inserted"""
-  left, right = 0, len(arr)
-  
-  while left < right:
-    mid = (left + right) // 2
-    if arr[mid] <= target:
-      left = mid + 1
-    else:
-      right = mid
-  
-  return left
+ """Find last position where target can be inserted"""
+ left, right = 0, len(arr)
+ 
+ while left < right:
+  mid = (left + right) // 2
+  if arr[mid] <= target:
+   left = mid + 1
+  else:
+   right = mid
+ 
+ return left
 
 def binary_search_on_answer(arr, condition_func):
-  """Binary search on answer space"""
-  left, right = 0, len(arr) - 1
-  answer = -1
-  
-  while left <= right:
-    mid = (left + right) // 2
-    if condition_func(arr[mid]):
-      answer = mid
-      left = mid + 1  # or right = mid - 1, depending on problem
-    else:
-      right = mid - 1  # or left = mid + 1
-  
-  return answer
+ """Binary search on answer space"""
+ left, right = 0, len(arr) - 1
+ answer = -1
+ 
+ while left <= right:
+  mid = (left + right) // 2
+  if condition_func(arr[mid]):
+   answer = mid
+   left = mid + 1  # or right = mid - 1, depending on problem
+  else:
+   right = mid - 1  # or left = mid + 1
+ 
+ return answer
 
 def find_peak_element(arr):
-  """Find peak element using binary search"""
-  left, right = 0, len(arr) - 1
-  
-  while left < right:
-    mid = (left + right) // 2
-    if arr[mid] > arr[mid + 1]:
-      right = mid
-    else:
-      left = mid + 1
-  
-  return left
+ """Find peak element using binary search"""
+ left, right = 0, len(arr) - 1
+ 
+ while left < right:
+  mid = (left + right) // 2
+  if arr[mid] > arr[mid + 1]:
+   right = mid
+  else:
+   left = mid + 1
+ 
+ return left
 ```
 
 ### Advanced Searching Techniques
@@ -516,248 +516,248 @@ def find_peak_element(arr):
 #### 1. Two Pointers Technique
 ```python
 def two_sum_sorted(arr, target):
-  """Find two numbers that sum to target in sorted array"""
-  left, right = 0, len(arr) - 1
-  
-  while left < right:
-    current_sum = arr[left] + arr[right]
-    if current_sum == target:
-      return [left, right]
-    elif current_sum < target:
-      left += 1
-    else:
-      right -= 1
-  
-  return [-1, -1]
+ """Find two numbers that sum to target in sorted array"""
+ left, right = 0, len(arr) - 1
+ 
+ while left < right:
+  current_sum = arr[left] + arr[right]
+  if current_sum == target:
+   return [left, right]
+  elif current_sum < target:
+   left += 1
+  else:
+   right -= 1
+ 
+ return [-1, -1]
 
 def remove_duplicates(arr):
-  """Remove duplicates from sorted array in-place"""
-  if not arr:
-    return 0
-  
-  write_index = 1
-  for read_index in range(1, len(arr)):
-    if arr[read_index] != arr[read_index - 1]:
-      arr[write_index] = arr[read_index]
-      write_index += 1
-  
-  return write_index
+ """Remove duplicates from sorted array in-place"""
+ if not arr:
+  return 0
+ 
+ write_index = 1
+ for read_index in range(1, len(arr)):
+  if arr[read_index] != arr[read_index - 1]:
+   arr[write_index] = arr[read_index]
+   write_index += 1
+ 
+ return write_index
 
 def three_sum(arr, target):
-  """Find all triplets that sum to target"""
-  arr.sort()
-  result = []
+ """Find all triplets that sum to target"""
+ arr.sort()
+ result = []
+ 
+ for i in range(len(arr) - 2):
+  if i > 0 and arr[i] == arr[i - 1]:
+   continue
   
-  for i in range(len(arr) - 2):
-    if i > 0 and arr[i] == arr[i - 1]:
-      continue
+  left, right = i + 1, len(arr) - 1
+  while left < right:
+   current_sum = arr[i] + arr[left] + arr[right]
+   if current_sum == target:
+    result.append([arr[i], arr[left], arr[right]])
     
-    left, right = i + 1, len(arr) - 1
-    while left < right:
-      current_sum = arr[i] + arr[left] + arr[right]
-      if current_sum == target:
-        result.append([arr[i], arr[left], arr[right]])
-        
-        # Skip duplicates
-        while left < right and arr[left] == arr[left + 1]:
-          left += 1
-        while left < right and arr[right] == arr[right - 1]:
-          right -= 1
-        
-        left += 1
-        right -= 1
-      elif current_sum < target:
-        left += 1
-      else:
-        right -= 1
-  
-  return result
+    # Skip duplicates
+    while left < right and arr[left] == arr[left + 1]:
+     left += 1
+    while left < right and arr[right] == arr[right - 1]:
+     right -= 1
+    
+    left += 1
+    right -= 1
+   elif current_sum < target:
+    left += 1
+   else:
+    right -= 1
+ 
+ return result
 
 def container_with_most_water(heights):
-  """Find two lines that together with x-axis forms container with most water"""
-  left, right = 0, len(heights) - 1
-  max_area = 0
+ """Find two lines that together with x-axis forms container with most water"""
+ left, right = 0, len(heights) - 1
+ max_area = 0
+ 
+ while left < right:
+  width = right - left
+  height = min(heights[left], heights[right])
+  area = width * height
+  max_area = max(max_area, area)
   
-  while left < right:
-    width = right - left
-    height = min(heights[left], heights[right])
-    area = width * height
-    max_area = max(max_area, area)
-    
-    if heights[left] < heights[right]:
-      left += 1
-    else:
-      right -= 1
-  
-  return max_area
+  if heights[left] < heights[right]:
+   left += 1
+  else:
+   right -= 1
+ 
+ return max_area
 ```
 
 #### 2. Sliding Window Technique
 ```python
 def sliding_window_maximum(arr, k):
-  """Find maximum in each sliding window of size k"""
-  from collections import deque
+ """Find maximum in each sliding window of size k"""
+ from collections import deque
+ 
+ dq = deque()
+ result = []
+ 
+ # Process first window
+ for i in range(k):
+  while dq and arr[dq[-1]] <= arr[i]:
+   dq.pop()
+  dq.append(i)
+ 
+ result.append(arr[dq[0]])
+ 
+ # Process remaining windows
+ for i in range(k, len(arr)):
+  # Remove elements outside current window
+  while dq and dq[0] <= i - k:
+   dq.popleft()
   
-  dq = deque()
-  result = []
+  # Remove elements smaller than current element
+  while dq and arr[dq[-1]] <= arr[i]:
+   dq.pop()
   
-  # Process first window
-  for i in range(k):
-    while dq and arr[dq[-1]] <= arr[i]:
-      dq.pop()
-    dq.append(i)
-  
+  dq.append(i)
   result.append(arr[dq[0]])
-  
-  # Process remaining windows
-  for i in range(k, len(arr)):
-    # Remove elements outside current window
-    while dq and dq[0] <= i - k:
-      dq.popleft()
-    
-    # Remove elements smaller than current element
-    while dq and arr[dq[-1]] <= arr[i]:
-      dq.pop()
-    
-    dq.append(i)
-    result.append(arr[dq[0]])
-  
-  return result
+ 
+ return result
 
 def longest_substring_without_repeating(s):
-  """Find length of longest substring without repeating characters"""
-  char_set = set()
-  left = 0
-  max_length = 0
+ """Find length of longest substring without repeating characters"""
+ char_set = set()
+ left = 0
+ max_length = 0
+ 
+ for right in range(len(s)):
+  while s[right] in char_set:
+   char_set.remove(s[left])
+   left += 1
   
-  for right in range(len(s)):
-    while s[right] in char_set:
-      char_set.remove(s[left])
-      left += 1
-    
-    char_set.add(s[right])
-    max_length = max(max_length, right - left + 1)
-  
-  return max_length
+  char_set.add(s[right])
+  max_length = max(max_length, right - left + 1)
+ 
+ return max_length
 
 def minimum_window_substring(s, t):
-  """Find minimum window in s that contains all characters in t"""
-  from collections import Counter
+ """Find minimum window in s that contains all characters in t"""
+ from collections import Counter
+ 
+ if not s or not t:
+  return ""
+ 
+ dict_t = Counter(t)
+ required = len(dict_t)
+ 
+ left = right = 0
+ formed = 0
+ window_counts = {}
+ 
+ ans = float('inf'), None, None
+ 
+ while right < len(s):
+  char = s[right]
+  window_counts[char] = window_counts.get(char, 0) + 1
   
-  if not s or not t:
-    return ""
+  if char in dict_t and window_counts[char] == dict_t[char]:
+   formed += 1
   
-  dict_t = Counter(t)
-  required = len(dict_t)
+  while left <= right and formed == required:
+   char = s[left]
+   
+   if right - left + 1 < ans[0]:
+    ans = (right - left + 1, left, right)
+   
+   window_counts[char] -= 1
+   if char in dict_t and window_counts[char] < dict_t[char]:
+    formed -= 1
+   
+   left += 1
   
-  left = right = 0
-  formed = 0
-  window_counts = {}
-  
-  ans = float('inf'), None, None
-  
-  while right < len(s):
-    char = s[right]
-    window_counts[char] = window_counts.get(char, 0) + 1
-    
-    if char in dict_t and window_counts[char] == dict_t[char]:
-      formed += 1
-    
-    while left <= right and formed == required:
-      char = s[left]
-      
-      if right - left + 1 < ans[0]:
-        ans = (right - left + 1, left, right)
-      
-      window_counts[char] -= 1
-      if char in dict_t and window_counts[char] < dict_t[char]:
-        formed -= 1
-      
-      left += 1
-    
-    right += 1
-  
-  return "" if ans[0] == float('inf') else s[ans[1]:ans[2] + 1]
+  right += 1
+ 
+ return "" if ans[0] == float('inf') else s[ans[1]:ans[2] + 1]
 ```
 
 #### 3. Greedy Algorithms
 ```python
 def activity_selection(activities):
-  """Select maximum number of non-overlapping activities"""
-  # Sort by finish time
-  activities.sort(key=lambda x: x[1])
-  
-  selected = [activities[0]]
-  last_finish_time = activities[0][1]
-  
-  for start, finish in activities[1:]:
-    if start >= last_finish_time:
-      selected.append((start, finish))
-      last_finish_time = finish
-  
-  return selected
+ """Select maximum number of non-overlapping activities"""
+ # Sort by finish time
+ activities.sort(key=lambda x: x[1])
+ 
+ selected = [activities[0]]
+ last_finish_time = activities[0][1]
+ 
+ for start, finish in activities[1:]:
+  if start >= last_finish_time:
+   selected.append((start, finish))
+   last_finish_time = finish
+ 
+ return selected
 
 def fractional_knapsack(weights, values, capacity):
-  """Fractional knapsack using greedy approach"""
-  items = list(zip(weights, values))
-  # Sort by value per unit weight (descending)
-  items.sort(key=lambda x: x[1] / x[0], reverse=True)
-  
-  total_value = 0
-  remaining_capacity = capacity
-  
-  for weight, value in items:
-    if remaining_capacity >= weight:
-      # Take the whole item
-      total_value += value
-      remaining_capacity -= weight
-    else:
-      # Take fraction of item
-      fraction = remaining_capacity / weight
-      total_value += value * fraction
-      break
-  
-  return total_value
+ """Fractional knapsack using greedy approach"""
+ items = list(zip(weights, values))
+ # Sort by value per unit weight (descending)
+ items.sort(key=lambda x: x[1] / x[0], reverse=True)
+ 
+ total_value = 0
+ remaining_capacity = capacity
+ 
+ for weight, value in items:
+  if remaining_capacity >= weight:
+   # Take the whole item
+   total_value += value
+   remaining_capacity -= weight
+  else:
+   # Take fraction of item
+   fraction = remaining_capacity / weight
+   total_value += value * fraction
+   break
+ 
+ return total_value
 
 def huffman_coding(frequencies):
-  """Build Huffman tree for optimal prefix codes"""
-  import heapq
+ """Build Huffman tree for optimal prefix codes"""
+ import heapq
+ 
+ # Create min heap
+ heap = [[freq, [char, ""]] for char, freq in frequencies.items()]
+ heapq.heapify(heap)
+ 
+ while len(heap) > 1:
+  # Extract two nodes with minimum frequency
+  left = heapq.heappop(heap)
+  right = heapq.heappop(heap)
   
-  # Create min heap
-  heap = [[freq, [char, ""]] for char, freq in frequencies.items()]
-  heapq.heapify(heap)
+  # Add '0' to left subtree and '1' to right subtree
+  for pair in left[1:]:
+   pair[1] = '0' + pair[1]
+  for pair in right[1:]:
+   pair[1] = '1' + pair[1]
   
-  while len(heap) > 1:
-    # Extract two nodes with minimum frequency
-    left = heapq.heappop(heap)
-    right = heapq.heappop(heap)
-    
-    # Add '0' to left subtree and '1' to right subtree
-    for pair in left[1:]:
-      pair[1] = '0' + pair[1]
-    for pair in right[1:]:
-      pair[1] = '1' + pair[1]
-    
-    # Create new node
-    new_node = [left[0] + right[0]] + left[1:] + right[1:]
-    heapq.heappush(heap, new_node)
-  
-  return heap[0][1:]
+  # Create new node
+  new_node = [left[0] + right[0]] + left[1:] + right[1:]
+  heapq.heappush(heap, new_node)
+ 
+ return heap[0][1:]
 
 def interval_scheduling(intervals):
-  """Schedule maximum number of non-overlapping intervals"""
-  # Sort by finish time
-  intervals.sort(key=lambda x: x[1])
-  
-  selected = [intervals[0]]
-  last_finish = intervals[0][1]
-  
-  for start, finish in intervals[1:]:
-    if start >= last_finish:
-      selected.append((start, finish))
-      last_finish = finish
-  
-  return selected
+ """Schedule maximum number of non-overlapping intervals"""
+ # Sort by finish time
+ intervals.sort(key=lambda x: x[1])
+ 
+ selected = [intervals[0]]
+ last_finish = intervals[0][1]
+ 
+ for start, finish in intervals[1:]:
+  if start >= last_finish:
+   selected.append((start, finish))
+   last_finish = finish
+ 
+ return selected
 ```
 
 ### Advanced Data Structures
@@ -765,60 +765,60 @@ def interval_scheduling(intervals):
 #### 1. Custom Comparators and Sorting
 ```python
 def custom_sort_examples():
-  """Examples of custom sorting"""
-  
-  # Sort by multiple criteria
-  students = [
-    ("Alice", 85, "A"),
-    ("Bob", 90, "B"),
-    ("Charlie", 85, "A"),
-    ("David", 90, "A")
-  ]
-  
-  # Sort by grade (descending), then by name (ascending)
-  students.sort(key=lambda x: (-x[1], x[0]))
-  
-  # Sort strings by length, then alphabetically
-  words = ["apple", "pie", "banana", "cat"]
-  words.sort(key=lambda x: (len(x), x))
-  
-  # Sort points by distance from origin
-  points = [(3, 4), (1, 1), (5, 2), (0, 0)]
-  points.sort(key=lambda x: x[0]**2 + x[1]**2)
-  
-  return students, words, points
+ """Examples of custom sorting"""
+ 
+ # Sort by multiple criteria
+ students = [
+  ("Alice", 85, "A"),
+  ("Bob", 90, "B"),
+  ("Charlie", 85, "A"),
+  ("David", 90, "A")
+ ]
+ 
+ # Sort by grade (descending), then by name (ascending)
+ students.sort(key=lambda x: (-x[1], x[0]))
+ 
+ # Sort strings by length, then alphabetically
+ words = ["apple", "pie", "banana", "cat"]
+ words.sort(key=lambda x: (len(x), x))
+ 
+ # Sort points by distance from origin
+ points = [(3, 4), (1, 1), (5, 2), (0, 0)]
+ points.sort(key=lambda x: x[0]**2 + x[1]**2)
+ 
+ return students, words, points
 
 def stable_sort_example():
-  """Demonstrate stable sorting"""
-  # Merge sort is stable, quick sort is not
-  arr = [(3, 'a'), (1, 'b'), (3, 'c'), (1, 'd')]
-  
-  # Stable sort preserves relative order of equal elements
-  stable_sorted = merge_sort(arr.copy())
-  
-  return stable_sorted
+ """Demonstrate stable sorting"""
+ # Merge sort is stable, quick sort is not
+ arr = [(3, 'a'), (1, 'b'), (3, 'c'), (1, 'd')]
+ 
+ # Stable sort preserves relative order of equal elements
+ stable_sorted = merge_sort(arr.copy())
+ 
+ return stable_sorted
 
 def in_place_sorting():
-  """Examples of in-place sorting"""
-  arr1 = [64, 34, 25, 12, 22, 11, 90]
-  arr2 = arr1.copy()
-  arr3 = arr1.copy()
-  
-  # Quick sort (in-place)
-  quick_sort(arr1)
-  
-  # Heap sort (in-place)
-  heap_sort(arr2)
-  
-  # Selection sort (in-place)
-  for i in range(len(arr3)):
-    min_idx = i
-    for j in range(i + 1, len(arr3)):
-      if arr3[j] < arr3[min_idx]:
-        min_idx = j
-    arr3[i], arr3[min_idx] = arr3[min_idx], arr3[i]
-  
-  return arr1, arr2, arr3
+ """Examples of in-place sorting"""
+ arr1 = [64, 34, 25, 12, 22, 11, 90]
+ arr2 = arr1.copy()
+ arr3 = arr1.copy()
+ 
+ # Quick sort (in-place)
+ quick_sort(arr1)
+ 
+ # Heap sort (in-place)
+ heap_sort(arr2)
+ 
+ # Selection sort (in-place)
+ for i in range(len(arr3)):
+  min_idx = i
+  for j in range(i + 1, len(arr3)):
+   if arr3[j] < arr3[min_idx]:
+    min_idx = j
+  arr3[i], arr3[min_idx] = arr3[min_idx], arr3[i]
+ 
+ return arr1, arr2, arr3
 ```
 
 ## Tips for Success

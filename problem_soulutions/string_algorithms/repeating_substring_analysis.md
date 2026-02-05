@@ -97,19 +97,19 @@ Check all possible substrings and count their occurrences using a hash set.
 
 ```python
 def solve_brute_force(s):
-  """
-  Brute force: check all substrings.
-  Time: O(n^3)  Space: O(n^2)
-  """
-  n = len(s)
-  for length in range(n - 1, 0, -1):
-    seen = set()
-    for i in range(n - length + 1):
-      sub = s[i:i + length]
-      if sub in seen:
-        return length
-      seen.add(sub)
-  return -1
+ """
+ Brute force: check all substrings.
+ Time: O(n^3)  Space: O(n^2)
+ """
+ n = len(s)
+ for length in range(n - 1, 0, -1):
+  seen = set()
+  for i in range(n - length + 1):
+   sub = s[i:i + length]
+   if sub in seen:
+    return length
+   seen.add(sub)
+ return -1
 ```
 
 ### Complexity
@@ -192,55 +192,55 @@ Answer: 4
 **Python:**
 ```python
 def solve(s):
-  """
-  Binary Search + Rolling Hash.
-  Time: O(n log n)  Space: O(n)
-  """
-  n = len(s)
-  if n == 1:
-    return -1
+ """
+ Binary Search + Rolling Hash.
+ Time: O(n log n)  Space: O(n)
+ """
+ n = len(s)
+ if n == 1:
+  return -1
 
-  BASE = 31
-  MOD = 10**18 + 9
+ BASE = 31
+ MOD = 10**18 + 9
 
-  # Precompute powers
-  pw = [1] * (n + 1)
-  for i in range(1, n + 1):
-    pw[i] = (pw[i-1] * BASE) % MOD
+ # Precompute powers
+ pw = [1] * (n + 1)
+ for i in range(1, n + 1):
+  pw[i] = (pw[i-1] * BASE) % MOD
 
-  # Precompute prefix hashes
-  h = [0] * (n + 1)
-  for i in range(n):
-    h[i + 1] = (h[i] * BASE + ord(s[i]) - ord('a') + 1) % MOD
+ # Precompute prefix hashes
+ h = [0] * (n + 1)
+ for i in range(n):
+  h[i + 1] = (h[i] * BASE + ord(s[i]) - ord('a') + 1) % MOD
 
-  def get_hash(l, r):
-    """Get hash of s[l:r] in O(1)"""
-    return (h[r] - h[l] * pw[r - l] % MOD + MOD) % MOD
+ def get_hash(l, r):
+  """Get hash of s[l:r] in O(1)"""
+  return (h[r] - h[l] * pw[r - l] % MOD + MOD) % MOD
 
-  def has_repeat(length):
-    """Check if any substring of given length repeats"""
-    seen = {}
-    for i in range(n - length + 1):
-      hval = get_hash(i, i + length)
-      if hval in seen:
-        # Verify to handle hash collisions
-        if s[seen[hval]:seen[hval] + length] == s[i:i + length]:
-          return True
-      else:
-        seen[hval] = i
-    return False
+ def has_repeat(length):
+  """Check if any substring of given length repeats"""
+  seen = {}
+  for i in range(n - length + 1):
+   hval = get_hash(i, i + length)
+   if hval in seen:
+    # Verify to handle hash collisions
+    if s[seen[hval]:seen[hval] + length] == s[i:i + length]:
+     return True
+   else:
+    seen[hval] = i
+  return False
 
-  # Binary search on answer
-  lo, hi, ans = 1, n - 1, -1
-  while lo <= hi:
-    mid = (lo + hi) // 2
-    if has_repeat(mid):
-      ans = mid
-      lo = mid + 1
-    else:
-      hi = mid - 1
+ # Binary search on answer
+ lo, hi, ans = 1, n - 1, -1
+ while lo <= hi:
+  mid = (lo + hi) // 2
+  if has_repeat(mid):
+   ans = mid
+   lo = mid + 1
+  else:
+   hi = mid - 1
 
-  return ans
+ return ans
 
 # Input/Output
 s = input().strip()
@@ -273,52 +273,52 @@ print(solve(s))
 **Python:**
 ```python
 def solve_suffix_array(s):
-  """
-  Suffix Array + LCP approach.
-  Time: O(n log n)  Space: O(n)
-  """
-  n = len(s)
-  if n == 1:
-    return -1
+ """
+ Suffix Array + LCP approach.
+ Time: O(n log n)  Space: O(n)
+ """
+ n = len(s)
+ if n == 1:
+  return -1
 
-  # Build suffix array (simplified O(n log^2 n) version)
-  sa = list(range(n))
-  rank = [ord(c) for c in s]
-  tmp = [0] * n
+ # Build suffix array (simplified O(n log^2 n) version)
+ sa = list(range(n))
+ rank = [ord(c) for c in s]
+ tmp = [0] * n
 
-  k = 1
-  while k < n:
-    def key(i):
-      return (rank[i], rank[i + k] if i + k < n else -1)
-    sa.sort(key=key)
+ k = 1
+ while k < n:
+  def key(i):
+   return (rank[i], rank[i + k] if i + k < n else -1)
+  sa.sort(key=key)
 
-    tmp[sa[0]] = 0
-    for i in range(1, n):
-      tmp[sa[i]] = tmp[sa[i-1]]
-      if key(sa[i]) != key(sa[i-1]):
-        tmp[sa[i]] += 1
-    rank = tmp[:]
-    k *= 2
+  tmp[sa[0]] = 0
+  for i in range(1, n):
+   tmp[sa[i]] = tmp[sa[i-1]]
+   if key(sa[i]) != key(sa[i-1]):
+    tmp[sa[i]] += 1
+  rank = tmp[:]
+  k *= 2
 
-  # Build LCP array using Kasai's algorithm
-  lcp = [0] * n
-  rank_inv = [0] * n
-  for i in range(n):
-    rank_inv[sa[i]] = i
+ # Build LCP array using Kasai's algorithm
+ lcp = [0] * n
+ rank_inv = [0] * n
+ for i in range(n):
+  rank_inv[sa[i]] = i
 
-  k = 0
-  for i in range(n):
-    if rank_inv[i] == 0:
-      k = 0
-      continue
-    j = sa[rank_inv[i] - 1]
-    while i + k < n and j + k < n and s[i + k] == s[j + k]:
-      k += 1
-    lcp[rank_inv[i]] = k
-    if k > 0:
-      k -= 1
+ k = 0
+ for i in range(n):
+  if rank_inv[i] == 0:
+   k = 0
+   continue
+  j = sa[rank_inv[i] - 1]
+  while i + k < n and j + k < n and s[i + k] == s[j + k]:
+   k += 1
+  lcp[rank_inv[i]] = k
+  if k > 0:
+   k -= 1
 
-  return max(lcp) if max(lcp) > 0 else -1
+ return max(lcp) if max(lcp) > 0 else -1
 
 s = input().strip()
 print(solve_suffix_array(s))
@@ -333,7 +333,7 @@ print(solve_suffix_array(s))
 ```python
 # WRONG - no collision check
 if hval in seen:
-  return True  # May be false positive!
+ return True  # May be false positive!
 ```
 
 **Problem:** Two different strings can have the same hash value.
@@ -344,7 +344,7 @@ if hval in seen:
 ```python
 # WRONG - subtracting hashes directly
 def get_hash(l, r):
-  return h[r] - h[l]  # Doesn't account for positional weights!
+ return h[r] - h[l]  # Doesn't account for positional weights!
 ```
 
 **Problem:** Must scale by power of base when subtracting prefix hashes.

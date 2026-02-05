@@ -97,38 +97,38 @@ Enumerate all possible subgrids using four nested loops. For each subgrid, colle
 **Python:**
 ```python
 def count_all_letter_subgrids(n, m, grid):
-  """
-  Brute force: enumerate all subgrids, check each for completeness.
+ """
+ Brute force: enumerate all subgrids, check each for completeness.
 
-  Time: O(n^2 * m^2 * n * m) - 6 nested loops
-  Space: O(k) where k = number of unique letters
-  """
-  MOD = 10**9 + 7
+ Time: O(n^2 * m^2 * n * m) - 6 nested loops
+ Space: O(k) where k = number of unique letters
+ """
+ MOD = 10**9 + 7
 
-  # Find all unique letters in grid
-  all_letters = set()
-  for row in grid:
-    for ch in row:
-      all_letters.add(ch)
-  target_count = len(all_letters)
+ # Find all unique letters in grid
+ all_letters = set()
+ for row in grid:
+  for ch in row:
+   all_letters.add(ch)
+ target_count = len(all_letters)
 
-  result = 0
+ result = 0
 
-  # Enumerate all subgrids: O(n^2 * m^2)
-  for top in range(n):
-    for left in range(m):
-      for bottom in range(top, n):
-        for right in range(left, m):
-          # Collect letters in this subgrid: O(n * m)
-          letters = set()
-          for i in range(top, bottom + 1):
-            for j in range(left, right + 1):
-              letters.add(grid[i][j])
+ # Enumerate all subgrids: O(n^2 * m^2)
+ for top in range(n):
+  for left in range(m):
+   for bottom in range(top, n):
+    for right in range(left, m):
+     # Collect letters in this subgrid: O(n * m)
+     letters = set()
+     for i in range(top, bottom + 1):
+      for j in range(left, right + 1):
+       letters.add(grid[i][j])
 
-          if len(letters) == target_count:
-            result = (result + 1) % MOD
+     if len(letters) == target_count:
+      result = (result + 1) % MOD
 
-  return result
+ return result
 ```
 
 ### Complexity
@@ -218,38 +218,38 @@ Step 1: [a]     Step 2: [a b]    Step 3: [a b c]
 **Python:**
 ```python
 def count_all_letter_subgrids_optimized(n, m, grid):
-  """
-  Optimized: incrementally build set when expanding right.
+ """
+ Optimized: incrementally build set when expanding right.
 
-  Time: O(n^2 * m^2) - still 4 loops but no inner scanning
-  Space: O(26) = O(1)
-  """
-  MOD = 10**9 + 7
+ Time: O(n^2 * m^2) - still 4 loops but no inner scanning
+ Space: O(26) = O(1)
+ """
+ MOD = 10**9 + 7
 
-  # Find all unique letters
-  all_letters = set()
-  for row in grid:
-    for ch in row:
-      all_letters.add(ch)
-  target_count = len(all_letters)
+ # Find all unique letters
+ all_letters = set()
+ for row in grid:
+  for ch in row:
+   all_letters.add(ch)
+ target_count = len(all_letters)
 
-  result = 0
+ result = 0
 
-  # Fix top and bottom rows
-  for top in range(n):
-    for bottom in range(top, n):
-      # For this row range, slide window across columns
-      for left in range(m):
-        letters = set()
-        for right in range(left, m):
-          # Only add the new column
-          for i in range(top, bottom + 1):
-            letters.add(grid[i][right])
+ # Fix top and bottom rows
+ for top in range(n):
+  for bottom in range(top, n):
+   # For this row range, slide window across columns
+   for left in range(m):
+    letters = set()
+    for right in range(left, m):
+     # Only add the new column
+     for i in range(top, bottom + 1):
+      letters.add(grid[i][right])
 
-          if len(letters) == target_count:
-            result = (result + 1) % MOD
+     if len(letters) == target_count:
+      result = (result + 1) % MOD
 
-  return result
+ return result
 ```
 
 ### Complexity
@@ -269,10 +269,10 @@ def count_all_letter_subgrids_optimized(n, m, grid):
 # WRONG - set accumulates across different left boundaries
 letters = set()
 for left in range(m):
-  for right in range(left, m):
-    # letters still has old values!
-    for i in range(top, bottom + 1):
-      letters.add(grid[i][right])
+ for right in range(left, m):
+  # letters still has old values!
+  for i in range(top, bottom + 1):
+   letters.add(grid[i][right])
 ```
 
 **Problem:** The set is not reset when starting a new left boundary.
@@ -283,8 +283,8 @@ for left in range(m):
 ```python
 # WRONG - bottom should depend on top
 for top in range(n):
-  for bottom in range(n):  # Should start from top!
-    ...
+ for bottom in range(n):  # Should start from top!
+  ...
 ```
 
 **Problem:** Creates invalid subgrids where bottom < top.
@@ -295,7 +295,7 @@ for top in range(n):
 ```python
 # WRONG - may overflow for large results
 if len(letters) == target_count:
-  result += 1  # Should be (result + 1) % MOD
+ result += 1  # Should be (result + 1) % MOD
 ```
 
 **Problem:** Result can exceed integer limits.

@@ -100,30 +100,30 @@ Recursively determine if each position is winning or losing by checking all poss
 
 ```python
 def solve_recursive(n: int, moves: list) -> str:
-  """
-  Recursive solution with memoization.
+ """
+ Recursive solution with memoization.
 
-  Time: O(n * k)
-  Space: O(n)
-  """
-  memo = {}
+ Time: O(n * k)
+ Space: O(n)
+ """
+ memo = {}
 
-  def is_winning(pos: int) -> bool:
-    if pos in memo:
-      return memo[pos]
-    if pos == 0:
-      return False  # No moves = lose
+ def is_winning(pos: int) -> bool:
+  if pos in memo:
+   return memo[pos]
+  if pos == 0:
+   return False  # No moves = lose
 
-    # Check if any move leads to losing position
-    for move in moves:
-      if move <= pos and not is_winning(pos - move):
-        memo[pos] = True
-        return True
+  # Check if any move leads to losing position
+  for move in moves:
+   if move <= pos and not is_winning(pos - move):
+    memo[pos] = True
+    return True
 
-    memo[pos] = False
-    return False
+  memo[pos] = False
+  return False
 
-  return "W" if is_winning(n) else "L"
+ return "W" if is_winning(n) else "L"
 ```
 
 ### Complexity
@@ -240,36 +240,36 @@ Transition arrows for position 10:
 
 ```python
 def solve(n: int, k: int, moves: list) -> str:
-  """
-  Bottom-up DP solution for stick game.
+ """
+ Bottom-up DP solution for stick game.
 
-  Time: O(n * k)
-  Space: O(n)
-  """
-  # dp[i] = True if position i is winning
-  dp = [False] * (n + 1)
+ Time: O(n * k)
+ Space: O(n)
+ """
+ # dp[i] = True if position i is winning
+ dp = [False] * (n + 1)
 
-  # Base case: dp[0] = False (no moves = lose)
+ # Base case: dp[0] = False (no moves = lose)
 
-  for i in range(1, n + 1):
-    for move in moves:
-      if move <= i and not dp[i - move]:
-        dp[i] = True
-        break  # Found winning move, no need to check others
+ for i in range(1, n + 1):
+  for move in moves:
+   if move <= i and not dp[i - move]:
+    dp[i] = True
+    break  # Found winning move, no need to check others
 
-  # Build result string for all positions 1 to n
-  result = ''.join('W' if dp[i] else 'L' for i in range(1, n + 1))
-  return result
+ # Build result string for all positions 1 to n
+ result = ''.join('W' if dp[i] else 'L' for i in range(1, n + 1))
+ return result
 
 
 def main():
-  n, k = map(int, input().split())
-  moves = list(map(int, input().split()))
-  print(solve(n, k, moves))
+ n, k = map(int, input().split())
+ moves = list(map(int, input().split()))
+ print(solve(n, k, moves))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -298,11 +298,11 @@ dp = [True] * (n + 1)
 ```python
 # WRONG - looking for winning positions to move to
 if move <= i and dp[i - move]:
-  dp[i] = True
+ dp[i] = True
 
 # CORRECT - looking for LOSING positions to move to
 if move <= i and not dp[i - move]:
-  dp[i] = True
+ dp[i] = True
 ```
 
 **Problem:** You want to leave your opponent in a LOSING position, not a winning one.
@@ -313,11 +313,11 @@ if move <= i and not dp[i - move]:
 ```python
 # WRONG - may access negative index
 if not dp[i - move]:
-  dp[i] = True
+ dp[i] = True
 
 # CORRECT - check if move is valid
 if move <= i and not dp[i - move]:
-  dp[i] = True
+ dp[i] = True
 ```
 
 **Problem:** If move > i, accessing dp[i - move] accesses negative indices.

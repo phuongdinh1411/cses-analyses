@@ -73,43 +73,43 @@ import sys
 from sys import stdin
 
 def solve():
-  input = stdin.readline
-  n, m, q = map(int, input().split())
+ input = stdin.readline
+ n, m, q = map(int, input().split())
 
-  parent = list(range(n + 1))
-  rank = [0] * (n + 1)
+ parent = list(range(n + 1))
+ rank = [0] * (n + 1)
 
-  def find(x):
-    if parent[x] != x:
-      parent[x] = find(parent[x])
-    return parent[x]
+ def find(x):
+  if parent[x] != x:
+   parent[x] = find(parent[x])
+  return parent[x]
 
-  def union(a, b):
-    ra, rb = find(a), find(b)
-    if ra == rb:
-      return
+ def union(a, b):
+  ra, rb = find(a), find(b)
+  if ra == rb:
+   return
 
-    if rank[ra] < rank[rb]:
-      ra, rb = rb, ra
-    parent[rb] = ra
-    if rank[ra] == rank[rb]:
-      rank[ra] += 1
+  if rank[ra] < rank[rb]:
+   ra, rb = rb, ra
+  parent[rb] = ra
+  if rank[ra] == rank[rb]:
+   rank[ra] += 1
 
-  # Build phase: process all roads
-  for _ in range(m):
-    a, b = map(int, input().split())
-    union(a, b)
+ # Build phase: process all roads
+ for _ in range(m):
+  a, b = map(int, input().split())
+  union(a, b)
 
-  # Query phase: answer connectivity queries
-  result = []
-  for _ in range(q):
-    a, b = map(int, input().split())
-    if find(a) == find(b):
-      result.append("YES")
-    else:
-      result.append("NO")
+ # Query phase: answer connectivity queries
+ result = []
+ for _ in range(q):
+  a, b = map(int, input().split())
+  if find(a) == find(b):
+   result.append("YES")
+  else:
+   result.append("NO")
 
-  print('\n'.join(result))
+ print('\n'.join(result))
 
 solve()
 ```

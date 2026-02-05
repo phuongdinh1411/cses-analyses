@@ -32,122 +32,122 @@ Use hashing. For each string, compute hash values for all possible single-charac
 
 ```python
 def solve():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Store hashes of all strings in memory, grouped by length
-  from collections import defaultdict
-  memory = defaultdict(set)
+ # Store hashes of all strings in memory, grouped by length
+ from collections import defaultdict
+ memory = defaultdict(set)
 
-  BASE = 31
-  MOD = 10**18 + 9
+ BASE = 31
+ MOD = 10**18 + 9
 
-  def compute_hash(s):
-    h = 0
-    for c in s:
-      h = (h * BASE + ord(c) - ord('a') + 1) % MOD
-    return h
+ def compute_hash(s):
+  h = 0
+  for c in s:
+   h = (h * BASE + ord(c) - ord('a') + 1) % MOD
+  return h
 
-  # Precompute powers of BASE
-  max_len = 600001
-  pw = [1] * max_len
-  for i in range(1, max_len):
-    pw[i] = (pw[i-1] * BASE) % MOD
+ # Precompute powers of BASE
+ max_len = 600001
+ pw = [1] * max_len
+ for i in range(1, max_len):
+  pw[i] = (pw[i-1] * BASE) % MOD
 
-  for _ in range(n):
-    s = input().strip()
-    h = compute_hash(s)
-    memory[len(s)].add(h)
+ for _ in range(n):
+  s = input().strip()
+  h = compute_hash(s)
+  memory[len(s)].add(h)
 
-  results = []
+ results = []
 
-  for _ in range(m):
-    s = input().strip()
-    length = len(s)
-    h = compute_hash(s)
+ for _ in range(m):
+  s = input().strip()
+  length = len(s)
+  h = compute_hash(s)
 
-    found = False
-    current_hash = h
+  found = False
+  current_hash = h
 
-    # Try changing each position
-    for i in range(length):
-      pos = length - 1 - i  # Position from right
-      old_val = ord(s[i]) - ord('a') + 1
+  # Try changing each position
+  for i in range(length):
+   pos = length - 1 - i  # Position from right
+   old_val = ord(s[i]) - ord('a') + 1
 
-      for c in 'abc':
-        new_val = ord(c) - ord('a') + 1
-        if new_val != old_val:
-          # Compute new hash
-          diff = (new_val - old_val) * pw[pos]
-          new_hash = (current_hash + diff) % MOD
+   for c in 'abc':
+    new_val = ord(c) - ord('a') + 1
+    if new_val != old_val:
+     # Compute new hash
+     diff = (new_val - old_val) * pw[pos]
+     new_hash = (current_hash + diff) % MOD
 
-          if new_hash in memory[length]:
-            found = True
-            break
+     if new_hash in memory[length]:
+      found = True
+      break
 
-      if found:
-        break
+   if found:
+    break
 
-    results.append("YES" if found else "NO")
+  results.append("YES" if found else "NO")
 
-  print('\n'.join(results))
+ print('\n'.join(results))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with Rolling Hash
 
 ```python
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  from collections import defaultdict
-  BASE = 31
-  MOD = 2**61 - 1
+ from collections import defaultdict
+ BASE = 31
+ MOD = 2**61 - 1
 
-  strings_by_len = defaultdict(set)
+ strings_by_len = defaultdict(set)
 
-  def poly_hash(s):
-    h = 0
-    for c in s:
-      h = (h * BASE + ord(c)) % MOD
-    return h
+ def poly_hash(s):
+  h = 0
+  for c in s:
+   h = (h * BASE + ord(c)) % MOD
+  return h
 
-  # Read and hash all strings
-  for _ in range(n):
-    s = input().strip()
-    strings_by_len[len(s)].add(poly_hash(s))
+ # Read and hash all strings
+ for _ in range(n):
+  s = input().strip()
+  strings_by_len[len(s)].add(poly_hash(s))
 
-  # Precompute powers
-  pow_base = [1]
-  for _ in range(600005):
-    pow_base.append((pow_base[-1] * BASE) % MOD)
+ # Precompute powers
+ pow_base = [1]
+ for _ in range(600005):
+  pow_base.append((pow_base[-1] * BASE) % MOD)
 
-  for _ in range(m):
-    s = input().strip()
-    L = len(s)
-    h = poly_hash(s)
+ for _ in range(m):
+  s = input().strip()
+  L = len(s)
+  h = poly_hash(s)
 
-    found = False
-    for i in range(L):
-      old_c = ord(s[i])
-      for new_c in [ord('a'), ord('b'), ord('c')]:
-        if new_c != old_c:
-          diff = (new_c - old_c) * pow_base[L - 1 - i]
-          new_h = (h + diff) % MOD
-          if new_h in strings_by_len[L]:
-            found = True
-            break
-      if found:
-        break
+  found = False
+  for i in range(L):
+   old_c = ord(s[i])
+   for new_c in [ord('a'), ord('b'), ord('c')]:
+    if new_c != old_c:
+     diff = (new_c - old_c) * pow_base[L - 1 - i]
+     new_h = (h + diff) % MOD
+     if new_h in strings_by_len[L]:
+      found = True
+      break
+   if found:
+    break
 
-    print("YES" if found else "NO")
+  print("YES" if found else "NO")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

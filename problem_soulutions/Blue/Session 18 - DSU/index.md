@@ -43,50 +43,50 @@ ranks = dict()
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
+ global parent, ranks
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if up == vp:
+  return
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def solution():
-  m, n = map(int, input().split())
-  if m != n:
-    print('NO')
-    return
+ m, n = map(int, input().split())
+ if m != n:
+  print('NO')
+  return
 
-  make_set(m)
-  for i in range(m):
-    a, b = map(int, input().split())
-    union_set(a, b)
+ make_set(m)
+ for i in range(m):
+  a, b = map(int, input().split())
+  union_set(a, b)
 
-  top_parent = find_set(1)
-  for i in range(2, m):
-    if find_set(i) != top_parent:
-      print('NO')
-      return
+ top_parent = find_set(1)
+ for i in range(2, m):
+  if find_set(i) != top_parent:
+   print('NO')
+   return
 
-  print('FHTAGN!')
+ print('FHTAGN!')
 
 
 solution()
@@ -130,54 +130,54 @@ ranks = dict()
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
+ global parent, ranks
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if up == vp:
+  return
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def solution():
-  n_drifts = int(input())
-  make_set(n_drifts)
-  drifts = []
-  for i in range(n_drifts):
-    x, y = map(int, input().split())
-    drifts.append([x, y])
+ n_drifts = int(input())
+ make_set(n_drifts)
+ drifts = []
+ for i in range(n_drifts):
+  x, y = map(int, input().split())
+  drifts.append([x, y])
 
-  for i in range(n_drifts - 1):
-    for j in range(i + 1, n_drifts):
-      if drifts[i][0] == drifts[j][0] or drifts[i][1] == drifts[j][1]:
-        union_set(i, j)
+ for i in range(n_drifts - 1):
+  for j in range(i + 1, n_drifts):
+   if drifts[i][0] == drifts[j][0] or drifts[i][1] == drifts[j][1]:
+    union_set(i, j)
 
-  leaders = dict()
-  for i in range(n_drifts):
-    leader = find_set(i)
-    if leaders.get(leader) is not None:
-      leaders[leader] += 1
-    else:
-      leaders[leader] = 1
+ leaders = dict()
+ for i in range(n_drifts):
+  leader = find_set(i)
+  if leaders.get(leader) is not None:
+   leaders[leader] += 1
+  else:
+   leaders[leader] = 1
 
-  print(len(leaders) - 1)
+ print(len(leaders) - 1)
 
 
 solution()
@@ -225,59 +225,59 @@ ranks = []
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
+ global parent, ranks
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  else:
-    parent[u] = u
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ else:
+  parent[u] = u
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def solution():
-  set_indicators = dict()
-  n, a, b = map(int, input().split())
-  numbers = list(map(int, input().split()))
-  A = n + 1
-  B = A + 1
+ set_indicators = dict()
+ n, a, b = map(int, input().split())
+ numbers = list(map(int, input().split()))
+ A = n + 1
+ B = A + 1
 
-  make_set(n)
-  for i in range(n):
-    set_indicators[numbers[i]] = i
+ make_set(n)
+ for i in range(n):
+  set_indicators[numbers[i]] = i
 
-  for i in range(n):
-    if set_indicators.get(a - numbers[i]) is not None:
-      union_set(i, set_indicators.get(a - numbers[i]))
-    else:
-      union_set(i, B)
-    if set_indicators.get(b - numbers[i]) is not None:
-      union_set(i, set_indicators.get(b - numbers[i]))
-    else:
-      union_set(i, A)
-  if find_set(A) == find_set(B):
-    print('NO')
-    return
+ for i in range(n):
+  if set_indicators.get(a - numbers[i]) is not None:
+   union_set(i, set_indicators.get(a - numbers[i]))
+  else:
+   union_set(i, B)
+  if set_indicators.get(b - numbers[i]) is not None:
+   union_set(i, set_indicators.get(b - numbers[i]))
+  else:
+   union_set(i, A)
+ if find_set(A) == find_set(B):
+  print('NO')
+  return
 
-  print('YES')
-  for i in range(n):
-    print(1 if find_set(i) == find_set(n + 2) else 0)
+ print('YES')
+ for i in range(n):
+  print(1 if find_set(i) == find_set(n + 2) else 0)
 
 
 solution()
@@ -330,61 +330,61 @@ ranks = []
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(2*N + 5)]
-  ranks = [0 for i in range(2*N + 5)]
+ global parent, ranks
+ parent = [i for i in range(2*N + 5)]
+ ranks = [0 for i in range(2*N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if up == vp:
+  return
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def solution():
-  n = int(input())
-  make_set(n)
-  while True:
-    c, x, y = map(int, input().split())
-    if c == 0:
-      break
-    if c == 1:
-      if find_set(x) == find_set(y + n) or find_set(y) == find_set(x + n):
-        print(-1)
-      else:
-        union_set(x, y)
-        union_set(x + n, y + n)
-    if c == 2:
-      if find_set(x) == find_set(y) or find_set(x + n) == find_set(y + n):
-        print(-1)
-      else:
-        union_set(x, y + n)
-        union_set(y, x + n)
-    if c == 3:
-      if find_set(x) == find_set(y) or find_set(x + n) == find_set(y + n):
-        print(1)
-      else:
-        print(0)
-    if c == 4:
-      if find_set(x) == find_set(y + n) or find_set(y) == find_set(x + n):
-        print(1)
-      else:
-        print(0)
+ n = int(input())
+ make_set(n)
+ while True:
+  c, x, y = map(int, input().split())
+  if c == 0:
+   break
+  if c == 1:
+   if find_set(x) == find_set(y + n) or find_set(y) == find_set(x + n):
+    print(-1)
+   else:
+    union_set(x, y)
+    union_set(x + n, y + n)
+  if c == 2:
+   if find_set(x) == find_set(y) or find_set(x + n) == find_set(y + n):
+    print(-1)
+   else:
+    union_set(x, y + n)
+    union_set(y, x + n)
+  if c == 3:
+   if find_set(x) == find_set(y) or find_set(x + n) == find_set(y + n):
+    print(1)
+   else:
+    print(0)
+  if c == 4:
+   if find_set(x) == find_set(y + n) or find_set(y) == find_set(x + n):
+    print(1)
+   else:
+    print(0)
 
 
 solution()
@@ -430,78 +430,78 @@ ranks = []
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
+ global parent, ranks
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if up == vp:
+  return
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def has_same_opinion(opinions1, opinions2, length):
-  for i in range(length):
-    if opinions1[i] != opinions2[i]:
-      return False
-  return True
+ for i in range(length):
+  if opinions1[i] != opinions2[i]:
+   return False
+ return True
 
 
 def solution():
-  TC = int(input())
-  input()
-  for t in range(TC):
-    P, T = map(int, input().split())
-    opinions = [[False for i in range(T + 5)] for i in range(P + 5)]
+ TC = int(input())
+ input()
+ for t in range(TC):
+  P, T = map(int, input().split())
+  opinions = [[False for i in range(T + 5)] for i in range(P + 5)]
 
-    while True:
-      try:
-        line = input()
-      except:
-        break
-      if not line:
-        break
-      try:
-        p, t = map(int, line.split())
-      except:
-        break
-      opinions[p][t] = True
+  while True:
+   try:
+    line = input()
+   except:
+    break
+   if not line:
+    break
+   try:
+    p, t = map(int, line.split())
+   except:
+    break
+   opinions[p][t] = True
 
-    make_set(P)
+  make_set(P)
 
-    for i in range(1, P):
-      for j in range(i + 1, P + 1):
-        if has_same_opinion(opinions[i], opinions[j], T + 1):
-          union_set(i, j)
+  for i in range(1, P):
+   for j in range(i + 1, P + 1):
+    if has_same_opinion(opinions[i], opinions[j], T + 1):
+     union_set(i, j)
 
-    opinions_set = dict()
+  opinions_set = dict()
 
-    for i in range(1, P + 1):
-      leader = find_set(i)
-      if opinions_set.get(leader) is not None:
-        opinions_set[leader] += 1
-      else:
-        opinions_set[leader] = 1
+  for i in range(1, P + 1):
+   leader = find_set(i)
+   if opinions_set.get(leader) is not None:
+    opinions_set[leader] += 1
+   else:
+    opinions_set[leader] = 1
 
-    print(len(opinions_set))
-    if t != TC - 1:
-      print()
+  print(len(opinions_set))
+  if t != TC - 1:
+   print()
 
 
 solution()
@@ -548,54 +548,54 @@ members = []
 
 
 def make_set(N):
-  global parent, ranks, members
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
-  members = [1 for i in range(N + 5)]
+ global parent, ranks, members
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
+ members = [1 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return members[vp]
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-    members[up] = members[up] + members[vp]
-    return members[up]
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-    members[vp] = members[vp] + members[up]
-    return members[vp]
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
-    members[vp] = members[vp] + members[up]
-    return members[vp]
+ if up == vp:
+  return members[vp]
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+  members[up] = members[up] + members[vp]
+  return members[up]
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+  members[vp] = members[vp] + members[up]
+  return members[vp]
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
+  members[vp] = members[vp] + members[up]
+  return members[vp]
 
 
 def solution():
-  T = int(input())
-  for t in range(T):
-    N, M = map(int, input().split())
+ T = int(input())
+ for t in range(T):
+  N, M = map(int, input().split())
 
-    max_members = 1
+  max_members = 1
 
-    make_set(N)
-    for i in range(M):
-      u, v = map(int, input().split())
-      current_members = union_set(u, v)
-      if max_members < current_members:
-        max_members = current_members
+  make_set(N)
+  for i in range(M):
+   u, v = map(int, input().split())
+   current_members = union_set(u, v)
+   if max_members < current_members:
+    max_members = current_members
 
-    print(max_members)
+  print(max_members)
 
 
 solution()
@@ -642,60 +642,60 @@ members = dict()
 
 
 def make_set():
-  global parent, ranks, members
-  parent = dict()
-  ranks = dict()
-  members = dict()
+ global parent, ranks, members
+ parent = dict()
+ ranks = dict()
+ members = dict()
 
 
 def find_set(u):
-  if parent.get(u) is not None and parent[u] is not u:
-    parent[u] = find_set(parent[u])
-  else:
-    parent[u] = u
-  return parent[u]
+ if parent.get(u) is not None and parent[u] is not u:
+  parent[u] = find_set(parent[u])
+ else:
+  parent[u] = u
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
-  if ranks.get(up) is None:
-    ranks[up] = 1
-  if ranks.get(vp) is None:
-    ranks[vp] = 1
-  if members.get(up) is None:
-    members[up] = 1
-  if members.get(vp) is None:
-    members[vp] = 1
+ up = find_set(u)
+ vp = find_set(v)
+ if ranks.get(up) is None:
+  ranks[up] = 1
+ if ranks.get(vp) is None:
+  ranks[vp] = 1
+ if members.get(up) is None:
+  members[up] = 1
+ if members.get(vp) is None:
+  members[vp] = 1
 
-  if up == vp:
-    return members[vp]
+ if up == vp:
+  return members[vp]
 
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-    members[up] = members[up] + members[vp]
-    return members[up]
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-    members[vp] = members[vp] + members[up]
-    return members[vp]
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
-    members[vp] = members[vp] + members[up]
-    return members[vp]
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+  members[up] = members[up] + members[vp]
+  return members[up]
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+  members[vp] = members[vp] + members[up]
+  return members[vp]
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
+  members[vp] = members[vp] + members[up]
+  return members[vp]
 
 
 def solution():
-  T = int(input())
-  for t in range(T):
-    F = int(input())
+ T = int(input())
+ for t in range(T):
+  F = int(input())
 
-    make_set()
-    for i in range(F):
-      u, v = map(str, input().split())
-      current_members = union_set(u, v)
-      print(current_members)
+  make_set()
+  for i in range(F):
+   u, v = map(str, input().split())
+   current_members = union_set(u, v)
+   print(current_members)
 
 
 solution()
@@ -742,58 +742,58 @@ ranks = dict()
 
 
 def make_set(N):
-  global parent, ranks
-  parent = [i for i in range(N + 5)]
-  ranks = [0 for i in range(N + 5)]
+ global parent, ranks
+ parent = [i for i in range(N + 5)]
+ ranks = [0 for i in range(N + 5)]
 
 
 def find_set(u):
-  if parent[u] != u:
-    parent[u] = find_set(parent[u])
-  return parent[u]
+ if parent[u] != u:
+  parent[u] = find_set(parent[u])
+ return parent[u]
 
 
 def union_set(u, v):
-  up = find_set(u)
-  vp = find_set(v)
+ up = find_set(u)
+ vp = find_set(v)
 
-  if up == vp:
-    return
-  if ranks[up] > ranks[vp]:
-    parent[vp] = up
-  elif ranks[up] < ranks[vp]:
-    parent[up] = vp
-  else:
-    parent[up] = vp
-    ranks[vp] += 1
+ if up == vp:
+  return
+ if ranks[up] > ranks[vp]:
+  parent[vp] = up
+ elif ranks[up] < ranks[vp]:
+  parent[up] = vp
+ else:
+  parent[up] = vp
+  ranks[vp] += 1
 
 
 def solution():
-  T = int(input())
-  input()
-  for t in range(T):
-    n_nodes = ord(input()) - 64
-    make_set(n_nodes)
-    while True:
-      try:
-        line = input()
-        u = ord(line[0]) - 65
-        v = ord(line[1]) - 65
-        union_set(u, v)
-      except:
-        break
+ T = int(input())
+ input()
+ for t in range(T):
+  n_nodes = ord(input()) - 64
+  make_set(n_nodes)
+  while True:
+   try:
+    line = input()
+    u = ord(line[0]) - 65
+    v = ord(line[1]) - 65
+    union_set(u, v)
+   except:
+    break
 
-    leaders = dict()
-    for i in range(n_nodes):
-      leader = find_set(i)
-      if leaders.get(leader) is not None:
-        leaders[leader] += 1
-      else:
-        leaders[leader] = 1
+  leaders = dict()
+  for i in range(n_nodes):
+   leader = find_set(i)
+   if leaders.get(leader) is not None:
+    leaders[leader] += 1
+   else:
+    leaders[leader] = 1
 
-    print(len(leaders))
-    if t != T - 1:
-      print()
+  print(len(leaders))
+  if t != T - 1:
+   print()
 
 
 solution()

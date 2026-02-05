@@ -76,13 +76,13 @@ This is the **critical concept** for this problem. The difference between Coin C
 ```python
 # Coin Combinations I (PERMUTATIONS) - sum outer, coin inner
 for target_sum in range(1, x + 1):
-  for coin in coins:
-    dp[target_sum] += dp[target_sum - coin]
+ for coin in coins:
+  dp[target_sum] += dp[target_sum - coin]
 
 # Coin Combinations II (COMBINATIONS) - coin outer, sum inner
 for coin in coins:
-  for target_sum in range(coin, x + 1):
-    dp[target_sum] += dp[target_sum - coin]
+ for target_sum in range(coin, x + 1):
+  dp[target_sum] += dp[target_sum - coin]
 ```
 
 ### Why Does This Work?
@@ -203,24 +203,24 @@ Answer: dp[9] = 3
 
 ```python
 def solve(n, x, coins):
-  """
-  Count unordered ways (combinations) to make sum x with given coins.
+ """
+ Count unordered ways (combinations) to make sum x with given coins.
 
-  Time: O(n * x) where n = number of coins
-  Space: O(x) for dp array
-  """
-  MOD = 10**9 + 7
+ Time: O(n * x) where n = number of coins
+ Space: O(x) for dp array
+ """
+ MOD = 10**9 + 7
 
-  dp = [0] * (x + 1)
-  dp[0] = 1  # Base case: one way to make sum 0
+ dp = [0] * (x + 1)
+ dp[0] = 1  # Base case: one way to make sum 0
 
-  # Process each coin type one at a time
-  for coin in coins:
-    # Update all sums reachable with this coin
-    for i in range(coin, x + 1):
-      dp[i] = (dp[i] + dp[i - coin]) % MOD
+ # Process each coin type one at a time
+ for coin in coins:
+  # Update all sums reachable with this coin
+  for i in range(coin, x + 1):
+   dp[i] = (dp[i] + dp[i - coin]) % MOD
 
-  return dp[x]
+ return dp[x]
 
 # Read input
 n, x = map(int, input().split())
@@ -244,14 +244,14 @@ print(solve(n, x, coins))
 ```python
 # WRONG - This counts PERMUTATIONS, not combinations!
 for i in range(1, x + 1):      # Sum in outer loop
-  for coin in coins:
-    if i >= coin:
-      dp[i] += dp[i - coin]
+ for coin in coins:
+  if i >= coin:
+   dp[i] += dp[i - coin]
 
 # CORRECT - This counts COMBINATIONS (what we want)
 for coin in coins:             # Coin in outer loop
-  for i in range(coin, x + 1):
-    dp[i] += dp[i - coin]
+ for i in range(coin, x + 1):
+  dp[i] += dp[i - coin]
 ```
 
 **This is THE mistake students make.** Remember:
@@ -283,11 +283,11 @@ dp[0] = 1
 ```python
 # WRONG - Crashes when coin > i
 for i in range(1, x + 1):
-  dp[i] += dp[i - coin]  # i - coin could be negative!
+ dp[i] += dp[i - coin]  # i - coin could be negative!
 
 # CORRECT - Start at coin value
 for i in range(coin, x + 1):
-  dp[i] += dp[i - coin]
+ dp[i] += dp[i - coin]
 ```
 
 ---

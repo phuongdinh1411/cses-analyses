@@ -36,49 +36,49 @@ Transform to LIS: Map Prince's sequence to positions 1, 2, ..., p+1. Then for ea
 import bisect
 
 def solve():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  case = 0
-  while True:
-    line = input().split()
-    if not line:
-      break
+ case = 0
+ while True:
+  line = input().split()
+  if not line:
+   break
 
-    n, p, q = int(line[0]), int(line[1]), int(line[2])
-    case += 1
+  n, p, q = int(line[0]), int(line[1]), int(line[2])
+  case += 1
 
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
+  prince = list(map(int, input().split()))
+  princess = list(map(int, input().split()))
 
-    # Map prince's sequence to positions
-    pos = {}
-    for i, val in enumerate(prince):
-      pos[val] = i
+  # Map prince's sequence to positions
+  pos = {}
+  for i, val in enumerate(prince):
+   pos[val] = i
 
-    # Transform princess's sequence
-    transformed = []
-    for val in princess:
-      if val in pos:
-        transformed.append(pos[val])
+  # Transform princess's sequence
+  transformed = []
+  for val in princess:
+   if val in pos:
+    transformed.append(pos[val])
 
-    # LIS on transformed sequence
-    if not transformed:
-      print(f"Case {case}: 0")
-      continue
+  # LIS on transformed sequence
+  if not transformed:
+   print(f"Case {case}: 0")
+   continue
 
-    tails = []
-    for x in transformed:
-      idx = bisect.bisect_left(tails, x)
-      if idx == len(tails):
-        tails.append(x)
-      else:
-        tails[idx] = x
+  tails = []
+  for x in transformed:
+   idx = bisect.bisect_left(tails, x)
+   if idx == len(tails):
+    tails.append(x)
+   else:
+    tails[idx] = x
 
-    print(f"Case {case}: {len(tails)}")
+  print(f"Case {case}: {len(tails)}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
@@ -88,42 +88,42 @@ import bisect
 import sys
 
 def solve():
-  input = sys.stdin.readline
-  case = 0
+ input = sys.stdin.readline
+ case = 0
 
-  while True:
-    try:
-      line = input()
-      if not line.strip():
-        break
-      n, p, q = map(int, line.split())
-    except:
-      break
+ while True:
+  try:
+   line = input()
+   if not line.strip():
+    break
+   n, p, q = map(int, line.split())
+  except:
+   break
 
-    case += 1
+  case += 1
 
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
+  prince = list(map(int, input().split()))
+  princess = list(map(int, input().split()))
 
-    # Create position map for prince
-    prince_pos = {v: i for i, v in enumerate(prince)}
+  # Create position map for prince
+  prince_pos = {v: i for i, v in enumerate(prince)}
 
-    # Convert princess to positions in prince's sequence
-    seq = [prince_pos[v] for v in princess if v in prince_pos]
+  # Convert princess to positions in prince's sequence
+  seq = [prince_pos[v] for v in princess if v in prince_pos]
 
-    # LIS
-    dp = []
-    for x in seq:
-      pos = bisect.bisect_left(dp, x)
-      if pos == len(dp):
-        dp.append(x)
-      else:
-        dp[pos] = x
+  # LIS
+  dp = []
+  for x in seq:
+   pos = bisect.bisect_left(dp, x)
+   if pos == len(dp):
+    dp.append(x)
+   else:
+    dp[pos] = x
 
-    print(f"Case {case}: {len(dp)}")
+  print(f"Case {case}: {len(dp)}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

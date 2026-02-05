@@ -101,11 +101,11 @@ For each window position, scan all k elements to find the maximum.
 
 ```python
 def sliding_max_brute(arr, k):
-  n = len(arr)
-  result = []
-  for i in range(n - k + 1):
-    result.append(max(arr[i:i+k]))
-  return result
+ n = len(arr)
+ result = []
+ for i in range(n - k + 1):
+  result.append(max(arr[i:i+k]))
+ return result
 ```
 
 ### Complexity
@@ -206,47 +206,47 @@ Window 3: [4, 5, 3]
 from collections import deque
 
 def sliding_max(arr, k):
-  """
-  Find maximum in each sliding window of size k.
+ """
+ Find maximum in each sliding window of size k.
 
-  Time: O(n) - each element pushed/popped at most once
-  Space: O(k) - deque holds at most k indices
-  """
-  n = len(arr)
-  dq = deque()  # stores indices
-  result = []
+ Time: O(n) - each element pushed/popped at most once
+ Space: O(k) - deque holds at most k indices
+ """
+ n = len(arr)
+ dq = deque()  # stores indices
+ result = []
 
-  for i in range(n):
-    # Remove indices outside current window
-    while dq and dq[0] <= i - k:
-      dq.popleft()
+ for i in range(n):
+  # Remove indices outside current window
+  while dq and dq[0] <= i - k:
+   dq.popleft()
 
-    # Remove indices of elements smaller than current
-    # They can never be the maximum while current exists
-    while dq and arr[dq[-1]] <= arr[i]:
-      dq.pop()
+  # Remove indices of elements smaller than current
+  # They can never be the maximum while current exists
+  while dq and arr[dq[-1]] <= arr[i]:
+   dq.pop()
 
-    dq.append(i)
+  dq.append(i)
 
-    # Window is complete when i >= k-1
-    if i >= k - 1:
-      result.append(arr[dq[0]])
+  # Window is complete when i >= k-1
+  if i >= k - 1:
+   result.append(arr[dq[0]])
 
-  return result
+ return result
 
 
 # CSES I/O wrapper
 def main():
-  import sys
-  input_data = sys.stdin.read().split()
-  n, k = int(input_data[0]), int(input_data[1])
-  arr = list(map(int, input_data[2:2+n]))
+ import sys
+ input_data = sys.stdin.read().split()
+ n, k = int(input_data[0]), int(input_data[1])
+ arr = list(map(int, input_data[2:2+n]))
 
-  result = sliding_max(arr, k)
-  print(' '.join(map(str, result)))
+ result = sliding_max(arr, k)
+ print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 # WRONG - Cannot track when elements leave the window
 dq.append(arr[i])  # Stores value
 while dq and dq[0] < ???:  # How do we know if it's out of window?
-  dq.popleft()
+ dq.popleft()
 ```
 
 **Problem:** Without indices, you cannot determine when the front element has left the window.
@@ -277,9 +277,9 @@ while dq and dq[0] < ???:  # How do we know if it's out of window?
 ```python
 # WRONG - Removing from front before back
 for i in range(n):
-  while dq and dq[0] <= i - k:  # Front removal
-    dq.popleft()
-  dq.append(i)  # Adding without back removal!
+ while dq and dq[0] <= i - k:  # Front removal
+  dq.popleft()
+ dq.append(i)  # Adding without back removal!
 ```
 
 **Problem:** Not removing smaller elements from back breaks the decreasing property.
@@ -290,7 +290,7 @@ for i in range(n):
 ```python
 # WRONG for some cases
 while dq and arr[dq[-1]] < arr[i]:  # Strict less-than
-  dq.pop()
+ dq.pop()
 ```
 
 **Problem:** With `<` instead of `<=`, duplicates can accumulate unnecessarily.
@@ -301,7 +301,7 @@ while dq and arr[dq[-1]] < arr[i]:  # Strict less-than
 ```python
 # WRONG
 if i >= k:  # Should be k-1
-  result.append(arr[dq[0]])
+ result.append(arr[dq[0]])
 ```
 
 **Problem:** Misses the first window or outputs too late.
@@ -348,7 +348,7 @@ To find the **minimum** instead of maximum, reverse the comparison:
 ```python
 # For MINIMUM: maintain INCREASING deque
 while dq and arr[dq[-1]] >= arr[i]:  # Remove larger elements
-  dq.pop()
+ dq.pop()
 ```
 
 The front will hold the minimum instead of the maximum.

@@ -131,77 +131,77 @@ For each query, find the path using LCA and traverse all nodes to find maximum.
 
 ```python
 def solve_brute_force(n, values, edges, queries):
-  """
-  Brute force: traverse path for each query.
+ """
+ Brute force: traverse path for each query.
 
-  Time: O(q * n) - each query may traverse O(n) nodes
-  Space: O(n log n) - for LCA preprocessing
-  """
-  from collections import defaultdict
-  import sys
-  sys.setrecursionlimit(300000)
+ Time: O(q * n) - each query may traverse O(n) nodes
+ Space: O(n log n) - for LCA preprocessing
+ """
+ from collections import defaultdict
+ import sys
+ sys.setrecursionlimit(300000)
 
-  graph = defaultdict(list)
-  for u, v in edges:
-    graph[u].append(v)
-    graph[v].append(u)
+ graph = defaultdict(list)
+ for u, v in edges:
+  graph[u].append(v)
+  graph[v].append(u)
 
-  LOG = 18
-  parent = [[0] * (n + 1) for _ in range(LOG)]
-  depth = [0] * (n + 1)
+ LOG = 18
+ parent = [[0] * (n + 1) for _ in range(LOG)]
+ depth = [0] * (n + 1)
 
-  def dfs(node, par, d):
-    parent[0][node] = par
-    depth[node] = d
-    for child in graph[node]:
-      if child != par:
-        dfs(child, node, d + 1)
+ def dfs(node, par, d):
+  parent[0][node] = par
+  depth[node] = d
+  for child in graph[node]:
+   if child != par:
+    dfs(child, node, d + 1)
 
-  dfs(1, 0, 0)
+ dfs(1, 0, 0)
 
-  for k in range(1, LOG):
-    for v in range(1, n + 1):
-      parent[k][v] = parent[k-1][parent[k-1][v]]
+ for k in range(1, LOG):
+  for v in range(1, n + 1):
+   parent[k][v] = parent[k-1][parent[k-1][v]]
 
-  def lca(a, b):
-    if depth[a] < depth[b]:
-      a, b = b, a
-    diff = depth[a] - depth[b]
-    for k in range(LOG):
-      if diff & (1 << k):
-        a = parent[k][a]
-    if a == b:
-      return a
-    for k in range(LOG - 1, -1, -1):
-      if parent[k][a] != parent[k][b]:
-        a, b = parent[k][a], parent[k][b]
-    return parent[0][a]
+ def lca(a, b):
+  if depth[a] < depth[b]:
+   a, b = b, a
+  diff = depth[a] - depth[b]
+  for k in range(LOG):
+   if diff & (1 << k):
+    a = parent[k][a]
+  if a == b:
+   return a
+  for k in range(LOG - 1, -1, -1):
+   if parent[k][a] != parent[k][b]:
+    a, b = parent[k][a], parent[k][b]
+  return parent[0][a]
 
-  def path_max(a, b):
-    l = lca(a, b)
-    max_val = values[l]
-    # Traverse a to lca
-    node = a
-    while node != l:
-      max_val = max(max_val, values[node])
-      node = parent[0][node]
-    # Traverse b to lca
-    node = b
-    while node != l:
-      max_val = max(max_val, values[node])
-      node = parent[0][node]
-    return max_val
+ def path_max(a, b):
+  l = lca(a, b)
+  max_val = values[l]
+  # Traverse a to lca
+  node = a
+  while node != l:
+   max_val = max(max_val, values[node])
+   node = parent[0][node]
+  # Traverse b to lca
+  node = b
+  while node != l:
+   max_val = max(max_val, values[node])
+   node = parent[0][node]
+  return max_val
 
-  results = []
-  for query in queries:
-    if query[0] == 1:  # Update
-      s, x = query[1], query[2]
-      values[s] = x
-    else:  # Query
-      a, b = query[1], query[2]
-      results.append(path_max(a, b))
+ results = []
+ for query in queries:
+  if query[0] == 1:  # Update
+   s, x = query[1], query[2]
+   values[s] = x
+  else:  # Query
+   a, b = query[1], query[2]
+   results.append(path_max(a, b))
 
-  return results
+ return results
 ```
 
 ### Complexity
@@ -321,138 +321,138 @@ import sys
 from collections import defaultdict
 
 def solve():
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n, q = int(input_data[idx]), int(input_data[idx + 1])
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n, q = int(input_data[idx]), int(input_data[idx + 1])
+ idx += 2
+
+ values = [0] + [int(input_data[idx + i]) for i in range(n)]  # 1-indexed
+ idx += n
+
+ graph = defaultdict(list)
+ for _ in range(n - 1):
+  u, v = int(input_data[idx]), int(input_data[idx + 1])
   idx += 2
+  graph[u].append(v)
+  graph[v].append(u)
 
-  values = [0] + [int(input_data[idx + i]) for i in range(n)]  # 1-indexed
-  idx += n
+ # HLD arrays
+ parent = [0] * (n + 1)
+ depth = [0] * (n + 1)
+ size = [0] * (n + 1)
+ heavy = [0] * (n + 1)  # heavy child (0 if leaf)
+ head = [0] * (n + 1)   # chain head
+ pos = [0] * (n + 1)    # position in segment tree
 
-  graph = defaultdict(list)
-  for _ in range(n - 1):
-    u, v = int(input_data[idx]), int(input_data[idx + 1])
-    idx += 2
-    graph[u].append(v)
-    graph[v].append(u)
+ # DFS to compute size and heavy child (iterative)
+ stack = [(1, 0, False)]
+ while stack:
+  node, par, processed = stack.pop()
+  if processed:
+   size[node] = 1
+   max_child_size = 0
+   for child in graph[node]:
+    if child != par:
+     size[node] += size[child]
+     if size[child] > max_child_size:
+      max_child_size = size[child]
+      heavy[node] = child
+  else:
+   parent[node] = par
+   depth[node] = depth[par] + 1 if par else 0
+   stack.append((node, par, True))
+   for child in graph[node]:
+    if child != par:
+     stack.append((child, node, False))
 
-  # HLD arrays
-  parent = [0] * (n + 1)
-  depth = [0] * (n + 1)
-  size = [0] * (n + 1)
-  heavy = [0] * (n + 1)  # heavy child (0 if leaf)
-  head = [0] * (n + 1)   # chain head
-  pos = [0] * (n + 1)    # position in segment tree
+ # Decompose into chains (iterative)
+ current_pos = 0
+ stack = [(1, 1)]  # (node, chain_head)
+ while stack:
+  node, h = stack.pop()
+  head[node] = h
+  pos[node] = current_pos
+  current_pos += 1
 
-  # DFS to compute size and heavy child (iterative)
-  stack = [(1, 0, False)]
-  while stack:
-    node, par, processed = stack.pop()
-    if processed:
-      size[node] = 1
-      max_child_size = 0
-      for child in graph[node]:
-        if child != par:
-          size[node] += size[child]
-          if size[child] > max_child_size:
-            max_child_size = size[child]
-            heavy[node] = child
-    else:
-      parent[node] = par
-      depth[node] = depth[par] + 1 if par else 0
-      stack.append((node, par, True))
-      for child in graph[node]:
-        if child != par:
-          stack.append((child, node, False))
+  # Add light children first (processed later)
+  light_children = []
+  for child in graph[node]:
+   if child != parent[node] and child != heavy[node]:
+    light_children.append(child)
 
-  # Decompose into chains (iterative)
-  current_pos = 0
-  stack = [(1, 1)]  # (node, chain_head)
-  while stack:
-    node, h = stack.pop()
-    head[node] = h
-    pos[node] = current_pos
-    current_pos += 1
+  # Add light children - each starts new chain
+  for child in reversed(light_children):
+   stack.append((child, child))
 
-    # Add light children first (processed later)
-    light_children = []
-    for child in graph[node]:
-      if child != parent[node] and child != heavy[node]:
-        light_children.append(child)
+  # Add heavy child (processed next, same chain)
+  if heavy[node]:
+   stack.append((heavy[node], h))
 
-    # Add light children - each starts new chain
-    for child in reversed(light_children):
-      stack.append((child, child))
+ # Build segment tree
+ seg_tree = [0] * (4 * n)
+ arr = [0] * n
+ for i in range(1, n + 1):
+  arr[pos[i]] = values[i]
 
-    # Add heavy child (processed next, same chain)
-    if heavy[node]:
-      stack.append((heavy[node], h))
+ def build(node, start, end):
+  if start == end:
+   seg_tree[node] = arr[start]
+  else:
+   mid = (start + end) // 2
+   build(2 * node, start, mid)
+   build(2 * node + 1, mid + 1, end)
+   seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
 
-  # Build segment tree
-  seg_tree = [0] * (4 * n)
-  arr = [0] * n
-  for i in range(1, n + 1):
-    arr[pos[i]] = values[i]
+ def update(node, start, end, idx, val):
+  if start == end:
+   seg_tree[node] = val
+  else:
+   mid = (start + end) // 2
+   if idx <= mid:
+    update(2 * node, start, mid, idx, val)
+   else:
+    update(2 * node + 1, mid + 1, end, idx, val)
+   seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
 
-  def build(node, start, end):
-    if start == end:
-      seg_tree[node] = arr[start]
-    else:
-      mid = (start + end) // 2
-      build(2 * node, start, mid)
-      build(2 * node + 1, mid + 1, end)
-      seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
+ def query(node, start, end, l, r):
+  if r < start or end < l:
+   return 0
+  if l <= start and end <= r:
+   return seg_tree[node]
+  mid = (start + end) // 2
+  return max(query(2 * node, start, mid, l, r),
+    query(2 * node + 1, mid + 1, end, l, r))
 
-  def update(node, start, end, idx, val):
-    if start == end:
-      seg_tree[node] = val
-    else:
-      mid = (start + end) // 2
-      if idx <= mid:
-        update(2 * node, start, mid, idx, val)
-      else:
-        update(2 * node + 1, mid + 1, end, idx, val)
-      seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1])
+ build(1, 0, n - 1)
 
-  def query(node, start, end, l, r):
-    if r < start or end < l:
-      return 0
-    if l <= start and end <= r:
-      return seg_tree[node]
-    mid = (start + end) // 2
-    return max(query(2 * node, start, mid, l, r),
-         query(2 * node + 1, mid + 1, end, l, r))
+ def path_max(a, b):
+  result = 0
+  while head[a] != head[b]:
+   if depth[head[a]] < depth[head[b]]:
+    a, b = b, a
+   result = max(result, query(1, 0, n - 1, pos[head[a]], pos[a]))
+   a = parent[head[a]]
+  if depth[a] > depth[b]:
+   a, b = b, a
+  result = max(result, query(1, 0, n - 1, pos[a], pos[b]))
+  return result
 
-  build(1, 0, n - 1)
+ results = []
+ for _ in range(q):
+  query_type = int(input_data[idx])
+  if query_type == 1:
+   s, x = int(input_data[idx + 1]), int(input_data[idx + 2])
+   idx += 3
+   update(1, 0, n - 1, pos[s], x)
+  else:
+   a, b = int(input_data[idx + 1]), int(input_data[idx + 2])
+   idx += 3
+   results.append(path_max(a, b))
 
-  def path_max(a, b):
-    result = 0
-    while head[a] != head[b]:
-      if depth[head[a]] < depth[head[b]]:
-        a, b = b, a
-      result = max(result, query(1, 0, n - 1, pos[head[a]], pos[a]))
-      a = parent[head[a]]
-    if depth[a] > depth[b]:
-      a, b = b, a
-    result = max(result, query(1, 0, n - 1, pos[a], pos[b]))
-    return result
-
-  results = []
-  for _ in range(q):
-    query_type = int(input_data[idx])
-    if query_type == 1:
-      s, x = int(input_data[idx + 1]), int(input_data[idx + 2])
-      idx += 3
-      update(1, 0, n - 1, pos[s], x)
-    else:
-      a, b = int(input_data[idx + 1]), int(input_data[idx + 2])
-      idx += 3
-      results.append(path_max(a, b))
-
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -471,9 +471,9 @@ if __name__ == "__main__":
 ```python
 # WRONG - may skip nodes
 while head[a] != head[b]:
-  if depth[a] < depth[b]:  # Comparing node depth, not chain head depth
-    a, b = b, a
-  ...
+ if depth[a] < depth[b]:  # Comparing node depth, not chain head depth
+  a, b = b, a
+ ...
 ```
 
 **Problem:** We must compare depths of chain heads, not the nodes themselves.
@@ -484,7 +484,7 @@ while head[a] != head[b]:
 ```python
 # WRONG - missing the final segment
 while head[a] != head[b]:
-  # ... process chains
+ # ... process chains
 # Missing: query(pos[a], pos[b]) when same chain!
 ```
 
@@ -502,7 +502,7 @@ result = max(result, query(1, 0, n-1, pos[a], pos[b]))
 **Fix:** Ensure a is the shallower node before the final query:
 ```python
 if depth[a] > depth[b]:
-  a, b = b, a
+ a, b = b, a
 result = max(result, query(1, 0, n-1, pos[a], pos[b]))
 ```
 
@@ -511,9 +511,9 @@ result = max(result, query(1, 0, n-1, pos[a], pos[b]))
 ```python
 # WRONG - recursive DFS on large trees
 def dfs(node, par):
-  for child in graph[node]:
-    if child != par:
-      dfs(child, node)  # Stack overflow for n=200000
+ for child in graph[node]:
+  if child != par:
+   dfs(child, node)  # Stack overflow for n=200000
 ```
 
 **Problem:** Python's default recursion limit is 1000.

@@ -111,23 +111,23 @@ Check all possible subarrays by trying every start and end position.
 
 ```python
 def count_subarrays_brute(arr, x):
-  """
-  Brute force: check all subarrays.
+ """
+ Brute force: check all subarrays.
 
-  Time: O(n^2)
-  Space: O(1)
-  """
-  n = len(arr)
-  count = 0
+ Time: O(n^2)
+ Space: O(1)
+ """
+ n = len(arr)
+ count = 0
 
-  for i in range(n):
-    current_sum = 0
-    for j in range(i, n):
-      current_sum += arr[j]
-      if current_sum == x:
-        count += 1
+ for i in range(n):
+  current_sum = 0
+  for j in range(i, n):
+   current_sum += arr[j]
+   if current_sum == x:
+    count += 1
 
-  return count
+ return count
 ```
 
 ### Complexity
@@ -218,38 +218,38 @@ Looking for prefix differences = 7:
 
 ```python
 def count_subarrays(arr, x):
-  """
-  Count subarrays with sum equal to x using prefix sum + hash map.
+ """
+ Count subarrays with sum equal to x using prefix sum + hash map.
 
-  Time: O(n) - single pass
-  Space: O(n) - hash map storage
-  """
-  prefix_sum = 0
-  count = 0
-  freq = {0: 1}  # Empty prefix has sum 0
+ Time: O(n) - single pass
+ Space: O(n) - hash map storage
+ """
+ prefix_sum = 0
+ count = 0
+ freq = {0: 1}  # Empty prefix has sum 0
 
-  for num in arr:
-    prefix_sum += num
+ for num in arr:
+  prefix_sum += num
 
-    # How many previous prefixes give us target sum?
-    complement = prefix_sum - x
-    count += freq.get(complement, 0)
+  # How many previous prefixes give us target sum?
+  complement = prefix_sum - x
+  count += freq.get(complement, 0)
 
-    # Store current prefix sum
-    freq[prefix_sum] = freq.get(prefix_sum, 0) + 1
+  # Store current prefix sum
+  freq[prefix_sum] = freq.get(prefix_sum, 0) + 1
 
-  return count
+ return count
 
 
 # Read input and solve
 def main():
-  n, x = map(int, input().split())
-  arr = list(map(int, input().split()))
-  print(count_subarrays(arr, x))
+ n, x = map(int, input().split())
+ arr = list(map(int, input().split()))
+ print(count_subarrays(arr, x))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -269,9 +269,9 @@ if __name__ == "__main__":
 # WRONG - misses subarrays starting from index 0
 freq = {}
 for num in arr:
-  prefix_sum += num
-  count += freq.get(prefix_sum - x, 0)
-  freq[prefix_sum] = freq.get(prefix_sum, 0) + 1
+ prefix_sum += num
+ count += freq.get(prefix_sum - x, 0)
+ freq[prefix_sum] = freq.get(prefix_sum, 0) + 1
 ```
 
 **Problem:** Without {0: 1}, we cannot find subarrays that start from index 0.
@@ -287,9 +287,9 @@ for num in arr:
 ```python
 # WRONG - may count same element twice
 for num in arr:
-  prefix_sum += num
-  freq[prefix_sum] = freq.get(prefix_sum, 0) + 1  # Store first
-  count += freq.get(prefix_sum - x, 0)            # Then check
+ prefix_sum += num
+ freq[prefix_sum] = freq.get(prefix_sum, 0) + 1  # Store first
+ count += freq.get(prefix_sum - x, 0)            # Then check
 ```
 
 **Problem:** If x = 0, this would match the current prefix with itself.

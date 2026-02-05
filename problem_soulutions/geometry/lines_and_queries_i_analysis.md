@@ -98,20 +98,20 @@ For each query, evaluate all n lines and find the minimum.
 
 ```python
 def solve_brute_force(lines, queries):
-  """
-  Brute force: check all lines for each query.
+ """
+ Brute force: check all lines for each query.
 
-  Time: O(n * q)
-  Space: O(1)
-  """
-  results = []
-  for x in queries:
-    min_y = float('inf')
-    for m, b in lines:
-      y = m * x + b
-      min_y = min(min_y, y)
-    results.append(min_y)
-  return results
+ Time: O(n * q)
+ Space: O(1)
+ """
+ results = []
+ for x in queries:
+  min_y = float('inf')
+  for m, b in lines:
+   y = m * x + b
+   min_y = min(min_y, y)
+  results.append(min_y)
+ return results
 ```
 
 ### Complexity
@@ -223,70 +223,70 @@ Lower envelope: Uses L1 for x < 0.5, L2 for 0.5 < x < 2, L3 for x > 2
 
 ```python
 class ConvexHullTrick:
+ """
+ Convex Hull Trick for minimum line queries.
+ Lines must be added in order of increasing slope.
+ """
+ def __init__(self):
+  self.lines = []  # List of (slope, intercept)
+
+ def bad(self, l1, l2, l3):
   """
-  Convex Hull Trick for minimum line queries.
-  Lines must be added in order of increasing slope.
+  Check if l2 is useless given l1 and l3.
+  Returns True if l1-l3 intersection is at or before l1-l2 intersection.
   """
-  def __init__(self):
-    self.lines = []  # List of (slope, intercept)
+  # Intersection of l1 and l2: x = (b2-b1)/(m1-m2)
+  # Intersection of l1 and l3: x = (b3-b1)/(m1-m3)
+  # l2 is bad if x13 <= x12
+  # (b3-b1)/(m1-m3) <= (b2-b1)/(m1-m2)
+  # Cross multiply (careful with signs):
+  return (l3[1] - l1[1]) * (l1[0] - l2[0]) <= (l2[1] - l1[1]) * (l1[0] - l3[0])
 
-  def bad(self, l1, l2, l3):
-    """
-    Check if l2 is useless given l1 and l3.
-    Returns True if l1-l3 intersection is at or before l1-l2 intersection.
-    """
-    # Intersection of l1 and l2: x = (b2-b1)/(m1-m2)
-    # Intersection of l1 and l3: x = (b3-b1)/(m1-m3)
-    # l2 is bad if x13 <= x12
-    # (b3-b1)/(m1-m3) <= (b2-b1)/(m1-m2)
-    # Cross multiply (careful with signs):
-    return (l3[1] - l1[1]) * (l1[0] - l2[0]) <= (l2[1] - l1[1]) * (l1[0] - l3[0])
+ def add_line(self, m, b):
+  """Add line y = mx + b. Must be called with increasing slopes."""
+  line = (m, b)
+  while len(self.lines) >= 2 and self.bad(self.lines[-2], self.lines[-1], line):
+   self.lines.pop()
+  self.lines.append(line)
 
-  def add_line(self, m, b):
-    """Add line y = mx + b. Must be called with increasing slopes."""
-    line = (m, b)
-    while len(self.lines) >= 2 and self.bad(self.lines[-2], self.lines[-1], line):
-      self.lines.pop()
-    self.lines.append(line)
+ def query(self, x):
+  """Find minimum y value at x using binary search."""
+  if not self.lines:
+   return float('inf')
 
-  def query(self, x):
-    """Find minimum y value at x using binary search."""
-    if not self.lines:
-      return float('inf')
+  lo, hi = 0, len(self.lines) - 1
+  while lo < hi:
+   mid = (lo + hi) // 2
+   m1, b1 = self.lines[mid]
+   m2, b2 = self.lines[mid + 1]
+   if m1 * x + b1 > m2 * x + b2:
+    lo = mid + 1
+   else:
+    hi = mid
 
-    lo, hi = 0, len(self.lines) - 1
-    while lo < hi:
-      mid = (lo + hi) // 2
-      m1, b1 = self.lines[mid]
-      m2, b2 = self.lines[mid + 1]
-      if m1 * x + b1 > m2 * x + b2:
-        lo = mid + 1
-      else:
-        hi = mid
-
-    m, b = self.lines[lo]
-    return m * x + b
+  m, b = self.lines[lo]
+  return m * x + b
 
 
 def solve_cht(lines, queries):
-  """
-  Optimal solution using Convex Hull Trick.
+ """
+ Optimal solution using Convex Hull Trick.
 
-  Time: O(n log n + q log n)
-  Space: O(n)
-  """
-  # Sort lines by slope
-  sorted_lines = sorted(lines, key=lambda x: x[0])
+ Time: O(n log n + q log n)
+ Space: O(n)
+ """
+ # Sort lines by slope
+ sorted_lines = sorted(lines, key=lambda x: x[0])
 
-  cht = ConvexHullTrick()
-  for m, b in sorted_lines:
-    cht.add_line(m, b)
+ cht = ConvexHullTrick()
+ for m, b in sorted_lines:
+  cht.add_line(m, b)
 
-  results = []
-  for x in queries:
-    results.append(cht.query(x))
+ results = []
+ for x in queries:
+  results.append(cht.query(x))
 
-  return results
+ return results
 ```
 
 #### Complexity
@@ -310,12 +310,12 @@ def solve_cht(lines, queries):
 ```python
 # WRONG - adding lines in arbitrary order
 for m, b in lines:
-  cht.add_line(m, b)
+ cht.add_line(m, b)
 
 # CORRECT - sort first
 sorted_lines = sorted(lines, key=lambda x: x[0])
 for m, b in sorted_lines:
-  cht.add_line(m, b)
+ cht.add_line(m, b)
 ```
 
 **Problem:** The CHT algorithm requires lines in slope order.
@@ -326,11 +326,11 @@ for m, b in sorted_lines:
 ```python
 # For MINIMUM queries
 if m1 * x + b1 > m2 * x + b2:
-  lo = mid + 1
+ lo = mid + 1
 
 # For MAXIMUM queries - flip the comparison!
 if m1 * x + b1 < m2 * x + b2:
-  lo = mid + 1
+ lo = mid + 1
 ```
 
 **Problem:** The binary search direction depends on whether you want min or max.

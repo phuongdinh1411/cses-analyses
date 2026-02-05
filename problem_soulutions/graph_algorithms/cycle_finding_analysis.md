@@ -213,78 +213,78 @@ Or equivalently: 2 -> 4 -> 3 -> 2
 
 ```python
 def find_negative_cycle(n, edges):
-  """
-  Find a negative cycle using Bellman-Ford algorithm.
+ """
+ Find a negative cycle using Bellman-Ford algorithm.
 
-  Args:
-    n: Number of nodes (1-indexed)
-    edges: List of (u, v, w) tuples representing directed edges
+ Args:
+  n: Number of nodes (1-indexed)
+  edges: List of (u, v, w) tuples representing directed edges
 
-  Returns:
-    List of nodes forming the cycle, or None if no negative cycle
-  """
-  INF = float('inf')
-  dist = [0] * (n + 1)  # Start with all zeros (virtual source to all)
-  parent = [-1] * (n + 1)
+ Returns:
+  List of nodes forming the cycle, or None if no negative cycle
+ """
+ INF = float('inf')
+ dist = [0] * (n + 1)  # Start with all zeros (virtual source to all)
+ parent = [-1] * (n + 1)
 
-  # Run n iterations (n-1 for shortest paths, 1 more to detect cycle)
+ # Run n iterations (n-1 for shortest paths, 1 more to detect cycle)
+ last_relaxed = -1
+
+ for iteration in range(n):
   last_relaxed = -1
+  for u, v, w in edges:
+   if dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+    parent[v] = u
+    last_relaxed = v
 
-  for iteration in range(n):
-    last_relaxed = -1
-    for u, v, w in edges:
-      if dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-        parent[v] = u
-        last_relaxed = v
+ # No relaxation on nth iteration means no negative cycle
+ if last_relaxed == -1:
+  return None
 
-  # No relaxation on nth iteration means no negative cycle
-  if last_relaxed == -1:
-    return None
+ # Find a node that is definitely on the cycle
+ # Go back n steps to ensure we're on the cycle
+ node_on_cycle = last_relaxed
+ for _ in range(n):
+  node_on_cycle = parent[node_on_cycle]
 
-  # Find a node that is definitely on the cycle
-  # Go back n steps to ensure we're on the cycle
-  node_on_cycle = last_relaxed
-  for _ in range(n):
-    node_on_cycle = parent[node_on_cycle]
+ # Extract the cycle
+ cycle = []
+ current = node_on_cycle
+ while True:
+  cycle.append(current)
+  current = parent[current]
+  if current == node_on_cycle:
+   break
 
-  # Extract the cycle
-  cycle = []
-  current = node_on_cycle
-  while True:
-    cycle.append(current)
-    current = parent[current]
-    if current == node_on_cycle:
-      break
+ cycle.append(node_on_cycle)  # Complete the cycle
+ cycle.reverse()  # Correct order
 
-  cycle.append(node_on_cycle)  # Complete the cycle
-  cycle.reverse()  # Correct order
-
-  return cycle
+ return cycle
 
 
 def solve():
-  """Main solution function."""
-  import sys
-  input = sys.stdin.readline
+ """Main solution function."""
+ import sys
+ input = sys.stdin.readline
 
-  n, m = map(int, input().split())
-  edges = []
-  for _ in range(m):
-    a, b, c = map(int, input().split())
-    edges.append((a, b, c))
+ n, m = map(int, input().split())
+ edges = []
+ for _ in range(m):
+  a, b, c = map(int, input().split())
+  edges.append((a, b, c))
 
-  cycle = find_negative_cycle(n, edges)
+ cycle = find_negative_cycle(n, edges)
 
-  if cycle is None:
-    print("NO")
-  else:
-    print("YES")
-    print(' '.join(map(str, cycle)))
+ if cycle is None:
+  print("NO")
+ else:
+  print("YES")
+  print(' '.join(map(str, cycle)))
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ## Common Mistakes
@@ -302,7 +302,7 @@ cycle_start = last_relaxed
 # CORRECT: Follow parents n times to ensure we're on cycle
 node_on_cycle = last_relaxed
 for _ in range(n):
-  node_on_cycle = parent[node_on_cycle]
+ node_on_cycle = parent[node_on_cycle]
 ```
 
 ### 2. Integer Overflow

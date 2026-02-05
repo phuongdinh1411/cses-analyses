@@ -95,20 +95,20 @@ Check every possible subarray by trying all start and end positions.
 **Python:**
 ```python
 def max_subarray_brute(arr):
-  """
-  Brute force: check all subarrays.
-  Time: O(n^2), Space: O(1)
-  """
-  n = len(arr)
-  max_sum = arr[0]
+ """
+ Brute force: check all subarrays.
+ Time: O(n^2), Space: O(1)
+ """
+ n = len(arr)
+ max_sum = arr[0]
 
-  for i in range(n):
-    current_sum = 0
-    for j in range(i, n):
-      current_sum += arr[j]
-      max_sum = max(max_sum, current_sum)
+ for i in range(n):
+  current_sum = 0
+  for j in range(i, n):
+   current_sum += arr[j]
+   max_sum = max(max_sum, current_sum)
 
-  return max_sum
+ return max_sum
 ```
 
 ### Complexity
@@ -223,16 +223,16 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n = int(input())
-  arr = list(map(int, input().split()))
+ n = int(input())
+ arr = list(map(int, input().split()))
 
-  current_sum = max_sum = arr[0]
+ current_sum = max_sum = arr[0]
 
-  for i in range(1, n):
-    current_sum = max(arr[i], current_sum + arr[i])
-    max_sum = max(max_sum, current_sum)
+ for i in range(1, n):
+  current_sum = max(arr[i], current_sum + arr[i])
+  max_sum = max(max_sum, current_sum)
 
-  print(max_sum)
+ print(max_sum)
 
 solve()
 ```

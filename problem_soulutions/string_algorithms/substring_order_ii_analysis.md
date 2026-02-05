@@ -105,21 +105,21 @@ Generate all substrings, sort them, and return the k-th one.
 
 ```python
 def solve_brute_force(s, k):
-  """
-  Generate all substrings, sort, return k-th.
+ """
+ Generate all substrings, sort, return k-th.
 
-  Time: O(n^3 log n) - generating and sorting all substrings
-  Space: O(n^2) - storing all substrings
-  """
-  n = len(s)
-  substrings = []
+ Time: O(n^3 log n) - generating and sorting all substrings
+ Space: O(n^2) - storing all substrings
+ """
+ n = len(s)
+ substrings = []
 
-  for i in range(n):
-    for j in range(i + 1, n + 1):
-      substrings.append(s[i:j])
+ for i in range(n):
+  for j in range(i + 1, n + 1):
+   substrings.append(s[i:j])
 
-  substrings.sort()
-  return substrings[k - 1]
+ substrings.sort()
+ return substrings[k - 1]
 ```
 
 ### Complexity
@@ -222,73 +222,73 @@ To find k=10:
 
 ```python
 def build_suffix_array(s):
-  """
-  Build suffix array using doubling algorithm.
-  Time: O(n log n)
-  """
-  n = len(s)
-  sa = list(range(n))
-  rank = [ord(c) for c in s]
-  tmp = [0] * n
-  k = 1
+ """
+ Build suffix array using doubling algorithm.
+ Time: O(n log n)
+ """
+ n = len(s)
+ sa = list(range(n))
+ rank = [ord(c) for c in s]
+ tmp = [0] * n
+ k = 1
 
-  while k < n:
-    def key(i):
-      r1 = rank[i]
-      r2 = rank[i + k] if i + k < n else -1
-      return (r1, r2)
+ while k < n:
+  def key(i):
+   r1 = rank[i]
+   r2 = rank[i + k] if i + k < n else -1
+   return (r1, r2)
 
-    sa.sort(key=key)
+  sa.sort(key=key)
 
-    tmp[sa[0]] = 0
-    for i in range(1, n):
-      tmp[sa[i]] = tmp[sa[i-1]]
-      if key(sa[i]) != key(sa[i-1]):
-        tmp[sa[i]] += 1
+  tmp[sa[0]] = 0
+  for i in range(1, n):
+   tmp[sa[i]] = tmp[sa[i-1]]
+   if key(sa[i]) != key(sa[i-1]):
+    tmp[sa[i]] += 1
 
-    rank = tmp[:]
-    if rank[sa[n-1]] == n - 1:
-      break
-    k *= 2
+  rank = tmp[:]
+  if rank[sa[n-1]] == n - 1:
+   break
+  k *= 2
 
-  return sa
+ return sa
 
 def solve(s, k):
-  """
-  Find k-th lexicographically smallest substring (with repetitions).
+ """
+ Find k-th lexicographically smallest substring (with repetitions).
 
-  Time: O(n log n)
-  Space: O(n)
-  """
-  n = len(s)
-  sa = build_suffix_array(s)
+ Time: O(n log n)
+ Space: O(n)
+ """
+ n = len(s)
+ sa = build_suffix_array(s)
 
-  # Compute prefix sums of substring counts
-  # Each suffix sa[i] contributes (n - sa[i]) substrings
-  cumulative = []
-  total = 0
-  for i in range(n):
-    total += n - sa[i]
-    cumulative.append(total)
+ # Compute prefix sums of substring counts
+ # Each suffix sa[i] contributes (n - sa[i]) substrings
+ cumulative = []
+ total = 0
+ for i in range(n):
+  total += n - sa[i]
+  cumulative.append(total)
 
-  # Binary search for which suffix contains k-th substring
-  left, right = 0, n - 1
-  while left < right:
-    mid = (left + right) // 2
-    if cumulative[mid] < k:
-      left = mid + 1
-    else:
-      right = mid
+ # Binary search for which suffix contains k-th substring
+ left, right = 0, n - 1
+ while left < right:
+  mid = (left + right) // 2
+  if cumulative[mid] < k:
+   left = mid + 1
+  else:
+   right = mid
 
-  # Suffix at sa[left] contains our answer
-  idx = left
-  prev_count = cumulative[idx - 1] if idx > 0 else 0
-  offset = k - prev_count  # Which prefix of this suffix (1-indexed)
+ # Suffix at sa[left] contains our answer
+ idx = left
+ prev_count = cumulative[idx - 1] if idx > 0 else 0
+ offset = k - prev_count  # Which prefix of this suffix (1-indexed)
 
-  start = sa[idx]
-  length = offset
+ start = sa[idx]
+ length = offset
 
-  return s[start:start + length]
+ return s[start:start + length]
 
 # Read input and solve
 import sys
@@ -333,19 +333,19 @@ all_substrings = n - sa[i]
 ```python
 # WRONG - Wrong boundary condition
 while left <= right:
-  mid = (left + right) // 2
-  if cumulative[mid] < k:
-    left = mid + 1
-  else:
-    right = mid - 1  # May skip the correct answer
+ mid = (left + right) // 2
+ if cumulative[mid] < k:
+  left = mid + 1
+ else:
+  right = mid - 1  # May skip the correct answer
 
 # CORRECT
 while left < right:
-  mid = (left + right) // 2
-  if cumulative[mid] < k:
-    left = mid + 1
-  else:
-    right = mid  # Keep mid as potential answer
+ mid = (left + right) // 2
+ if cumulative[mid] < k:
+  left = mid + 1
+ else:
+  right = mid  # Keep mid as potential answer
 ```
 
 ---

@@ -213,60 +213,60 @@ Final: dist = [0, 2, 3, 6]
 import heapq
 
 def dijkstra(n, edges):
-  """
-  Dijkstra's algorithm for single-source shortest paths.
+ """
+ Dijkstra's algorithm for single-source shortest paths.
 
-  Args:
-    n: number of nodes (1-indexed)
-    edges: list of (from, to, cost) tuples
+ Args:
+  n: number of nodes (1-indexed)
+  edges: list of (from, to, cost) tuples
 
-  Returns:
-    list of shortest distances from node 1 to all nodes
-  """
-  # Build adjacency list
-  INF = float('inf')
-  graph = [[] for _ in range(n + 1)]
-  for u, v, w in edges:
-    graph[u].append((v, w))
+ Returns:
+  list of shortest distances from node 1 to all nodes
+ """
+ # Build adjacency list
+ INF = float('inf')
+ graph = [[] for _ in range(n + 1)]
+ for u, v, w in edges:
+  graph[u].append((v, w))
 
-  # Initialize distances
-  dist = [INF] * (n + 1)
-  dist[1] = 0
+ # Initialize distances
+ dist = [INF] * (n + 1)
+ dist[1] = 0
 
-  # Min-heap: (distance, node)
-  pq = [(0, 1)]
-  processed = [False] * (n + 1)
+ # Min-heap: (distance, node)
+ pq = [(0, 1)]
+ processed = [False] * (n + 1)
 
-  while pq:
-    d, u = heapq.heappop(pq)
+ while pq:
+  d, u = heapq.heappop(pq)
 
-    # Skip if already processed
-    if processed[u]:
-      continue
-    processed[u] = True
+  # Skip if already processed
+  if processed[u]:
+   continue
+  processed[u] = True
 
-    # Relax all neighbors
-    for v, w in graph[u]:
-      if dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-        heapq.heappush(pq, (dist[v], v))
+  # Relax all neighbors
+  for v, w in graph[u]:
+   if dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+    heapq.heappush(pq, (dist[v], v))
 
-  return dist[1:]  # Return distances for nodes 1 to n
+ return dist[1:]  # Return distances for nodes 1 to n
 
 
 def solve():
-  n, m = map(int, input().split())
-  edges = []
-  for _ in range(m):
-    a, b, c = map(int, input().split())
-    edges.append((a, b, c))
+ n, m = map(int, input().split())
+ edges = []
+ for _ in range(m):
+  a, b, c = map(int, input().split())
+  edges.append((a, b, c))
 
-  result = dijkstra(n, edges)
-  print(' '.join(map(str, result)))
+ result = dijkstra(n, edges)
+ print(' '.join(map(str, result)))
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ## Common Mistakes
@@ -276,17 +276,17 @@ if __name__ == "__main__":
 ```python
 # WRONG - processes same node multiple times
 while pq:
-  d, u = heapq.heappop(pq)
-  for v, w in graph[u]:  # Bug: may relax from outdated distance
-    ...
+ d, u = heapq.heappop(pq)
+ for v, w in graph[u]:  # Bug: may relax from outdated distance
+  ...
 
 # CORRECT - skip already processed nodes
 while pq:
-  d, u = heapq.heappop(pq)
-  if processed[u]:  # Critical check!
-    continue
-  processed[u] = True
-  ...
+ d, u = heapq.heappop(pq)
+ if processed[u]:  # Critical check!
+  continue
+ processed[u] = True
+ ...
 ```
 
 ### 2. Using Max-Heap Instead of Min-Heap

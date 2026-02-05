@@ -99,40 +99,40 @@ For each node, use DFS to find all cycles containing that node and track the min
 
 ```python
 def solve_brute_force(n, edges):
-  """
-  Brute force: DFS from each node.
+ """
+ Brute force: DFS from each node.
 
-  Time: O(n * m) - exponential in worst case
-  Space: O(n)
-  """
-  adj = [[] for _ in range(n + 1)]
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ Time: O(n * m) - exponential in worst case
+ Space: O(n)
+ """
+ adj = [[] for _ in range(n + 1)]
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  min_girth = float('inf')
+ min_girth = float('inf')
 
-  for start in range(1, n + 1):
-    visited = [False] * (n + 1)
+ for start in range(1, n + 1):
+  visited = [False] * (n + 1)
 
-    def dfs(node, parent, depth):
-      nonlocal min_girth
-      if visited[node]:
-        return depth
-      visited[node] = True
+  def dfs(node, parent, depth):
+   nonlocal min_girth
+   if visited[node]:
+    return depth
+   visited[node] = True
 
-      for neighbor in adj[node]:
-        if neighbor != parent:
-          cycle_len = dfs(neighbor, node, depth + 1)
-          if cycle_len > 0:
-            min_girth = min(min_girth, cycle_len)
+   for neighbor in adj[node]:
+    if neighbor != parent:
+     cycle_len = dfs(neighbor, node, depth + 1)
+     if cycle_len > 0:
+      min_girth = min(min_girth, cycle_len)
 
-      visited[node] = False
-      return -1
+   visited[node] = False
+   return -1
 
-    dfs(start, -1, 0)
+  dfs(start, -1, 0)
 
-  return min_girth if min_girth != float('inf') else -1
+ return min_girth if min_girth != float('inf') else -1
 ```
 
 ### Complexity
@@ -234,63 +234,63 @@ Length: dist[1] + dist[4] + 1 = 1 + 1 + 1 = 3
 from collections import deque
 
 def solve(n, m, edges):
-  """
-  Optimal solution: BFS from each node.
+ """
+ Optimal solution: BFS from each node.
 
-  Time: O(n * (n + m))
-  Space: O(n + m)
-  """
-  # Build adjacency list
-  adj = [[] for _ in range(n + 1)]
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ Time: O(n * (n + m))
+ Space: O(n + m)
+ """
+ # Build adjacency list
+ adj = [[] for _ in range(n + 1)]
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  min_girth = float('inf')
+ min_girth = float('inf')
 
-  # BFS from each node
-  for start in range(1, n + 1):
-    dist = [-1] * (n + 1)
-    parent = [-1] * (n + 1)
+ # BFS from each node
+ for start in range(1, n + 1):
+  dist = [-1] * (n + 1)
+  parent = [-1] * (n + 1)
 
-    dist[start] = 0
-    queue = deque([start])
+  dist[start] = 0
+  queue = deque([start])
 
-    while queue:
-      u = queue.popleft()
+  while queue:
+   u = queue.popleft()
 
-      for v in adj[u]:
-        if dist[v] == -1:
-          # Not visited yet
-          dist[v] = dist[u] + 1
-          parent[v] = u
-          queue.append(v)
-        elif parent[u] != v:
-          # Found a cycle (v already visited via different path)
-          cycle_length = dist[u] + dist[v] + 1
-          min_girth = min(min_girth, cycle_length)
+   for v in adj[u]:
+    if dist[v] == -1:
+     # Not visited yet
+     dist[v] = dist[u] + 1
+     parent[v] = u
+     queue.append(v)
+    elif parent[u] != v:
+     # Found a cycle (v already visited via different path)
+     cycle_length = dist[u] + dist[v] + 1
+     min_girth = min(min_girth, cycle_length)
 
-  return min_girth if min_girth != float('inf') else -1
+ return min_girth if min_girth != float('inf') else -1
 
 
 # Input handling
 def main():
-  import sys
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  m = int(input_data[idx]); idx += 1
+ import sys
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ m = int(input_data[idx]); idx += 1
 
-  edges = []
-  for _ in range(m):
-    a = int(input_data[idx]); idx += 1
-    b = int(input_data[idx]); idx += 1
-    edges.append((a, b))
+ edges = []
+ for _ in range(m):
+  a = int(input_data[idx]); idx += 1
+  b = int(input_data[idx]); idx += 1
+  edges.append((a, b))
 
-  print(solve(n, m, edges))
+ print(solve(n, m, edges))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 #### Complexity
@@ -309,9 +309,9 @@ if __name__ == "__main__":
 ```python
 # WRONG
 for v in adj[u]:
-  if dist[v] != -1:
-    # This includes the edge we came from!
-    cycle_length = dist[u] + dist[v] + 1
+ if dist[v] != -1:
+  # This includes the edge we came from!
+  cycle_length = dist[u] + dist[v] + 1
 ```
 
 **Problem:** In undirected graphs, the edge (u, parent[u]) should not be counted as forming a cycle.
@@ -321,8 +321,8 @@ for v in adj[u]:
 ```python
 # CORRECT
 for v in adj[u]:
-  if dist[v] != -1 and parent[u] != v:
-    cycle_length = dist[u] + dist[v] + 1
+ if dist[v] != -1 and parent[u] != v:
+  cycle_length = dist[u] + dist[v] + 1
 ```
 
 ### Mistake 2: Only Running BFS from One Node

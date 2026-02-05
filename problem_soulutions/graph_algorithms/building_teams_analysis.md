@@ -147,39 +147,39 @@ Final: [1, 2, 1, 2, 1]
 from collections import deque
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Build adjacency list (1-indexed)
-  adj = [[] for _ in range(n + 1)]
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ # Build adjacency list (1-indexed)
+ adj = [[] for _ in range(n + 1)]
+ for _ in range(m):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  color = [0] * (n + 1)  # 0 = uncolored, 1 or 2 = team
+ color = [0] * (n + 1)  # 0 = uncolored, 1 or 2 = team
 
-  def bfs(start):
-    queue = deque([start])
-    color[start] = 1
+ def bfs(start):
+  queue = deque([start])
+  color[start] = 1
 
-    while queue:
-      u = queue.popleft()
-      for v in adj[u]:
-        if color[v] == 0:
-          color[v] = 3 - color[u]  # Alternate: 1->2, 2->1
-          queue.append(v)
-        elif color[v] == color[u]:
-          return False  # Same color = conflict
-    return True
+  while queue:
+   u = queue.popleft()
+   for v in adj[u]:
+    if color[v] == 0:
+     color[v] = 3 - color[u]  # Alternate: 1->2, 2->1
+     queue.append(v)
+    elif color[v] == color[u]:
+     return False  # Same color = conflict
+  return True
 
-  # Check ALL components
-  for i in range(1, n + 1):
-    if color[i] == 0:
-      if not bfs(i):
-        print("IMPOSSIBLE")
-        return
+ # Check ALL components
+ for i in range(1, n + 1):
+  if color[i] == 0:
+   if not bfs(i):
+    print("IMPOSSIBLE")
+    return
 
-  print(*color[1:])
+ print(*color[1:])
 
 solve()
 ```
@@ -190,34 +190,34 @@ import sys
 sys.setrecursionlimit(200005)
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  adj = [[] for _ in range(n + 1)]
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = [[] for _ in range(n + 1)]
+ for _ in range(m):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  color = [0] * (n + 1)
-  possible = True
+ color = [0] * (n + 1)
+ possible = True
 
-  def dfs(u, c):
-    nonlocal possible
-    color[u] = c
-    for v in adj[u]:
-      if color[v] == 0:
-        dfs(v, 3 - c)
-      elif color[v] == c:
-        possible = False
+ def dfs(u, c):
+  nonlocal possible
+  color[u] = c
+  for v in adj[u]:
+   if color[v] == 0:
+    dfs(v, 3 - c)
+   elif color[v] == c:
+    possible = False
 
-  for i in range(1, n + 1):
-    if color[i] == 0:
-      dfs(i, 1)
+ for i in range(1, n + 1):
+  if color[i] == 0:
+   dfs(i, 1)
 
-  if possible:
-    print(*color[1:])
-  else:
-    print("IMPOSSIBLE")
+ if possible:
+  print(*color[1:])
+ else:
+  print("IMPOSSIBLE")
 
 solve()
 ```
@@ -248,25 +248,25 @@ The mathematical reason: In a cycle of length k, vertex vi gets color based on (
 
 1. **Forgetting disconnected components**: Only running BFS/DFS from vertex 1 misses isolated components
    ```python
- # WRONG: Only starts from vertex 1
- bfs(1)
+# WRONG: Only starts from vertex 1
+bfs(1)
 
- # CORRECT: Check all vertices
- for i in range(1, n + 1):
-   if color[i] == 0:
-     bfs(i)
- ```
+# CORRECT: Check all vertices
+for i in range(1, n + 1):
+ if color[i] == 0:
+  bfs(i)
+```
 
 2. **Wrong initial color check**: Using 0 as a valid color instead of "uncolored"
    ```python
- # WRONG: 0 could be confused with unvisited
- color = [0] * n  # Is 0 a team or unvisited?
+# WRONG: 0 could be confused with unvisited
+color = [0] * n  # Is 0 a team or unvisited?
 
- # CORRECT: Use distinct values
- color = [0] * n  # 0 = unvisited, 1 and 2 = teams
- # OR
- color = [-1] * n  # -1 = unvisited, 0 and 1 = teams
- ```
+# CORRECT: Use distinct values
+color = [0] * n  # 0 = unvisited, 1 and 2 = teams
+# OR
+color = [-1] * n  # -1 = unvisited, 0 and 1 = teams
+```
 
 3. **Not handling self-loops**: A self-loop (edge from v to v) makes the graph non-bipartite
 

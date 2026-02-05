@@ -181,33 +181,33 @@ Move 1: 1->2    Move 2: 1->3    Move 3: 2->3
 
 ```python
 def solve():
-  n = int(input())
+ n = int(input())
 
-  moves = []
+ moves = []
 
-  def hanoi(disks, source, target, auxiliary):
-    """
-    Move 'disks' disks from 'source' to 'target' using 'auxiliary'.
+ def hanoi(disks, source, target, auxiliary):
+  """
+  Move 'disks' disks from 'source' to 'target' using 'auxiliary'.
 
-    Time: O(2^n) - we make 2^n - 1 moves
-    Space: O(n) - recursion depth
-    """
-    if disks == 0:
-      return
+  Time: O(2^n) - we make 2^n - 1 moves
+  Space: O(n) - recursion depth
+  """
+  if disks == 0:
+   return
 
-    # Step 1: Move n-1 disks from source to auxiliary
-    hanoi(disks - 1, source, auxiliary, target)
+  # Step 1: Move n-1 disks from source to auxiliary
+  hanoi(disks - 1, source, auxiliary, target)
 
-    # Step 2: Move the largest disk from source to target
-    moves.append(f"{source} {target}")
+  # Step 2: Move the largest disk from source to target
+  moves.append(f"{source} {target}")
 
-    # Step 3: Move n-1 disks from auxiliary to target
-    hanoi(disks - 1, auxiliary, target, source)
+  # Step 3: Move n-1 disks from auxiliary to target
+  hanoi(disks - 1, auxiliary, target, source)
 
-  hanoi(n, 1, 3, 2)
+ hanoi(n, 1, 3, 2)
 
-  print(len(moves))
-  print('\n'.join(moves))
+ print(len(moves))
+ print('\n'.join(moves))
 
 solve()
 ```
@@ -241,15 +241,15 @@ print(2 ** n - 1)  # The formula is 2^n - 1
 ```python
 # WRONG
 def hanoi(disks, source, target, auxiliary):
-  hanoi(disks - 1, source, target, auxiliary)  # Wrong! Should go to auxiliary
-  moves.append(f"{source} {target}")
-  hanoi(disks - 1, target, auxiliary, source)  # Wrong parameters
+ hanoi(disks - 1, source, target, auxiliary)  # Wrong! Should go to auxiliary
+ moves.append(f"{source} {target}")
+ hanoi(disks - 1, target, auxiliary, source)  # Wrong parameters
 
 # CORRECT
 def hanoi(disks, source, target, auxiliary):
-  hanoi(disks - 1, source, auxiliary, target)  # Move to auxiliary first
-  moves.append(f"{source} {target}")
-  hanoi(disks - 1, auxiliary, target, source)  # Move from auxiliary to target
+ hanoi(disks - 1, source, auxiliary, target)  # Move to auxiliary first
+ moves.append(f"{source} {target}")
+ hanoi(disks - 1, auxiliary, target, source)  # Move from auxiliary to target
 ```
 
 **Problem:** The roles of auxiliary and target must swap correctly in each recursive call.
@@ -260,17 +260,17 @@ def hanoi(disks, source, target, auxiliary):
 ```python
 # WRONG - infinite recursion
 def hanoi(disks, source, target, auxiliary):
-  hanoi(disks - 1, source, auxiliary, target)
-  moves.append(f"{source} {target}")
-  hanoi(disks - 1, auxiliary, target, source)
+ hanoi(disks - 1, source, auxiliary, target)
+ moves.append(f"{source} {target}")
+ hanoi(disks - 1, auxiliary, target, source)
 
 # CORRECT
 def hanoi(disks, source, target, auxiliary):
-  if disks == 0:  # Base case!
-    return
-  hanoi(disks - 1, source, auxiliary, target)
-  moves.append(f"{source} {target}")
-  hanoi(disks - 1, auxiliary, target, source)
+ if disks == 0:  # Base case!
+  return
+ hanoi(disks - 1, source, auxiliary, target)
+ moves.append(f"{source} {target}")
+ hanoi(disks - 1, auxiliary, target, source)
 ```
 
 **Problem:** Without a base case, recursion never terminates.

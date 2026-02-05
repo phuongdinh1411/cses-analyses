@@ -131,53 +131,53 @@ from collections import defaultdict
 sys.setrecursionlimit(200001)
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Build adjacency lists (1-indexed)
-  adj = defaultdict(list)      # Original graph
-  radj = defaultdict(list)     # Reversed graph
+ # Build adjacency lists (1-indexed)
+ adj = defaultdict(list)      # Original graph
+ radj = defaultdict(list)     # Reversed graph
 
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    radj[b].append(a)
+ for _ in range(m):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  radj[b].append(a)
 
-  # Pass 1: DFS on original graph to get finish order
-  visited = [False] * (n + 1)
-  order = []
+ # Pass 1: DFS on original graph to get finish order
+ visited = [False] * (n + 1)
+ order = []
 
-  def dfs1(u):
-    visited[u] = True
-    for v in adj[u]:
-      if not visited[v]:
-        dfs1(v)
-    order.append(u)
+ def dfs1(u):
+  visited[u] = True
+  for v in adj[u]:
+   if not visited[v]:
+    dfs1(v)
+  order.append(u)
 
-  for i in range(1, n + 1):
-    if not visited[i]:
-      dfs1(i)
+ for i in range(1, n + 1):
+  if not visited[i]:
+   dfs1(i)
 
-  # Pass 2: DFS on reversed graph, assign component IDs
-  visited = [False] * (n + 1)
-  component = [0] * (n + 1)
-  comp_id = 0
+ # Pass 2: DFS on reversed graph, assign component IDs
+ visited = [False] * (n + 1)
+ component = [0] * (n + 1)
+ comp_id = 0
 
-  def dfs2(u, cid):
-    visited[u] = True
-    component[u] = cid
-    for v in radj[u]:
-      if not visited[v]:
-        dfs2(v, cid)
+ def dfs2(u, cid):
+  visited[u] = True
+  component[u] = cid
+  for v in radj[u]:
+   if not visited[v]:
+    dfs2(v, cid)
 
-  # Process in reverse finish order
-  for u in reversed(order):
-    if not visited[u]:
-      comp_id += 1
-      dfs2(u, comp_id)
+ # Process in reverse finish order
+ for u in reversed(order):
+  if not visited[u]:
+   comp_id += 1
+   dfs2(u, comp_id)
 
-  # Output
-  print(comp_id)
-  print(' '.join(map(str, component[1:])))
+ # Output
+ print(comp_id)
+ print(' '.join(map(str, component[1:])))
 
 solve()
 ```

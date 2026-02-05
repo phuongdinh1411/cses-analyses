@@ -112,19 +112,19 @@ For each query, iterate through the range and use a set to count distinct elemen
 
 ```python
 def solve_brute_force(n, arr, queries):
-  """
-  Brute force: Use a set for each query.
+ """
+ Brute force: Use a set for each query.
 
-  Time: O(q * n)
-  Space: O(n)
-  """
-  results = []
-  for l, r in queries:
-    distinct = set()
-    for i in range(l - 1, r):  # Convert to 0-indexed
-      distinct.add(arr[i])
-    results.append(len(distinct))
-  return results
+ Time: O(q * n)
+ Space: O(n)
+ """
+ results = []
+ for l, r in queries:
+  distinct = set()
+  for i in range(l - 1, r):  # Convert to 0-indexed
+   distinct.add(arr[i])
+  results.append(len(distinct))
+ return results
 ```
 
 ### Complexity
@@ -240,89 +240,89 @@ Query (1,5): sum of BIT[1..5] = 3 distinct values
 
 ```python
 class BIT:
-  """Binary Indexed Tree for point updates and prefix sums."""
-  def __init__(self, n):
-    self.n = n
-    self.tree = [0] * (n + 1)
+ """Binary Indexed Tree for point updates and prefix sums."""
+ def __init__(self, n):
+  self.n = n
+  self.tree = [0] * (n + 1)
 
-  def update(self, i, delta):
-    """Add delta to position i (1-indexed)."""
-    while i <= self.n:
-      self.tree[i] += delta
-      i += i & (-i)
+ def update(self, i, delta):
+  """Add delta to position i (1-indexed)."""
+  while i <= self.n:
+   self.tree[i] += delta
+   i += i & (-i)
 
-  def prefix_sum(self, i):
-    """Sum of elements from 1 to i."""
-    total = 0
-    while i > 0:
-      total += self.tree[i]
-      i -= i & (-i)
-    return total
+ def prefix_sum(self, i):
+  """Sum of elements from 1 to i."""
+  total = 0
+  while i > 0:
+   total += self.tree[i]
+   i -= i & (-i)
+  return total
 
-  def range_sum(self, l, r):
-    """Sum of elements from l to r (inclusive)."""
-    return self.prefix_sum(r) - self.prefix_sum(l - 1)
+ def range_sum(self, l, r):
+  """Sum of elements from l to r (inclusive)."""
+  return self.prefix_sum(r) - self.prefix_sum(l - 1)
 
 
 def solve_offline_bit(n, arr, queries):
-  """
-  Offline processing with BIT.
+ """
+ Offline processing with BIT.
 
-  Time: O((n + q) * log(n))
-  Space: O(n + q)
-  """
-  # Store queries with original index, sort by right endpoint
-  indexed_queries = [(l, r, i) for i, (l, r) in enumerate(queries)]
-  indexed_queries.sort(key=lambda x: x[1])  # Sort by r
+ Time: O((n + q) * log(n))
+ Space: O(n + q)
+ """
+ # Store queries with original index, sort by right endpoint
+ indexed_queries = [(l, r, i) for i, (l, r) in enumerate(queries)]
+ indexed_queries.sort(key=lambda x: x[1])  # Sort by r
 
-  bit = BIT(n)
-  last_pos = {}  # value -> last position where it's marked
-  answers = [0] * len(queries)
+ bit = BIT(n)
+ last_pos = {}  # value -> last position where it's marked
+ answers = [0] * len(queries)
 
-  query_idx = 0
-  for i in range(1, n + 1):
-    val = arr[i - 1]  # Convert to 0-indexed array access
+ query_idx = 0
+ for i in range(1, n + 1):
+  val = arr[i - 1]  # Convert to 0-indexed array access
 
-    # If this value was marked before, unmark it
-    if val in last_pos:
-      bit.update(last_pos[val], -1)
+  # If this value was marked before, unmark it
+  if val in last_pos:
+   bit.update(last_pos[val], -1)
 
-    # Mark current position
-    bit.update(i, 1)
-    last_pos[val] = i
+  # Mark current position
+  bit.update(i, 1)
+  last_pos[val] = i
 
-    # Answer all queries with right endpoint == i
-    while query_idx < len(indexed_queries) and indexed_queries[query_idx][1] == i:
-      l, r, orig_idx = indexed_queries[query_idx]
-      answers[orig_idx] = bit.range_sum(l, r)
-      query_idx += 1
+  # Answer all queries with right endpoint == i
+  while query_idx < len(indexed_queries) and indexed_queries[query_idx][1] == i:
+   l, r, orig_idx = indexed_queries[query_idx]
+   answers[orig_idx] = bit.range_sum(l, r)
+   query_idx += 1
 
-  return answers
+ return answers
 
 
 def main():
-  import sys
-  input_data = sys.stdin.read().split()
-  idx = 0
+ import sys
+ input_data = sys.stdin.read().split()
+ idx = 0
 
-  n, q = int(input_data[idx]), int(input_data[idx + 1])
+ n, q = int(input_data[idx]), int(input_data[idx + 1])
+ idx += 2
+
+ arr = [int(input_data[idx + i]) for i in range(n)]
+ idx += n
+
+ queries = []
+ for _ in range(q):
+  l, r = int(input_data[idx]), int(input_data[idx + 1])
+  queries.append((l, r))
   idx += 2
 
-  arr = [int(input_data[idx + i]) for i in range(n)]
-  idx += n
-
-  queries = []
-  for _ in range(q):
-    l, r = int(input_data[idx]), int(input_data[idx + 1])
-    queries.append((l, r))
-    idx += 2
-
-  results = solve_offline_bit(n, arr, queries)
-  print('\n'.join(map(str, results)))
+ results = solve_offline_bit(n, arr, queries)
+ print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -357,57 +357,57 @@ from collections import defaultdict
 import math
 
 def solve_mo(n, arr, queries):
-  """
-  Mo's algorithm for offline range queries.
+ """
+ Mo's algorithm for offline range queries.
 
-  Time: O((n + q) * sqrt(n))
-  Space: O(n + q)
-  """
-  block_size = max(1, int(math.sqrt(n)))
+ Time: O((n + q) * sqrt(n))
+ Space: O(n + q)
+ """
+ block_size = max(1, int(math.sqrt(n)))
 
-  # Store queries with original index
-  indexed_queries = [(l, r, i) for i, (l, r) in enumerate(queries)]
+ # Store queries with original index
+ indexed_queries = [(l, r, i) for i, (l, r) in enumerate(queries)]
 
-  # Sort by (block of l, r)
-  indexed_queries.sort(key=lambda x: (x[0] // block_size, x[1]))
+ # Sort by (block of l, r)
+ indexed_queries.sort(key=lambda x: (x[0] // block_size, x[1]))
 
-  freq = defaultdict(int)
-  distinct_count = 0
-  cur_l, cur_r = 1, 0  # Empty range initially
-  answers = [0] * len(queries)
+ freq = defaultdict(int)
+ distinct_count = 0
+ cur_l, cur_r = 1, 0  # Empty range initially
+ answers = [0] * len(queries)
 
-  def add(idx):
-    nonlocal distinct_count
-    val = arr[idx - 1]  # Convert to 0-indexed
-    if freq[val] == 0:
-      distinct_count += 1
-    freq[val] += 1
+ def add(idx):
+  nonlocal distinct_count
+  val = arr[idx - 1]  # Convert to 0-indexed
+  if freq[val] == 0:
+   distinct_count += 1
+  freq[val] += 1
 
-  def remove(idx):
-    nonlocal distinct_count
-    val = arr[idx - 1]
-    freq[val] -= 1
-    if freq[val] == 0:
-      distinct_count -= 1
+ def remove(idx):
+  nonlocal distinct_count
+  val = arr[idx - 1]
+  freq[val] -= 1
+  if freq[val] == 0:
+   distinct_count -= 1
 
-  for l, r, orig_idx in indexed_queries:
-    # Expand/shrink to reach [l, r]
-    while cur_r < r:
-      cur_r += 1
-      add(cur_r)
-    while cur_l > l:
-      cur_l -= 1
-      add(cur_l)
-    while cur_r > r:
-      remove(cur_r)
-      cur_r -= 1
-    while cur_l < l:
-      remove(cur_l)
-      cur_l += 1
+ for l, r, orig_idx in indexed_queries:
+  # Expand/shrink to reach [l, r]
+  while cur_r < r:
+   cur_r += 1
+   add(cur_r)
+  while cur_l > l:
+   cur_l -= 1
+   add(cur_l)
+  while cur_r > r:
+   remove(cur_r)
+   cur_r -= 1
+  while cur_l < l:
+   remove(cur_l)
+   cur_l += 1
 
-    answers[orig_idx] = distinct_count
+  answers[orig_idx] = distinct_count
 
-  return answers
+ return answers
 ```
 
 ### Complexity (Mo's Algorithm)
@@ -426,8 +426,8 @@ def solve_mo(n, arr, queries):
 ```python
 # WRONG - Cannot answer each query independently in O(log n)
 for l, r in queries:
-  # No efficient way to count distinct in [l, r] online
-  answer = some_magic_query(l, r)  # Doesn't exist!
+ # No efficient way to count distinct in [l, r] online
+ answer = some_magic_query(l, r)  # Doesn't exist!
 ```
 
 **Problem:** Distinct value counting is not decomposable; segment trees cannot merge distinct counts.
@@ -438,8 +438,8 @@ for l, r in queries:
 ```python
 # WRONG
 for i in range(1, n + 1):
-  bit.update(i, 1)  # Just marks everything
-  last_pos[arr[i]] = i
+ bit.update(i, 1)  # Just marks everything
+ last_pos[arr[i]] = i
 ```
 
 **Problem:** An element appearing at positions 2 and 5 would be counted twice.

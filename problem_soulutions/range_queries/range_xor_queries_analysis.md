@@ -128,19 +128,19 @@ For each query, iterate through the range and XOR all elements together.
 
 ```python
 def solve_brute_force(n, arr, queries):
-  """
-  Brute force: compute XOR for each query independently.
+ """
+ Brute force: compute XOR for each query independently.
 
-  Time: O(q * n)
-  Space: O(1)
-  """
-  results = []
-  for a, b in queries:
-    xor_result = 0
-    for i in range(a - 1, b):  # Convert to 0-indexed
-      xor_result ^= arr[i]
-    results.append(xor_result)
-  return results
+ Time: O(q * n)
+ Space: O(1)
+ """
+ results = []
+ for a, b in queries:
+  xor_result = 0
+  for i in range(a - 1, b):  # Convert to 0-indexed
+   xor_result ^= arr[i]
+  results.append(xor_result)
+ return results
 ```
 
 ### Complexity
@@ -234,21 +234,21 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n, q = map(int, input().split())
-  arr = list(map(int, input().split()))
+ n, q = map(int, input().split())
+ arr = list(map(int, input().split()))
 
-  # Build prefix XOR array
-  prefix = [0] * (n + 1)
-  for i in range(n):
-    prefix[i + 1] = prefix[i] ^ arr[i]
+ # Build prefix XOR array
+ prefix = [0] * (n + 1)
+ for i in range(n):
+  prefix[i + 1] = prefix[i] ^ arr[i]
 
-  # Answer queries
-  results = []
-  for _ in range(q):
-    a, b = map(int, input().split())
-    results.append(prefix[b] ^ prefix[a - 1])
+ # Answer queries
+ results = []
+ for _ in range(q):
+  a, b = map(int, input().split())
+  results.append(prefix[b] ^ prefix[a - 1])
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 solve()
 ```

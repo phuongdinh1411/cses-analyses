@@ -194,112 +194,112 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-  n = int(input())
-  colors = [0] + list(map(int, input().split()))  # 1-indexed
+ n = int(input())
+ colors = [0] + list(map(int, input().split()))  # 1-indexed
 
-  adj = defaultdict(list)
-  for _ in range(n - 1):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = defaultdict(list)
+ for _ in range(n - 1):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  # Build rooted tree and calculate subtree sizes
-  subtree_size = [0] * (n + 1)
-  parent = [0] * (n + 1)
-  order = []  # post-order for bottom-up processing
+ # Build rooted tree and calculate subtree sizes
+ subtree_size = [0] * (n + 1)
+ parent = [0] * (n + 1)
+ order = []  # post-order for bottom-up processing
 
-  # BFS to establish parent relationships and order
-  from collections import deque
-  visited = [False] * (n + 1)
-  queue = deque([1])
-  visited[1] = True
-  bfs_order = []
+ # BFS to establish parent relationships and order
+ from collections import deque
+ visited = [False] * (n + 1)
+ queue = deque([1])
+ visited[1] = True
+ bfs_order = []
 
-  while queue:
-    node = queue.popleft()
-    bfs_order.append(node)
-    for child in adj[node]:
-      if not visited[child]:
-        visited[child] = True
-        parent[child] = node
-        queue.append(child)
+ while queue:
+  node = queue.popleft()
+  bfs_order.append(node)
+  for child in adj[node]:
+   if not visited[child]:
+    visited[child] = True
+    parent[child] = node
+    queue.append(child)
 
-  # Calculate subtree sizes (reverse BFS order)
-  children = defaultdict(list)
-  for node in bfs_order[1:]:
-    children[parent[node]].append(node)
+ # Calculate subtree sizes (reverse BFS order)
+ children = defaultdict(list)
+ for node in bfs_order[1:]:
+  children[parent[node]].append(node)
 
-  for node in reversed(bfs_order):
-    subtree_size[node] = 1
-    for child in children[node]:
-      subtree_size[node] += subtree_size[child]
+ for node in reversed(bfs_order):
+  subtree_size[node] = 1
+  for child in children[node]:
+   subtree_size[node] += subtree_size[child]
 
-  # Find heavy child for each node
-  heavy = [0] * (n + 1)
-  for node in range(1, n + 1):
-    if children[node]:
-      heavy[node] = max(children[node], key=lambda x: subtree_size[x])
+ # Find heavy child for each node
+ heavy = [0] * (n + 1)
+ for node in range(1, n + 1):
+  if children[node]:
+   heavy[node] = max(children[node], key=lambda x: subtree_size[x])
 
-  # DSU on tree
-  cnt = defaultdict(int)  # color -> count
-  distinct = [0]  # mutable counter
-  answer = [0] * (n + 1)
+ # DSU on tree
+ cnt = defaultdict(int)  # color -> count
+ distinct = [0]  # mutable counter
+ answer = [0] * (n + 1)
 
-  def add(node):
-    """Add a node's color to the count."""
-    if cnt[colors[node]] == 0:
-      distinct[0] += 1
-    cnt[colors[node]] += 1
+ def add(node):
+  """Add a node's color to the count."""
+  if cnt[colors[node]] == 0:
+   distinct[0] += 1
+  cnt[colors[node]] += 1
 
-  def remove(node):
-    """Remove a node's color from the count."""
-    cnt[colors[node]] -= 1
-    if cnt[colors[node]] == 0:
-      distinct[0] -= 1
+ def remove(node):
+  """Remove a node's color from the count."""
+  cnt[colors[node]] -= 1
+  if cnt[colors[node]] == 0:
+   distinct[0] -= 1
 
-  def add_subtree(node):
-    """Add all nodes in subtree to count."""
-    add(node)
-    for child in children[node]:
-      add_subtree(child)
+ def add_subtree(node):
+  """Add all nodes in subtree to count."""
+  add(node)
+  for child in children[node]:
+   add_subtree(child)
 
-  def remove_subtree(node):
-    """Remove all nodes in subtree from count."""
-    remove(node)
-    for child in children[node]:
-      remove_subtree(child)
+ def remove_subtree(node):
+  """Remove all nodes in subtree from count."""
+  remove(node)
+  for child in children[node]:
+   remove_subtree(child)
 
-  def dfs(node, keep):
-    """
-    Process node's subtree.
-    keep: whether to keep this subtree's data after processing
-    """
-    # Process light children first (clear after)
-    for child in children[node]:
-      if child != heavy[node]:
-        dfs(child, keep=False)
+ def dfs(node, keep):
+  """
+  Process node's subtree.
+  keep: whether to keep this subtree's data after processing
+  """
+  # Process light children first (clear after)
+  for child in children[node]:
+   if child != heavy[node]:
+    dfs(child, keep=False)
 
-    # Process heavy child (keep its data)
-    if heavy[node]:
-      dfs(heavy[node], keep=True)
+  # Process heavy child (keep its data)
+  if heavy[node]:
+   dfs(heavy[node], keep=True)
 
-    # Add current node
-    add(node)
+  # Add current node
+  add(node)
 
-    # Re-add light children's subtrees
-    for child in children[node]:
-      if child != heavy[node]:
-        add_subtree(child)
+  # Re-add light children's subtrees
+  for child in children[node]:
+   if child != heavy[node]:
+    add_subtree(child)
 
-    # Record answer
-    answer[node] = distinct[0]
+  # Record answer
+  answer[node] = distinct[0]
 
-    # Clear if not keeping
-    if not keep:
-      remove_subtree(node)
+  # Clear if not keeping
+  if not keep:
+   remove_subtree(node)
 
-  dfs(1, keep=False)
-  print(' '.join(map(str, answer[1:])))
+ dfs(1, keep=False)
+ print(' '.join(map(str, answer[1:])))
 
 solve()
 ```

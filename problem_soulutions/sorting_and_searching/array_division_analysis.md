@@ -107,30 +107,30 @@ Use DP where dp[i][j] = minimum maximum sum when dividing the first i elements i
 
 ```python
 def solve_brute_force(n, k, arr):
-  """
-  DP solution - works but O(n^2 * k).
+ """
+ DP solution - works but O(n^2 * k).
 
-  Time: O(n^2 * k)
-  Space: O(n * k)
-  """
-  INF = float('inf')
-  prefix = [0] * (n + 1)
-  for i in range(n):
-    prefix[i + 1] = prefix[i] + arr[i]
+ Time: O(n^2 * k)
+ Space: O(n * k)
+ """
+ INF = float('inf')
+ prefix = [0] * (n + 1)
+ for i in range(n):
+  prefix[i + 1] = prefix[i] + arr[i]
 
-  dp = [[INF] * (k + 1) for _ in range(n + 1)]
+ dp = [[INF] * (k + 1) for _ in range(n + 1)]
 
-  # Base case: divide first i elements into 1 subarray
-  for i in range(1, n + 1):
-    dp[i][1] = prefix[i]
+ # Base case: divide first i elements into 1 subarray
+ for i in range(1, n + 1):
+  dp[i][1] = prefix[i]
 
-  for i in range(1, n + 1):
-    for j in range(2, min(i + 1, k + 1)):
-      for split in range(j - 1, i):
-        subarray_sum = prefix[i] - prefix[split]
-        dp[i][j] = min(dp[i][j], max(dp[split][j - 1], subarray_sum))
+ for i in range(1, n + 1):
+  for j in range(2, min(i + 1, k + 1)):
+   for split in range(j - 1, i):
+    subarray_sum = prefix[i] - prefix[split]
+    dp[i][j] = min(dp[i][j], max(dp[split][j - 1], subarray_sum))
 
-  return dp[n][k]
+ return dp[n][k]
 ```
 
 ### Complexity
@@ -245,46 +245,46 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n, k = map(int, input().split())
-  arr = list(map(int, input().split()))
+ n, k = map(int, input().split())
+ arr = list(map(int, input().split()))
 
-  def can_divide(max_sum):
-    """
-    Check if array can be divided into at most k subarrays
-    where each subarray sum <= max_sum.
+ def can_divide(max_sum):
+  """
+  Check if array can be divided into at most k subarrays
+  where each subarray sum <= max_sum.
 
-    Greedy: pack as many elements as possible into each subarray.
-    """
-    subarrays = 1
-    current_sum = 0
+  Greedy: pack as many elements as possible into each subarray.
+  """
+  subarrays = 1
+  current_sum = 0
 
-    for num in arr:
-      if current_sum + num <= max_sum:
-        current_sum += num
-      else:
-        subarrays += 1
-        current_sum = num
-        if subarrays > k:
-          return False
+  for num in arr:
+   if current_sum + num <= max_sum:
+    current_sum += num
+   else:
+    subarrays += 1
+    current_sum = num
+    if subarrays > k:
+     return False
 
-    return True
+  return True
 
-  # Binary search bounds
-  left = max(arr)      # At least one element per subarray
-  right = sum(arr)     # All elements in one subarray
+ # Binary search bounds
+ left = max(arr)      # At least one element per subarray
+ right = sum(arr)     # All elements in one subarray
 
-  # Binary search for minimum feasible max_sum
-  while left < right:
-    mid = (left + right) // 2
-    if can_divide(mid):
-      right = mid  # Try smaller max_sum
-    else:
-      left = mid + 1  # Need larger max_sum
+ # Binary search for minimum feasible max_sum
+ while left < right:
+  mid = (left + right) // 2
+  if can_divide(mid):
+   right = mid  # Try smaller max_sum
+  else:
+   left = mid + 1  # Need larger max_sum
 
-  print(left)
+ print(left)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -318,9 +318,9 @@ left = max(arr)
 ```python
 # WRONG - starting new subarray even when not needed
 if current_sum + num > max_sum:
-  subarrays += 1
-  current_sum = 0  # Bug: should be current_sum = num
-  current_sum += num
+ subarrays += 1
+ current_sum = 0  # Bug: should be current_sum = num
+ current_sum += num
 ```
 
 **Problem:** When starting a new subarray, the current element should be its first element.
@@ -335,11 +335,11 @@ if current_sum + num > max_sum:
 # WRONG - counting subarrays incorrectly
 subarrays = 0  # Should start at 1
 for num in arr:
-  if current_sum + num > max_sum:
-    subarrays += 1
-    current_sum = num
-  else:
-    current_sum += num
+ if current_sum + num > max_sum:
+  subarrays += 1
+  current_sum = num
+ else:
+  current_sum += num
 # Forgot to count the last subarray!
 ```
 

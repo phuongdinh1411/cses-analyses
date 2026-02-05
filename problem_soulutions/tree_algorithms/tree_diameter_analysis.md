@@ -110,36 +110,36 @@ Check all pairs of nodes and find the path length between them.
 from collections import deque
 
 def brute_force_diameter(n, edges):
-  """
-  Brute force: Check all pairs.
+ """
+ Brute force: Check all pairs.
 
-  Time: O(n^3) - n^2 pairs, O(n) BFS each
-  Space: O(n)
-  """
-  adj = [[] for _ in range(n + 1)]
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ Time: O(n^3) - n^2 pairs, O(n) BFS each
+ Space: O(n)
+ """
+ adj = [[] for _ in range(n + 1)]
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  def bfs_distance(start, end):
-    queue = deque([(start, 0)])
-    visited = [False] * (n + 1)
-    visited[start] = True
-    while queue:
-      node, dist = queue.popleft()
-      if node == end:
-        return dist
-      for neighbor in adj[node]:
-        if not visited[neighbor]:
-          visited[neighbor] = True
-          queue.append((neighbor, dist + 1))
-    return 0
+ def bfs_distance(start, end):
+  queue = deque([(start, 0)])
+  visited = [False] * (n + 1)
+  visited[start] = True
+  while queue:
+   node, dist = queue.popleft()
+   if node == end:
+    return dist
+   for neighbor in adj[node]:
+    if not visited[neighbor]:
+     visited[neighbor] = True
+     queue.append((neighbor, dist + 1))
+  return 0
 
-  max_diameter = 0
-  for i in range(1, n + 1):
-    for j in range(i + 1, n + 1):
-      max_diameter = max(max_diameter, bfs_distance(i, j))
-  return max_diameter
+ max_diameter = 0
+ for i in range(1, n + 1):
+  for j in range(i + 1, n + 1):
+   max_diameter = max(max_diameter, bfs_distance(i, j))
+ return max_diameter
 ```
 
 ### Complexity
@@ -217,40 +217,40 @@ Farthest: 4           Farthest: 2
 from collections import deque
 
 def solve():
-  n = int(input())
-  if n == 1:
-    print(0)
-    return
+ n = int(input())
+ if n == 1:
+  print(0)
+  return
 
-  adj = [[] for _ in range(n + 1)]
-  for _ in range(n - 1):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = [[] for _ in range(n + 1)]
+ for _ in range(n - 1):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  def bfs(start):
-    """Return (farthest_node, distance_to_it)"""
-    dist = [-1] * (n + 1)
-    dist[start] = 0
-    queue = deque([start])
-    farthest, max_dist = start, 0
+ def bfs(start):
+  """Return (farthest_node, distance_to_it)"""
+  dist = [-1] * (n + 1)
+  dist[start] = 0
+  queue = deque([start])
+  farthest, max_dist = start, 0
 
-    while queue:
-      node = queue.popleft()
-      for neighbor in adj[node]:
-        if dist[neighbor] == -1:
-          dist[neighbor] = dist[node] + 1
-          queue.append(neighbor)
-          if dist[neighbor] > max_dist:
-            max_dist = dist[neighbor]
-            farthest = neighbor
-    return farthest, max_dist
+  while queue:
+   node = queue.popleft()
+   for neighbor in adj[node]:
+    if dist[neighbor] == -1:
+     dist[neighbor] = dist[node] + 1
+     queue.append(neighbor)
+     if dist[neighbor] > max_dist:
+      max_dist = dist[neighbor]
+      farthest = neighbor
+  return farthest, max_dist
 
-  # First BFS: find one endpoint
-  endpoint, _ = bfs(1)
-  # Second BFS: find diameter
-  _, diameter = bfs(endpoint)
-  print(diameter)
+ # First BFS: find one endpoint
+ endpoint, _ = bfs(1)
+ # Second BFS: find diameter
+ _, diameter = bfs(endpoint)
+ print(diameter)
 
 solve()
 ```
@@ -295,37 +295,37 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-  n = int(input())
-  if n == 1:
-    print(0)
-    return
+ n = int(input())
+ if n == 1:
+  print(0)
+  return
 
-  adj = defaultdict(list)
-  for _ in range(n - 1):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = defaultdict(list)
+ for _ in range(n - 1):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  diameter = 0
+ diameter = 0
 
-  def dfs(node, parent):
-    nonlocal diameter
-    max1 = max2 = 0  # Two longest paths down
+ def dfs(node, parent):
+  nonlocal diameter
+  max1 = max2 = 0  # Two longest paths down
 
-    for child in adj[node]:
-      if child != parent:
-        child_depth = dfs(child, node) + 1
-        if child_depth > max1:
-          max2 = max1
-          max1 = child_depth
-        elif child_depth > max2:
-          max2 = child_depth
+  for child in adj[node]:
+   if child != parent:
+    child_depth = dfs(child, node) + 1
+    if child_depth > max1:
+     max2 = max1
+     max1 = child_depth
+    elif child_depth > max2:
+     max2 = child_depth
 
-    diameter = max(diameter, max1 + max2)
-    return max1
+  diameter = max(diameter, max1 + max2)
+  return max1
 
-  dfs(1, -1)
-  print(diameter)
+ dfs(1, -1)
+ print(diameter)
 
 solve()
 ```
@@ -346,7 +346,7 @@ solve()
 ```python
 # WRONG - default recursion limit is ~1000
 def dfs(node, parent):
-  ...
+ ...
 ```
 
 **Problem:** Python's default recursion limit causes crashes for large trees.
@@ -357,7 +357,7 @@ def dfs(node, parent):
 ```python
 # WRONG - crashes when n=1 (no edges to read)
 for _ in range(n - 1):
-  a, b = map(int, input().split())
+ a, b = map(int, input().split())
 ```
 
 **Problem:** When n=1, there are 0 edges, and the diameter is 0.

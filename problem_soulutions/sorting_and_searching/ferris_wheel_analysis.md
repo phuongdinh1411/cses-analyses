@@ -112,17 +112,17 @@ Result: 3 gondolas
 
 ```python
 def min_gondolas(n: int, x: int, weights: list[int]) -> int:
-  weights.sort()
-  left, right = 0, n - 1
-  gondolas = 0
+ weights.sort()
+ left, right = 0, n - 1
+ gondolas = 0
 
-  while left <= right:
-    if weights[left] + weights[right] <= x:
-      left += 1  # Lightest paired
-    right -= 1     # Heaviest always assigned
-    gondolas += 1
+ while left <= right:
+  if weights[left] + weights[right] <= x:
+   left += 1  # Lightest paired
+  right -= 1     # Heaviest always assigned
+  gondolas += 1
 
-  return gondolas
+ return gondolas
 
 # Read input
 n, x = map(int, input().split())

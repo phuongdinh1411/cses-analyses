@@ -207,88 +207,88 @@ Output:
 from collections import deque
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Adjacency list and capacity matrix
-  adj = [[] for _ in range(n + 1)]
-  cap = [[0] * (n + 1) for _ in range(n + 1)]
+ # Adjacency list and capacity matrix
+ adj = [[] for _ in range(n + 1)]
+ cap = [[0] * (n + 1) for _ in range(n + 1)]
 
-  edges = []
-  for _ in range(m):
-    a, b = map(int, input().split())
-    edges.append((a, b))
-    adj[a].append(b)
-    adj[b].append(a)
-    cap[a][b] += 1
-    cap[b][a] += 1
+ edges = []
+ for _ in range(m):
+  a, b = map(int, input().split())
+  edges.append((a, b))
+  adj[a].append(b)
+  adj[b].append(a)
+  cap[a][b] += 1
+  cap[b][a] += 1
 
-  source, sink = 1, n
+ source, sink = 1, n
 
-  def bfs():
-    """Find augmenting path using BFS, return parent array"""
-    parent = [-1] * (n + 1)
-    parent[source] = source
-    queue = deque([source])
-
-    while queue:
-      u = queue.popleft()
-      if u == sink:
-        break
-      for v in adj[u]:
-        if parent[v] == -1 and cap[u][v] > 0:
-          parent[v] = u
-          queue.append(v)
-
-    return parent if parent[sink] != -1 else None
-
-  # Edmonds-Karp: Find max flow
-  max_flow = 0
-  while True:
-    parent = bfs()
-    if not parent:
-      break
-
-    # Find bottleneck
-    flow = float('inf')
-    v = sink
-    while v != source:
-      u = parent[v]
-      flow = min(flow, cap[u][v])
-      v = u
-
-    # Update residual capacities
-    v = sink
-    while v != source:
-      u = parent[v]
-      cap[u][v] -= flow
-      cap[v][u] += flow
-      v = u
-
-    max_flow += flow
-
-  # Find nodes reachable from source in residual graph
-  reachable = [False] * (n + 1)
-  reachable[source] = True
+ def bfs():
+  """Find augmenting path using BFS, return parent array"""
+  parent = [-1] * (n + 1)
+  parent[source] = source
   queue = deque([source])
 
   while queue:
-    u = queue.popleft()
-    for v in adj[u]:
-      if not reachable[v] and cap[u][v] > 0:
-        reachable[v] = True
-        queue.append(v)
+   u = queue.popleft()
+   if u == sink:
+    break
+   for v in adj[u]:
+    if parent[v] == -1 and cap[u][v] > 0:
+     parent[v] = u
+     queue.append(v)
 
-  # Find cut edges: from reachable to non-reachable
-  cut_edges = []
-  for a, b in edges:
-    if reachable[a] and not reachable[b]:
-      cut_edges.append((a, b))
-    elif reachable[b] and not reachable[a]:
-      cut_edges.append((b, a))
+  return parent if parent[sink] != -1 else None
 
-  print(len(cut_edges))
-  for a, b in cut_edges:
-    print(a, b)
+ # Edmonds-Karp: Find max flow
+ max_flow = 0
+ while True:
+  parent = bfs()
+  if not parent:
+   break
+
+  # Find bottleneck
+  flow = float('inf')
+  v = sink
+  while v != source:
+   u = parent[v]
+   flow = min(flow, cap[u][v])
+   v = u
+
+  # Update residual capacities
+  v = sink
+  while v != source:
+   u = parent[v]
+   cap[u][v] -= flow
+   cap[v][u] += flow
+   v = u
+
+  max_flow += flow
+
+ # Find nodes reachable from source in residual graph
+ reachable = [False] * (n + 1)
+ reachable[source] = True
+ queue = deque([source])
+
+ while queue:
+  u = queue.popleft()
+  for v in adj[u]:
+   if not reachable[v] and cap[u][v] > 0:
+    reachable[v] = True
+    queue.append(v)
+
+ # Find cut edges: from reachable to non-reachable
+ cut_edges = []
+ for a, b in edges:
+  if reachable[a] and not reachable[b]:
+   cut_edges.append((a, b))
+  elif reachable[b] and not reachable[a]:
+   cut_edges.append((b, a))
+
+ print(len(cut_edges))
+ for a, b in cut_edges:
+  print(a, b)
 
 solve()
 ```

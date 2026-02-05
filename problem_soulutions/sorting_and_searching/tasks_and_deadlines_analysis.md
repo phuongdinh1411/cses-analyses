@@ -121,23 +121,23 @@ Try all possible orderings (permutations) of tasks and find the one with maximum
 from itertools import permutations
 
 def solve_brute_force(tasks):
-  """
-  Brute force: try all permutations.
+ """
+ Brute force: try all permutations.
 
-  Time: O(n! * n)
-  Space: O(n)
-  """
-  max_reward = float('-inf')
+ Time: O(n! * n)
+ Space: O(n)
+ """
+ max_reward = float('-inf')
 
-  for order in permutations(tasks):
-    current_time = 0
-    total_reward = 0
-    for duration, deadline in order:
-      current_time += duration
-      total_reward += deadline - current_time
-    max_reward = max(max_reward, total_reward)
+ for order in permutations(tasks):
+  current_time = 0
+  total_reward = 0
+  for duration, deadline in order:
+   current_time += duration
+   total_reward += deadline - current_time
+  max_reward = max(max_reward, total_reward)
 
-  return max_reward
+ return max_reward
 ```
 
 ### Complexity
@@ -222,37 +222,37 @@ Rewards:
 
 ```python
 def solve(n, tasks):
-  """
-  Optimal greedy solution: sort by duration.
+ """
+ Optimal greedy solution: sort by duration.
 
-  Time: O(n log n)
-  Space: O(1) extra (in-place sort)
-  """
-  # Sort by duration (shortest first)
-  tasks.sort(key=lambda x: x[0])
+ Time: O(n log n)
+ Space: O(1) extra (in-place sort)
+ """
+ # Sort by duration (shortest first)
+ tasks.sort(key=lambda x: x[0])
 
-  current_time = 0
-  total_reward = 0
+ current_time = 0
+ total_reward = 0
 
-  for duration, deadline in tasks:
-    current_time += duration
-    total_reward += deadline - current_time
+ for duration, deadline in tasks:
+  current_time += duration
+  total_reward += deadline - current_time
 
-  return total_reward
+ return total_reward
 
 
 def main():
-  n = int(input())
-  tasks = []
-  for _ in range(n):
-    d, t = map(int, input().split())
-    tasks.append((d, t))
+ n = int(input())
+ tasks = []
+ for _ in range(n):
+  d, t = map(int, input().split())
+  tasks.append((d, t))
 
-  print(solve(n, tasks))
+ print(solve(n, tasks))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -289,12 +289,12 @@ tasks.sort(key=lambda x: x[0])  # Sort by duration
 ```python
 # WRONG - early termination on negative reward
 if total_reward < 0:
-  break
+ break
 
 # CORRECT - must complete ALL tasks
 for duration, deadline in tasks:
-  current_time += duration
-  total_reward += deadline - current_time  # May be negative
+ current_time += duration
+ total_reward += deadline - current_time  # May be negative
 ```
 
 **Problem:** The problem requires completing ALL tasks. Negative rewards are expected and valid.

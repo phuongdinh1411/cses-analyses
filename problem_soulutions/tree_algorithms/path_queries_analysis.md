@@ -124,43 +124,43 @@ For each query, traverse from root to the target node, summing values along the 
 
 ```python
 def solve_brute_force(n, values, edges, queries):
-  """
-  Brute force: DFS for each query.
+ """
+ Brute force: DFS for each query.
 
-  Time: O(q * n) - TLE for large inputs
-  Space: O(n)
-  """
-  from collections import defaultdict
+ Time: O(q * n) - TLE for large inputs
+ Space: O(n)
+ """
+ from collections import defaultdict
 
-  adj = defaultdict(list)
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = defaultdict(list)
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  def path_sum(target):
-    """Find sum from root (1) to target using DFS."""
-    def dfs(node, parent, current_sum):
-      current_sum += values[node]
-      if node == target:
-        return current_sum
-      for child in adj[node]:
-        if child != parent:
-          result = dfs(child, node, current_sum)
-          if result is not None:
-            return result
-      return None
-    return dfs(1, 0, 0)
+ def path_sum(target):
+  """Find sum from root (1) to target using DFS."""
+  def dfs(node, parent, current_sum):
+   current_sum += values[node]
+   if node == target:
+    return current_sum
+   for child in adj[node]:
+    if child != parent:
+     result = dfs(child, node, current_sum)
+     if result is not None:
+      return result
+   return None
+  return dfs(1, 0, 0)
 
-  results = []
-  for query in queries:
-    if query[0] == 1:  # Update
-      s, x = query[1], query[2]
-      values[s] = x
-    else:  # Query
-      s = query[1]
-      results.append(path_sum(s))
+ results = []
+ for query in queries:
+  if query[0] == 1:  # Update
+   s, x = query[1], query[2]
+   values[s] = x
+  else:  # Query
+   s = query[1]
+   results.append(path_sum(s))
 
-  return results
+ return results
 ```
 
 ### Complexity
@@ -263,90 +263,90 @@ from collections import defaultdict
 input = sys.stdin.readline
 
 def solve():
-  n, q = map(int, input().split())
-  values = [0] + list(map(int, input().split()))  # 1-indexed
+ n, q = map(int, input().split())
+ values = [0] + list(map(int, input().split()))  # 1-indexed
 
-  # Build adjacency list
-  adj = defaultdict(list)
-  for _ in range(n - 1):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ # Build adjacency list
+ adj = defaultdict(list)
+ for _ in range(n - 1):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  # Euler tour: compute entry and exit times
-  entry = [0] * (n + 1)
-  exit_time = [0] * (n + 1)
-  euler = [0] * (2 * n)  # Euler tour array
-  timer = [0]  # Use list for mutable reference in nested function
+ # Euler tour: compute entry and exit times
+ entry = [0] * (n + 1)
+ exit_time = [0] * (n + 1)
+ euler = [0] * (2 * n)  # Euler tour array
+ timer = [0]  # Use list for mutable reference in nested function
 
-  def dfs(node, parent):
-    entry[node] = timer[0]
-    euler[timer[0]] = values[node]  # +value at entry
-    timer[0] += 1
+ def dfs(node, parent):
+  entry[node] = timer[0]
+  euler[timer[0]] = values[node]  # +value at entry
+  timer[0] += 1
 
-    for child in adj[node]:
-      if child != parent:
-        dfs(child, node)
+  for child in adj[node]:
+   if child != parent:
+    dfs(child, node)
 
-    exit_time[node] = timer[0]
-    euler[timer[0]] = -values[node]  # -value at exit
-    timer[0] += 1
+  exit_time[node] = timer[0]
+  euler[timer[0]] = -values[node]  # -value at exit
+  timer[0] += 1
 
-  dfs(1, 0)
+ dfs(1, 0)
 
-  # Segment tree for range sum with point updates
-  size = 2 * n
-  tree = [0] * (4 * size)
+ # Segment tree for range sum with point updates
+ size = 2 * n
+ tree = [0] * (4 * size)
 
-  def build(node, start, end):
-    if start == end:
-      tree[node] = euler[start]
-    else:
-      mid = (start + end) // 2
-      build(2 * node, start, mid)
-      build(2 * node + 1, mid + 1, end)
-      tree[node] = tree[2 * node] + tree[2 * node + 1]
+ def build(node, start, end):
+  if start == end:
+   tree[node] = euler[start]
+  else:
+   mid = (start + end) // 2
+   build(2 * node, start, mid)
+   build(2 * node + 1, mid + 1, end)
+   tree[node] = tree[2 * node] + tree[2 * node + 1]
 
-  def update(node, start, end, idx, delta):
-    if start == end:
-      tree[node] += delta
-    else:
-      mid = (start + end) // 2
-      if idx <= mid:
-        update(2 * node, start, mid, idx, delta)
-      else:
-        update(2 * node + 1, mid + 1, end, idx, delta)
-      tree[node] = tree[2 * node] + tree[2 * node + 1]
+ def update(node, start, end, idx, delta):
+  if start == end:
+   tree[node] += delta
+  else:
+   mid = (start + end) // 2
+   if idx <= mid:
+    update(2 * node, start, mid, idx, delta)
+   else:
+    update(2 * node + 1, mid + 1, end, idx, delta)
+   tree[node] = tree[2 * node] + tree[2 * node + 1]
 
-  def query(node, start, end, l, r):
-    if r < start or end < l:
-      return 0
-    if l <= start and end <= r:
-      return tree[node]
-    mid = (start + end) // 2
-    return query(2 * node, start, mid, l, r) + \
-       query(2 * node + 1, mid + 1, end, l, r)
+ def query(node, start, end, l, r):
+  if r < start or end < l:
+   return 0
+  if l <= start and end <= r:
+   return tree[node]
+  mid = (start + end) // 2
+  return query(2 * node, start, mid, l, r) + \
+   query(2 * node + 1, mid + 1, end, l, r)
 
-  build(1, 0, size - 1)
+ build(1, 0, size - 1)
 
-  # Process queries
-  results = []
-  for _ in range(q):
-    query_line = list(map(int, input().split()))
-    if query_line[0] == 1:  # Update
-      s, x = query_line[1], query_line[2]
-      old_val = values[s]
-      delta = x - old_val
-      values[s] = x
-      # Update entry position (+delta) and exit position (-delta)
-      update(1, 0, size - 1, entry[s], delta)
-      update(1, 0, size - 1, exit_time[s], -delta)
-    else:  # Query
-      s = query_line[1]
-      # Prefix sum from 0 to entry[s]
-      results.append(query(1, 0, size - 1, 0, entry[s]))
+ # Process queries
+ results = []
+ for _ in range(q):
+  query_line = list(map(int, input().split()))
+  if query_line[0] == 1:  # Update
+   s, x = query_line[1], query_line[2]
+   old_val = values[s]
+   delta = x - old_val
+   values[s] = x
+   # Update entry position (+delta) and exit position (-delta)
+   update(1, 0, size - 1, entry[s], delta)
+   update(1, 0, size - 1, exit_time[s], -delta)
+  else:  # Query
+   s = query_line[1]
+   # Prefix sum from 0 to entry[s]
+   results.append(query(1, 0, size - 1, 0, entry[s]))
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 solve()
 ```

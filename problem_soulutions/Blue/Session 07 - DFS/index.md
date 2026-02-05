@@ -45,61 +45,61 @@ Use DFS to find all lakes (water components not touching boundary), sort by size
 
 ```python
 def fill_the_lakes(n, m, k, matrix):
-  lakes = []
+ lakes = []
 
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+ dx = [1, 0, -1, 0]
+ dy = [0, -1, 0, 1]
 
-  visited = [[False for i in range(m)] for i in range(n)]
-  for i in range(n):
-    for j in range(m):
-      is_lake = False
-      lake = []
+ visited = [[False for i in range(m)] for i in range(n)]
+ for i in range(n):
+  for j in range(m):
+   is_lake = False
+   lake = []
 
-      if matrix[i][j] == '.' and not visited[i][j]:
-        if i == 0 or i == n - 1 or j == 0 or j == m - 1:
-          is_lake = False
-        else:
-          is_lake = True
-        lake.append([i, j])
-        s = [[i, j]]
-        visited[i][j] = True
-        while len(s) > 0:
-          checking_node = s[-1]
-          s.pop()
-          for ll in range(4):
-            neighbor_x = checking_node[0] + dx[ll]
-            neighbor_y = checking_node[1] + dy[ll]
-            if 0 <= neighbor_x < n and 0 <= neighbor_y < m and matrix[neighbor_x][neighbor_y] == '.' and not visited[neighbor_x][neighbor_y]:
-              s.append([neighbor_x, neighbor_y])
-              lake.append([neighbor_x, neighbor_y])
-              visited[neighbor_x][neighbor_y] = True
-              if neighbor_x == 0 or neighbor_x == n - 1 or neighbor_y == 0 or neighbor_y == m - 1:
-                is_lake = False
-      if is_lake and len(lake) > 0:
-        lakes.append(lake)
-  lakes = sorted(lakes, key=lambda _lake:len(_lake))
+   if matrix[i][j] == '.' and not visited[i][j]:
+    if i == 0 or i == n - 1 or j == 0 or j == m - 1:
+     is_lake = False
+    else:
+     is_lake = True
+    lake.append([i, j])
+    s = [[i, j]]
+    visited[i][j] = True
+    while len(s) > 0:
+     checking_node = s[-1]
+     s.pop()
+     for ll in range(4):
+      neighbor_x = checking_node[0] + dx[ll]
+      neighbor_y = checking_node[1] + dy[ll]
+      if 0 <= neighbor_x < n and 0 <= neighbor_y < m and matrix[neighbor_x][neighbor_y] == '.' and not visited[neighbor_x][neighbor_y]:
+       s.append([neighbor_x, neighbor_y])
+       lake.append([neighbor_x, neighbor_y])
+       visited[neighbor_x][neighbor_y] = True
+       if neighbor_x == 0 or neighbor_x == n - 1 or neighbor_y == 0 or neighbor_y == m - 1:
+        is_lake = False
+   if is_lake and len(lake) > 0:
+    lakes.append(lake)
+ lakes = sorted(lakes, key=lambda _lake:len(_lake))
 
-  to_be_filled = len(lakes) - k
+ to_be_filled = len(lakes) - k
 
-  filled_cells = 0
-  for i in range(to_be_filled):
-    lake_len = len(lakes[i])
-    for j in range(lake_len):
-      matrix[lakes[i][j][0]][lakes[i][j][1]] = '*'
-      filled_cells += 1
+ filled_cells = 0
+ for i in range(to_be_filled):
+  lake_len = len(lakes[i])
+  for j in range(lake_len):
+   matrix[lakes[i][j][0]][lakes[i][j][1]] = '*'
+   filled_cells += 1
 
-  print(filled_cells)
-  for i in range(n):
-    print(''.join(matrix[i]))
+ print(filled_cells)
+ for i in range(n):
+  print(''.join(matrix[i]))
 
 def solution():
-  n, m, k = map(int, input().split())
-  matrix = []
-  for i in range(n):
-    matrix.append(list(input().strip()))
+ n, m, k = map(int, input().split())
+ matrix = []
+ for i in range(n):
+  matrix.append(list(input().strip()))
 
-  fill_the_lakes(n, m, k, matrix)
+ fill_the_lakes(n, m, k, matrix)
 
 solution()
 ```
@@ -140,51 +140,51 @@ DFS from node 1, track distances, find minimum distance girl with smallest node 
 
 ```python
 def find_girl(N, graph, girls):
-  s = []
-  visited = [False for i in range(N + 1)]
+ s = []
+ visited = [False for i in range(N + 1)]
 
-  roads = [0 for i in range(N + 1)]
+ roads = [0 for i in range(N + 1)]
 
-  visited[1] = True
-  s.append(1)
+ visited[1] = True
+ s.append(1)
 
-  selected_girl = N
-  selected_road = N
+ selected_girl = N
+ selected_road = N
 
-  while len(s) > 0:
-    u = s[-1]
-    s.pop()
+ while len(s) > 0:
+  u = s[-1]
+  s.pop()
 
-    for v in graph[u]:
-      if not visited[v]:
-        roads[v] = roads[u] + 1
-        if roads[v] <= selected_road:
-          if girls[v]:
-            if roads[v] < selected_road or (roads[v] == selected_road and selected_girl > v):
-              selected_girl = v
-              selected_road = roads[v]
-              visited[v] = True
-          else:
-            visited[v] = True
-            s.append(v)
+  for v in graph[u]:
+   if not visited[v]:
+    roads[v] = roads[u] + 1
+    if roads[v] <= selected_road:
+     if girls[v]:
+      if roads[v] < selected_road or (roads[v] == selected_road and selected_girl > v):
+       selected_girl = v
+       selected_road = roads[v]
+       visited[v] = True
+     else:
+      visited[v] = True
+      s.append(v)
 
-  return selected_girl
+ return selected_girl
 
 def solution():
-  N = int(input())
-  roads = []
-  graph = [[] for i in range(N + 1)]
-  for i in range(N-1):
-    u, v = map(int, input().split())
-    graph[u].append(v)
-    graph[v].append(u)
+ N = int(input())
+ roads = []
+ graph = [[] for i in range(N + 1)]
+ for i in range(N-1):
+  u, v = map(int, input().split())
+  graph[u].append(v)
+  graph[v].append(u)
 
-  Q = int(input())
-  girls = [0 for i in range(N + 1)]
-  for i in range(Q):
-    girls[int(input())] = 1
+ Q = int(input())
+ girls = [0 for i in range(N + 1)]
+ for i in range(Q):
+  girls[int(input())] = 1
 
-  print(find_girl(N, graph, girls))
+ print(find_girl(N, graph, girls))
 
 solution()
 ```
@@ -226,49 +226,49 @@ DFS to count connected components in an undirected graph. Start DFS from each un
 
 ```python
 def calc_disjoint_sets(Ni, graph):
-  result = 0
-  visited = [False for i in range(Ni)]
+ result = 0
+ visited = [False for i in range(Ni)]
 
-  for i in range(Ni):
-    if visited[i]:
-      continue
-    stack = [i]
-    visited[i] = True
+ for i in range(Ni):
+  if visited[i]:
+   continue
+  stack = [i]
+  visited[i] = True
 
-    while len(stack) > 0:
-      u = stack[-1]
-      stack.pop()
-      for v in graph[u]:
-        if not visited[v]:
-          visited[v] = True
-          stack.append(v)
-    result += 1
+  while len(stack) > 0:
+   u = stack[-1]
+   stack.pop()
+   for v in graph[u]:
+    if not visited[v]:
+     visited[v] = True
+     stack.append(v)
+  result += 1
 
-  return result
+ return result
 
 def solution():
-  results = []
+ results = []
+ while True:
+  new_line = input().strip()
+  if new_line:
+   t = int(new_line)
+   break
+ for i in range(t):
   while True:
-    new_line = input().strip()
-    if new_line:
-      t = int(new_line)
-      break
-  for i in range(t):
-    while True:
-      new_line = input().strip()
-      if new_line:
-        Ni = int(new_line)
-        break
-    ei = int(input())
-    graph = [[] for jj in range(Ni)]
-    for j in range(ei):
-      start, end = map(int, input().split())
-      graph[start].append(end)
-      graph[end].append(start)
+   new_line = input().strip()
+   if new_line:
+    Ni = int(new_line)
+    break
+  ei = int(input())
+  graph = [[] for jj in range(Ni)]
+  for j in range(ei):
+   start, end = map(int, input().split())
+   graph[start].append(end)
+   graph[end].append(start)
 
-    results.append(calc_disjoint_sets(Ni, graph))
+  results.append(calc_disjoint_sets(Ni, graph))
 
-  print(*results, sep='\n')
+ print(*results, sep='\n')
 
 solution()
 ```
@@ -309,51 +309,51 @@ DFS with cycle detection. Track visited nodes in the current DFS path. If we rev
 
 ```python
 def sim_nao(N, graph):
-  global_visited = [False for i in range(N+1)]
+ global_visited = [False for i in range(N+1)]
 
-  for i in range(1, N + 1):
-    if not global_visited[i]:
-      visited = [False for l in range(N + 1)]
-      s = [i]
-      global_visited[i] = True
-      visited[i] = True
-      path = [0] * (N+1)
-      while len(s) > 0:
-        u = s[-1]
-        s.pop()
-        for v in graph[u]:
-          if not visited[v]:
-            visited[v] = True
-            if not global_visited[v]:
-              s.append(v)
-              global_visited[u] = True
-          else:
-            return 'SIM'
+ for i in range(1, N + 1):
+  if not global_visited[i]:
+   visited = [False for l in range(N + 1)]
+   s = [i]
+   global_visited[i] = True
+   visited[i] = True
+   path = [0] * (N+1)
+   while len(s) > 0:
+    u = s[-1]
+    s.pop()
+    for v in graph[u]:
+     if not visited[v]:
+      visited[v] = True
+      if not global_visited[v]:
+       s.append(v)
+       global_visited[u] = True
+     else:
+      return 'SIM'
 
-  return 'NAO'
+ return 'NAO'
 
 def solution():
-  results = []
-  T = int(input())
-  for i in range(T):
-    while True:
-      new_line = input().strip()
-      if new_line:
-        N, M = map(int, new_line.split())
-        break
+ results = []
+ T = int(input())
+ for i in range(T):
+  while True:
+   new_line = input().strip()
+   if new_line:
+    N, M = map(int, new_line.split())
+    break
 
-    graph = [[] for i in range(N + 1)]
-    for j in range(M):
-      while True:
-        new_line = input().strip()
-        if new_line:
-          A, B = map(int, new_line.split())
-          if not B in graph[A]:
-            graph[A].append(B)
-          break
-    results.append(sim_nao(N, graph))
+  graph = [[] for i in range(N + 1)]
+  for j in range(M):
+   while True:
+    new_line = input().strip()
+    if new_line:
+     A, B = map(int, new_line.split())
+     if not B in graph[A]:
+      graph[A].append(B)
+     break
+  results.append(sim_nao(N, graph))
 
-  print(*results, sep='\n')
+ print(*results, sep='\n')
 
 solution()
 ```

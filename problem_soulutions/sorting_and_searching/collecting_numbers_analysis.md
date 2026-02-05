@@ -109,24 +109,24 @@ Simulate the actual collection process: repeatedly scan left-to-right, collectin
 
 ```python
 def solve_brute_force(n, arr):
-  """
-  Brute force solution - simulate the collection process.
+ """
+ Brute force solution - simulate the collection process.
 
-  Time: O(n^2)
-  Space: O(1)
-  """
-  collected = 0
-  rounds = 0
-  target = 1
+ Time: O(n^2)
+ Space: O(1)
+ """
+ collected = 0
+ rounds = 0
+ target = 1
 
-  while collected < n:
-    rounds += 1
-    for i in range(n):
-      if arr[i] == target:
-        collected += 1
-        target += 1
+ while collected < n:
+  rounds += 1
+  for i in range(n):
+   if arr[i] == target:
+    collected += 1
+    target += 1
 
-  return rounds
+ return rounds
 ```
 
 ### Complexity
@@ -216,38 +216,38 @@ Rounds = 1 + 2 = 3
 
 ```python
 def solve_optimal(n, arr):
-  """
-  Optimal solution using position tracking.
+ """
+ Optimal solution using position tracking.
 
-  Key insight: Count how many times pos[i+1] < pos[i]
-  Each such case requires a new round.
+ Key insight: Count how many times pos[i+1] < pos[i]
+ Each such case requires a new round.
 
-  Time: O(n) - single pass to build map, single pass to count
-  Space: O(n) - position map storage
-  """
-  # Build position map: pos[value] = index
-  pos = [0] * (n + 1)
-  for i in range(n):
-    pos[arr[i]] = i
+ Time: O(n) - single pass to build map, single pass to count
+ Space: O(n) - position map storage
+ """
+ # Build position map: pos[value] = index
+ pos = [0] * (n + 1)
+ for i in range(n):
+  pos[arr[i]] = i
 
-  # Count inversions
-  rounds = 1
-  for i in range(1, n):
-    if pos[i + 1] < pos[i]:
-      rounds += 1
+ # Count inversions
+ rounds = 1
+ for i in range(1, n):
+  if pos[i + 1] < pos[i]:
+   rounds += 1
 
-  return rounds
+ return rounds
 
 
 # Main code for CSES submission
 def main():
-  n = int(input())
-  arr = list(map(int, input().split()))
-  print(solve_optimal(n, arr))
+ n = int(input())
+ arr = list(map(int, input().split()))
+ print(solve_optimal(n, arr))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 ```python
 # WRONG - counting when current is before next (opposite condition)
 if pos[i] < pos[i + 1]:
-  rounds += 1
+ rounds += 1
 ```
 
 **Problem:** This counts when we CAN continue in the same round, not when we need a new round.
@@ -278,7 +278,7 @@ if pos[i] < pos[i + 1]:
 # WRONG - using 0-indexed values
 pos = [0] * n
 for i in range(n):
-  pos[arr[i]] = i  # Fails when arr[i] = n
+ pos[arr[i]] = i  # Fails when arr[i] = n
 ```
 
 **Problem:** Values are 1 to n, but array is 0 to n-1.
@@ -290,8 +290,8 @@ for i in range(n):
 # WRONG
 rounds = 0
 for i in range(1, n):
-  if pos[i + 1] < pos[i]:
-    rounds += 1
+ if pos[i + 1] < pos[i]:
+  rounds += 1
 return rounds  # Returns 0 for sorted array, should be 1
 ```
 
@@ -303,8 +303,8 @@ return rounds  # Returns 0 for sorted array, should be 1
 ```python
 # WRONG - goes out of bounds
 for i in range(1, n + 1):  # i+1 will be n+1, out of bounds
-  if pos[i + 1] < pos[i]:
-    rounds += 1
+ if pos[i + 1] < pos[i]:
+  rounds += 1
 ```
 
 **Problem:** Accessing `pos[n + 1]` which does not exist.

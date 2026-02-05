@@ -40,52 +40,52 @@ Actually, the optimal is **2*(N-1)** for N > 1.
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
+ for _ in range(t):
+  n = int(input())
 
-    if n == 1:
-      print(0)
-    else:
-      # Minimum messages = 2 * (n - 1)
-      # First phase: gather all stories to one person (n-1 messages)
-      # Second phase: distribute from that person (n-1 messages)
-      print(2 * (n - 1))
+  if n == 1:
+   print(0)
+  else:
+   # Minimum messages = 2 * (n - 1)
+   # First phase: gather all stories to one person (n-1 messages)
+   # Second phase: distribute from that person (n-1 messages)
+   print(2 * (n - 1))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Mathematical Proof
 
 ```python
 def solve():
-  """
-  For N students to all know all N stories:
+ """
+ For N students to all know all N stories:
 
-  Lower bound: Each student except the "collector" must send at least once
-  to contribute their story = N-1 messages minimum for gathering.
+ Lower bound: Each student except the "collector" must send at least once
+ to contribute their story = N-1 messages minimum for gathering.
 
-  Each student except the "distributor" must receive at least once
-  to get all stories = N-1 messages minimum for distributing.
+ Each student except the "distributor" must receive at least once
+ to get all stories = N-1 messages minimum for distributing.
 
-  Total minimum = 2*(N-1)
+ Total minimum = 2*(N-1)
 
-  This is achievable:
-  Round 1: Students 2,3,...,N each send to student 1 (N-1 messages)
-      Now student 1 knows all stories
-  Round 2: Student 1 sends to students 2,3,...,N (N-1 messages)
-      Now everyone knows all stories
-  """
-  t = int(input())
+ This is achievable:
+ Round 1: Students 2,3,...,N each send to student 1 (N-1 messages)
+   Now student 1 knows all stories
+ Round 2: Student 1 sends to students 2,3,...,N (N-1 messages)
+   Now everyone knows all stories
+ """
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    print(max(0, 2 * (n - 1)))
+ for _ in range(t):
+  n = int(input())
+  print(max(0, 2 * (n - 1)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### One-liner Solution
@@ -93,8 +93,8 @@ if __name__ == "__main__":
 ```python
 t = int(input())
 for _ in range(t):
-  n = int(input())
-  print(2 * n - 2 if n > 1 else 0)
+ n = int(input())
+ print(2 * n - 2 if n > 1 else 0)
 ```
 
 ### Complexity Analysis

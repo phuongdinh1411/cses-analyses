@@ -117,101 +117,101 @@ Query (3, 2): Different components
 import sys
 
 def solve():
-  data = sys.stdin.read().split()
-  idx = 0
-  n, q = int(data[idx]), int(data[idx + 1])
-  idx += 2
-  t = [int(data[idx + i]) - 1 for i in range(n)]
-  idx += n
+ data = sys.stdin.read().split()
+ idx = 0
+ n, q = int(data[idx]), int(data[idx + 1])
+ idx += 2
+ t = [int(data[idx + i]) - 1 for i in range(n)]
+ idx += n
 
-  LOG = 18
-  jump = [[0] * n for _ in range(LOG)]
+ LOG = 18
+ jump = [[0] * n for _ in range(LOG)]
+ for i in range(n):
+  jump[0][i] = t[i]
+ for j in range(1, LOG):
   for i in range(n):
-    jump[0][i] = t[i]
-  for j in range(1, LOG):
-    for i in range(n):
-      jump[j][i] = jump[j-1][jump[j-1][i]]
+   jump[j][i] = jump[j-1][jump[j-1][i]]
 
-  color = [0] * n
-  in_cycle = [False] * n
-  cycle_id = [-1] * n
-  cycle_pos = [-1] * n
-  cycle_len = [0] * n
-  dist_to_cycle = [0] * n
-  cycle_entry = [-1] * n
-  num_cycles = 0
+ color = [0] * n
+ in_cycle = [False] * n
+ cycle_id = [-1] * n
+ cycle_pos = [-1] * n
+ cycle_len = [0] * n
+ dist_to_cycle = [0] * n
+ cycle_entry = [-1] * n
+ num_cycles = 0
 
-  for start in range(n):
-    if color[start]: continue
-    path = []
-    node = start
-    while color[node] == 0:
-      color[node] = 1
-      path.append(node)
-      node = t[node]
+ for start in range(n):
+  if color[start]: continue
+  path = []
+  node = start
+  while color[node] == 0:
+   color[node] = 1
+   path.append(node)
+   node = t[node]
 
-    if color[node] == 1:
-      csi = path.index(node)
-      clen = len(path) - csi
-      for i in range(csi, len(path)):
-        cn = path[i]
-        in_cycle[cn] = True
-        cycle_id[cn] = num_cycles
-        cycle_pos[cn] = i - csi
-        cycle_len[cn] = clen
-        cycle_entry[cn] = cn
-        color[cn] = 2
-      for i in range(csi - 1, -1, -1):
-        tn = path[i]
-        cycle_id[tn] = num_cycles
-        dist_to_cycle[tn] = csi - i
-        cycle_entry[tn] = path[csi]
-        cycle_len[tn] = clen
-        color[tn] = 2
-      num_cycles += 1
-    else:
-      for i in range(len(path) - 1, -1, -1):
-        tn = path[i]
-        nxt = t[tn]
-        cycle_id[tn] = cycle_id[nxt]
-        dist_to_cycle[tn] = dist_to_cycle[nxt] + 1
-        cycle_entry[tn] = cycle_entry[nxt]
-        cycle_len[tn] = cycle_len[nxt]
-        color[tn] = 2
+  if color[node] == 1:
+   csi = path.index(node)
+   clen = len(path) - csi
+   for i in range(csi, len(path)):
+    cn = path[i]
+    in_cycle[cn] = True
+    cycle_id[cn] = num_cycles
+    cycle_pos[cn] = i - csi
+    cycle_len[cn] = clen
+    cycle_entry[cn] = cn
+    color[cn] = 2
+   for i in range(csi - 1, -1, -1):
+    tn = path[i]
+    cycle_id[tn] = num_cycles
+    dist_to_cycle[tn] = csi - i
+    cycle_entry[tn] = path[csi]
+    cycle_len[tn] = clen
+    color[tn] = 2
+   num_cycles += 1
+  else:
+   for i in range(len(path) - 1, -1, -1):
+    tn = path[i]
+    nxt = t[tn]
+    cycle_id[tn] = cycle_id[nxt]
+    dist_to_cycle[tn] = dist_to_cycle[nxt] + 1
+    cycle_entry[tn] = cycle_entry[nxt]
+    cycle_len[tn] = cycle_len[nxt]
+    color[tn] = 2
 
-  def kth(node, k):
-    for j in range(LOG):
-      if k & (1 << j):
-        node = jump[j][node]
-    return node
+ def kth(node, k):
+  for j in range(LOG):
+   if k & (1 << j):
+    node = jump[j][node]
+  return node
 
-  results = []
-  for _ in range(q):
-    a, b = int(data[idx]) - 1, int(data[idx + 1]) - 1
-    idx += 2
+ results = []
+ for _ in range(q):
+  a, b = int(data[idx]) - 1, int(data[idx + 1]) - 1
+  idx += 2
 
-    if a == b:
-      results.append(0)
-    elif cycle_id[a] != cycle_id[b]:
-      results.append(-1)
-    elif not in_cycle[b]:
-      if not in_cycle[a]:
-        d = dist_to_cycle[a] - dist_to_cycle[b]
-        results.append(d if d > 0 and kth(a, d) == b else -1)
-      else:
-        results.append(-1)
-    elif in_cycle[a]:
-      d = (cycle_pos[b] - cycle_pos[a] + cycle_len[a]) % cycle_len[a]
-      results.append(d if d else cycle_len[a])
-    else:
-      d1 = dist_to_cycle[a]
-      d2 = (cycle_pos[b] - cycle_pos[cycle_entry[a]] + cycle_len[a]) % cycle_len[a]
-      results.append(d1 + d2)
+  if a == b:
+   results.append(0)
+  elif cycle_id[a] != cycle_id[b]:
+   results.append(-1)
+  elif not in_cycle[b]:
+   if not in_cycle[a]:
+    d = dist_to_cycle[a] - dist_to_cycle[b]
+    results.append(d if d > 0 and kth(a, d) == b else -1)
+   else:
+    results.append(-1)
+  elif in_cycle[a]:
+   d = (cycle_pos[b] - cycle_pos[a] + cycle_len[a]) % cycle_len[a]
+   results.append(d if d else cycle_len[a])
+  else:
+   d1 = dist_to_cycle[a]
+   d2 = (cycle_pos[b] - cycle_pos[cycle_entry[a]] + cycle_len[a]) % cycle_len[a]
+   results.append(d1 + d2)
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ## Complexity Analysis

@@ -43,18 +43,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -64,38 +64,38 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E):
-  dist = [INF for i in range(N + 1)]
+ dist = [INF for i in range(N + 1)]
 
-  dist[1] = 0
-  for i in range(1, N):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+ dist[1] = 0
+ for i in range(1, N):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      return 'Yes'
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != INF and dist[u] + w < dist[v]:
+   return 'Yes'
 
-  return 'No'
+ return 'No'
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      C = int(inp.next())
-      E.append([i, j, -C])
-    print(bellman_ford(N, M, E))
+ T = int(inp.next())
+ for t in range(T):
+  N = int(inp.next())
+  M = int(inp.next())
+  E = []
+  for m in range(M):
+   i = int(inp.next())
+   j = int(inp.next())
+   C = int(inp.next())
+   E.append([i, j, -C])
+  print(bellman_ford(N, M, E))
 
 
 solution()
@@ -142,18 +142,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -163,56 +163,56 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E, q):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
+ dist = [INF for i in range(N + 1)]
+ flag = [False for i in range(N + 1)]
 
-  dist[0] = 0
-  for i in range(1, N):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-
+ dist[0] = 0
+ for i in range(1, N):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
 
-  for cq in q:
-    if flag[cq]:
-      print('-Infinity')
-    elif dist[cq] == INF:
-      print('Impossible')
-    else:
-      print(dist[cq])
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != INF and dist[u] + w < dist[v]:
+   dist[v] = dist[u] + w
+   flag[v] = True
+
+ for cq in q:
+  if flag[cq]:
+   print('-Infinity')
+  elif dist[cq] == INF:
+   print('Impossible')
+  else:
+   print(dist[cq])
 
 
 def solution():
-  while True:
-    N = int(inp.next())
-    if N == 0:
-      break
-    M = int(inp.next())
-    Q = int(inp.next())
-    S = int(inp.next())
+ while True:
+  N = int(inp.next())
+  if N == 0:
+   break
+  M = int(inp.next())
+  Q = int(inp.next())
+  S = int(inp.next())
 
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      w = int(inp.next())
-      E.append([i, j, w])
-    q = []
-    for x in range(Q):
-      q.append(int(inp.next()))
+  E = []
+  for m in range(M):
+   i = int(inp.next())
+   j = int(inp.next())
+   w = int(inp.next())
+   E.append([i, j, w])
+  q = []
+  for x in range(Q):
+   q.append(int(inp.next()))
 
-    bellman_ford(N, M, E, q)
-    print()
+  bellman_ford(N, M, E, q)
+  print()
 
 
 solution()
@@ -261,18 +261,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -282,56 +282,56 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E, q, case_number):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
+ dist = [INF for i in range(N + 1)]
+ flag = [False for i in range(N + 1)]
 
-  print('Case ' + str(case_number) + ':')
+ print('Case ' + str(case_number) + ':')
 
-  dist[1] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+ dist[1] = 0
+ for i in range(0, N-1):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != INF and dist[u] + w < dist[v]:
+   dist[v] = dist[u] + w
+   flag[v] = True
 
-  for cq in q:
-    if flag[cq] or dist[cq] < 3 or dist[cq] == INF:
-      print('?')
-    else:
-      print(dist[cq])
+ for cq in q:
+  if flag[cq] or dist[cq] < 3 or dist[cq] == INF:
+   print('?')
+  else:
+   print(dist[cq])
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    busyness = [0 for x in range(N + 1)]
-    counter = 1
-    for x in range(N):
-      busyness[counter] = int(inp.next())
-      counter += 1
+ T = int(inp.next())
+ for t in range(T):
+  N = int(inp.next())
+  busyness = [0 for x in range(N + 1)]
+  counter = 1
+  for x in range(N):
+   busyness[counter] = int(inp.next())
+   counter += 1
 
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      E.append([i, j, busyness[j] - busyness[i]])
-    nq = int(inp.next())
-    q = []
-    for x in range(nq):
-      q.append(int(inp.next()))
+  M = int(inp.next())
+  E = []
+  for m in range(M):
+   i = int(inp.next())
+   j = int(inp.next())
+   E.append([i, j, busyness[j] - busyness[i]])
+  nq = int(inp.next())
+  q = []
+  for x in range(nq):
+   q.append(int(inp.next()))
 
-    bellman_ford(N, M, E, q, t + 1)
+  bellman_ford(N, M, E, q, t + 1)
 
 
 solution()
@@ -381,76 +381,76 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E, query):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
+ dist = [INF for i in range(N + 1)]
+ flag = [False for i in range(N + 1)]
 
-  dist[query] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+ dist[query] = 0
+ for i in range(0, N-1):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != INF and dist[u] + w < dist[v]:
+   dist[v] = dist[u] + w
+   flag[v] = True
 
-  return [dist, flag]
+ return [dist, flag]
 
 
 def solution():
-  counter = 1
-  while True:
-    N = int(input())
-    if N == 0:
-      break
+ counter = 1
+ while True:
+  N = int(input())
+  if N == 0:
+   break
 
-    E = []
-    monuments = ['' for i in range(N)]
-    for x in range(N):
-      line = input().split()
-      monuments[x] = line[0]
-      for i in range(1, N + 1):
-        if int(line[i]) != 0:
-          if int(line[i]) < 0 or x != i - 1:
-            E.append([x, i - 1, int(line[i])])
+  E = []
+  monuments = ['' for i in range(N)]
+  for x in range(N):
+   line = input().split()
+   monuments[x] = line[0]
+   for i in range(1, N + 1):
+    if int(line[i]) != 0:
+     if int(line[i]) < 0 or x != i - 1:
+      E.append([x, i - 1, int(line[i])])
 
-    nq = int(input())
-    q = []
-    queries = defaultdict(list)
-    for x in range(nq):
-      pair = list(map(int, (input().split())))
-      q.append(pair)
-      queries[pair[0]].append(pair[1])
+  nq = int(input())
+  q = []
+  queries = defaultdict(list)
+  for x in range(nq):
+   pair = list(map(int, (input().split())))
+   q.append(pair)
+   queries[pair[0]].append(pair[1])
 
-    print('Case #' + str(counter) + ':')
+  print('Case #' + str(counter) + ':')
 
-    dists = [[] for x in range(N)]
-    neg_flags = [[] for x in range(N)]
+  dists = [[] for x in range(N)]
+  neg_flags = [[] for x in range(N)]
 
-    for query in queries.keys():
-      bf_result = bellman_ford(N, len(E), E, query)
-      dists[query] = bf_result[0]
-      neg_flags[query] = bf_result[1]
+  for query in queries.keys():
+   bf_result = bellman_ford(N, len(E), E, query)
+   dists[query] = bf_result[0]
+   neg_flags[query] = bf_result[1]
 
-    for qq in q:
-      dist = dists[qq[0]][qq[1]]
-      is_neg = neg_flags[qq[0]][qq[1]]
-      if (dist < 0 and qq[0] == qq[1]) or is_neg:
-        print("NEGATIVE CYCLE")
-      else:
-        if dist == INF:
-          dist = "NOT REACHABLE"
-        start_city = monuments[qq[0]]
-        dest_city = monuments[qq[1]]
-        print("{}-{} {}".format(start_city, dest_city, dist))
+  for qq in q:
+   dist = dists[qq[0]][qq[1]]
+   is_neg = neg_flags[qq[0]][qq[1]]
+   if (dist < 0 and qq[0] == qq[1]) or is_neg:
+    print("NEGATIVE CYCLE")
+   else:
+    if dist == INF:
+     dist = "NOT REACHABLE"
+    start_city = monuments[qq[0]]
+    dest_city = monuments[qq[1]]
+    print("{}-{} {}".format(start_city, dest_city, dist))
 
-    counter += 1
+  counter += 1
 
 
 solution()
@@ -495,18 +495,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -516,35 +516,35 @@ INF = -int(1e9)
 
 
 def bellman_ford(n, m, E):
-  dist = [INF for i in range(n + 1)]
-  dist[1] = 100
-  for i in range(1, n):
-    for j in range(m):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] * w / 100 > dist[v]:
-        dist[v] = dist[u] * w / 100
+ dist = [INF for i in range(n + 1)]
+ dist[1] = 100
+ for i in range(1, n):
+  for j in range(m):
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] * w / 100 > dist[v]:
+    dist[v] = dist[u] * w / 100
 
-  return "{:.6f}".format(dist[n]) + ' percent'
+ return "{:.6f}".format(dist[n]) + ' percent'
 
 
 def solution():
-  while True:
-    n = int(inp.next())
-    if n == 0:
-      break
-    m = int(inp.next())
+ while True:
+  n = int(inp.next())
+  if n == 0:
+   break
+  m = int(inp.next())
 
-    E = []
-    for i in range(m):
-      a = int(inp.next())
-      b = int(inp.next())
-      p = int(inp.next())
-      E.append([a, b, p])
-      E.append([b, a, p])
+  E = []
+  for i in range(m):
+   a = int(inp.next())
+   b = int(inp.next())
+   p = int(inp.next())
+   E.append([a, b, p])
+   E.append([b, a, p])
 
-    print(bellman_ford(n, m * 2, E))
+  print(bellman_ford(n, m * 2, E))
 
 
 solution()
@@ -589,18 +589,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -610,43 +610,43 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E):
-  dist = [-INF for i in range(N)]
+ dist = [-INF for i in range(N)]
 
-  dist[0] = 100
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != -INF and dist[u] + w > dist[v] and dist[u] + w > 0:
-        dist[v] = dist[u] + w
+ dist[0] = 100
+ for i in range(0, N-1):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != -INF and dist[u] + w > dist[v] != -INF:
-      return 'winnable'
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != -INF and dist[u] + w > dist[v] and dist[u] + w > 0:
+    dist[v] = dist[u] + w
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != -INF and dist[u] + w > dist[v] != -INF:
+   return 'winnable'
 
-  return 'hopeless' if dist[N - 1] < 0 else 'winnable'
+ return 'hopeless' if dist[N - 1] < 0 else 'winnable'
 
 
 def solution():
-  while True:
-    N = int(inp.next())
-    if N == -1:
-      break
-    E = []
-    energies = []
-    for i in range(N):
-      energy = int(inp.next())
-      energies.append(energy)
-      connections = int(inp.next())
-      for j in range(connections):
-        neighbor = int(inp.next()) - 1
-        E.append([i, neighbor])
-    for connection in E:
-      connection.append(energies[connection[1]])
-    print(bellman_ford(N, len(E), E))
+ while True:
+  N = int(inp.next())
+  if N == -1:
+   break
+  E = []
+  energies = []
+  for i in range(N):
+   energy = int(inp.next())
+   energies.append(energy)
+   connections = int(inp.next())
+   for j in range(connections):
+    neighbor = int(inp.next()) - 1
+    E.append([i, neighbor])
+  for connection in E:
+   connection.append(energies[connection[1]])
+  print(bellman_ford(N, len(E), E))
 
 
 solution()
@@ -689,36 +689,36 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E):
-  dist = [INF for i in range(N)]
+ dist = [INF for i in range(N)]
 
-  dist[0] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+ dist[0] = 0
+ for i in range(0, N-1):
+  for j in range(M):
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
 
-  max = 0
-  for di in dist:
-    if di > max:
-      max = di
+ max = 0
+ for di in dist:
+  if di > max:
+   max = di
 
-  return max
+ return max
 
 
 def solution():
-  N = int(input())
-  E = []
-  for i in range(N - 1):
-    line = list(map(str, input().strip().split()))
-    for j in range(i + 1):
-      if line[j] is not 'x':
-        E.append([i + 1, j, int(line[j])])
-        E.append([j, i + 1, int(line[j])])
+ N = int(input())
+ E = []
+ for i in range(N - 1):
+  line = list(map(str, input().strip().split()))
+  for j in range(i + 1):
+   if line[j] is not 'x':
+    E.append([i + 1, j, int(line[j])])
+    E.append([j, i + 1, int(line[j])])
 
-  print(bellman_ford(N, len(E), E))
+ print(bellman_ford(N, len(E), E))
 
 
 solution()
@@ -764,18 +764,18 @@ import sys
 
 
 class input_tokenizer:
-  __tokens = None
+ __tokens = None
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+ def has_next(self):
+  return self.__tokens != [] and self.__tokens != None
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
+ def next(self):
+  token = self.__tokens[-1]
+  self.__tokens.pop()
+  return token
 
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+ def __init__(self):
+  self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
@@ -785,38 +785,38 @@ INF = int(1e9)
 
 
 def bellman_ford(N, M, E):
-  dist = [INF for i in range(N + 1)]
+ dist = [INF for i in range(N + 1)]
 
-  dist[0] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+ dist[0] = 0
+ for i in range(0, N-1):
   for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      return 'possible'
+   u = E[j][0]
+   v = E[j][1]
+   w = E[j][2]
+   if dist[u] != INF and dist[u] + w < dist[v]:
+    dist[v] = dist[u] + w
+ for j in range(M):
+  u = E[j][0]
+  v = E[j][1]
+  w = E[j][2]
+  if dist[u] != INF and dist[u] + w < dist[v]:
+   return 'possible'
 
-  return 'not possible'
+ return 'not possible'
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      C = int(inp.next())
-      E.append([i, j, C])
-    print(bellman_ford(N, M, E))
+ T = int(inp.next())
+ for t in range(T):
+  N = int(inp.next())
+  M = int(inp.next())
+  E = []
+  for m in range(M):
+   i = int(inp.next())
+   j = int(inp.next())
+   C = int(inp.next())
+   E.append([i, j, C])
+  print(bellman_ford(N, M, E))
 
 
 solution()

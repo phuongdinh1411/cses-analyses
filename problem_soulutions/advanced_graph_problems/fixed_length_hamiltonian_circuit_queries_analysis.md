@@ -109,32 +109,32 @@ Try all possible orderings of cities using depth-first search with backtracking.
 
 ```python
 def solve_brute_force(n, adj):
-  """
-  Brute force using DFS backtracking.
+ """
+ Brute force using DFS backtracking.
 
-  Time: O(n! * n) - factorial paths, n edges each
-  Space: O(n) - recursion stack
-  """
-  MOD = 10**9 + 7
-  count = 0
+ Time: O(n! * n) - factorial paths, n edges each
+ Space: O(n) - recursion stack
+ """
+ MOD = 10**9 + 7
+ count = 0
 
-  def dfs(city, visited_count, visited):
-    nonlocal count
-    if city == n:
-      if visited_count == n:
-        count = (count + 1) % MOD
-      return
+ def dfs(city, visited_count, visited):
+  nonlocal count
+  if city == n:
+   if visited_count == n:
+    count = (count + 1) % MOD
+   return
 
-    for next_city in adj[city]:
-      if not visited[next_city]:
-        visited[next_city] = True
-        dfs(next_city, visited_count + 1, visited)
-        visited[next_city] = False
+  for next_city in adj[city]:
+   if not visited[next_city]:
+    visited[next_city] = True
+    dfs(next_city, visited_count + 1, visited)
+    visited[next_city] = False
 
-  visited = [False] * (n + 1)
-  visited[1] = True
-  dfs(1, 1, visited)
-  return count
+ visited = [False] * (n + 1)
+ visited[1] = True
+ dfs(1, 1, visited)
+ return count
 ```
 
 ### Complexity
@@ -244,65 +244,65 @@ Bitmask meaning:
 
 ```python
 def solve(n, m, edges):
-  """
-  Bitmask DP solution for counting Hamiltonian paths.
+ """
+ Bitmask DP solution for counting Hamiltonian paths.
 
-  Time: O(2^n * n^2)
-  Space: O(2^n * n)
-  """
-  MOD = 10**9 + 7
+ Time: O(2^n * n^2)
+ Space: O(2^n * n)
+ """
+ MOD = 10**9 + 7
 
-  # Build adjacency list
-  adj = [[] for _ in range(n + 1)]
-  for a, b in edges:
-    adj[a].append(b)
+ # Build adjacency list
+ adj = [[] for _ in range(n + 1)]
+ for a, b in edges:
+  adj[a].append(b)
 
-  # dp[mask][v] = number of paths visiting cities in mask, ending at v
-  dp = [[0] * (n + 1) for _ in range(1 << n)]
+ # dp[mask][v] = number of paths visiting cities in mask, ending at v
+ dp = [[0] * (n + 1) for _ in range(1 << n)]
 
-  # Base case: start at city 1
-  dp[1][1] = 1
+ # Base case: start at city 1
+ dp[1][1] = 1
 
-  # Process all masks in order
-  for mask in range(1, 1 << n):
-    for v in range(1, n + 1):
-      # Skip if v is not in current mask
-      if not (mask & (1 << (v - 1))):
-        continue
-      if dp[mask][v] == 0:
-        continue
+ # Process all masks in order
+ for mask in range(1, 1 << n):
+  for v in range(1, n + 1):
+   # Skip if v is not in current mask
+   if not (mask & (1 << (v - 1))):
+    continue
+   if dp[mask][v] == 0:
+    continue
 
-      # Try extending to each neighbor
-      for u in adj[v]:
-        # Skip if u already visited
-        if mask & (1 << (u - 1)):
-          continue
-        new_mask = mask | (1 << (u - 1))
-        dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
+   # Try extending to each neighbor
+   for u in adj[v]:
+    # Skip if u already visited
+    if mask & (1 << (u - 1)):
+     continue
+    new_mask = mask | (1 << (u - 1))
+    dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
 
-  # Answer: all cities visited, ending at city n
-  full_mask = (1 << n) - 1
-  return dp[full_mask][n]
+ # Answer: all cities visited, ending at city n
+ full_mask = (1 << n) - 1
+ return dp[full_mask][n]
 
 
 # Input handling
 def main():
-  import sys
-  input_data = sys.stdin.read().split()
-  idx = 0
-  n = int(input_data[idx]); idx += 1
-  m = int(input_data[idx]); idx += 1
+ import sys
+ input_data = sys.stdin.read().split()
+ idx = 0
+ n = int(input_data[idx]); idx += 1
+ m = int(input_data[idx]); idx += 1
 
-  edges = []
-  for _ in range(m):
-    a = int(input_data[idx]); idx += 1
-    b = int(input_data[idx]); idx += 1
-    edges.append((a, b))
+ edges = []
+ for _ in range(m):
+  a = int(input_data[idx]); idx += 1
+  b = int(input_data[idx]); idx += 1
+  edges.append((a, b))
 
-  print(solve(n, m, edges))
+ print(solve(n, m, edges))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -338,7 +338,7 @@ if new_mask & (1 << (u - 1)):  # Always true!
 
 # CORRECT: Check before updating
 if mask & (1 << (u - 1)):  # Skip if already visited
-  continue
+ continue
 new_mask = mask | (1 << (u - 1))
 ```
 

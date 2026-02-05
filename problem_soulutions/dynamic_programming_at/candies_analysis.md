@@ -115,23 +115,23 @@ dp[i][j] = sum(dp[i-1][j-k]) for k = 0 to min(a_i, j)
 
 ```python
 def solve_naive(n, k, limits):
-  """
-  Naive DP solution - O(N * K^2), will TLE for large inputs.
+ """
+ Naive DP solution - O(N * K^2), will TLE for large inputs.
 
-  Time: O(N * K^2)
-  Space: O(N * K)
-  """
-  MOD = 10**9 + 7
-  dp = [[0] * (k + 1) for _ in range(n + 1)]
-  dp[0][0] = 1
+ Time: O(N * K^2)
+ Space: O(N * K)
+ """
+ MOD = 10**9 + 7
+ dp = [[0] * (k + 1) for _ in range(n + 1)]
+ dp[0][0] = 1
 
-  for i in range(1, n + 1):
-    limit = limits[i - 1]
-    for j in range(k + 1):
-      for give in range(min(limit, j) + 1):
-        dp[i][j] = (dp[i][j] + dp[i - 1][j - give]) % MOD
+ for i in range(1, n + 1):
+  limit = limits[i - 1]
+  for j in range(k + 1):
+   for give in range(min(limit, j) + 1):
+    dp[i][j] = (dp[i][j] + dp[i - 1][j - give]) % MOD
 
-  return dp[n][k]
+ return dp[n][k]
 ```
 
 ### Complexity
@@ -257,46 +257,46 @@ Candies:   0-1    0-2    0-3      (each child can receive)
 
 ```python
 def solve(n, k, limits):
-  """
-  DP with prefix sum optimization for Candies problem.
+ """
+ DP with prefix sum optimization for Candies problem.
 
-  Time: O(N * K)
-  Space: O(K) with space optimization
-  """
-  MOD = 10**9 + 7
+ Time: O(N * K)
+ Space: O(K) with space optimization
+ """
+ MOD = 10**9 + 7
 
-  # dp[j] = ways to distribute j candies to children processed so far
-  dp = [0] * (k + 1)
-  dp[0] = 1
+ # dp[j] = ways to distribute j candies to children processed so far
+ dp = [0] * (k + 1)
+ dp[0] = 1
 
-  for i in range(n):
-    limit = limits[i]
+ for i in range(n):
+  limit = limits[i]
 
-    # Build prefix sum of current dp
-    prefix = [0] * (k + 2)
-    for j in range(k + 1):
-      prefix[j + 1] = (prefix[j] + dp[j]) % MOD
+  # Build prefix sum of current dp
+  prefix = [0] * (k + 2)
+  for j in range(k + 1):
+   prefix[j + 1] = (prefix[j] + dp[j]) % MOD
 
-    # Update dp using prefix sums
-    new_dp = [0] * (k + 1)
-    for j in range(k + 1):
-      # Sum from dp[max(0, j-limit)] to dp[j]
-      left = max(0, j - limit)
-      new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD
+  # Update dp using prefix sums
+  new_dp = [0] * (k + 1)
+  for j in range(k + 1):
+   # Sum from dp[max(0, j-limit)] to dp[j]
+   left = max(0, j - limit)
+   new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD
 
-    dp = new_dp
+  dp = new_dp
 
-  return dp[k]
+ return dp[k]
 
 
 def main():
-  n, k = map(int, input().split())
-  limits = list(map(int, input().split()))
-  print(solve(n, k, limits))
+ n, k = map(int, input().split())
+ limits = list(map(int, input().split()))
+ print(solve(n, k, limits))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity

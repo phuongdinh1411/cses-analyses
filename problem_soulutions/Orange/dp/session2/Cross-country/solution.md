@@ -39,115 +39,115 @@ This is a **Longest Common Subsequence (LCS)** problem! Tom needs to find checkp
 
 ```python
 def lcs(agnes, tom):
-  """Find longest common subsequence length"""
-  m, n = len(agnes), len(tom)
-  dp = [[0] * (n + 1) for _ in range(m + 1)]
+ """Find longest common subsequence length"""
+ m, n = len(agnes), len(tom)
+ dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-  for i in range(1, m + 1):
-    for j in range(1, n + 1):
-      if agnes[i-1] == tom[j-1]:
-        dp[i][j] = dp[i-1][j-1] + 1
-      else:
-        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+ for i in range(1, m + 1):
+  for j in range(1, n + 1):
+   if agnes[i-1] == tom[j-1]:
+    dp[i][j] = dp[i-1][j-1] + 1
+   else:
+    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-  return dp[m][n]
+ return dp[m][n]
 
 def solve():
-  d = int(input())
+ d = int(input())
 
-  for _ in range(d):
-    # Read Agnes' route
-    agnes = []
-    line = input().split()
-    for x in line:
-      val = int(x)
-      if val == 0:
-        break
-      agnes.append(val)
+ for _ in range(d):
+  # Read Agnes' route
+  agnes = []
+  line = input().split()
+  for x in line:
+   val = int(x)
+   if val == 0:
+    break
+   agnes.append(val)
 
-    max_meetings = 0
+  max_meetings = 0
 
-    # Read Tom's routes
-    while True:
-      line = input().split()
+  # Read Tom's routes
+  while True:
+   line = input().split()
 
-      # Check for end of data set
-      if line[0] == '0':
-        break
+   # Check for end of data set
+   if line[0] == '0':
+    break
 
-      tom = []
-      for x in line:
-        val = int(x)
-        if val == 0:
-          break
-        tom.append(val)
+   tom = []
+   for x in line:
+    val = int(x)
+    if val == 0:
+     break
+    tom.append(val)
 
-      # Compute LCS
-      meetings = lcs(agnes, tom)
-      max_meetings = max(max_meetings, meetings)
+   # Compute LCS
+   meetings = lcs(agnes, tom)
+   max_meetings = max(max_meetings, meetings)
 
-    print(max_meetings)
+  print(max_meetings)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def lcs_optimized(agnes, tom):
-  """LCS with O(n) space"""
-  m, n = len(agnes), len(tom)
-  prev = [0] * (n + 1)
-  curr = [0] * (n + 1)
+ """LCS with O(n) space"""
+ m, n = len(agnes), len(tom)
+ prev = [0] * (n + 1)
+ curr = [0] * (n + 1)
 
-  for i in range(1, m + 1):
-    for j in range(1, n + 1):
-      if agnes[i-1] == tom[j-1]:
-        curr[j] = prev[j-1] + 1
-      else:
-        curr[j] = max(prev[j], curr[j-1])
-    prev, curr = curr, [0] * (n + 1)
+ for i in range(1, m + 1):
+  for j in range(1, n + 1):
+   if agnes[i-1] == tom[j-1]:
+    curr[j] = prev[j-1] + 1
+   else:
+    curr[j] = max(prev[j], curr[j-1])
+  prev, curr = curr, [0] * (n + 1)
 
-  return prev[n]
+ return prev[n]
 
 def solve():
-  import sys
-  data = sys.stdin.read().split()
-  idx = 0
+ import sys
+ data = sys.stdin.read().split()
+ idx = 0
 
-  d = int(data[idx])
-  idx += 1
+ d = int(data[idx])
+ idx += 1
 
-  for _ in range(d):
-    # Read Agnes' route
-    agnes = []
-    while data[idx] != '0':
-      agnes.append(int(data[idx]))
-      idx += 1
-    idx += 1  # Skip the 0
+ for _ in range(d):
+  # Read Agnes' route
+  agnes = []
+  while data[idx] != '0':
+   agnes.append(int(data[idx]))
+   idx += 1
+  idx += 1  # Skip the 0
 
-    max_meetings = 0
+  max_meetings = 0
 
-    # Read Tom's routes
-    while True:
-      if data[idx] == '0':
-        idx += 1
-        break
+  # Read Tom's routes
+  while True:
+   if data[idx] == '0':
+    idx += 1
+    break
 
-      tom = []
-      while data[idx] != '0':
-        tom.append(int(data[idx]))
-        idx += 1
-      idx += 1  # Skip the 0
+   tom = []
+   while data[idx] != '0':
+    tom.append(int(data[idx]))
+    idx += 1
+   idx += 1  # Skip the 0
 
-      meetings = lcs_optimized(agnes, tom)
-      max_meetings = max(max_meetings, meetings)
+   meetings = lcs_optimized(agnes, tom)
+   max_meetings = max(max_meetings, meetings)
 
-    print(max_meetings)
+  print(max_meetings)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

@@ -94,35 +94,35 @@ Generate all possible color assignments for the grid, then check each one for va
 
 ```python
 def solve_brute_force(n, k):
-  """
-  Brute force: try all colorings, validate each.
+ """
+ Brute force: try all colorings, validate each.
 
-  Time: O(k^(n^2) * n^2)
-  Space: O(n^2)
-  """
-  def is_valid(grid):
-    for i in range(n):
-      for j in range(n):
-        if j + 1 < n and grid[i][j] == grid[i][j + 1]:
-          return False
-        if i + 1 < n and grid[i][j] == grid[i + 1][j]:
-          return False
-    return True
+ Time: O(k^(n^2) * n^2)
+ Space: O(n^2)
+ """
+ def is_valid(grid):
+  for i in range(n):
+   for j in range(n):
+    if j + 1 < n and grid[i][j] == grid[i][j + 1]:
+     return False
+    if i + 1 < n and grid[i][j] == grid[i + 1][j]:
+     return False
+  return True
 
-  def generate(grid, pos):
-    if pos == n * n:
-      return grid if is_valid(grid) else None
+ def generate(grid, pos):
+  if pos == n * n:
+   return grid if is_valid(grid) else None
 
-    row, col = pos // n, pos % n
-    for color in range(1, k + 1):
-      grid[row][col] = color
-      result = generate(grid, pos + 1)
-      if result:
-        return result
-    return None
+  row, col = pos // n, pos % n
+  for color in range(1, k + 1):
+   grid[row][col] = color
+   result = generate(grid, pos + 1)
+   if result:
+    return result
+  return None
 
-  grid = [[0] * n for _ in range(n)]
-  return generate(grid, 0)
+ grid = [[0] * n for _ in range(n)]
+ return generate(grid, 0)
 ```
 
 ### Complexity
@@ -219,60 +219,60 @@ Color placement order:    Constraint check pattern:
 
 ```python
 def solve_optimal(n, k):
-  """
-  Backtracking with constraint checking.
+ """
+ Backtracking with constraint checking.
 
-  Time: O(k^(n^2)) worst case, much better in practice
-  Space: O(n^2) for grid + O(n^2) recursion stack
-  """
-  def is_safe(row, col, color):
-    # Check left neighbor
-    if col > 0 and grid[row][col - 1] == color:
-      return False
-    # Check top neighbor
-    if row > 0 and grid[row - 1][col] == color:
-      return False
-    return True
+ Time: O(k^(n^2)) worst case, much better in practice
+ Space: O(n^2) for grid + O(n^2) recursion stack
+ """
+ def is_safe(row, col, color):
+  # Check left neighbor
+  if col > 0 and grid[row][col - 1] == color:
+   return False
+  # Check top neighbor
+  if row > 0 and grid[row - 1][col] == color:
+   return False
+  return True
 
-  def solve(row, col):
-    # Base case: filled entire grid
-    if row == n:
-      return True
+ def solve(row, col):
+  # Base case: filled entire grid
+  if row == n:
+   return True
 
-    # Move to next row if current row complete
-    next_row, next_col = (row, col + 1) if col + 1 < n else (row + 1, 0)
+  # Move to next row if current row complete
+  next_row, next_col = (row, col + 1) if col + 1 < n else (row + 1, 0)
 
-    # Try each color
-    for color in range(1, k + 1):
-      if is_safe(row, col, color):
-        grid[row][col] = color
-        if solve(next_row, next_col):
-          return True
-        grid[row][col] = 0  # Backtrack
+  # Try each color
+  for color in range(1, k + 1):
+   if is_safe(row, col, color):
+    grid[row][col] = color
+    if solve(next_row, next_col):
+     return True
+    grid[row][col] = 0  # Backtrack
 
-    return False
+  return False
 
-  # Special case: need at least 2 colors for n > 1
-  if n > 1 and k < 2:
-    return None
+ # Special case: need at least 2 colors for n > 1
+ if n > 1 and k < 2:
+  return None
 
-  grid = [[0] * n for _ in range(n)]
-  return grid if solve(0, 0) else None
+ grid = [[0] * n for _ in range(n)]
+ return grid if solve(0, 0) else None
 
 
 def main():
-  n, k = map(int, input().split())
-  result = solve_optimal(n, k)
+ n, k = map(int, input().split())
+ result = solve_optimal(n, k)
 
-  if result is None:
-    print("NO")
-  else:
-    for row in result:
-      print(" ".join(map(str, row)))
+ if result is None:
+  print("NO")
+ else:
+  for row in result:
+   print(" ".join(map(str, row)))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -293,11 +293,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - checking neighbors not yet colored
 def is_safe(row, col, color):
-  for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
-    nr, nc = row + dr, col + dc
-    if 0 <= nr < n and 0 <= nc < n:
-      if grid[nr][nc] == color:  # Bottom/right not yet filled!
-        return False
+ for dr, dc in [(-1,0), (1,0), (0,-1), (0,1)]:
+  nr, nc = row + dr, col + dc
+  if 0 <= nr < n and 0 <= nc < n:
+   if grid[nr][nc] == color:  # Bottom/right not yet filled!
+    return False
 ```
 
 **Problem:** In row-major order, right and bottom neighbors are not yet colored. Checking them is unnecessary and may cause bugs.
@@ -309,8 +309,8 @@ def is_safe(row, col, color):
 ```python
 # WRONG - will loop forever or return invalid result
 def solve(n, k):
-  grid = [[0] * n for _ in range(n)]
-  # ... backtracking without special case check
+ grid = [[0] * n for _ in range(n)]
+ # ... backtracking without special case check
 ```
 
 **Problem:** With only 1 color and n > 1, adjacent cells must share colors, which is impossible.
@@ -322,11 +322,11 @@ def solve(n, k):
 ```python
 # WRONG - grid state corrupted after failed branch
 for color in range(1, k + 1):
-  if is_safe(row, col, color):
-    grid[row][col] = color
-    if solve(next_row, next_col):
-      return True
-    # Missing: grid[row][col] = 0
+ if is_safe(row, col, color):
+  grid[row][col] = color
+  if solve(next_row, next_col):
+   return True
+  # Missing: grid[row][col] = 0
 ```
 
 **Problem:** Without resetting the cell, failed attempts leave stale values that corrupt future attempts.

@@ -186,109 +186,109 @@ from typing import List, Tuple
 Point = Tuple[float, float]
 
 def cross(o: Point, a: Point, b: Point) -> float:
-  """Cross product of vectors OA and OB."""
-  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+ """Cross product of vectors OA and OB."""
+ return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 
 def dist_sq(a: Point, b: Point) -> float:
-  """Squared distance between two points."""
-  return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+ """Squared distance between two points."""
+ return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 
 def convex_hull(points: List[Point]) -> List[Point]:
-  """Andrew's monotone chain algorithm. Returns CCW hull."""
-  points = sorted(set(points))
-  if len(points) <= 1:
-    return points
+ """Andrew's monotone chain algorithm. Returns CCW hull."""
+ points = sorted(set(points))
+ if len(points) <= 1:
+  return points
 
-  # Build lower hull
-  lower = []
-  for p in points:
-    while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
-      lower.pop()
-    lower.append(p)
+ # Build lower hull
+ lower = []
+ for p in points:
+  while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+   lower.pop()
+  lower.append(p)
 
-  # Build upper hull
-  upper = []
-  for p in reversed(points):
-    while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
-      upper.pop()
-    upper.append(p)
+ # Build upper hull
+ upper = []
+ for p in reversed(points):
+  while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+   upper.pop()
+  upper.append(p)
 
-  return lower[:-1] + upper[:-1]
+ return lower[:-1] + upper[:-1]
 
 def rotating_calipers_diameter(points: List[Point]) -> float:
-  """
-  Find diameter (maximum distance between any two points).
+ """
+ Find diameter (maximum distance between any two points).
 
-  Time: O(n log n) for hull, O(n) for calipers
-  Space: O(n) for hull storage
-  """
-  hull = convex_hull(points)
-  n = len(hull)
+ Time: O(n log n) for hull, O(n) for calipers
+ Space: O(n) for hull storage
+ """
+ hull = convex_hull(points)
+ n = len(hull)
 
-  if n == 1:
-    return 0
-  if n == 2:
-    return math.sqrt(dist_sq(hull[0], hull[1]))
+ if n == 1:
+  return 0
+ if n == 2:
+  return math.sqrt(dist_sq(hull[0], hull[1]))
 
-  # Find initial antipodal vertex (furthest from edge 0-1)
-  j = 1
-  while cross(hull[0], hull[1], hull[(j + 1) % n]) > \
-     cross(hull[0], hull[1], hull[j]):
-    j = (j + 1) % n
+ # Find initial antipodal vertex (furthest from edge 0-1)
+ j = 1
+ while cross(hull[0], hull[1], hull[(j + 1) % n]) > \
+  cross(hull[0], hull[1], hull[j]):
+  j = (j + 1) % n
 
-  max_dist_sq = 0
+ max_dist_sq = 0
 
-  # Rotate through all edges
-  for i in range(n):
-    # Check distance from current edge endpoints to antipodal vertex
-    max_dist_sq = max(max_dist_sq, dist_sq(hull[i], hull[j]))
-    max_dist_sq = max(max_dist_sq, dist_sq(hull[(i + 1) % n], hull[j]))
+ # Rotate through all edges
+ for i in range(n):
+  # Check distance from current edge endpoints to antipodal vertex
+  max_dist_sq = max(max_dist_sq, dist_sq(hull[i], hull[j]))
+  max_dist_sq = max(max_dist_sq, dist_sq(hull[(i + 1) % n], hull[j]))
 
-    # Advance j while it gives larger cross product (further from edge)
-    next_i = (i + 1) % n
-    next_next_i = (i + 2) % n
-    while cross(hull[next_i], hull[next_next_i], hull[(j + 1) % n]) > \
-       cross(hull[next_i], hull[next_next_i], hull[j]):
-      j = (j + 1) % n
-      max_dist_sq = max(max_dist_sq, dist_sq(hull[i], hull[j]))
-      max_dist_sq = max(max_dist_sq, dist_sq(hull[next_i], hull[j]))
+  # Advance j while it gives larger cross product (further from edge)
+  next_i = (i + 1) % n
+  next_next_i = (i + 2) % n
+  while cross(hull[next_i], hull[next_next_i], hull[(j + 1) % n]) > \
+   cross(hull[next_i], hull[next_next_i], hull[j]):
+   j = (j + 1) % n
+   max_dist_sq = max(max_dist_sq, dist_sq(hull[i], hull[j]))
+   max_dist_sq = max(max_dist_sq, dist_sq(hull[next_i], hull[j]))
 
-  return math.sqrt(max_dist_sq)
+ return math.sqrt(max_dist_sq)
 
 def rotating_calipers_width(points: List[Point]) -> float:
-  """
-  Find width (minimum distance between parallel supporting lines).
+ """
+ Find width (minimum distance between parallel supporting lines).
 
-  Time: O(n log n) for hull, O(n) for calipers
-  """
-  hull = convex_hull(points)
-  n = len(hull)
+ Time: O(n log n) for hull, O(n) for calipers
+ """
+ hull = convex_hull(points)
+ n = len(hull)
 
-  if n <= 2:
-    return 0
+ if n <= 2:
+  return 0
 
-  j = 1
-  min_width = float('inf')
+ j = 1
+ min_width = float('inf')
 
-  for i in range(n):
-    next_i = (i + 1) % n
+ for i in range(n):
+  next_i = (i + 1) % n
 
-    # Advance j to furthest point from edge i -> next_i
-    while True:
-      curr_cross = abs(cross(hull[i], hull[next_i], hull[j]))
-      next_cross = abs(cross(hull[i], hull[next_i], hull[(j + 1) % n]))
-      if next_cross > curr_cross:
-        j = (j + 1) % n
-      else:
-        break
+  # Advance j to furthest point from edge i -> next_i
+  while True:
+   curr_cross = abs(cross(hull[i], hull[next_i], hull[j]))
+   next_cross = abs(cross(hull[i], hull[next_i], hull[(j + 1) % n]))
+   if next_cross > curr_cross:
+    j = (j + 1) % n
+   else:
+    break
 
-    # Width = perpendicular distance from j to edge (i, next_i)
-    edge_len = math.sqrt(dist_sq(hull[i], hull[next_i]))
-    if edge_len > 0:
-      height = abs(cross(hull[i], hull[next_i], hull[j])) / edge_len
-      min_width = min(min_width, height)
+  # Width = perpendicular distance from j to edge (i, next_i)
+  edge_len = math.sqrt(dist_sq(hull[i], hull[next_i]))
+  if edge_len > 0:
+   height = abs(cross(hull[i], hull[next_i], hull[j])) / edge_len
+   min_width = min(min_width, height)
 
-  return min_width
+ return min_width
 ```
 
 #---
@@ -300,8 +300,8 @@ def rotating_calipers_width(points: List[Point]) -> float:
 ```python
 # WRONG: Checking all vertices for each edge
 for i in range(n):
-  for j in range(n):  # O(n^2) - defeats the purpose!
-    max_dist = max(max_dist, dist(hull[i], hull[j]))
+ for j in range(n):  # O(n^2) - defeats the purpose!
+  max_dist = max(max_dist, dist(hull[i], hull[j]))
 ```
 
 **Problem:** This is O(n^2), not using the monotonic property.
@@ -312,7 +312,7 @@ for i in range(n):
 ```python
 # WRONG: Using >= instead of >
 while cross(hull[i], hull[ni], hull[(j+1)%n]) >= cross(hull[i], hull[ni], hull[j]):
-  j = (j + 1) % n  # May loop forever on collinear points!
+ j = (j + 1) % n  # May loop forever on collinear points!
 ```
 
 **Problem:** When points are collinear, `>=` causes infinite loop.

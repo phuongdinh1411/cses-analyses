@@ -114,26 +114,26 @@ After each insertion, sort all positions and scan to find the maximum gap.
 
 ```python
 def solve_brute_force(x, positions):
-  """
-  Brute force: sort and scan after each insertion.
+ """
+ Brute force: sort and scan after each insertion.
 
-  Time: O(n^2 log n)
-  Space: O(n)
-  """
-  lights = [0, x]
-  result = []
+ Time: O(n^2 log n)
+ Space: O(n)
+ """
+ lights = [0, x]
+ result = []
 
-  for pos in positions:
-    lights.append(pos)
-    lights.sort()
+ for pos in positions:
+  lights.append(pos)
+  lights.sort()
 
-    max_gap = 0
-    for i in range(len(lights) - 1):
-      max_gap = max(max_gap, lights[i + 1] - lights[i])
+  max_gap = 0
+  for i in range(len(lights) - 1):
+   max_gap = max(max_gap, lights[i + 1] - lights[i])
 
-    result.append(max_gap)
+  result.append(max_gap)
 
-  return result
+ return result
 ```
 
 ### Complexity
@@ -228,70 +228,70 @@ Python does not have a built-in multiset. We use `sortedcontainers.SortedList` f
 from sortedcontainers import SortedList
 
 def solve_optimal(x, positions):
-  """
-  Optimal solution using sorted containers.
+ """
+ Optimal solution using sorted containers.
 
-  Time: O(n log n)
-  Space: O(n)
-  """
-  lights = SortedList([0, x])    # Positions in sorted order
-  segments = SortedList([x])     # Segment lengths (allows duplicates)
-  result = []
+ Time: O(n log n)
+ Space: O(n)
+ """
+ lights = SortedList([0, x])    # Positions in sorted order
+ segments = SortedList([x])     # Segment lengths (allows duplicates)
+ result = []
 
-  for p in positions:
-    # Find neighbors using bisect
-    idx = lights.bisect_left(p)
-    right = lights[idx]
-    left = lights[idx - 1]
+ for p in positions:
+  # Find neighbors using bisect
+  idx = lights.bisect_left(p)
+  right = lights[idx]
+  left = lights[idx - 1]
 
-    # Remove old segment, add two new segments
-    segments.remove(right - left)
-    segments.add(p - left)
-    segments.add(right - p)
+  # Remove old segment, add two new segments
+  segments.remove(right - left)
+  segments.add(p - left)
+  segments.add(right - p)
 
-    # Add new position
-    lights.add(p)
+  # Add new position
+  lights.add(p)
 
-    # Maximum is the last element
-    result.append(segments[-1])
+  # Maximum is the last element
+  result.append(segments[-1])
 
-  return result
+ return result
 
 # For CSES submission (without external libraries)
 from bisect import bisect_left, insort
 
 def solve_for_submission(x, positions):
-  """
-  Solution using built-in bisect (O(n) per insert, but works for n <= 2*10^5).
-  """
-  lights = [0, x]
-  segments = [x]
-  result = []
+ """
+ Solution using built-in bisect (O(n) per insert, but works for n <= 2*10^5).
+ """
+ lights = [0, x]
+ segments = [x]
+ result = []
 
-  for p in positions:
-    idx = bisect_left(lights, p)
-    right = lights[idx]
-    left = lights[idx - 1]
+ for p in positions:
+  idx = bisect_left(lights, p)
+  right = lights[idx]
+  left = lights[idx - 1]
 
-    # Remove old segment
-    segments.remove(right - left)
+  # Remove old segment
+  segments.remove(right - left)
 
-    # Add new segments
-    insort(segments, p - left)
-    insort(segments, right - p)
+  # Add new segments
+  insort(segments, p - left)
+  insort(segments, right - p)
 
-    # Insert new light
-    lights.insert(idx, p)
+  # Insert new light
+  lights.insert(idx, p)
 
-    result.append(segments[-1])
+  result.append(segments[-1])
 
-  return result
+ return result
 
 # Read input and solve
 if __name__ == "__main__":
-  x, n = map(int, input().split())
-  positions = list(map(int, input().split()))
-  print(*solve_for_submission(x, positions))
+ x, n = map(int, input().split())
+ positions = list(map(int, input().split()))
+ print(*solve_for_submission(x, positions))
 ```
 
 ### Complexity

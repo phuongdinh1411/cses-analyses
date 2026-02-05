@@ -105,54 +105,54 @@ If `s[i]` matches with `s[j]` where `s[i] == s[j]`:
 
 ```python
 def solve_recursive(s):
-  """
-  Recursive solution with memoization.
-  Time: O(n^3), Space: O(n^2)
-  """
-  MOD = 10**9 + 7
-  n = len(s)
+ """
+ Recursive solution with memoization.
+ Time: O(n^3), Space: O(n^2)
+ """
+ MOD = 10**9 + 7
+ n = len(s)
 
-  if n % 2 == 1:
-    return 0
+ if n % 2 == 1:
+  return 0
 
-  # Precompute binomial coefficients
-  max_n = n + 1
-  C = [[0] * max_n for _ in range(max_n)]
-  for i in range(max_n):
-    C[i][0] = 1
-    for j in range(1, i + 1):
-      C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD
+ # Precompute binomial coefficients
+ max_n = n + 1
+ C = [[0] * max_n for _ in range(max_n)]
+ for i in range(max_n):
+  C[i][0] = 1
+  for j in range(1, i + 1):
+   C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD
 
-  memo = {}
+ memo = {}
 
-  def dp(i, j):
-    """Count ways to empty s[i..j]"""
-    if i > j:
-      return 1
-    if (j - i + 1) % 2 == 1:
-      return 0
-    if (i, j) in memo:
-      return memo[(i, j)]
+ def dp(i, j):
+  """Count ways to empty s[i..j]"""
+  if i > j:
+   return 1
+  if (j - i + 1) % 2 == 1:
+   return 0
+  if (i, j) in memo:
+   return memo[(i, j)]
 
-    result = 0
-    # Match s[i] with some s[k] where s[i] == s[k]
-    for k in range(i + 1, j + 1, 2):  # k must have same parity distance
-      if s[i] == s[k]:
-        # s[i+1..k-1] forms inner group, s[k+1..j] forms outer group
-        inner = dp(i + 1, k - 1)
-        outer = dp(k + 1, j)
+  result = 0
+  # Match s[i] with some s[k] where s[i] == s[k]
+  for k in range(i + 1, j + 1, 2):  # k must have same parity distance
+   if s[i] == s[k]:
+    # s[i+1..k-1] forms inner group, s[k+1..j] forms outer group
+    inner = dp(i + 1, k - 1)
+    outer = dp(k + 1, j)
 
-        # Number of ways to interleave operations
-        inner_pairs = (k - 1 - (i + 1) + 1) // 2
-        outer_pairs = (j - (k + 1) + 1) // 2
-        ways = C[inner_pairs + outer_pairs][inner_pairs]
+    # Number of ways to interleave operations
+    inner_pairs = (k - 1 - (i + 1) + 1) // 2
+    outer_pairs = (j - (k + 1) + 1) // 2
+    ways = C[inner_pairs + outer_pairs][inner_pairs]
 
-        result = (result + inner * outer % MOD * ways) % MOD
+    result = (result + inner * outer % MOD * ways) % MOD
 
-    memo[(i, j)] = result
-    return result
+  memo[(i, j)] = result
+  return result
 
-  return dp(0, n - 1)
+ return dp(0, n - 1)
 ```
 
 ### Complexity
@@ -263,56 +263,56 @@ Answer: 3 ways
 
 ```python
 def solve(s):
-  """
-  Interval DP solution for Empty String.
-  Time: O(n^3), Space: O(n^2)
-  """
-  MOD = 10**9 + 7
-  n = len(s)
+ """
+ Interval DP solution for Empty String.
+ Time: O(n^3), Space: O(n^2)
+ """
+ MOD = 10**9 + 7
+ n = len(s)
 
-  if n % 2 == 1:
-    return 0
+ if n % 2 == 1:
+  return 0
 
-  # Precompute binomial coefficients C[n][k]
-  max_n = n // 2 + 1
-  C = [[0] * max_n for _ in range(max_n)]
-  for i in range(max_n):
-    C[i][0] = 1
-    for j in range(1, i + 1):
-      C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD
+ # Precompute binomial coefficients C[n][k]
+ max_n = n // 2 + 1
+ C = [[0] * max_n for _ in range(max_n)]
+ for i in range(max_n):
+  C[i][0] = 1
+  for j in range(1, i + 1):
+   C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD
 
-  # dp[i][j] = ways to empty s[i..j]
-  dp = [[0] * n for _ in range(n)]
+ # dp[i][j] = ways to empty s[i..j]
+ dp = [[0] * n for _ in range(n)]
 
-  # Base case: empty intervals
-  for i in range(n + 1):
-    if i < n:
-      dp[i][i-1] = 1  # Handled by checking i > j
+ # Base case: empty intervals
+ for i in range(n + 1):
+  if i < n:
+   dp[i][i-1] = 1  # Handled by checking i > j
 
-  # Fill by interval length
-  for length in range(2, n + 1, 2):  # Only even lengths
-    for i in range(n - length + 1):
-      j = i + length - 1
+ # Fill by interval length
+ for length in range(2, n + 1, 2):  # Only even lengths
+  for i in range(n - length + 1):
+   j = i + length - 1
 
-      # Try matching s[i] with s[k]
-      for k in range(i + 1, j + 1, 2):
-        if s[i] == s[k]:
-          inner = dp[i+1][k-1] if i+1 <= k-1 else 1
-          outer = dp[k+1][j] if k+1 <= j else 1
+   # Try matching s[i] with s[k]
+   for k in range(i + 1, j + 1, 2):
+    if s[i] == s[k]:
+     inner = dp[i+1][k-1] if i+1 <= k-1 else 1
+     outer = dp[k+1][j] if k+1 <= j else 1
 
-          inner_pairs = (k - i - 1) // 2
-          outer_pairs = (j - k) // 2
-          ways = C[inner_pairs + outer_pairs][inner_pairs]
+     inner_pairs = (k - i - 1) // 2
+     outer_pairs = (j - k) // 2
+     ways = C[inner_pairs + outer_pairs][inner_pairs]
 
-          dp[i][j] = (dp[i][j] + inner * outer % MOD * ways) % MOD
+     dp[i][j] = (dp[i][j] + inner * outer % MOD * ways) % MOD
 
-  return dp[0][n-1]
+ return dp[0][n-1]
 
 
 # Main
 if __name__ == "__main__":
-  s = input().strip()
-  print(solve(s))
+ s = input().strip()
+ print(solve(s))
 ```
 
 #### Complexity

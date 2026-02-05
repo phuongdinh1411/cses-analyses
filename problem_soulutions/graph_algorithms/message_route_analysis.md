@@ -62,8 +62,8 @@ BFS Levels:
 ```python
 adj = [[] for _ in range(n + 1)]  # 1-indexed
 for a, b in edges:
-  adj[a].append(b)
-  adj[b].append(a)  # Bidirectional!
+ adj[a].append(b)
+ adj[b].append(a)  # Bidirectional!
 ```
 
 ### Step 2: BFS with Parent Tracking
@@ -75,27 +75,27 @@ parent[1] = 0  # Sentinel for start node
 queue = deque([1])
 
 while queue:
-  u = queue.popleft()
-  if u == n: break
-  for v in adj[u]:
-    if parent[v] == -1:
-      parent[v] = u
-      queue.append(v)
+ u = queue.popleft()
+ if u == n: break
+ for v in adj[u]:
+  if parent[v] == -1:
+   parent[v] = u
+   queue.append(v)
 ```
 
 ### Step 3: Check & Reconstruct Path
 ```python
 if parent[n] == -1:
-  print("IMPOSSIBLE")
+ print("IMPOSSIBLE")
 else:
-  path = []
-  cur = n
-  while cur != 0:
-    path.append(cur)
-    cur = parent[cur]
-  path.reverse()
-  print(len(path))
-  print(*path)
+ path = []
+ cur = n
+ while cur != 0:
+  path.append(cur)
+  cur = parent[cur]
+ path.reverse()
+ print(len(path))
+ print(*path)
 ```
 
 ## Visual Diagram: BFS Levels
@@ -139,40 +139,40 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  adj = [[] for _ in range(n + 1)]
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = [[] for _ in range(n + 1)]
+ for _ in range(m):
+  a, b = map(int, input().split())
+  adj[a].append(b)
+  adj[b].append(a)
 
-  parent = [-1] * (n + 1)
-  parent[1] = 0
-  queue = deque([1])
+ parent = [-1] * (n + 1)
+ parent[1] = 0
+ queue = deque([1])
 
-  while queue:
-    u = queue.popleft()
-    if u == n:
-      break
-    for v in adj[u]:
-      if parent[v] == -1:
-        parent[v] = u
-        queue.append(v)
+ while queue:
+  u = queue.popleft()
+  if u == n:
+   break
+  for v in adj[u]:
+   if parent[v] == -1:
+    parent[v] = u
+    queue.append(v)
 
-  if parent[n] == -1:
-    print("IMPOSSIBLE")
-    return
+ if parent[n] == -1:
+  print("IMPOSSIBLE")
+  return
 
-  path = []
-  cur = n
-  while cur != 0:
-    path.append(cur)
-    cur = parent[cur]
-  path.reverse()
+ path = []
+ cur = n
+ while cur != 0:
+  path.append(cur)
+  cur = parent[cur]
+ path.reverse()
 
-  print(len(path))
-  print(*path)
+ print(len(path))
+ print(*path)
 
 solve()
 ```

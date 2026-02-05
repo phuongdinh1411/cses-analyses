@@ -108,37 +108,37 @@ Try all possible paths recursively, only counting those that visit all 49 cells 
 
 ```python
 def solve_naive(path: str) -> int:
-  """
-  Naive backtracking without pruning.
+ """
+ Naive backtracking without pruning.
 
-  Time: O(4^48) worst case - TOO SLOW
-  Space: O(49) for visited array and recursion stack
-  """
-  n = 7
-  visited = [[False] * n for _ in range(n)]
-  directions = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
+ Time: O(4^48) worst case - TOO SLOW
+ Space: O(49) for visited array and recursion stack
+ """
+ n = 7
+ visited = [[False] * n for _ in range(n)]
+ directions = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
 
-  def dfs(row: int, col: int, step: int) -> int:
-    # Base case: completed all 48 moves
-    if step == 48:
-      return 1 if row == 6 and col == 0 else 0
+ def dfs(row: int, col: int, step: int) -> int:
+  # Base case: completed all 48 moves
+  if step == 48:
+   return 1 if row == 6 and col == 0 else 0
 
-    count = 0
-    moves = directions.keys() if path[step] == '?' else [path[step]]
+  count = 0
+  moves = directions.keys() if path[step] == '?' else [path[step]]
 
-    for move in moves:
-      dr, dc = directions[move]
-      nr, nc = row + dr, col + dc
+  for move in moves:
+   dr, dc = directions[move]
+   nr, nc = row + dr, col + dc
 
-      if 0 <= nr < n and 0 <= nc < n and not visited[nr][nc]:
-        visited[nr][nc] = True
-        count += dfs(nr, nc, step + 1)
-        visited[nr][nc] = False
+   if 0 <= nr < n and 0 <= nc < n and not visited[nr][nc]:
+    visited[nr][nc] = True
+    count += dfs(nr, nc, step + 1)
+    visited[nr][nc] = False
 
-    return count
+  return count
 
-  visited[0][0] = True
-  return dfs(0, 0, 0)
+ visited[0][0] = True
+ return dfs(0, 0, 0)
 ```
 
 ### Complexity
@@ -240,106 +240,106 @@ Wall:             |
 
 ```python
 def solve_optimal(path: str) -> int:
-  """
-  Backtracking with pruning optimizations.
+ """
+ Backtracking with pruning optimizations.
 
-  Time: O(~exponential but heavily pruned) - passes within time limit
-  Space: O(n^2) for visited array
-  """
-  n = 7
-  visited = [[False] * n for _ in range(n)]
+ Time: O(~exponential but heavily pruned) - passes within time limit
+ Space: O(n^2) for visited array
+ """
+ n = 7
+ visited = [[False] * n for _ in range(n)]
 
-  # Direction mappings
-  dir_map = {'U': 0, 'D': 1, 'L': 2, 'R': 3}
-  dr = [-1, 1, 0, 0]  # U, D, L, R
-  dc = [0, 0, -1, 1]
-  opposite = [1, 0, 3, 2]  # opposite directions
+ # Direction mappings
+ dir_map = {'U': 0, 'D': 1, 'L': 2, 'R': 3}
+ dr = [-1, 1, 0, 0]  # U, D, L, R
+ dc = [0, 0, -1, 1]
+ opposite = [1, 0, 3, 2]  # opposite directions
 
-  def is_valid(r: int, c: int) -> bool:
-    return 0 <= r < n and 0 <= c < n and not visited[r][c]
+ def is_valid(r: int, c: int) -> bool:
+  return 0 <= r < n and 0 <= c < n and not visited[r][c]
 
-  def dfs(row: int, col: int, step: int) -> int:
-    # Base case: completed path
-    if step == 48:
-      return 1 if row == 6 and col == 0 else 0
+ def dfs(row: int, col: int, step: int) -> int:
+  # Base case: completed path
+  if step == 48:
+   return 1 if row == 6 and col == 0 else 0
 
-    # Reached destination too early
-    if row == 6 and col == 0:
-      return 0
+  # Reached destination too early
+  if row == 6 and col == 0:
+   return 0
 
-    count = 0
+  count = 0
 
-    # Determine which directions to try
-    if path[step] != '?':
-      directions = [dir_map[path[step]]]
-    else:
-      directions = range(4)
+  # Determine which directions to try
+  if path[step] != '?':
+   directions = [dir_map[path[step]]]
+  else:
+   directions = range(4)
 
-    for d in directions:
-      nr, nc = row + dr[d], col + dc[d]
+  for d in directions:
+   nr, nc = row + dr[d], col + dc[d]
 
-      if not is_valid(nr, nc):
-        continue
+   if not is_valid(nr, nc):
+    continue
 
-      # PRUNING 1: Check if we hit a wall and would split the grid
-      # If moving parallel to a wall and both perpendicular cells are unvisited,
-      # we're creating a dead end
+   # PRUNING 1: Check if we hit a wall and would split the grid
+   # If moving parallel to a wall and both perpendicular cells are unvisited,
+   # we're creating a dead end
 
-      # Check perpendicular directions
-      perp1 = (d + 2) % 4 if d < 2 else (d + 2) % 4
-      perp2 = (d + 3) % 4 if d < 2 else (d + 1) % 4
+   # Check perpendicular directions
+   perp1 = (d + 2) % 4 if d < 2 else (d + 2) % 4
+   perp2 = (d + 3) % 4 if d < 2 else (d + 1) % 4
 
-      # Simplified connectivity pruning:
-      # If the cell ahead in current direction is blocked/visited,
-      # but cells on both sides of current position are unvisited,
-      # we're splitting the grid
+   # Simplified connectivity pruning:
+   # If the cell ahead in current direction is blocked/visited,
+   # but cells on both sides of current position are unvisited,
+   # we're splitting the grid
 
-      # Left-right or up-down checks
-      if d < 2:  # Moving U or D (vertical)
-        left_valid = is_valid(row, col - 1)
-        right_valid = is_valid(row, col + 1)
-        ahead_blocked = not is_valid(row + 2*dr[d], col)
+   # Left-right or up-down checks
+   if d < 2:  # Moving U or D (vertical)
+    left_valid = is_valid(row, col - 1)
+    right_valid = is_valid(row, col + 1)
+    ahead_blocked = not is_valid(row + 2*dr[d], col)
 
-        if left_valid and right_valid and ahead_blocked:
-          continue
-      else:  # Moving L or R (horizontal)
-        up_valid = is_valid(row - 1, col)
-        down_valid = is_valid(row + 1, col)
-        ahead_blocked = not is_valid(row, col + 2*dc[d])
+    if left_valid and right_valid and ahead_blocked:
+     continue
+   else:  # Moving L or R (horizontal)
+    up_valid = is_valid(row - 1, col)
+    down_valid = is_valid(row + 1, col)
+    ahead_blocked = not is_valid(row, col + 2*dc[d])
 
-        if up_valid and down_valid and ahead_blocked:
-          continue
+    if up_valid and down_valid and ahead_blocked:
+     continue
 
-      # PRUNING 2: Can't go through and neighbor cells form dead end
-      # Count unvisited neighbors of (nr, nc)
-      unvisited_neighbors = 0
-      for d2 in range(4):
-        nnr, nnc = nr + dr[d2], nc + dc[d2]
-        if is_valid(nnr, nnc):
-          unvisited_neighbors += 1
+   # PRUNING 2: Can't go through and neighbor cells form dead end
+   # Count unvisited neighbors of (nr, nc)
+   unvisited_neighbors = 0
+   for d2 in range(4):
+    nnr, nnc = nr + dr[d2], nc + dc[d2]
+    if is_valid(nnr, nnc):
+     unvisited_neighbors += 1
 
-      # If moving to a cell that would have 0 unvisited neighbors
-      # and it's not the final destination
-      if unvisited_neighbors == 0 and not (nr == 6 and nc == 0 and step == 47):
-        continue
+   # If moving to a cell that would have 0 unvisited neighbors
+   # and it's not the final destination
+   if unvisited_neighbors == 0 and not (nr == 6 and nc == 0 and step == 47):
+    continue
 
-      visited[nr][nc] = True
-      count += dfs(nr, nc, step + 1)
-      visited[nr][nc] = False
+   visited[nr][nc] = True
+   count += dfs(nr, nc, step + 1)
+   visited[nr][nc] = False
 
-    return count
+  return count
 
-  visited[0][0] = True
-  return dfs(0, 0, 0)
+ visited[0][0] = True
+ return dfs(0, 0, 0)
 
 
 # Main function for CSES submission
 def main():
-  path = input().strip()
-  print(solve_optimal(path))
+ path = input().strip()
+ print(solve_optimal(path))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 #### Complexity
@@ -358,17 +358,17 @@ if __name__ == "__main__":
 ```python
 # WRONG - No pruning, will TLE
 def dfs(row, col, step):
-  if step == 48:
-    return 1 if (row, col) == (6, 0) else 0
+ if step == 48:
+  return 1 if (row, col) == (6, 0) else 0
 
-  count = 0
-  for d in range(4):
-    nr, nc = row + dr[d], col + dc[d]
-    if is_valid(nr, nc):
-      visited[nr][nc] = True
-      count += dfs(nr, nc, step + 1)  # Explores too many dead ends
-      visited[nr][nc] = False
-  return count
+ count = 0
+ for d in range(4):
+  nr, nc = row + dr[d], col + dc[d]
+  if is_valid(nr, nc):
+   visited[nr][nc] = True
+   count += dfs(nr, nc, step + 1)  # Explores too many dead ends
+   visited[nr][nc] = False
+ return count
 ```
 
 **Problem:** Without pruning, the algorithm explores paths that are guaranteed to fail.
@@ -379,9 +379,9 @@ def dfs(row, col, step):
 ```python
 # WRONG - Doesn't check if we reach (6,0) too early
 def dfs(row, col, step):
-  if step == 48:
-    return 1 if (row, col) == (6, 0) else 0
-  # Missing: if (row, col) == (6, 0): return 0
+ if step == 48:
+  return 1 if (row, col) == (6, 0) else 0
+ # Missing: if (row, col) == (6, 0): return 0
 ```
 
 **Problem:** If we reach the end cell before step 48, we haven't visited all cells.

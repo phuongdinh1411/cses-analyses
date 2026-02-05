@@ -49,96 +49,96 @@ Total = a1 × a2 × ... × aK (where aK is chocolates in smallest box)
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total = 0
+  total = 0
 
-    for _ in range(b):
-      line = list(map(int, input().split()))
-      k = line[0]
-      values = line[1:k+1]
+  for _ in range(b):
+   line = list(map(int, input().split()))
+   k = line[0]
+   values = line[1:k+1]
 
-      # Calculate chocolates from this box structure
-      # Product of all values
-      product = 1
-      for v in values:
-        product = (product * v) % n
+   # Calculate chocolates from this box structure
+   # Product of all values
+   product = 1
+   for v in values:
+    product = (product * v) % n
 
-      total = (total + product) % n
+   total = (total + product) % n
 
-    print(total)
+  print(total)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total_chocolates = 0
+  total_chocolates = 0
 
-    for _ in range(b):
-      parts = list(map(int, input().split()))
-      k = parts[0]
-      box_structure = parts[1:k+1]
+  for _ in range(b):
+   parts = list(map(int, input().split()))
+   k = parts[0]
+   box_structure = parts[1:k+1]
 
-      # The structure means:
-      # box_structure[0] boxes, each containing
-      # box_structure[1] boxes, each containing
-      # ... and so on
-      # Final value is chocolates in smallest box
+   # The structure means:
+   # box_structure[0] boxes, each containing
+   # box_structure[1] boxes, each containing
+   # ... and so on
+   # Final value is chocolates in smallest box
 
-      # Total from this box = product of all values
-      chocolates = 1
-      for val in box_structure:
-        chocolates *= val
-        chocolates %= n  # Keep modular to avoid overflow
+   # Total from this box = product of all values
+   chocolates = 1
+   for val in box_structure:
+    chocolates *= val
+    chocolates %= n  # Keep modular to avoid overflow
 
-      total_chocolates += chocolates
-      total_chocolates %= n
+   total_chocolates += chocolates
+   total_chocolates %= n
 
-    print(total_chocolates)
+  print(total_chocolates)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Recursive
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, b = map(int, input().split())
+ for _ in range(t):
+  n, b = map(int, input().split())
 
-    total = 0
+  total = 0
 
-    for _ in range(b):
-      line = input().split()
-      k = int(line[0])
-      values = [int(line[i]) for i in range(1, k + 1)]
+  for _ in range(b):
+   line = input().split()
+   k = int(line[0])
+   values = [int(line[i]) for i in range(1, k + 1)]
 
-      # Nested boxes: multiply all levels
-      product = 1
-      for v in values:
-        product = (product * v) % n
+   # Nested boxes: multiply all levels
+   product = 1
+   for v in values:
+    product = (product * v) % n
 
-      total = (total + product) % n
+   total = (total + product) % n
 
-    print(total)
+  print(total)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -188,36 +188,36 @@ The key insight is based on number theory:
 
 ```python
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Read happy boys
-  line = list(map(int, input().split()))
-  b = line[0]
-  happy_boys = set(line[1:b+1]) if b > 0 else set()
+ # Read happy boys
+ line = list(map(int, input().split()))
+ b = line[0]
+ happy_boys = set(line[1:b+1]) if b > 0 else set()
 
-  # Read happy girls
-  line = list(map(int, input().split()))
-  g = line[0]
-  happy_girls = set(line[1:g+1]) if g > 0 else set()
+ # Read happy girls
+ line = list(map(int, input().split()))
+ g = line[0]
+ happy_girls = set(line[1:g+1]) if g > 0 else set()
 
-  # Simulate for n * m days (covers full cycle)
-  for day in range(n * m):
-    boy = day % n
-    girl = day % m
+ # Simulate for n * m days (covers full cycle)
+ for day in range(n * m):
+  boy = day % n
+  girl = day % m
 
-    # If either is happy, both become happy
-    if boy in happy_boys or girl in happy_girls:
-      happy_boys.add(boy)
-      happy_girls.add(girl)
+  # If either is happy, both become happy
+  if boy in happy_boys or girl in happy_girls:
+   happy_boys.add(boy)
+   happy_girls.add(girl)
 
-  # Check if everyone is happy
-  if len(happy_boys) == n and len(happy_girls) == m:
-    print("Yes")
-  else:
-    print("No")
+ # Check if everyone is happy
+ if len(happy_boys) == n and len(happy_girls) == m:
+  print("Yes")
+ else:
+  print("No")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
@@ -226,38 +226,38 @@ if __name__ == "__main__":
 import math
 
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  line = list(map(int, input().split()))
-  b = line[0]
-  happy_boys = [False] * n
-  for i in range(1, b + 1):
-    happy_boys[line[i]] = True
+ line = list(map(int, input().split()))
+ b = line[0]
+ happy_boys = [False] * n
+ for i in range(1, b + 1):
+  happy_boys[line[i]] = True
 
-  line = list(map(int, input().split()))
-  g = line[0]
-  happy_girls = [False] * m
-  for i in range(1, g + 1):
-    happy_girls[line[i]] = True
+ line = list(map(int, input().split()))
+ g = line[0]
+ happy_girls = [False] * m
+ for i in range(1, g + 1):
+  happy_girls[line[i]] = True
 
-  # Simulate for lcm(n, m) days - use n*m as upper bound
-  lcm = (n * m) // math.gcd(n, m)
+ # Simulate for lcm(n, m) days - use n*m as upper bound
+ lcm = (n * m) // math.gcd(n, m)
 
-  for day in range(lcm):
-    boy = day % n
-    girl = day % m
+ for day in range(lcm):
+  boy = day % n
+  girl = day % m
 
-    if happy_boys[boy] or happy_girls[girl]:
-      happy_boys[boy] = True
-      happy_girls[girl] = True
+  if happy_boys[boy] or happy_girls[girl]:
+   happy_boys[boy] = True
+   happy_girls[girl] = True
 
-  if all(happy_boys) and all(happy_girls):
-    print("Yes")
-  else:
-    print("No")
+ if all(happy_boys) and all(happy_girls):
+  print("Yes")
+ else:
+  print("No")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -310,93 +310,93 @@ Precompute sum of each diagonal, then for each cell compute total attack value. 
 
 ```python
 def solve():
-  n = int(input())
-  board = []
-  for _ in range(n):
-    row = list(map(int, input().split()))
-    board.append(row)
+ n = int(input())
+ board = []
+ for _ in range(n):
+  row = list(map(int, input().split()))
+  board.append(row)
 
-  # Diagonal sums
-  # Main diagonal: indexed by i - j (range: -(n-1) to n-1)
-  # Anti diagonal: indexed by i + j (range: 0 to 2n-2)
+ # Diagonal sums
+ # Main diagonal: indexed by i - j (range: -(n-1) to n-1)
+ # Anti diagonal: indexed by i + j (range: 0 to 2n-2)
 
-  main_diag = {}  # i - j -> sum
-  anti_diag = {}  # i + j -> sum
+ main_diag = {}  # i - j -> sum
+ anti_diag = {}  # i + j -> sum
 
-  for i in range(n):
-    for j in range(n):
-      d1 = i - j
-      d2 = i + j
+ for i in range(n):
+  for j in range(n):
+   d1 = i - j
+   d2 = i + j
 
-      main_diag[d1] = main_diag.get(d1, 0) + board[i][j]
-      anti_diag[d2] = anti_diag.get(d2, 0) + board[i][j]
+   main_diag[d1] = main_diag.get(d1, 0) + board[i][j]
+   anti_diag[d2] = anti_diag.get(d2, 0) + board[i][j]
 
-  # For each cell, compute bishop value (don't double count the cell itself)
-  # bishop_value[i][j] = main_diag[i-j] + anti_diag[i+j] - board[i][j]
+ # For each cell, compute bishop value (don't double count the cell itself)
+ # bishop_value[i][j] = main_diag[i-j] + anti_diag[i+j] - board[i][j]
 
-  best_even = (-1, -1, -1)  # (value, i, j)
-  best_odd = (-1, -1, -1)
+ best_even = (-1, -1, -1)  # (value, i, j)
+ best_odd = (-1, -1, -1)
 
-  for i in range(n):
-    for j in range(n):
-      val = main_diag[i - j] + anti_diag[i + j] - board[i][j]
-      parity = (i + j) % 2
+ for i in range(n):
+  for j in range(n):
+   val = main_diag[i - j] + anti_diag[i + j] - board[i][j]
+   parity = (i + j) % 2
 
-      if parity == 0:
-        if val > best_even[0]:
-          best_even = (val, i, j)
-      else:
-        if val > best_odd[0]:
-          best_odd = (val, i, j)
+   if parity == 0:
+    if val > best_even[0]:
+     best_even = (val, i, j)
+   else:
+    if val > best_odd[0]:
+     best_odd = (val, i, j)
 
-  total = best_even[0] + best_odd[0]
-  # Convert to 1-indexed
-  x1, y1 = best_even[1] + 1, best_even[2] + 1
-  x2, y2 = best_odd[1] + 1, best_odd[2] + 1
+ total = best_even[0] + best_odd[0]
+ # Convert to 1-indexed
+ x1, y1 = best_even[1] + 1, best_even[2] + 1
+ x2, y2 = best_odd[1] + 1, best_odd[2] + 1
 
-  print(total)
-  print(x1, y1, x2, y2)
+ print(total)
+ print(x1, y1, x2, y2)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  n = int(input())
-  board = [list(map(int, input().split())) for _ in range(n)]
+ n = int(input())
+ board = [list(map(int, input().split())) for _ in range(n)]
 
-  # Diagonal sums using arrays
-  # Main: i - j + (n-1) maps to range [0, 2n-2]
-  # Anti: i + j maps to range [0, 2n-2]
+ # Diagonal sums using arrays
+ # Main: i - j + (n-1) maps to range [0, 2n-2]
+ # Anti: i + j maps to range [0, 2n-2]
 
-  main = [0] * (2 * n - 1)
-  anti = [0] * (2 * n - 1)
+ main = [0] * (2 * n - 1)
+ anti = [0] * (2 * n - 1)
 
-  for i in range(n):
-    for j in range(n):
-      main[i - j + n - 1] += board[i][j]
-      anti[i + j] += board[i][j]
+ for i in range(n):
+  for j in range(n):
+   main[i - j + n - 1] += board[i][j]
+   anti[i + j] += board[i][j]
 
-  # Find best positions for each parity
-  best = [(-1, 0, 0), (-1, 0, 0)]  # [even_parity, odd_parity]
+ # Find best positions for each parity
+ best = [(-1, 0, 0), (-1, 0, 0)]  # [even_parity, odd_parity]
 
-  for i in range(n):
-    for j in range(n):
-      score = main[i - j + n - 1] + anti[i + j] - board[i][j]
-      parity = (i + j) % 2
+ for i in range(n):
+  for j in range(n):
+   score = main[i - j + n - 1] + anti[i + j] - board[i][j]
+   parity = (i + j) % 2
 
-      if score > best[parity][0]:
-        best[parity] = (score, i + 1, j + 1)
+   if score > best[parity][0]:
+    best[parity] = (score, i + 1, j + 1)
 
-  total = best[0][0] + best[1][0]
-  print(total)
-  print(best[0][1], best[0][2], best[1][1], best[1][2])
+ total = best[0][0] + best[1][0]
+ print(total)
+ print(best[0][1], best[0][2], best[1][1], best[1][2])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -447,93 +447,93 @@ Simpler approach: directly compute remainders.
 
 ```python
 def solve():
-  import sys
+ import sys
 
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      continue
+ for line in sys.stdin:
+  n = int(line.strip())
+  if n == 0:
+   continue
 
-    # Find smallest repunit divisible by n
-    # repunit(k) = 111...1 (k ones) = (10^k - 1) / 9
+  # Find smallest repunit divisible by n
+  # repunit(k) = 111...1 (k ones) = (10^k - 1) / 9
 
-    remainder = 1 % n
-    count = 1
+  remainder = 1 % n
+  count = 1
 
-    while remainder != 0:
-      remainder = (remainder * 10 + 1) % n
-      count += 1
+  while remainder != 0:
+   remainder = (remainder * 10 + 1) % n
+   count += 1
 
-    print(count)
+  print(count)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def min_repunit_digits(n):
-  """
-  Find minimum k such that 111...1 (k ones) is divisible by n.
+ """
+ Find minimum k such that 111...1 (k ones) is divisible by n.
 
-  The number with k ones is: (10^k - 1) / 9
+ The number with k ones is: (10^k - 1) / 9
 
-  We iterate: r_1 = 1, r_k = r_{k-1} * 10 + 1
-  Stop when r_k ≡ 0 (mod n)
-  """
-  if n == 1:
-    return 1
+ We iterate: r_1 = 1, r_k = r_{k-1} * 10 + 1
+ Stop when r_k ≡ 0 (mod n)
+ """
+ if n == 1:
+  return 1
 
-  remainder = 1
-  digits = 1
+ remainder = 1
+ digits = 1
 
-  while remainder % n != 0:
-    remainder = (remainder * 10 + 1) % n
-    digits += 1
+ while remainder % n != 0:
+  remainder = (remainder * 10 + 1) % n
+  digits += 1
 
-  return digits
+ return digits
 
 def solve():
-  import sys
-  for line in sys.stdin:
-    line = line.strip()
-    if not line:
-      continue
-    n = int(line)
-    print(min_repunit_digits(n))
+ import sys
+ for line in sys.stdin:
+  line = line.strip()
+  if not line:
+   continue
+  n = int(line)
+  print(min_repunit_digits(n))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Mathematical
 
 ```python
 def solve():
-  """
-  For n not divisible by 2 or 5, a repunit divisible by n always exists.
+ """
+ For n not divisible by 2 or 5, a repunit divisible by n always exists.
 
-  By pigeonhole principle, since there are only n possible remainders,
-  within n+1 iterations we must find a repeat, and since we start at 1,
-  we'll eventually hit 0.
-  """
-  import sys
+ By pigeonhole principle, since there are only n possible remainders,
+ within n+1 iterations we must find a repeat, and since we start at 1,
+ we'll eventually hit 0.
+ """
+ import sys
 
-  for line in sys.stdin:
-    n = int(line.strip())
+ for line in sys.stdin:
+  n = int(line.strip())
 
-    r = 1
-    k = 1
+  r = 1
+  k = 1
 
-    while r != 0:
-      r = (r * 10 + 1) % n
-      k += 1
+  while r != 0:
+   r = (r * 10 + 1) % n
+   k += 1
 
-    print(k)
+  print(k)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -587,111 +587,111 @@ Since gcd(a, b) = gcd(a, a+1) = 1, solution always exists.
 
 ```python
 def extended_gcd(a, b):
-  """Returns (gcd, x, y) such that a*x + b*y = gcd"""
-  if b == 0:
-    return a, 1, 0
-  gcd, x1, y1 = extended_gcd(b, a % b)
-  x = y1
-  y = x1 - (a // b) * y1
-  return gcd, x, y
+ """Returns (gcd, x, y) such that a*x + b*y = gcd"""
+ if b == 0:
+  return a, 1, 0
+ gcd, x1, y1 = extended_gcd(b, a % b)
+ x = y1
+ y = x1 - (a // b) * y1
+ return gcd, x, y
 
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    x, k = map(int, input().split())
+ for _ in range(t):
+  x, k = map(int, input().split())
 
-    a = x // k          # floor(x/k)
-    b = (x + k - 1) // k  # ceil(x/k)
+  a = x // k          # floor(x/k)
+  b = (x + k - 1) // k  # ceil(x/k)
 
-    if a == b:
-      # x is divisible by k
-      # x = p*a + q*a = (p+q)*a
-      # So p + q = x/a = k
-      print(k, 0)
-    else:
-      # a and b differ by 1, gcd(a, b) = 1
-      # Solve p*a + q*b = x using extended Euclidean
-      gcd, p0, q0 = extended_gcd(a, b)
+  if a == b:
+   # x is divisible by k
+   # x = p*a + q*a = (p+q)*a
+   # So p + q = x/a = k
+   print(k, 0)
+  else:
+   # a and b differ by 1, gcd(a, b) = 1
+   # Solve p*a + q*b = x using extended Euclidean
+   gcd, p0, q0 = extended_gcd(a, b)
 
-      # p0*a + q0*b = 1
-      # So (p0*x)*a + (q0*x)*b = x
-      p = p0 * x
-      q = q0 * x
+   # p0*a + q0*b = 1
+   # So (p0*x)*a + (q0*x)*b = x
+   p = p0 * x
+   q = q0 * x
 
-      print(p, q)
+   print(p, q)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    x, k = map(int, input().split())
+ for _ in range(t):
+  x, k = map(int, input().split())
 
-    floor_val = x // k
-    ceil_val = -(-x // k)  # Ceiling division trick
+  floor_val = x // k
+  ceil_val = -(-x // k)  # Ceiling division trick
 
-    if floor_val == ceil_val:
-      # x divisible by k
-      print(k, 0)
-    else:
-      # floor_val and ceil_val differ by 1
-      # ceil_val = floor_val + 1
-      # Need: p * floor_val + q * (floor_val + 1) = x
-      # Let r = x % k (remainder)
-      # Then x = floor_val * k + r
-      # And ceil_val = floor_val + 1
+  if floor_val == ceil_val:
+   # x divisible by k
+   print(k, 0)
+  else:
+   # floor_val and ceil_val differ by 1
+   # ceil_val = floor_val + 1
+   # Need: p * floor_val + q * (floor_val + 1) = x
+   # Let r = x % k (remainder)
+   # Then x = floor_val * k + r
+   # And ceil_val = floor_val + 1
 
-      # p * floor_val + q * ceil_val = x
-      # With gcd = 1, use extended Euclidean
-      a, b = floor_val, ceil_val
+   # p * floor_val + q * ceil_val = x
+   # With gcd = 1, use extended Euclidean
+   a, b = floor_val, ceil_val
 
-      # Extended GCD for consecutive integers
-      # gcd(a, a+1) = 1
-      # a*1 + (a+1)*(-a) + (a+1) = a - a^2 - a + a + 1 = 1
-      # So: a*(-a) + (a+1)*(a+1-1) = a*(-a) + (a+1)*a = -a^2 + a^2 + a = a... wrong
+   # Extended GCD for consecutive integers
+   # gcd(a, a+1) = 1
+   # a*1 + (a+1)*(-a) + (a+1) = a - a^2 - a + a + 1 = 1
+   # So: a*(-a) + (a+1)*(a+1-1) = a*(-a) + (a+1)*a = -a^2 + a^2 + a = a... wrong
 
-      # Direct: a*1 + b*0 when b=a (not applicable here)
-      # For a, a+1: 1 = (a+1) - a = a*(-1) + (a+1)*1
-      # So p0 = -1, q0 = 1 gives a*(-1) + (a+1)*1 = 1
+   # Direct: a*1 + b*0 when b=a (not applicable here)
+   # For a, a+1: 1 = (a+1) - a = a*(-1) + (a+1)*1
+   # So p0 = -1, q0 = 1 gives a*(-1) + (a+1)*1 = 1
 
-      p = -x
-      q = x
+   p = -x
+   q = x
 
-      print(p, q)
+   print(p, q)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Simplified
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    x, k = map(int, input().split())
+ for _ in range(t):
+  x, k = map(int, input().split())
 
-    a = x // k  # floor
-    b = (x + k - 1) // k  # ceil
+  a = x // k  # floor
+  b = (x + k - 1) // k  # ceil
 
-    if a == b:
-      print(k, 0)
-    else:
-      # gcd(a, a+1) = 1
-      # a * (-1) + (a+1) * 1 = 1
-      # Multiply by x: a * (-x) + (a+1) * x = x
-      print(-x, x)
+  if a == b:
+   print(k, 0)
+  else:
+   # gcd(a, a+1) = 1
+   # a * (-1) + (a+1) * 1 = 1
+   # Multiply by x: a * (-x) + (a+1) * x = x
+   print(-x, x)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -738,112 +738,112 @@ Use modular arithmetic and precompute factorials for efficient computation.
 
 ```python
 def solve():
-  MOD = 10**9 + 7
-  MAX = 2 * 10**6 + 10
+ MOD = 10**9 + 7
+ MAX = 2 * 10**6 + 10
 
-  # Precompute factorials and inverse factorials
-  fact = [1] * MAX
-  for i in range(1, MAX):
-    fact[i] = fact[i-1] * i % MOD
+ # Precompute factorials and inverse factorials
+ fact = [1] * MAX
+ for i in range(1, MAX):
+  fact[i] = fact[i-1] * i % MOD
 
-  # Modular inverse using Fermat's little theorem
-  inv_fact = [1] * MAX
-  inv_fact[MAX-1] = pow(fact[MAX-1], MOD-2, MOD)
-  for i in range(MAX-2, -1, -1):
-    inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
+ # Modular inverse using Fermat's little theorem
+ inv_fact = [1] * MAX
+ inv_fact[MAX-1] = pow(fact[MAX-1], MOD-2, MOD)
+ for i in range(MAX-2, -1, -1):
+  inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
 
-  def nCr(n, r):
-    if r < 0 or r > n:
-      return 0
-    return fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
+ def nCr(n, r):
+  if r < 0 or r > n:
+   return 0
+  return fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
 
-  t = int(input())
-  for case in range(1, t+1):
-    n, k = map(int, input().split())
+ t = int(input())
+ for case in range(1, t+1):
+  n, k = map(int, input().split())
 
-    # Stars and Bars: C(n + k - 1, k - 1)
-    result = nCr(n + k - 1, k - 1)
-    print(f"Case {case}: {result}")
+  # Stars and Bars: C(n + k - 1, k - 1)
+  result = nCr(n + k - 1, k - 1)
+  print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  MOD = 10**9 + 7
+ MOD = 10**9 + 7
 
-  # Precompute
-  MAXN = 2000005
-  fact = [1] * MAXN
-  inv = [1] * MAXN
-  inv_fact = [1] * MAXN
+ # Precompute
+ MAXN = 2000005
+ fact = [1] * MAXN
+ inv = [1] * MAXN
+ inv_fact = [1] * MAXN
 
-  for i in range(2, MAXN):
-    fact[i] = fact[i-1] * i % MOD
-    inv[i] = (MOD - MOD // i) * inv[MOD % i] % MOD
-    inv_fact[i] = inv_fact[i-1] * inv[i] % MOD
+ for i in range(2, MAXN):
+  fact[i] = fact[i-1] * i % MOD
+  inv[i] = (MOD - MOD // i) * inv[MOD % i] % MOD
+  inv_fact[i] = inv_fact[i-1] * inv[i] % MOD
 
-  def C(n, k):
-    if k < 0 or k > n:
-      return 0
-    return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
+ def C(n, k):
+  if k < 0 or k > n:
+   return 0
+  return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
 
-  t = int(input())
-  for case in range(1, t + 1):
-    n, k = map(int, input().split())
-    # Ways = C(n+k-1, k-1)
-    ans = C(n + k - 1, k - 1)
-    print(f"Case {case}: {ans}")
+ t = int(input())
+ for case in range(1, t + 1):
+  n, k = map(int, input().split())
+  # Ways = C(n+k-1, k-1)
+  ans = C(n + k - 1, k - 1)
+  print(f"Case {case}: {ans}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Lucas Theorem Solution (for larger moduli)
 
 ```python
 def solve():
-  MOD = 10**9 + 7
+ MOD = 10**9 + 7
 
-  def power(base, exp, mod):
-    result = 1
-    base %= mod
-    while exp > 0:
-      if exp & 1:
-        result = result * base % mod
-      exp >>= 1
-      base = base * base % mod
-    return result
+ def power(base, exp, mod):
+  result = 1
+  base %= mod
+  while exp > 0:
+   if exp & 1:
+    result = result * base % mod
+   exp >>= 1
+   base = base * base % mod
+  return result
 
-  def mod_inverse(a, mod):
-    return power(a, mod - 2, mod)
+ def mod_inverse(a, mod):
+  return power(a, mod - 2, mod)
 
-  # Precompute factorials up to expected max
-  MAX = 2 * 10**6 + 5
-  fact = [1] * MAX
-  for i in range(1, MAX):
-    fact[i] = fact[i-1] * i % MOD
+ # Precompute factorials up to expected max
+ MAX = 2 * 10**6 + 5
+ fact = [1] * MAX
+ for i in range(1, MAX):
+  fact[i] = fact[i-1] * i % MOD
 
-  inv_fact = [1] * MAX
-  inv_fact[MAX-1] = mod_inverse(fact[MAX-1], MOD)
-  for i in range(MAX-2, -1, -1):
-    inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
+ inv_fact = [1] * MAX
+ inv_fact[MAX-1] = mod_inverse(fact[MAX-1], MOD)
+ for i in range(MAX-2, -1, -1):
+  inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
 
-  def nCr(n, r):
-    if r > n or r < 0:
-      return 0
-    return fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
+ def nCr(n, r):
+  if r > n or r < 0:
+   return 0
+  return fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
 
-  t = int(input())
-  for case in range(1, t+1):
-    n, k = map(int, input().split())
-    print(f"Case {case}: {nCr(n + k - 1, k - 1)}")
+ t = int(input())
+ for case in range(1, t+1):
+  n, k = map(int, input().split())
+  print(f"Case {case}: {nCr(n + k - 1, k - 1)}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -894,52 +894,52 @@ Use greedy simulation with events:
 
 ```python
 def solve():
-  n = int(input())
+ n = int(input())
 
-  for case in range(1, n + 1):
-    t = int(input())  # turnaround time
-    na, nb = map(int, input().split())
+ for case in range(1, n + 1):
+  t = int(input())  # turnaround time
+  na, nb = map(int, input().split())
 
-    def parse_time(s):
-      h, m = map(int, s.split(':'))
-      return h * 60 + m
+  def parse_time(s):
+   h, m = map(int, s.split(':'))
+   return h * 60 + m
 
-    events = []  # (time, type, station)
-    # type: 0 = departure, 1 = arrival (ready after turnaround)
+  events = []  # (time, type, station)
+  # type: 0 = departure, 1 = arrival (ready after turnaround)
 
-    for _ in range(na):
-      dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t  # ready after turnaround
-      events.append((dep_time, 0, 'A'))  # depart from A
-      events.append((arr_time, 1, 'B'))  # arrive at B (available)
+  for _ in range(na):
+   dep, arr = input().split()
+   dep_time = parse_time(dep)
+   arr_time = parse_time(arr) + t  # ready after turnaround
+   events.append((dep_time, 0, 'A'))  # depart from A
+   events.append((arr_time, 1, 'B'))  # arrive at B (available)
 
-    for _ in range(nb):
-      dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t
-      events.append((dep_time, 0, 'B'))  # depart from B
-      events.append((arr_time, 1, 'A'))  # arrive at A (available)
+  for _ in range(nb):
+   dep, arr = input().split()
+   dep_time = parse_time(dep)
+   arr_time = parse_time(arr) + t
+   events.append((dep_time, 0, 'B'))  # depart from B
+   events.append((arr_time, 1, 'A'))  # arrive at A (available)
 
-    # Sort: by time, then arrivals before departures (type 1 before 0)
-    events.sort(key=lambda x: (x[0], -x[1]))
+  # Sort: by time, then arrivals before departures (type 1 before 0)
+  events.sort(key=lambda x: (x[0], -x[1]))
 
-    available = {'A': 0, 'B': 0}
-    needed = {'A': 0, 'B': 0}
+  available = {'A': 0, 'B': 0}
+  needed = {'A': 0, 'B': 0}
 
-    for time, event_type, station in events:
-      if event_type == 0:  # departure
-        if available[station] > 0:
-          available[station] -= 1
-        else:
-          needed[station] += 1
-      else:  # arrival (train becomes available)
-        available[station] += 1
+  for time, event_type, station in events:
+   if event_type == 0:  # departure
+    if available[station] > 0:
+     available[station] -= 1
+    else:
+     needed[station] += 1
+   else:  # arrival (train becomes available)
+    available[station] += 1
 
-    print(f"Case #{case}: {needed['A']} {needed['B']}")
+  print(f"Case #{case}: {needed['A']} {needed['B']}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
@@ -948,82 +948,82 @@ if __name__ == "__main__":
 import heapq
 
 def solve():
-  n = int(input())
+ n = int(input())
 
-  for case in range(1, n + 1):
-    t = int(input())
-    na, nb = map(int, input().split())
+ for case in range(1, n + 1):
+  t = int(input())
+  na, nb = map(int, input().split())
 
-    def to_minutes(s):
-      h, m = s.split(':')
-      return int(h) * 60 + int(m)
+  def to_minutes(s):
+   h, m = s.split(':')
+   return int(h) * 60 + int(m)
 
-    # Collect all trips
-    trips_from_a = []
-    trips_from_b = []
+  # Collect all trips
+  trips_from_a = []
+  trips_from_b = []
 
-    for _ in range(na):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_a.append((dep, arr))
+  for _ in range(na):
+   parts = input().split()
+   dep = to_minutes(parts[0])
+   arr = to_minutes(parts[1])
+   trips_from_a.append((dep, arr))
 
-    for _ in range(nb):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_b.append((dep, arr))
+  for _ in range(nb):
+   parts = input().split()
+   dep = to_minutes(parts[0])
+   arr = to_minutes(parts[1])
+   trips_from_b.append((dep, arr))
 
-    trips_from_a.sort()
-    trips_from_b.sort()
+  trips_from_a.sort()
+  trips_from_b.sort()
 
-    # available_at_X is a min-heap of times when trains become available at X
-    available_a = []
-    available_b = []
-    trains_a = 0
-    trains_b = 0
+  # available_at_X is a min-heap of times when trains become available at X
+  available_a = []
+  available_b = []
+  trains_a = 0
+  trains_b = 0
 
-    # Process trips from A
-    for dep, arr in trips_from_a:
-      # Check if train available at A before dep
-      while available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-        # Train is ready but we'll use one
-      if available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-      else:
-        # Need to check heap properly
-        pass
+  # Process trips from A
+  for dep, arr in trips_from_a:
+   # Check if train available at A before dep
+   while available_a and available_a[0] <= dep:
+    heapq.heappop(available_a)
+    # Train is ready but we'll use one
+   if available_a and available_a[0] <= dep:
+    heapq.heappop(available_a)
+   else:
+    # Need to check heap properly
+    pass
 
-    # Actually, let's use the event-based approach properly
-    # Reset and redo
+  # Actually, let's use the event-based approach properly
+  # Reset and redo
 
-    events = []
-    for dep, arr in trips_from_a:
-      events.append((dep, 0, 'A'))
-      events.append((arr + t, 1, 'B'))
-    for dep, arr in trips_from_b:
-      events.append((dep, 0, 'B'))
-      events.append((arr + t, 1, 'A'))
+  events = []
+  for dep, arr in trips_from_a:
+   events.append((dep, 0, 'A'))
+   events.append((arr + t, 1, 'B'))
+  for dep, arr in trips_from_b:
+   events.append((dep, 0, 'B'))
+   events.append((arr + t, 1, 'A'))
 
-    events.sort(key=lambda x: (x[0], -x[1]))
+  events.sort(key=lambda x: (x[0], -x[1]))
 
-    avail = {'A': 0, 'B': 0}
-    need = {'A': 0, 'B': 0}
+  avail = {'A': 0, 'B': 0}
+  need = {'A': 0, 'B': 0}
 
-    for tm, typ, st in events:
-      if typ == 0:
-        if avail[st] > 0:
-          avail[st] -= 1
-        else:
-          need[st] += 1
-      else:
-        avail[st] += 1
+  for tm, typ, st in events:
+   if typ == 0:
+    if avail[st] > 0:
+     avail[st] -= 1
+    else:
+     need[st] += 1
+   else:
+    avail[st] += 1
 
-    print(f"Case #{case}: {need['A']} {need['B']}")
+  print(f"Case #{case}: {need['A']} {need['B']}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis

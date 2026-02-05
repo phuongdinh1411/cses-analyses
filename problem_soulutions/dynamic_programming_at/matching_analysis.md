@@ -102,25 +102,25 @@ Generate all N! permutations of women and check which ones form valid matchings.
 from itertools import permutations
 
 def solve_brute_force(n, compatibility):
-  """
-  Brute force: check all N! permutations.
+ """
+ Brute force: check all N! permutations.
 
-  Time: O(N! * N)
-  Space: O(N)
-  """
-  MOD = 10**9 + 7
-  count = 0
+ Time: O(N! * N)
+ Space: O(N)
+ """
+ MOD = 10**9 + 7
+ count = 0
 
-  for perm in permutations(range(n)):
-    valid = True
-    for man, woman in enumerate(perm):
-      if compatibility[man][woman] == 0:
-        valid = False
-        break
-    if valid:
-      count = (count + 1) % MOD
+ for perm in permutations(range(n)):
+  valid = True
+  for man, woman in enumerate(perm):
+   if compatibility[man][woman] == 0:
+    valid = False
+    break
+  if valid:
+   count = (count + 1) % MOD
 
-  return count
+ return count
 ```
 
 ### Complexity
@@ -240,44 +240,44 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  """
-  Bitmask DP solution for counting perfect matchings.
+ """
+ Bitmask DP solution for counting perfect matchings.
 
-  Time: O(N * 2^N)
-  Space: O(2^N)
-  """
-  MOD = 10**9 + 7
+ Time: O(N * 2^N)
+ Space: O(2^N)
+ """
+ MOD = 10**9 + 7
 
-  n = int(input())
-  compatibility = []
-  for _ in range(n):
-    row = list(map(int, input().split()))
-    compatibility.append(row)
+ n = int(input())
+ compatibility = []
+ for _ in range(n):
+  row = list(map(int, input().split()))
+  compatibility.append(row)
 
-  # dp[mask] = ways to match first popcount(mask) men with women in mask
-  dp = [0] * (1 << n)
-  dp[0] = 1
+ # dp[mask] = ways to match first popcount(mask) men with women in mask
+ dp = [0] * (1 << n)
+ dp[0] = 1
 
-  for mask in range(1 << n):
-    man_idx = bin(mask).count('1')
+ for mask in range(1 << n):
+  man_idx = bin(mask).count('1')
 
-    if man_idx >= n:
-      continue
+  if man_idx >= n:
+   continue
 
-    for woman in range(n):
-      # Skip if woman already matched
-      if (mask >> woman) & 1:
-        continue
+  for woman in range(n):
+   # Skip if woman already matched
+   if (mask >> woman) & 1:
+    continue
 
-      # Check compatibility
-      if compatibility[man_idx][woman] == 1:
-        new_mask = mask | (1 << woman)
-        dp[new_mask] = (dp[new_mask] + dp[mask]) % MOD
+   # Check compatibility
+   if compatibility[man_idx][woman] == 1:
+    new_mask = mask | (1 << woman)
+    dp[new_mask] = (dp[new_mask] + dp[mask]) % MOD
 
-  print(dp[(1 << n) - 1])
+ print(dp[(1 << n) - 1])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity
@@ -298,13 +298,13 @@ For N = 21: 21 * 2^21 = ~44 million operations, which is feasible.
 ```python
 # WRONG - using loop variable as man index
 for mask in range(1 << n):
-  for man in range(n):  # Wrong! Man is determined by popcount
-    ...
+ for man in range(n):  # Wrong! Man is determined by popcount
+  ...
 
 # CORRECT - man index equals popcount of mask
 for mask in range(1 << n):
-  man_idx = bin(mask).count('1')
-  ...
+ man_idx = bin(mask).count('1')
+ ...
 ```
 
 **Problem:** The man to be matched is always the next one in sequence (determined by how many are already matched).

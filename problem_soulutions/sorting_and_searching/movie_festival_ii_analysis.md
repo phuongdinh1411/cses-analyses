@@ -113,34 +113,34 @@ For each movie, try assigning it to each of the k members and check if valid. Us
 
 ```python
 def solve_brute_force(movies, k):
-  """
-  Brute force: try all possible assignments.
+ """
+ Brute force: try all possible assignments.
 
-  Time: O(k^n) - exponential
-  Space: O(n) - recursion stack
-  """
-  movies.sort(key=lambda x: x[1])  # Sort by end time
-  n = len(movies)
+ Time: O(k^n) - exponential
+ Space: O(n) - recursion stack
+ """
+ movies.sort(key=lambda x: x[1])  # Sort by end time
+ n = len(movies)
 
-  def backtrack(idx, member_end_times):
-    if idx == n:
-      return 0
+ def backtrack(idx, member_end_times):
+  if idx == n:
+   return 0
 
-    # Option 1: Skip this movie
-    best = backtrack(idx + 1, member_end_times)
+  # Option 1: Skip this movie
+  best = backtrack(idx + 1, member_end_times)
 
-    # Option 2: Try assigning to each member
-    start, end = movies[idx]
-    for i in range(k):
-      if member_end_times[i] <= start:
-        old_end = member_end_times[i]
-        member_end_times[i] = end
-        best = max(best, 1 + backtrack(idx + 1, member_end_times))
-        member_end_times[i] = old_end
+  # Option 2: Try assigning to each member
+  start, end = movies[idx]
+  for i in range(k):
+   if member_end_times[i] <= start:
+    old_end = member_end_times[i]
+    member_end_times[i] = end
+    best = max(best, 1 + backtrack(idx + 1, member_end_times))
+    member_end_times[i] = old_end
 
-    return best
+  return best
 
-  return backtrack(0, [0] * k)
+ return backtrack(0, [0] * k)
 ```
 
 ### Complexity
@@ -166,25 +166,25 @@ Sort by end time and greedily assign each movie to an available member. Linear s
 
 ```python
 def solve_greedy_linear(movies, k):
-  """
-  Greedy with linear search for available member.
+ """
+ Greedy with linear search for available member.
 
-  Time: O(n*k) after O(n log n) sort
-  Space: O(k)
-  """
-  movies.sort(key=lambda x: x[1])  # Sort by end time
-  member_ends = [0] * k  # Last end time for each member
-  count = 0
+ Time: O(n*k) after O(n log n) sort
+ Space: O(k)
+ """
+ movies.sort(key=lambda x: x[1])  # Sort by end time
+ member_ends = [0] * k  # Last end time for each member
+ count = 0
 
-  for start, end in movies:
-    # Find any available member
-    for i in range(k):
-      if member_ends[i] <= start:
-        member_ends[i] = end
-        count += 1
-        break
+ for start, end in movies:
+  # Find any available member
+  for i in range(k):
+   if member_ends[i] <= start:
+    member_ends[i] = end
+    count += 1
+    break
 
-  return count
+ return count
 ```
 
 ### Complexity
@@ -293,47 +293,47 @@ Timeline:
 from sortedcontainers import SortedList
 
 def solve_optimal(movies, k):
-  """
-  Optimal solution using SortedList (multiset equivalent).
+ """
+ Optimal solution using SortedList (multiset equivalent).
 
-  Time: O(n log n) for sort + O(n log k) for processing
-  Space: O(k) for SortedList
-  """
-  movies.sort(key=lambda x: x[1])  # Sort by end time
+ Time: O(n log n) for sort + O(n log k) for processing
+ Space: O(k) for SortedList
+ """
+ movies.sort(key=lambda x: x[1])  # Sort by end time
 
-  # Multiset of member end times (all start at 0)
-  member_ends = SortedList([0] * k)
-  count = 0
+ # Multiset of member end times (all start at 0)
+ member_ends = SortedList([0] * k)
+ count = 0
 
-  for start, end in movies:
-    # Find largest end time <= start
-    # bisect_right gives index where start would be inserted
-    # So index - 1 is the largest value <= start
-    idx = member_ends.bisect_right(start) - 1
+ for start, end in movies:
+  # Find largest end time <= start
+  # bisect_right gives index where start would be inserted
+  # So index - 1 is the largest value <= start
+  idx = member_ends.bisect_right(start) - 1
 
-    if idx >= 0:
-      # Found an available member
-      member_ends.remove(member_ends[idx])
-      member_ends.add(end)
-      count += 1
+  if idx >= 0:
+   # Found an available member
+   member_ends.remove(member_ends[idx])
+   member_ends.add(end)
+   count += 1
 
-  return count
+ return count
 
 # Main
 def main():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  n, k = map(int, input().split())
-  movies = []
-  for _ in range(n):
-    a, b = map(int, input().split())
-    movies.append((a, b))
+ n, k = map(int, input().split())
+ movies = []
+ for _ in range(n):
+  a, b = map(int, input().split())
+  movies.append((a, b))
 
-  print(solve_optimal(movies, k))
+ print(solve_optimal(movies, k))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity

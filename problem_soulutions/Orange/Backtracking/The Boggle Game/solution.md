@@ -34,151 +34,151 @@ For each pair, output alphabetically sorted common words, or "There are no commo
 
 ```python
 def solve():
-  VOWELS = set('AEIOUY')
-  DIRS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
+ VOWELS = set('AEIOUY')
+ DIRS = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
-  def count_vowels(word):
-    return sum(1 for c in word if c in VOWELS)
+ def count_vowels(word):
+  return sum(1 for c in word if c in VOWELS)
 
-  def find_words(board):
-    words = set()
-    visited = [[False] * 4 for _ in range(4)]
+ def find_words(board):
+  words = set()
+  visited = [[False] * 4 for _ in range(4)]
 
-    def dfs(r, c, path):
-      if len(path) == 4:
-        if count_vowels(path) == 2:
-          words.add(path)
-        return
+  def dfs(r, c, path):
+   if len(path) == 4:
+    if count_vowels(path) == 2:
+     words.add(path)
+    return
 
-      visited[r][c] = True
+   visited[r][c] = True
 
-      for dr, dc in DIRS:
-        nr, nc = r + dr, c + dc
-        if 0 <= nr < 4 and 0 <= nc < 4 and not visited[nr][nc]:
-          dfs(nr, nc, path + board[nr][nc])
+   for dr, dc in DIRS:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < 4 and 0 <= nc < 4 and not visited[nr][nc]:
+     dfs(nr, nc, path + board[nr][nc])
 
-      visited[r][c] = False
+   visited[r][c] = False
 
-    for i in range(4):
-      for j in range(4):
-        dfs(i, j, board[i][j])
+  for i in range(4):
+   for j in range(4):
+    dfs(i, j, board[i][j])
 
-    return words
+  return words
 
-  first = True
+ first = True
 
-  while True:
-    # Read two boards
-    boards = [[], []]
+ while True:
+  # Read two boards
+  boards = [[], []]
 
-    try:
-      for row in range(4):
-        line = input()
-        if line.strip() == '#':
-          return
+  try:
+   for row in range(4):
+    line = input()
+    if line.strip() == '#':
+     return
 
-        parts = line.split()
-        if len(parts) >= 8:
-          boards[0].append([parts[i] for i in range(4)])
-          boards[1].append([parts[i] for i in range(4, 8)])
-    except EOFError:
-      return
+    parts = line.split()
+    if len(parts) >= 8:
+     boards[0].append([parts[i] for i in range(4)])
+     boards[1].append([parts[i] for i in range(4, 8)])
+  except EOFError:
+   return
 
-    if not first:
-      print()
-    first = False
+  if not first:
+   print()
+  first = False
 
-    # Find words in both boards
-    words1 = find_words(boards[0])
-    words2 = find_words(boards[1])
+  # Find words in both boards
+  words1 = find_words(boards[0])
+  words2 = find_words(boards[1])
 
-    # Find common words
-    common = sorted(words1 & words2)
+  # Find common words
+  common = sorted(words1 & words2)
 
-    if common:
-      for word in common:
-        print(word)
-    else:
-      print("There are no common words for this pair of boggle boards.")
+  if common:
+   for word in common:
+    print(word)
+  else:
+   print("There are no common words for this pair of boggle boards.")
 
-    # Read blank line between test cases
-    try:
-      input()
-    except:
-      pass
+  # Read blank line between test cases
+  try:
+   input()
+  except:
+   pass
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-  VOWELS = "AEIOUY"
+ VOWELS = "AEIOUY"
 
-  def is_valid_word(word):
-    return len(word) == 4 and sum(c in VOWELS for c in word) == 2
+ def is_valid_word(word):
+  return len(word) == 4 and sum(c in VOWELS for c in word) == 2
 
-  def get_all_words(board):
-    words = set()
-    directions = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
+ def get_all_words(board):
+  words = set()
+  directions = [(-1,-1),(-1,0),(-1,1),(0,-1),(0,1),(1,-1),(1,0),(1,1)]
 
-    def backtrack(r, c, path, visited):
-      if len(path) == 4:
-        if is_valid_word(path):
-          words.add(path)
-        return
+  def backtrack(r, c, path, visited):
+   if len(path) == 4:
+    if is_valid_word(path):
+     words.add(path)
+    return
 
-      for dr, dc in directions:
-        nr, nc = r + dr, c + dc
-        if 0 <= nr < 4 and 0 <= nc < 4 and (nr, nc) not in visited:
-          visited.add((nr, nc))
-          backtrack(nr, nc, path + board[nr][nc], visited)
-          visited.remove((nr, nc))
+   for dr, dc in directions:
+    nr, nc = r + dr, c + dc
+    if 0 <= nr < 4 and 0 <= nc < 4 and (nr, nc) not in visited:
+     visited.add((nr, nc))
+     backtrack(nr, nc, path + board[nr][nc], visited)
+     visited.remove((nr, nc))
 
-    for i in range(4):
-      for j in range(4):
-        backtrack(i, j, board[i][j], {(i, j)})
+  for i in range(4):
+   for j in range(4):
+    backtrack(i, j, board[i][j], {(i, j)})
 
-    return words
+  return words
 
-  import sys
-  lines = sys.stdin.read().strip().split('\n')
-  idx = 0
-  first_case = True
+ import sys
+ lines = sys.stdin.read().strip().split('\n')
+ idx = 0
+ first_case = True
 
-  while idx < len(lines):
-    if lines[idx].strip() == '#':
-      break
+ while idx < len(lines):
+  if lines[idx].strip() == '#':
+   break
 
-    # Read 4 rows for both boards
-    board1, board2 = [], []
-    for _ in range(4):
-      parts = lines[idx].split()
-      board1.append(parts[:4])
-      board2.append(parts[4:])
-      idx += 1
+  # Read 4 rows for both boards
+  board1, board2 = [], []
+  for _ in range(4):
+   parts = lines[idx].split()
+   board1.append(parts[:4])
+   board2.append(parts[4:])
+   idx += 1
 
-    if not first_case:
-      print()
-    first_case = False
+  if not first_case:
+   print()
+  first_case = False
 
-    words1 = get_all_words(board1)
-    words2 = get_all_words(board2)
-    common = sorted(words1 & words2)
+  words1 = get_all_words(board1)
+  words2 = get_all_words(board2)
+  common = sorted(words1 & words2)
 
-    if common:
-      print('\n'.join(common))
-    else:
-      print("There are no common words for this pair of boggle boards.")
+  if common:
+   print('\n'.join(common))
+  else:
+   print("There are no common words for this pair of boggle boards.")
 
-    # Skip blank line
-    if idx < len(lines) and lines[idx].strip() == '':
-      idx += 1
+  # Skip blank line
+  if idx < len(lines) and lines[idx].strip() == '':
+   idx += 1
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

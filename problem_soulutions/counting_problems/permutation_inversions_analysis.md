@@ -114,25 +114,25 @@ dp[i][j] = sum(dp[i-1][j-x]) for x in [0, min(j, i-1)]
 
 ```python
 def count_permutations_basic(n, k):
-  """
-  Basic DP solution - O(n^2 * k) time.
+ """
+ Basic DP solution - O(n^2 * k) time.
 
-  Time: O(n^2 * k) - too slow for large inputs
-  Space: O(n * k)
-  """
-  MOD = 10**9 + 7
+ Time: O(n^2 * k) - too slow for large inputs
+ Space: O(n * k)
+ """
+ MOD = 10**9 + 7
 
-  # dp[i][j] = permutations of 1..i with j inversions
-  dp = [[0] * (k + 1) for _ in range(n + 1)]
-  dp[1][0] = 1
+ # dp[i][j] = permutations of 1..i with j inversions
+ dp = [[0] * (k + 1) for _ in range(n + 1)]
+ dp[1][0] = 1
 
-  for i in range(2, n + 1):
-    for j in range(k + 1):
-      # Insert element i: can add 0 to (i-1) inversions
-      for add in range(min(j + 1, i)):
-        dp[i][j] = (dp[i][j] + dp[i-1][j-add]) % MOD
+ for i in range(2, n + 1):
+  for j in range(k + 1):
+   # Insert element i: can add 0 to (i-1) inversions
+   for add in range(min(j + 1, i)):
+    dp[i][j] = (dp[i][j] + dp[i-1][j-add]) % MOD
 
-  return dp[n][k]
+ return dp[n][k]
 ```
 
 ### Complexity
@@ -224,44 +224,44 @@ To reach exactly 3 inversions from dp[3]:
 
 ```python
 def count_permutations(n: int, k: int) -> int:
-  """
-  Count permutations of 1..n with exactly k inversions.
-  Uses prefix sum optimization.
+ """
+ Count permutations of 1..n with exactly k inversions.
+ Uses prefix sum optimization.
 
-  Time: O(n * k)
-  Space: O(k) with rolling array optimization
-  """
-  MOD = 10**9 + 7
+ Time: O(n * k)
+ Space: O(k) with rolling array optimization
+ """
+ MOD = 10**9 + 7
 
-  # dp[j] = permutations with j inversions
-  dp = [0] * (k + 1)
-  dp[0] = 1  # Base: permutation [1] has 0 inversions
+ # dp[j] = permutations with j inversions
+ dp = [0] * (k + 1)
+ dp[0] = 1  # Base: permutation [1] has 0 inversions
 
-  for i in range(2, n + 1):
-    # Build prefix sum of current dp
-    prefix = [0] * (k + 2)
-    for j in range(k + 1):
-      prefix[j + 1] = (prefix[j] + dp[j]) % MOD
+ for i in range(2, n + 1):
+  # Build prefix sum of current dp
+  prefix = [0] * (k + 2)
+  for j in range(k + 1):
+   prefix[j + 1] = (prefix[j] + dp[j]) % MOD
 
-    # Update dp using prefix sums
-    new_dp = [0] * (k + 1)
-    for j in range(k + 1):
-      # Sum dp[max(0, j-(i-1))] to dp[j]
-      left = max(0, j - (i - 1))
-      new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD
+  # Update dp using prefix sums
+  new_dp = [0] * (k + 1)
+  for j in range(k + 1):
+   # Sum dp[max(0, j-(i-1))] to dp[j]
+   left = max(0, j - (i - 1))
+   new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD
 
-    dp = new_dp
+  dp = new_dp
 
-  return dp[k]
+ return dp[k]
 
 
 def solve():
-  n, k = map(int, input().split())
-  print(count_permutations(n, k))
+ n, k = map(int, input().split())
+ print(count_permutations(n, k))
 
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity

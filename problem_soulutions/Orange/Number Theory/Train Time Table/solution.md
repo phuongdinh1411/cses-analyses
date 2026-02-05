@@ -37,52 +37,52 @@ Use greedy simulation with events:
 
 ```python
 def solve():
-  n = int(input())
+ n = int(input())
 
-  for case in range(1, n + 1):
-    t = int(input())  # turnaround time
-    na, nb = map(int, input().split())
+ for case in range(1, n + 1):
+  t = int(input())  # turnaround time
+  na, nb = map(int, input().split())
 
-    def parse_time(s):
-      h, m = map(int, s.split(':'))
-      return h * 60 + m
+  def parse_time(s):
+   h, m = map(int, s.split(':'))
+   return h * 60 + m
 
-    events = []  # (time, type, station)
-    # type: 0 = departure, 1 = arrival (ready after turnaround)
+  events = []  # (time, type, station)
+  # type: 0 = departure, 1 = arrival (ready after turnaround)
 
-    for _ in range(na):
-      dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t  # ready after turnaround
-      events.append((dep_time, 0, 'A'))  # depart from A
-      events.append((arr_time, 1, 'B'))  # arrive at B (available)
+  for _ in range(na):
+   dep, arr = input().split()
+   dep_time = parse_time(dep)
+   arr_time = parse_time(arr) + t  # ready after turnaround
+   events.append((dep_time, 0, 'A'))  # depart from A
+   events.append((arr_time, 1, 'B'))  # arrive at B (available)
 
-    for _ in range(nb):
-      dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t
-      events.append((dep_time, 0, 'B'))  # depart from B
-      events.append((arr_time, 1, 'A'))  # arrive at A (available)
+  for _ in range(nb):
+   dep, arr = input().split()
+   dep_time = parse_time(dep)
+   arr_time = parse_time(arr) + t
+   events.append((dep_time, 0, 'B'))  # depart from B
+   events.append((arr_time, 1, 'A'))  # arrive at A (available)
 
-    # Sort: by time, then arrivals before departures (type 1 before 0)
-    events.sort(key=lambda x: (x[0], -x[1]))
+  # Sort: by time, then arrivals before departures (type 1 before 0)
+  events.sort(key=lambda x: (x[0], -x[1]))
 
-    available = {'A': 0, 'B': 0}
-    needed = {'A': 0, 'B': 0}
+  available = {'A': 0, 'B': 0}
+  needed = {'A': 0, 'B': 0}
 
-    for time, event_type, station in events:
-      if event_type == 0:  # departure
-        if available[station] > 0:
-          available[station] -= 1
-        else:
-          needed[station] += 1
-      else:  # arrival (train becomes available)
-        available[station] += 1
+  for time, event_type, station in events:
+   if event_type == 0:  # departure
+    if available[station] > 0:
+     available[station] -= 1
+    else:
+     needed[station] += 1
+   else:  # arrival (train becomes available)
+    available[station] += 1
 
-    print(f"Case #{case}: {needed['A']} {needed['B']}")
+  print(f"Case #{case}: {needed['A']} {needed['B']}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
@@ -91,82 +91,82 @@ if __name__ == "__main__":
 import heapq
 
 def solve():
-  n = int(input())
+ n = int(input())
 
-  for case in range(1, n + 1):
-    t = int(input())
-    na, nb = map(int, input().split())
+ for case in range(1, n + 1):
+  t = int(input())
+  na, nb = map(int, input().split())
 
-    def to_minutes(s):
-      h, m = s.split(':')
-      return int(h) * 60 + int(m)
+  def to_minutes(s):
+   h, m = s.split(':')
+   return int(h) * 60 + int(m)
 
-    # Collect all trips
-    trips_from_a = []
-    trips_from_b = []
+  # Collect all trips
+  trips_from_a = []
+  trips_from_b = []
 
-    for _ in range(na):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_a.append((dep, arr))
+  for _ in range(na):
+   parts = input().split()
+   dep = to_minutes(parts[0])
+   arr = to_minutes(parts[1])
+   trips_from_a.append((dep, arr))
 
-    for _ in range(nb):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_b.append((dep, arr))
+  for _ in range(nb):
+   parts = input().split()
+   dep = to_minutes(parts[0])
+   arr = to_minutes(parts[1])
+   trips_from_b.append((dep, arr))
 
-    trips_from_a.sort()
-    trips_from_b.sort()
+  trips_from_a.sort()
+  trips_from_b.sort()
 
-    # available_at_X is a min-heap of times when trains become available at X
-    available_a = []
-    available_b = []
-    trains_a = 0
-    trains_b = 0
+  # available_at_X is a min-heap of times when trains become available at X
+  available_a = []
+  available_b = []
+  trains_a = 0
+  trains_b = 0
 
-    # Process trips from A
-    for dep, arr in trips_from_a:
-      # Check if train available at A before dep
-      while available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-        # Train is ready but we'll use one
-      if available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-      else:
-        # Need to check heap properly
-        pass
+  # Process trips from A
+  for dep, arr in trips_from_a:
+   # Check if train available at A before dep
+   while available_a and available_a[0] <= dep:
+    heapq.heappop(available_a)
+    # Train is ready but we'll use one
+   if available_a and available_a[0] <= dep:
+    heapq.heappop(available_a)
+   else:
+    # Need to check heap properly
+    pass
 
-    # Actually, let's use the event-based approach properly
-    # Reset and redo
+  # Actually, let's use the event-based approach properly
+  # Reset and redo
 
-    events = []
-    for dep, arr in trips_from_a:
-      events.append((dep, 0, 'A'))
-      events.append((arr + t, 1, 'B'))
-    for dep, arr in trips_from_b:
-      events.append((dep, 0, 'B'))
-      events.append((arr + t, 1, 'A'))
+  events = []
+  for dep, arr in trips_from_a:
+   events.append((dep, 0, 'A'))
+   events.append((arr + t, 1, 'B'))
+  for dep, arr in trips_from_b:
+   events.append((dep, 0, 'B'))
+   events.append((arr + t, 1, 'A'))
 
-    events.sort(key=lambda x: (x[0], -x[1]))
+  events.sort(key=lambda x: (x[0], -x[1]))
 
-    avail = {'A': 0, 'B': 0}
-    need = {'A': 0, 'B': 0}
+  avail = {'A': 0, 'B': 0}
+  need = {'A': 0, 'B': 0}
 
-    for tm, typ, st in events:
-      if typ == 0:
-        if avail[st] > 0:
-          avail[st] -= 1
-        else:
-          need[st] += 1
-      else:
-        avail[st] += 1
+  for tm, typ, st in events:
+   if typ == 0:
+    if avail[st] > 0:
+     avail[st] -= 1
+    else:
+     need[st] += 1
+   else:
+    avail[st] += 1
 
-    print(f"Case #{case}: {need['A']} {need['B']}")
+  print(f"Case #{case}: {need['A']} {need['B']}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

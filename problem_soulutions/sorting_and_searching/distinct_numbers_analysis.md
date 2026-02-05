@@ -61,7 +61,7 @@ The values are 2 and 3, so the answer is 2.
 ### Python
 ```python
 def count_distinct_set(arr):
-  return len(set(arr))
+ return len(set(arr))
 
 # Full solution with input
 n = int(input())
@@ -79,14 +79,14 @@ print(len(set(arr)))
 ### Python
 ```python
 def count_distinct_sort(arr):
-  if not arr:
-    return 0
-  arr.sort()
-  count = 1  # First element is always distinct
-  for i in range(1, len(arr)):
-    if arr[i] != arr[i-1]:
-      count += 1
-  return count
+ if not arr:
+  return 0
+ arr.sort()
+ count = 1  # First element is always distinct
+ for i in range(1, len(arr)):
+  if arr[i] != arr[i-1]:
+   count += 1
+ return count
 
 # Full solution with input
 n = int(input())
@@ -94,8 +94,8 @@ arr = list(map(int, input().split()))
 arr.sort()
 count = 1
 for i in range(1, n):
-  if arr[i] != arr[i-1]:
-    count += 1
+ if arr[i] != arr[i-1]:
+  count += 1
 print(count)
 ```
 
@@ -115,29 +115,29 @@ print(count)
 
 1. **Forgetting the first element in sorting approach:**
    ```python
- # WRONG: starts count at 0
- count = 0
- for i in range(1, n):
-   if arr[i] != arr[i-1]:
-     count += 1
+# WRONG: starts count at 0
+count = 0
+for i in range(1, n):
+ if arr[i] != arr[i-1]:
+  count += 1
 
- # CORRECT: starts count at 1 (first element is always distinct)
- count = 1
- for i in range(1, n):
-   if arr[i] != arr[i-1]:
-     count += 1
- ```
+# CORRECT: starts count at 1 (first element is always distinct)
+count = 1
+for i in range(1, n):
+ if arr[i] != arr[i-1]:
+  count += 1
+```
 
 2. **Off-by-one in loop bounds:**
    ```python
- # WRONG: will cause index error
- for i in range(n):
-   if arr[i] != arr[i-1]:  # arr[-1] when i=0!
+# WRONG: will cause index error
+for i in range(n):
+ if arr[i] != arr[i-1]:  # arr[-1] when i=0!
 
- # CORRECT: start from index 1
- for i in range(1, n):
-   if arr[i] != arr[i-1]:
- ```
+# CORRECT: start from index 1
+for i in range(1, n):
+ if arr[i] != arr[i-1]:
+```
 
 3. **Empty array edge case:** Always check if array is empty before processing.
 

@@ -35,103 +35,103 @@ Use two DP tables:
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    a = input().strip()
-    b = input().strip()
+ for case in range(1, t + 1):
+  a = input().strip()
+  b = input().strip()
 
-    m, n = len(a), len(b)
+  m, n = len(a), len(b)
 
-    # LCS DP
-    lcs = [[0] * (n + 1) for _ in range(m + 1)]
+  # LCS DP
+  lcs = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-      for j in range(1, n + 1):
-        if a[i-1] == b[j-1]:
-          lcs[i][j] = lcs[i-1][j-1] + 1
-        else:
-          lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
+  for i in range(1, m + 1):
+   for j in range(1, n + 1):
+    if a[i-1] == b[j-1]:
+     lcs[i][j] = lcs[i-1][j-1] + 1
+    else:
+     lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
 
-    # SCS length
-    scs_len = m + n - lcs[m][n]
+  # SCS length
+  scs_len = m + n - lcs[m][n]
 
-    # Count SCS: cnt[i][j] = ways to form SCS of a[:i] and b[:j]
-    cnt = [[0] * (n + 1) for _ in range(m + 1)]
-    cnt[0][0] = 1
+  # Count SCS: cnt[i][j] = ways to form SCS of a[:i] and b[:j]
+  cnt = [[0] * (n + 1) for _ in range(m + 1)]
+  cnt[0][0] = 1
 
-    # Base cases
-    for i in range(1, m + 1):
-      cnt[i][0] = 1
-    for j in range(1, n + 1):
-      cnt[0][j] = 1
+  # Base cases
+  for i in range(1, m + 1):
+   cnt[i][0] = 1
+  for j in range(1, n + 1):
+   cnt[0][j] = 1
 
-    for i in range(1, m + 1):
-      for j in range(1, n + 1):
-        if a[i-1] == b[j-1]:
-          # Must take this character (extends LCS)
-          cnt[i][j] = cnt[i-1][j-1]
-        else:
-          # Choose which character to append
-          # Only count paths that maintain optimal LCS
-          if lcs[i-1][j] > lcs[i][j-1]:
-            cnt[i][j] = cnt[i-1][j]
-          elif lcs[i][j-1] > lcs[i-1][j]:
-            cnt[i][j] = cnt[i][j-1]
-          else:
-            cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
+  for i in range(1, m + 1):
+   for j in range(1, n + 1):
+    if a[i-1] == b[j-1]:
+     # Must take this character (extends LCS)
+     cnt[i][j] = cnt[i-1][j-1]
+    else:
+     # Choose which character to append
+     # Only count paths that maintain optimal LCS
+     if lcs[i-1][j] > lcs[i][j-1]:
+      cnt[i][j] = cnt[i-1][j]
+     elif lcs[i][j-1] > lcs[i-1][j]:
+      cnt[i][j] = cnt[i][j-1]
+     else:
+      cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
 
-    print(f"Case {case}: {scs_len} {cnt[m][n]}")
+  print(f"Case {case}: {scs_len} {cnt[m][n]}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with Explanation
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    a = input().strip()
-    b = input().strip()
+ for case in range(1, t + 1):
+  a = input().strip()
+  b = input().strip()
 
-    m, n = len(a), len(b)
+  m, n = len(a), len(b)
 
-    # dp[i][j] = (scs_length, count) for a[:i] and b[:j]
-    # scs_length = i + j - lcs[i][j]
+  # dp[i][j] = (scs_length, count) for a[:i] and b[:j]
+  # scs_length = i + j - lcs[i][j]
 
-    lcs = [[0] * (n + 1) for _ in range(m + 1)]
-    cnt = [[0] * (n + 1) for _ in range(m + 1)]
+  lcs = [[0] * (n + 1) for _ in range(m + 1)]
+  cnt = [[0] * (n + 1) for _ in range(m + 1)]
 
-    # Base: empty strings
-    cnt[0][0] = 1
-    for i in range(1, m + 1):
-      cnt[i][0] = 1  # Only one way: use all of a
-    for j in range(1, n + 1):
-      cnt[0][j] = 1  # Only one way: use all of b
+  # Base: empty strings
+  cnt[0][0] = 1
+  for i in range(1, m + 1):
+   cnt[i][0] = 1  # Only one way: use all of a
+  for j in range(1, n + 1):
+   cnt[0][j] = 1  # Only one way: use all of b
 
-    for i in range(1, m + 1):
-      for j in range(1, n + 1):
-        if a[i-1] == b[j-1]:
-          lcs[i][j] = lcs[i-1][j-1] + 1
-          cnt[i][j] = cnt[i-1][j-1]
-        else:
-          lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
+  for i in range(1, m + 1):
+   for j in range(1, n + 1):
+    if a[i-1] == b[j-1]:
+     lcs[i][j] = lcs[i-1][j-1] + 1
+     cnt[i][j] = cnt[i-1][j-1]
+    else:
+     lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
 
-          if lcs[i-1][j] > lcs[i][j-1]:
-            cnt[i][j] = cnt[i-1][j]
-          elif lcs[i][j-1] > lcs[i-1][j]:
-            cnt[i][j] = cnt[i][j-1]
-          else:
-            cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
+     if lcs[i-1][j] > lcs[i][j-1]:
+      cnt[i][j] = cnt[i-1][j]
+     elif lcs[i][j-1] > lcs[i-1][j]:
+      cnt[i][j] = cnt[i][j-1]
+     else:
+      cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
 
-    scs_len = m + n - lcs[m][n]
-    print(f"Case {case}: {scs_len} {cnt[m][n]}")
+  scs_len = m + n - lcs[m][n]
+  print(f"Case {case}: {scs_len} {cnt[m][n]}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

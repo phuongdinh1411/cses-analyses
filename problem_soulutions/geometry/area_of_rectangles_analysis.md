@@ -115,31 +115,31 @@ Compress coordinates to create a grid, then check each grid cell against all rec
 
 ```python
 def solve_brute_force(n, rectangles):
-  """
-  Brute force with coordinate compression.
+ """
+ Brute force with coordinate compression.
 
-  Time: O(n^3) - n^2 cells, n rectangles to check each
-  Space: O(n^2)
-  """
-  # Collect unique coordinates
-  xs = sorted(set(x for r in rectangles for x in (r[0], r[2])))
-  ys = sorted(set(y for r in rectangles for y in (r[1], r[3])))
+ Time: O(n^3) - n^2 cells, n rectangles to check each
+ Space: O(n^2)
+ """
+ # Collect unique coordinates
+ xs = sorted(set(x for r in rectangles for x in (r[0], r[2])))
+ ys = sorted(set(y for r in rectangles for y in (r[1], r[3])))
 
-  total_area = 0
+ total_area = 0
 
-  # Check each grid cell
-  for i in range(len(xs) - 1):
-    for j in range(len(ys) - 1):
-      x1, x2 = xs[i], xs[i + 1]
-      y1, y2 = ys[j], ys[j + 1]
+ # Check each grid cell
+ for i in range(len(xs) - 1):
+  for j in range(len(ys) - 1):
+   x1, x2 = xs[i], xs[i + 1]
+   y1, y2 = ys[j], ys[j + 1]
 
-      # Check if any rectangle covers this cell
-      for rx1, ry1, rx2, ry2 in rectangles:
-        if rx1 <= x1 and x2 <= rx2 and ry1 <= y1 and y2 <= ry2:
-          total_area += (x2 - x1) * (y2 - y1)
-          break
+   # Check if any rectangle covers this cell
+   for rx1, ry1, rx2, ry2 in rectangles:
+    if rx1 <= x1 and x2 <= rx2 and ry1 <= y1 and y2 <= ry2:
+     total_area += (x2 - x1) * (y2 - y1)
+     break
 
-  return total_area
+ return total_area
 ```
 
 ### Complexity
@@ -231,71 +231,71 @@ from collections import defaultdict
 input = sys.stdin.readline
 
 def solve():
-  n = int(input())
-  rectangles = []
-  ys = set()
+ n = int(input())
+ rectangles = []
+ ys = set()
 
-  for _ in range(n):
-    x1, y1, x2, y2 = map(int, input().split())
-    rectangles.append((x1, y1, x2, y2))
-    ys.add(y1)
-    ys.add(y2)
+ for _ in range(n):
+  x1, y1, x2, y2 = map(int, input().split())
+  rectangles.append((x1, y1, x2, y2))
+  ys.add(y1)
+  ys.add(y2)
 
-  # Coordinate compression for y
-  ys = sorted(ys)
-  y_to_idx = {y: i for i, y in enumerate(ys)}
-  m = len(ys) - 1  # Number of y-intervals
+ # Coordinate compression for y
+ ys = sorted(ys)
+ y_to_idx = {y: i for i, y in enumerate(ys)}
+ m = len(ys) - 1  # Number of y-intervals
 
-  # Segment tree arrays
-  cnt = [0] * (4 * m)  # Coverage count
-  total = [0] * (4 * m)  # Covered length
+ # Segment tree arrays
+ cnt = [0] * (4 * m)  # Coverage count
+ total = [0] * (4 * m)  # Covered length
 
-  def update(node, start, end, l, r, val):
-    """Update coverage for y-interval [l, r) by val (+1 or -1)."""
-    if r <= start or end <= l:
-      return
-    if l <= start and end <= r:
-      cnt[node] += val
-    else:
-      mid = (start + end) // 2
-      update(2*node, start, mid, l, r, val)
-      update(2*node+1, mid, end, l, r, val)
+ def update(node, start, end, l, r, val):
+  """Update coverage for y-interval [l, r) by val (+1 or -1)."""
+  if r <= start or end <= l:
+   return
+  if l <= start and end <= r:
+   cnt[node] += val
+  else:
+   mid = (start + end) // 2
+   update(2*node, start, mid, l, r, val)
+   update(2*node+1, mid, end, l, r, val)
 
-    # Recalculate covered length
-    if cnt[node] > 0:
-      total[node] = ys[end] - ys[start]
-    elif end - start == 1:
-      total[node] = 0
-    else:
-      total[node] = total[2*node] + total[2*node+1]
+  # Recalculate covered length
+  if cnt[node] > 0:
+   total[node] = ys[end] - ys[start]
+  elif end - start == 1:
+   total[node] = 0
+  else:
+   total[node] = total[2*node] + total[2*node+1]
 
-  # Create events: (x, type, y1_idx, y2_idx)
-  # type: 0 = start (add), 1 = end (remove)
-  events = []
-  for x1, y1, x2, y2 in rectangles:
-    y1_idx = y_to_idx[y1]
-    y2_idx = y_to_idx[y2]
-    events.append((x1, 0, y1_idx, y2_idx))
-    events.append((x2, 1, y1_idx, y2_idx))
+ # Create events: (x, type, y1_idx, y2_idx)
+ # type: 0 = start (add), 1 = end (remove)
+ events = []
+ for x1, y1, x2, y2 in rectangles:
+  y1_idx = y_to_idx[y1]
+  y2_idx = y_to_idx[y2]
+  events.append((x1, 0, y1_idx, y2_idx))
+  events.append((x2, 1, y1_idx, y2_idx))
 
-  events.sort()
+ events.sort()
 
-  area = 0
-  prev_x = events[0][0]
+ area = 0
+ prev_x = events[0][0]
 
-  for x, typ, y1_idx, y2_idx in events:
-    # Add area from previous x to current x
-    area += total[1] * (x - prev_x)
+ for x, typ, y1_idx, y2_idx in events:
+  # Add area from previous x to current x
+  area += total[1] * (x - prev_x)
 
-    # Update segment tree
-    if typ == 0:  # Start of rectangle
-      update(1, 0, m, y1_idx, y2_idx, 1)
-    else:  # End of rectangle
-      update(1, 0, m, y1_idx, y2_idx, -1)
+  # Update segment tree
+  if typ == 0:  # Start of rectangle
+   update(1, 0, m, y1_idx, y2_idx, 1)
+  else:  # End of rectangle
+   update(1, 0, m, y1_idx, y2_idx, -1)
 
-    prev_x = x
+  prev_x = x
 
-  print(area)
+ print(area)
 
 solve()
 ```
@@ -321,14 +321,14 @@ solve()
 ```python
 # WRONG - stops at last event without adding final area
 for event in events:
-  update_tree(event)
-  # Missing area calculation!
+ update_tree(event)
+ # Missing area calculation!
 
 # CORRECT
 for x, typ, y1, y2 in events:
-  area += total[1] * (x - prev_x)  # Add area BEFORE update
-  update_tree(...)
-  prev_x = x
+ area += total[1] * (x - prev_x)  # Add area BEFORE update
+ update_tree(...)
+ prev_x = x
 ```
 
 ### Mistake 3: Wrong Event Order for Same X

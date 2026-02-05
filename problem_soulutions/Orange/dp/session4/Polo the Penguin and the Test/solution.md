@@ -43,60 +43,60 @@ This is a 0/1 Knapsack problem:
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, w = map(int, input().split())
+ for _ in range(t):
+  n, w = map(int, input().split())
 
-    questions = []
-    for _ in range(n):
-      c, p, ti = map(int, input().split())
-      questions.append((ti, c * p))  # (time_cost, value)
+  questions = []
+  for _ in range(n):
+   c, p, ti = map(int, input().split())
+   questions.append((ti, c * p))  # (time_cost, value)
 
-    # 0/1 Knapsack
-    dp = [0] * (w + 1)
+  # 0/1 Knapsack
+  dp = [0] * (w + 1)
 
-    for time_cost, value in questions:
-      for capacity in range(w, time_cost - 1, -1):
-        dp[capacity] = max(dp[capacity], dp[capacity - time_cost] + value)
+  for time_cost, value in questions:
+   for capacity in range(w, time_cost - 1, -1):
+    dp[capacity] = max(dp[capacity], dp[capacity - time_cost] + value)
 
-    print(dp[w])
+  print(dp[w])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with 2D DP
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n, w = map(int, input().split())
+ for _ in range(t):
+  n, w = map(int, input().split())
 
-    questions = []
-    for _ in range(n):
-      c, p, ti = map(int, input().split())
-      questions.append((ti, c * p))
+  questions = []
+  for _ in range(n):
+   c, p, ti = map(int, input().split())
+   questions.append((ti, c * p))
 
-    # 2D DP for clarity
-    # dp[i][j] = max value using first i questions with capacity j
-    dp = [[0] * (w + 1) for _ in range(n + 1)]
+  # 2D DP for clarity
+  # dp[i][j] = max value using first i questions with capacity j
+  dp = [[0] * (w + 1) for _ in range(n + 1)]
 
-    for i in range(1, n + 1):
-      time_cost, value = questions[i - 1]
-      for j in range(w + 1):
-        # Don't take question i
-        dp[i][j] = dp[i - 1][j]
-        # Take question i (if possible)
-        if j >= time_cost:
-          dp[i][j] = max(dp[i][j], dp[i - 1][j - time_cost] + value)
+  for i in range(1, n + 1):
+   time_cost, value = questions[i - 1]
+   for j in range(w + 1):
+    # Don't take question i
+    dp[i][j] = dp[i - 1][j]
+    # Take question i (if possible)
+    if j >= time_cost:
+     dp[i][j] = max(dp[i][j], dp[i - 1][j - time_cost] + value)
 
-    print(dp[n][w])
+  print(dp[n][w])
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

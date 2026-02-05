@@ -97,32 +97,32 @@ For each pair of nodes, compute distance using BFS and count if in [k1, k2].
 
 ```python
 def solve_brute_force(n, k1, k2, edges):
-  """
-  Time: O(n^2), Space: O(n)
-  """
-  from collections import defaultdict, deque
+ """
+ Time: O(n^2), Space: O(n)
+ """
+ from collections import defaultdict, deque
 
-  adj = defaultdict(list)
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = defaultdict(list)
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  count = 0
-  for start in range(1, n + 1):
-    dist = [-1] * (n + 1)
-    dist[start] = 0
-    queue = deque([start])
+ count = 0
+ for start in range(1, n + 1):
+  dist = [-1] * (n + 1)
+  dist[start] = 0
+  queue = deque([start])
 
-    while queue:
-      u = queue.popleft()
-      for v in adj[u]:
-        if dist[v] == -1:
-          dist[v] = dist[u] + 1
-          queue.append(v)
-          if k1 <= dist[v] <= k2:
-            count += 1
+  while queue:
+   u = queue.popleft()
+   for v in adj[u]:
+    if dist[v] == -1:
+     dist[v] = dist[u] + 1
+     queue.append(v)
+     if k1 <= dist[v] <= k2:
+      count += 1
 
-  return count // 2  # Each path counted twice
+ return count // 2  # Each path counted twice
 ```
 
 ### Complexity
@@ -169,96 +169,96 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve(n, k1, k2, edges):
-  adj = [[] for _ in range(n + 1)]
-  for a, b in edges:
-    adj[a].append(b)
-    adj[b].append(a)
+ adj = [[] for _ in range(n + 1)]
+ for a, b in edges:
+  adj[a].append(b)
+  adj[b].append(a)
 
-  bit = [0] * (n + 2)
+ bit = [0] * (n + 2)
 
-  def bit_update(i, delta):
-    i += 1
-    while i <= n + 1:
-      bit[i] += delta
-      i += i & (-i)
+ def bit_update(i, delta):
+  i += 1
+  while i <= n + 1:
+   bit[i] += delta
+   i += i & (-i)
 
-  def bit_query(i):
-    if i < 0: return 0
-    i = min(i + 1, n + 1)
-    s = 0
-    while i > 0:
-      s += bit[i]
-      i -= i & (-i)
-    return s
+ def bit_query(i):
+  if i < 0: return 0
+  i = min(i + 1, n + 1)
+  s = 0
+  while i > 0:
+   s += bit[i]
+   i -= i & (-i)
+  return s
 
-  def bit_range(lo, hi):
-    return 0 if lo > hi else bit_query(hi) - bit_query(lo - 1)
+ def bit_range(lo, hi):
+  return 0 if lo > hi else bit_query(hi) - bit_query(lo - 1)
 
-  removed = [False] * (n + 1)
-  size = [0] * (n + 1)
+ removed = [False] * (n + 1)
+ size = [0] * (n + 1)
 
-  def get_size(u, p):
-    size[u] = 1
-    for v in adj[u]:
-      if v != p and not removed[v]:
-        get_size(v, u)
-        size[u] += size[v]
+ def get_size(u, p):
+  size[u] = 1
+  for v in adj[u]:
+   if v != p and not removed[v]:
+    get_size(v, u)
+    size[u] += size[v]
 
-  def get_centroid(u, p, tree_size):
-    for v in adj[u]:
-      if v != p and not removed[v] and size[v] > tree_size // 2:
-        return get_centroid(v, u, tree_size)
-    return u
+ def get_centroid(u, p, tree_size):
+  for v in adj[u]:
+   if v != p and not removed[v] and size[v] > tree_size // 2:
+    return get_centroid(v, u, tree_size)
+  return u
 
-  def get_depths(u, p, d, depths):
-    if d > k2: return
-    depths.append(d)
-    for v in adj[u]:
-      if v != p and not removed[v]:
-        get_depths(v, u, d + 1, depths)
+ def get_depths(u, p, d, depths):
+  if d > k2: return
+  depths.append(d)
+  for v in adj[u]:
+   if v != p and not removed[v]:
+    get_depths(v, u, d + 1, depths)
 
-  result = 0
+ result = 0
 
-  def process(u):
-    nonlocal result
-    get_size(u, -1)
-    c = get_centroid(u, -1, size[u])
-    removed[c] = True
+ def process(u):
+  nonlocal result
+  get_size(u, -1)
+  c = get_centroid(u, -1, size[u])
+  removed[c] = True
 
-    max_d = 0
-    for v in adj[c]:
-      if removed[v]: continue
-      depths = []
-      get_depths(v, c, 1, depths)
+  max_d = 0
+  for v in adj[c]:
+   if removed[v]: continue
+   depths = []
+   get_depths(v, c, 1, depths)
 
-      for d in depths:
-        lo, hi = max(0, k1 - d), k2 - d
-        if hi >= 0:
-          result += bit_range(lo, hi)
+   for d in depths:
+    lo, hi = max(0, k1 - d), k2 - d
+    if hi >= 0:
+     result += bit_range(lo, hi)
 
-      for d in depths:
-        bit_update(d, 1)
-        max_d = max(max_d, d)
+   for d in depths:
+    bit_update(d, 1)
+    max_d = max(max_d, d)
 
-    for d in range(max_d + 1):
-      v = bit_range(d, d)
-      if v > 0: bit_update(d, -v)
+  for d in range(max_d + 1):
+   v = bit_range(d, d)
+   if v > 0: bit_update(d, -v)
 
-    for v in adj[c]:
-      if not removed[v]:
-        process(v)
+  for v in adj[c]:
+   if not removed[v]:
+    process(v)
 
-  process(1)
-  return result
+ process(1)
+ return result
 
 def main():
-  data = sys.stdin.read().split()
-  n, k1, k2 = int(data[0]), int(data[1]), int(data[2])
-  edges = [(int(data[3+2*i]), int(data[4+2*i])) for i in range(n-1)]
-  print(solve(n, k1, k2, edges))
+ data = sys.stdin.read().split()
+ n, k1, k2 = int(data[0]), int(data[1]), int(data[2])
+ edges = [(int(data[3+2*i]), int(data[4+2*i])) for i in range(n-1)]
+ print(solve(n, k1, k2, edges))
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -287,7 +287,7 @@ bit = [0] * (n + 2)
 # WRONG - counts paths within same subtree
 all_depths = []
 for v in adj[centroid]:
-  get_depths(v, centroid, 1, all_depths)
+ get_depths(v, centroid, 1, all_depths)
 # Then counting pairs in all_depths
 ```
 

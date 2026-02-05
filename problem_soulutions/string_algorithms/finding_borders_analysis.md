@@ -119,20 +119,20 @@ Check every possible prefix length to see if that prefix equals the correspondin
 
 ```python
 def find_borders_brute(s):
-  """
-  Brute force: check all possible prefix/suffix pairs.
+ """
+ Brute force: check all possible prefix/suffix pairs.
 
-  Time: O(n^2)
-  Space: O(1)
-  """
-  n = len(s)
-  borders = []
+ Time: O(n^2)
+ Space: O(1)
+ """
+ n = len(s)
+ borders = []
 
-  for k in range(1, n):
-    if s[:k] == s[n-k:]:
-      borders.append(k)
+ for k in range(1, n):
+  if s[:k] == s[n-k:]:
+   borders.append(k)
 
-  return borders
+ return borders
 ```
 
 ### Complexity
@@ -242,37 +242,37 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  s = input().strip()
-  n = len(s)
+ s = input().strip()
+ n = len(s)
 
-  if n == 1:
-    return  # No proper borders possible
+ if n == 1:
+  return  # No proper borders possible
 
-  # Build failure function
-  fail = [0] * n
-  j = 0  # Length of previous longest prefix-suffix
+ # Build failure function
+ fail = [0] * n
+ j = 0  # Length of previous longest prefix-suffix
 
-  for i in range(1, n):
-    # Fall back until match or j becomes 0
-    while j > 0 and s[i] != s[j]:
-      j = fail[j - 1]
+ for i in range(1, n):
+  # Fall back until match or j becomes 0
+  while j > 0 and s[i] != s[j]:
+   j = fail[j - 1]
 
-    if s[i] == s[j]:
-      j += 1
+  if s[i] == s[j]:
+   j += 1
 
-    fail[i] = j
+  fail[i] = j
 
-  # Extract all borders by following the chain
-  borders = []
-  length = fail[n - 1]
+ # Extract all borders by following the chain
+ borders = []
+ length = fail[n - 1]
 
-  while length > 0:
-    borders.append(length)
-    length = fail[length - 1]
+ while length > 0:
+  borders.append(length)
+  length = fail[length - 1]
 
-  # Print in increasing order
-  if borders:
-    print(' '.join(map(str, reversed(borders))))
+ # Print in increasing order
+ if borders:
+  print(' '.join(map(str, reversed(borders))))
 
 solve()
 ```
@@ -293,8 +293,8 @@ solve()
 ```python
 # WRONG: Including the entire string as a border
 for k in range(1, n + 1):  # Should be range(1, n)
-  if s[:k] == s[n-k:]:
-    borders.append(k)
+ if s[:k] == s[n-k:]:
+  borders.append(k)
 ```
 
 **Problem:** A border must be a PROPER prefix/suffix (not the entire string)
@@ -306,8 +306,8 @@ for k in range(1, n + 1):  # Should be range(1, n)
 # WRONG: Using wrong index
 length = fail[n - 1]
 while length > 0:
-  borders.append(length)
-  length = fail[length]  # Should be fail[length - 1]
+ borders.append(length)
+ length = fail[length]  # Should be fail[length - 1]
 ```
 
 **Problem:** fail[length] is wrong because we need the border of the border substring s[0..length-1]
@@ -318,8 +318,8 @@ while length > 0:
 ```python
 # WRONG: Printing in decreasing order
 while length > 0:
-  print(length, end=' ')  # Gives "3 1" instead of "1 3"
-  length = fail[length - 1]
+ print(length, end=' ')  # Gives "3 1" instead of "1 3"
+ length = fail[length - 1]
 ```
 
 **Problem:** The problem asks for increasing order

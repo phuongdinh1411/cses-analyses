@@ -32,62 +32,62 @@ Since we only have 5 numbers and need to choose 4 with specific positions, we ca
 from itertools import permutations
 
 def solve():
-  x = list(map(int, input().split()))
+ x = list(map(int, input().split()))
 
-  min_diff = float('inf')
-  best_indices = None
+ min_diff = float('inf')
+ best_indices = None
 
-  # Try all permutations of 4 indices from 5
-  for perm in permutations(range(5), 4):
-    a, b, c, d = perm
-    # Calculate |(x[a]/x[b]) - (x[c]/x[d])|
-    diff = abs(x[a] / x[b] - x[c] / x[d])
+ # Try all permutations of 4 indices from 5
+ for perm in permutations(range(5), 4):
+  a, b, c, d = perm
+  # Calculate |(x[a]/x[b]) - (x[c]/x[d])|
+  diff = abs(x[a] / x[b] - x[c] / x[d])
 
-    # Update if better, or if same but lexicographically smaller
-    if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
-      min_diff = diff
-      best_indices = perm
+  # Update if better, or if same but lexicographically smaller
+  if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
+   min_diff = diff
+   best_indices = perm
 
-  print(' '.join(map(str, best_indices)))
+ print(' '.join(map(str, best_indices)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution with Explicit Enumeration
 
 ```python
 def solve():
-  x = list(map(int, input().split()))
+ x = list(map(int, input().split()))
 
-  min_diff = float('inf')
-  best = None
+ min_diff = float('inf')
+ best = None
 
-  # Generate all permutations of 4 distinct indices
-  for a in range(5):
-    for b in range(5):
-      if b == a:
-        continue
-      for c in range(5):
-        if c == a or c == b:
-          continue
-        for d in range(5):
-          if d == a or d == b or d == c:
-            continue
+ # Generate all permutations of 4 distinct indices
+ for a in range(5):
+  for b in range(5):
+   if b == a:
+    continue
+   for c in range(5):
+    if c == a or c == b:
+     continue
+    for d in range(5):
+     if d == a or d == b or d == c:
+      continue
 
-          diff = abs(x[a] / x[b] - x[c] / x[d])
-          indices = (a, b, c, d)
+     diff = abs(x[a] / x[b] - x[c] / x[d])
+     indices = (a, b, c, d)
 
-          if diff < min_diff:
-            min_diff = diff
-            best = indices
-          elif diff == min_diff and indices < best:
-            best = indices
+     if diff < min_diff:
+      min_diff = diff
+      best = indices
+     elif diff == min_diff and indices < best:
+      best = indices
 
-  print(' '.join(map(str, best)))
+ print(' '.join(map(str, best)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Solution with Fraction Comparison (Avoid Floating Point)
@@ -97,26 +97,26 @@ from fractions import Fraction
 from itertools import permutations
 
 def solve():
-  x = list(map(int, input().split()))
+ x = list(map(int, input().split()))
 
-  min_diff = Fraction(10**9, 1)
-  best_indices = None
+ min_diff = Fraction(10**9, 1)
+ best_indices = None
 
-  for perm in permutations(range(5), 4):
-    a, b, c, d = perm
-    # Use fractions for exact comparison
-    frac1 = Fraction(x[a], x[b])
-    frac2 = Fraction(x[c], x[d])
-    diff = abs(frac1 - frac2)
+ for perm in permutations(range(5), 4):
+  a, b, c, d = perm
+  # Use fractions for exact comparison
+  frac1 = Fraction(x[a], x[b])
+  frac2 = Fraction(x[c], x[d])
+  diff = abs(frac1 - frac2)
 
-    if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
-      min_diff = diff
-      best_indices = perm
+  if diff < min_diff or (diff == min_diff and list(perm) < list(best_indices)):
+   min_diff = diff
+   best_indices = perm
 
-  print(' '.join(map(str, best_indices)))
+ print(' '.join(map(str, best_indices)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

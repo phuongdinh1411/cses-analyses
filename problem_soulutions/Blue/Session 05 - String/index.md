@@ -41,12 +41,12 @@ first_team = input().strip()
 first_team_score = 1
 second_team = ''
 for i in range(1, n):
-  cur_team_score = input().strip()
-  if cur_team_score != first_team:
-    first_team_score -= 1
-    second_team = cur_team_score
-  else:
-    first_team_score += 1
+ cur_team_score = input().strip()
+ if cur_team_score != first_team:
+  first_team_score -= 1
+  second_team = cur_team_score
+ else:
+  first_team_score += 1
 
 print(first_team if first_team_score > 0 else second_team)
 ```
@@ -83,45 +83,45 @@ Check character frequencies. If same length, only swaps needed. If t is subseque
 ##### Python Solution
 ```python
 def check_solution(_s, _t):
-  is_array = False
+ is_array = False
 
-  s_map = [0] * 26
-  t_map = [0] * 26
+ s_map = [0] * 26
+ t_map = [0] * 26
 
-  s_length = len(_s)
-  t_length = len(_t)
+ s_length = len(_s)
+ t_length = len(_t)
 
-  for i in range(s_length):
-    s_map[ord(_s[i]) - 97] += 1
+ for i in range(s_length):
+  s_map[ord(_s[i]) - 97] += 1
 
-  for i in range(t_length):
-    t_map[ord(_t[i]) - 97] += 1
+ for i in range(t_length):
+  t_map[ord(_t[i]) - 97] += 1
 
-  for i in range(26):
-    if s_map[i] < t_map[i]:
-      return 'need tree'
+ for i in range(26):
+  if s_map[i] < t_map[i]:
+   return 'need tree'
 
-  if s_length == t_length:
-    return 'array'
+ if s_length == t_length:
+  return 'array'
 
-  s_left = 0
-  t_left = 0
-  while True:
-    if s_left >= s_length or t_left >= t_length:
-      break
-    if _s[s_left] != _t[t_left]:
-      s_left += 1
-    else:
-      s_left += 1
-      t_left += 1
-    if s_length - s_left < t_length - t_left:
-      is_array = True
-      break
+ s_left = 0
+ t_left = 0
+ while True:
+  if s_left >= s_length or t_left >= t_length:
+   break
+  if _s[s_left] != _t[t_left]:
+   s_left += 1
+  else:
+   s_left += 1
+   t_left += 1
+  if s_length - s_left < t_length - t_left:
+   is_array = True
+   break
 
-  if is_array:
-    return 'both'
+ if is_array:
+  return 'both'
 
-  return 'automaton'
+ return 'automaton'
 
 
 s = input()
@@ -163,26 +163,26 @@ Build a dictionary mapping first language words to their pairs. For each lecture
 ##### Python Solution
 ```python
 def get_shorter(ci, _a, _b):
-  _i = 0
-  while ci != _a[_i]:
-    _i += 1
+ _i = 0
+ while ci != _a[_i]:
+  _i += 1
 
-  return _a[_i] if len(_a[_i]) <= len(_b[_i]) else _b[_i]
+ return _a[_i] if len(_a[_i]) <= len(_b[_i]) else _b[_i]
 
 
 n, m = map(int, input().split())
 a = []
 b = []
 for i in range(m):
-  ai, bi = input().split()
-  a.append(ai)
-  b.append(bi)
+ ai, bi = input().split()
+ a.append(ai)
+ b.append(bi)
 c = input().split()
 
 result = []
 
 for i in range(n):
-  result.append(get_shorter(c[i], a, b))
+ result.append(get_shorter(c[i], a, b))
 
 print(*result, sep=' ')
 ```
@@ -223,25 +223,25 @@ t = input().strip()
 first_smaller = -1
 result = 'No such string'
 for i in range(len(s)):
-  if ord(t[i]) - ord(s[i]) >= 2:
-    result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
-    break
-  if ord(t[i]) > ord(s[i]):
-    first_smaller = i
-    break
+ if ord(t[i]) - ord(s[i]) >= 2:
+  result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
+  break
+ if ord(t[i]) > ord(s[i]):
+  first_smaller = i
+  break
 
 if first_smaller >= 0:
-  if s[first_smaller + 1:] >= t[first_smaller + 1:]:
-    for i in range(first_smaller + 1, len(t)):
-      if t[i] is not 'a':
-        result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + t[first_smaller + 1:i] + chr(
-          ord(t[i]) - 1) + t[i + 1:]
-        break
-      if s[i] is not 'z':
-        result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
-        break
-  elif s[first_smaller + 1:] < t[first_smaller + 1:]:
-    result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + s[first_smaller + 1:]
+ if s[first_smaller + 1:] >= t[first_smaller + 1:]:
+  for i in range(first_smaller + 1, len(t)):
+   if t[i] is not 'a':
+    result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + t[first_smaller + 1:i] + chr(
+     ord(t[i]) - 1) + t[i + 1:]
+    break
+   if s[i] is not 'z':
+    result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
+    break
+ elif s[first_smaller + 1:] < t[first_smaller + 1:]:
+  result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + s[first_smaller + 1:]
 
 print(result)
 ```
@@ -291,49 +291,49 @@ t_map = [0] * 58
 up_low_distance = 32
 
 for i in range(slength):
-  s_map[ord(s[i]) - 65] += 1
+ s_map[ord(s[i]) - 65] += 1
 
 for i in range(tlength):
-  t_map[ord(t[i]) - 65] += 1
+ t_map[ord(t[i]) - 65] += 1
 
 for i in range(26):
-  # Go with YAY!
-  if t_map[i] >= s_map[i]:
-    yay += s_map[i]
-    t_map[i] -= s_map[i]
-    s_map[i] = 0
-  else:
-    yay += t_map[i]
-    s_map[i] -= t_map[i]
-    t_map[i] = 0
+ # Go with YAY!
+ if t_map[i] >= s_map[i]:
+  yay += s_map[i]
+  t_map[i] -= s_map[i]
+  s_map[i] = 0
+ else:
+  yay += t_map[i]
+  s_map[i] -= t_map[i]
+  t_map[i] = 0
 
-  if t_map[i + up_low_distance] >= s_map[i + up_low_distance]:
-    yay += s_map[i + up_low_distance]
-    t_map[i + up_low_distance] -= s_map[i + up_low_distance]
-    s_map[i + up_low_distance] = 0
-  else:
-    yay += t_map[i + up_low_distance]
-    s_map[i + up_low_distance] -= t_map[i + up_low_distance]
-    t_map[i + up_low_distance] = 0
+ if t_map[i + up_low_distance] >= s_map[i + up_low_distance]:
+  yay += s_map[i + up_low_distance]
+  t_map[i + up_low_distance] -= s_map[i + up_low_distance]
+  s_map[i + up_low_distance] = 0
+ else:
+  yay += t_map[i + up_low_distance]
+  s_map[i + up_low_distance] -= t_map[i + up_low_distance]
+  t_map[i + up_low_distance] = 0
 
-  # Go with WHOOPS
-  if t_map[i] >= s_map[i + up_low_distance]:
-    whoops += s_map[i + up_low_distance]
-    t_map[i] -= s_map[i + up_low_distance]
-    s_map[i + up_low_distance] = 0
-  else:
-    whoops += t_map[i]
-    s_map[i + up_low_distance] -= t_map[i]
-    t_map[i] = 0
+ # Go with WHOOPS
+ if t_map[i] >= s_map[i + up_low_distance]:
+  whoops += s_map[i + up_low_distance]
+  t_map[i] -= s_map[i + up_low_distance]
+  s_map[i + up_low_distance] = 0
+ else:
+  whoops += t_map[i]
+  s_map[i + up_low_distance] -= t_map[i]
+  t_map[i] = 0
 
-  if t_map[i + up_low_distance] >= s_map[i]:
-    whoops += s_map[i]
-    t_map[i + up_low_distance] -= s_map[i]
-    s_map[i] = 0
-  else:
-    whoops += t_map[i + up_low_distance]
-    s_map[i] -= t_map[i + up_low_distance]
-    t_map[i + up_low_distance] = 0
+ if t_map[i + up_low_distance] >= s_map[i]:
+  whoops += s_map[i]
+  t_map[i + up_low_distance] -= s_map[i]
+  s_map[i] = 0
+ else:
+  whoops += t_map[i + up_low_distance]
+  s_map[i] -= t_map[i + up_low_distance]
+  t_map[i + up_low_distance] = 0
 
 print(yay, whoops)
 ```
@@ -376,15 +376,15 @@ str13 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower
 
 n = int(input())
 for i in range(n):
-  ai = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
-  if len(ai) != len(str11) + len(str12) + len(str13):
-    print('WA')
-    continue
-  if (str11 + str12 + str13) == ai or (str11 + str13 + str12) == ai or (str12 + str11 + str13) == ai or (
-      str12 + str13 + str11) == ai or (str13 + str11 + str12) == ai or (str13 + str12 + str11) == ai:
-    print('ACC')
-    continue
+ ai = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
+ if len(ai) != len(str11) + len(str12) + len(str13):
   print('WA')
+  continue
+ if (str11 + str12 + str13) == ai or (str11 + str13 + str12) == ai or (str12 + str11 + str13) == ai or (
+   str12 + str13 + str11) == ai or (str13 + str11 + str12) == ai or (str13 + str12 + str11) == ai:
+  print('ACC')
+  continue
+ print('WA')
 ```
 
 ##### Complexity Analysis
@@ -423,28 +423,28 @@ n, k = map(int, input().split())
 
 passwords = []
 for i in range(n):
-  passwords.append(input())
+ passwords.append(input())
 
 passwords = sorted(passwords, key=lambda x: -len(x))
 correct_pwd = input()
 right_break_point = n - 1
 left_break_point = 0
 for i in range(n - 1, -1, -1):
-  if len(correct_pwd) == len(passwords[i]):
-    right_break_point = i
-    break
+ if len(correct_pwd) == len(passwords[i]):
+  right_break_point = i
+  break
 
 for i in range(right_break_point, -1, -1):
-  if len(correct_pwd) != len(passwords[i]):
-    left_break_point = i + 1
-    break
+ if len(correct_pwd) != len(passwords[i]):
+  left_break_point = i + 1
+  break
 
 same_length_list = passwords[left_break_point:right_break_point + 1]
 
 number_of_corrects = 0
 for i in range(len(same_length_list)):
-  if same_length_list[i] == correct_pwd:
-    number_of_corrects += 1
+ if same_length_list[i] == correct_pwd:
+  number_of_corrects += 1
 
 counter_best_case = n - right_break_point
 counter_worst_case = n - (left_break_point + number_of_corrects - 1)
@@ -490,8 +490,8 @@ ex_name = input()
 result = 0
 cur_pos = 97
 for c in ex_name:
-  result += min(abs(ord(c) - cur_pos), 26 - abs(ord(c) - cur_pos))
-  cur_pos = ord(c)
+ result += min(abs(ord(c) - cur_pos), 26 - abs(ord(c) - cur_pos))
+ cur_pos = ord(c)
 print(result)
 ```
 
@@ -533,25 +533,25 @@ result = ''
 matrix = [[0 for i in range(m)] for j in range(n)]
 
 for i in range(n):
-  rectangular.append(input())
+ rectangular.append(input())
 
 for i in range(n):
-  for j in range(m):
-    if matrix[i][j] == 0:
-      for row_checker in range(m):
-        if row_checker != j and rectangular[i][row_checker] == rectangular[i][j]:
-          matrix[i][row_checker] = 1
-          matrix[i][j] = 1
-      for col_checker in range(n):
-        if col_checker != i and rectangular[col_checker][j] == rectangular[i][j]:
-          matrix[col_checker][j] = 1
-          matrix[i][j] = 1
+ for j in range(m):
+  if matrix[i][j] == 0:
+   for row_checker in range(m):
+    if row_checker != j and rectangular[i][row_checker] == rectangular[i][j]:
+     matrix[i][row_checker] = 1
+     matrix[i][j] = 1
+   for col_checker in range(n):
+    if col_checker != i and rectangular[col_checker][j] == rectangular[i][j]:
+     matrix[col_checker][j] = 1
+     matrix[i][j] = 1
 
 
 for i in range(n):
-  for j in range(m):
-    if matrix[i][j] == 0:
-      result += rectangular[i][j]
+ for j in range(m):
+  if matrix[i][j] == 0:
+   result += rectangular[i][j]
 
 print(result)
 ```

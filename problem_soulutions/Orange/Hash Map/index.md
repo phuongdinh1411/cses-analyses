@@ -40,129 +40,129 @@ Use KMP to find the failure function of t, which tells us the overlap when placi
 
 ```python
 def compute_lps(pattern):
-  """KMP failure function"""
-  m = len(pattern)
-  lps = [0] * m
-  length = 0
-  i = 1
+ """KMP failure function"""
+ m = len(pattern)
+ lps = [0] * m
+ length = 0
+ i = 1
 
-  while i < m:
-    if pattern[i] == pattern[length]:
-      length += 1
-      lps[i] = length
-      i += 1
-    elif length != 0:
-      length = lps[length - 1]
-    else:
-      lps[i] = 0
-      i += 1
+ while i < m:
+  if pattern[i] == pattern[length]:
+   length += 1
+   lps[i] = length
+   i += 1
+  elif length != 0:
+   length = lps[length - 1]
+  else:
+   lps[i] = 0
+   i += 1
 
-  return lps
+ return lps
 
 def solve():
-  s = input().strip()
-  t = input().strip()
+ s = input().strip()
+ t = input().strip()
 
-  # Count available 0s and 1s
-  zeros = s.count('0')
-  ones = s.count('1')
+ # Count available 0s and 1s
+ zeros = s.count('0')
+ ones = s.count('1')
 
-  # Count 0s and 1s needed for one copy of t
-  t_zeros = t.count('0')
-  t_ones = t.count('1')
+ # Count 0s and 1s needed for one copy of t
+ t_zeros = t.count('0')
+ t_ones = t.count('1')
 
-  if t_zeros == 0 and t_ones == 0:
-    print(s)
-    return
+ if t_zeros == 0 and t_ones == 0:
+  print(s)
+  return
 
-  # Compute LPS for overlap
-  lps = compute_lps(t)
-  overlap = lps[-1] if t else 0
+ # Compute LPS for overlap
+ lps = compute_lps(t)
+ overlap = lps[-1] if t else 0
 
-  # The non-overlapping suffix of t
-  suffix = t[overlap:]
-  suffix_zeros = suffix.count('0')
-  suffix_ones = suffix.count('1')
+ # The non-overlapping suffix of t
+ suffix = t[overlap:]
+ suffix_zeros = suffix.count('0')
+ suffix_ones = suffix.count('1')
 
-  result = []
+ result = []
 
-  # Place first copy of t if possible
-  if zeros >= t_zeros and ones >= t_ones:
-    result.append(t)
-    zeros -= t_zeros
-    ones -= t_ones
+ # Place first copy of t if possible
+ if zeros >= t_zeros and ones >= t_ones:
+  result.append(t)
+  zeros -= t_zeros
+  ones -= t_ones
 
-    # Place more copies using overlap
-    while zeros >= suffix_zeros and ones >= suffix_ones:
-      result.append(suffix)
-      zeros -= suffix_zeros
-      ones -= suffix_ones
+  # Place more copies using overlap
+  while zeros >= suffix_zeros and ones >= suffix_ones:
+   result.append(suffix)
+   zeros -= suffix_zeros
+   ones -= suffix_ones
 
-  # Append remaining characters
-  result.append('0' * zeros)
-  result.append('1' * ones)
+ # Append remaining characters
+ result.append('0' * zeros)
+ result.append('1' * ones)
 
-  print(''.join(result))
+ print(''.join(result))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  s = input().strip()
-  t = input().strip()
+ s = input().strip()
+ t = input().strip()
 
-  cnt0 = s.count('0')
-  cnt1 = s.count('1')
+ cnt0 = s.count('0')
+ cnt1 = s.count('1')
 
-  t0 = t.count('0')
-  t1 = t.count('1')
+ t0 = t.count('0')
+ t1 = t.count('1')
 
-  # KMP failure function
-  def kmp_fail(p):
-    n = len(p)
-    fail = [0] * n
-    j = 0
-    for i in range(1, n):
-      while j > 0 and p[i] != p[j]:
-        j = fail[j-1]
-      if p[i] == p[j]:
-        j += 1
-      fail[i] = j
-    return fail
+ # KMP failure function
+ def kmp_fail(p):
+  n = len(p)
+  fail = [0] * n
+  j = 0
+  for i in range(1, n):
+   while j > 0 and p[i] != p[j]:
+    j = fail[j-1]
+   if p[i] == p[j]:
+    j += 1
+   fail[i] = j
+  return fail
 
-  fail = kmp_fail(t)
-  overlap = fail[-1] if t else 0
+ fail = kmp_fail(t)
+ overlap = fail[-1] if t else 0
 
-  # After first t, each additional t adds only t[overlap:]
-  add = t[overlap:]
-  add0 = add.count('0')
-  add1 = add.count('1')
+ # After first t, each additional t adds only t[overlap:]
+ add = t[overlap:]
+ add0 = add.count('0')
+ add1 = add.count('1')
 
-  ans = []
+ ans = []
 
-  # Try to place first t
-  if cnt0 >= t0 and cnt1 >= t1:
-    ans.append(t)
-    cnt0 -= t0
-    cnt1 -= t1
+ # Try to place first t
+ if cnt0 >= t0 and cnt1 >= t1:
+  ans.append(t)
+  cnt0 -= t0
+  cnt1 -= t1
 
-    # Keep adding overlapped copies
-    while cnt0 >= add0 and cnt1 >= add1:
-      ans.append(add)
-      cnt0 -= add0
-      cnt1 -= add1
+  # Keep adding overlapped copies
+  while cnt0 >= add0 and cnt1 >= add1:
+   ans.append(add)
+   cnt0 -= add0
+   cnt1 -= add1
 
-  # Fill remaining
-  ans.append('0' * cnt0 + '1' * cnt1)
+ # Fill remaining
+ ans.append('0' * cnt0 + '1' * cnt1)
 
-  print(''.join(ans))
+ print(''.join(ans))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -225,84 +225,84 @@ Use a running XOR of the last min(k, i+1) bits of b.
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  s = input().strip()
+ n, k = map(int, input().split())
+ s = input().strip()
 
-  b = []
-  xor_sum = 0  # Running XOR of last k bits of b
+ b = []
+ xor_sum = 0  # Running XOR of last k bits of b
 
-  for i in range(n):
-    # s[i] = xor of b[max(0,i-k+1)] to b[i]
-    # So b[i] = s[i] XOR (xor of b[max(0,i-k+1)] to b[i-1])
-    # The "xor of previous" is our running xor_sum
+ for i in range(n):
+  # s[i] = xor of b[max(0,i-k+1)] to b[i]
+  # So b[i] = s[i] XOR (xor of b[max(0,i-k+1)] to b[i-1])
+  # The "xor of previous" is our running xor_sum
 
-    bit = int(s[i]) ^ xor_sum
-    b.append(str(bit))
+  bit = int(s[i]) ^ xor_sum
+  b.append(str(bit))
 
-    # Update running XOR
-    xor_sum ^= bit
+  # Update running XOR
+  xor_sum ^= bit
 
-    # Remove contribution of b[i-k+1] if it exists (sliding window)
-    if i >= k - 1:
-      xor_sum ^= int(b[i - k + 1])
+  # Remove contribution of b[i-k+1] if it exists (sliding window)
+  if i >= k - 1:
+   xor_sum ^= int(b[i - k + 1])
 
-  print(''.join(b))
+ print(''.join(b))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  s = input().strip()
+ n, k = map(int, input().split())
+ s = input().strip()
 
-  result = []
-  window_xor = 0
+ result = []
+ window_xor = 0
 
-  for i in range(n):
-    # Decode b[i]
-    # s[i] contains XOR of b[i-k+1..i], but we only have b[0..i-1]
-    # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
+ for i in range(n):
+  # Decode b[i]
+  # s[i] contains XOR of b[i-k+1..i], but we only have b[0..i-1]
+  # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
 
-    b_i = int(s[i]) ^ window_xor
-    result.append(b_i)
+  b_i = int(s[i]) ^ window_xor
+  result.append(b_i)
 
-    # Add b[i] to window
-    window_xor ^= b_i
+  # Add b[i] to window
+  window_xor ^= b_i
 
-    # Remove b[i-k+1] from window if window exceeds k
-    if i - k + 1 >= 0:
-      window_xor ^= result[i - k + 1]
+  # Remove b[i-k+1] from window if window exceeds k
+  if i - k + 1 >= 0:
+   window_xor ^= result[i - k + 1]
 
-  print(''.join(map(str, result)))
+ print(''.join(map(str, result)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### One-liner
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  s = input().strip()
+ n, k = map(int, input().split())
+ s = input().strip()
 
-  b = [0] * n
-  xor = 0
+ b = [0] * n
+ xor = 0
 
-  for i in range(n):
-    b[i] = int(s[i]) ^ xor
-    xor ^= b[i]
-    if i >= k - 1:
-      xor ^= b[i - k + 1]
+ for i in range(n):
+  b[i] = int(s[i]) ^ xor
+  xor ^= b[i]
+  if i >= k - 1:
+   xor ^= b[i - k + 1]
 
-  print(''.join(map(str, b)))
+ print(''.join(map(str, b)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -354,116 +354,116 @@ The Trie approach is more efficient for this problem.
 
 ```python
 def solve():
-  s = input().strip()
-  good_bad = input().strip()
-  k = int(input())
+ s = input().strip()
+ good_bad = input().strip()
+ k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+ def is_bad(c):
+  return good_bad[ord(c) - ord('a')] == '0'
 
-  n = len(s)
-  good_substrings = set()
+ n = len(s)
+ good_substrings = set()
 
-  for i in range(n):
-    bad_count = 0
-    substring = ""
-    for j in range(i, n):
-      substring += s[j]
-      if is_bad(s[j]):
-        bad_count += 1
+ for i in range(n):
+  bad_count = 0
+  substring = ""
+  for j in range(i, n):
+   substring += s[j]
+   if is_bad(s[j]):
+    bad_count += 1
 
-      if bad_count > k:
-        break
+   if bad_count > k:
+    break
 
-      good_substrings.add(substring)
+   good_substrings.add(substring)
 
-  print(len(good_substrings))
+ print(len(good_substrings))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Python Solution
 
 ```python
 class TrieNode:
-  def __init__(self):
-    self.children = {}
-    self.is_end = False
+ def __init__(self):
+  self.children = {}
+  self.is_end = False
 
 def solve():
-  s = input().strip()
-  good_bad = input().strip()
-  k = int(input())
+ s = input().strip()
+ good_bad = input().strip()
+ k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+ def is_bad(c):
+  return good_bad[ord(c) - ord('a')] == '0'
 
-  n = len(s)
-  root = TrieNode()
-  count = 0
+ n = len(s)
+ root = TrieNode()
+ count = 0
 
-  for i in range(n):
-    bad_count = 0
-    node = root
+ for i in range(n):
+  bad_count = 0
+  node = root
 
-    for j in range(i, n):
-      c = s[j]
-      if is_bad(c):
-        bad_count += 1
+  for j in range(i, n):
+   c = s[j]
+   if is_bad(c):
+    bad_count += 1
 
-      if bad_count > k:
-        break
+   if bad_count > k:
+    break
 
-      if c not in node.children:
-        node.children[c] = TrieNode()
-        count += 1  # New unique substring found
+   if c not in node.children:
+    node.children[c] = TrieNode()
+    count += 1  # New unique substring found
 
-      node = node.children[c]
+   node = node.children[c]
 
-  print(count)
+ print(count)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Python Solution
 
 ```python
 def solve():
-  s = input().strip()
-  good_bad = input().strip()
-  k = int(input())
+ s = input().strip()
+ good_bad = input().strip()
+ k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+ def is_bad(c):
+  return good_bad[ord(c) - ord('a')] == '0'
 
-  n = len(s)
-  MOD = 10**18 + 9
-  BASE = 31
+ n = len(s)
+ MOD = 10**18 + 9
+ BASE = 31
 
-  good_substrings = set()
+ good_substrings = set()
 
-  for i in range(n):
-    bad_count = 0
-    hash_val = 0
-    power = 1
+ for i in range(n):
+  bad_count = 0
+  hash_val = 0
+  power = 1
 
-    for j in range(i, n):
-      if is_bad(s[j]):
-        bad_count += 1
+  for j in range(i, n):
+   if is_bad(s[j]):
+    bad_count += 1
 
-      if bad_count > k:
-        break
+   if bad_count > k:
+    break
 
-      # Rolling hash
-      hash_val = (hash_val * BASE + ord(s[j]) - ord('a') + 1) % MOD
-      good_substrings.add((j - i + 1, hash_val))  # (length, hash) pair
+   # Rolling hash
+   hash_val = (hash_val * BASE + ord(s[j]) - ord('a') + 1) % MOD
+   good_substrings.add((j - i + 1, hash_val))  # (length, hash) pair
 
-  print(len(good_substrings))
+ print(len(good_substrings))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -512,64 +512,64 @@ This is the classic Activity Selection problem. Greedy approach:
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    starts = list(map(int, input().split()))
-    ends = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  starts = list(map(int, input().split()))
+  ends = list(map(int, input().split()))
 
-    # Create list of (end_time, start_time, original_index)
-    meetings = [(ends[i], starts[i], i + 1) for i in range(n)]
+  # Create list of (end_time, start_time, original_index)
+  meetings = [(ends[i], starts[i], i + 1) for i in range(n)]
 
-    # Sort by end time
-    meetings.sort()
+  # Sort by end time
+  meetings.sort()
 
-    result = []
-    last_end = -1
+  result = []
+  last_end = -1
 
-    for end, start, idx in meetings:
-      if start > last_end:
-        result.append(idx)
-        last_end = end
+  for end, start, idx in meetings:
+   if start > last_end:
+    result.append(idx)
+    last_end = end
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    starts = list(map(int, input().split()))
-    ends = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  starts = list(map(int, input().split()))
+  ends = list(map(int, input().split()))
 
-    # Create meetings with 1-based index
-    meetings = []
-    for i in range(n):
-      meetings.append((ends[i], starts[i], i + 1))
+  # Create meetings with 1-based index
+  meetings = []
+  for i in range(n):
+   meetings.append((ends[i], starts[i], i + 1))
 
-    # Sort by end time, then by start time
-    meetings.sort(key=lambda x: (x[0], x[1]))
+  # Sort by end time, then by start time
+  meetings.sort(key=lambda x: (x[0], x[1]))
 
-    selected = []
-    prev_end = 0
+  selected = []
+  prev_end = 0
 
-    for end, start, idx in meetings:
-      if start >= prev_end:
-        selected.append(idx)
-        prev_end = end
+  for end, start, idx in meetings:
+   if start >= prev_end:
+    selected.append(idx)
+    prev_end = end
 
-    print(' '.join(map(str, selected)))
+  print(' '.join(map(str, selected)))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -616,96 +616,96 @@ To count all proper suffixes that are also prefixes:
 
 ```python
 def compute_prefix(s):
-  """KMP prefix function"""
-  n = len(s)
-  pi = [0] * n
+ """KMP prefix function"""
+ n = len(s)
+ pi = [0] * n
 
-  for i in range(1, n):
-    j = pi[i - 1]
-    while j > 0 and s[i] != s[j]:
-      j = pi[j - 1]
-    if s[i] == s[j]:
-      j += 1
-    pi[i] = j
+ for i in range(1, n):
+  j = pi[i - 1]
+  while j > 0 and s[i] != s[j]:
+   j = pi[j - 1]
+  if s[i] == s[j]:
+   j += 1
+  pi[i] = j
 
-  return pi
+ return pi
 
 def count_suffix_prefix(s):
-  """Count proper suffixes that are also prefixes"""
-  n = len(s)
-  if n == 0:
-    return 0
+ """Count proper suffixes that are also prefixes"""
+ n = len(s)
+ if n == 0:
+  return 0
 
-  pi = compute_prefix(s)
+ pi = compute_prefix(s)
 
-  # Follow the chain from pi[n-1]
-  count = 0
-  length = pi[n - 1]
+ # Follow the chain from pi[n-1]
+ count = 0
+ length = pi[n - 1]
 
-  while length > 0:
-    count += 1
-    length = pi[length - 1]
+ while length > 0:
+  count += 1
+  length = pi[length - 1]
 
-  return count
+ return count
 
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    s = input().strip()
-    result = count_suffix_prefix(s)
-    print(f"Case {case}: {result}")
+ for case in range(1, t + 1):
+  s = input().strip()
+  result = count_suffix_prefix(s)
+  print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def z_function(s):
-  """Z-function: z[i] = length of longest substring starting from i that matches prefix"""
-  n = len(s)
-  z = [0] * n
-  z[0] = n
-  l, r = 0, 0
+ """Z-function: z[i] = length of longest substring starting from i that matches prefix"""
+ n = len(s)
+ z = [0] * n
+ z[0] = n
+ l, r = 0, 0
 
-  for i in range(1, n):
-    if i < r:
-      z[i] = min(r - i, z[i - l])
-    while i + z[i] < n and s[z[i]] == s[i + z[i]]:
-      z[i] += 1
-    if i + z[i] > r:
-      l, r = i, i + z[i]
+ for i in range(1, n):
+  if i < r:
+   z[i] = min(r - i, z[i - l])
+  while i + z[i] < n and s[z[i]] == s[i + z[i]]:
+   z[i] += 1
+  if i + z[i] > r:
+   l, r = i, i + z[i]
 
-  return z
+ return z
 
 def count_suffix_prefix_z(s):
-  """Count using Z-function"""
-  n = len(s)
-  if n == 0:
-    return 0
+ """Count using Z-function"""
+ n = len(s)
+ if n == 0:
+  return 0
 
-  z = z_function(s)
+ z = z_function(s)
 
-  # A suffix starting at position i is also a prefix if z[i] == n - i
-  count = 0
-  for i in range(1, n):
-    if z[i] == n - i:
-      count += 1
+ # A suffix starting at position i is also a prefix if z[i] == n - i
+ count = 0
+ for i in range(1, n):
+  if z[i] == n - i:
+   count += 1
 
-  return count
+ return count
 
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    s = input().strip()
-    result = count_suffix_prefix_z(s)
-    print(f"Case {case}: {result}")
+ for case in range(1, t + 1):
+  s = input().strip()
+  result = count_suffix_prefix_z(s)
+  print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -766,45 +766,45 @@ Print two integers: the value with maximum occurrences (or max value if all uniq
 
 ```python
 def digit_sum(n):
-  total = 0
-  while n:
-    total += n % 10
-    n //= 10
-  return total
+ total = 0
+ while n:
+  total += n % 10
+  n //= 10
+ return total
 
 def r3gz3n(n):
-  return n ^ digit_sum(n)
+ return n ^ digit_sum(n)
 
 def solve():
-  n = int(input())
-  numbers = list(map(int, input().split()))
+ n = int(input())
+ numbers = list(map(int, input().split()))
 
-  hash_count = {}
-  collisions = 0
-  max_hash = float('-inf')
+ hash_count = {}
+ collisions = 0
+ max_hash = float('-inf')
 
-  for num in numbers:
-    h = r3gz3n(num)
-    max_hash = max(max_hash, h)
+ for num in numbers:
+  h = r3gz3n(num)
+  max_hash = max(max_hash, h)
 
-    if h in hash_count:
-      collisions += 1
-      hash_count[h] += 1
-    else:
-      hash_count[h] = 1
-
-  # Find most frequent hash value
-  if collisions == 0:
-    # All unique - return max hash value
-    print(max_hash, 0)
+  if h in hash_count:
+   collisions += 1
+   hash_count[h] += 1
   else:
-    # Find value with maximum count (smallest if tie)
-    max_count = max(hash_count.values())
-    most_frequent = min(h for h, c in hash_count.items() if c == max_count)
-    print(most_frequent, collisions)
+   hash_count[h] = 1
+
+ # Find most frequent hash value
+ if collisions == 0:
+  # All unique - return max hash value
+  print(max_hash, 0)
+ else:
+  # Find value with maximum count (smallest if tie)
+  max_count = max(hash_count.values())
+  most_frequent = min(h for h, c in hash_count.items() if c == max_count)
+  print(most_frequent, collisions)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
@@ -813,27 +813,27 @@ if __name__ == "__main__":
 from collections import Counter
 
 def solve():
-  n = int(input())
-  nums = list(map(int, input().split()))
+ n = int(input())
+ nums = list(map(int, input().split()))
 
-  def hash_func(x):
-    return x ^ sum(int(d) for d in str(x))
+ def hash_func(x):
+  return x ^ sum(int(d) for d in str(x))
 
-  hashes = [hash_func(x) for x in nums]
-  count = Counter(hashes)
+ hashes = [hash_func(x) for x in nums]
+ count = Counter(hashes)
 
-  collisions = len(hashes) - len(count)
+ collisions = len(hashes) - len(count)
 
-  if collisions == 0:
-    result = max(hashes)
-  else:
-    max_freq = max(count.values())
-    result = min(h for h, c in count.items() if c == max_freq)
+ if collisions == 0:
+  result = max(hashes)
+ else:
+  max_freq = max(count.values())
+  result = min(h for h, c in count.items() if c == max_freq)
 
-  print(result, collisions)
+ print(result, collisions)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### One-liner
@@ -842,22 +842,22 @@ if __name__ == "__main__":
 from collections import Counter
 
 def solve():
-  n = int(input())
-  nums = list(map(int, input().split()))
+ n = int(input())
+ nums = list(map(int, input().split()))
 
-  h = lambda x: x ^ sum(map(int, str(x)))
-  hashes = [h(x) for x in nums]
-  cnt = Counter(hashes)
-  colls = len(hashes) - len(cnt)
+ h = lambda x: x ^ sum(map(int, str(x)))
+ hashes = [h(x) for x in nums]
+ cnt = Counter(hashes)
+ colls = len(hashes) - len(cnt)
 
-  if colls == 0:
-    print(max(hashes), 0)
-  else:
-    mx = max(cnt.values())
-    print(min(k for k, v in cnt.items() if v == mx), colls)
+ if colls == 0:
+  print(max(hashes), 0)
+ else:
+  mx = max(cnt.values())
+  print(min(k for k, v in cnt.items() if v == mx), colls)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis
@@ -903,122 +903,122 @@ Use hashing. For each string, compute hash values for all possible single-charac
 
 ```python
 def solve():
-  import sys
-  input = sys.stdin.readline
+ import sys
+ input = sys.stdin.readline
 
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  # Store hashes of all strings in memory, grouped by length
-  from collections import defaultdict
-  memory = defaultdict(set)
+ # Store hashes of all strings in memory, grouped by length
+ from collections import defaultdict
+ memory = defaultdict(set)
 
-  BASE = 31
-  MOD = 10**18 + 9
+ BASE = 31
+ MOD = 10**18 + 9
 
-  def compute_hash(s):
-    h = 0
-    for c in s:
-      h = (h * BASE + ord(c) - ord('a') + 1) % MOD
-    return h
+ def compute_hash(s):
+  h = 0
+  for c in s:
+   h = (h * BASE + ord(c) - ord('a') + 1) % MOD
+  return h
 
-  # Precompute powers of BASE
-  max_len = 600001
-  pw = [1] * max_len
-  for i in range(1, max_len):
-    pw[i] = (pw[i-1] * BASE) % MOD
+ # Precompute powers of BASE
+ max_len = 600001
+ pw = [1] * max_len
+ for i in range(1, max_len):
+  pw[i] = (pw[i-1] * BASE) % MOD
 
-  for _ in range(n):
-    s = input().strip()
-    h = compute_hash(s)
-    memory[len(s)].add(h)
+ for _ in range(n):
+  s = input().strip()
+  h = compute_hash(s)
+  memory[len(s)].add(h)
 
-  results = []
+ results = []
 
-  for _ in range(m):
-    s = input().strip()
-    length = len(s)
-    h = compute_hash(s)
+ for _ in range(m):
+  s = input().strip()
+  length = len(s)
+  h = compute_hash(s)
 
-    found = False
-    current_hash = h
+  found = False
+  current_hash = h
 
-    # Try changing each position
-    for i in range(length):
-      pos = length - 1 - i  # Position from right
-      old_val = ord(s[i]) - ord('a') + 1
+  # Try changing each position
+  for i in range(length):
+   pos = length - 1 - i  # Position from right
+   old_val = ord(s[i]) - ord('a') + 1
 
-      for c in 'abc':
-        new_val = ord(c) - ord('a') + 1
-        if new_val != old_val:
-          # Compute new hash
-          diff = (new_val - old_val) * pw[pos]
-          new_hash = (current_hash + diff) % MOD
+   for c in 'abc':
+    new_val = ord(c) - ord('a') + 1
+    if new_val != old_val:
+     # Compute new hash
+     diff = (new_val - old_val) * pw[pos]
+     new_hash = (current_hash + diff) % MOD
 
-          if new_hash in memory[length]:
-            found = True
-            break
+     if new_hash in memory[length]:
+      found = True
+      break
 
-      if found:
-        break
+   if found:
+    break
 
-    results.append("YES" if found else "NO")
+  results.append("YES" if found else "NO")
 
-  print('\n'.join(results))
+ print('\n'.join(results))
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-  n, m = map(int, input().split())
+ n, m = map(int, input().split())
 
-  from collections import defaultdict
-  BASE = 31
-  MOD = 2**61 - 1
+ from collections import defaultdict
+ BASE = 31
+ MOD = 2**61 - 1
 
-  strings_by_len = defaultdict(set)
+ strings_by_len = defaultdict(set)
 
-  def poly_hash(s):
-    h = 0
-    for c in s:
-      h = (h * BASE + ord(c)) % MOD
-    return h
+ def poly_hash(s):
+  h = 0
+  for c in s:
+   h = (h * BASE + ord(c)) % MOD
+  return h
 
-  # Read and hash all strings
-  for _ in range(n):
-    s = input().strip()
-    strings_by_len[len(s)].add(poly_hash(s))
+ # Read and hash all strings
+ for _ in range(n):
+  s = input().strip()
+  strings_by_len[len(s)].add(poly_hash(s))
 
-  # Precompute powers
-  pow_base = [1]
-  for _ in range(600005):
-    pow_base.append((pow_base[-1] * BASE) % MOD)
+ # Precompute powers
+ pow_base = [1]
+ for _ in range(600005):
+  pow_base.append((pow_base[-1] * BASE) % MOD)
 
-  for _ in range(m):
-    s = input().strip()
-    L = len(s)
-    h = poly_hash(s)
+ for _ in range(m):
+  s = input().strip()
+  L = len(s)
+  h = poly_hash(s)
 
-    found = False
-    for i in range(L):
-      old_c = ord(s[i])
-      for new_c in [ord('a'), ord('b'), ord('c')]:
-        if new_c != old_c:
-          diff = (new_c - old_c) * pow_base[L - 1 - i]
-          new_h = (h + diff) % MOD
-          if new_h in strings_by_len[L]:
-            found = True
-            break
-      if found:
-        break
+  found = False
+  for i in range(L):
+   old_c = ord(s[i])
+   for new_c in [ord('a'), ord('b'), ord('c')]:
+    if new_c != old_c:
+     diff = (new_c - old_c) * pow_base[L - 1 - i]
+     new_h = (h + diff) % MOD
+     if new_h in strings_by_len[L]:
+      found = True
+      break
+   if found:
+    break
 
-    print("YES" if found else "NO")
+  print("YES" if found else "NO")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ##### Complexity Analysis

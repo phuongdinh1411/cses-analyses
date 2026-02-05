@@ -199,54 +199,54 @@ Sum = 5 valid permutations
 
 ```python
 def solve(n: int, s: str) -> int:
-  """
-  Count permutations satisfying < and > constraints using insertion DP.
+ """
+ Count permutations satisfying < and > constraints using insertion DP.
 
-  Time: O(N^2)
-  Space: O(N) with space optimization
-  """
-  MOD = 10**9 + 7
+ Time: O(N^2)
+ Space: O(N) with space optimization
+ """
+ MOD = 10**9 + 7
 
-  # dp[j] = count of valid arrangements where last element has rank j
-  dp = [0] * n
-  dp[0] = 1  # Base case: single element at rank 0
+ # dp[j] = count of valid arrangements where last element has rank j
+ dp = [0] * n
+ dp[0] = 1  # Base case: single element at rank 0
 
-  for i in range(2, n + 1):
-    # Build prefix sums of previous dp
-    prefix = [0] * i
-    prefix[0] = dp[0]
-    for j in range(1, i - 1):
-      prefix[j] = (prefix[j - 1] + dp[j]) % MOD
+ for i in range(2, n + 1):
+  # Build prefix sums of previous dp
+  prefix = [0] * i
+  prefix[0] = dp[0]
+  for j in range(1, i - 1):
+   prefix[j] = (prefix[j - 1] + dp[j]) % MOD
 
-    # Compute new dp values
-    new_dp = [0] * n
+  # Compute new dp values
+  new_dp = [0] * n
 
-    if s[i - 2] == '<':
-      # Previous rank must be smaller than current rank
-      for j in range(i):
-        if j > 0:
-          new_dp[j] = prefix[j - 1]
-    else:  # '>'
-      # Previous rank must be >= current rank (before insertion)
-      for j in range(i):
-        if j == 0:
-          new_dp[j] = prefix[i - 2] if i >= 2 else 0
-        else:
-          new_dp[j] = (prefix[i - 2] - prefix[j - 1] + MOD) % MOD
+  if s[i - 2] == '<':
+   # Previous rank must be smaller than current rank
+   for j in range(i):
+    if j > 0:
+     new_dp[j] = prefix[j - 1]
+  else:  # '>'
+   # Previous rank must be >= current rank (before insertion)
+   for j in range(i):
+    if j == 0:
+     new_dp[j] = prefix[i - 2] if i >= 2 else 0
+    else:
+     new_dp[j] = (prefix[i - 2] - prefix[j - 1] + MOD) % MOD
 
-    dp = new_dp
+  dp = new_dp
 
-  return sum(dp) % MOD
+ return sum(dp) % MOD
 
 
 def main():
-  n = int(input())
-  s = input().strip()
-  print(solve(n, s))
+ n = int(input())
+ s = input().strip()
+ print(solve(n, s))
 
 
 if __name__ == "__main__":
-  main()
+ main()
 ```
 
 ### Complexity
@@ -288,7 +288,7 @@ new_dp[j] = (prefix[i-2] - prefix[j-1] + MOD) % MOD
 ```python
 # WRONG: Using k > j instead of k >= j for '>'
 if s[i-1] == '>':
-  dp[i][j] = sum(dp[i-1][k] for k > j)  # Off by one!
+ dp[i][j] = sum(dp[i-1][k] for k > j)  # Off by one!
 ```
 
 **Problem:** When inserting at rank j, elements at rank k >= j shift up. For `>` constraint, we need previous rank (after shift) > current rank j, which means original rank k >= j.

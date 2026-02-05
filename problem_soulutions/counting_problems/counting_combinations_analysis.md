@@ -96,24 +96,24 @@ For each query, compute factorials and modular inverse directly.
 
 ```python
 def mod_inverse(a, p):
-  """Compute a^(-1) mod p using Fermat's Little Theorem."""
-  return pow(a, p - 2, p)
+ """Compute a^(-1) mod p using Fermat's Little Theorem."""
+ return pow(a, p - 2, p)
 
 def factorial(n, p):
-  """Compute n! mod p."""
-  result = 1
-  for i in range(2, n + 1):
-    result = (result * i) % p
-  return result
+ """Compute n! mod p."""
+ result = 1
+ for i in range(2, n + 1):
+  result = (result * i) % p
+ return result
 
 def nCr_naive(n, k, p=10**9 + 7):
-  """Compute C(n,k) mod p - naive per-query approach."""
-  if k > n or k < 0:
-    return 0
+ """Compute C(n,k) mod p - naive per-query approach."""
+ if k > n or k < 0:
+  return 0
 
-  num = factorial(n, p)
-  denom = (factorial(k, p) * factorial(n - k, p)) % p
-  return (num * mod_inverse(denom, p)) % p
+ num = factorial(n, p)
+ denom = (factorial(k, p) * factorial(n - k, p)) % p
+ return (num * mod_inverse(denom, p)) % p
 ```
 
 ### Complexity
@@ -204,33 +204,33 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-  MOD = 10**9 + 7
-  MAX_N = 10**6 + 1
+ MOD = 10**9 + 7
+ MAX_N = 10**6 + 1
 
-  # Precompute factorials
-  fact = [1] * MAX_N
-  for i in range(1, MAX_N):
-    fact[i] = (fact[i-1] * i) % MOD
+ # Precompute factorials
+ fact = [1] * MAX_N
+ for i in range(1, MAX_N):
+  fact[i] = (fact[i-1] * i) % MOD
 
-  # Precompute inverse factorials
-  inv_fact = [1] * MAX_N
-  inv_fact[MAX_N - 1] = pow(fact[MAX_N - 1], MOD - 2, MOD)
-  for i in range(MAX_N - 2, -1, -1):
-    inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
+ # Precompute inverse factorials
+ inv_fact = [1] * MAX_N
+ inv_fact[MAX_N - 1] = pow(fact[MAX_N - 1], MOD - 2, MOD)
+ for i in range(MAX_N - 2, -1, -1):
+  inv_fact[i] = (inv_fact[i + 1] * (i + 1)) % MOD
 
-  def nCr(n, k):
-    if k > n or k < 0:
-      return 0
-    return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
+ def nCr(n, k):
+  if k > n or k < 0:
+   return 0
+  return (fact[n] * inv_fact[k] % MOD) * inv_fact[n - k] % MOD
 
-  # Process queries
-  q = int(input())
-  results = []
-  for _ in range(q):
-    a, b = map(int, input().split())
-    results.append(nCr(a, b))
+ # Process queries
+ q = int(input())
+ results = []
+ for _ in range(q):
+  a, b = map(int, input().split())
+  results.append(nCr(a, b))
 
-  print('\n'.join(map(str, results)))
+ print('\n'.join(map(str, results)))
 
 solve()
 ```
@@ -269,13 +269,13 @@ result = fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
 ```python
 # WRONG - crashes or wrong answer
 def nCr(n, k):
-  return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
+ return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
 
 # CORRECT - handle invalid input
 def nCr(n, k):
-  if k > n or k < 0:
-    return 0
-  return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
+ if k > n or k < 0:
+  return 0
+ return fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD
 ```
 
 ### Mistake 4: Wrong Inverse Computation Direction
@@ -283,12 +283,12 @@ def nCr(n, k):
 ```python
 # WRONG - forward computation needs pow for each
 for i in range(MAX_N):
-  inv_fact[i] = pow(fact[i], MOD-2, MOD)  # O(n log p)
+ inv_fact[i] = pow(fact[i], MOD-2, MOD)  # O(n log p)
 
 # CORRECT - backward computation in O(n)
 inv_fact[MAX_N-1] = pow(fact[MAX_N-1], MOD-2, MOD)
 for i in range(MAX_N-2, -1, -1):
-  inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
+ inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
 ```
 
 ---

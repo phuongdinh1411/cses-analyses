@@ -41,116 +41,116 @@ For a hanging stick, it only uses half its length of container space.
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    n, L = map(int, input().split())
+ for case in range(1, t + 1):
+  n, L = map(int, input().split())
 
-    sticks = []
-    for _ in range(n):
-      a, v = map(int, input().split())
-      sticks.append((a, v))
+  sticks = []
+  for _ in range(n):
+   a, v = map(int, input().split())
+   sticks.append((a, v))
 
-    # Multiply L by 2 to avoid floating point
-    L *= 2
+  # Multiply L by 2 to avoid floating point
+  L *= 2
 
-    # dp[capacity][hanging_count] = max value
-    # hanging_count: 0, 1, or 2
-    INF = float('-inf')
+  # dp[capacity][hanging_count] = max value
+  # hanging_count: 0, 1, or 2
+  INF = float('-inf')
 
-    # Initialize
-    dp = [[INF] * 3 for _ in range(L + 1)]
-    dp[0][0] = 0
+  # Initialize
+  dp = [[INF] * 3 for _ in range(L + 1)]
+  dp[0][0] = 0
 
-    for a, v in sticks:
-      full_len = a * 2  # full stick length (doubled)
-      half_len = a      # half length (since L is doubled)
+  for a, v in sticks:
+   full_len = a * 2  # full stick length (doubled)
+   half_len = a      # half length (since L is doubled)
 
-      # Process in reverse for 0/1 knapsack
-      new_dp = [row[:] for row in dp]
+   # Process in reverse for 0/1 knapsack
+   new_dp = [row[:] for row in dp]
 
-      for c in range(L + 1):
-        for h in range(3):
-          if dp[c][h] == INF:
-            continue
+   for c in range(L + 1):
+    for h in range(3):
+     if dp[c][h] == INF:
+      continue
 
-          # Option 1: Place stick fully inside (uses full length)
-          if c + full_len <= L:
-            new_dp[c + full_len][h] = max(new_dp[c + full_len][h], dp[c][h] + v)
+     # Option 1: Place stick fully inside (uses full length)
+     if c + full_len <= L:
+      new_dp[c + full_len][h] = max(new_dp[c + full_len][h], dp[c][h] + v)
 
-          # Option 2: Place stick hanging over edge (uses half length)
-          if h < 2 and c + half_len <= L:
-            new_dp[c + half_len][h + 1] = max(new_dp[c + half_len][h + 1], dp[c][h] + v)
+     # Option 2: Place stick hanging over edge (uses half length)
+     if h < 2 and c + half_len <= L:
+      new_dp[c + half_len][h + 1] = max(new_dp[c + half_len][h + 1], dp[c][h] + v)
 
-      dp = new_dp
+   dp = new_dp
 
-    # Find maximum value
-    result = 0
-    for c in range(L + 1):
-      for h in range(3):
-        if dp[c][h] != INF:
-          result = max(result, dp[c][h])
+  # Find maximum value
+  result = 0
+  for c in range(L + 1):
+   for h in range(3):
+    if dp[c][h] != INF:
+     result = max(result, dp[c][h])
 
-    print(f"Case #{case}: {result}")
+  print(f"Case #{case}: {result}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for case in range(1, t + 1):
-    n, L = map(int, input().split())
+ for case in range(1, t + 1):
+  n, L = map(int, input().split())
 
-    sticks = []
-    for _ in range(n):
-      a, v = map(int, input().split())
-      sticks.append((a, v))
+  sticks = []
+  for _ in range(n):
+   a, v = map(int, input().split())
+   sticks.append((a, v))
 
-    # Use 2*L to handle half-lengths as integers
-    capacity = 2 * L
-    NEG_INF = float('-inf')
+  # Use 2*L to handle half-lengths as integers
+  capacity = 2 * L
+  NEG_INF = float('-inf')
 
-    # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
-    dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
-    dp[0][0] = 0
+  # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
+  dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
+  dp[0][0] = 0
 
-    for length, value in sticks:
-      full_cost = 2 * length  # fully inside
-      half_cost = length       # hanging (uses only half)
+  for length, value in sticks:
+   full_cost = 2 * length  # fully inside
+   half_cost = length       # hanging (uses only half)
 
-      # Process backwards
-      for c in range(capacity, -1, -1):
-        for e in range(3):
-          if dp[c][e] == NEG_INF:
-            continue
+   # Process backwards
+   for c in range(capacity, -1, -1):
+    for e in range(3):
+     if dp[c][e] == NEG_INF:
+      continue
 
-          # Option A: place fully inside
-          nc = c + full_cost
-          if nc <= capacity:
-            dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
+     # Option A: place fully inside
+     nc = c + full_cost
+     if nc <= capacity:
+      dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
 
-          # Option B: place hanging
-          if e < 2:
-            nc = c + half_cost
-            if nc <= capacity:
-              dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
+     # Option B: place hanging
+     if e < 2:
+      nc = c + half_cost
+      if nc <= capacity:
+       dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
 
-    # Get max value
-    ans = 0
-    for c in range(capacity + 1):
-      for e in range(3):
-        if dp[c][e] != NEG_INF:
-          ans = max(ans, dp[c][e])
+  # Get max value
+  ans = 0
+  for c in range(capacity + 1):
+   for e in range(3):
+    if dp[c][e] != NEG_INF:
+     ans = max(ans, dp[c][e])
 
-    print(f"Case #{case}: {ans}")
+  print(f"Case #{case}: {ans}")
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis

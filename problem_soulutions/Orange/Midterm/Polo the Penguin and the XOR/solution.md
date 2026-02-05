@@ -53,81 +53,81 @@ For each bit position:
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    arr = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-    # Compute prefix XOR
-    prefix = [0] * (n + 1)
-    for i in range(n):
-      prefix[i + 1] = prefix[i] ^ arr[i]
+  # Compute prefix XOR
+  prefix = [0] * (n + 1)
+  for i in range(n):
+   prefix[i + 1] = prefix[i] ^ arr[i]
 
-    total_sum = 0
+  total_sum = 0
 
-    # For each bit position (up to 30 bits for 10^9)
-    for bit in range(30):
-      mask = 1 << bit
-      ones = 0
-      zeros = 0
+  # For each bit position (up to 30 bits for 10^9)
+  for bit in range(30):
+   mask = 1 << bit
+   ones = 0
+   zeros = 0
 
-      # Count prefix values with this bit set/unset
-      for i in range(n + 1):
-        if prefix[i] & mask:
-          ones += 1
-        else:
-          zeros += 1
+   # Count prefix values with this bit set/unset
+   for i in range(n + 1):
+    if prefix[i] & mask:
+     ones += 1
+    else:
+     zeros += 1
 
-      # Number of subarrays with this bit set in XOR
-      # = pairs where P[R] and P[L-1] differ at this bit
-      count = ones * zeros
+   # Number of subarrays with this bit set in XOR
+   # = pairs where P[R] and P[L-1] differ at this bit
+   count = ones * zeros
 
-      # Add contribution
-      total_sum += count * mask
+   # Add contribution
+   total_sum += count * mask
 
-    print(total_sum)
+  print(total_sum)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
-  t = int(input())
+ t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    arr = list(map(int, input().split()))
+ for _ in range(t):
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-    total_sum = 0
-    prefix_xor = 0
+  total_sum = 0
+  prefix_xor = 0
 
-    # For each bit, track count of 0s and 1s in prefix XOR
-    bit_count = [[1, 0] for _ in range(30)]  # Initially prefix[0]=0
+  # For each bit, track count of 0s and 1s in prefix XOR
+  bit_count = [[1, 0] for _ in range(30)]  # Initially prefix[0]=0
 
-    for num in arr:
-      prefix_xor ^= num
+  for num in arr:
+   prefix_xor ^= num
 
-      for bit in range(30):
-        mask = 1 << bit
-        bit_val = (prefix_xor >> bit) & 1
+   for bit in range(30):
+    mask = 1 << bit
+    bit_val = (prefix_xor >> bit) & 1
 
-        # Subarrays ending here with this bit set
-        # = count of previous prefixes with opposite bit
-        opposite = 1 - bit_val
-        count = bit_count[bit][opposite]
-        total_sum += count * mask
+    # Subarrays ending here with this bit set
+    # = count of previous prefixes with opposite bit
+    opposite = 1 - bit_val
+    count = bit_count[bit][opposite]
+    total_sum += count * mask
 
-        # Update count
-        bit_count[bit][bit_val] += 1
+    # Update count
+    bit_count[bit][bit_val] += 1
 
-    print(total_sum)
+  print(total_sum)
 
 if __name__ == "__main__":
-  solve()
+ solve()
 ```
 
 ### Complexity Analysis
