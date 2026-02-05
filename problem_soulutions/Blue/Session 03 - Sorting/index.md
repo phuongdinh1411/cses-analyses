@@ -13,10 +13,8 @@ This session covers sorting algorithms and techniques, including comparison-base
 ### Business Trip
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 149A
+- **Source:** [Codeforces 149A](https://codeforces.com/problemset/problem/149/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/149/A
 
 #### Problem Statement
 A flower must grow at least k centimeters. There are 12 months, and each month i has a potential growth a[i] centimeters if watered that month. Find the minimum number of months you need to water the flower to achieve at least k centimeters of growth. You can choose which months to water.
@@ -62,10 +60,8 @@ print('-1')
 ### Chores
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 169A
+- **Source:** [Codeforces 169A](https://codeforces.com/problemset/problem/169/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/169/A
 
 #### Problem Statement
 Petya and Vasya divide n chores. Vasya does the a "easiest" chores (lowest difficulty) and Petya does the b "hardest" chores (highest difficulty) where a + b = n.
@@ -103,10 +99,8 @@ print(h[b] - h[b - 1])
 ### Eight Point Set
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 334B
+- **Source:** [Codeforces 334B](https://codeforces.com/problemset/problem/334/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/334/B
 
 #### Problem Statement
 Gerald thinks that any decent eight point set must consist of all pairwise intersections of three distinct integer vertical straight lines and three distinct integer horizontal straight lines, except for the average of these nine points. In other words, there must be three integers x1, x2, x3 and three more integers y1, y2, y3, such that x1 < x2 < x3, y1 < y2 < y3 and the eight point set consists of all points (xi, yj), except for point (x2, y2).
@@ -172,10 +166,8 @@ print('respectable')
 ### Towers
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 37A
+- **Source:** [Codeforces 37A](https://codeforces.com/problemset/problem/37/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/37/A
 
 #### Problem Statement
 Little Vasya has received a young builder's kit consisting of several wooden bars. Bars can be put one on top of another if their lengths are the same. Vasya wants to construct the minimal number of towers from the bars.
@@ -225,10 +217,8 @@ print(highest_tower, number_of_towers, sep=' ')
 ### Devu and Subjects
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 439B
+- **Source:** [Codeforces 439B](https://codeforces.com/problemset/problem/439/B)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/439/B
 
 #### Problem Statement
 You need to teach Devu n subjects, where the ith subject has ci chapters. His initial per chapter learning power is x hours. If you teach him a subject, time required to teach any chapter of the next subject will require exactly 1 hour less (minimum 1 hour). You can teach the subjects in any order. Find the minimum amount of time Devu will take to understand all subjects.
@@ -269,10 +259,8 @@ print(total_time)
 ### Sort the Array
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 451B
+- **Source:** [Codeforces 451B](https://codeforces.com/problemset/problem/451/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/451/B
 
 #### Problem Statement
 Given an array of n distinct integers, determine if you can sort it in ascending order by reversing exactly one contiguous segment. If possible, output "yes" and the segment boundaries. Otherwise, output "no".
@@ -330,10 +318,8 @@ print(start_segment + 1, end_segment + 1, sep=' ')
 ### Contest Positions
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 551A
+- **Source:** [Codeforces 551A](https://codeforces.com/problemset/problem/551/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/551/A
 
 #### Problem Statement
 In a contest with n students, each student has a rating. Students take positions according to their ratings - a student with strictly lower rating gets a strictly better position, and students with equal ratings share the same position.
@@ -376,10 +362,8 @@ print(*ranking_list, sep=' ')
 ### Tea Party
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 557B
+- **Source:** [Codeforces 557B](https://codeforces.com/problemset/problem/557/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/557/B
 
 #### Problem Statement
 Pasha has n boys and n girls at a tea party. He has a teapot with capacity w and 2n cups. He wants to pour water such that each girl gets x milliliters and each boy gets 2x milliliters. Maximize the total water poured while respecting cup capacities.

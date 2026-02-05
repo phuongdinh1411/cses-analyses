@@ -13,10 +13,8 @@ This session covers algorithmic complexity analysis, including time and space co
 ### Soldier and Vests
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 161A
+- **Source:** [Codeforces 161A](https://codeforces.com/problemset/problem/161/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/161/A
 
 #### Problem Statement
 There are n soldiers and m vests. Each soldier has a size a[i], and each vest has a size b[i]. A soldier can wear a vest if the vest size is in the range [a[i] - x, a[i] + y]. Both arrays are sorted in ascending order.
@@ -88,10 +86,8 @@ for i in range(len(u)):
 ### Distinct K Segment
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 224B
+- **Source:** [Codeforces 224B](https://codeforces.com/problemset/problem/224/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/224/B
 
 #### Problem Statement
 Given an array of n integers and a number k, find the shortest contiguous segment that contains exactly k distinct values. Output the 1-based start and end positions of this segment.
@@ -150,10 +146,8 @@ else:
 ### Books
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 279B
+- **Source:** [Codeforces 279B](https://codeforces.com/problemset/problem/279/B)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/279/B
 
 #### Problem Statement
 Valera has n books on a shelf. Each book i takes a[i] minutes to read. He has t minutes of free time and wants to read as many CONSECUTIVE books as possible (starting from any position). Find the maximum number of consecutive books he can completely read within time t.
@@ -215,10 +209,8 @@ print(max_total_book)
 ### Sereja and Dima
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 381A
+- **Source:** [Codeforces 381A](https://codeforces.com/problemset/problem/381/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/contest/381/problem/A
 
 #### Problem Statement
 n cards are laid out in a row, each with a value. Sereja and Dima play a game where they take turns picking cards. On each turn, a player can take either the leftmost or rightmost card. Both players play optimally (always pick the card with the higher value). Sereja goes first.
@@ -278,10 +270,8 @@ print(Sereja, Dima, sep=' ')
 ### George and Round
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 387B
+- **Source:** [Codeforces 387B](https://codeforces.com/problemset/problem/387/B)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/387/B
 
 #### Problem Statement
 George wants to prepare a programming contest with n problems of specific difficulties a[1], a[2], ..., a[n]. He has m prepared problems with difficulties b[1], b[2], ..., b[m]. Both arrays are sorted in non-decreasing order.
@@ -340,10 +330,8 @@ print(n - needed_problem_index)
 ### Almost Constant Range
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 602B
+- **Source:** [Codeforces 602B](https://codeforces.com/problemset/problem/602/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/602/B
 
 #### Problem Statement
 Given an array of n integers, find the length of the longest contiguous subarray where the difference between the maximum and minimum values is at most 1 (i.e., max - min <= 1).
@@ -417,10 +405,8 @@ print(max_almost_constant_range)
 ### Alice, Bob and Chocolate
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 6C
+- **Source:** [Codeforces 6C](https://codeforces.com/problemset/problem/6/C)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/6/C
 
 #### Problem Statement
 n chocolate bars are lined up. Alice starts eating from the left side, Bob starts from the right side. They eat simultaneously and continuously. Each bar i takes t[i] seconds to eat. When they meet (or would overlap), they stop. If they finish a chocolate at the same time and there's one bar left, Alice gets it.
@@ -475,10 +461,8 @@ print(alice_eating_index + 1, n - alice_eating_index - 1)
 ### Wrath (Survivors)
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 892B
+- **Source:** [Codeforces 892B](https://codeforces.com/problemset/problem/892/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/892/B
 
 #### Problem Statement
 n people stand in a line (positions 1 to n, left to right). Each person i has a weapon that can kill L[i] people to their left. At time 0, everyone swings simultaneously. A person survives if they are not killed by anyone to their right.

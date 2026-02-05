@@ -13,7 +13,7 @@ Breadth-First Search problems involving shortest paths in unweighted graphs, lev
 ### Ice Cave
 
 #### Problem Information
-- **Source:** Codeforces 540C
+- **Source:** [Codeforces 540C](https://codeforces.com/problemset/problem/540/C)
 - **Difficulty:** Secret
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB
@@ -110,7 +110,7 @@ solution()
 ### Kefa and Park
 
 #### Problem Information
-- **Source:** Codeforces 580C
+- **Source:** [Codeforces 580C](https://codeforces.com/problemset/problem/580/C)
 - **Difficulty:** Secret
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB

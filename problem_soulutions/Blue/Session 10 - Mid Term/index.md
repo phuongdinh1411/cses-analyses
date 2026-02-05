@@ -106,7 +106,7 @@ solution()
 ### Regular Bracket Sequence
 
 #### Problem Information
-- **Source:** Codeforces 26B
+- **Source:** [Codeforces 26B](https://codeforces.com/problemset/problem/26/B)
 - **Difficulty:** Secret
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB
@@ -157,7 +157,7 @@ solution()
 ### Queries about less or equal elements
 
 #### Problem Information
-- **Source:** Codeforces 600B
+- **Source:** [Codeforces 600B](https://codeforces.com/problemset/problem/600/B)
 - **Difficulty:** Secret
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB
@@ -525,7 +525,7 @@ solution()
 ### Soldier and Bananas
 
 #### Problem Information
-- **Source:** Codeforces 546A
+- **Source:** [Codeforces 546A](https://codeforces.com/problemset/problem/546/A)
 - **Difficulty:** Secret
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB

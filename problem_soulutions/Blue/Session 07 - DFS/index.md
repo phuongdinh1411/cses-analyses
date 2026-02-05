@@ -13,7 +13,7 @@ Depth-First Search problems involving graph traversal, connected components, cyc
 ### Lakes in Berland
 
 #### Problem Information
-- **Source:** Codeforces 723D
+- **Source:** [Codeforces 723D](https://codeforces.com/problemset/problem/723/D)
 - **Difficulty:** Secret
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB

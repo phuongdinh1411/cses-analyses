@@ -13,10 +13,8 @@ This session covers stack and queue data structures, including LIFO/FIFO operati
 ### Compilers and Parsers
 
 #### Problem Information
-- **Source:** CodeChef
-- **Problem Code:** COMPILER
+- **Source:** [CodeChef COMPILER](https://www.codechef.com/problems/COMPILER)
 - **Difficulty:** Easy
-- **URL:** https://www.codechef.com/problems/COMPILER
 
 #### Problem Statement
 Lira is designing a language L++ where expressions consist of "<" and ">" characters. For an expression to be valid, a "<" symbol must always have a corresponding ">" character somewhere after it. Each ">" symbol should correspond to exactly one "<" symbol.
@@ -72,10 +70,8 @@ print(*results, sep='\n')
 ### Processing Time
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 644B
+- **Source:** [Codeforces 644B](https://codeforces.com/problemset/problem/644/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/644/B
 
 #### Problem Statement
 Simulate a one-thread server processing n queries. Each query arrives at time ti and needs di time to process. The server has a queue of size b. If the queue is full, queries are rejected. Determine when each query finishes processing or if it's rejected.
@@ -127,10 +123,8 @@ print(*result, sep=' ')
 ### Mass of Molecule
 
 #### Problem Information
-- **Source:** SPOJ
-- **Problem Code:** MMASS
+- **Source:** [SPOJ MMASS](https://www.spoj.com/problems/MMASS/)
 - **Difficulty:** Medium
-- **URL:** https://www.spoj.com/problems/MMASS/
 
 #### Problem Statement
 Calculate the mass of a molecule from its chemical formula. The formula consists of H (mass 1), C (mass 12), O (mass 16), parentheses for grouping, and numbers 2-9 for multipliers. Calculate the total mass of the molecule.
@@ -199,10 +193,8 @@ print(total_result)
 ### Transform to RPN
 
 #### Problem Information
-- **Source:** SPOJ
-- **Problem Code:** ONP
+- **Source:** [SPOJ ONP](https://www.spoj.com/problems/ONP/)
 - **Difficulty:** Medium
-- **URL:** https://www.spoj.com/problems/ONP/
 
 #### Problem Statement
 Transform algebraic expressions with brackets into Reverse Polish Notation (RPN). Operators are +, -, *, /, ^ (priority from lowest to highest). Operands are lowercase letters a-z.
@@ -273,10 +265,8 @@ print(*results, sep='\n')
 ### Street Parade
 
 #### Problem Information
-- **Source:** SPOJ
-- **Problem Code:** STPAR
+- **Source:** [SPOJ STPAR](https://www.spoj.com/problems/STPAR/)
 - **Difficulty:** Medium
-- **URL:** https://www.spoj.com/problems/STPAR/
 
 #### Problem Statement
 Love mobiles need to be arranged in order 1 to n for a parade. They arrive in a given order and can use a side street (stack) to help reorder. Determine if the trucks can be arranged in the correct order.
@@ -341,10 +331,8 @@ print(*results, sep='\n')
 ### Ferry Loading III
 
 #### Problem Information
-- **Source:** UVA
-- **Problem Code:** 10901
+- **Source:** [UVA 10901](https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=10901)
 - **Difficulty:** Medium
-- **URL:** https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=1842
 
 #### Problem Statement
 A ferry carries cars between two banks. Given arrival times and bank for each car, and ferry crossing time t, determine when each car arrives at the destination bank.
@@ -432,10 +420,8 @@ for i in range(len(results)):
 ### Throwing Cards Away
 
 #### Problem Information
-- **Source:** UVA
-- **Problem Code:** 10935
+- **Source:** [UVA 10935](https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=10935)
 - **Difficulty:** Easy
-- **URL:** https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=1876
 
 #### Problem Statement
 Given a deck of n cards numbered 1 to n, repeatedly throw away the top card and move the next card to the bottom until one card remains. Find the sequence of discarded cards and the remaining card.
@@ -495,10 +481,8 @@ for i in range(len(results)):
 ### That is Your Queue
 
 #### Problem Information
-- **Source:** UVA
-- **Problem Code:** 12207
+- **Source:** [UVA 12207](https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=12207)
 - **Difficulty:** Medium
-- **URL:** https://uva.onlinejudge.org/index.php?option=onlinejudge&page=show_problem&problem=3359
 
 #### Problem Statement
 Simulate a hospital queue with P citizens and C commands. Commands are 'N' (next person) or 'E x' (expedite person x to front). Output the processed person for each 'N' command.

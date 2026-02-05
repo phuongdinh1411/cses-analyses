@@ -13,10 +13,8 @@ This session covers string manipulation, pattern matching, and text processing a
 ### Football Winner
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 43A
+- **Source:** [Codeforces 43A](https://codeforces.com/problemset/problem/43/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/43/A
 
 #### Problem Statement
 Given the results of a football match where each goal is marked with the team name, determine which team won. The team that scores more goals wins. It is guaranteed the match did not end in a tie.
@@ -60,10 +58,8 @@ print(first_team if first_team_score > 0 else second_team)
 ### Suffix Data Structures
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 448B
+- **Source:** [Codeforces 448B](https://codeforces.com/problemset/problem/448/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/448/B
 
 #### Problem Statement
 Transform word s into word t using suffix automaton (removes one character) and suffix array (swaps two characters). Determine which data structures are needed: "automaton" (removal only), "array" (swap only), "both", or "need tree" (impossible).
@@ -139,10 +135,8 @@ print(check_solution(s, t))
 ### Lecture Notes
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 499B
+- **Source:** [Codeforces 499B](https://codeforces.com/problemset/problem/499/B)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/499/B
 
 #### Problem Statement
 You know two languages with one-to-one word correspondence. During a lecture, write each word in whichever language has the shorter form. If equal length, prefer the first language.
@@ -196,10 +190,8 @@ print(*result, sep=' ')
 ### Lexicographically Between
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 518A
+- **Source:** [Codeforces 518A](https://codeforces.com/problemset/problem/518/A)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/518/A
 
 #### Problem Statement
 Given two strings s and t of equal length where s < t lexicographically, find a string that is lexicographically greater than s and less than t.
@@ -255,10 +247,8 @@ print(result)
 ### Tanya's Birthday Postcard
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 518B
+- **Source:** [Codeforces 518B](https://codeforces.com/problemset/problem/518/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/518/B
 
 #### Problem Statement
 Tanya wants to create a message of length n from letters cut from a newspaper. Count how many exact matches ("YAY!") and case-insensitive matches ("WHOOPS") she can make.
@@ -347,10 +337,8 @@ print(yay, whoops)
 ### String Concatenation
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 61B
+- **Source:** [Codeforces 61B](https://codeforces.com/problemset/problem/61/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/61/B
 
 #### Problem Statement
 Given three strings, students concatenate them in any order. Check if a student's answer matches any valid concatenation (ignoring case and special characters like "-", ";", "_").
@@ -396,10 +384,8 @@ for i in range(n):
 ### Password Security
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 721B
+- **Source:** [Codeforces 721B](https://codeforces.com/problemset/problem/721/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/721/B
 
 #### Problem Statement
 Vanya tries passwords in order of increasing length, with same-length passwords in arbitrary order. After k wrong attempts, he waits 5 seconds. Find the best and worst case time to enter the correct password.
@@ -465,10 +451,8 @@ print(best_case, worst_case)
 ### Embosser Rotations
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 731A
+- **Source:** [Codeforces 731A](https://codeforces.com/problemset/problem/731/A)
 - **Difficulty:** Easy
-- **URL:** http://codeforces.com/problemset/problem/731/A
 
 #### Problem Statement
 An embosser has a wheel with letters arranged in a circle. Starting at 'a', find the minimum number of rotations (clockwise or counterclockwise) to print a given string.
@@ -504,10 +488,8 @@ print(result)
 ### African Crossword
 
 #### Problem Information
-- **Source:** Codeforces
-- **Problem Code:** 90B
+- **Source:** [Codeforces 90B](https://codeforces.com/problemset/problem/90/B)
 - **Difficulty:** Medium
-- **URL:** http://codeforces.com/problemset/problem/90/B
 
 #### Problem Statement
 In a rectangular grid, cross out all letters that appear more than once in their row or column. The remaining letters form the encrypted word (read left to right, top to bottom).

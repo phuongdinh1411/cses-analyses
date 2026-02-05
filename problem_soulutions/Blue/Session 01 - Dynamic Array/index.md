@@ -13,7 +13,7 @@ This session covers dynamic array fundamentals, including array manipulation, in
 ### Jacket
 
 #### Problem Information
-- **Source:** Codeforces 691A
+- **Source:** [Codeforces 691A](https://codeforces.com/problemset/problem/691/A)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 ### Vanya and Fence
 
 #### Problem Information
-- **Source:** Codeforces 677A
+- **Source:** [Codeforces 677A](https://codeforces.com/problemset/problem/677/A)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 ### Big Segment
 
 #### Problem Information
-- **Source:** Codeforces 242B
+- **Source:** [Codeforces 242B](https://codeforces.com/problemset/problem/242/B)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 ### Arrays
 
 #### Problem Information
-- **Source:** Codeforces 572A
+- **Source:** [Codeforces 572A](https://codeforces.com/problemset/problem/572/A)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -208,7 +208,7 @@ if __name__ == "__main__":
 ### Bear and Game
 
 #### Problem Information
-- **Source:** Codeforces 673A
+- **Source:** [Codeforces 673A](https://codeforces.com/problemset/problem/673/A)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -263,7 +263,7 @@ if __name__ == "__main__":
 ### Semifinals
 
 #### Problem Information
-- **Source:** Codeforces 378B
+- **Source:** [Codeforces 378B](https://codeforces.com/problemset/problem/378/B)
 - **Difficulty:** Medium
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -335,7 +335,7 @@ if __name__ == "__main__":
 ### Nicholas and Permutation
 
 #### Problem Information
-- **Source:** Codeforces 676A
+- **Source:** [Codeforces 676A](https://codeforces.com/problemset/problem/676/A)
 - **Difficulty:** Easy
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
@@ -382,7 +382,7 @@ if __name__ == "__main__":
 ### The Best Gift
 
 #### Problem Information
-- **Source:** Codeforces 609B
+- **Source:** [Codeforces 609B](https://codeforces.com/problemset/problem/609/B)
 - **Difficulty:** Easy
 - **Time Limit:** 2000ms
 - **Memory Limit:** 256MB
@@ -434,7 +434,7 @@ if __name__ == "__main__":
 ### Balls Game
 
 #### Problem Information
-- **Source:** Codeforces 430B
+- **Source:** [Codeforces 430B](https://codeforces.com/problemset/problem/430/B)
 - **Difficulty:** Medium
 - **Time Limit:** 1000ms
 - **Memory Limit:** 256MB
