@@ -106,16 +106,16 @@ For each query, scan all buildings to the right and count those that are visible
 
 ```python
 def solve_brute_force(n, heights, queries):
-    """Brute force: process each query independently. Time: O(q*n)"""
-    results = []
-    for pos in queries:
-        i, count, max_height = pos - 1, 0, 0
-        for j in range(i + 1, n):
-            if heights[j] > max_height:
-                count += 1
-                max_height = heights[j]
-        results.append(count)
-    return results
+  """Brute force: process each query independently. Time: O(q*n)"""
+  results = []
+  for pos in queries:
+    i, count, max_height = pos - 1, 0, 0
+    for j in range(i + 1, n):
+      if heights[j] > max_height:
+        count += 1
+        max_height = heights[j]
+    results.append(count)
+  return results
 ```
 
 ### Complexity
@@ -189,16 +189,16 @@ From position 0, looking right:
 
 ```python
 def solve_optimal(n, heights, queries):
-    """Precompute visible counts for O(1) queries."""
-    visible = [0] * n
-    for i in range(n):
-        count, max_height = 0, 0
-        for j in range(i + 1, n):
-            if heights[j] > max_height:
-                count += 1
-                max_height = heights[j]
-        visible[i] = count
-    return [visible[pos - 1] for pos in queries]
+  """Precompute visible counts for O(1) queries."""
+  visible = [0] * n
+  for i in range(n):
+    count, max_height = 0, 0
+    for j in range(i + 1, n):
+      if heights[j] > max_height:
+        count += 1
+        max_height = heights[j]
+    visible[i] = count
+  return [visible[pos - 1] for pos in queries]
 ```
 
 ### Complexity
@@ -227,24 +227,24 @@ Note: O(n^2) preprocessing, O(1) per query. See Solution 3 for O(n) preprocessin
 
 ```python
 def solve_with_next_greater(n, heights, queries):
-    """O(n) preprocessing using next greater element chain."""
-    # Step 1: Find next strictly greater element
-    next_greater = [-1] * n
-    stack = []
-    for i in range(n - 1, -1, -1):
-        while stack and heights[stack[-1]] <= heights[i]:
-            stack.pop()
-        if stack:
-            next_greater[i] = stack[-1]
-        stack.append(i)
+  """O(n) preprocessing using next greater element chain."""
+  # Step 1: Find next strictly greater element
+  next_greater = [-1] * n
+  stack = []
+  for i in range(n - 1, -1, -1):
+    while stack and heights[stack[-1]] <= heights[i]:
+      stack.pop()
+    if stack:
+      next_greater[i] = stack[-1]
+    stack.append(i)
 
-    # Step 2: DP - visible[i] = 1 + visible[next_greater[i]]
-    visible = [0] * n
-    for i in range(n - 1, -1, -1):
-        if next_greater[i] != -1:
-            visible[i] = 1 + visible[next_greater[i]]
+  # Step 2: DP - visible[i] = 1 + visible[next_greater[i]]
+  visible = [0] * n
+  for i in range(n - 1, -1, -1):
+    if next_greater[i] != -1:
+      visible[i] = 1 + visible[next_greater[i]]
 
-    return [visible[pos - 1] for pos in queries]
+  return [visible[pos - 1] for pos in queries]
 ```
 
 ### Complexity

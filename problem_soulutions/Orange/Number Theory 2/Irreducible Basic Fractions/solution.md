@@ -35,112 +35,112 @@ These are exactly the numerators of irreducible fractions m/n.
 
 ```python
 def euler_totient(n):
-    """Calculate Euler's totient function φ(n)"""
-    result = n
-    p = 2
+  """Calculate Euler's totient function φ(n)"""
+  result = n
+  p = 2
 
-    while p * p <= n:
-        if n % p == 0:
-            # Remove all factors of p
-            while n % p == 0:
-                n //= p
-            # Apply formula
-            result -= result // p
+  while p * p <= n:
+    if n % p == 0:
+      # Remove all factors of p
+      while n % p == 0:
+        n //= p
+      # Apply formula
+      result -= result // p
 
-        p += 1
+    p += 1
 
-    # If n > 1, then it's a prime factor
-    if n > 1:
-        result -= result // n
+  # If n > 1, then it's a prime factor
+  if n > 1:
+    result -= result // n
 
-    return result
+  return result
 
 def solve():
-    import sys
+  import sys
 
-    for line in sys.stdin:
-        n = int(line.strip())
-        if n == 0:
-            break
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
 
-        print(euler_totient(n))
+    print(euler_totient(n))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def phi(n):
-    """Euler's totient using prime factorization"""
-    result = n
-    d = 2
+  """Euler's totient using prime factorization"""
+  result = n
+  d = 2
 
-    while d * d <= n:
-        if n % d == 0:
-            result -= result // d
-            while n % d == 0:
-                n //= d
-        d += 1
+  while d * d <= n:
+    if n % d == 0:
+      result -= result // d
+      while n % d == 0:
+        n //= d
+    d += 1
 
-    if n > 1:
-        result -= result // n
+  if n > 1:
+    result -= result // n
 
-    return result
+  return result
 
 def solve():
-    import sys
-    for line in sys.stdin:
-        n = int(line.strip())
-        if n == 0:
-            break
-        print(phi(n))
+  import sys
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
+    print(phi(n))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized with Prime Check
 
 ```python
 def euler_phi(n):
-    if n == 1:
-        return 1
+  if n == 1:
+    return 1
 
-    result = n
-    temp = n
+  result = n
+  temp = n
 
-    # Check for factor 2
-    if temp % 2 == 0:
-        result -= result // 2
-        while temp % 2 == 0:
-            temp //= 2
+  # Check for factor 2
+  if temp % 2 == 0:
+    result -= result // 2
+    while temp % 2 == 0:
+      temp //= 2
 
-    # Check odd factors
-    i = 3
-    while i * i <= temp:
-        if temp % i == 0:
-            result -= result // i
-            while temp % i == 0:
-                temp //= i
-        i += 2
+  # Check odd factors
+  i = 3
+  while i * i <= temp:
+    if temp % i == 0:
+      result -= result // i
+      while temp % i == 0:
+        temp //= i
+    i += 2
 
-    # Remaining prime factor
-    if temp > 1:
-        result -= result // temp
+  # Remaining prime factor
+  if temp > 1:
+    result -= result // temp
 
-    return result
+  return result
 
 def solve():
-    while True:
-        n = int(input())
-        if n == 0:
-            break
-        print(euler_phi(n))
+  while True:
+    n = int(input())
+    if n == 0:
+      break
+    print(euler_phi(n))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

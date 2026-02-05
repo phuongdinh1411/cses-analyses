@@ -96,24 +96,24 @@ Check every possible subarray, calculate its sum, and track the minimum length a
 
 ```python
 def solve_brute_force(arr, target):
-    """
-    Brute force: check all subarrays.
+  """
+  Brute force: check all subarrays.
 
-    Time: O(n^2) with running sum optimization
-    Space: O(1)
-    """
-    n = len(arr)
-    min_len = float('inf')
+  Time: O(n^2) with running sum optimization
+  Space: O(1)
+  """
+  n = len(arr)
+  min_len = float('inf')
 
-    for i in range(n):
-        curr_sum = 0
-        for j in range(i, n):
-            curr_sum += arr[j]
-            if curr_sum >= target:
-                min_len = min(min_len, j - i + 1)
-                break  # No need to extend further from this start
+  for i in range(n):
+    curr_sum = 0
+    for j in range(i, n):
+      curr_sum += arr[j]
+      if curr_sum >= target:
+        min_len = min(min_len, j - i + 1)
+        break  # No need to extend further from this start
 
-    return min_len if min_len != float('inf') else 0
+  return min_len if min_len != float('inf') else 0
 ```
 
 ### Complexity
@@ -211,37 +211,37 @@ Step 5:  2  3  1  2 [4  3]   sum=7  len=2  (BEST!)
 
 ```python
 def solve_optimal(arr, target):
-    """
-    Two-pointer sliding window approach.
+  """
+  Two-pointer sliding window approach.
 
-    Time: O(n) - each element visited at most twice
-    Space: O(1) - only tracking pointers and sum
-    """
-    n = len(arr)
-    left = 0
-    curr_sum = 0
-    min_len = float('inf')
+  Time: O(n) - each element visited at most twice
+  Space: O(1) - only tracking pointers and sum
+  """
+  n = len(arr)
+  left = 0
+  curr_sum = 0
+  min_len = float('inf')
 
-    for right in range(n):
-        curr_sum += arr[right]
+  for right in range(n):
+    curr_sum += arr[right]
 
-        # Contract window while sum is sufficient
-        while curr_sum >= target:
-            min_len = min(min_len, right - left + 1)
-            curr_sum -= arr[left]
-            left += 1
+    # Contract window while sum is sufficient
+    while curr_sum >= target:
+      min_len = min(min_len, right - left + 1)
+      curr_sum -= arr[left]
+      left += 1
 
-    return min_len if min_len != float('inf') else 0
+  return min_len if min_len != float('inf') else 0
 
 
 # Complete solution with I/O
 def main():
-    n, target = map(int, input().split())
-    arr = list(map(int, input().split()))
-    print(solve_optimal(arr, target))
+  n, target = map(int, input().split())
+  arr = list(map(int, input().split()))
+  print(solve_optimal(arr, target))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -260,15 +260,15 @@ if __name__ == "__main__":
 ```python
 # WRONG - crashes or returns wrong answer
 def solve(arr, target):
-    min_len = float('inf')
-    # ... algorithm ...
-    return min_len  # Returns infinity if no solution!
+  min_len = float('inf')
+  # ... algorithm ...
+  return min_len  # Returns infinity if no solution!
 
 # CORRECT
 def solve(arr, target):
-    min_len = float('inf')
-    # ... algorithm ...
-    return min_len if min_len != float('inf') else 0
+  min_len = float('inf')
+  # ... algorithm ...
+  return min_len if min_len != float('inf') else 0
 ```
 
 **Problem:** No valid subarray means min_len stays at infinity.

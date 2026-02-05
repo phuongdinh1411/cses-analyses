@@ -93,20 +93,20 @@ Check every possible substring and verify if it contains all unique characters.
 
 ```python
 def longest_substring_brute(s: str) -> int:
-    """
-    Brute force: check all substrings.
-    Time: O(n^3), Space: O(n)
-    """
-    n = len(s)
-    max_len = 0
+  """
+  Brute force: check all substrings.
+  Time: O(n^3), Space: O(n)
+  """
+  n = len(s)
+  max_len = 0
 
-    for i in range(n):
-        for j in range(i, n):
-            substring = s[i:j+1]
-            if len(set(substring)) == len(substring):  # All unique
-                max_len = max(max_len, j - i + 1)
+  for i in range(n):
+    for j in range(i, n):
+      substring = s[i:j+1]
+      if len(set(substring)) == len(substring):  # All unique
+        max_len = max(max_len, j - i + 1)
 
-    return max_len
+  return max_len
 ```
 
 ### Complexity
@@ -228,25 +228,25 @@ Final answer: 3 (substrings "abc", "bca", "cab" all work)
 
 ```python
 def longest_substring_optimal(s: str) -> int:
-    """
-    Sliding window with hash set.
-    Time: O(n), Space: O(min(n, alphabet_size))
-    """
-    seen = set()
-    left = 0
-    max_len = 0
+  """
+  Sliding window with hash set.
+  Time: O(n), Space: O(min(n, alphabet_size))
+  """
+  seen = set()
+  left = 0
+  max_len = 0
 
-    for right in range(len(s)):
-        # Shrink window while duplicate exists
-        while s[right] in seen:
-            seen.remove(s[left])
-            left += 1
+  for right in range(len(s)):
+    # Shrink window while duplicate exists
+    while s[right] in seen:
+      seen.remove(s[left])
+      left += 1
 
-        # Add current character and update max
-        seen.add(s[right])
-        max_len = max(max_len, right - left + 1)
+    # Add current character and update max
+    seen.add(s[right])
+    max_len = max(max_len, right - left + 1)
 
-    return max_len
+  return max_len
 ```
 
 ### Complexity
@@ -266,22 +266,22 @@ Instead of shrinking one character at a time, we can jump directly to the positi
 
 ```python
 def longest_substring_jump(s: str) -> int:
-    """
-    Optimized: jump left pointer directly using last index map.
-    Time: O(n), Space: O(min(n, alphabet_size))
-    """
-    last_index = {}  # char -> last seen index
-    left = 0
-    max_len = 0
+  """
+  Optimized: jump left pointer directly using last index map.
+  Time: O(n), Space: O(min(n, alphabet_size))
+  """
+  last_index = {}  # char -> last seen index
+  left = 0
+  max_len = 0
 
-    for right, char in enumerate(s):
-        if char in last_index and last_index[char] >= left:
-            left = last_index[char] + 1  # Jump past the duplicate
+  for right, char in enumerate(s):
+    if char in last_index and last_index[char] >= left:
+      left = last_index[char] + 1  # Jump past the duplicate
 
-        last_index[char] = right
-        max_len = max(max_len, right - left + 1)
+    last_index[char] = right
+    max_len = max(max_len, right - left + 1)
 
-    return max_len
+  return max_len
 ```
 
 ---
@@ -293,13 +293,13 @@ def longest_substring_jump(s: str) -> int:
 ```python
 # WRONG
 while s[right] in seen:
-    left += 1              # Moved left but didn't remove s[left-1]!
-    seen.remove(s[left])   # Wrong index
+  left += 1              # Moved left but didn't remove s[left-1]!
+  seen.remove(s[left])   # Wrong index
 
 # CORRECT
 while s[right] in seen:
-    seen.remove(s[left])   # Remove BEFORE incrementing
-    left += 1
+  seen.remove(s[left])   # Remove BEFORE incrementing
+  left += 1
 ```
 
 **Problem:** The set becomes inconsistent with the actual window.
@@ -310,11 +310,11 @@ while s[right] in seen:
 ```python
 # WRONG (for the jump optimization)
 if char in last_index:
-    left = last_index[char] + 1  # May jump backwards!
+  left = last_index[char] + 1  # May jump backwards!
 
 # CORRECT
 if char in last_index and last_index[char] >= left:
-    left = last_index[char] + 1
+  left = last_index[char] + 1
 ```
 
 **Problem:** The duplicate might be from before the current window started.
@@ -327,16 +327,16 @@ if char in last_index and last_index[char] >= left:
 char_count = {}
 char_count[s[right]] = char_count.get(s[right], 0) + 1
 while char_count[s[right]] > 1:
-    char_count[s[left]] -= 1
-    if char_count[s[left]] == 0:
-        del char_count[s[left]]
-    left += 1
+  char_count[s[left]] -= 1
+  if char_count[s[left]] == 0:
+    del char_count[s[left]]
+  left += 1
 
 # SIMPLER (use a set when you only need presence/absence)
 seen = set()
 while s[right] in seen:
-    seen.remove(s[left])
-    left += 1
+  seen.remove(s[left])
+  left += 1
 seen.add(s[right])
 ```
 
@@ -441,17 +441,17 @@ Before moving on, make sure you can:
 ```python
 # Python - Copy-paste ready
 def lengthOfLongestSubstring(s: str) -> int:
-    seen = set()
-    left = 0
-    max_len = 0
+  seen = set()
+  left = 0
+  max_len = 0
 
-    for right in range(len(s)):
-        while s[right] in seen:
-            seen.remove(s[left])
-            left += 1
-        seen.add(s[right])
-        max_len = max(max_len, right - left + 1)
+  for right in range(len(s)):
+    while s[right] in seen:
+      seen.remove(s[left])
+      left += 1
+    seen.add(s[right])
+    max_len = max(max_len, right - left + 1)
 
-    return max_len
+  return max_len
 ```
 

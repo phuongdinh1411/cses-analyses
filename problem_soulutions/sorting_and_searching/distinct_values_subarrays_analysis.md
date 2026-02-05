@@ -105,22 +105,22 @@ Check every possible subarray and verify if all its elements are distinct using 
 
 ```python
 def count_distinct_subarrays_brute(arr):
-    """
-    Brute force: Check all subarrays.
+  """
+  Brute force: Check all subarrays.
 
-    Time: O(n^3) - O(n^2) subarrays, O(n) to build set
-    Space: O(n) - set for each subarray
-    """
-    n = len(arr)
-    count = 0
+  Time: O(n^3) - O(n^2) subarrays, O(n) to build set
+  Space: O(n) - set for each subarray
+  """
+  n = len(arr)
+  count = 0
 
-    for i in range(n):
-        for j in range(i, n):
-            subarray = arr[i:j+1]
-            if len(subarray) == len(set(subarray)):
-                count += 1
+  for i in range(n):
+    for j in range(i, n):
+      subarray = arr[i:j+1]
+      if len(subarray) == len(set(subarray)):
+        count += 1
 
-    return count
+  return count
 ```
 
 ### Complexity
@@ -227,40 +227,40 @@ right=3: [_, 2, 1, 3]  left=1  +3 subarrays  count=8
 
 ```python
 def count_distinct_subarrays(arr):
-    """
-    Optimal solution using sliding window with hash set.
+  """
+  Optimal solution using sliding window with hash set.
 
-    Time: O(n) - each element added/removed at most once
-    Space: O(n) - hash set stores at most n elements
-    """
-    n = len(arr)
-    count = 0
-    left = 0
-    seen = set()
+  Time: O(n) - each element added/removed at most once
+  Space: O(n) - hash set stores at most n elements
+  """
+  n = len(arr)
+  count = 0
+  left = 0
+  seen = set()
 
-    for right in range(n):
-        # Shrink window until arr[right] is not a duplicate
-        while arr[right] in seen:
-            seen.remove(arr[left])
-            left += 1
+  for right in range(n):
+    # Shrink window until arr[right] is not a duplicate
+    while arr[right] in seen:
+      seen.remove(arr[left])
+      left += 1
 
-        # Add current element to window
-        seen.add(arr[right])
+    # Add current element to window
+    seen.add(arr[right])
 
-        # All subarrays [left..right], [left+1..right], ..., [right..right] are valid
-        count += right - left + 1
+    # All subarrays [left..right], [left+1..right], ..., [right..right] are valid
+    count += right - left + 1
 
-    return count
+  return count
 
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    print(count_distinct_subarrays(arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(count_distinct_subarrays(arr))
 
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -280,11 +280,11 @@ if __name__ == "__main__":
 # WRONG - Only counts subarrays of maximum length
 count = 0
 for right in range(n):
-    while arr[right] in seen:
-        seen.remove(arr[left])
-        left += 1
-    seen.add(arr[right])
-    count += 1  # WRONG: Only counts 1 subarray per position
+  while arr[right] in seen:
+    seen.remove(arr[left])
+    left += 1
+  seen.add(arr[right])
+  count += 1  # WRONG: Only counts 1 subarray per position
 ```
 
 **Problem:** This only counts n subarrays (one per ending position), missing shorter valid subarrays.
@@ -297,8 +297,8 @@ for right in range(n):
 # WRONG - List instead of set
 seen = []
 while arr[right] in seen:  # O(n) lookup!
-    seen.remove(arr[left])
-    left += 1
+  seen.remove(arr[left])
+  left += 1
 ```
 
 **Problem:** Using a list makes membership checking O(n), resulting in O(n^2) total time.

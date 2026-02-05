@@ -114,19 +114,19 @@ Check every possible subarray by iterating through all start and end positions.
 
 ```python
 def count_subarrays_brute(arr, x):
-    """
-    Brute force: check all subarrays.
-    Time: O(n^2), Space: O(1)
-    """
-    n = len(arr)
-    count = 0
-    for i in range(n):
-        current_sum = 0
-        for j in range(i, n):
-            current_sum += arr[j]
-            if current_sum == x:
-                count += 1
-    return count
+  """
+  Brute force: check all subarrays.
+  Time: O(n^2), Space: O(1)
+  """
+  n = len(arr)
+  count = 0
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, n):
+      current_sum += arr[j]
+      if current_sum == x:
+        count += 1
+  return count
 ```
 
 ### Complexity
@@ -214,37 +214,37 @@ Subarrays summing to 7:
 from collections import defaultdict
 
 def count_subarrays(arr, x):
-    """
-    Count subarrays with sum equal to x using prefix sum + hash map.
+  """
+  Count subarrays with sum equal to x using prefix sum + hash map.
 
-    Time: O(n) - single pass
-    Space: O(n) - hash map storage
-    """
-    prefix_count = defaultdict(int)
-    prefix_count[0] = 1  # Empty prefix
+  Time: O(n) - single pass
+  Space: O(n) - hash map storage
+  """
+  prefix_count = defaultdict(int)
+  prefix_count[0] = 1  # Empty prefix
 
-    current_prefix = 0
-    count = 0
+  current_prefix = 0
+  count = 0
 
-    for num in arr:
-        current_prefix += num
-        # How many previous prefixes give us target?
-        count += prefix_count[current_prefix - x]
-        # Record this prefix
-        prefix_count[current_prefix] += 1
+  for num in arr:
+    current_prefix += num
+    # How many previous prefixes give us target?
+    count += prefix_count[current_prefix - x]
+    # Record this prefix
+    prefix_count[current_prefix] += 1
 
-    return count
+  return count
 
 # CSES Input/Output
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    n, x = int(input_data[0]), int(input_data[1])
-    arr = list(map(int, input_data[2:2+n]))
-    print(count_subarrays(arr, x))
+  import sys
+  input_data = sys.stdin.read().split()
+  n, x = int(input_data[0]), int(input_data[1])
+  arr = list(map(int, input_data[2:2+n]))
+  print(count_subarrays(arr, x))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -276,9 +276,9 @@ prefix_count = defaultdict(int)
 ```python
 # WRONG
 for num in arr:
-    current_prefix += num
-    prefix_count[current_prefix] += 1  # Added FIRST
-    count += prefix_count[current_prefix - x]  # Check AFTER
+  current_prefix += num
+  prefix_count[current_prefix] += 1  # Added FIRST
+  count += prefix_count[current_prefix - x]  # Check AFTER
 ```
 
 **Problem:** If x = 0, this might count the same prefix as both start and end.

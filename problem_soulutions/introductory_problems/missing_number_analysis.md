@@ -86,12 +86,12 @@ Calculate the expected sum of 1 to n using the formula n(n+1)/2, then subtract t
 **Python:**
 ```python
 def find_missing_sum(n, arr):
-    """
-    Time: O(n), Space: O(1)
-    """
-    expected_sum = n * (n + 1) // 2
-    actual_sum = sum(arr)
-    return expected_sum - actual_sum
+  """
+  Time: O(n), Space: O(1)
+  """
+  expected_sum = n * (n + 1) // 2
+  actual_sum = sum(arr)
+  return expected_sum - actual_sum
 
 n = int(input())
 arr = list(map(int, input().split()))
@@ -153,15 +153,15 @@ Unpaired:              4  -> Answer!
 **Python:**
 ```python
 def find_missing_xor(n, arr):
-    """
-    Time: O(n), Space: O(1)
-    """
-    result = 0
-    for i in range(1, n + 1):
-        result ^= i
-    for num in arr:
-        result ^= num
-    return result
+  """
+  Time: O(n), Space: O(1)
+  """
+  result = 0
+  for i in range(1, n + 1):
+    result ^= i
+  for num in arr:
+    result ^= num
+  return result
 
 n = int(input())
 arr = list(map(int, input().split()))
@@ -188,11 +188,11 @@ print(find_missing_xor(n, arr))
 ```python
 # WRONG - starting from 0
 for i in range(n):  # 0 to n-1
-    result ^= i
+  result ^= i
 
 # CORRECT - numbers are 1 to n
 for i in range(1, n + 1):  # 1 to n
-    result ^= i
+  result ^= i
 ```
 
 ### Mistake 3: Reading Wrong Number of Inputs

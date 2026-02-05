@@ -34,83 +34,83 @@ Use DP with an additional dimension for the number of changes used.
 
 ```python
 def solve():
-    n, m, k = map(int, input().split())
-    a = list(map(int, input().split()))
-    b = list(map(int, input().split()))
+  n, m, k = map(int, input().split())
+  a = list(map(int, input().split()))
+  b = list(map(int, input().split()))
 
-    # dp[i][j][c] = max LCS length using first i of a, first j of b, with c changes
-    # c changes means we changed c elements in a to match elements in b
+  # dp[i][j][c] = max LCS length using first i of a, first j of b, with c changes
+  # c changes means we changed c elements in a to match elements in b
 
-    dp = [[[-1] * (k + 2) for _ in range(m + 1)] for _ in range(n + 1)]
+  dp = [[[-1] * (k + 2) for _ in range(m + 1)] for _ in range(n + 1)]
 
-    # Base case
-    for i in range(n + 1):
-        for c in range(k + 2):
-            dp[i][0][c] = 0
-    for j in range(m + 1):
-        for c in range(k + 2):
-            dp[0][j][c] = 0
+  # Base case
+  for i in range(n + 1):
+    for c in range(k + 2):
+      dp[i][0][c] = 0
+  for j in range(m + 1):
+    for c in range(k + 2):
+      dp[0][j][c] = 0
 
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            for c in range(k + 1):
-                # Option 1: Don't include a[i-1] in LCS
-                dp[i][j][c] = max(dp[i][j][c], dp[i-1][j][c])
+  for i in range(1, n + 1):
+    for j in range(1, m + 1):
+      for c in range(k + 1):
+        # Option 1: Don't include a[i-1] in LCS
+        dp[i][j][c] = max(dp[i][j][c], dp[i-1][j][c])
 
-                # Option 2: Don't include b[j-1] in LCS
-                dp[i][j][c] = max(dp[i][j][c], dp[i][j-1][c])
+        # Option 2: Don't include b[j-1] in LCS
+        dp[i][j][c] = max(dp[i][j][c], dp[i][j-1][c])
 
-                # Option 3: Match a[i-1] with b[j-1]
-                if a[i-1] == b[j-1]:
-                    dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c] + 1)
+        # Option 3: Match a[i-1] with b[j-1]
+        if a[i-1] == b[j-1]:
+          dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c] + 1)
 
-                # Option 4: Change a[i-1] to b[j-1] (costs 1 change)
-                if c > 0:
-                    dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c-1] + 1)
+        # Option 4: Change a[i-1] to b[j-1] (costs 1 change)
+        if c > 0:
+          dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c-1] + 1)
 
-    print(max(dp[n][m][c] for c in range(k + 1)))
+  print(max(dp[n][m][c] for c in range(k + 1)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
-    n, m, k = map(int, input().split())
-    a = list(map(int, input().split()))
-    b = list(map(int, input().split()))
+  n, m, k = map(int, input().split())
+  a = list(map(int, input().split()))
+  b = list(map(int, input().split()))
 
-    # dp[j][c] for space optimization
-    INF = float('-inf')
+  # dp[j][c] for space optimization
+  INF = float('-inf')
 
-    dp = [[0] * (k + 1) for _ in range(m + 1)]
+  dp = [[0] * (k + 1) for _ in range(m + 1)]
 
-    for i in range(1, n + 1):
-        new_dp = [[0] * (k + 1) for _ in range(m + 1)]
+  for i in range(1, n + 1):
+    new_dp = [[0] * (k + 1) for _ in range(m + 1)]
 
-        for j in range(1, m + 1):
-            for c in range(k + 1):
-                # Skip a[i-1]
-                new_dp[j][c] = max(new_dp[j][c], dp[j][c])
-                # Skip b[j-1]
-                new_dp[j][c] = max(new_dp[j][c], new_dp[j-1][c])
+    for j in range(1, m + 1):
+      for c in range(k + 1):
+        # Skip a[i-1]
+        new_dp[j][c] = max(new_dp[j][c], dp[j][c])
+        # Skip b[j-1]
+        new_dp[j][c] = max(new_dp[j][c], new_dp[j-1][c])
 
-                # Natural match
-                if a[i-1] == b[j-1]:
-                    new_dp[j][c] = max(new_dp[j][c], dp[j-1][c] + 1)
+        # Natural match
+        if a[i-1] == b[j-1]:
+          new_dp[j][c] = max(new_dp[j][c], dp[j-1][c] + 1)
 
-                # Use a change
-                if c > 0:
-                    new_dp[j][c] = max(new_dp[j][c], dp[j-1][c-1] + 1)
+        # Use a change
+        if c > 0:
+          new_dp[j][c] = max(new_dp[j][c], dp[j-1][c-1] + 1)
 
-        dp = new_dp
+    dp = new_dp
 
-    print(max(dp[m]))
+  print(max(dp[m]))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

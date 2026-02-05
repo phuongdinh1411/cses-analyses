@@ -116,24 +116,24 @@ For each range update, iterate through and update all elements. For point querie
 
 ```python
 def solve_brute_force(n, arr, queries):
-    """
-    Brute force: directly apply range updates.
+  """
+  Brute force: directly apply range updates.
 
-    Time: O(q * n) - each update touches up to n elements
-    Space: O(n)
-    """
-    results = []
+  Time: O(q * n) - each update touches up to n elements
+  Space: O(n)
+  """
+  results = []
 
-    for query in queries:
-        if query[0] == 1:
-            a, b, u = query[1], query[2], query[3]
-            for i in range(a - 1, b):  # Convert to 0-indexed
-                arr[i] += u
-        else:
-            k = query[1]
-            results.append(arr[k - 1])
+  for query in queries:
+    if query[0] == 1:
+      a, b, u = query[1], query[2], query[3]
+      for i in range(a - 1, b):  # Convert to 0-indexed
+        arr[i] += u
+    else:
+      k = query[1]
+      results.append(arr[k - 1])
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -169,37 +169,37 @@ This only works if queries come after all updates (offline processing).
 
 ```python
 def solve_difference_array_offline(n, arr, queries):
-    """
-    Difference array for offline processing.
-    Only works if all updates come before all queries.
+  """
+  Difference array for offline processing.
+  Only works if all updates come before all queries.
 
-    Time: O(n + q)
-    Space: O(n)
-    """
-    diff = [0] * (n + 2)  # Extra space to avoid boundary checks
+  Time: O(n + q)
+  Space: O(n)
+  """
+  diff = [0] * (n + 2)  # Extra space to avoid boundary checks
 
-    # Separate updates and queries
-    updates = [(q[1], q[2], q[3]) for q in queries if q[0] == 1]
-    point_queries = [q[1] for q in queries if q[0] == 2]
+  # Separate updates and queries
+  updates = [(q[1], q[2], q[3]) for q in queries if q[0] == 1]
+  point_queries = [q[1] for q in queries if q[0] == 2]
 
-    # Apply all updates to difference array
-    for a, b, u in updates:
-        diff[a] += u
-        diff[b + 1] -= u
+  # Apply all updates to difference array
+  for a, b, u in updates:
+    diff[a] += u
+    diff[b + 1] -= u
 
-    # Convert difference array to actual updates via prefix sum
-    total_update = [0] * (n + 1)
-    running_sum = 0
-    for i in range(1, n + 1):
-        running_sum += diff[i]
-        total_update[i] = running_sum
+  # Convert difference array to actual updates via prefix sum
+  total_update = [0] * (n + 1)
+  running_sum = 0
+  for i in range(1, n + 1):
+    running_sum += diff[i]
+    total_update[i] = running_sum
 
-    # Answer queries
-    results = []
-    for k in point_queries:
-        results.append(arr[k - 1] + total_update[k])
+  # Answer queries
+  results = []
+  for k in point_queries:
+    results.append(arr[k - 1] + total_update[k])
 
-    return results
+  return results
 ```
 
 **Limitation:** This does NOT work for the actual problem since updates and queries are interleaved.
@@ -261,55 +261,55 @@ import sys
 from typing import List
 
 def solve():
-    input_data = sys.stdin.buffer.read().split()
-    idx = 0
+  input_data = sys.stdin.buffer.read().split()
+  idx = 0
 
-    n = int(input_data[idx]); idx += 1
-    q = int(input_data[idx]); idx += 1
+  n = int(input_data[idx]); idx += 1
+  q = int(input_data[idx]); idx += 1
 
-    arr = [0] * (n + 1)  # 1-indexed
-    for i in range(1, n + 1):
-        arr[i] = int(input_data[idx]); idx += 1
+  arr = [0] * (n + 1)  # 1-indexed
+  for i in range(1, n + 1):
+    arr[i] = int(input_data[idx]); idx += 1
 
-    # BIT for range updates (stores difference array)
-    bit = [0] * (n + 2)
+  # BIT for range updates (stores difference array)
+  bit = [0] * (n + 2)
 
-    def update(i: int, delta: int):
-        """Add delta to position i"""
-        while i <= n:
-            bit[i] += delta
-            i += i & (-i)
+  def update(i: int, delta: int):
+    """Add delta to position i"""
+    while i <= n:
+      bit[i] += delta
+      i += i & (-i)
 
-    def query(i: int) -> int:
-        """Get prefix sum from 1 to i"""
-        total = 0
-        while i > 0:
-            total += bit[i]
-            i -= i & (-i)
-        return total
+  def query(i: int) -> int:
+    """Get prefix sum from 1 to i"""
+    total = 0
+    while i > 0:
+      total += bit[i]
+      i -= i & (-i)
+    return total
 
-    results = []
+  results = []
 
-    for _ in range(q):
-        query_type = int(input_data[idx]); idx += 1
+  for _ in range(q):
+    query_type = int(input_data[idx]); idx += 1
 
-        if query_type == 1:
-            a = int(input_data[idx]); idx += 1
-            b = int(input_data[idx]); idx += 1
-            u = int(input_data[idx]); idx += 1
-            # Range update: add u to [a, b]
-            update(a, u)
-            update(b + 1, -u)
-        else:
-            k = int(input_data[idx]); idx += 1
-            # Point query: get value at k
-            answer = arr[k] + query(k)
-            results.append(answer)
+    if query_type == 1:
+      a = int(input_data[idx]); idx += 1
+      b = int(input_data[idx]); idx += 1
+      u = int(input_data[idx]); idx += 1
+      # Range update: add u to [a, b]
+      update(a, u)
+      update(b + 1, -u)
+    else:
+      k = int(input_data[idx]); idx += 1
+      # Point query: get value at k
+      answer = arr[k] + query(k)
+      results.append(answer)
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -328,13 +328,13 @@ if __name__ == "__main__":
 ```python
 # WRONG - only marks start of update
 def range_update(a, b, u):
-    update(a, u)
-    # Missing: update(b + 1, -u)
+  update(a, u)
+  # Missing: update(b + 1, -u)
 
 # CORRECT
 def range_update(a, b, u):
-    update(a, u)
-    update(b + 1, -u)  # Cancel the update after position b
+  update(a, u)
+  update(b + 1, -u)  # Cancel the update after position b
 ```
 
 **Problem:** Without cancellation, the update extends to the end of the array.

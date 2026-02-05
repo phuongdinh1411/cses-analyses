@@ -33,98 +33,98 @@ For each case, print case number and count of occurrences of s in S (spaces remo
 
 ```python
 def kmp_count(text, pattern):
-    """Count occurrences of pattern in text using KMP"""
-    if not pattern:
-        return 0
+  """Count occurrences of pattern in text using KMP"""
+  if not pattern:
+    return 0
 
-    # Build failure function
-    m = len(pattern)
-    fail = [0] * m
+  # Build failure function
+  m = len(pattern)
+  fail = [0] * m
 
-    for i in range(1, m):
-        j = fail[i - 1]
-        while j > 0 and pattern[i] != pattern[j]:
-            j = fail[j - 1]
-        if pattern[i] == pattern[j]:
-            j += 1
-        fail[i] = j
+  for i in range(1, m):
+    j = fail[i - 1]
+    while j > 0 and pattern[i] != pattern[j]:
+      j = fail[j - 1]
+    if pattern[i] == pattern[j]:
+      j += 1
+    fail[i] = j
 
-    # Search
-    count = 0
-    j = 0
-    for i in range(len(text)):
-        while j > 0 and text[i] != pattern[j]:
-            j = fail[j - 1]
-        if text[i] == pattern[j]:
-            j += 1
-        if j == m:
-            count += 1
-            j = fail[j - 1]  # Continue searching for overlapping matches
+  # Search
+  count = 0
+  j = 0
+  for i in range(len(text)):
+    while j > 0 and text[i] != pattern[j]:
+      j = fail[j - 1]
+    if text[i] == pattern[j]:
+      j += 1
+    if j == m:
+      count += 1
+      j = fail[j - 1]  # Continue searching for overlapping matches
 
-    return count
+  return count
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        S = input().replace(' ', '')  # Remove all spaces
-        s = input().strip()
+  for case in range(1, t + 1):
+    S = input().replace(' ', '')  # Remove all spaces
+    s = input().strip()
 
-        count = kmp_count(S, s)
-        print(f"Case {case}: {count}")
+    count = kmp_count(S, s)
+    print(f"Case {case}: {count}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        text = input().replace(' ', '')
-        pattern = input().strip()
+  for case in range(1, t + 1):
+    text = input().replace(' ', '')
+    pattern = input().strip()
 
-        # Build KMP prefix function
-        def build_lps(p):
-            lps = [0] * len(p)
-            length = 0
-            i = 1
-            while i < len(p):
-                if p[i] == p[length]:
-                    length += 1
-                    lps[i] = length
-                    i += 1
-                elif length != 0:
-                    length = lps[length - 1]
-                else:
-                    lps[i] = 0
-                    i += 1
-            return lps
+    # Build KMP prefix function
+    def build_lps(p):
+      lps = [0] * len(p)
+      length = 0
+      i = 1
+      while i < len(p):
+        if p[i] == p[length]:
+          length += 1
+          lps[i] = length
+          i += 1
+        elif length != 0:
+          length = lps[length - 1]
+        else:
+          lps[i] = 0
+          i += 1
+      return lps
 
-        lps = build_lps(pattern)
+    lps = build_lps(pattern)
 
-        # KMP search
-        count = 0
-        i = j = 0
-        while i < len(text):
-            if text[i] == pattern[j]:
-                i += 1
-                j += 1
-                if j == len(pattern):
-                    count += 1
-                    j = lps[j - 1]
-            elif j != 0:
-                j = lps[j - 1]
-            else:
-                i += 1
+    # KMP search
+    count = 0
+    i = j = 0
+    while i < len(text):
+      if text[i] == pattern[j]:
+        i += 1
+        j += 1
+        if j == len(pattern):
+          count += 1
+          j = lps[j - 1]
+      elif j != 0:
+        j = lps[j - 1]
+      else:
+        i += 1
 
-        print(f"Case {case}: {count}")
+    print(f"Case {case}: {count}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

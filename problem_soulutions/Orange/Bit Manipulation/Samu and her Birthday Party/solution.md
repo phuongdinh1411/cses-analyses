@@ -35,81 +35,81 @@ Since K ≤ 10, we can enumerate all 2^K possible subsets of dishes. For each su
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, k = map(int, input().split())
-        preferences = []
+  for _ in range(t):
+    n, k = map(int, input().split())
+    preferences = []
 
-        for _ in range(n):
-            pref = input().strip()
-            # Convert to integer bitmask
-            mask = int(pref, 2)
-            preferences.append(mask)
+    for _ in range(n):
+      pref = input().strip()
+      # Convert to integer bitmask
+      mask = int(pref, 2)
+      preferences.append(mask)
 
-        min_dishes = k  # Worst case: need all dishes
+    min_dishes = k  # Worst case: need all dishes
 
-        # Try all subsets of dishes (1 to 2^k - 1)
-        for subset in range(1, 1 << k):
-            # Check if all friends are satisfied
-            all_satisfied = True
+    # Try all subsets of dishes (1 to 2^k - 1)
+    for subset in range(1, 1 << k):
+      # Check if all friends are satisfied
+      all_satisfied = True
 
-            for pref in preferences:
-                # Friend is satisfied if they like at least one dish in subset
-                if (pref & subset) == 0:
-                    all_satisfied = False
-                    break
+      for pref in preferences:
+        # Friend is satisfied if they like at least one dish in subset
+        if (pref & subset) == 0:
+          all_satisfied = False
+          break
 
-            if all_satisfied:
-                # Count dishes in this subset
-                dish_count = bin(subset).count('1')
-                min_dishes = min(min_dishes, dish_count)
+      if all_satisfied:
+        # Count dishes in this subset
+        dish_count = bin(subset).count('1')
+        min_dishes = min(min_dishes, dish_count)
 
-        print(min_dishes)
+    print(min_dishes)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized Solution with Early Termination
 
 ```python
 def popcount(x):
-    count = 0
-    while x:
-        count += x & 1
-        x >>= 1
-    return count
+  count = 0
+  while x:
+    count += x & 1
+    x >>= 1
+  return count
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, k = map(int, input().split())
-        preferences = []
+  for _ in range(t):
+    n, k = map(int, input().split())
+    preferences = []
 
-        for _ in range(n):
-            pref = input().strip()
-            preferences.append(int(pref, 2))
+    for _ in range(n):
+      pref = input().strip()
+      preferences.append(int(pref, 2))
 
-        min_dishes = k
+    min_dishes = k
 
-        # Enumerate subsets by number of bits (for early termination)
-        for subset in range(1, 1 << k):
-            bits = popcount(subset)
+    # Enumerate subsets by number of bits (for early termination)
+    for subset in range(1, 1 << k):
+      bits = popcount(subset)
 
-            # Skip if we already found a better solution
-            if bits >= min_dishes:
-                continue
+      # Skip if we already found a better solution
+      if bits >= min_dishes:
+        continue
 
-            # Check if all friends satisfied
-            if all(pref & subset for pref in preferences):
-                min_dishes = bits
+      # Check if all friends satisfied
+      if all(pref & subset for pref in preferences):
+        min_dishes = bits
 
-        print(min_dishes)
+    print(min_dishes)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative: Iterate by Subset Size
@@ -118,33 +118,33 @@ if __name__ == "__main__":
 from itertools import combinations
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, k = map(int, input().split())
-        preferences = []
+  for _ in range(t):
+    n, k = map(int, input().split())
+    preferences = []
 
-        for _ in range(n):
-            pref = input().strip()
-            preferences.append(int(pref, 2))
+    for _ in range(n):
+      pref = input().strip()
+      preferences.append(int(pref, 2))
 
-        # Try subsets of increasing size
-        for size in range(1, k + 1):
-            found = False
+    # Try subsets of increasing size
+    for size in range(1, k + 1):
+      found = False
 
-            for dishes in combinations(range(k), size):
-                subset = sum(1 << d for d in dishes)
+      for dishes in combinations(range(k), size):
+        subset = sum(1 << d for d in dishes)
 
-                if all(pref & subset for pref in preferences):
-                    print(size)
-                    found = True
-                    break
+        if all(pref & subset for pref in preferences):
+          print(size)
+          found = True
+          break
 
-            if found:
-                break
+      if found:
+        break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

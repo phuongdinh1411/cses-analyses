@@ -45,138 +45,138 @@ Track which items are selected for reconstruction.
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().strip().split('\n')
-    idx = 0
-    first = True
+  import sys
+  data = sys.stdin.read().strip().split('\n')
+  idx = 0
+  first = True
 
-    while idx < len(data):
-        # Skip empty lines
-        while idx < len(data) and not data[idx].strip():
-            idx += 1
+  while idx < len(data):
+    # Skip empty lines
+    while idx < len(data) and not data[idx].strip():
+      idx += 1
 
-        if idx >= len(data):
-            break
+    if idx >= len(data):
+      break
 
-        t, w = map(int, data[idx].split())
-        idx += 1
+    t, w = map(int, data[idx].split())
+    idx += 1
 
-        n = int(data[idx])
-        idx += 1
+    n = int(data[idx])
+    idx += 1
 
-        treasures = []
-        for _ in range(n):
-            d, v = map(int, data[idx].split())
-            treasures.append((d, v))
-            idx += 1
+    treasures = []
+    for _ in range(n):
+      d, v = map(int, data[idx].split())
+      treasures.append((d, v))
+      idx += 1
 
-        # Calculate time cost for each treasure
-        costs = [3 * w * d for d, v in treasures]
-        values = [v for d, v in treasures]
+    # Calculate time cost for each treasure
+    costs = [3 * w * d for d, v in treasures]
+    values = [v for d, v in treasures]
 
-        # 0/1 Knapsack
-        # dp[c] = max gold with time capacity c
-        dp = [0] * (t + 1)
-        # For reconstruction: track which items
-        parent = [[-1] * (t + 1) for _ in range(n + 1)]
+    # 0/1 Knapsack
+    # dp[c] = max gold with time capacity c
+    dp = [0] * (t + 1)
+    # For reconstruction: track which items
+    parent = [[-1] * (t + 1) for _ in range(n + 1)]
 
-        for i in range(n):
-            for c in range(t, costs[i] - 1, -1):
-                if dp[c - costs[i]] + values[i] > dp[c]:
-                    dp[c] = dp[c - costs[i]] + values[i]
+    for i in range(n):
+      for c in range(t, costs[i] - 1, -1):
+        if dp[c - costs[i]] + values[i] > dp[c]:
+          dp[c] = dp[c - costs[i]] + values[i]
 
-        # Reconstruction with separate tracking
-        # Re-run with full tracking
-        dp2 = [[0] * (t + 1) for _ in range(n + 1)]
+    # Reconstruction with separate tracking
+    # Re-run with full tracking
+    dp2 = [[0] * (t + 1) for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for c in range(t + 1):
-                dp2[i][c] = dp2[i-1][c]
-                if c >= costs[i-1] and dp2[i-1][c - costs[i-1]] + values[i-1] > dp2[i][c]:
-                    dp2[i][c] = dp2[i-1][c - costs[i-1]] + values[i-1]
+    for i in range(1, n + 1):
+      for c in range(t + 1):
+        dp2[i][c] = dp2[i-1][c]
+        if c >= costs[i-1] and dp2[i-1][c - costs[i-1]] + values[i-1] > dp2[i][c]:
+          dp2[i][c] = dp2[i-1][c - costs[i-1]] + values[i-1]
 
-        # Backtrack to find items
-        selected = []
-        c = t
-        for i in range(n, 0, -1):
-            if dp2[i][c] != dp2[i-1][c]:
-                selected.append(i - 1)
-                c -= costs[i-1]
+    # Backtrack to find items
+    selected = []
+    c = t
+    for i in range(n, 0, -1):
+      if dp2[i][c] != dp2[i-1][c]:
+        selected.append(i - 1)
+        c -= costs[i-1]
 
-        selected.reverse()
+    selected.reverse()
 
-        # Output
-        if not first:
-            print()
-        first = False
+    # Output
+    if not first:
+      print()
+    first = False
 
-        print(dp[t])
-        print(len(selected))
-        for i in selected:
-            print(treasures[i][0], treasures[i][1])
+    print(dp[t])
+    print(len(selected))
+    for i in selected:
+      print(treasures[i][0], treasures[i][1])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized with Reconstruction
 
 ```python
 def solve():
-    import sys
-    input_data = sys.stdin.read().strip().split('\n')
-    idx = 0
-    first = True
+  import sys
+  input_data = sys.stdin.read().strip().split('\n')
+  idx = 0
+  first = True
 
-    while idx < len(input_data):
-        while idx < len(input_data) and not input_data[idx].strip():
-            idx += 1
+  while idx < len(input_data):
+    while idx < len(input_data) and not input_data[idx].strip():
+      idx += 1
 
-        if idx >= len(input_data):
-            break
+    if idx >= len(input_data):
+      break
 
-        t, w = map(int, input_data[idx].split())
-        idx += 1
+    t, w = map(int, input_data[idx].split())
+    idx += 1
 
-        n = int(input_data[idx])
-        idx += 1
+    n = int(input_data[idx])
+    idx += 1
 
-        treasures = []
-        for _ in range(n):
-            d, v = map(int, input_data[idx].split())
-            treasures.append((d, v))
-            idx += 1
+    treasures = []
+    for _ in range(n):
+      d, v = map(int, input_data[idx].split())
+      treasures.append((d, v))
+      idx += 1
 
-        # Time costs
-        costs = [3 * w * d for d, v in treasures]
-        values = [v for d, v in treasures]
+    # Time costs
+    costs = [3 * w * d for d, v in treasures]
+    values = [v for d, v in treasures]
 
-        # DP with item tracking
-        # dp[c] = (max_value, set of item indices)
-        INF = float('inf')
-        dp = [(0, []) for _ in range(t + 1)]
+    # DP with item tracking
+    # dp[c] = (max_value, set of item indices)
+    INF = float('inf')
+    dp = [(0, []) for _ in range(t + 1)]
 
-        for i in range(n):
-            for c in range(t, costs[i] - 1, -1):
-                prev_val, prev_items = dp[c - costs[i]]
-                new_val = prev_val + values[i]
+    for i in range(n):
+      for c in range(t, costs[i] - 1, -1):
+        prev_val, prev_items = dp[c - costs[i]]
+        new_val = prev_val + values[i]
 
-                if new_val > dp[c][0]:
-                    dp[c] = (new_val, prev_items + [i])
+        if new_val > dp[c][0]:
+          dp[c] = (new_val, prev_items + [i])
 
-        max_gold, selected = dp[t]
+    max_gold, selected = dp[t]
 
-        if not first:
-            print()
-        first = False
+    if not first:
+      print()
+    first = False
 
-        print(max_gold)
-        print(len(selected))
-        for i in selected:
-            print(treasures[i][0], treasures[i][1])
+    print(max_gold)
+    print(len(selected))
+    for i in selected:
+      print(treasures[i][0], treasures[i][1])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

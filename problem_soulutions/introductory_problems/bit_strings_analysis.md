@@ -92,17 +92,17 @@ Multiply 2 by itself n times, taking modulo at each step.
 
 ```python
 def solve_naive(n):
-    """
-    Naive solution: linear multiplication.
+  """
+  Naive solution: linear multiplication.
 
-    Time: O(n)
-    Space: O(1)
-    """
-    MOD = 10**9 + 7
-    result = 1
-    for _ in range(n):
-        result = (result * 2) % MOD
-    return result
+  Time: O(n)
+  Space: O(1)
+  """
+  MOD = 10**9 + 7
+  result = 1
+  for _ in range(n):
+    result = (result * 2) % MOD
+  return result
 ```
 
 ### Complexity
@@ -217,32 +217,32 @@ Result = 2^8 * 2^2 = 256 * 4 = 1024
 
 ```python
 def solve_optimal(n):
-    """
-    Optimal solution using binary exponentiation.
+  """
+  Optimal solution using binary exponentiation.
 
-    Time: O(log n)
-    Space: O(1)
-    """
-    MOD = 10**9 + 7
+  Time: O(log n)
+  Space: O(1)
+  """
+  MOD = 10**9 + 7
 
-    def power(base, exp, mod):
-        result = 1
-        base = base % mod
+  def power(base, exp, mod):
+    result = 1
+    base = base % mod
 
-        while exp > 0:
-            # If exp is odd, multiply result with base
-            if exp % 2 == 1:
-                result = (result * base) % mod
+    while exp > 0:
+      # If exp is odd, multiply result with base
+      if exp % 2 == 1:
+        result = (result * base) % mod
 
-            # Square the base
-            base = (base * base) % mod
+      # Square the base
+      base = (base * base) % mod
 
-            # Halve the exponent
-            exp //= 2
+      # Halve the exponent
+      exp //= 2
 
-        return result
+    return result
 
-    return power(2, n, MOD)
+  return power(2, n, MOD)
 
 
 # Main
@@ -278,13 +278,13 @@ print(pow(2, n, 10**9 + 7))
 ```python
 # WRONG - intermediate values overflow
 def power(base, exp):
-    result = 1
-    while exp > 0:
-        if exp % 2 == 1:
-            result = result * base  # No modulo!
-        base = base * base          # No modulo!
-        exp //= 2
-    return result % MOD
+  result = 1
+  while exp > 0:
+    if exp % 2 == 1:
+      result = result * base  # No modulo!
+    base = base * base          # No modulo!
+    exp //= 2
+  return result % MOD
 ```
 
 **Problem:** Even though Python handles big integers, this is slow and wrong for other languages.

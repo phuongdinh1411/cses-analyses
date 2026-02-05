@@ -43,31 +43,31 @@ Use prefix arrays for both XOR and zero count:
 
 ```python
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-    # Build prefix arrays (1-indexed)
-    xor_prefix = [0] * (n + 1)
-    zero_prefix = [0] * (n + 1)
+  # Build prefix arrays (1-indexed)
+  xor_prefix = [0] * (n + 1)
+  zero_prefix = [0] * (n + 1)
 
-    for i in range(n):
-        xor_prefix[i + 1] = xor_prefix[i] ^ arr[i]
-        zero_prefix[i + 1] = zero_prefix[i] + (1 if arr[i] == 0 else 0)
+  for i in range(n):
+    xor_prefix[i + 1] = xor_prefix[i] ^ arr[i]
+    zero_prefix[i + 1] = zero_prefix[i] + (1 if arr[i] == 0 else 0)
 
-    q = int(input())
-    for _ in range(q):
-        l, r = map(int, input().split())
+  q = int(input())
+  for _ in range(q):
+    l, r = map(int, input().split())
 
-        # XOR of range [l, r]
-        xor_result = xor_prefix[r] ^ xor_prefix[l - 1]
+    # XOR of range [l, r]
+    xor_result = xor_prefix[r] ^ xor_prefix[l - 1]
 
-        # Count of zeros in range [l, r]
-        zeros = zero_prefix[r] - zero_prefix[l - 1]
+    # Count of zeros in range [l, r]
+    zeros = zero_prefix[r] - zero_prefix[l - 1]
 
-        print(xor_result, zeros)
+    print(xor_result, zeros)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -106,43 +106,43 @@ import heapq
 from collections import defaultdict
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    base_time = [0] * (n + 1)
-    deps = [[] for _ in range(n + 1)]
-    out_degree = [0] * (n + 1)
+  base_time = [0] * (n + 1)
+  deps = [[] for _ in range(n + 1)]
+  out_degree = [0] * (n + 1)
 
-    for u in range(1, n + 1):
-        line = list(map(int, input().split()))
-        base_time[u] = line[0]
-        d = line[1]
-        for v in line[2:2+d]:
-            deps[u].append(v)
-            out_degree[v] += 1
+  for u in range(1, n + 1):
+    line = list(map(int, input().split()))
+    base_time[u] = line[0]
+    d = line[1]
+    for v in line[2:2+d]:
+      deps[u].append(v)
+      out_degree[v] += 1
 
-    heap = []
-    for u in range(1, n + 1):
-        if out_degree[u] == 0:
-            heapq.heappush(heap, (base_time[u], u))
+  heap = []
+  for u in range(1, n + 1):
+    if out_degree[u] == 0:
+      heapq.heappush(heap, (base_time[u], u))
 
-    max_meeting = 0
-    recap_time = n - 1
+  max_meeting = 0
+  recap_time = n - 1
 
-    while heap:
-        dur, u = heapq.heappop(heap)
-        total_time = dur + recap_time
-        max_meeting = max(max_meeting, total_time)
-        recap_time -= 1
+  while heap:
+    dur, u = heapq.heappop(heap)
+    total_time = dur + recap_time
+    max_meeting = max(max_meeting, total_time)
+    recap_time -= 1
 
-        for v in deps[u]:
-            out_degree[v] -= 1
-            if out_degree[v] == 0:
-                heapq.heappush(heap, (base_time[v], v))
+    for v in deps[u]:
+      out_degree[v] -= 1
+      if out_degree[v] == 0:
+        heapq.heappush(heap, (base_time[v], v))
 
-    print(max_meeting)
+  print(max_meeting)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -177,28 +177,28 @@ N x M = (N << a) + (N << b) + (N << c) + ...
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m = map(int, input().split())
+  for _ in range(t):
+    n, m = map(int, input().split())
 
-        positions = []
-        bit_pos = 0
+    positions = []
+    bit_pos = 0
 
-        while m > 0:
-            if m & 1:
-                positions.append(bit_pos)
-            m >>= 1
-            bit_pos += 1
+    while m > 0:
+      if m & 1:
+        positions.append(bit_pos)
+      m >>= 1
+      bit_pos += 1
 
-        terms = []
-        for pos in reversed(positions):
-            terms.append(f"({n}<<{pos})")
+    terms = []
+    for pos in reversed(positions):
+      terms.append(f"({n}<<{pos})")
 
-        print(" + ".join(terms))
+    print(" + ".join(terms))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -231,49 +231,49 @@ import sys
 sys.setrecursionlimit(200000)
 
 def solve():
-    n, k = map(int, input().split())
-    main_courses = list(map(int, input().split()))
+  n, k = map(int, input().split())
+  main_courses = list(map(int, input().split()))
 
-    deps = [[] for _ in range(n + 1)]
-    for i in range(1, n + 1):
-        line = list(map(int, input().split()))
-        t = line[0]
-        deps[i] = line[1:t+1]
+  deps = [[] for _ in range(n + 1)]
+  for i in range(1, n + 1):
+    line = list(map(int, input().split()))
+    t = line[0]
+    deps[i] = line[1:t+1]
 
-    WHITE, GRAY, BLACK = 0, 1, 2
-    color = [WHITE] * (n + 1)
-    result = []
-    has_cycle = False
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * (n + 1)
+  result = []
+  has_cycle = False
 
-    def dfs(u):
-        nonlocal has_cycle
-        if has_cycle:
-            return
-
-        color[u] = GRAY
-
-        for v in deps[u]:
-            if color[v] == GRAY:
-                has_cycle = True
-                return
-            if color[v] == WHITE:
-                dfs(v)
-
-        color[u] = BLACK
-        result.append(u)
-
-    for course in main_courses:
-        if color[course] == WHITE:
-            dfs(course)
-
+  def dfs(u):
+    nonlocal has_cycle
     if has_cycle:
-        print(-1)
-    else:
-        print(len(result))
-        print(' '.join(map(str, result)))
+      return
+
+    color[u] = GRAY
+
+    for v in deps[u]:
+      if color[v] == GRAY:
+        has_cycle = True
+        return
+      if color[v] == WHITE:
+        dfs(v)
+
+    color[u] = BLACK
+    result.append(u)
+
+  for course in main_courses:
+    if color[course] == WHITE:
+      dfs(course)
+
+  if has_cycle:
+    print(-1)
+  else:
+    print(len(result))
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -305,35 +305,35 @@ Strategy: For each bit position (0 to 30), AND together all numbers that have th
 
 ```python
 def is_power_of_two(x):
-    return x > 0 and (x & (x - 1)) == 0
+  return x > 0 and (x & (x - 1)) == 0
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        found = False
+    found = False
 
-        for bit in range(31):
-            target = 1 << bit
-            and_result = (1 << 31) - 1
+    for bit in range(31):
+      target = 1 << bit
+      and_result = (1 << 31) - 1
 
-            has_bit = False
-            for num in arr:
-                if num & target:
-                    and_result &= num
-                    has_bit = True
+      has_bit = False
+      for num in arr:
+        if num & target:
+          and_result &= num
+          has_bit = True
 
-            if has_bit and is_power_of_two(and_result):
-                found = True
-                break
+      if has_bit and is_power_of_two(and_result):
+        found = True
+        break
 
-        print("YES" if found else "NO")
+    print("YES" if found else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -365,35 +365,35 @@ Since K <= 10, we can enumerate all 2^K possible subsets of dishes. For each sub
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, k = map(int, input().split())
-        preferences = []
+  for _ in range(t):
+    n, k = map(int, input().split())
+    preferences = []
 
-        for _ in range(n):
-            pref = input().strip()
-            mask = int(pref, 2)
-            preferences.append(mask)
+    for _ in range(n):
+      pref = input().strip()
+      mask = int(pref, 2)
+      preferences.append(mask)
 
-        min_dishes = k
+    min_dishes = k
 
-        for subset in range(1, 1 << k):
-            all_satisfied = True
+    for subset in range(1, 1 << k):
+      all_satisfied = True
 
-            for pref in preferences:
-                if (pref & subset) == 0:
-                    all_satisfied = False
-                    break
+      for pref in preferences:
+        if (pref & subset) == 0:
+          all_satisfied = False
+          break
 
-            if all_satisfied:
-                dish_count = bin(subset).count('1')
-                min_dishes = min(min_dishes, dish_count)
+      if all_satisfied:
+        dish_count = bin(subset).count('1')
+        min_dishes = min(min_dishes, dish_count)
 
-        print(min_dishes)
+    print(min_dishes)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -426,49 +426,49 @@ If this count is odd, the element contributes to the final XOR. If even, it canc
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        result = 0
+    result = 0
 
-        for i in range(n):
-            count = (i + 1) * (n - i)
-            if count % 2 == 1:
-                result ^= arr[i]
+    for i in range(n):
+      count = (i + 1) * (n - i)
+      if count % 2 == 1:
+        result ^= arr[i]
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized Solution
 
 ```python
 def solve_optimized():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        # If n is even, result is always 0
-        if n % 2 == 0:
-            print(0)
-            continue
+    # If n is even, result is always 0
+    if n % 2 == 0:
+      print(0)
+      continue
 
-        # If n is odd, XOR elements at even indices
-        result = 0
-        for i in range(0, n, 2):
-            result ^= arr[i]
+    # If n is odd, XOR elements at even indices
+    result = 0
+    for i in range(0, n, 2):
+      result ^= arr[i]
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve_optimized()
+  solve_optimized()
 ```
 
 ##### Complexity Analysis
@@ -495,42 +495,42 @@ Given an array A, determine if there exists any subset where the AND of all elem
 
 ```python
 def is_power_of_two(x):
-    return x > 0 and (x & (x - 1)) == 0
+  return x > 0 and (x & (x - 1)) == 0
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        found = False
+    found = False
 
-        # Check if any single element is power of 2
+    # Check if any single element is power of 2
+    for num in arr:
+      if is_power_of_two(num):
+        found = True
+        break
+
+    if not found:
+      for bit in range(31):
+        target = 1 << bit
+        and_result = (1 << 31) - 1
+
+        has_bit = False
         for num in arr:
-            if is_power_of_two(num):
-                found = True
-                break
+          if num & target:
+            and_result &= num
+            has_bit = True
 
-        if not found:
-            for bit in range(31):
-                target = 1 << bit
-                and_result = (1 << 31) - 1
+        if has_bit and is_power_of_two(and_result):
+          found = True
+          break
 
-                has_bit = False
-                for num in arr:
-                    if num & target:
-                        and_result &= num
-                        has_bit = True
-
-                if has_bit and is_power_of_two(and_result):
-                    found = True
-                    break
-
-        print("YES" if found else "NO")
+    print("YES" if found else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

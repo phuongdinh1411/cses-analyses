@@ -93,13 +93,13 @@ This ensures each position in the sequence can use any coin, creating permutatio
 ```python
 # PERMUTATIONS (this problem) - sum first, then coins
 for sum in range(1, x + 1):
-    for coin in coins:
-        dp[sum] += dp[sum - coin]
+  for coin in coins:
+    dp[sum] += dp[sum - coin]
 
 # COMBINATIONS (Coin Combinations II) - coins first, then sum
 for coin in coins:
-    for sum in range(coin, x + 1):
-        dp[sum] += dp[sum - coin]
+  for sum in range(coin, x + 1):
+    dp[sum] += dp[sum - coin]
 ```
 
 **Why?** In the permutation version, for each sum, we try ALL coins as the last coin. In the combination version, we process one coin at a time across all sums, preventing reordering.
@@ -207,25 +207,25 @@ For sum 5:
 
 ```python
 def solve(n, x, coins):
-    """
-    Count ordered ways (permutations) to make sum x with given coins.
+  """
+  Count ordered ways (permutations) to make sum x with given coins.
 
-    Time: O(n * x) where n = number of coins
-    Space: O(x) for dp array
-    """
-    MOD = 10**9 + 7
+  Time: O(n * x) where n = number of coins
+  Space: O(x) for dp array
+  """
+  MOD = 10**9 + 7
 
-    dp = [0] * (x + 1)
-    dp[0] = 1  # Base case: one way to make sum 0
+  dp = [0] * (x + 1)
+  dp[0] = 1  # Base case: one way to make sum 0
 
-    # For each target sum
-    for i in range(1, x + 1):
-        # Try each coin as the last coin
-        for coin in coins:
-            if i >= coin:
-                dp[i] = (dp[i] + dp[i - coin]) % MOD
+  # For each target sum
+  for i in range(1, x + 1):
+    # Try each coin as the last coin
+    for coin in coins:
+      if i >= coin:
+        dp[i] = (dp[i] + dp[i - coin]) % MOD
 
-    return dp[x]
+  return dp[x]
 
 # Read input
 n, x = map(int, input().split())
@@ -249,14 +249,14 @@ print(solve(n, x, coins))
 ```python
 # WRONG - This counts COMBINATIONS, not permutations!
 for coin in coins:         # Coin in outer loop
-    for i in range(coin, x + 1):
-        dp[i] += dp[i - coin]
+  for i in range(coin, x + 1):
+    dp[i] += dp[i - coin]
 
 # CORRECT - This counts PERMUTATIONS (what we want)
 for i in range(1, x + 1):  # Sum in outer loop
-    for coin in coins:
-        if i >= coin:
-            dp[i] += dp[i - coin]
+  for coin in coins:
+    if i >= coin:
+      dp[i] += dp[i - coin]
 ```
 
 **Why wrong loop order gives combinations:** When we process one coin across all sums before moving to the next coin, we're saying "use coin A first, then coin B" - preventing B before A.
@@ -287,12 +287,12 @@ dp[0] = 1
 ```python
 # Could crash if coin > x and we don't check
 for coin in coins:
-    dp[i] += dp[i - coin]  # i - coin could be negative!
+  dp[i] += dp[i - coin]  # i - coin could be negative!
 
 # CORRECT
 for coin in coins:
-    if i >= coin:
-        dp[i] += dp[i - coin]
+  if i >= coin:
+    dp[i] += dp[i - coin]
 ```
 
 ---

@@ -112,38 +112,38 @@ For each query, perform DFS from the queried node and sum all values in its subt
 
 ```python
 def solve_brute_force(n, q, values, edges, queries):
-    """
-    Brute force: DFS for each query.
+  """
+  Brute force: DFS for each query.
 
-    Time: O(q * n)
-    Space: O(n)
-    """
-    from collections import defaultdict
+  Time: O(q * n)
+  Space: O(n)
+  """
+  from collections import defaultdict
 
-    graph = defaultdict(list)
-    for a, b in edges:
-        graph[a].append(b)
-        graph[b].append(a)
+  graph = defaultdict(list)
+  for a, b in edges:
+    graph[a].append(b)
+    graph[b].append(a)
 
-    def subtree_sum(root, parent=-1):
-        total = values[root]
-        for child in graph[root]:
-            if child != parent:
-                total += subtree_sum(child, root)
-        return total
+  def subtree_sum(root, parent=-1):
+    total = values[root]
+    for child in graph[root]:
+      if child != parent:
+        total += subtree_sum(child, root)
+    return total
 
-    results = []
-    for query in queries:
-        if query[0] == 1:  # Update
-            s, x = query[1], query[2]
-            values[s] = x
-        else:  # Query
-            s = query[1]
-            # Need to find parent to avoid going back up
-            # For simplicity, we root at 1 and track parents
-            results.append(subtree_sum(s, -1))  # Simplified
+  results = []
+  for query in queries:
+    if query[0] == 1:  # Update
+      s, x = query[1], query[2]
+      values[s] = x
+    else:  # Query
+      s = query[1]
+      # Need to find parent to avoid going back up
+      # For simplicity, we root at 1 and track parents
+      results.append(subtree_sum(s, -1))  # Simplified
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -297,82 +297,82 @@ from collections import defaultdict
 input = sys.stdin.readline
 
 def solve():
-    n, q = map(int, input().split())
-    values = [0] + list(map(int, input().split()))  # 1-indexed
+  n, q = map(int, input().split())
+  values = [0] + list(map(int, input().split()))  # 1-indexed
 
-    # Build adjacency list
-    graph = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        graph[a].append(b)
-        graph[b].append(a)
+  # Build adjacency list
+  graph = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
 
-    # Euler tour using iterative DFS (avoid recursion limit)
-    in_time = [0] * (n + 1)
-    out_time = [0] * (n + 1)
-    euler = [0] * (n + 1)  # euler[i] = value at position i
+  # Euler tour using iterative DFS (avoid recursion limit)
+  in_time = [0] * (n + 1)
+  out_time = [0] * (n + 1)
+  euler = [0] * (n + 1)  # euler[i] = value at position i
 
-    timer = 0
-    stack = [(1, -1, False)]  # (node, parent, visited)
+  timer = 0
+  stack = [(1, -1, False)]  # (node, parent, visited)
 
-    while stack:
-        node, parent, visited = stack.pop()
+  while stack:
+    node, parent, visited = stack.pop()
 
-        if visited:
-            out_time[node] = timer - 1
-        else:
-            in_time[node] = timer
-            euler[timer] = values[node]
-            timer += 1
-            stack.append((node, parent, True))
+    if visited:
+      out_time[node] = timer - 1
+    else:
+      in_time[node] = timer
+      euler[timer] = values[node]
+      timer += 1
+      stack.append((node, parent, True))
 
-            for child in graph[node]:
-                if child != parent:
-                    stack.append((child, node, False))
+      for child in graph[node]:
+        if child != parent:
+          stack.append((child, node, False))
 
-    # Binary Indexed Tree (1-indexed internally)
-    bit = [0] * (n + 2)
+  # Binary Indexed Tree (1-indexed internally)
+  bit = [0] * (n + 2)
 
-    def bit_update(i, delta):
-        i += 1  # Convert to 1-indexed
-        while i <= n + 1:
-            bit[i] += delta
-            i += i & (-i)
+  def bit_update(i, delta):
+    i += 1  # Convert to 1-indexed
+    while i <= n + 1:
+      bit[i] += delta
+      i += i & (-i)
 
-    def bit_query(i):
-        i += 1  # Convert to 1-indexed
-        total = 0
-        while i > 0:
-            total += bit[i]
-            i -= i & (-i)
-        return total
+  def bit_query(i):
+    i += 1  # Convert to 1-indexed
+    total = 0
+    while i > 0:
+      total += bit[i]
+      i -= i & (-i)
+    return total
 
-    def range_sum(l, r):
-        if l == 0:
-            return bit_query(r)
-        return bit_query(r) - bit_query(l - 1)
+  def range_sum(l, r):
+    if l == 0:
+      return bit_query(r)
+    return bit_query(r) - bit_query(l - 1)
 
-    # Initialize BIT with euler tour values
-    for i in range(n):
-        bit_update(i, euler[i])
+  # Initialize BIT with euler tour values
+  for i in range(n):
+    bit_update(i, euler[i])
 
-    # Process queries
-    results = []
-    for _ in range(q):
-        query = list(map(int, input().split()))
+  # Process queries
+  results = []
+  for _ in range(q):
+    query = list(map(int, input().split()))
 
-        if query[0] == 1:  # Update
-            s, x = query[1], query[2]
-            pos = in_time[s]
-            old_val = euler[pos]
-            euler[pos] = x
-            bit_update(pos, x - old_val)
-        else:  # Query subtree sum
-            s = query[1]
-            l, r = in_time[s], out_time[s]
-            results.append(range_sum(l, r))
+    if query[0] == 1:  # Update
+      s, x = query[1], query[2]
+      pos = in_time[s]
+      old_val = euler[pos]
+      euler[pos] = x
+      bit_update(pos, x - old_val)
+    else:  # Query subtree sum
+      s = query[1]
+      l, r = in_time[s], out_time[s]
+      results.append(range_sum(l, r))
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 solve()
 ```
@@ -393,11 +393,11 @@ solve()
 ```python
 # WRONG - May cause stack overflow for n = 200000
 def dfs(node, parent):
-    in_time[node] = timer
-    for child in graph[node]:
-        if child != parent:
-            dfs(child, node)  # Deep recursion
-    out_time[node] = timer - 1
+  in_time[node] = timer
+  for child in graph[node]:
+    if child != parent:
+      dfs(child, node)  # Deep recursion
+  out_time[node] = timer - 1
 ```
 
 **Problem:** Python's default recursion limit (~1000) is too small.
@@ -408,9 +408,9 @@ def dfs(node, parent):
 ```python
 # WRONG - BIT is 1-indexed but forgetting conversion
 def bit_update(i, delta):
-    while i <= n:  # Missing i += 1 for 0-indexed input
-        bit[i] += delta
-        i += i & (-i)
+  while i <= n:  # Missing i += 1 for 0-indexed input
+    bit[i] += delta
+    i += i & (-i)
 ```
 
 **Problem:** BIT operations assume 1-indexed arrays.
@@ -426,12 +426,12 @@ def bit_update(i, delta):
 ```python
 # WRONG
 def dfs(node, parent):
-    in_time[node] = timer
-    timer += 1
-    for child in graph[node]:
-        if child != parent:
-            dfs(child, node)
-    out_time[node] = timer  # Should be timer - 1
+  in_time[node] = timer
+  timer += 1
+  for child in graph[node]:
+    if child != parent:
+      dfs(child, node)
+  out_time[node] = timer  # Should be timer - 1
 ```
 
 **Problem:** out_time should point to the last valid index, not one past it.

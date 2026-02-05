@@ -189,51 +189,51 @@ Goal: sum_mod == 0 at the end
 
 ```python
 def solve():
-    """
-    Digit DP solution for counting numbers with digit sum divisible by D.
+  """
+  Digit DP solution for counting numbers with digit sum divisible by D.
 
-    Time: O(n * 2 * D * 10) = O(n * D)
-    Space: O(n * D) for memoization
-    """
-    MOD = 10**9 + 7
+  Time: O(n * 2 * D * 10) = O(n * D)
+  Space: O(n * D) for memoization
+  """
+  MOD = 10**9 + 7
 
-    K = input().strip()
-    D = int(input().strip())
+  K = input().strip()
+  D = int(input().strip())
 
-    n = len(K)
-    digits = [int(c) for c in K]
+  n = len(K)
+  digits = [int(c) for c in K]
 
-    # Memoization: (pos, tight, sum_mod) -> count
-    memo = {}
+  # Memoization: (pos, tight, sum_mod) -> count
+  memo = {}
 
-    def dp(pos, tight, sum_mod):
-        # Base case: all digits processed
-        if pos == n:
-            return 1 if sum_mod == 0 else 0
+  def dp(pos, tight, sum_mod):
+    # Base case: all digits processed
+    if pos == n:
+      return 1 if sum_mod == 0 else 0
 
-        state = (pos, tight, sum_mod)
-        if state in memo:
-            return memo[state]
+    state = (pos, tight, sum_mod)
+    if state in memo:
+      return memo[state]
 
-        # Determine digit range
-        limit = digits[pos] if tight else 9
+    # Determine digit range
+    limit = digits[pos] if tight else 9
 
-        result = 0
-        for d in range(limit + 1):
-            new_tight = tight and (d == limit)
-            new_sum = (sum_mod + d) % D
-            result = (result + dp(pos + 1, new_tight, new_sum)) % MOD
+    result = 0
+    for d in range(limit + 1):
+      new_tight = tight and (d == limit)
+      new_sum = (sum_mod + d) % D
+      result = (result + dp(pos + 1, new_tight, new_sum)) % MOD
 
-        memo[state] = result
-        return result
+    memo[state] = result
+    return result
 
-    # dp(0, True, 0) counts numbers from 0 to K
-    # Subtract 1 to exclude 0 (we want 1 to K)
-    ans = (dp(0, True, 0) - 1 + MOD) % MOD
-    print(ans)
+  # dp(0, True, 0) counts numbers from 0 to K
+  # Subtract 1 to exclude 0 (we want 1 to K)
+  ans = (dp(0, True, 0) - 1 + MOD) % MOD
+  print(ans)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity

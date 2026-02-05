@@ -50,33 +50,33 @@ vindex = 0
 
 while True:
 
-    while vindex < m and a[sindex] - x > b[vindex]:  # too small
-        vindex += 1  # Add vest's size
+  while vindex < m and a[sindex] - x > b[vindex]:  # too small
+    vindex += 1  # Add vest's size
 
-    if vindex >= m:
-        break
+  if vindex >= m:
+    break
 
-    while sindex < n and a[sindex] + y < b[vindex]:  # too big
-        sindex += 1  # Add solider's size
+  while sindex < n and a[sindex] + y < b[vindex]:  # too big
+    sindex += 1  # Add solider's size
 
-    if sindex >= n:
-        break
+  if sindex >= n:
+    break
 
-    if a[sindex] - x > b[vindex]:
-        continue
+  if a[sindex] - x > b[vindex]:
+    continue
 
-    u.append(sindex + 1)
-    v.append(vindex + 1)
+  u.append(sindex + 1)
+  v.append(vindex + 1)
 
-    sindex += 1
-    vindex += 1
+  sindex += 1
+  vindex += 1
 
-    if sindex >= n or vindex >= m:
-        break
+  if sindex >= n or vindex >= m:
+    break
 
 print(len(u))
 for i in range(len(u)):
-    print(u[i], v[i], sep=' ')
+  print(u[i], v[i], sep=' ')
 ```
 
 ##### Complexity Analysis
@@ -122,23 +122,23 @@ end_position = -1
 distinct_list = [0] * 100001
 
 for i in range(n):
-    if distinct_list[a[i]] == 0:
-        total_distinct += 1
-    distinct_list[a[i]] += 1
-    if total_distinct == k:
-        end_position = i
-        break
+  if distinct_list[a[i]] == 0:
+    total_distinct += 1
+  distinct_list[a[i]] += 1
+  if total_distinct == k:
+    end_position = i
+    break
 
 if end_position == -1:
-    print('-1 -1')
+  print('-1 -1')
 else:
-    while True:
-        if distinct_list[a[start_position]] > 1:
-            distinct_list[a[start_position]] -= 1
-            start_position += 1
-        else:
-            break
-    print(start_position + 1, end_position + 1, sep=' ')
+  while True:
+    if distinct_list[a[start_position]] > 1:
+      distinct_list[a[start_position]] -= 1
+      start_position += 1
+    else:
+      break
+  print(start_position + 1, end_position + 1, sep=' ')
 ```
 
 ##### Complexity Analysis
@@ -185,23 +185,23 @@ max_left = 0
 
 while True:
 
-    while right < n and total_time + a[right] <= t:
-        total_time += a[right]
-        right += 1
+  while right < n and total_time + a[right] <= t:
+    total_time += a[right]
+    right += 1
 
-    while total_time > t:
-        total_time -= a[left]
-        left += 1
+  while total_time > t:
+    total_time -= a[left]
+    left += 1
 
-    if right - left > max_total_book:
-        max_total_book = right - left
-        max_left = left
+  if right - left > max_total_book:
+    max_total_book = right - left
+    max_left = left
 
-    if right < n:
-        total_time += a[right]
-        right += 1
-    else:
-        break
+  if right < n:
+    total_time += a[right]
+    right += 1
+  else:
+    break
 
 print(max_total_book)
 ```
@@ -249,22 +249,22 @@ left = 0
 right = n - 1
 
 while True:
-    if cards[left] > cards[right]:
-        Sereja += cards[left]
-        left += 1
-    else:
-        Sereja += cards[right]
-        right -= 1
-    if left > right:
-        break
-    if cards[left] > cards[right]:
-        Dima += cards[left]
-        left += 1
-    else:
-        Dima += cards[right]
-        right -= 1
-    if left > right:
-        break
+  if cards[left] > cards[right]:
+    Sereja += cards[left]
+    left += 1
+  else:
+    Sereja += cards[right]
+    right -= 1
+  if left > right:
+    break
+  if cards[left] > cards[right]:
+    Dima += cards[left]
+    left += 1
+  else:
+    Dima += cards[right]
+    right -= 1
+  if left > right:
+    break
 
 print(Sereja, Dima, sep=' ')
 ```
@@ -312,21 +312,21 @@ prepared_problem_index = 0
 
 while True:
 
-    while prepared_problem_index < m and b[prepared_problem_index] < a[needed_problem_index]:
-        prepared_problem_index += 1
-
-    if prepared_problem_index >= m:
-        break
-
+  while prepared_problem_index < m and b[prepared_problem_index] < a[needed_problem_index]:
     prepared_problem_index += 1
 
-    needed_problem_index += 1
+  if prepared_problem_index >= m:
+    break
 
-    if prepared_problem_index >= m:
-        break
+  prepared_problem_index += 1
 
-    if needed_problem_index >= n:
-        break
+  needed_problem_index += 1
+
+  if prepared_problem_index >= m:
+    break
+
+  if needed_problem_index >= n:
+    break
 
 print(n - needed_problem_index)
 ```
@@ -372,39 +372,39 @@ range_max = a[0]
 range_min = a[0]
 
 while True:
-    if right >= n - 1:
+  if right >= n - 1:
+    break
+  right += 1
+  if a[right] > range_max and range_max - range_min >= 1:
+    range_max = a[right]
+    if max_almost_constant_range <= evaluating_range:
+      max_almost_constant_range = evaluating_range
+    evaluating_range = 1
+    for i in range(right - 1, left - 1, -1):
+      if a[i] == range_min:
+        left = i + 1
+        range_min += 1
         break
-    right += 1
-    if a[right] > range_max and range_max - range_min >= 1:
-        range_max = a[right]
-        if max_almost_constant_range <= evaluating_range:
-            max_almost_constant_range = evaluating_range
-        evaluating_range = 1
-        for i in range(right - 1, left - 1, -1):
-            if a[i] == range_min:
-                left = i + 1
-                range_min += 1
-                break
-            evaluating_range += 1
-    elif a[right] < range_min and range_max - range_min >= 1:
-        range_min = a[right]
-        if max_almost_constant_range <= evaluating_range:
-            max_almost_constant_range = evaluating_range
-        evaluating_range = 1
-        for i in range(right - 1, left - 1, -1):
-            if a[i] == range_max:
-                left = i + 1
-                range_max -= 1
-                break
-            evaluating_range += 1
-    else:
-        if a[right] > range_max:
-            range_max = a[right]
-        elif a[right] < range_min:
-            range_min = a[right]
-        evaluating_range += 1
-        if max_almost_constant_range < evaluating_range:
-            max_almost_constant_range = evaluating_range
+      evaluating_range += 1
+  elif a[right] < range_min and range_max - range_min >= 1:
+    range_min = a[right]
+    if max_almost_constant_range <= evaluating_range:
+      max_almost_constant_range = evaluating_range
+    evaluating_range = 1
+    for i in range(right - 1, left - 1, -1):
+      if a[i] == range_max:
+        left = i + 1
+        range_max -= 1
+        break
+      evaluating_range += 1
+  else:
+    if a[right] > range_max:
+      range_max = a[right]
+    elif a[right] < range_min:
+      range_min = a[right]
+    evaluating_range += 1
+    if max_almost_constant_range < evaluating_range:
+      max_almost_constant_range = evaluating_range
 print(max_almost_constant_range)
 ```
 
@@ -447,20 +447,20 @@ t = list(map(int, input().split()))
 alice_eating_index = 0
 bob_eating_index = n - 1
 while True:
-    if alice_eating_index >= bob_eating_index - 1:
-        break
-    if t[alice_eating_index] > t[bob_eating_index]:
-        t[alice_eating_index] -= t[bob_eating_index]
-        bob_eating_index -= 1
-    elif t[alice_eating_index] < t[bob_eating_index]:
-        t[bob_eating_index] -= t[alice_eating_index]
-        alice_eating_index += 1
+  if alice_eating_index >= bob_eating_index - 1:
+    break
+  if t[alice_eating_index] > t[bob_eating_index]:
+    t[alice_eating_index] -= t[bob_eating_index]
+    bob_eating_index -= 1
+  elif t[alice_eating_index] < t[bob_eating_index]:
+    t[bob_eating_index] -= t[alice_eating_index]
+    alice_eating_index += 1
+  else:
+    if bob_eating_index - alice_eating_index == 2:
+      alice_eating_index += 1
     else:
-        if bob_eating_index - alice_eating_index == 2:
-            alice_eating_index += 1
-        else:
-            alice_eating_index += 1
-            bob_eating_index -= 1
+      alice_eating_index += 1
+      bob_eating_index -= 1
 
 
 print(alice_eating_index + 1, n - alice_eating_index - 1)
@@ -505,15 +505,15 @@ L = list(map(int, input().split()))
 total_people = n
 last_kill = 0
 for i in range(n - 1, 0, -1):
-    if L[i] > last_kill:
-        if L[i] < i:
-            total_people -= (L[i] - last_kill)
-            last_kill = L[i] - 1
-        else:
-            total_people -= (i - last_kill)
-            break
+  if L[i] > last_kill:
+    if L[i] < i:
+      total_people -= (L[i] - last_kill)
+      last_kill = L[i] - 1
     else:
-        last_kill = last_kill - 1 if last_kill > 0 else 0
+      total_people -= (i - last_kill)
+      break
+  else:
+    last_kill = last_kill - 1 if last_kill > 0 else 0
 print(total_people)
 ```
 

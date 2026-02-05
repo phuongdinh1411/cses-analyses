@@ -103,50 +103,50 @@ Try placing an office at each node, pick the one that covers the most uncovered 
 from collections import deque
 
 def solve_brute_force(n, d, edges):
-    """
-    Greedy solution - place office at node covering most uncovered nodes.
+  """
+  Greedy solution - place office at node covering most uncovered nodes.
 
-    Time: O(n^2) per office placement
-    Space: O(n)
-    """
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
+  Time: O(n^2) per office placement
+  Space: O(n)
+  """
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
-    def get_coverage(start, max_dist):
-        """BFS to find all nodes within max_dist from start."""
-        covered = set()
-        queue = deque([(start, 0)])
-        visited = {start}
+  def get_coverage(start, max_dist):
+    """BFS to find all nodes within max_dist from start."""
+    covered = set()
+    queue = deque([(start, 0)])
+    visited = {start}
 
-        while queue:
-            node, dist = queue.popleft()
-            covered.add(node)
+    while queue:
+      node, dist = queue.popleft()
+      covered.add(node)
 
-            if dist < max_dist:
-                for neighbor in adj[node]:
-                    if neighbor not in visited:
-                        visited.add(neighbor)
-                        queue.append((neighbor, dist + 1))
-        return covered
+      if dist < max_dist:
+        for neighbor in adj[node]:
+          if neighbor not in visited:
+            visited.add(neighbor)
+            queue.append((neighbor, dist + 1))
+    return covered
 
-    uncovered = set(range(1, n + 1))
-    offices = 0
+  uncovered = set(range(1, n + 1))
+  offices = 0
 
-    while uncovered:
-        best_node, best_count = 1, 0
-        for node in range(1, n + 1):
-            coverage = get_coverage(node, d)
-            count = len(coverage & uncovered)
-            if count > best_count:
-                best_count = count
-                best_node = node
+  while uncovered:
+    best_node, best_count = 1, 0
+    for node in range(1, n + 1):
+      coverage = get_coverage(node, d)
+      count = len(coverage & uncovered)
+      if count > best_count:
+        best_count = count
+        best_node = node
 
-        uncovered -= get_coverage(best_node, d)
-        offices += 1
+    uncovered -= get_coverage(best_node, d)
+    offices += 1
 
-    return offices
+  return offices
 ```
 
 ### Complexity
@@ -211,78 +211,78 @@ Result: 1 office at node 1
 from collections import deque
 
 def solve_optimal(n, d, edges):
-    """
-    Optimal greedy: process deepest uncovered nodes first.
+  """
+  Optimal greedy: process deepest uncovered nodes first.
 
-    Time: O(n)
-    Space: O(n)
-    """
-    if n == 1:
-        return 1
+  Time: O(n)
+  Space: O(n)
+  """
+  if n == 1:
+    return 1
 
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
-    # Root tree at node 1, compute depths and parents
-    parent = [0] * (n + 1)
-    depth = [0] * (n + 1)
-    order = []  # Nodes in BFS order
+  # Root tree at node 1, compute depths and parents
+  parent = [0] * (n + 1)
+  depth = [0] * (n + 1)
+  order = []  # Nodes in BFS order
 
-    queue = deque([1])
-    visited = {1}
+  queue = deque([1])
+  visited = {1}
 
-    while queue:
-        node = queue.popleft()
-        order.append(node)
-        for neighbor in adj[node]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                parent[neighbor] = node
-                depth[neighbor] = depth[node] + 1
-                queue.append(neighbor)
+  while queue:
+    node = queue.popleft()
+    order.append(node)
+    for neighbor in adj[node]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        parent[neighbor] = node
+        depth[neighbor] = depth[node] + 1
+        queue.append(neighbor)
 
-    # Process nodes from deepest to shallowest
-    order.sort(key=lambda x: -depth[x])
+  # Process nodes from deepest to shallowest
+  order.sort(key=lambda x: -depth[x])
 
-    covered_dist = [-1] * (n + 1)  # Distance to nearest office (-1 = uncovered)
-    offices = 0
+  covered_dist = [-1] * (n + 1)  # Distance to nearest office (-1 = uncovered)
+  offices = 0
 
-    for node in order:
-        if covered_dist[node] >= 0:
-            continue  # Already covered
+  for node in order:
+    if covered_dist[node] >= 0:
+      continue  # Already covered
 
-        # Find office location: walk d steps toward root
-        office = node
-        for _ in range(d):
-            if parent[office] != 0:
-                office = parent[office]
+    # Find office location: walk d steps toward root
+    office = node
+    for _ in range(d):
+      if parent[office] != 0:
+        office = parent[office]
 
-        # BFS to mark all nodes within distance d of office
-        offices += 1
-        q = deque([(office, 0)])
-        vis = {office}
+    # BFS to mark all nodes within distance d of office
+    offices += 1
+    q = deque([(office, 0)])
+    vis = {office}
 
-        while q:
-            curr, dist = q.popleft()
-            covered_dist[curr] = dist
+    while q:
+      curr, dist = q.popleft()
+      covered_dist[curr] = dist
 
-            if dist < d:
-                for neighbor in adj[curr]:
-                    if neighbor not in vis:
-                        vis.add(neighbor)
-                        q.append((neighbor, dist + 1))
+      if dist < d:
+        for neighbor in adj[curr]:
+          if neighbor not in vis:
+            vis.add(neighbor)
+            q.append((neighbor, dist + 1))
 
-    return offices
+  return offices
 
 
 if __name__ == "__main__":
-    import sys
-    data = sys.stdin.read().split()
-    n, d = int(data[0]), int(data[1])
-    edges = [(int(data[i]), int(data[i+1])) for i in range(2, len(data), 2)]
-    print(solve_optimal(n, d, edges))
+  import sys
+  data = sys.stdin.read().split()
+  n, d = int(data[0]), int(data[1])
+  edges = [(int(data[i]), int(data[i+1])) for i in range(2, len(data), 2)]
+  print(solve_optimal(n, d, edges))
 ```
 
 #### Complexity
@@ -305,8 +305,8 @@ office = node  # Office at leaf node
 # CORRECT: Walk d steps toward root for better coverage
 office = node
 for _ in range(d):
-    if parent[office] != 0:
-        office = parent[office]
+  if parent[office] != 0:
+    office = parent[office]
 ```
 
 **Problem:** Placing office at a leaf wastes coverage - half the radius extends into empty space.
@@ -317,12 +317,12 @@ for _ in range(d):
 ```python
 # WRONG: Process nodes in BFS order (shallow first)
 for node in order:  # If order is BFS order
-    ...
+  ...
 
 # CORRECT: Process deepest nodes first
 order.sort(key=lambda x: -depth[x])
 for node in order:
-    ...
+  ...
 ```
 
 **Problem:** Processing shallow nodes first may place offices inefficiently, leaving deep nodes uncovered.
@@ -337,7 +337,7 @@ parent = [0] * (n + 1)
 
 # CORRECT: Handle n=1 explicitly
 if n == 1:
-    return 1
+  return 1
 ```
 
 **Problem:** A single node tree still needs one office.

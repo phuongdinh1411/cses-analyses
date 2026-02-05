@@ -104,31 +104,31 @@ Generate all possible paths starting from vertex 1, tracking visited vertices, a
 
 ```python
 def solve_brute_force(n, adj):
-    """
-    Brute force backtracking solution.
+  """
+  Brute force backtracking solution.
 
-    Time: O(n! * n) - generates all permutations
-    Space: O(n) - recursion stack
-    """
-    MOD = 10**9 + 7
-    count = 0
+  Time: O(n! * n) - generates all permutations
+  Space: O(n) - recursion stack
+  """
+  MOD = 10**9 + 7
+  count = 0
 
-    def dfs(node, visited):
-        nonlocal count
-        if len(visited) == n:
-            if node == n - 1:  # 0-indexed, so n-1 is the target
-                count = (count + 1) % MOD
-            return
+  def dfs(node, visited):
+    nonlocal count
+    if len(visited) == n:
+      if node == n - 1:  # 0-indexed, so n-1 is the target
+        count = (count + 1) % MOD
+      return
 
-        for neighbor in adj[node]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                dfs(neighbor, visited)
-                visited.remove(neighbor)
+    for neighbor in adj[node]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        dfs(neighbor, visited)
+        visited.remove(neighbor)
 
-    visited = {0}  # Start from vertex 0 (1 in 1-indexed)
-    dfs(0, visited)
-    return count
+  visited = {0}  # Start from vertex 0 (1 in 1-indexed)
+  dfs(0, visited)
+  return count
 ```
 
 ### Complexity
@@ -227,62 +227,62 @@ Answer: dp[111][2] = number of Hamiltonian paths ending at n
 
 ```python
 def solve_optimal(n, m, edges):
-    """
-    Bitmask DP solution for counting Hamiltonian paths.
+  """
+  Bitmask DP solution for counting Hamiltonian paths.
 
-    Time: O(2^n * n^2)
-    Space: O(2^n * n)
-    """
-    MOD = 10**9 + 7
+  Time: O(2^n * n^2)
+  Space: O(2^n * n)
+  """
+  MOD = 10**9 + 7
 
-    # Build adjacency list (0-indexed)
-    adj = [[] for _ in range(n)]
-    for a, b in edges:
-        adj[a - 1].append(b - 1)  # Convert to 0-indexed
+  # Build adjacency list (0-indexed)
+  adj = [[] for _ in range(n)]
+  for a, b in edges:
+    adj[a - 1].append(b - 1)  # Convert to 0-indexed
 
-    # dp[mask][v] = number of paths visiting vertices in mask, ending at v
-    dp = [[0] * n for _ in range(1 << n)]
-    dp[1][0] = 1  # Start at vertex 0
+  # dp[mask][v] = number of paths visiting vertices in mask, ending at v
+  dp = [[0] * n for _ in range(1 << n)]
+  dp[1][0] = 1  # Start at vertex 0
 
-    # Iterate through all subsets
-    for mask in range(1, 1 << n):
-        for v in range(n):
-            if dp[mask][v] == 0:
-                continue
-            if not (mask & (1 << v)):  # v must be in mask
-                continue
+  # Iterate through all subsets
+  for mask in range(1, 1 << n):
+    for v in range(n):
+      if dp[mask][v] == 0:
+        continue
+      if not (mask & (1 << v)):  # v must be in mask
+        continue
 
-            # Extend to unvisited neighbors
-            for u in adj[v]:
-                if mask & (1 << u):  # Skip if already visited
-                    continue
-                new_mask = mask | (1 << u)
-                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
+      # Extend to unvisited neighbors
+      for u in adj[v]:
+        if mask & (1 << u):  # Skip if already visited
+          continue
+        new_mask = mask | (1 << u)
+        dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
 
-    # Answer: all vertices visited, ending at vertex n-1
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n - 1]
+  # Answer: all vertices visited, ending at vertex n-1
+  full_mask = (1 << n) - 1
+  return dp[full_mask][n - 1]
 
 
 # Read input and solve
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, m = int(input_data[idx]), int(input_data[idx + 1])
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+
+  edges = []
+  for _ in range(m):
+    a, b = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((a, b))
     idx += 2
 
-    edges = []
-    for _ in range(m):
-        a, b = int(input_data[idx]), int(input_data[idx + 1])
-        edges.append((a, b))
-        idx += 2
-
-    print(solve_optimal(n, m, edges))
+  print(solve_optimal(n, m, edges))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -337,15 +337,15 @@ dp[1 << 0][0] = 1  # Vertex 1 becomes index 0
 ```python
 # WRONG - Processing vertices not in mask
 for v in range(n):
-    for u in adj[v]:
-        ...
+  for u in adj[v]:
+    ...
 
 # CORRECT - Only process if v is actually in the current mask
 for v in range(n):
-    if not (mask & (1 << v)):
-        continue
-    for u in adj[v]:
-        ...
+  if not (mask & (1 << v)):
+    continue
+  for u in adj[v]:
+    ...
 ```
 
 ---

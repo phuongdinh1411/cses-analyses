@@ -96,13 +96,13 @@ dp[0] = 0  (we're already at 0, no steps needed)
 
 ```python
 def get_digits(n):
-    digits = []
-    while n > 0:
-        d = n % 10      # get last digit
-        if d > 0:       # skip zeros
-            digits.append(d)
-        n //= 10        # remove last digit
-    return digits
+  digits = []
+  while n > 0:
+    d = n % 10      # get last digit
+    if d > 0:       # skip zeros
+      digits.append(d)
+    n //= 10        # remove last digit
+  return digits
 ```
 
 **Alternative using string conversion**:
@@ -156,30 +156,30 @@ i=27: digits = [2, 7]
 
 ```python
 def removing_digits(n):
-    """
-    Find minimum steps to reduce n to 0 by subtracting its digits.
+  """
+  Find minimum steps to reduce n to 0 by subtracting its digits.
 
-    Args:
-        n: positive integer to reduce
+  Args:
+    n: positive integer to reduce
 
-    Returns:
-        minimum number of steps
-    """
-    # dp[i] = minimum steps to reduce i to 0
-    dp = [0] * (n + 1)
+  Returns:
+    minimum number of steps
+  """
+  # dp[i] = minimum steps to reduce i to 0
+  dp = [0] * (n + 1)
 
-    for i in range(1, n + 1):
-        dp[i] = float('inf')
+  for i in range(1, n + 1):
+    dp[i] = float('inf')
 
-        # Extract and try each digit
-        temp = i
-        while temp > 0:
-            digit = temp % 10
-            if digit > 0:  # Skip zero digits
-                dp[i] = min(dp[i], dp[i - digit] + 1)
-            temp //= 10
+    # Extract and try each digit
+    temp = i
+    while temp > 0:
+      digit = temp % 10
+      if digit > 0:  # Skip zero digits
+        dp[i] = min(dp[i], dp[i - digit] + 1)
+      temp //= 10
 
-    return dp[n]
+  return dp[n]
 
 
 # Read input and solve
@@ -191,14 +191,14 @@ print(removing_digits(n))
 
 ```python
 def removing_digits_alt(n):
-    dp = [0] * (n + 1)
+  dp = [0] * (n + 1)
 
-    for i in range(1, n + 1):
-        # Get non-zero digits using string conversion
-        digits = [int(c) for c in str(i) if c != '0']
-        dp[i] = min(dp[i - d] + 1 for d in digits)
+  for i in range(1, n + 1):
+    # Get non-zero digits using string conversion
+    digits = [int(c) for c in str(i) if c != '0']
+    dp[i] = min(dp[i - d] + 1 for d in digits)
 
-    return dp[n]
+  return dp[n]
 
 n = int(input())
 print(removing_digits_alt(n))
@@ -215,7 +215,7 @@ dp[i] = min(dp[i], dp[i - digit] + 1)  # Subtracting 0 is useless!
 # CORRECT: skip zero digits
 digit = temp % 10
 if digit > 0:
-    dp[i] = min(dp[i], dp[i - digit] + 1)
+  dp[i] = min(dp[i], dp[i - digit] + 1)
 ```
 
 ### 2. Not Initializing dp[i] Properly
@@ -249,30 +249,30 @@ Since each operation has cost 1 (unweighted edges), BFS finds the shortest path:
 from collections import deque
 
 def removing_digits_bfs(n):
-    if n == 0:
-        return 0
+  if n == 0:
+    return 0
 
-    visited = [False] * (n + 1)
-    queue = deque([(n, 0)])  # (current number, steps)
-    visited[n] = True
+  visited = [False] * (n + 1)
+  queue = deque([(n, 0)])  # (current number, steps)
+  visited[n] = True
 
-    while queue:
-        curr, steps = queue.popleft()
+  while queue:
+    curr, steps = queue.popleft()
 
-        # Try each digit
-        temp = curr
-        while temp > 0:
-            digit = temp % 10
-            if digit > 0:
-                next_num = curr - digit
-                if next_num == 0:
-                    return steps + 1
-                if not visited[next_num]:
-                    visited[next_num] = True
-                    queue.append((next_num, steps + 1))
-            temp //= 10
+    # Try each digit
+    temp = curr
+    while temp > 0:
+      digit = temp % 10
+      if digit > 0:
+        next_num = curr - digit
+        if next_num == 0:
+          return steps + 1
+        if not visited[next_num]:
+          visited[next_num] = True
+          queue.append((next_num, steps + 1))
+      temp //= 10
 
-    return -1  # Should never reach here for valid input
+  return -1  # Should never reach here for valid input
 ```
 
 **BFS vs DP Comparison**:

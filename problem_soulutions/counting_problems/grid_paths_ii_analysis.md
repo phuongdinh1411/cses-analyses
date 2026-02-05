@@ -101,21 +101,21 @@ Try all possible paths using recursion. At each cell, branch into two choices: g
 
 ```python
 def count_paths_brute(grid):
-    """
-    Brute force DFS solution.
-    Time: O(2^(2n)) - exponential
-    Space: O(n) - recursion depth
-    """
-    n = len(grid)
+  """
+  Brute force DFS solution.
+  Time: O(2^(2n)) - exponential
+  Space: O(n) - recursion depth
+  """
+  n = len(grid)
 
-    def dfs(i, j):
-        if i >= n or j >= n or grid[i][j] == '*':
-            return 0
-        if i == n - 1 and j == n - 1:
-            return 1
-        return dfs(i + 1, j) + dfs(i, j + 1)
+  def dfs(i, j):
+    if i >= n or j >= n or grid[i][j] == '*':
+      return 0
+    if i == n - 1 and j == n - 1:
+      return 1
+    return dfs(i + 1, j) + dfs(i, j + 1)
 
-    return dfs(0, 0)
+  return dfs(0, 0)
 ```
 
 ### Complexity
@@ -224,36 +224,36 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    MOD = 10**9 + 7
-    n = int(input())
-    grid = [input().strip() for _ in range(n)]
+  MOD = 10**9 + 7
+  n = int(input())
+  grid = [input().strip() for _ in range(n)]
 
-    # Edge case: start or end blocked
-    if grid[0][0] == '*' or grid[n-1][n-1] == '*':
-        print(0)
-        return
+  # Edge case: start or end blocked
+  if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+    print(0)
+    return
 
-    # DP table
-    dp = [[0] * n for _ in range(n)]
-    dp[0][0] = 1
+  # DP table
+  dp = [[0] * n for _ in range(n)]
+  dp[0][0] = 1
 
-    # Fill first row
+  # Fill first row
+  for j in range(1, n):
+    if grid[0][j] == '.':
+      dp[0][j] = dp[0][j-1]
+
+  # Fill first column
+  for i in range(1, n):
+    if grid[i][0] == '.':
+      dp[i][0] = dp[i-1][0]
+
+  # Fill rest of the table
+  for i in range(1, n):
     for j in range(1, n):
-        if grid[0][j] == '.':
-            dp[0][j] = dp[0][j-1]
+      if grid[i][j] == '.':
+        dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
 
-    # Fill first column
-    for i in range(1, n):
-        if grid[i][0] == '.':
-            dp[i][0] = dp[i-1][0]
-
-    # Fill rest of the table
-    for i in range(1, n):
-        for j in range(1, n):
-            if grid[i][j] == '.':
-                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD
-
-    print(dp[n-1][n-1])
+  print(dp[n-1][n-1])
 
 solve()
 ```
@@ -264,25 +264,25 @@ Since each row only depends on the previous row, we can use a single array:
 
 ```python
 def solve_optimized():
-    MOD = 10**9 + 7
-    n = int(input())
-    grid = [input().strip() for _ in range(n)]
+  MOD = 10**9 + 7
+  n = int(input())
+  grid = [input().strip() for _ in range(n)]
 
-    if grid[0][0] == '*' or grid[n-1][n-1] == '*':
-        print(0)
-        return
+  if grid[0][0] == '*' or grid[n-1][n-1] == '*':
+    print(0)
+    return
 
-    dp = [0] * n
-    dp[0] = 1
+  dp = [0] * n
+  dp[0] = 1
 
-    for i in range(n):
-        for j in range(n):
-            if grid[i][j] == '*':
-                dp[j] = 0
-            elif j > 0:
-                dp[j] = (dp[j] + dp[j-1]) % MOD
+  for i in range(n):
+    for j in range(n):
+      if grid[i][j] == '*':
+        dp[j] = 0
+      elif j > 0:
+        dp[j] = (dp[j] + dp[j-1]) % MOD
 
-    print(dp[n-1])
+  print(dp[n-1])
 ```
 
 ### Complexity
@@ -302,13 +302,13 @@ def solve_optimized():
 # WRONG - crashes or gives wrong answer if start blocked
 dp[0][0] = 1
 for i in range(n):
-    for j in range(n):
-        ...
+  for j in range(n):
+    ...
 
 # CORRECT
 if grid[0][0] == '*' or grid[n-1][n-1] == '*':
-    print(0)
-    return
+  print(0)
+  return
 dp[0][0] = 1
 ```
 
@@ -320,11 +320,11 @@ dp[0][0] = 1
 ```python
 # WRONG - using '#' instead of '*'
 if grid[i][j] == '#':
-    dp[i][j] = 0
+  dp[i][j] = 0
 
 # CORRECT - CSES uses '*' for obstacles
 if grid[i][j] == '*':
-    dp[i][j] = 0
+  dp[i][j] = 0
 ```
 
 **Problem:** Different problems use different characters for obstacles.
@@ -335,13 +335,13 @@ if grid[i][j] == '*':
 ```python
 # WRONG - doesn't stop propagation after obstacle
 for j in range(1, n):
-    dp[0][j] = dp[0][j-1]  # Missing obstacle check!
+  dp[0][j] = dp[0][j-1]  # Missing obstacle check!
 
 # CORRECT
 for j in range(1, n):
-    if grid[0][j] == '.':
-        dp[0][j] = dp[0][j-1]
-    # else dp[0][j] stays 0
+  if grid[0][j] == '.':
+    dp[0][j] = dp[0][j-1]
+  # else dp[0][j] stays 0
 ```
 
 ---

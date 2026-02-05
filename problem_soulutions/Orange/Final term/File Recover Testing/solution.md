@@ -35,106 +35,106 @@ Formula: If K ≥ len(S), count = (K - prefix[last]) / (len(S) - prefix[last])
 
 ```python
 def compute_prefix(pattern):
-    """KMP prefix function"""
-    m = len(pattern)
-    prefix = [0] * m
-    j = 0
+  """KMP prefix function"""
+  m = len(pattern)
+  prefix = [0] * m
+  j = 0
 
-    for i in range(1, m):
-        while j > 0 and pattern[i] != pattern[j]:
-            j = prefix[j - 1]
-        if pattern[i] == pattern[j]:
-            j += 1
-        prefix[i] = j
+  for i in range(1, m):
+    while j > 0 and pattern[i] != pattern[j]:
+      j = prefix[j - 1]
+    if pattern[i] == pattern[j]:
+      j += 1
+    prefix[i] = j
 
-    return prefix
+  return prefix
 
 def solve():
-    import sys
+  import sys
 
-    for line in sys.stdin:
-        parts = line.split()
-        k = int(parts[0])
-        s = parts[1]
+  for line in sys.stdin:
+    parts = line.split()
+    k = int(parts[0])
+    s = parts[1]
 
-        if k == -1:
-            break
+    if k == -1:
+      break
 
-        n = len(s)
+    n = len(s)
 
-        if k < n:
-            print(0)
-            continue
+    if k < n:
+      print(0)
+      continue
 
-        prefix = compute_prefix(s)
+    prefix = compute_prefix(s)
 
-        # Period of string S
-        period = n - prefix[n - 1]
+    # Period of string S
+    period = n - prefix[n - 1]
 
-        # Number of occurrences
-        # First occurrence needs n characters
-        # Each subsequent occurrence needs 'period' more characters
-        count = (k - prefix[n - 1]) // period
+    # Number of occurrences
+    # First occurrence needs n characters
+    # Each subsequent occurrence needs 'period' more characters
+    count = (k - prefix[n - 1]) // period
 
-        print(count)
+    print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with Detailed Explanation
 
 ```python
 def kmp_prefix(s):
-    n = len(s)
-    lps = [0] * n  # Longest Proper Prefix which is also Suffix
-    length = 0
-    i = 1
+  n = len(s)
+  lps = [0] * n  # Longest Proper Prefix which is also Suffix
+  length = 0
+  i = 1
 
-    while i < n:
-        if s[i] == s[length]:
-            length += 1
-            lps[i] = length
-            i += 1
-        elif length != 0:
-            length = lps[length - 1]
-        else:
-            lps[i] = 0
-            i += 1
+  while i < n:
+    if s[i] == s[length]:
+      length += 1
+      lps[i] = length
+      i += 1
+    elif length != 0:
+      length = lps[length - 1]
+    else:
+      lps[i] = 0
+      i += 1
 
-    return lps
+  return lps
 
 def solve():
-    while True:
-        line = input().split()
-        k, s = int(line[0]), line[1]
+  while True:
+    line = input().split()
+    k, s = int(line[0]), line[1]
 
-        if k == -1:
-            break
+    if k == -1:
+      break
 
-        n = len(s)
+    n = len(s)
 
-        if k < n:
-            print(0)
-            continue
+    if k < n:
+      print(0)
+      continue
 
-        lps = kmp_prefix(s)
+    lps = kmp_prefix(s)
 
-        # The "overlap" is lps[n-1]
-        # The "unique part" is n - lps[n-1]
-        # First match: needs n chars
-        # Each additional match: needs (n - lps[n-1]) chars
+    # The "overlap" is lps[n-1]
+    # The "unique part" is n - lps[n-1]
+    # First match: needs n chars
+    # Each additional match: needs (n - lps[n-1]) chars
 
-        overlap = lps[n - 1]
-        step = n - overlap
+    overlap = lps[n - 1]
+    step = n - overlap
 
-        # Count = 1 + (k - n) // step = (k - overlap) // step
-        count = (k - overlap) // step
+    # Count = 1 + (k - n) // step = (k - overlap) // step
+    count = (k - overlap) // step
 
-        print(count)
+    print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -109,24 +109,24 @@ For each group, linearly scan hotels from left to right to find the first one wi
 
 ```python
 def solve_brute_force(n, m, hotels, groups):
-    """
-    Brute force: linear scan for each query.
+  """
+  Brute force: linear scan for each query.
 
-    Time: O(m * n)
-    Space: O(1) extra
-    """
-    results = []
+  Time: O(m * n)
+  Space: O(1) extra
+  """
+  results = []
 
-    for group_size in groups:
-        found = 0
-        for i in range(n):
-            if hotels[i] >= group_size:
-                hotels[i] -= group_size
-                found = i + 1  # 1-indexed
-                break
-        results.append(found)
+  for group_size in groups:
+    found = 0
+    for i in range(n):
+      if hotels[i] >= group_size:
+        hotels[i] -= group_size
+        found = i + 1  # 1-indexed
+        break
+    results.append(found)
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -237,63 +237,63 @@ import sys
 from typing import List
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n = int(input_data[idx]); idx += 1
-    m = int(input_data[idx]); idx += 1
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
-    hotels = [int(input_data[idx + i]) for i in range(n)]
-    idx += n
+  hotels = [int(input_data[idx + i]) for i in range(n)]
+  idx += n
 
-    groups = [int(input_data[idx + i]) for i in range(m)]
+  groups = [int(input_data[idx + i]) for i in range(m)]
 
-    # Build segment tree (1-indexed, size 2*n)
-    # tree[i] for i >= n are leaves (hotels)
-    # tree[i] for i < n are internal nodes (max of children)
-    tree = [0] * (2 * n)
+  # Build segment tree (1-indexed, size 2*n)
+  # tree[i] for i >= n are leaves (hotels)
+  # tree[i] for i < n are internal nodes (max of children)
+  tree = [0] * (2 * n)
 
-    # Initialize leaves
-    for i in range(n):
-        tree[n + i] = hotels[i]
+  # Initialize leaves
+  for i in range(n):
+    tree[n + i] = hotels[i]
 
-    # Build internal nodes (bottom-up)
-    for i in range(n - 1, 0, -1):
-        tree[i] = max(tree[2 * i], tree[2 * i + 1])
+  # Build internal nodes (bottom-up)
+  for i in range(n - 1, 0, -1):
+    tree[i] = max(tree[2 * i], tree[2 * i + 1])
 
-    results = []
+  results = []
 
-    for group_size in groups:
-        # Check if any hotel can accommodate
-        if tree[1] < group_size:
-            results.append(0)
-            continue
+  for group_size in groups:
+    # Check if any hotel can accommodate
+    if tree[1] < group_size:
+      results.append(0)
+      continue
 
-        # Descend to find leftmost hotel with enough rooms
-        v = 1
-        while v < n:
-            if tree[2 * v] >= group_size:
-                v = 2 * v      # go left
-            else:
-                v = 2 * v + 1  # go right
+    # Descend to find leftmost hotel with enough rooms
+    v = 1
+    while v < n:
+      if tree[2 * v] >= group_size:
+        v = 2 * v      # go left
+      else:
+        v = 2 * v + 1  # go right
 
-        # v is now a leaf, hotel index = v - n (0-indexed), output v - n + 1 (1-indexed)
-        hotel_idx = v - n
-        results.append(hotel_idx + 1)
+    # v is now a leaf, hotel index = v - n (0-indexed), output v - n + 1 (1-indexed)
+    hotel_idx = v - n
+    results.append(hotel_idx + 1)
 
-        # Update: subtract group_size from this hotel
-        tree[v] -= group_size
+    # Update: subtract group_size from this hotel
+    tree[v] -= group_size
 
-        # Propagate update upward
-        v //= 2
-        while v >= 1:
-            tree[v] = max(tree[2 * v], tree[2 * v + 1])
-            v //= 2
+    # Propagate update upward
+    v //= 2
+    while v >= 1:
+      tree[v] = max(tree[2 * v], tree[2 * v + 1])
+      v //= 2
 
-    print(' '.join(map(str, results)))
+  print(' '.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -312,11 +312,11 @@ if __name__ == "__main__":
 ```python
 # WRONG APPROACH
 def find_hotel_binary_search(tree, n, required):
-    lo, hi = 0, n - 1
-    while lo < hi:
-        mid = (lo + hi) // 2
-        # This doesn't work! Can't query "max in [0, mid]" efficiently
-        # without understanding segment tree structure
+  lo, hi = 0, n - 1
+  while lo < hi:
+    mid = (lo + hi) // 2
+    # This doesn't work! Can't query "max in [0, mid]" efficiently
+    # without understanding segment tree structure
 ```
 
 **Problem:** Standard binary search doesn't leverage segment tree structure efficiently.
@@ -333,8 +333,8 @@ tree[v] -= group_size  # Update leaf
 tree[v] -= group_size
 v //= 2
 while v >= 1:
-    tree[v] = max(tree[2 * v], tree[2 * v + 1])
-    v //= 2
+  tree[v] = max(tree[2 * v], tree[2 * v + 1])
+  v //= 2
 ```
 
 **Problem:** Parent nodes still have stale max values.

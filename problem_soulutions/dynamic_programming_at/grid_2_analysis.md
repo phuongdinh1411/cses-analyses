@@ -119,30 +119,30 @@ Use standard 2D DP: dp[i][j] = number of paths to cell (i,j).
 
 ```python
 def solve_brute_force(h, w, obstacles):
-    """
-    Standard grid DP - DOES NOT WORK for this problem!
+  """
+  Standard grid DP - DOES NOT WORK for this problem!
 
-    Time: O(H * W) = O(10^10) - Too slow!
-    Space: O(H * W) = O(10^10) - Too much memory!
-    """
-    MOD = 10**9 + 7
-    obstacle_set = set((r-1, c-1) for r, c in obstacles)
+  Time: O(H * W) = O(10^10) - Too slow!
+  Space: O(H * W) = O(10^10) - Too much memory!
+  """
+  MOD = 10**9 + 7
+  obstacle_set = set((r-1, c-1) for r, c in obstacles)
 
-    dp = [[0] * w for _ in range(h)]
-    dp[0][0] = 1
+  dp = [[0] * w for _ in range(h)]
+  dp[0][0] = 1
 
-    for i in range(h):
-        for j in range(w):
-            if (i, j) in obstacle_set:
-                dp[i][j] = 0
-            else:
-                if i > 0:
-                    dp[i][j] += dp[i-1][j]
-                if j > 0:
-                    dp[i][j] += dp[i][j-1]
-                dp[i][j] %= MOD
+  for i in range(h):
+    for j in range(w):
+      if (i, j) in obstacle_set:
+        dp[i][j] = 0
+      else:
+        if i > 0:
+          dp[i][j] += dp[i-1][j]
+        if j > 0:
+          dp[i][j] += dp[i][j-1]
+        dp[i][j] %= MOD
 
-    return dp[h-1][w-1]
+  return dp[h-1][w-1]
 ```
 
 ### Complexity
@@ -343,96 +343,96 @@ Inclusion-Exclusion Idea:
 
 ```python
 def solve_grid2(h, w, n, obstacles):
-    """
-    Inclusion-Exclusion DP for counting paths avoiding obstacles.
+  """
+  Inclusion-Exclusion DP for counting paths avoiding obstacles.
 
-    Args:
-        h: Grid height (rows)
-        w: Grid width (columns)
-        n: Number of obstacles
-        obstacles: List of (row, col) tuples (1-indexed)
+  Args:
+    h: Grid height (rows)
+    w: Grid width (columns)
+    n: Number of obstacles
+    obstacles: List of (row, col) tuples (1-indexed)
 
-    Returns:
-        Number of valid paths modulo 10^9 + 7
+  Returns:
+    Number of valid paths modulo 10^9 + 7
 
-    Time: O(N^2 + H + W) for N obstacles
-    Space: O(N + H + W)
-    """
-    MOD = 10**9 + 7
+  Time: O(N^2 + H + W) for N obstacles
+  Space: O(N + H + W)
+  """
+  MOD = 10**9 + 7
 
-    # Precompute factorials for combinations
-    max_val = h + w
-    fact = [1] * (max_val + 1)
-    inv_fact = [1] * (max_val + 1)
+  # Precompute factorials for combinations
+  max_val = h + w
+  fact = [1] * (max_val + 1)
+  inv_fact = [1] * (max_val + 1)
 
-    for i in range(1, max_val + 1):
-        fact[i] = fact[i-1] * i % MOD
+  for i in range(1, max_val + 1):
+    fact[i] = fact[i-1] * i % MOD
 
-    # Fermat's little theorem for modular inverse
-    inv_fact[max_val] = pow(fact[max_val], MOD - 2, MOD)
-    for i in range(max_val - 1, -1, -1):
-        inv_fact[i] = inv_fact[i + 1] * (i + 1) % MOD
+  # Fermat's little theorem for modular inverse
+  inv_fact[max_val] = pow(fact[max_val], MOD - 2, MOD)
+  for i in range(max_val - 1, -1, -1):
+    inv_fact[i] = inv_fact[i + 1] * (i + 1) % MOD
 
-    def nCr(n, r):
-        """Compute C(n, r) mod MOD."""
-        if r < 0 or r > n:
-            return 0
-        return fact[n] * inv_fact[r] % MOD * inv_fact[n - r] % MOD
+  def nCr(n, r):
+    """Compute C(n, r) mod MOD."""
+    if r < 0 or r > n:
+      return 0
+    return fact[n] * inv_fact[r] % MOD * inv_fact[n - r] % MOD
 
-    def count_paths(r1, c1, r2, c2):
-        """Count paths from (r1,c1) to (r2,c2) using only right/down moves."""
-        dr = r2 - r1
-        dc = c2 - c1
-        if dr < 0 or dc < 0:
-            return 0
-        return nCr(dr + dc, dr)
+  def count_paths(r1, c1, r2, c2):
+    """Count paths from (r1,c1) to (r2,c2) using only right/down moves."""
+    dr = r2 - r1
+    dc = c2 - c1
+    if dr < 0 or dc < 0:
+      return 0
+    return nCr(dr + dc, dr)
 
-    # Convert to 0-indexed and sort by distance from start
-    points = [(r - 1, c - 1) for r, c in obstacles]
-    points.sort(key=lambda p: p[0] + p[1])
-    points.append((h - 1, w - 1))  # Add destination
+  # Convert to 0-indexed and sort by distance from start
+  points = [(r - 1, c - 1) for r, c in obstacles]
+  points.sort(key=lambda p: p[0] + p[1])
+  points.append((h - 1, w - 1))  # Add destination
 
-    # dp[i] = paths to points[i] avoiding all previous obstacles
-    m = len(points)
-    dp = [0] * m
+  # dp[i] = paths to points[i] avoiding all previous obstacles
+  m = len(points)
+  dp = [0] * m
 
-    for i in range(m):
-        ri, ci = points[i]
-        # Total paths from start to this point
-        dp[i] = count_paths(0, 0, ri, ci)
+  for i in range(m):
+    ri, ci = points[i]
+    # Total paths from start to this point
+    dp[i] = count_paths(0, 0, ri, ci)
 
-        # Subtract paths that go through earlier obstacles
-        for j in range(i):
-            rj, cj = points[j]
-            # Can we reach points[i] from points[j]?
-            if rj <= ri and cj <= ci:
-                # Subtract: paths to j (clean) * paths from j to i
-                dp[i] = (dp[i] - dp[j] * count_paths(rj, cj, ri, ci)) % MOD
+    # Subtract paths that go through earlier obstacles
+    for j in range(i):
+      rj, cj = points[j]
+      # Can we reach points[i] from points[j]?
+      if rj <= ri and cj <= ci:
+        # Subtract: paths to j (clean) * paths from j to i
+        dp[i] = (dp[i] - dp[j] * count_paths(rj, cj, ri, ci)) % MOD
 
-    return dp[m - 1] % MOD
+  return dp[m - 1] % MOD
 
 
 def main():
-    """Read input and solve."""
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
+  """Read input and solve."""
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    h = int(input_data[idx]); idx += 1
-    w = int(input_data[idx]); idx += 1
-    n = int(input_data[idx]); idx += 1
+  h = int(input_data[idx]); idx += 1
+  w = int(input_data[idx]); idx += 1
+  n = int(input_data[idx]); idx += 1
 
-    obstacles = []
-    for _ in range(n):
-        r = int(input_data[idx]); idx += 1
-        c = int(input_data[idx]); idx += 1
-        obstacles.append((r, c))
+  obstacles = []
+  for _ in range(n):
+    r = int(input_data[idx]); idx += 1
+    c = int(input_data[idx]); idx += 1
+    obstacles.append((r, c))
 
-    print(solve_grid2(h, w, n, obstacles))
+  print(solve_grid2(h, w, n, obstacles))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -466,7 +466,7 @@ dp = [[0] * w for _ in range(h)]  # 10^10 cells!
 ```python
 # WRONG - Processing obstacles in arbitrary order
 for i, (ri, ci) in enumerate(obstacles):
-    # Cannot guarantee earlier obstacles are "before" current one
+  # Cannot guarantee earlier obstacles are "before" current one
 ```
 
 **Problem:** Inclusion-exclusion requires processing points in reachability order.

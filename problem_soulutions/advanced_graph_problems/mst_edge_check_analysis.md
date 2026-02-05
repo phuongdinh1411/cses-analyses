@@ -149,67 +149,67 @@ from collections import defaultdict
 input = sys.stdin.readline
 
 class UnionFind:
-    def __init__(self, n):
-        self.parent = list(range(n))
-        self.rank = [0] * n
+  def __init__(self, n):
+    self.parent = list(range(n))
+    self.rank = [0] * n
 
-    def find(self, x):
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])
-        return self.parent[x]
+  def find(self, x):
+    if self.parent[x] != x:
+      self.parent[x] = self.find(self.parent[x])
+    return self.parent[x]
 
-    def union(self, x, y):
-        px, py = self.find(x), self.find(y)
-        if px == py:
-            return False
-        if self.rank[px] < self.rank[py]:
-            px, py = py, px
-        self.parent[py] = px
-        if self.rank[px] == self.rank[py]:
-            self.rank[px] += 1
-        return True
+  def union(self, x, y):
+    px, py = self.find(x), self.find(y)
+    if px == py:
+      return False
+    if self.rank[px] < self.rank[py]:
+      px, py = py, px
+    self.parent[py] = px
+    if self.rank[px] == self.rank[py]:
+      self.rank[px] += 1
+    return True
 
-    def connected(self, x, y):
-        return self.find(x) == self.find(y)
+  def connected(self, x, y):
+    return self.find(x) == self.find(y)
 
 def solve():
-    n, m = map(int, input().split())
-    edges = []
-    for i in range(m):
-        a, b, w = map(int, input().split())
-        edges.append((w, a - 1, b - 1, i))  # (weight, u, v, original_index)
+  n, m = map(int, input().split())
+  edges = []
+  for i in range(m):
+    a, b, w = map(int, input().split())
+    edges.append((w, a - 1, b - 1, i))  # (weight, u, v, original_index)
 
-    # Sort by weight
-    edges.sort()
+  # Sort by weight
+  edges.sort()
 
-    result = ['NO'] * m
-    uf = UnionFind(n)
+  result = ['NO'] * m
+  uf = UnionFind(n)
 
-    # Process edges in groups of same weight
-    i = 0
-    while i < m:
-        j = i
-        # Find all edges with same weight
-        while j < m and edges[j][0] == edges[i][0]:
-            j += 1
+  # Process edges in groups of same weight
+  i = 0
+  while i < m:
+    j = i
+    # Find all edges with same weight
+    while j < m and edges[j][0] == edges[i][0]:
+      j += 1
 
-        # Check which edges in this group connect different components
-        for k in range(i, j):
-            w, u, v, idx = edges[k]
-            if not uf.connected(u, v):
-                result[idx] = 'YES'
+    # Check which edges in this group connect different components
+    for k in range(i, j):
+      w, u, v, idx = edges[k]
+      if not uf.connected(u, v):
+        result[idx] = 'YES'
 
-        # Now union all edges in this weight group
-        for k in range(i, j):
-            w, u, v, idx = edges[k]
-            uf.union(u, v)
+    # Now union all edges in this weight group
+    for k in range(i, j):
+      w, u, v, idx = edges[k]
+      uf.union(u, v)
 
-        i = j
+    i = j
 
-    print('\n'.join(result))
+  print('\n'.join(result))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -246,96 +246,96 @@ input = sys.stdin.readline
 LOG = 18
 
 def solve():
-    n, m = map(int, input().split())
-    edges = []
-    for i in range(m):
-        a, b, w = map(int, input().split())
-        edges.append((w, a - 1, b - 1, i))
+  n, m = map(int, input().split())
+  edges = []
+  for i in range(m):
+    a, b, w = map(int, input().split())
+    edges.append((w, a - 1, b - 1, i))
 
-    # Build MST using Kruskal's
-    parent = list(range(n))
+  # Build MST using Kruskal's
+  parent = list(range(n))
 
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
+  def find(x):
+    if parent[x] != x:
+      parent[x] = find(parent[x])
+    return parent[x]
 
-    def union(x, y):
-        px, py = find(x), find(y)
-        if px == py:
-            return False
-        parent[px] = py
-        return True
+  def union(x, y):
+    px, py = find(x), find(y)
+    if px == py:
+      return False
+    parent[px] = py
+    return True
 
-    sorted_edges = sorted(edges)
-    mst_adj = defaultdict(list)
-    in_mst = set()
+  sorted_edges = sorted(edges)
+  mst_adj = defaultdict(list)
+  in_mst = set()
 
-    for w, u, v, idx in sorted_edges:
-        if union(u, v):
-            mst_adj[u].append((v, w))
-            mst_adj[v].append((u, w))
-            in_mst.add(idx)
+  for w, u, v, idx in sorted_edges:
+    if union(u, v):
+      mst_adj[u].append((v, w))
+      mst_adj[v].append((u, w))
+      in_mst.add(idx)
 
-    # Build LCA structure with max edge tracking
-    depth = [0] * n
-    up = [[0] * n for _ in range(LOG)]
-    max_edge = [[0] * n for _ in range(LOG)]  # max edge weight to 2^k ancestor
+  # Build LCA structure with max edge tracking
+  depth = [0] * n
+  up = [[0] * n for _ in range(LOG)]
+  max_edge = [[0] * n for _ in range(LOG)]  # max edge weight to 2^k ancestor
 
-    def dfs(u, p, d, edge_w):
-        depth[u] = d
-        up[0][u] = p
-        max_edge[0][u] = edge_w
-        for k in range(1, LOG):
-            up[k][u] = up[k-1][up[k-1][u]]
-            max_edge[k][u] = max(max_edge[k-1][u], max_edge[k-1][up[k-1][u]])
-        for v, w in mst_adj[u]:
-            if v != p:
-                dfs(v, u, d + 1, w)
+  def dfs(u, p, d, edge_w):
+    depth[u] = d
+    up[0][u] = p
+    max_edge[0][u] = edge_w
+    for k in range(1, LOG):
+      up[k][u] = up[k-1][up[k-1][u]]
+      max_edge[k][u] = max(max_edge[k-1][u], max_edge[k-1][up[k-1][u]])
+    for v, w in mst_adj[u]:
+      if v != p:
+        dfs(v, u, d + 1, w)
 
-    # Handle disconnected components
-    for start in range(n):
-        if depth[start] == 0 and (start == 0 or not mst_adj[start]):
-            if mst_adj[start] or start == 0:
-                dfs(start, start, 1, 0)
+  # Handle disconnected components
+  for start in range(n):
+    if depth[start] == 0 and (start == 0 or not mst_adj[start]):
+      if mst_adj[start] or start == 0:
+        dfs(start, start, 1, 0)
 
-    def get_max_on_path(u, v):
-        if depth[u] < depth[v]:
-            u, v = v, u
+  def get_max_on_path(u, v):
+    if depth[u] < depth[v]:
+      u, v = v, u
 
-        result = 0
-        diff = depth[u] - depth[v]
+    result = 0
+    diff = depth[u] - depth[v]
 
-        for k in range(LOG):
-            if (diff >> k) & 1:
-                result = max(result, max_edge[k][u])
-                u = up[k][u]
+    for k in range(LOG):
+      if (diff >> k) & 1:
+        result = max(result, max_edge[k][u])
+        u = up[k][u]
 
-        if u == v:
-            return result
+    if u == v:
+      return result
 
-        for k in range(LOG - 1, -1, -1):
-            if up[k][u] != up[k][v]:
-                result = max(result, max_edge[k][u], max_edge[k][v])
-                u, v = up[k][u], up[k][v]
+    for k in range(LOG - 1, -1, -1):
+      if up[k][u] != up[k][v]:
+        result = max(result, max_edge[k][u], max_edge[k][v])
+        u, v = up[k][u], up[k][v]
 
-        result = max(result, max_edge[0][u], max_edge[0][v])
-        return result
+    result = max(result, max_edge[0][u], max_edge[0][v])
+    return result
 
-    # Answer queries
-    result = ['NO'] * m
-    for w, u, v, idx in edges:
-        if idx in in_mst:
-            result[idx] = 'YES'
-        elif depth[u] > 0 and depth[v] > 0:
-            max_w = get_max_on_path(u, v)
-            if w <= max_w:
-                result[idx] = 'YES'
+  # Answer queries
+  result = ['NO'] * m
+  for w, u, v, idx in edges:
+    if idx in in_mst:
+      result[idx] = 'YES'
+    elif depth[u] > 0 and depth[v] > 0:
+      max_w = get_max_on_path(u, v)
+      if w <= max_w:
+        result[idx] = 'YES'
 
-    print('\n'.join(result))
+  print('\n'.join(result))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -354,10 +354,10 @@ if __name__ == "__main__":
 ```python
 # WRONG - treats ties as "not in MST"
 for w, u, v, idx in sorted_edges:
-    if uf.union(u, v):
-        result[idx] = 'YES'
-    else:
-        result[idx] = 'NO'  # Wrong! Edge might be in a different MST
+  if uf.union(u, v):
+    result[idx] = 'YES'
+  else:
+    result[idx] = 'NO'  # Wrong! Edge might be in a different MST
 ```
 
 **Problem:** When multiple edges have the same weight, any of them could be in some MST.
@@ -368,10 +368,10 @@ for w, u, v, idx in sorted_edges:
 ```python
 # WRONG - checks after modifying union-find
 for k in range(i, j):
-    w, u, v, idx = edges[k]
-    uf.union(u, v)  # Modifies structure!
-    if not uf.connected(u, v):  # Always false after union!
-        result[idx] = 'YES'
+  w, u, v, idx = edges[k]
+  uf.union(u, v)  # Modifies structure!
+  if not uf.connected(u, v):  # Always false after union!
+    result[idx] = 'YES'
 ```
 
 **Problem:** Union modifies the structure before checking.

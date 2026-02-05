@@ -200,23 +200,23 @@ Output: 3 10 5 16 8 4 2 1
 
 ```python
 def solve():
-    """
-    Weird Algorithm - Collatz sequence simulation.
+  """
+  Weird Algorithm - Collatz sequence simulation.
 
-    Time: O(?) - unknown, but finite for all tested values
-    Space: O(1) - no extra storage needed
-    """
-    n = int(input())
+  Time: O(?) - unknown, but finite for all tested values
+  Space: O(1) - no extra storage needed
+  """
+  n = int(input())
 
-    result = [n]
-    while n != 1:
-        if n % 2 == 0:
-            n = n // 2
-        else:
-            n = n * 3 + 1
-        result.append(n)
+  result = [n]
+  while n != 1:
+    if n % 2 == 0:
+      n = n // 2
+    else:
+      n = n * 3 + 1
+    result.append(n)
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 solve()
 ```
@@ -242,15 +242,15 @@ solve()
 ```python
 # WRONG - extra space at the end
 while n != 1:
-    print(n, end=' ')
-    # ...
+  print(n, end=' ')
+  # ...
 print(n)  # prints "1" but there's trailing space before it
 
 # CORRECT - join with spaces
 result = [n]
 while n != 1:
-    # ...
-    result.append(n)
+  # ...
+  result.append(n)
 print(' '.join(map(str, result)))
 ```
 
@@ -262,16 +262,16 @@ print(' '.join(map(str, result)))
 ```python
 # WRONG
 while n != 1:
-    if n % 2 == 0:
-        n = n // 2
-    else:
-        n = n * 3 + 1
-    print(n, end=' ')  # Missing initial value!
+  if n % 2 == 0:
+    n = n // 2
+  else:
+    n = n * 3 + 1
+  print(n, end=' ')  # Missing initial value!
 
 # CORRECT
 print(n, end=' ')  # Print initial value first
 while n != 1:
-    # ...
+  # ...
 ```
 
 **Problem:** The sequence should include the starting value.

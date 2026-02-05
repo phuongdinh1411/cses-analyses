@@ -103,26 +103,26 @@ Enumerate all possible paths of length k starting from node a using DFS, countin
 
 ```python
 def brute_force(n, adj, queries):
-    """
-    DFS enumeration of all paths.
+  """
+  DFS enumeration of all paths.
 
-    Time: O(n^k * q) - exponential in k
-    Space: O(k) - recursion depth
-    """
-    MOD = 10**9 + 7
+  Time: O(n^k * q) - exponential in k
+  Space: O(k) - recursion depth
+  """
+  MOD = 10**9 + 7
 
-    def count_circuits(start, length):
-        def dfs(node, remaining):
-            if remaining == 0:
-                return 1 if node == start else 0
-            total = 0
-            for neighbor in range(n):
-                if adj[node][neighbor]:
-                    total = (total + dfs(neighbor, remaining - 1)) % MOD
-            return total
-        return dfs(start, length)
+  def count_circuits(start, length):
+    def dfs(node, remaining):
+      if remaining == 0:
+        return 1 if node == start else 0
+      total = 0
+      for neighbor in range(n):
+        if adj[node][neighbor]:
+          total = (total + dfs(neighbor, remaining - 1)) % MOD
+      return total
+    return dfs(start, length)
 
-    return [count_circuits(a - 1, k) for a, k in queries]
+  return [count_circuits(a - 1, k) for a, k in queries]
 ```
 
 ### Complexity
@@ -232,45 +232,45 @@ A^k[i][j] = paths of length k
 
 ```python
 def matrix_exponentiation(n, adj, queries):
-    """
-    Optimal solution using matrix exponentiation.
+  """
+  Optimal solution using matrix exponentiation.
 
-    Time: O(n^3 * log(max_k) + q)
-    Space: O(n^2)
-    """
-    MOD = 10**9 + 7
+  Time: O(n^3 * log(max_k) + q)
+  Space: O(n^2)
+  """
+  MOD = 10**9 + 7
 
-    def mat_mult(A, B):
-        """Multiply two n x n matrices."""
-        C = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for k in range(n):
-                if A[i][k] == 0:
-                    continue
-                for j in range(n):
-                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
-        return C
+  def mat_mult(A, B):
+    """Multiply two n x n matrices."""
+    C = [[0] * n for _ in range(n)]
+    for i in range(n):
+      for k in range(n):
+        if A[i][k] == 0:
+          continue
+        for j in range(n):
+          C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+    return C
 
-    def mat_pow(M, p):
-        """Compute M^p using binary exponentiation."""
-        # Initialize result as identity matrix
-        result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        base = [row[:] for row in M]
+  def mat_pow(M, p):
+    """Compute M^p using binary exponentiation."""
+    # Initialize result as identity matrix
+    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    base = [row[:] for row in M]
 
-        while p > 0:
-            if p & 1:
-                result = mat_mult(result, base)
-            base = mat_mult(base, base)
-            p >>= 1
+    while p > 0:
+      if p & 1:
+        result = mat_mult(result, base)
+      base = mat_mult(base, base)
+      p >>= 1
 
-        return result
+    return result
 
-    results = []
-    for a, k in queries:
-        powered = mat_pow(adj, k)
-        results.append(powered[a - 1][a - 1])
+  results = []
+  for a, k in queries:
+    powered = mat_pow(adj, k)
+    results.append(powered[a - 1][a - 1])
 
-    return results
+  return results
 ```
 
 #### Complexity

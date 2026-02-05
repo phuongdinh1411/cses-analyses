@@ -55,16 +55,16 @@ The minimum number of moves for Tower of Hanoi with N disks is **2^N - 1**.
 MOD = 10**9 + 7
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        # Tower of Hanoi formula: 2^n - 1
-        result = (pow(2, n, MOD) - 1) % MOD
-        print(result)
+  for _ in range(t):
+    n = int(input())
+    # Tower of Hanoi formula: 2^n - 1
+    result = (pow(2, n, MOD) - 1) % MOD
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Solution with Fast Modular Exponentiation
@@ -73,41 +73,41 @@ if __name__ == "__main__":
 MOD = 10**9 + 7
 
 def mod_pow(base, exp, mod):
-    """Fast modular exponentiation"""
-    result = 1
-    base %= mod
+  """Fast modular exponentiation"""
+  result = 1
+  base %= mod
 
-    while exp > 0:
-        if exp % 2 == 1:
-            result = (result * base) % mod
-        exp //= 2
-        base = (base * base) % mod
+  while exp > 0:
+    if exp % 2 == 1:
+      result = (result * base) % mod
+    exp //= 2
+    base = (base * base) % mod
 
-    return result
+  return result
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        result = (mod_pow(2, n, MOD) - 1 + MOD) % MOD
-        print(result)
+  for _ in range(t):
+    n = int(input())
+    result = (mod_pow(2, n, MOD) - 1 + MOD) % MOD
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### One-liner
 
 ```python
 def solve():
-    M = 10**9 + 7
-    t = int(input())
-    for _ in range(t):
-        print((pow(2, int(input()), M) - 1) % M)
+  M = 10**9 + 7
+  t = int(input())
+  for _ in range(t):
+    print((pow(2, int(input()), M) - 1) % M)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -176,60 +176,60 @@ from collections import defaultdict
 sys.setrecursionlimit(200000)
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    # DFS to compute entry and exit times
-    entry = [0] * (n + 1)
-    exit_time = [0] * (n + 1)
-    timer = [0]
+  # DFS to compute entry and exit times
+  entry = [0] * (n + 1)
+  exit_time = [0] * (n + 1)
+  timer = [0]
 
-    def dfs(u, parent):
-        timer[0] += 1
-        entry[u] = timer[0]
+  def dfs(u, parent):
+    timer[0] += 1
+    entry[u] = timer[0]
 
-        for v in adj[u]:
-            if v != parent:
-                dfs(v, u)
+    for v in adj[u]:
+      if v != parent:
+        dfs(v, u)
 
-        timer[0] += 1
-        exit_time[u] = timer[0]
+    timer[0] += 1
+    exit_time[u] = timer[0]
 
-    # Root the tree at node 1 (King's Mansion)
-    dfs(1, -1)
+  # Root the tree at node 1 (King's Mansion)
+  dfs(1, -1)
 
-    def is_ancestor(a, b):
-        """Check if a is ancestor of b"""
-        return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
+  def is_ancestor(a, b):
+    """Check if a is ancestor of b"""
+    return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
 
-    q = int(input())
-    results = []
+  q = int(input())
+  results = []
 
-    for _ in range(q):
-        query_type, x, y = map(int, input().split())
+  for _ in range(q):
+    query_type, x, y = map(int, input().split())
 
-        if query_type == 0:
-            # Moving towards mansion: X must be ancestor of Y
-            if is_ancestor(x, y) and x != y:
-                results.append("YES")
-            else:
-                results.append("NO")
-        else:
-            # Moving away from mansion: X must be descendant of Y (Y is ancestor of X)
-            if is_ancestor(y, x) and x != y:
-                results.append("YES")
-            else:
-                results.append("NO")
+    if query_type == 0:
+      # Moving towards mansion: X must be ancestor of Y
+      if is_ancestor(x, y) and x != y:
+        results.append("YES")
+      else:
+        results.append("NO")
+    else:
+      # Moving away from mansion: X must be descendant of Y (Y is ancestor of X)
+      if is_ancestor(y, x) and x != y:
+        results.append("YES")
+      else:
+        results.append("NO")
 
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Iterative
@@ -238,53 +238,53 @@ if __name__ == "__main__":
 from collections import defaultdict
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    # Iterative DFS for entry/exit times
-    entry = [0] * (n + 1)
-    exit_time = [0] * (n + 1)
+  # Iterative DFS for entry/exit times
+  entry = [0] * (n + 1)
+  exit_time = [0] * (n + 1)
 
-    timer = 0
-    stack = [(1, -1, False)]  # (node, parent, processed)
+  timer = 0
+  stack = [(1, -1, False)]  # (node, parent, processed)
 
-    while stack:
-        node, parent, processed = stack.pop()
+  while stack:
+    node, parent, processed = stack.pop()
 
-        if processed:
-            timer += 1
-            exit_time[node] = timer
-        else:
-            timer += 1
-            entry[node] = timer
-            stack.append((node, parent, True))
+    if processed:
+      timer += 1
+      exit_time[node] = timer
+    else:
+      timer += 1
+      entry[node] = timer
+      stack.append((node, parent, True))
 
-            for child in adj[node]:
-                if child != parent:
-                    stack.append((child, node, False))
+      for child in adj[node]:
+        if child != parent:
+          stack.append((child, node, False))
 
-    def is_ancestor(a, b):
-        return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
+  def is_ancestor(a, b):
+    return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
 
-    q = int(input())
+  q = int(input())
 
-    for _ in range(q):
-        t, x, y = map(int, input().split())
+  for _ in range(q):
+    t, x, y = map(int, input().split())
 
-        if t == 0:
-            # Towards root: x must be ancestor of y
-            print("YES" if x != y and is_ancestor(x, y) else "NO")
-        else:
-            # Away from root: x must be descendant of y
-            print("YES" if x != y and is_ancestor(y, x) else "NO")
+    if t == 0:
+      # Towards root: x must be ancestor of y
+      print("YES" if x != y and is_ancestor(x, y) else "NO")
+    else:
+      # Away from root: x must be descendant of y
+      print("YES" if x != y and is_ancestor(y, x) else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -343,75 +343,75 @@ For each test case, print "YES" if the string is palindrome, "NO" otherwise.
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = input().strip()
-        digits = [int(d) for d in n]
-        length = sum(digits)
+  for _ in range(t):
+    n = input().strip()
+    digits = [int(d) for d in n]
+    length = sum(digits)
 
-        # Build string of given length by repeating digits
-        result = []
-        idx = 0
-        for i in range(length):
-            result.append(digits[idx])
-            idx = (idx + 1) % len(digits)
+    # Build string of given length by repeating digits
+    result = []
+    idx = 0
+    for i in range(length):
+      result.append(digits[idx])
+      idx = (idx + 1) % len(digits)
 
-        # Check palindrome
-        is_palindrome = result == result[::-1]
-        print("YES" if is_palindrome else "NO")
+    # Check palindrome
+    is_palindrome = result == result[::-1]
+    print("YES" if is_palindrome else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = input().strip()
-        digits = [int(d) for d in n]
-        length = sum(digits)
-        num_digits = len(digits)
+  for _ in range(t):
+    n = input().strip()
+    digits = [int(d) for d in n]
+    length = sum(digits)
+    num_digits = len(digits)
 
-        # Check palindrome without building full string
-        is_palindrome = True
-        for i in range(length // 2):
-            left_digit = digits[i % num_digits]
-            right_digit = digits[(length - 1 - i) % num_digits]
-            if left_digit != right_digit:
-                is_palindrome = False
-                break
+    # Check palindrome without building full string
+    is_palindrome = True
+    for i in range(length // 2):
+      left_digit = digits[i % num_digits]
+      right_digit = digits[(length - 1 - i) % num_digits]
+      if left_digit != right_digit:
+        is_palindrome = False
+        break
 
-        print("YES" if is_palindrome else "NO")
+    print("YES" if is_palindrome else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def is_palindrome_series(n_str):
-    digits = list(n_str)
-    length = sum(int(d) for d in digits)
-    num_digits = len(digits)
+  digits = list(n_str)
+  length = sum(int(d) for d in digits)
+  num_digits = len(digits)
 
-    # Build and check
-    s = ''.join(digits[i % num_digits] for i in range(length))
-    return s == s[::-1]
+  # Build and check
+  s = ''.join(digits[i % num_digits] for i in range(length))
+  return s == s[::-1]
 
 def solve():
-    t = int(input())
-    for _ in range(t):
-        n = input().strip()
-        print("YES" if is_palindrome_series(n) else "NO")
+  t = int(input())
+  for _ in range(t):
+    n = input().strip()
+    print("YES" if is_palindrome_series(n) else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -489,81 +489,81 @@ For each bit position:
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        # Compute prefix XOR
-        prefix = [0] * (n + 1)
-        for i in range(n):
-            prefix[i + 1] = prefix[i] ^ arr[i]
+    # Compute prefix XOR
+    prefix = [0] * (n + 1)
+    for i in range(n):
+      prefix[i + 1] = prefix[i] ^ arr[i]
 
-        total_sum = 0
+    total_sum = 0
 
-        # For each bit position (up to 30 bits for 10^9)
-        for bit in range(30):
-            mask = 1 << bit
-            ones = 0
-            zeros = 0
+    # For each bit position (up to 30 bits for 10^9)
+    for bit in range(30):
+      mask = 1 << bit
+      ones = 0
+      zeros = 0
 
-            # Count prefix values with this bit set/unset
-            for i in range(n + 1):
-                if prefix[i] & mask:
-                    ones += 1
-                else:
-                    zeros += 1
+      # Count prefix values with this bit set/unset
+      for i in range(n + 1):
+        if prefix[i] & mask:
+          ones += 1
+        else:
+          zeros += 1
 
-            # Number of subarrays with this bit set in XOR
-            # = pairs where P[R] and P[L-1] differ at this bit
-            count = ones * zeros
+      # Number of subarrays with this bit set in XOR
+      # = pairs where P[R] and P[L-1] differ at this bit
+      count = ones * zeros
 
-            # Add contribution
-            total_sum += count * mask
+      # Add contribution
+      total_sum += count * mask
 
-        print(total_sum)
+    print(total_sum)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        total_sum = 0
-        prefix_xor = 0
+    total_sum = 0
+    prefix_xor = 0
 
-        # For each bit, track count of 0s and 1s in prefix XOR
-        bit_count = [[1, 0] for _ in range(30)]  # Initially prefix[0]=0
+    # For each bit, track count of 0s and 1s in prefix XOR
+    bit_count = [[1, 0] for _ in range(30)]  # Initially prefix[0]=0
 
-        for num in arr:
-            prefix_xor ^= num
+    for num in arr:
+      prefix_xor ^= num
 
-            for bit in range(30):
-                mask = 1 << bit
-                bit_val = (prefix_xor >> bit) & 1
+      for bit in range(30):
+        mask = 1 << bit
+        bit_val = (prefix_xor >> bit) & 1
 
-                # Subarrays ending here with this bit set
-                # = count of previous prefixes with opposite bit
-                opposite = 1 - bit_val
-                count = bit_count[bit][opposite]
-                total_sum += count * mask
+        # Subarrays ending here with this bit set
+        # = count of previous prefixes with opposite bit
+        opposite = 1 - bit_val
+        count = bit_count[bit][opposite]
+        total_sum += count * mask
 
-                # Update count
-                bit_count[bit][bit_val] += 1
+        # Update count
+        bit_count[bit][bit_val] += 1
 
-        print(total_sum)
+    print(total_sum)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -617,95 +617,95 @@ Use backtracking:
 
 ```python
 def solve():
-    def is_safe(queens, row, col):
-        """Check if placing a queen at (row, col) is safe"""
-        for r in range(row):
-            c = queens[r]
-            # Same column
-            if c == col:
-                return False
-            # Same diagonal
-            if abs(r - row) == abs(c - col):
-                return False
-        return True
+  def is_safe(queens, row, col):
+    """Check if placing a queen at (row, col) is safe"""
+    for r in range(row):
+      c = queens[r]
+      # Same column
+      if c == col:
+        return False
+      # Same diagonal
+      if abs(r - row) == abs(c - col):
+        return False
+    return True
 
-    def backtrack(board, queens, row, current_sum, max_sum):
-        """Backtrack to find all valid 8-queens placements"""
-        if row == 8:
-            return max(max_sum[0], current_sum)
+  def backtrack(board, queens, row, current_sum, max_sum):
+    """Backtrack to find all valid 8-queens placements"""
+    if row == 8:
+      return max(max_sum[0], current_sum)
 
-        for col in range(8):
-            if is_safe(queens, row, col):
-                queens[row] = col
-                new_sum = current_sum + board[row][col]
-                max_sum[0] = max(max_sum[0], backtrack(board, queens, row + 1, new_sum, max_sum))
+    for col in range(8):
+      if is_safe(queens, row, col):
+        queens[row] = col
+        new_sum = current_sum + board[row][col]
+        max_sum[0] = max(max_sum[0], backtrack(board, queens, row + 1, new_sum, max_sum))
 
-        return max_sum[0]
+    return max_sum[0]
 
-    k = int(input())
+  k = int(input())
 
-    for _ in range(k):
-        board = []
-        for i in range(8):
-            row = list(map(int, input().split()))
-            board.append(row)
+  for _ in range(k):
+    board = []
+    for i in range(8):
+      row = list(map(int, input().split()))
+      board.append(row)
 
-        queens = [-1] * 8  # queens[i] = column of queen in row i
-        max_sum = [0]
+    queens = [-1] * 8  # queens[i] = column of queen in row i
+    max_sum = [0]
 
-        result = backtrack(board, queens, 0, 0, max_sum)
+    result = backtrack(board, queens, 0, 0, max_sum)
 
-        # Right-justify in field of 5 characters
-        print(f"{result:5d}")
+    # Right-justify in field of 5 characters
+    print(f"{result:5d}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    def backtrack(board, row, cols, diag1, diag2, current_sum):
-        """
-        cols: bitmask of occupied columns
-        diag1: bitmask of occupied \ diagonals
-        diag2: bitmask of occupied / diagonals
-        """
-        if row == 8:
-            return current_sum
+  def backtrack(board, row, cols, diag1, diag2, current_sum):
+    """
+    cols: bitmask of occupied columns
+    diag1: bitmask of occupied \ diagonals
+    diag2: bitmask of occupied / diagonals
+    """
+    if row == 8:
+      return current_sum
 
-        max_sum = 0
-        for col in range(8):
-            d1 = row - col + 7  # \ diagonal index (0-14)
-            d2 = row + col      # / diagonal index (0-14)
+    max_sum = 0
+    for col in range(8):
+      d1 = row - col + 7  # \ diagonal index (0-14)
+      d2 = row + col      # / diagonal index (0-14)
 
-            if not (cols & (1 << col)) and not (diag1 & (1 << d1)) and not (diag2 & (1 << d2)):
-                new_sum = backtrack(
-                    board,
-                    row + 1,
-                    cols | (1 << col),
-                    diag1 | (1 << d1),
-                    diag2 | (1 << d2),
-                    current_sum + board[row][col]
-                )
-                max_sum = max(max_sum, new_sum)
+      if not (cols & (1 << col)) and not (diag1 & (1 << d1)) and not (diag2 & (1 << d2)):
+        new_sum = backtrack(
+          board,
+          row + 1,
+          cols | (1 << col),
+          diag1 | (1 << d1),
+          diag2 | (1 << d2),
+          current_sum + board[row][col]
+        )
+        max_sum = max(max_sum, new_sum)
 
-        return max_sum
+    return max_sum
 
-    k = int(input())
+  k = int(input())
 
-    for _ in range(k):
-        board = []
-        for i in range(8):
-            row = list(map(int, input().split()))
-            board.append(row)
+  for _ in range(k):
+    board = []
+    for i in range(8):
+      row = list(map(int, input().split()))
+      board.append(row)
 
-        result = backtrack(board, 0, 0, 0, 0, 0)
-        print(f"{result:5d}")
+    result = backtrack(board, 0, 0, 0, 0, 0)
+    print(f"{result:5d}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

@@ -40,129 +40,129 @@ Strategy: On the way there, use all rocks. On return, only big rocks remain. The
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        parts = input().split()
-        n, d = int(parts[0]), int(parts[1])
+  for case in range(1, t + 1):
+    parts = input().split()
+    n, d = int(parts[0]), int(parts[1])
 
-        rocks = []
-        for i in range(n):
-            rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
-            rock_type = rock[0]
-            dist = int(rock[2:])
-            rocks.append((dist, rock_type))
+    rocks = []
+    for i in range(n):
+      rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
+      rock_type = rock[0]
+      dist = int(rock[2:])
+      rocks.append((dist, rock_type))
 
-        rocks.sort()
+    rocks.sort()
 
-        # Add banks
-        positions = [0]  # left bank
-        big_positions = [0]
+    # Add banks
+    positions = [0]  # left bank
+    big_positions = [0]
 
-        for dist, rock_type in rocks:
-            positions.append(dist)
-            if rock_type == 'B':
-                big_positions.append(dist)
+    for dist, rock_type in rocks:
+      positions.append(dist)
+      if rock_type == 'B':
+        big_positions.append(dist)
 
-        positions.append(d)  # right bank
-        big_positions.append(d)
+    positions.append(d)  # right bank
+    big_positions.append(d)
 
-        # Max jump going (using all rocks)
-        max_jump_go = 0
-        for i in range(1, len(positions)):
-            max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
+    # Max jump going (using all rocks)
+    max_jump_go = 0
+    for i in range(1, len(positions)):
+      max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
 
-        # Max jump returning (only big rocks)
-        max_jump_return = 0
-        for i in range(1, len(big_positions)):
-            max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
+    # Max jump returning (only big rocks)
+    max_jump_return = 0
+    for i in range(1, len(big_positions)):
+      max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
 
-        result = max(max_jump_go, max_jump_return)
-        print(f"Case {case}: {result}")
+    result = max(max_jump_go, max_jump_return)
+    print(f"Case {case}: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with Single Pass
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        line = input().split()
-        n, d = int(line[0]), int(line[1])
+  for case in range(1, t + 1):
+    line = input().split()
+    n, d = int(line[0]), int(line[1])
 
-        rocks = []
-        idx = 2
-        while len(rocks) < n:
-            if idx < len(line):
-                rocks.append(line[idx])
-                idx += 1
-            else:
-                rocks.extend(input().split())
+    rocks = []
+    idx = 2
+    while len(rocks) < n:
+      if idx < len(line):
+        rocks.append(line[idx])
+        idx += 1
+      else:
+        rocks.extend(input().split())
 
-        # Parse rocks
-        parsed = []
-        for rock in rocks:
-            rock_type = rock[0]
-            pos = int(rock.split('-')[1])
-            parsed.append((pos, rock_type))
+    # Parse rocks
+    parsed = []
+    for rock in rocks:
+      rock_type = rock[0]
+      pos = int(rock.split('-')[1])
+      parsed.append((pos, rock_type))
 
-        parsed.sort()
+    parsed.sort()
 
-        # Calculate jumps
-        all_pos = [0] + [p for p, _ in parsed] + [d]
-        big_pos = [0] + [p for p, t in parsed if t == 'B'] + [d]
+    # Calculate jumps
+    all_pos = [0] + [p for p, _ in parsed] + [d]
+    big_pos = [0] + [p for p, t in parsed if t == 'B'] + [d]
 
-        max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-        max_return = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
+    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
+    max_return = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
 
-        print(f"Case {case}: {max(max_go, max_return)}")
+    print(f"Case {case}: {max(max_go, max_return)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Input Parsing Variant
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    t = int(data[idx])
-    idx += 1
+  t = int(data[idx])
+  idx += 1
 
-    for case in range(1, t + 1):
-        n = int(data[idx])
-        d = int(data[idx + 1])
-        idx += 2
+  for case in range(1, t + 1):
+    n = int(data[idx])
+    d = int(data[idx + 1])
+    idx += 2
 
-        rocks = []
-        for _ in range(n):
-            rock = data[idx]
-            idx += 1
-            rock_type = rock[0]
-            pos = int(rock[2:])
-            rocks.append((pos, rock_type))
+    rocks = []
+    for _ in range(n):
+      rock = data[idx]
+      idx += 1
+      rock_type = rock[0]
+      pos = int(rock[2:])
+      rocks.append((pos, rock_type))
 
-        rocks.sort()
+    rocks.sort()
 
-        # All positions for going
-        all_pos = [0] + [p for p, _ in rocks] + [d]
-        # Big rocks only for return
-        big_pos = [0] + [p for p, t in rocks if t == 'B'] + [d]
+    # All positions for going
+    all_pos = [0] + [p for p, _ in rocks] + [d]
+    # Big rocks only for return
+    big_pos = [0] + [p for p, t in rocks if t == 'B'] + [d]
 
-        max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-        max_ret = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
+    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
+    max_ret = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
 
-        print(f"Case {case}: {max(max_go, max_ret)}")
+    print(f"Case {case}: {max(max_go, max_ret)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

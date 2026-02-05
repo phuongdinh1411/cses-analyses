@@ -105,24 +105,24 @@ Check every possible subarray and count distinct values using a set.
 
 ```python
 def count_subarrays_brute(arr, k):
-    """
-    Brute force: Check all subarrays.
-    Time: O(n^2) or O(n^3)
-    Space: O(n)
-    """
-    n = len(arr)
-    count = 0
+  """
+  Brute force: Check all subarrays.
+  Time: O(n^2) or O(n^3)
+  Space: O(n)
+  """
+  n = len(arr)
+  count = 0
 
-    for i in range(n):
-        distinct = set()
-        for j in range(i, n):
-            distinct.add(arr[j])
-            if len(distinct) <= k:
-                count += 1
-            else:
-                break  # Optimization: no point continuing
+  for i in range(n):
+    distinct = set()
+    for j in range(i, n):
+      distinct.add(arr[j])
+      if len(distinct) <= k:
+        count += 1
+      else:
+        break  # Optimization: no point continuing
 
-    return count
+  return count
 ```
 
 ### Complexity
@@ -226,34 +226,34 @@ import sys
 from collections import defaultdict
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, k = int(input_data[idx]), int(input_data[idx + 1])
-    idx += 2
-    arr = [int(input_data[idx + i]) for i in range(n)]
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, k = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+  arr = [int(input_data[idx + i]) for i in range(n)]
 
-    freq = defaultdict(int)
-    left = 0
-    distinct = 0
-    count = 0
+  freq = defaultdict(int)
+  left = 0
+  distinct = 0
+  count = 0
 
-    for right in range(n):
-        # Add arr[right] to window
-        if freq[arr[right]] == 0:
-            distinct += 1
-        freq[arr[right]] += 1
+  for right in range(n):
+    # Add arr[right] to window
+    if freq[arr[right]] == 0:
+      distinct += 1
+    freq[arr[right]] += 1
 
-        # Shrink window while too many distinct values
-        while distinct > k:
-            freq[arr[left]] -= 1
-            if freq[arr[left]] == 0:
-                distinct -= 1
-            left += 1
+    # Shrink window while too many distinct values
+    while distinct > k:
+      freq[arr[left]] -= 1
+      if freq[arr[left]] == 0:
+        distinct -= 1
+      left += 1
 
-        # All subarrays ending at right starting from left..right are valid
-        count += right - left + 1
+    # All subarrays ending at right starting from left..right are valid
+    count += right - left + 1
 
-    print(count)
+  print(count)
 
 solve()
 ```
@@ -276,11 +276,11 @@ solve()
 ```python
 # WRONG - Using len(freq) is expensive with defaultdict
 while len(freq) > k:  # len() counts all keys, even those with 0 count
-    ...
+  ...
 
 # CORRECT - Track distinct count separately
 while distinct > k:
-    ...
+  ...
 ```
 
 **Problem:** With `defaultdict`, entries with value 0 still exist as keys.
@@ -296,15 +296,15 @@ while distinct > k:
 ```python
 # WRONG - Shrinking before adding
 while distinct > k:
-    # shrink
+  # shrink
 freq[arr[right]] += 1
 
 # CORRECT - Add first, then shrink
 freq[arr[right]] += 1
 if freq[arr[right]] == 1:
-    distinct += 1
+  distinct += 1
 while distinct > k:
-    # shrink
+  # shrink
 ```
 
 **Problem:** Must add current element before checking if shrinking is needed.

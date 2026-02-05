@@ -43,60 +43,60 @@ from collections import defaultdict
 sys.setrecursionlimit(200000)
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    # DFS to compute entry and exit times
-    entry = [0] * (n + 1)
-    exit_time = [0] * (n + 1)
-    timer = [0]
+  # DFS to compute entry and exit times
+  entry = [0] * (n + 1)
+  exit_time = [0] * (n + 1)
+  timer = [0]
 
-    def dfs(u, parent):
-        timer[0] += 1
-        entry[u] = timer[0]
+  def dfs(u, parent):
+    timer[0] += 1
+    entry[u] = timer[0]
 
-        for v in adj[u]:
-            if v != parent:
-                dfs(v, u)
+    for v in adj[u]:
+      if v != parent:
+        dfs(v, u)
 
-        timer[0] += 1
-        exit_time[u] = timer[0]
+    timer[0] += 1
+    exit_time[u] = timer[0]
 
-    # Root the tree at node 1 (King's Mansion)
-    dfs(1, -1)
+  # Root the tree at node 1 (King's Mansion)
+  dfs(1, -1)
 
-    def is_ancestor(a, b):
-        """Check if a is ancestor of b"""
-        return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
+  def is_ancestor(a, b):
+    """Check if a is ancestor of b"""
+    return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
 
-    q = int(input())
-    results = []
+  q = int(input())
+  results = []
 
-    for _ in range(q):
-        query_type, x, y = map(int, input().split())
+  for _ in range(q):
+    query_type, x, y = map(int, input().split())
 
-        if query_type == 0:
-            # Moving towards mansion: X must be ancestor of Y
-            if is_ancestor(x, y) and x != y:
-                results.append("YES")
-            else:
-                results.append("NO")
-        else:
-            # Moving away from mansion: X must be descendant of Y (Y is ancestor of X)
-            if is_ancestor(y, x) and x != y:
-                results.append("YES")
-            else:
-                results.append("NO")
+    if query_type == 0:
+      # Moving towards mansion: X must be ancestor of Y
+      if is_ancestor(x, y) and x != y:
+        results.append("YES")
+      else:
+        results.append("NO")
+    else:
+      # Moving away from mansion: X must be descendant of Y (Y is ancestor of X)
+      if is_ancestor(y, x) and x != y:
+        results.append("YES")
+      else:
+        results.append("NO")
 
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Iterative DFS Solution
@@ -105,53 +105,53 @@ if __name__ == "__main__":
 from collections import defaultdict
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    # Iterative DFS for entry/exit times
-    entry = [0] * (n + 1)
-    exit_time = [0] * (n + 1)
+  # Iterative DFS for entry/exit times
+  entry = [0] * (n + 1)
+  exit_time = [0] * (n + 1)
 
-    timer = 0
-    stack = [(1, -1, False)]  # (node, parent, processed)
+  timer = 0
+  stack = [(1, -1, False)]  # (node, parent, processed)
 
-    while stack:
-        node, parent, processed = stack.pop()
+  while stack:
+    node, parent, processed = stack.pop()
 
-        if processed:
-            timer += 1
-            exit_time[node] = timer
-        else:
-            timer += 1
-            entry[node] = timer
-            stack.append((node, parent, True))
+    if processed:
+      timer += 1
+      exit_time[node] = timer
+    else:
+      timer += 1
+      entry[node] = timer
+      stack.append((node, parent, True))
 
-            for child in adj[node]:
-                if child != parent:
-                    stack.append((child, node, False))
+      for child in adj[node]:
+        if child != parent:
+          stack.append((child, node, False))
 
-    def is_ancestor(a, b):
-        return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
+  def is_ancestor(a, b):
+    return entry[a] <= entry[b] and exit_time[a] >= exit_time[b]
 
-    q = int(input())
+  q = int(input())
 
-    for _ in range(q):
-        t, x, y = map(int, input().split())
+  for _ in range(q):
+    t, x, y = map(int, input().split())
 
-        if t == 0:
-            # Towards root: x must be ancestor of y
-            print("YES" if x != y and is_ancestor(x, y) else "NO")
-        else:
-            # Away from root: x must be descendant of y
-            print("YES" if x != y and is_ancestor(y, x) else "NO")
+    if t == 0:
+      # Towards root: x must be ancestor of y
+      print("YES" if x != y and is_ancestor(x, y) else "NO")
+    else:
+      # Away from root: x must be descendant of y
+      print("YES" if x != y and is_ancestor(y, x) else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

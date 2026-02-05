@@ -187,49 +187,49 @@ import sys
 from math import log2
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n, q = int(input_data[idx]), int(input_data[idx + 1])
+  n, q = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+
+  # Read teleporter destinations (convert to 0-indexed)
+  t = [int(input_data[idx + i]) - 1 for i in range(n)]
+  idx += n
+
+  # LOG = number of bits needed for max k (10^9 < 2^30)
+  LOG = 30
+
+  # Build binary lifting table
+  # jump[j][i] = destination from planet i after 2^j teleports
+  jump = [[0] * n for _ in range(LOG)]
+
+  # Base case: j=0, direct successors
+  for i in range(n):
+    jump[0][i] = t[i]
+
+  # Fill table: jump 2^j = jump 2^(j-1) twice
+  for j in range(1, LOG):
+    for i in range(n):
+      jump[j][i] = jump[j - 1][jump[j - 1][i]]
+
+  # Answer queries
+  results = []
+  for _ in range(q):
+    x, k = int(input_data[idx]) - 1, int(input_data[idx + 1])
     idx += 2
 
-    # Read teleporter destinations (convert to 0-indexed)
-    t = [int(input_data[idx + i]) - 1 for i in range(n)]
-    idx += n
+    # Decompose k into powers of 2
+    for j in range(LOG):
+      if k & (1 << j):
+        x = jump[j][x]
 
-    # LOG = number of bits needed for max k (10^9 < 2^30)
-    LOG = 30
+    results.append(x + 1)  # Convert back to 1-indexed
 
-    # Build binary lifting table
-    # jump[j][i] = destination from planet i after 2^j teleports
-    jump = [[0] * n for _ in range(LOG)]
-
-    # Base case: j=0, direct successors
-    for i in range(n):
-        jump[0][i] = t[i]
-
-    # Fill table: jump 2^j = jump 2^(j-1) twice
-    for j in range(1, LOG):
-        for i in range(n):
-            jump[j][i] = jump[j - 1][jump[j - 1][i]]
-
-    # Answer queries
-    results = []
-    for _ in range(q):
-        x, k = int(input_data[idx]) - 1, int(input_data[idx + 1])
-        idx += 2
-
-        # Decompose k into powers of 2
-        for j in range(LOG):
-            if k & (1 << j):
-                x = jump[j][x]
-
-        results.append(x + 1)  # Convert back to 1-indexed
-
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ## Complexity Analysis

@@ -37,97 +37,97 @@ Alternatively, use direct DP:
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    while True:
-        line = input()
-        if not line:
-            break
-        s = line.strip()
-        if not s:
-            continue
+  while True:
+    line = input()
+    if not line:
+      break
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
+    n = len(s)
 
-        # LPS via LCS with reverse
-        rev = s[::-1]
+    # LPS via LCS with reverse
+    rev = s[::-1]
 
-        # Space-optimized LCS
-        prev = [0] * (n + 1)
-        curr = [0] * (n + 1)
+    # Space-optimized LCS
+    prev = [0] * (n + 1)
+    curr = [0] * (n + 1)
 
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if s[i-1] == rev[j-1]:
-                    curr[j] = prev[j-1] + 1
-                else:
-                    curr[j] = max(prev[j], curr[j-1])
-            prev, curr = curr, prev
+    for i in range(1, n + 1):
+      for j in range(1, n + 1):
+        if s[i-1] == rev[j-1]:
+          curr[j] = prev[j-1] + 1
+        else:
+          curr[j] = max(prev[j], curr[j-1])
+      prev, curr = curr, prev
 
-        lps = prev[n]
-        print(n - lps)
+    lps = prev[n]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution - Direct DP
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    while True:
-        line = input()
-        if not line:
-            break
-        s = line.strip()
-        if not s:
-            continue
+  while True:
+    line = input()
+    if not line:
+      break
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
+    n = len(s)
 
-        # dp[i][j] = min insertions for s[i:j+1]
-        # Use only 2 rows since dp[i] depends on dp[i+1]
-        # Actually for gap-based DP:
+    # dp[i][j] = min insertions for s[i:j+1]
+    # Use only 2 rows since dp[i] depends on dp[i+1]
+    # Actually for gap-based DP:
 
-        # dp[length][start] but we can optimize
-        # Use dp[j] = min insertions for substring ending at j with some length
+    # dp[length][start] but we can optimize
+    # Use dp[j] = min insertions for substring ending at j with some length
 
-        # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
+    # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
 
-        # Direct approach with LPS
-        # dp[i][j] = LPS of s[i:j+1]
-        # dp[i][i] = 1
-        # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
-        #          = max(dp[i+1][j], dp[i][j-1]) otherwise
+    # Direct approach with LPS
+    # dp[i][j] = LPS of s[i:j+1]
+    # dp[i][i] = 1
+    # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
+    #          = max(dp[i+1][j], dp[i][j-1]) otherwise
 
-        if n <= 1:
-            print(0)
-            continue
+    if n <= 1:
+      print(0)
+      continue
 
-        # Space optimized: process by length
-        prev = [1] * n  # length 1 substrings
-        curr = [0] * n
+    # Space optimized: process by length
+    prev = [1] * n  # length 1 substrings
+    curr = [0] * n
 
-        for length in range(2, n + 1):
-            for i in range(n - length + 1):
-                j = i + length - 1
-                if s[i] == s[j]:
-                    curr[i] = prev[i+1] + 2 if length > 2 else 2
-                else:
-                    curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
-                    # Actually need different indexing
+    for length in range(2, n + 1):
+      for i in range(n - length + 1):
+        j = i + length - 1
+        if s[i] == s[j]:
+          curr[i] = prev[i+1] + 2 if length > 2 else 2
+        else:
+          curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
+          # Actually need different indexing
 
-            prev, curr = curr, [0] * n
+      prev, curr = curr, [0] * n
 
-        lps = prev[0]
-        print(n - lps)
+    lps = prev[0]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Cleaner LCS Solution
@@ -137,30 +137,30 @@ import sys
 sys.setrecursionlimit(10000)
 
 def solve():
-    for line in sys.stdin:
-        s = line.strip()
-        if not s:
-            continue
+  for line in sys.stdin:
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
-        rev = s[::-1]
+    n = len(s)
+    rev = s[::-1]
 
-        # LCS of s and rev = LPS of s
-        # dp[i][j] = LCS of s[:i] and rev[:j]
-        dp = [[0] * (n + 1) for _ in range(2)]
+    # LCS of s and rev = LPS of s
+    # dp[i][j] = LCS of s[:i] and rev[:j]
+    dp = [[0] * (n + 1) for _ in range(2)]
 
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if s[i-1] == rev[j-1]:
-                    dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
-                else:
-                    dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, n + 1):
+        if s[i-1] == rev[j-1]:
+          dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
+        else:
+          dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
 
-        lps = dp[n % 2][n]
-        print(n - lps)
+    lps = dp[n % 2][n]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

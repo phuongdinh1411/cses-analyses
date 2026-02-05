@@ -107,49 +107,49 @@ Col 2: {3,0,1} -> MEX = 2
 
 ```python
 def mex_grid_construction_ii(n: int, r: int, c: int) -> None:
-    """
-    Construct n x n grid where each row has MEX = r and each column has MEX = c.
-    Time: O(n^2), Space: O(n^2)
-    """
-    # Impossibility checks
-    if r > n or c > n:
-        print("IMPOSSIBLE")
-        return
-    if r != c and (r == n or c == n):
-        print("IMPOSSIBLE")
-        return
+  """
+  Construct n x n grid where each row has MEX = r and each column has MEX = c.
+  Time: O(n^2), Space: O(n^2)
+  """
+  # Impossibility checks
+  if r > n or c > n:
+    print("IMPOSSIBLE")
+    return
+  if r != c and (r == n or c == n):
+    print("IMPOSSIBLE")
+    return
 
-    grid = [[0] * n for _ in range(n)]
+  grid = [[0] * n for _ in range(n)]
 
-    if r == c:
-        # Symmetric case: cyclic construction
-        filler = r + 1
-        for i in range(n):
-            for j in range(n):
-                if j < r:
-                    grid[i][j] = (i + j) % r
-                else:
-                    grid[i][j] = filler
-                    filler += 1
-    else:
-        # Asymmetric case
-        large = max(r, c)
-        filler = large + 1
-        for i in range(n):
-            for j in range(n):
-                val = (i + j) % (large + 1)
-                if val == r or val == c:
-                    val = filler
-                    filler += 1
-                grid[i][j] = val
+  if r == c:
+    # Symmetric case: cyclic construction
+    filler = r + 1
+    for i in range(n):
+      for j in range(n):
+        if j < r:
+          grid[i][j] = (i + j) % r
+        else:
+          grid[i][j] = filler
+          filler += 1
+  else:
+    # Asymmetric case
+    large = max(r, c)
+    filler = large + 1
+    for i in range(n):
+      for j in range(n):
+        val = (i + j) % (large + 1)
+        if val == r or val == c:
+          val = filler
+          filler += 1
+        grid[i][j] = val
 
-    for row in grid:
-        print(*row)
+  for row in grid:
+    print(*row)
 
 
 if __name__ == "__main__":
-    n, r, c = map(int, input().split())
-    mex_grid_construction_ii(n, r, c)
+  n, r, c = map(int, input().split())
+  mex_grid_construction_ii(n, r, c)
 ```
 
 ### Complexity
@@ -168,11 +168,11 @@ if __name__ == "__main__":
 ```python
 # WRONG - only checks basic bounds
 if r > n or c > n:
-    return "IMPOSSIBLE"
+  return "IMPOSSIBLE"
 
 # CORRECT - also check asymmetric edge case
 if r != c and (r == n or c == n):
-    return "IMPOSSIBLE"
+  return "IMPOSSIBLE"
 ```
 
 ### Mistake 2: Including Forbidden Values
@@ -184,8 +184,8 @@ grid[i][j] = val  # Might be r or c!
 
 # CORRECT - skip forbidden values
 if val == r or val == c:
-    val = filler
-    filler += 1
+  val = filler
+  filler += 1
 ```
 
 ### Mistake 3: Treating Rows and Columns Independently

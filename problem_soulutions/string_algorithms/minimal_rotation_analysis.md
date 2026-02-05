@@ -104,21 +104,21 @@ Generate all n rotations explicitly and find the minimum using string comparison
 
 ```python
 def solve_brute_force(s: str) -> str:
-    """
-    Brute force: try all rotations.
+  """
+  Brute force: try all rotations.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    n = len(s)
-    min_rotation = s
+  Time: O(n^2)
+  Space: O(n)
+  """
+  n = len(s)
+  min_rotation = s
 
-    for i in range(n):
-        rotation = s[i:] + s[:i]
-        if rotation < min_rotation:
-            min_rotation = rotation
+  for i in range(n):
+    rotation = s[i:] + s[:i]
+    if rotation < min_rotation:
+      min_rotation = rotation
 
-    return min_rotation
+  return min_rotation
 ```
 
 ### Complexity
@@ -223,53 +223,53 @@ Final: position 3 -> "abac" is minimal rotation
 
 ```python
 def solve_optimal(s: str) -> str:
-    """
-    Booth's Algorithm for minimal rotation.
+  """
+  Booth's Algorithm for minimal rotation.
 
-    Time: O(n)
-    Space: O(n) for doubled string
-    """
-    n = len(s)
-    if n == 0:
-        return s
+  Time: O(n)
+  Space: O(n) for doubled string
+  """
+  n = len(s)
+  if n == 0:
+    return s
 
-    t = s + s  # Doubled string
+  t = s + s  # Doubled string
 
-    i = 0  # First candidate position
-    j = 1  # Second candidate position
-    k = 0  # Number of matching characters
+  i = 0  # First candidate position
+  j = 1  # Second candidate position
+  k = 0  # Number of matching characters
 
-    while i < n and j < n and k < n:
-        a = t[i + k]
-        b = t[j + k]
+  while i < n and j < n and k < n:
+    a = t[i + k]
+    b = t[j + k]
 
-        if a == b:
-            k += 1
-        elif a < b:
-            # Rotation at i is better, eliminate j through j+k
-            j = j + k + 1
-            if j == i:
-                j += 1
-            k = 0
-        else:
-            # Rotation at j is better, eliminate i through i+k
-            i = i + k + 1
-            if i == j:
-                i += 1
-            k = 0
+    if a == b:
+      k += 1
+    elif a < b:
+      # Rotation at i is better, eliminate j through j+k
+      j = j + k + 1
+      if j == i:
+        j += 1
+      k = 0
+    else:
+      # Rotation at j is better, eliminate i through i+k
+      i = i + k + 1
+      if i == j:
+        i += 1
+      k = 0
 
-    # The smaller index is the answer
-    start = min(i, j)
-    return s[start:] + s[:start]
+  # The smaller index is the answer
+  start = min(i, j)
+  return s[start:] + s[:start]
 
 
 def main():
-    s = input().strip()
-    print(solve_optimal(s))
+  s = input().strip()
+  print(solve_optimal(s))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -288,15 +288,15 @@ if __name__ == "__main__":
 ```python
 # WRONG
 if a < b:
-    j = j + k + 1
-    k = 0  # Missing: check if j == i
+  j = j + k + 1
+  k = 0  # Missing: check if j == i
 
 # CORRECT
 if a < b:
-    j = j + k + 1
-    if j == i:
-        j += 1  # Skip to avoid comparing same position
-    k = 0
+  j = j + k + 1
+  if j == i:
+    j += 1  # Skip to avoid comparing same position
+  k = 0
 ```
 
 **Problem:** When we advance j and it lands on i (or vice versa), we'd be comparing a rotation with itself.

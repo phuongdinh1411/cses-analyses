@@ -43,68 +43,68 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph, C):
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
+    for neighbor in graph[u]:
+      v = neighbor.id
+      w = neighbor.dist
+      if not visited[v] and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    dist.sort()
-    C.sort()
+  dist.sort()
+  C.sort()
 
-    for i in range(len(C)):
-        if i <= N + 1:
-            if dist[-i - 1] > C[i]:
-                dist[-i - 1] = C[i]
-            else:
-                break
-        else:
-            break
+  for i in range(len(C)):
+    if i <= N + 1:
+      if dist[-i - 1] > C[i]:
+        dist[-i - 1] = C[i]
+      else:
+        break
+    else:
+      break
 
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
+  result = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      result += dist[i]
 
-    return result
+  return result
 
 
 def solution():
-    N, M = map(int, input().split())
+  N, M = map(int, input().split())
 
-    graph = [[] for i in range(N + 1)]
-    for i in range(M):
-        A, B, W = map(int, input().split())
-        graph[A].append(Node(B, W))
-        graph[B].append(Node(A, W))
+  graph = [[] for i in range(N + 1)]
+  for i in range(M):
+    A, B, W = map(int, input().split())
+    graph[A].append(Node(B, W))
+    graph[B].append(Node(A, W))
 
-    Q = int(input())
-    C = []
-    if Q > 0:
-        C = list(map(int, input().strip().split()))
+  Q = int(input())
+  C = []
+  if Q > 0:
+    C = list(map(int, input().strip().split()))
 
-    result = prim(N, graph, C)
-    print(result)
+  result = prim(N, graph, C)
+  print(result)
 
 
 solution()
@@ -147,51 +147,51 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
+    for neighbor in graph[u]:
+      v = neighbor.id
+      w = neighbor.dist
+      if not visited[v] and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
+  result = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      result += dist[i]
 
-    return result
+  return result
 
 
 def solution():
-    N, M = map(int, input().split())
+  N, M = map(int, input().split())
 
-    graph = [[] for i in range(N + 1)]
-    for i in range(M):
-        A, B, W = map(int, input().split())
-        graph[A].append(Node(B, W))
-        graph[B].append(Node(A, W))
+  graph = [[] for i in range(N + 1)]
+  for i in range(M):
+    A, B, W = map(int, input().split())
+    graph[A].append(Node(B, W))
+    graph[B].append(Node(A, W))
 
-    result = prim(N, graph)
-    print(result)
+  result = prim(N, graph)
+  print(result)
 
 
 solution()
@@ -237,64 +237,64 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
+    for neighbor in graph[u]:
+      v = neighbor.id
+      w = neighbor.dist
+      if not visited[v] and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
-        else:
-            return 'Impossible'
+  result = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      result += dist[i]
+    else:
+      return 'Impossible'
 
-    return str(result)
+  return str(result)
 
 
 def solution():
-    t = int(input())
-    for j in range(t):
-        input()
-        m = int(input())
-        graph = [[] for i in range(m * 2 + 1)]
-        cities = {}
-        index = 0
-        for i in range(m):
-            city1, city2, cost = map(str, input().strip().split())
-            if cities.get(city1) is None:
-                index += 1
-                cities[city1] = index
-            if cities.get(city2) is None:
-                index += 1
-                cities[city2] = index
-            cost = int(cost)
-            graph[cities[city1]].append(Node(cities[city2], cost))
-            graph[cities[city2]].append(Node(cities[city1], cost))
+  t = int(input())
+  for j in range(t):
+    input()
+    m = int(input())
+    graph = [[] for i in range(m * 2 + 1)]
+    cities = {}
+    index = 0
+    for i in range(m):
+      city1, city2, cost = map(str, input().strip().split())
+      if cities.get(city1) is None:
+        index += 1
+        cities[city1] = index
+      if cities.get(city2) is None:
+        index += 1
+        cities[city2] = index
+      cost = int(cost)
+      graph[cities[city1]].append(Node(cities[city2], cost))
+      graph[cities[city2]].append(Node(cities[city1], cost))
 
-        result = prim(len(cities), graph)
-        print('Case {}: {}'.format(j + 1, result))
+    result = prim(len(cities), graph)
+    print('Case {}: {}'.format(j + 1, result))
 
 
 solution()
@@ -341,54 +341,54 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
+    for neighbor in graph[u]:
+      v = neighbor.id
+      w = neighbor.dist
+      if not visited[v] and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
+  result = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      result += dist[i]
 
-    return result
+  return result
 
 
 def solution():
-    t = int(input())
-    for j in range(t):
-        p = int(input())
-        n = int(input())
-        m = int(input())
-        graph = [[] for i in range(n + 1)]
-        for i in range(m):
-            a, b, c = map(int, input().strip().split())
-            graph[a].append(Node(b, c))
-            graph[b].append(Node(a, c))
+  t = int(input())
+  for j in range(t):
+    p = int(input())
+    n = int(input())
+    m = int(input())
+    graph = [[] for i in range(n + 1)]
+    for i in range(m):
+      a, b, c = map(int, input().strip().split())
+      graph[a].append(Node(b, c))
+      graph[b].append(Node(a, c))
 
-        result = prim(n, graph)
-        print(result * p)
+    result = prim(n, graph)
+    print(result * p)
 
 
 solution()
@@ -431,51 +431,51 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
+    for neighbor in graph[u]:
+      v = neighbor.id
+      w = neighbor.dist
+      if not visited[v] and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
+  result = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      result += dist[i]
 
-    return result
+  return result
 
 
 def solution():
-    N, M = map(int, input().split())
+  N, M = map(int, input().split())
 
-    graph = [[] for i in range(N + 1)]
-    for i in range(M):
-        A, B, W = map(int, input().split())
-        graph[A].append(Node(B, W))
-        graph[B].append(Node(A, W))
+  graph = [[] for i in range(N + 1)]
+  for i in range(M):
+    A, B, W = map(int, input().split())
+    graph[A].append(Node(B, W))
+    graph[B].append(Node(A, W))
 
-    result = prim(N, graph)
-    print(result)
+  result = prim(N, graph)
+  print(result)
 
 
 solution()
@@ -520,32 +520,32 @@ INF = 1e9
 
 
 def solution():
-    index = 0
-    while True:
-        C, S, Q = map(int, input().strip().split())
-        if C == 0:
-            break
-        if index > 0:
-            print()
-        graph = [[INF for j in range(C + 1)] for i in range(C + 1)]
-        for i in range(S):
-            A, B, W = map(int, input().strip().split())
-            graph[A][B] = min(graph[A][B], W)
-            graph[B][A] = min(graph[A][B], W)
+  index = 0
+  while True:
+    C, S, Q = map(int, input().strip().split())
+    if C == 0:
+      break
+    if index > 0:
+      print()
+    graph = [[INF for j in range(C + 1)] for i in range(C + 1)]
+    for i in range(S):
+      A, B, W = map(int, input().strip().split())
+      graph[A][B] = min(graph[A][B], W)
+      graph[B][A] = min(graph[A][B], W)
 
-        for k in range(1, C + 1):
-            for i in range(1, C + 1):
-                for j in range(1, C + 1):
-                    graph[i][j] = min(graph[i][j], max(graph[i][k], graph[k][j]))
+    for k in range(1, C + 1):
+      for i in range(1, C + 1):
+        for j in range(1, C + 1):
+          graph[i][j] = min(graph[i][j], max(graph[i][k], graph[k][j]))
 
-        index += 1
-        print("Case #{}".format(index))
-        for i in range(Q):
-            s, e = map(int, input().strip().split())
-            if graph[s][e] == INF:
-                print('no path')
-            else:
-                print(graph[s][e])
+    index += 1
+    print("Case #{}".format(index))
+    for i in range(Q):
+      s, e = map(int, input().strip().split())
+      if graph[s][e] == INF:
+        print('no path')
+      else:
+        print(graph[s][e])
 
 
 solution()
@@ -592,89 +592,89 @@ import sys
 
 
 class input_tokenizer:
-    __tokens = None
+  __tokens = None
 
-    def has_next(self):
-        return self.__tokens != [] and self.__tokens != None
+  def has_next(self):
+    return self.__tokens != [] and self.__tokens != None
 
-    def next(self):
-        token = self.__tokens[-1]
-        self.__tokens.pop()
-        return token
+  def next(self):
+    token = self.__tokens[-1]
+    self.__tokens.pop()
+    return token
 
-    def __init__(self):
-        self.__tokens = sys.stdin.read().split()[::-1]
+  def __init__(self):
+    self.__tokens = sys.stdin.read().split()[::-1]
 
 
 inp = input_tokenizer()
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1.0 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(0, 0))
-    dist[0] = 0
+  dist = [-1.0 for x in range(N+1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(0, 0))
+  dist[0] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for i in range(N):
-            v = i
-            w = graph[u][i]
-            if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1.0):
-                dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
-
-    result = 0
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
     for i in range(N):
-        if dist[i] != -1.0:
-            result += dist[i]
+      v = i
+      w = graph[u][i]
+      if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1.0):
+        dist[v] = w
+        heapq.heappush(pqueue, Node(v, w))
 
-    return result
+  result = 0
+  for i in range(N):
+    if dist[i] != -1.0:
+      result += dist[i]
+
+  return result
 
 
 def distance(city1, city2):
-    return math.sqrt((city1[0] - city2[0]) * (city1[0] - city2[0]) + (city1[1] - city2[1]) * (city1[1] - city2[1]))
+  return math.sqrt((city1[0] - city2[0]) * (city1[0] - city2[0]) + (city1[1] - city2[1]) * (city1[1] - city2[1]))
 
 
 def solution():
-    while True:
-        try:
-            n = int(inp.next())
-        except:
-            return
-        cities = []
-        for i in range(n):
-            x = int(inp.next())
-            y = int(inp.next())
-            cities.append([x, y])
-        graph = [[-1.0 for j in range(n + 1)] for i in range(n + 1)]
-        for i in range(n):
-            for j in range(i + 1, n):
-                distij = distance(cities[i], cities[j])
-                graph[i][j] = distij
-                graph[j][i] = distij
+  while True:
+    try:
+      n = int(inp.next())
+    except:
+      return
+    cities = []
+    for i in range(n):
+      x = int(inp.next())
+      y = int(inp.next())
+      cities.append([x, y])
+    graph = [[-1.0 for j in range(n + 1)] for i in range(n + 1)]
+    for i in range(n):
+      for j in range(i + 1, n):
+        distij = distance(cities[i], cities[j])
+        graph[i][j] = distij
+        graph[j][i] = distij
 
-        m = int(inp.next())
-        for i in range(m):
-            x = int(inp.next())
-            y = int(inp.next())
-            graph[x - 1][y - 1] = 0
-            graph[y - 1][x - 1] = 0
+    m = int(inp.next())
+    for i in range(m):
+      x = int(inp.next())
+      y = int(inp.next())
+      graph[x - 1][y - 1] = 0
+      graph[y - 1][x - 1] = 0
 
-        result = prim(n, graph)
-        print("{:.2f}".format(result))
+    result = prim(n, graph)
+    print("{:.2f}".format(result))
 
 
 solution()
@@ -719,68 +719,68 @@ import heapq
 
 
 class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+  def __init__(self, id, dist):
+    self.dist = dist
+    self.id = id
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+  def __lt__(self, other):
+    return self.dist < other.dist
 
 
 def prim(N, graph):
-    dist = [-1 for x in range(N+1)]
-    path = [-1 for x in range(N + 1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
-    dist[1] = 0
+  dist = [-1 for x in range(N+1)]
+  path = [-1 for x in range(N + 1)]
+  visited = [False for i in range(N + 1)]
+  pqueue = []
+  heapq.heappush(pqueue, Node(1, 0))
+  dist[1] = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        visited[u] = True
-        for i in range(1, N + 1):
-            v = i
-            w = graph[u][i]
-            if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1):
-                dist[v] = w
-                path[v] = u
-                heapq.heappush(pqueue, Node(v, w))
-
-    mst_cost = 0
+  while len(pqueue) > 0:
+    top = heapq.heappop(pqueue)
+    u = top.id
+    visited[u] = True
     for i in range(1, N + 1):
-        if dist[i] != -1:
-            mst_cost += dist[i]
+      v = i
+      w = graph[u][i]
+      if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1):
+        dist[v] = w
+        path[v] = u
+        heapq.heappush(pqueue, Node(v, w))
 
-    return path, mst_cost
+  mst_cost = 0
+  for i in range(1, N + 1):
+    if dist[i] != -1:
+      mst_cost += dist[i]
+
+  return path, mst_cost
 
 
 def solution():
-    T = int(input())
-    for i in range(T):
-        N, M = map(int, input().strip().split())
+  T = int(input())
+  for i in range(T):
+    N, M = map(int, input().strip().split())
 
-        graph = [[-1 for j in range(N + 1)] for i in range(N + 1)]
-        for i in range(M):
-            A, B, C = map(int, input().strip().split())
-            graph[A][B] = C
-            graph[B][A] = C
+    graph = [[-1 for j in range(N + 1)] for i in range(N + 1)]
+    for i in range(M):
+      A, B, C = map(int, input().strip().split())
+      graph[A][B] = C
+      graph[B][A] = C
 
-        mst, mst_cost = prim(N, graph)
+    mst, mst_cost = prim(N, graph)
 
-        second_mst_cost = 1e9
-        for i in range(len(mst)):
-            if mst[i] != -1:
-                tmp_weight = graph[i][mst[i]]
-                graph[i][mst[i]] = -1
-                graph[mst[i]][i] = -1
-                current_mst, current_mst_cost = prim(N, graph)
-                if current_mst_cost < second_mst_cost:
-                    second_mst_cost = current_mst_cost
-                graph[i][mst[i]] = tmp_weight
-                graph[mst[i]][i] = tmp_weight
+    second_mst_cost = 1e9
+    for i in range(len(mst)):
+      if mst[i] != -1:
+        tmp_weight = graph[i][mst[i]]
+        graph[i][mst[i]] = -1
+        graph[mst[i]][i] = -1
+        current_mst, current_mst_cost = prim(N, graph)
+        if current_mst_cost < second_mst_cost:
+          second_mst_cost = current_mst_cost
+        graph[i][mst[i]] = tmp_weight
+        graph[mst[i]][i] = tmp_weight
 
-        print(mst_cost, second_mst_cost)
+    print(mst_cost, second_mst_cost)
 
 
 solution()

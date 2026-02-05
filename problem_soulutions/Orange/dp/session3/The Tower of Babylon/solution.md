@@ -35,101 +35,101 @@ A block can be placed on another if both base dimensions are strictly smaller.
 
 ```python
 def solve():
-    case = 0
+  case = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case += 1
+    case += 1
 
-        # Generate all rotations
-        blocks = []  # (base1, base2, height)
+    # Generate all rotations
+    blocks = []  # (base1, base2, height)
 
-        for _ in range(n):
-            dims = list(map(int, input().split()))
-            x, y, z = dims
+    for _ in range(n):
+      dims = list(map(int, input().split()))
+      x, y, z = dims
 
-            # All 3 rotations (choosing each dimension as height)
-            # Store as (min_base, max_base, height) for consistent comparison
-            rotations = [
-                (min(y, z), max(y, z), x),
-                (min(x, z), max(x, z), y),
-                (min(x, y), max(x, y), z)
-            ]
+      # All 3 rotations (choosing each dimension as height)
+      # Store as (min_base, max_base, height) for consistent comparison
+      rotations = [
+        (min(y, z), max(y, z), x),
+        (min(x, z), max(x, z), y),
+        (min(x, y), max(x, y), z)
+      ]
 
-            for rot in rotations:
-                blocks.append(rot)
+      for rot in rotations:
+        blocks.append(rot)
 
-        # Sort by base area (or by first dimension)
-        blocks.sort()
+    # Sort by base area (or by first dimension)
+    blocks.sort()
 
-        m = len(blocks)
+    m = len(blocks)
 
-        # dp[i] = max height of tower with blocks[i] on top
-        dp = [b[2] for b in blocks]  # Initialize with just the block's height
+    # dp[i] = max height of tower with blocks[i] on top
+    dp = [b[2] for b in blocks]  # Initialize with just the block's height
 
-        for i in range(1, m):
-            for j in range(i):
-                # blocks[j] can be below blocks[i] if strictly smaller base
-                if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
-                    dp[i] = max(dp[i], dp[j] + blocks[i][2])
+    for i in range(1, m):
+      for j in range(i):
+        # blocks[j] can be below blocks[i] if strictly smaller base
+        if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
+          dp[i] = max(dp[i], dp[j] + blocks[i][2])
 
-        max_height = max(dp)
-        print(f"Case {case}: maximum height = {max_height}")
+    max_height = max(dp)
+    print(f"Case {case}: maximum height = {max_height}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
-    case = 0
+  import sys
+  input = sys.stdin.readline
+  case = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case += 1
-        blocks = []
+    case += 1
+    blocks = []
 
-        for _ in range(n):
-            x, y, z = map(int, input().split())
+    for _ in range(n):
+      x, y, z = map(int, input().split())
 
-            # Generate all orientations
-            # (width, depth, height) - width <= depth for consistency
-            dims = sorted([x, y, z])
-            a, b, c = dims
+      # Generate all orientations
+      # (width, depth, height) - width <= depth for consistency
+      dims = sorted([x, y, z])
+      a, b, c = dims
 
-            # Three unique orientations
-            blocks.append((a, b, c))  # smallest two as base
-            blocks.append((a, c, b))  # smallest and largest as base
-            blocks.append((b, c, a))  # two largest as base
+      # Three unique orientations
+      blocks.append((a, b, c))  # smallest two as base
+      blocks.append((a, c, b))  # smallest and largest as base
+      blocks.append((b, c, a))  # two largest as base
 
-        # Remove duplicates and sort
-        blocks = list(set(blocks))
-        blocks.sort()
+    # Remove duplicates and sort
+    blocks = list(set(blocks))
+    blocks.sort()
 
-        m = len(blocks)
-        dp = [0] * m
+    m = len(blocks)
+    dp = [0] * m
 
-        for i in range(m):
-            dp[i] = blocks[i][2]  # height of current block
+    for i in range(m):
+      dp[i] = blocks[i][2]  # height of current block
 
-            for j in range(i):
-                if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
-                    dp[i] = max(dp[i], dp[j] + blocks[i][2])
+      for j in range(i):
+        if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
+          dp[i] = max(dp[i], dp[j] + blocks[i][2])
 
-        print(f"Case {case}: maximum height = {max(dp)}")
+    print(f"Case {case}: maximum height = {max(dp)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

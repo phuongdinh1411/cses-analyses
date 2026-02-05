@@ -46,106 +46,106 @@ Formula: If K ≥ len(S), count = (K - prefix[last]) / (len(S) - prefix[last])
 
 ```python
 def compute_prefix(pattern):
-    """KMP prefix function"""
-    m = len(pattern)
-    prefix = [0] * m
-    j = 0
+  """KMP prefix function"""
+  m = len(pattern)
+  prefix = [0] * m
+  j = 0
 
-    for i in range(1, m):
-        while j > 0 and pattern[i] != pattern[j]:
-            j = prefix[j - 1]
-        if pattern[i] == pattern[j]:
-            j += 1
-        prefix[i] = j
+  for i in range(1, m):
+    while j > 0 and pattern[i] != pattern[j]:
+      j = prefix[j - 1]
+    if pattern[i] == pattern[j]:
+      j += 1
+    prefix[i] = j
 
-    return prefix
+  return prefix
 
 def solve():
-    import sys
+  import sys
 
-    for line in sys.stdin:
-        parts = line.split()
-        k = int(parts[0])
-        s = parts[1]
+  for line in sys.stdin:
+    parts = line.split()
+    k = int(parts[0])
+    s = parts[1]
 
-        if k == -1:
-            break
+    if k == -1:
+      break
 
-        n = len(s)
+    n = len(s)
 
-        if k < n:
-            print(0)
-            continue
+    if k < n:
+      print(0)
+      continue
 
-        prefix = compute_prefix(s)
+    prefix = compute_prefix(s)
 
-        # Period of string S
-        period = n - prefix[n - 1]
+    # Period of string S
+    period = n - prefix[n - 1]
 
-        # Number of occurrences
-        # First occurrence needs n characters
-        # Each subsequent occurrence needs 'period' more characters
-        count = (k - prefix[n - 1]) // period
+    # Number of occurrences
+    # First occurrence needs n characters
+    # Each subsequent occurrence needs 'period' more characters
+    count = (k - prefix[n - 1]) // period
 
-        print(count)
+    print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def kmp_prefix(s):
-    n = len(s)
-    lps = [0] * n  # Longest Proper Prefix which is also Suffix
-    length = 0
-    i = 1
+  n = len(s)
+  lps = [0] * n  # Longest Proper Prefix which is also Suffix
+  length = 0
+  i = 1
 
-    while i < n:
-        if s[i] == s[length]:
-            length += 1
-            lps[i] = length
-            i += 1
-        elif length != 0:
-            length = lps[length - 1]
-        else:
-            lps[i] = 0
-            i += 1
+  while i < n:
+    if s[i] == s[length]:
+      length += 1
+      lps[i] = length
+      i += 1
+    elif length != 0:
+      length = lps[length - 1]
+    else:
+      lps[i] = 0
+      i += 1
 
-    return lps
+  return lps
 
 def solve():
-    while True:
-        line = input().split()
-        k, s = int(line[0]), line[1]
+  while True:
+    line = input().split()
+    k, s = int(line[0]), line[1]
 
-        if k == -1:
-            break
+    if k == -1:
+      break
 
-        n = len(s)
+    n = len(s)
 
-        if k < n:
-            print(0)
-            continue
+    if k < n:
+      print(0)
+      continue
 
-        lps = kmp_prefix(s)
+    lps = kmp_prefix(s)
 
-        # The "overlap" is lps[n-1]
-        # The "unique part" is n - lps[n-1]
-        # First match: needs n chars
-        # Each additional match: needs (n - lps[n-1]) chars
+    # The "overlap" is lps[n-1]
+    # The "unique part" is n - lps[n-1]
+    # First match: needs n chars
+    # Each additional match: needs (n - lps[n-1]) chars
 
-        overlap = lps[n - 1]
-        step = n - overlap
+    overlap = lps[n - 1]
+    step = n - overlap
 
-        # Count = 1 + (k - n) // step = (k - overlap) // step
-        count = (k - overlap) // step
+    # Count = 1 + (k - n) // step = (k - overlap) // step
+    count = (k - overlap) // step
 
-        print(count)
+    print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -205,30 +205,30 @@ Key insight: If element A[i] > X, it gets decremented. So we count how many X va
 
 ```python
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    m = int(input())
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
 
-    hits = []
-    for _ in range(m):
-        hits.append(int(input()))
+  hits = []
+  for _ in range(m):
+    hits.append(int(input()))
 
-    # Sort hit thresholds
-    hits.sort()
+  # Sort hit thresholds
+  hits.sort()
 
-    # For each element, find how many hits affect it
-    result = []
-    for a in arr:
-        # Count how many X values are < a (element will be decremented for each)
-        # Binary search for position where hits[i] >= a
-        import bisect
-        count = bisect.bisect_left(hits, a)
-        result.append(a - count)
+  # For each element, find how many hits affect it
+  result = []
+  for a in arr:
+    # Count how many X values are < a (element will be decremented for each)
+    # Binary search for position where hits[i] >= a
+    import bisect
+    count = bisect.bisect_left(hits, a)
+    result.append(a - count)
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
@@ -237,26 +237,26 @@ if __name__ == "__main__":
 from bisect import bisect_left
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    m = int(input())
-    hits = [int(input()) for _ in range(m)]
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
+  hits = [int(input()) for _ in range(m)]
 
-    # Sort hits for binary search
-    hits.sort()
+  # Sort hits for binary search
+  hits.sort()
 
-    # For each element, count hits where X < element
-    # (element decreases by 1 for each such X)
-    result = []
-    for a in arr:
-        # Number of X values strictly less than a
-        decrements = bisect_left(hits, a)
-        result.append(a - decrements)
+  # For each element, count hits where X < element
+  # (element decreases by 1 for each such X)
+  result = []
+  for a in arr:
+    # Number of X values strictly less than a
+    decrements = bisect_left(hits, a)
+    result.append(a - decrements)
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -265,23 +265,23 @@ if __name__ == "__main__":
 from bisect import bisect_left
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    m = int(input())
-    hits = sorted(int(input()) for _ in range(m))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
+  hits = sorted(int(input()) for _ in range(m))
 
-    # Each HIT(X) decrements elements > X
-    # So element A becomes A - (count of X where X < A)
-    output = []
-    for val in arr:
-        # How many hit values are strictly less than val
-        dec = bisect_left(hits, val)
-        output.append(str(val - dec))
+  # Each HIT(X) decrements elements > X
+  # So element A becomes A - (count of X where X < A)
+  output = []
+  for val in arr:
+    # How many hit values are strictly less than val
+    dec = bisect_left(hits, val)
+    output.append(str(val - dec))
 
-    print(' '.join(output))
+  print(' '.join(output))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -333,83 +333,83 @@ Use DP with an additional dimension for the number of changes used.
 
 ```python
 def solve():
-    n, m, k = map(int, input().split())
-    a = list(map(int, input().split()))
-    b = list(map(int, input().split()))
+  n, m, k = map(int, input().split())
+  a = list(map(int, input().split()))
+  b = list(map(int, input().split()))
 
-    # dp[i][j][c] = max LCS length using first i of a, first j of b, with c changes
-    # c changes means we changed c elements in a to match elements in b
+  # dp[i][j][c] = max LCS length using first i of a, first j of b, with c changes
+  # c changes means we changed c elements in a to match elements in b
 
-    dp = [[[-1] * (k + 2) for _ in range(m + 1)] for _ in range(n + 1)]
+  dp = [[[-1] * (k + 2) for _ in range(m + 1)] for _ in range(n + 1)]
 
-    # Base case
-    for i in range(n + 1):
-        for c in range(k + 2):
-            dp[i][0][c] = 0
-    for j in range(m + 1):
-        for c in range(k + 2):
-            dp[0][j][c] = 0
+  # Base case
+  for i in range(n + 1):
+    for c in range(k + 2):
+      dp[i][0][c] = 0
+  for j in range(m + 1):
+    for c in range(k + 2):
+      dp[0][j][c] = 0
 
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            for c in range(k + 1):
-                # Option 1: Don't include a[i-1] in LCS
-                dp[i][j][c] = max(dp[i][j][c], dp[i-1][j][c])
+  for i in range(1, n + 1):
+    for j in range(1, m + 1):
+      for c in range(k + 1):
+        # Option 1: Don't include a[i-1] in LCS
+        dp[i][j][c] = max(dp[i][j][c], dp[i-1][j][c])
 
-                # Option 2: Don't include b[j-1] in LCS
-                dp[i][j][c] = max(dp[i][j][c], dp[i][j-1][c])
+        # Option 2: Don't include b[j-1] in LCS
+        dp[i][j][c] = max(dp[i][j][c], dp[i][j-1][c])
 
-                # Option 3: Match a[i-1] with b[j-1]
-                if a[i-1] == b[j-1]:
-                    dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c] + 1)
+        # Option 3: Match a[i-1] with b[j-1]
+        if a[i-1] == b[j-1]:
+          dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c] + 1)
 
-                # Option 4: Change a[i-1] to b[j-1] (costs 1 change)
-                if c > 0:
-                    dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c-1] + 1)
+        # Option 4: Change a[i-1] to b[j-1] (costs 1 change)
+        if c > 0:
+          dp[i][j][c] = max(dp[i][j][c], dp[i-1][j-1][c-1] + 1)
 
-    print(max(dp[n][m][c] for c in range(k + 1)))
+  print(max(dp[n][m][c] for c in range(k + 1)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    n, m, k = map(int, input().split())
-    a = list(map(int, input().split()))
-    b = list(map(int, input().split()))
+  n, m, k = map(int, input().split())
+  a = list(map(int, input().split()))
+  b = list(map(int, input().split()))
 
-    # dp[j][c] for space optimization
-    INF = float('-inf')
+  # dp[j][c] for space optimization
+  INF = float('-inf')
 
-    dp = [[0] * (k + 1) for _ in range(m + 1)]
+  dp = [[0] * (k + 1) for _ in range(m + 1)]
 
-    for i in range(1, n + 1):
-        new_dp = [[0] * (k + 1) for _ in range(m + 1)]
+  for i in range(1, n + 1):
+    new_dp = [[0] * (k + 1) for _ in range(m + 1)]
 
-        for j in range(1, m + 1):
-            for c in range(k + 1):
-                # Skip a[i-1]
-                new_dp[j][c] = max(new_dp[j][c], dp[j][c])
-                # Skip b[j-1]
-                new_dp[j][c] = max(new_dp[j][c], new_dp[j-1][c])
+    for j in range(1, m + 1):
+      for c in range(k + 1):
+        # Skip a[i-1]
+        new_dp[j][c] = max(new_dp[j][c], dp[j][c])
+        # Skip b[j-1]
+        new_dp[j][c] = max(new_dp[j][c], new_dp[j-1][c])
 
-                # Natural match
-                if a[i-1] == b[j-1]:
-                    new_dp[j][c] = max(new_dp[j][c], dp[j-1][c] + 1)
+        # Natural match
+        if a[i-1] == b[j-1]:
+          new_dp[j][c] = max(new_dp[j][c], dp[j-1][c] + 1)
 
-                # Use a change
-                if c > 0:
-                    new_dp[j][c] = max(new_dp[j][c], dp[j-1][c-1] + 1)
+        # Use a change
+        if c > 0:
+          new_dp[j][c] = max(new_dp[j][c], dp[j-1][c-1] + 1)
 
-        dp = new_dp
+    dp = new_dp
 
-    print(max(dp[m]))
+  print(max(dp[m]))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -463,52 +463,52 @@ Actually, the optimal is **2*(N-1)** for N > 1.
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
+  for _ in range(t):
+    n = int(input())
 
-        if n == 1:
-            print(0)
-        else:
-            # Minimum messages = 2 * (n - 1)
-            # First phase: gather all stories to one person (n-1 messages)
-            # Second phase: distribute from that person (n-1 messages)
-            print(2 * (n - 1))
+    if n == 1:
+      print(0)
+    else:
+      # Minimum messages = 2 * (n - 1)
+      # First phase: gather all stories to one person (n-1 messages)
+      # Second phase: distribute from that person (n-1 messages)
+      print(2 * (n - 1))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Mathematical
 
 ```python
 def solve():
-    """
-    For N students to all know all N stories:
+  """
+  For N students to all know all N stories:
 
-    Lower bound: Each student except the "collector" must send at least once
-    to contribute their story = N-1 messages minimum for gathering.
+  Lower bound: Each student except the "collector" must send at least once
+  to contribute their story = N-1 messages minimum for gathering.
 
-    Each student except the "distributor" must receive at least once
-    to get all stories = N-1 messages minimum for distributing.
+  Each student except the "distributor" must receive at least once
+  to get all stories = N-1 messages minimum for distributing.
 
-    Total minimum = 2*(N-1)
+  Total minimum = 2*(N-1)
 
-    This is achievable:
-    Round 1: Students 2,3,...,N each send to student 1 (N-1 messages)
-             Now student 1 knows all stories
-    Round 2: Student 1 sends to students 2,3,...,N (N-1 messages)
-             Now everyone knows all stories
-    """
-    t = int(input())
+  This is achievable:
+  Round 1: Students 2,3,...,N each send to student 1 (N-1 messages)
+      Now student 1 knows all stories
+  Round 2: Student 1 sends to students 2,3,...,N (N-1 messages)
+      Now everyone knows all stories
+  """
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        print(max(0, 2 * (n - 1)))
+  for _ in range(t):
+    n = int(input())
+    print(max(0, 2 * (n - 1)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### One-liner
@@ -516,8 +516,8 @@ if __name__ == "__main__":
 ```python
 t = int(input())
 for _ in range(t):
-    n = int(input())
-    print(2 * n - 2 if n > 1 else 0)
+  n = int(input())
+  print(2 * n - 2 if n > 1 else 0)
 ```
 
 ##### Complexity Analysis
@@ -576,67 +576,67 @@ This can be solved using LIS (Longest Increasing Subsequence) and LDS (Longest D
 
 ```python
 def longest_increasing_subsequence(arr):
-    """Returns array where lis[i] = length of LIS ending at index i"""
-    n = len(arr)
-    if n == 0:
-        return []
+  """Returns array where lis[i] = length of LIS ending at index i"""
+  n = len(arr)
+  if n == 0:
+    return []
 
-    lis = [1] * n
+  lis = [1] * n
 
-    for i in range(1, n):
-        for j in range(i):
-            if arr[j] < arr[i]:
-                lis[i] = max(lis[i], lis[j] + 1)
+  for i in range(1, n):
+    for j in range(i):
+      if arr[j] < arr[i]:
+        lis[i] = max(lis[i], lis[j] + 1)
 
-    return lis
+  return lis
 
 def longest_decreasing_subsequence(arr):
-    """Returns array where lds[i] = length of LDS ending at index i"""
-    n = len(arr)
-    if n == 0:
-        return []
+  """Returns array where lds[i] = length of LDS ending at index i"""
+  n = len(arr)
+  if n == 0:
+    return []
 
-    lds = [1] * n
+  lds = [1] * n
 
-    for i in range(1, n):
-        for j in range(i):
-            if arr[j] > arr[i]:
-                lds[i] = max(lds[i], lds[j] + 1)
+  for i in range(1, n):
+    for j in range(i):
+      if arr[j] > arr[i]:
+        lds[i] = max(lds[i], lds[j] + 1)
 
-    return lds
+  return lds
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
+  for _ in range(t):
+    n = int(input())
 
-        if n == 0:
-            print(0)
-            continue
+    if n == 0:
+      print(0)
+      continue
 
-        weights = []
-        for _ in range(n):
-            weights.append(int(input()))
+    weights = []
+    for _ in range(n):
+      weights.append(int(input()))
 
-        # LIS[i] = longest increasing subsequence ending at i
-        # This represents cars added to the back
-        lis = longest_increasing_subsequence(weights)
+    # LIS[i] = longest increasing subsequence ending at i
+    # This represents cars added to the back
+    lis = longest_increasing_subsequence(weights)
 
-        # LDS[i] = longest decreasing subsequence ending at i
-        # This represents cars added to the front
-        lds = longest_decreasing_subsequence(weights)
+    # LDS[i] = longest decreasing subsequence ending at i
+    # This represents cars added to the front
+    lds = longest_decreasing_subsequence(weights)
 
-        # For each position i as the "pivot" car, the maximum train length is
-        # LIS[i] + LDS[i] - 1 (subtract 1 because car i is counted twice)
-        max_length = 0
-        for i in range(n):
-            max_length = max(max_length, lis[i] + lds[i] - 1)
+    # For each position i as the "pivot" car, the maximum train length is
+    # LIS[i] + LDS[i] - 1 (subtract 1 because car i is counted twice)
+    max_length = 0
+    for i in range(n):
+      max_length = max(max_length, lis[i] + lds[i] - 1)
 
-        print(max_length)
+    print(max_length)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
@@ -645,45 +645,45 @@ if __name__ == "__main__":
 import bisect
 
 def lis_lengths(arr):
-    """O(n log n) LIS computation"""
-    n = len(arr)
-    lis = [1] * n
-    tails = []
+  """O(n log n) LIS computation"""
+  n = len(arr)
+  lis = [1] * n
+  tails = []
 
-    for i, x in enumerate(arr):
-        pos = bisect.bisect_left(tails, x)
-        if pos == len(tails):
-            tails.append(x)
-        else:
-            tails[pos] = x
-        lis[i] = pos + 1
+  for i, x in enumerate(arr):
+    pos = bisect.bisect_left(tails, x)
+    if pos == len(tails):
+      tails.append(x)
+    else:
+      tails[pos] = x
+    lis[i] = pos + 1
 
-    return lis
+  return lis
 
 def lds_lengths(arr):
-    """O(n log n) LDS computation"""
-    return lis_lengths([-x for x in arr])
+  """O(n log n) LDS computation"""
+  return lis_lengths([-x for x in arr])
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
+  for _ in range(t):
+    n = int(input())
 
-        if n == 0:
-            print(0)
-            continue
+    if n == 0:
+      print(0)
+      continue
 
-        weights = [int(input()) for _ in range(n)]
+    weights = [int(input()) for _ in range(n)]
 
-        lis = lis_lengths(weights)
-        lds = lds_lengths(weights)
+    lis = lis_lengths(weights)
+    lds = lds_lengths(weights)
 
-        max_length = max(lis[i] + lds[i] - 1 for i in range(n))
-        print(max_length)
+    max_length = max(lis[i] + lds[i] - 1 for i in range(n))
+    print(max_length)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

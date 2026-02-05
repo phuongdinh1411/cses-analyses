@@ -102,27 +102,27 @@ Try all possible paths from stone 1 to stone N using recursion. At each stone, b
 
 ```python
 def frog_brute_force(n, heights):
-    """
-    Brute force recursive solution.
+  """
+  Brute force recursive solution.
 
-    Time: O(2^n) - exponential branching
-    Space: O(n) - recursion stack
-    """
-    def solve(i):
-        if i == n - 1:
-            return 0
+  Time: O(2^n) - exponential branching
+  Space: O(n) - recursion stack
+  """
+  def solve(i):
+    if i == n - 1:
+      return 0
 
-        # Jump to i+1
-        cost1 = abs(heights[i] - heights[i + 1]) + solve(i + 1)
+    # Jump to i+1
+    cost1 = abs(heights[i] - heights[i + 1]) + solve(i + 1)
 
-        # Jump to i+2 (if possible)
-        if i + 2 < n:
-            cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
-            return min(cost1, cost2)
+    # Jump to i+2 (if possible)
+    if i + 2 < n:
+      cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
+      return min(cost1, cost2)
 
-        return cost1
+    return cost1
 
-    return solve(0)
+  return solve(0)
 ```
 
 ### Complexity
@@ -239,36 +239,36 @@ Optimal path reconstruction: 0 -> 2 -> 4 -> 5
 
 ```python
 def frog_dp(n, heights):
-    """
-    Bottom-up DP solution.
+  """
+  Bottom-up DP solution.
 
-    Time: O(n) - single pass
-    Space: O(n) - dp array
-    """
-    if n == 1:
-        return 0
+  Time: O(n) - single pass
+  Space: O(n) - dp array
+  """
+  if n == 1:
+    return 0
 
-    dp = [0] * n
-    dp[0] = 0
-    dp[1] = abs(heights[1] - heights[0])
+  dp = [0] * n
+  dp[0] = 0
+  dp[1] = abs(heights[1] - heights[0])
 
-    for i in range(2, n):
-        from_prev = dp[i - 1] + abs(heights[i] - heights[i - 1])
-        from_prev2 = dp[i - 2] + abs(heights[i] - heights[i - 2])
-        dp[i] = min(from_prev, from_prev2)
+  for i in range(2, n):
+    from_prev = dp[i - 1] + abs(heights[i] - heights[i - 1])
+    from_prev2 = dp[i - 2] + abs(heights[i] - heights[i - 2])
+    dp[i] = min(from_prev, from_prev2)
 
-    return dp[n - 1]
+  return dp[n - 1]
 
 
 # Read input and solve
 def main():
-    n = int(input())
-    heights = list(map(int, input().split()))
-    print(frog_dp(n, heights))
+  n = int(input())
+  heights = list(map(int, input().split()))
+  print(frog_dp(n, heights))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -292,36 +292,36 @@ if __name__ == "__main__":
 
 ```python
 def frog_optimized(n, heights):
-    """
-    Space-optimized DP using rolling variables.
+  """
+  Space-optimized DP using rolling variables.
 
-    Time: O(n) - single pass
-    Space: O(1) - only two variables
-    """
-    if n == 1:
-        return 0
+  Time: O(n) - single pass
+  Space: O(1) - only two variables
+  """
+  if n == 1:
+    return 0
 
-    prev2 = 0  # dp[i-2]
-    prev1 = abs(heights[1] - heights[0])  # dp[i-1]
+  prev2 = 0  # dp[i-2]
+  prev1 = abs(heights[1] - heights[0])  # dp[i-1]
 
-    for i in range(2, n):
-        curr = min(
-            prev1 + abs(heights[i] - heights[i - 1]),
-            prev2 + abs(heights[i] - heights[i - 2])
-        )
-        prev2, prev1 = prev1, curr
+  for i in range(2, n):
+    curr = min(
+      prev1 + abs(heights[i] - heights[i - 1]),
+      prev2 + abs(heights[i] - heights[i - 2])
+    )
+    prev2, prev1 = prev1, curr
 
-    return prev1
+  return prev1
 
 
 def main():
-    n = int(input())
-    heights = list(map(int, input().split()))
-    print(frog_optimized(n, heights))
+  n = int(input())
+  heights = list(map(int, input().split()))
+  print(frog_optimized(n, heights))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -344,8 +344,8 @@ return min(cost1, cost2)  # Crashes when i+2 >= n
 
 # CORRECT
 if i + 2 < n:
-    cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
-    return min(cost1, cost2)
+  cost2 = abs(heights[i] - heights[i + 2]) + solve(i + 2)
+  return min(cost1, cost2)
 return cost1
 ```
 

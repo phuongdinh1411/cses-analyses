@@ -95,32 +95,32 @@ For each position in the string, treat it as a potential center and expand outwa
 
 ```python
 def longest_palindrome_expand(s: str) -> str:
-    """
-    Find longest palindrome using center expansion.
-    Time: O(n^2), Space: O(1)
-    """
-    if not s:
-        return ""
+  """
+  Find longest palindrome using center expansion.
+  Time: O(n^2), Space: O(1)
+  """
+  if not s:
+    return ""
 
-    def expand(left: int, right: int) -> int:
-        """Expand around center and return palindrome length."""
-        while left >= 0 and right < len(s) and s[left] == s[right]:
-            left -= 1
-            right += 1
-        return right - left - 1
+  def expand(left: int, right: int) -> int:
+    """Expand around center and return palindrome length."""
+    while left >= 0 and right < len(s) and s[left] == s[right]:
+      left -= 1
+      right += 1
+    return right - left - 1
 
-    start, max_len = 0, 1
+  start, max_len = 0, 1
 
-    for i in range(len(s)):
-        len1 = expand(i, i)      # Odd length
-        len2 = expand(i, i + 1)  # Even length
-        curr_len = max(len1, len2)
+  for i in range(len(s)):
+    len1 = expand(i, i)      # Odd length
+    len2 = expand(i, i + 1)  # Even length
+    curr_len = max(len1, len2)
 
-        if curr_len > max_len:
-            max_len = curr_len
-            start = i - (curr_len - 1) // 2
+    if curr_len > max_len:
+      max_len = curr_len
+      start = i - (curr_len - 1) // 2
 
-    return s[start:start + max_len]
+  return s[start:start + max_len]
 
 # Read input and solve
 s = input().strip()
@@ -206,42 +206,42 @@ Original palindrome length = 3, which gives "bab" or "aba"
 
 ```python
 def longest_palindrome_manacher(s: str) -> str:
-    """
-    Find longest palindrome using Manacher's algorithm.
-    Time: O(n), Space: O(n)
-    """
-    if not s:
-        return ""
+  """
+  Find longest palindrome using Manacher's algorithm.
+  Time: O(n), Space: O(n)
+  """
+  if not s:
+    return ""
 
-    # Transform: "abc" -> "#a#b#c#"
-    t = '#' + '#'.join(s) + '#'
-    n = len(t)
-    p = [0] * n  # p[i] = radius of palindrome centered at i
-    center = right = 0
-    max_len, max_center = 0, 0
+  # Transform: "abc" -> "#a#b#c#"
+  t = '#' + '#'.join(s) + '#'
+  n = len(t)
+  p = [0] * n  # p[i] = radius of palindrome centered at i
+  center = right = 0
+  max_len, max_center = 0, 0
 
-    for i in range(n):
-        # Use mirror property if within current right boundary
-        if i < right:
-            mirror = 2 * center - i
-            p[i] = min(right - i, p[mirror])
+  for i in range(n):
+    # Use mirror property if within current right boundary
+    if i < right:
+      mirror = 2 * center - i
+      p[i] = min(right - i, p[mirror])
 
-        # Expand around center i
-        while (i + p[i] + 1 < n and i - p[i] - 1 >= 0 and
-               t[i + p[i] + 1] == t[i - p[i] - 1]):
-            p[i] += 1
+    # Expand around center i
+    while (i + p[i] + 1 < n and i - p[i] - 1 >= 0 and
+       t[i + p[i] + 1] == t[i - p[i] - 1]):
+      p[i] += 1
 
-        # Update center and right boundary
-        if i + p[i] > right:
-            center, right = i, i + p[i]
+    # Update center and right boundary
+    if i + p[i] > right:
+      center, right = i, i + p[i]
 
-        # Track maximum
-        if p[i] > max_len:
-            max_len, max_center = p[i], i
+    # Track maximum
+    if p[i] > max_len:
+      max_len, max_center = p[i], i
 
-    # Convert back to original string indices
-    start = (max_center - max_len) // 2
-    return s[start:start + max_len]
+  # Convert back to original string indices
+  start = (max_center - max_len) // 2
+  return s[start:start + max_len]
 
 # Read input and solve
 s = input().strip()
@@ -264,7 +264,7 @@ print(longest_palindrome_manacher(s))
 ```python
 # WRONG - only handles odd length
 for i in range(n):
-    length = expand(i, i)  # Missing even-length check!
+  length = expand(i, i)  # Missing even-length check!
 ```
 
 **Problem:** Even-length palindromes like "abba" have no single center character.

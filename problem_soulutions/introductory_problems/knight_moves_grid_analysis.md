@@ -99,35 +99,35 @@ Explore all possible paths using recursive DFS and track the minimum moves found
 
 ```python
 def brute_force_knight(n, start, target):
-    """
-    Brute force DFS solution - explores all paths.
+  """
+  Brute force DFS solution - explores all paths.
 
-    Time: O(8^d) where d is the solution depth
-    Space: O(n^2) for visited set
-    """
-    def dfs(row, col, moves, visited):
-        if (row, col) == target:
-            return moves
-        if moves > n * n:  # Pruning: max possible moves
-            return float('inf')
+  Time: O(8^d) where d is the solution depth
+  Space: O(n^2) for visited set
+  """
+  def dfs(row, col, moves, visited):
+    if (row, col) == target:
+      return moves
+    if moves > n * n:  # Pruning: max possible moves
+      return float('inf')
 
-        min_moves = float('inf')
-        knight_moves = [
-            (2, 1), (2, -1), (-2, 1), (-2, -1),
-            (1, 2), (1, -2), (-1, 2), (-1, -2)
-        ]
+    min_moves = float('inf')
+    knight_moves = [
+      (2, 1), (2, -1), (-2, 1), (-2, -1),
+      (1, 2), (1, -2), (-1, 2), (-1, -2)
+    ]
 
-        for dr, dc in knight_moves:
-            nr, nc = row + dr, col + dc
-            if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
-                visited.add((nr, nc))
-                min_moves = min(min_moves, dfs(nr, nc, moves + 1, visited))
-                visited.remove((nr, nc))
+    for dr, dc in knight_moves:
+      nr, nc = row + dr, col + dc
+      if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
+        visited.add((nr, nc))
+        min_moves = min(min_moves, dfs(nr, nc, moves + 1, visited))
+        visited.remove((nr, nc))
 
-        return min_moves
+    return min_moves
 
-    result = dfs(start[0], start[1], 0, {start})
-    return result if result != float('inf') else -1
+  result = dfs(start[0], start[1], 0, {start})
+  return result if result != float('inf') else -1
 ```
 
 ### Complexity
@@ -244,55 +244,55 @@ Knight moves in L-shape:
 from collections import deque
 
 def knight_moves_bfs(n, start, target):
-    """
-    Optimal BFS solution for shortest knight path.
+  """
+  Optimal BFS solution for shortest knight path.
 
-    Time: O(n^2) - each cell visited at most once
-    Space: O(n^2) - queue and visited set
-    """
-    if start == target:
-        return 0
+  Time: O(n^2) - each cell visited at most once
+  Space: O(n^2) - queue and visited set
+  """
+  if start == target:
+    return 0
 
-    # Knight move offsets: 8 L-shaped moves
-    moves = [(2,1), (2,-1), (-2,1), (-2,-1),
-             (1,2), (1,-2), (-1,2), (-1,-2)]
+  # Knight move offsets: 8 L-shaped moves
+  moves = [(2,1), (2,-1), (-2,1), (-2,-1),
+      (1,2), (1,-2), (-1,2), (-1,-2)]
 
-    queue = deque([(start[0], start[1], 0)])
-    visited = {start}
+  queue = deque([(start[0], start[1], 0)])
+  visited = {start}
 
-    while queue:
-        row, col, dist = queue.popleft()
+  while queue:
+    row, col, dist = queue.popleft()
 
-        for dr, dc in moves:
-            nr, nc = row + dr, col + dc
+    for dr, dc in moves:
+      nr, nc = row + dr, col + dc
 
-            # Check bounds
-            if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
-                # Check if target reached
-                if (nr, nc) == target:
-                    return dist + 1
+      # Check bounds
+      if 0 <= nr < n and 0 <= nc < n and (nr, nc) not in visited:
+        # Check if target reached
+        if (nr, nc) == target:
+          return dist + 1
 
-                visited.add((nr, nc))
-                queue.append((nr, nc, dist + 1))
+        visited.add((nr, nc))
+        queue.append((nr, nc, dist + 1))
 
-    return -1  # Target unreachable
+  return -1  # Target unreachable
 
 
 # Main function with I/O
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n = int(input_data[idx]); idx += 1
-    sr, sc = int(input_data[idx]), int(input_data[idx+1]); idx += 2
-    tr, tc = int(input_data[idx]), int(input_data[idx+1]); idx += 2
+  n = int(input_data[idx]); idx += 1
+  sr, sc = int(input_data[idx]), int(input_data[idx+1]); idx += 2
+  tr, tc = int(input_data[idx]), int(input_data[idx+1]); idx += 2
 
-    print(knight_moves_bfs(n, (sr, sc), (tr, tc)))
+  print(knight_moves_bfs(n, (sr, sc), (tr, tc)))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -311,10 +311,10 @@ if __name__ == "__main__":
 ```python
 # SLOWER - checks target after dequeue
 while queue:
-    row, col, dist = queue.popleft()
-    if (row, col) == target:  # Late check
-        return dist
-    # ... add neighbors
+  row, col, dist = queue.popleft()
+  if (row, col) == target:  # Late check
+    return dist
+  # ... add neighbors
 ```
 
 **Problem:** Wastes time by adding target to queue and processing it later.
@@ -322,7 +322,7 @@ while queue:
 
 ```python
 if (nr, nc) == target:
-    return dist + 1  # Return immediately
+  return dist + 1  # Return immediately
 ```
 
 ### Mistake 2: Not Marking Visited When Enqueueing
@@ -330,10 +330,10 @@ if (nr, nc) == target:
 ```python
 # WRONG - marks visited when dequeuing
 while queue:
-    row, col, dist = queue.popleft()
-    if (row, col) in visited:  # Too late!
-        continue
-    visited.add((row, col))
+  row, col, dist = queue.popleft()
+  if (row, col) in visited:  # Too late!
+    continue
+  visited.add((row, col))
 ```
 
 **Problem:** Same cell can be added to queue multiple times, causing TLE.
@@ -341,8 +341,8 @@ while queue:
 
 ```python
 if (nr, nc) not in visited:
-    visited.add((nr, nc))  # Mark NOW
-    queue.append((nr, nc, dist + 1))
+  visited.add((nr, nc))  # Mark NOW
+  queue.append((nr, nc, dist + 1))
 ```
 
 ### Mistake 3: Wrong Knight Move Offsets
@@ -353,7 +353,7 @@ moves = [(2,1), (1,2), (-2,-1), (-1,-2)]  # Only 4 moves!
 
 # CORRECT - all 8 L-shaped moves
 moves = [(2,1), (2,-1), (-2,1), (-2,-1),
-         (1,2), (1,-2), (-1,2), (-1,-2)]
+    (1,2), (1,-2), (-1,2), (-1,-2)]
 ```
 
 ---

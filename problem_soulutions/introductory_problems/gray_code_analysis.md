@@ -178,10 +178,10 @@ Index (i)    Binary    i >> 1    XOR Result    Gray Code
 **Python:**
 ```python
 def solve():
-    n = int(input())
-    for i in range(1 << n):  # 1 << n = 2^n
-        gray = i ^ (i >> 1)
-        print(format(gray, f'0{n}b'))
+  n = int(input())
+  for i in range(1 << n):  # 1 << n = 2^n
+    gray = i ^ (i >> 1)
+    print(format(gray, f'0{n}b'))
 
 solve()
 ```
@@ -214,18 +214,18 @@ solve()
 **Python:**
 ```python
 def gray_code_recursive(n):
-    if n == 1:
-        return ['0', '1']
+  if n == 1:
+    return ['0', '1']
 
-    prev = gray_code_recursive(n - 1)
+  prev = gray_code_recursive(n - 1)
 
-    # Prepend 0 to original, prepend 1 to reversed
-    return ['0' + code for code in prev] + ['1' + code for code in reversed(prev)]
+  # Prepend 0 to original, prepend 1 to reversed
+  return ['0' + code for code in prev] + ['1' + code for code in reversed(prev)]
 
 def solve():
-    n = int(input())
-    for code in gray_code_recursive(n):
-        print(code)
+  n = int(input())
+  for code in gray_code_recursive(n):
+    print(code)
 
 solve()
 ```

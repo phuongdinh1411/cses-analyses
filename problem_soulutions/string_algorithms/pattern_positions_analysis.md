@@ -109,35 +109,35 @@ Apply KMP algorithm for each pattern independently. Simple but inefficient for m
 
 ```python
 def solve_brute_force(text, patterns):
-    """Apply KMP for each pattern separately. Time: O(n * k + m)"""
-    def kmp_first_match(text, pattern):
-        # Build LPS array
-        m, lps = len(pattern), [0] * len(pattern)
-        length, i = 0, 1
-        while i < m:
-            if pattern[i] == pattern[length]:
-                length += 1
-                lps[i] = length
-                i += 1
-            elif length:
-                length = lps[length - 1]
-            else:
-                i += 1
-        # KMP search
-        i = j = 0
-        while i < len(text):
-            if text[i] == pattern[j]:
-                i, j = i + 1, j + 1
-            if j == m:
-                return i - j
-            elif i < len(text) and text[i] != pattern[j]:
-                j = lps[j - 1] if j else 0
-                if not j:
-                    i += 1
-        return -1
+  """Apply KMP for each pattern separately. Time: O(n * k + m)"""
+  def kmp_first_match(text, pattern):
+    # Build LPS array
+    m, lps = len(pattern), [0] * len(pattern)
+    length, i = 0, 1
+    while i < m:
+      if pattern[i] == pattern[length]:
+        length += 1
+        lps[i] = length
+        i += 1
+      elif length:
+        length = lps[length - 1]
+      else:
+        i += 1
+    # KMP search
+    i = j = 0
+    while i < len(text):
+      if text[i] == pattern[j]:
+        i, j = i + 1, j + 1
+      if j == m:
+        return i - j
+      elif i < len(text) and text[i] != pattern[j]:
+        j = lps[j - 1] if j else 0
+        if not j:
+          i += 1
+    return -1
 
-    return [kmp_first_match(text, p) + 1 if kmp_first_match(text, p) != -1 else -1
-            for p in patterns]
+  return [kmp_first_match(text, p) + 1 if kmp_first_match(text, p) != -1 else -1
+      for p in patterns]
 ```
 
 ### Complexity
@@ -206,95 +206,95 @@ Output: he=4, she=3, hers=4
 from collections import deque, defaultdict
 
 class AhoCorasick:
-    def __init__(self):
-        self.goto = [{}]          # Trie transitions
-        self.fail = [0]           # Failure links
-        self.output = [[]]        # Pattern indices ending at each node
-        self.node_count = 1
+  def __init__(self):
+    self.goto = [{}]          # Trie transitions
+    self.fail = [0]           # Failure links
+    self.output = [[]]        # Pattern indices ending at each node
+    self.node_count = 1
 
-    def add_pattern(self, pattern, index):
-        """Add a pattern to the trie with its index."""
-        node = 0
-        for char in pattern:
-            if char not in self.goto[node]:
-                self.goto[node][char] = self.node_count
-                self.goto.append({})
-                self.fail.append(0)
-                self.output.append([])
-                self.node_count += 1
-            node = self.goto[node][char]
-        self.output[node].append(index)
+  def add_pattern(self, pattern, index):
+    """Add a pattern to the trie with its index."""
+    node = 0
+    for char in pattern:
+      if char not in self.goto[node]:
+        self.goto[node][char] = self.node_count
+        self.goto.append({})
+        self.fail.append(0)
+        self.output.append([])
+        self.node_count += 1
+      node = self.goto[node][char]
+    self.output[node].append(index)
 
-    def build(self):
-        """Build failure links using BFS."""
-        queue = deque()
+  def build(self):
+    """Build failure links using BFS."""
+    queue = deque()
 
-        # Initialize: depth-1 nodes fail to root
-        for char, node in self.goto[0].items():
-            queue.append(node)
-            # fail[node] = 0 already set
+    # Initialize: depth-1 nodes fail to root
+    for char, node in self.goto[0].items():
+      queue.append(node)
+      # fail[node] = 0 already set
 
-        # BFS to compute failure links
-        while queue:
-            curr = queue.popleft()
+    # BFS to compute failure links
+    while queue:
+      curr = queue.popleft()
 
-            for char, next_node in self.goto[curr].items():
-                queue.append(next_node)
+      for char, next_node in self.goto[curr].items():
+        queue.append(next_node)
 
-                # Find failure link for next_node
-                fail_state = self.fail[curr]
-                while fail_state and char not in self.goto[fail_state]:
-                    fail_state = self.fail[fail_state]
+        # Find failure link for next_node
+        fail_state = self.fail[curr]
+        while fail_state and char not in self.goto[fail_state]:
+          fail_state = self.fail[fail_state]
 
-                self.fail[next_node] = self.goto[fail_state].get(char, 0)
+        self.fail[next_node] = self.goto[fail_state].get(char, 0)
 
-                # Merge output from failure link
-                if self.fail[next_node] != next_node:
-                    self.output[next_node] += self.output[self.fail[next_node]]
+        # Merge output from failure link
+        if self.fail[next_node] != next_node:
+          self.output[next_node] += self.output[self.fail[next_node]]
 
-    def search(self, text, pattern_lengths):
-        """Find first occurrence of each pattern (1-indexed, -1 if not found)."""
-        result = [-1] * len(pattern_lengths)
-        node = 0
+  def search(self, text, pattern_lengths):
+    """Find first occurrence of each pattern (1-indexed, -1 if not found)."""
+    result = [-1] * len(pattern_lengths)
+    node = 0
 
-        for i, char in enumerate(text):
-            while node and char not in self.goto[node]:
-                node = self.fail[node]
-            node = self.goto[node].get(char, 0)
+    for i, char in enumerate(text):
+      while node and char not in self.goto[node]:
+        node = self.fail[node]
+      node = self.goto[node].get(char, 0)
 
-            # Check outputs via failure chain
-            temp = node
-            while temp:
-                for idx in self.output[temp]:
-                    if result[idx] == -1:
-                        result[idx] = i - pattern_lengths[idx] + 2  # 1-indexed start
-                temp = self.fail[temp]
+      # Check outputs via failure chain
+      temp = node
+      while temp:
+        for idx in self.output[temp]:
+          if result[idx] == -1:
+            result[idx] = i - pattern_lengths[idx] + 2  # 1-indexed start
+        temp = self.fail[temp]
 
-        return result
+    return result
 
 
 def solve(text, patterns):
-    """Find first occurrence of each pattern using Aho-Corasick."""
-    ac = AhoCorasick()
-    lengths = [len(p) for p in patterns]
-    for i, p in enumerate(patterns):
-        ac.add_pattern(p, i)
-    ac.build()
-    return ac.search(text, lengths)
+  """Find first occurrence of each pattern using Aho-Corasick."""
+  ac = AhoCorasick()
+  lengths = [len(p) for p in patterns]
+  for i, p in enumerate(patterns):
+    ac.add_pattern(p, i)
+  ac.build()
+  return ac.search(text, lengths)
 
 
 def main():
-    text = input().strip()
-    k = int(input().strip())
-    patterns = [input().strip() for _ in range(k)]
+  text = input().strip()
+  k = int(input().strip())
+  patterns = [input().strip() for _ in range(k)]
 
-    result = solve(text, patterns)
-    for pos in result:
-        print(pos)
+  result = solve(text, patterns)
+  for pos in result:
+    print(pos)
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -317,9 +317,9 @@ if __name__ == "__main__":
 ```python
 # WRONG: Only current node    |  # CORRECT: Follow failure chain
 for idx in out[node]: ...     |  temp = node
-                              |  while temp:
-                              |      for idx in out[temp]: ...
-                              |      temp = fail[temp]
+               |  while temp:
+               |      for idx in out[temp]: ...
+               |      temp = fail[temp]
 ```
 
 ---

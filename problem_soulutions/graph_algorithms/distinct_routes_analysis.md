@@ -204,85 +204,85 @@ Edges: (1,2), (2,4), (1,3), (3,4), (1,4)
 from collections import deque, defaultdict
 
 def solve():
-    n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
-    # Adjacency list with edge indices
-    # For each edge, store (to, capacity, reverse_edge_index)
-    graph = defaultdict(list)
+  # Adjacency list with edge indices
+  # For each edge, store (to, capacity, reverse_edge_index)
+  graph = defaultdict(list)
 
-    def add_edge(u, v, cap):
-        # Forward edge
-        graph[u].append([v, cap, len(graph[v])])
-        # Reverse edge (capacity 0 initially)
-        graph[v].append([u, 0, len(graph[u]) - 1])
+  def add_edge(u, v, cap):
+    # Forward edge
+    graph[u].append([v, cap, len(graph[v])])
+    # Reverse edge (capacity 0 initially)
+    graph[v].append([u, 0, len(graph[u]) - 1])
 
-    for _ in range(m):
-        a, b = map(int, input().split())
-        add_edge(a, b, 1)
+  for _ in range(m):
+    a, b = map(int, input().split())
+    add_edge(a, b, 1)
 
-    def bfs():
-        """Find augmenting path using BFS, return parent array"""
-        parent = {1: None}  # node -> (prev_node, edge_index)
-        queue = deque([1])
+  def bfs():
+    """Find augmenting path using BFS, return parent array"""
+    parent = {1: None}  # node -> (prev_node, edge_index)
+    queue = deque([1])
 
-        while queue:
-            u = queue.popleft()
-            if u == n:
-                return parent
+    while queue:
+      u = queue.popleft()
+      if u == n:
+        return parent
 
-            for i, (v, cap, _) in enumerate(graph[u]):
-                if cap > 0 and v not in parent:
-                    parent[v] = (u, i)
-                    queue.append(v)
+      for i, (v, cap, _) in enumerate(graph[u]):
+        if cap > 0 and v not in parent:
+          parent[v] = (u, i)
+          queue.append(v)
 
-        return None
+    return None
 
-    # Ford-Fulkerson with BFS (Edmonds-Karp)
-    max_flow = 0
+  # Ford-Fulkerson with BFS (Edmonds-Karp)
+  max_flow = 0
 
-    while True:
-        parent = bfs()
-        if parent is None:
-            break
+  while True:
+    parent = bfs()
+    if parent is None:
+      break
 
-        # Augment flow along path (always 1 for unit capacity)
-        max_flow += 1
+    # Augment flow along path (always 1 for unit capacity)
+    max_flow += 1
 
-        # Update residual capacities
-        v = n
-        while parent[v] is not None:
-            u, edge_idx = parent[v]
-            rev_idx = graph[u][edge_idx][2]
+    # Update residual capacities
+    v = n
+    while parent[v] is not None:
+      u, edge_idx = parent[v]
+      rev_idx = graph[u][edge_idx][2]
 
-            # Decrease forward edge capacity
-            graph[u][edge_idx][1] -= 1
-            # Increase reverse edge capacity
-            graph[v][rev_idx][1] += 1
+      # Decrease forward edge capacity
+      graph[u][edge_idx][1] -= 1
+      # Increase reverse edge capacity
+      graph[v][rev_idx][1] += 1
 
-            v = u
+      v = u
 
-    # Reconstruct paths
-    paths = []
-    for _ in range(max_flow):
-        path = [1]
-        curr = 1
+  # Reconstruct paths
+  paths = []
+  for _ in range(max_flow):
+    path = [1]
+    curr = 1
 
-        while curr != n:
-            for i, (v, cap, rev_idx) in enumerate(graph[curr]):
-                # Check if this edge was used (reverse has capacity)
-                if graph[v][rev_idx][1] > 0 and cap == 0:
-                    # Remove one unit of flow from this edge
-                    graph[v][rev_idx][1] -= 1
-                    path.append(v)
-                    curr = v
-                    break
+    while curr != n:
+      for i, (v, cap, rev_idx) in enumerate(graph[curr]):
+        # Check if this edge was used (reverse has capacity)
+        if graph[v][rev_idx][1] > 0 and cap == 0:
+          # Remove one unit of flow from this edge
+          graph[v][rev_idx][1] -= 1
+          path.append(v)
+          curr = v
+          break
 
-        paths.append(path)
+    paths.append(path)
 
-    # Output
-    print(max_flow)
-    for path in paths:
-        print(len(path), *path)
+  # Output
+  print(max_flow)
+  for path in paths:
+    print(len(path), *path)
 
 solve()
 ```
@@ -295,7 +295,7 @@ solve()
 ```python
 # Only tracking forward edges
 if edge_used[u][v]:
-    continue
+  continue
 ```
 
 **Correct:**

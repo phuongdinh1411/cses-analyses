@@ -106,20 +106,20 @@ Check all possible subarrays and count those with sum divisible by n.
 
 ```python
 def solve_brute_force(n, arr):
-    """
-    Brute force: check all subarrays.
+  """
+  Brute force: check all subarrays.
 
-    Time: O(n^2)
-    Space: O(1)
-    """
-    count = 0
-    for i in range(n):
-        current_sum = 0
-        for j in range(i, n):
-            current_sum += arr[j]
-            if current_sum % n == 0:
-                count += 1
-    return count
+  Time: O(n^2)
+  Space: O(1)
+  """
+  count = 0
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, n):
+      current_sum += arr[j]
+      if current_sum % n == 0:
+        count += 1
+  return count
 ```
 
 ### Complexity
@@ -220,38 +220,38 @@ Subarray [1, 2, 7]: sum = 10, divisible by 5
 
 ```python
 def solve_optimal(n, arr):
-    """
-    Optimal solution using prefix sum remainders.
+  """
+  Optimal solution using prefix sum remainders.
 
-    Time: O(n) - single pass
-    Space: O(n) - hash map for remainder counts
-    """
-    remainder_count = {0: 1}  # Empty prefix has sum 0
-    prefix = 0
-    result = 0
+  Time: O(n) - single pass
+  Space: O(n) - hash map for remainder counts
+  """
+  remainder_count = {0: 1}  # Empty prefix has sum 0
+  prefix = 0
+  result = 0
 
-    for num in arr:
-        prefix += num
-        # Handle negative modulo
-        remainder = prefix % n
-        if remainder < 0:
-            remainder += n
+  for num in arr:
+    prefix += num
+    # Handle negative modulo
+    remainder = prefix % n
+    if remainder < 0:
+      remainder += n
 
-        # Add count of previous prefix sums with same remainder
-        result += remainder_count.get(remainder, 0)
-        remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
+    # Add count of previous prefix sums with same remainder
+    result += remainder_count.get(remainder, 0)
+    remainder_count[remainder] = remainder_count.get(remainder, 0) + 1
 
-    return result
+  return result
 
 
 # Main execution for CSES
 def main():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    print(solve_optimal(n, arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(solve_optimal(n, arr))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -274,7 +274,7 @@ remainder = prefix % n
 # CORRECT
 remainder = prefix % n
 if remainder < 0:
-    remainder += n
+  remainder += n
 
 # Or in C++:
 remainder = ((prefix % n) + n) % n

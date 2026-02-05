@@ -208,23 +208,23 @@ Total: 16 time units
 
 ```python
 def solve():
-    """
-    Optimal solution using mathematical formula.
+  """
+  Optimal solution using mathematical formula.
 
-    Time: O(n) - single pass to compute sum and max
-    Space: O(n) - storing the input array
-    """
-    n = int(input())
-    books = list(map(int, input().split()))
+  Time: O(n) - single pass to compute sum and max
+  Space: O(n) - storing the input array
+  """
+  n = int(input())
+  books = list(map(int, input().split()))
 
-    total = sum(books)
-    max_time = max(books)
+  total = sum(books)
+  max_time = max(books)
 
-    # Key formula: max(2 * max_time, total)
-    print(max(2 * max_time, total))
+  # Key formula: max(2 * max_time, total)
+  print(max(2 * max_time, total))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -243,15 +243,15 @@ if __name__ == "__main__":
 ```python
 # WRONG: Thinking this is about dividing books between two people
 def wrong_solution(books):
-    # This solves a DIFFERENT problem!
-    books.sort(reverse=True)
-    p1, p2 = 0, 0
-    for book in books:
-        if p1 <= p2:
-            p1 += book
-        else:
-            p2 += book
-    return max(p1, p2)
+  # This solves a DIFFERENT problem!
+  books.sort(reverse=True)
+  p1, p2 = 0, 0
+  for book in books:
+    if p1 <= p2:
+      p1 += book
+    else:
+      p2 += book
+  return max(p1, p2)
 ```
 
 **Problem:** The problem states BOTH people must read ALL books, not divide them.
@@ -262,7 +262,7 @@ def wrong_solution(books):
 ```python
 # WRONG: Missing the factor of 2
 def wrong_formula(books):
-    return max(max(books), sum(books))  # Missing 2 * max!
+  return max(max(books), sum(books))  # Missing 2 * max!
 ```
 
 **Problem:** The longest book blocks BOTH people - each must read it separately.

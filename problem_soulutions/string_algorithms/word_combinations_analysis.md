@@ -108,26 +108,26 @@ Use DP where `dp[i]` = number of ways to form `s[i:]`. For each position, check 
 
 ```python
 def solve_naive(s, words):
-    """
-    Naive DP solution using hash set.
+  """
+  Naive DP solution using hash set.
 
-    Time: O(n^2 * max_word_len) - substring creation and hashing
-    Space: O(n + total_word_length)
-    """
-    MOD = 10**9 + 7
-    n = len(s)
-    word_set = set(words)
-    max_len = max(len(w) for w in words) if words else 0
+  Time: O(n^2 * max_word_len) - substring creation and hashing
+  Space: O(n + total_word_length)
+  """
+  MOD = 10**9 + 7
+  n = len(s)
+  word_set = set(words)
+  max_len = max(len(w) for w in words) if words else 0
 
-    dp = [0] * (n + 1)
-    dp[n] = 1  # Base case: empty suffix has 1 way
+  dp = [0] * (n + 1)
+  dp[n] = 1  # Base case: empty suffix has 1 way
 
-    for i in range(n - 1, -1, -1):
-        for j in range(i + 1, min(i + max_len + 1, n + 1)):
-            if s[i:j] in word_set:
-                dp[i] = (dp[i] + dp[j]) % MOD
+  for i in range(n - 1, -1, -1):
+    for j in range(i + 1, min(i + max_len + 1, n + 1)):
+      if s[i:j] in word_set:
+        dp[i] = (dp[i] + dp[j]) % MOD
 
-    return dp[0]
+  return dp[0]
 ```
 
 ### Complexity
@@ -246,45 +246,45 @@ Position 0: "a" matches -> dp[1] = 1
 
 ```python
 def solve_trie_dp(s, words):
-    """
-    Optimal solution using Trie + DP.
+  """
+  Optimal solution using Trie + DP.
 
-    Time: O(n^2) worst case, but typically much better
-    Space: O(n + total_word_length)
-    """
-    MOD = 10**9 + 7
+  Time: O(n^2) worst case, but typically much better
+  Space: O(n + total_word_length)
+  """
+  MOD = 10**9 + 7
 
-    # Build Trie
-    class TrieNode:
-        def __init__(self):
-            self.children = {}
-            self.is_end = False
+  # Build Trie
+  class TrieNode:
+    def __init__(self):
+      self.children = {}
+      self.is_end = False
 
-    root = TrieNode()
-    for word in words:
-        node = root
-        for c in word:
-            if c not in node.children:
-                node.children[c] = TrieNode()
-            node = node.children[c]
-        node.is_end = True
+  root = TrieNode()
+  for word in words:
+    node = root
+    for c in word:
+      if c not in node.children:
+        node.children[c] = TrieNode()
+      node = node.children[c]
+    node.is_end = True
 
-    # DP
-    n = len(s)
-    dp = [0] * (n + 1)
-    dp[n] = 1
+  # DP
+  n = len(s)
+  dp = [0] * (n + 1)
+  dp[n] = 1
 
-    for i in range(n - 1, -1, -1):
-        node = root
-        for j in range(i, n):
-            c = s[j]
-            if c not in node.children:
-                break
-            node = node.children[c]
-            if node.is_end:
-                dp[i] = (dp[i] + dp[j + 1]) % MOD
+  for i in range(n - 1, -1, -1):
+    node = root
+    for j in range(i, n):
+      c = s[j]
+      if c not in node.children:
+        break
+      node = node.children[c]
+      if node.is_end:
+        dp[i] = (dp[i] + dp[j + 1]) % MOD
 
-    return dp[0]
+  return dp[0]
 
 
 # Main I/O
@@ -292,13 +292,13 @@ import sys
 input = sys.stdin.readline
 
 def main():
-    s = input().strip()
-    k = int(input())
-    words = [input().strip() for _ in range(k)]
-    print(solve_trie_dp(s, words))
+  s = input().strip()
+  k = int(input())
+  words = [input().strip() for _ in range(k)]
+  print(solve_trie_dp(s, words))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 #### Complexity
@@ -331,14 +331,14 @@ dp[i] = (dp[i] + dp[j + 1]) % MOD
 # WRONG - Forward DP without proper setup
 dp[0] = 1
 for i in range(n):
-    for j in range(i + 1, n + 1):
-        if s[i:j] in word_set:
-            dp[j] += dp[i]  # Might miss some cases
+  for j in range(i + 1, n + 1):
+    if s[i:j] in word_set:
+      dp[j] += dp[i]  # Might miss some cases
 
 # CORRECT - Backward DP is cleaner
 dp[n] = 1
 for i in range(n - 1, -1, -1):
-    # ... check words starting at i
+  # ... check words starting at i
 ```
 
 **Problem:** Forward DP requires careful handling of which states are "complete".
@@ -349,15 +349,15 @@ for i in range(n - 1, -1, -1):
 ```python
 # WRONG - Continues even when no match possible
 for j in range(i, n):
-    word = s[i:j+1]
-    if word in word_set:
-        dp[i] += dp[j + 1]
+  word = s[i:j+1]
+  if word in word_set:
+    dp[i] += dp[j + 1]
 
 # CORRECT - Stop when Trie path ends
 for j in range(i, n):
-    if s[j] not in node.children:
-        break  # No dictionary word continues this way
-    node = node.children[s[j]]
+  if s[j] not in node.children:
+    break  # No dictionary word continues this way
+  node = node.children[s[j]]
 ```
 
 **Problem:** Wasting time on impossible prefixes.

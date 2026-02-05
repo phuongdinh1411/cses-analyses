@@ -149,41 +149,41 @@ Only v=2 can be filled:
 
 ```python
 def array_description(n: int, m: int, array: list) -> int:
-    MOD = 10**9 + 7
+  MOD = 10**9 + 7
 
-    # dp[v] = ways to reach current position with value v
-    dp = [0] * (m + 2)  # Extra space for boundary handling
+  # dp[v] = ways to reach current position with value v
+  dp = [0] * (m + 2)  # Extra space for boundary handling
 
-    # Base case: first position
-    if array[0] == 0:
-        for v in range(1, m + 1):
-            dp[v] = 1
+  # Base case: first position
+  if array[0] == 0:
+    for v in range(1, m + 1):
+      dp[v] = 1
+  else:
+    dp[array[0]] = 1
+
+  # Fill remaining positions
+  for i in range(1, n):
+    new_dp = [0] * (m + 2)
+
+    if array[i] == 0:
+      # Unknown: try all values
+      for v in range(1, m + 1):
+        new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD
     else:
-        dp[array[0]] = 1
+      # Known: only one value allowed
+      v = array[i]
+      new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD
 
-    # Fill remaining positions
-    for i in range(1, n):
-        new_dp = [0] * (m + 2)
+    dp = new_dp
 
-        if array[i] == 0:
-            # Unknown: try all values
-            for v in range(1, m + 1):
-                new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD
-        else:
-            # Known: only one value allowed
-            v = array[i]
-            new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD
-
-        dp = new_dp
-
-    # Sum all ways for final position
-    return sum(dp[1:m+1]) % MOD
+  # Sum all ways for final position
+  return sum(dp[1:m+1]) % MOD
 
 
 # Example usage
 if __name__ == "__main__":
-    print(array_description(3, 2, [0, 1, 0]))  # Output: 4
-    print(array_description(4, 3, [1, 0, 2, 0]))  # Output: 6
+  print(array_description(3, 2, [0, 1, 0]))  # Output: 4
+  print(array_description(4, 3, [1, 0, 2, 0]))  # Output: 6
 ```
 
 ## Space Optimization
@@ -228,8 +228,8 @@ dp = [0] * (m + 2)  # dp[0] and dp[m+1] are always 0
 
 # Or explicit check
 for delta in [-1, 0, 1]:
-    if 1 <= v + delta <= m:
-        new_dp[v] += dp[v + delta]
+  if 1 <= v + delta <= m:
+    new_dp[v] += dp[v + delta]
 ```
 
 ### 2. Forgetting Modulo in Intermediate Sums
@@ -246,8 +246,8 @@ When array[i] != 0, only dp[i][array[i]] should be updated:
 ```python
 # Wrong: updating all values when position is fixed
 if array[i] != 0:
-    for v in range(1, m + 1):  # Should only update array[i]
-        ...
+  for v in range(1, m + 1):  # Should only update array[i]
+    ...
 ```
 
 ### 4. Edge Case: First Element is Fixed

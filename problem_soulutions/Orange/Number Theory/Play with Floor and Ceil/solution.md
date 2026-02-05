@@ -40,111 +40,111 @@ Since gcd(a, b) = gcd(a, a+1) = 1, solution always exists.
 
 ```python
 def extended_gcd(a, b):
-    """Returns (gcd, x, y) such that a*x + b*y = gcd"""
-    if b == 0:
-        return a, 1, 0
-    gcd, x1, y1 = extended_gcd(b, a % b)
-    x = y1
-    y = x1 - (a // b) * y1
-    return gcd, x, y
+  """Returns (gcd, x, y) such that a*x + b*y = gcd"""
+  if b == 0:
+    return a, 1, 0
+  gcd, x1, y1 = extended_gcd(b, a % b)
+  x = y1
+  y = x1 - (a // b) * y1
+  return gcd, x, y
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        x, k = map(int, input().split())
+  for _ in range(t):
+    x, k = map(int, input().split())
 
-        a = x // k          # floor(x/k)
-        b = (x + k - 1) // k  # ceil(x/k)
+    a = x // k          # floor(x/k)
+    b = (x + k - 1) // k  # ceil(x/k)
 
-        if a == b:
-            # x is divisible by k
-            # x = p*a + q*a = (p+q)*a
-            # So p + q = x/a = k
-            print(k, 0)
-        else:
-            # a and b differ by 1, gcd(a, b) = 1
-            # Solve p*a + q*b = x using extended Euclidean
-            gcd, p0, q0 = extended_gcd(a, b)
+    if a == b:
+      # x is divisible by k
+      # x = p*a + q*a = (p+q)*a
+      # So p + q = x/a = k
+      print(k, 0)
+    else:
+      # a and b differ by 1, gcd(a, b) = 1
+      # Solve p*a + q*b = x using extended Euclidean
+      gcd, p0, q0 = extended_gcd(a, b)
 
-            # p0*a + q0*b = 1
-            # So (p0*x)*a + (q0*x)*b = x
-            p = p0 * x
-            q = q0 * x
+      # p0*a + q0*b = 1
+      # So (p0*x)*a + (q0*x)*b = x
+      p = p0 * x
+      q = q0 * x
 
-            print(p, q)
+      print(p, q)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        x, k = map(int, input().split())
+  for _ in range(t):
+    x, k = map(int, input().split())
 
-        floor_val = x // k
-        ceil_val = -(-x // k)  # Ceiling division trick
+    floor_val = x // k
+    ceil_val = -(-x // k)  # Ceiling division trick
 
-        if floor_val == ceil_val:
-            # x divisible by k
-            print(k, 0)
-        else:
-            # floor_val and ceil_val differ by 1
-            # ceil_val = floor_val + 1
-            # Need: p * floor_val + q * (floor_val + 1) = x
-            # Let r = x % k (remainder)
-            # Then x = floor_val * k + r
-            # And ceil_val = floor_val + 1
+    if floor_val == ceil_val:
+      # x divisible by k
+      print(k, 0)
+    else:
+      # floor_val and ceil_val differ by 1
+      # ceil_val = floor_val + 1
+      # Need: p * floor_val + q * (floor_val + 1) = x
+      # Let r = x % k (remainder)
+      # Then x = floor_val * k + r
+      # And ceil_val = floor_val + 1
 
-            # p * floor_val + q * ceil_val = x
-            # With gcd = 1, use extended Euclidean
-            a, b = floor_val, ceil_val
+      # p * floor_val + q * ceil_val = x
+      # With gcd = 1, use extended Euclidean
+      a, b = floor_val, ceil_val
 
-            # Extended GCD for consecutive integers
-            # gcd(a, a+1) = 1
-            # a*1 + (a+1)*(-a) + (a+1) = a - a^2 - a + a + 1 = 1
-            # So: a*(-a) + (a+1)*(a+1-1) = a*(-a) + (a+1)*a = -a^2 + a^2 + a = a... wrong
+      # Extended GCD for consecutive integers
+      # gcd(a, a+1) = 1
+      # a*1 + (a+1)*(-a) + (a+1) = a - a^2 - a + a + 1 = 1
+      # So: a*(-a) + (a+1)*(a+1-1) = a*(-a) + (a+1)*a = -a^2 + a^2 + a = a... wrong
 
-            # Direct: a*1 + b*0 when b=a (not applicable here)
-            # For a, a+1: 1 = (a+1) - a = a*(-1) + (a+1)*1
-            # So p0 = -1, q0 = 1 gives a*(-1) + (a+1)*1 = 1
+      # Direct: a*1 + b*0 when b=a (not applicable here)
+      # For a, a+1: 1 = (a+1) - a = a*(-1) + (a+1)*1
+      # So p0 = -1, q0 = 1 gives a*(-1) + (a+1)*1 = 1
 
-            p = -x
-            q = x
+      p = -x
+      q = x
 
-            print(p, q)
+      print(p, q)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Simplified Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        x, k = map(int, input().split())
+  for _ in range(t):
+    x, k = map(int, input().split())
 
-        a = x // k  # floor
-        b = (x + k - 1) // k  # ceil
+    a = x // k  # floor
+    b = (x + k - 1) // k  # ceil
 
-        if a == b:
-            print(k, 0)
-        else:
-            # gcd(a, a+1) = 1
-            # a * (-1) + (a+1) * 1 = 1
-            # Multiply by x: a * (-x) + (a+1) * x = x
-            print(-x, x)
+    if a == b:
+      print(k, 0)
+    else:
+      # gcd(a, a+1) = 1
+      # a * (-1) + (a+1) * 1 = 1
+      # Multiply by x: a * (-x) + (a+1) * x = x
+      print(-x, x)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

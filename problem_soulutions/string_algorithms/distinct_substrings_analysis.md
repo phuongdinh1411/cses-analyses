@@ -94,20 +94,20 @@ Generate all possible substrings and store them in a set to eliminate duplicates
 
 ```python
 def count_distinct_brute(s: str) -> int:
-    """
-    Brute force: generate all substrings and use a set.
+  """
+  Brute force: generate all substrings and use a set.
 
-    Time: O(n^2) substrings, each taking O(n) to hash
-    Space: O(n^2) for storing substrings
-    """
-    n = len(s)
-    substrings = set()
+  Time: O(n^2) substrings, each taking O(n) to hash
+  Space: O(n^2) for storing substrings
+  """
+  n = len(s)
+  substrings = set()
 
-    for i in range(n):
-        for j in range(i + 1, n + 1):
-            substrings.add(s[i:j])
+  for i in range(n):
+    for j in range(i + 1, n + 1):
+      substrings.add(s[i:j])
 
-    return len(substrings)
+  return len(substrings)
 ```
 
 ### Complexity
@@ -197,48 +197,48 @@ Sorted Suffixes:        Suffix  |  Length  |  LCP  |  New Substrings
 
 ```python
 def count_distinct_substrings(s: str) -> int:
-    """
-    Count distinct substrings using Suffix Array + LCP.
+  """
+  Count distinct substrings using Suffix Array + LCP.
 
-    Time: O(n log n) for suffix array construction
-    Space: O(n) for arrays
-    """
-    n = len(s)
-    if n == 0:
-        return 0
+  Time: O(n log n) for suffix array construction
+  Space: O(n) for arrays
+  """
+  n = len(s)
+  if n == 0:
+    return 0
 
-    # Build suffix array (indices sorted by suffix)
-    suffix_array = sorted(range(n), key=lambda i: s[i:])
+  # Build suffix array (indices sorted by suffix)
+  suffix_array = sorted(range(n), key=lambda i: s[i:])
 
-    # Build rank array (position of each suffix in sorted order)
-    rank = [0] * n
-    for i, sa in enumerate(suffix_array):
-        rank[sa] = i
+  # Build rank array (position of each suffix in sorted order)
+  rank = [0] * n
+  for i, sa in enumerate(suffix_array):
+    rank[sa] = i
 
-    # Build LCP array using Kasai's algorithm
-    lcp = [0] * n
-    k = 0
-    for i in range(n):
-        if rank[i] == 0:
-            k = 0
-            continue
-        j = suffix_array[rank[i] - 1]
-        while i + k < n and j + k < n and s[i + k] == s[j + k]:
-            k += 1
-        lcp[rank[i]] = k
-        if k > 0:
-            k -= 1
+  # Build LCP array using Kasai's algorithm
+  lcp = [0] * n
+  k = 0
+  for i in range(n):
+    if rank[i] == 0:
+      k = 0
+      continue
+    j = suffix_array[rank[i] - 1]
+    while i + k < n and j + k < n and s[i + k] == s[j + k]:
+      k += 1
+    lcp[rank[i]] = k
+    if k > 0:
+      k -= 1
 
-    # Distinct = total - duplicates
-    total = n * (n + 1) // 2
-    duplicates = sum(lcp)
-    return total - duplicates
+  # Distinct = total - duplicates
+  total = n * (n + 1) // 2
+  duplicates = sum(lcp)
+  return total - duplicates
 
 
 # Read input and solve
 if __name__ == "__main__":
-    s = input().strip()
-    print(count_distinct_substrings(s))
+  s = input().strip()
+  print(count_distinct_substrings(s))
 ```
 
 ### Complexity
@@ -277,15 +277,15 @@ lcp[0] = 0  # First suffix has no predecessor
 # WRONG - Not decrementing k properly
 k = 0
 for i in range(n):
-    # ... compute lcp
-    k = lcp[rank[i]]  # Wrong: should preserve k and decrement
+  # ... compute lcp
+  k = lcp[rank[i]]  # Wrong: should preserve k and decrement
 
 # CORRECT
 k = 0
 for i in range(n):
-    # ... compute lcp
-    if k > 0:
-        k -= 1  # Key optimization in Kasai's algorithm
+  # ... compute lcp
+  if k > 0:
+    k -= 1  # Key optimization in Kasai's algorithm
 ```
 
 **Problem:** Kasai's algorithm relies on the property that LCP can decrease by at most 1.

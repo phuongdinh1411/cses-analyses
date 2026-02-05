@@ -194,61 +194,61 @@ No two queens share a row, column, or diagonal!
 
 ```python
 def solve():
-    """
-    CSES Chessboard and Queens - Backtracking Solution
+  """
+  CSES Chessboard and Queens - Backtracking Solution
 
-    Time: O(8!) worst case, much less with pruning
-    Space: O(8) for recursion stack and tracking arrays
-    """
-    # Read the 8x8 board
-    board = []
-    for _ in range(8):
-        board.append(input().strip())
+  Time: O(8!) worst case, much less with pruning
+  Space: O(8) for recursion stack and tracking arrays
+  """
+  # Read the 8x8 board
+  board = []
+  for _ in range(8):
+    board.append(input().strip())
 
-    # Tracking arrays for O(1) conflict detection
-    col_used = [False] * 8      # col_used[c] = True if column c has a queen
-    diag1 = [False] * 15        # Main diagonal: row - col + 7
-    diag2 = [False] * 15        # Anti diagonal: row + col
+  # Tracking arrays for O(1) conflict detection
+  col_used = [False] * 8      # col_used[c] = True if column c has a queen
+  diag1 = [False] * 15        # Main diagonal: row - col + 7
+  diag2 = [False] * 15        # Anti diagonal: row + col
 
-    count = 0
+  count = 0
 
-    def backtrack(row):
-        nonlocal count
+  def backtrack(row):
+    nonlocal count
 
-        # Base case: all 8 queens placed successfully
-        if row == 8:
-            count += 1
-            return
+    # Base case: all 8 queens placed successfully
+    if row == 8:
+      count += 1
+      return
 
-        # Try each column in current row
-        for col in range(8):
-            # Skip if square is reserved
-            if board[row][col] == '*':
-                continue
+    # Try each column in current row
+    for col in range(8):
+      # Skip if square is reserved
+      if board[row][col] == '*':
+        continue
 
-            # Calculate diagonal indices
-            d1 = row - col + 7  # Main diagonal index
-            d2 = row + col      # Anti diagonal index
+      # Calculate diagonal indices
+      d1 = row - col + 7  # Main diagonal index
+      d2 = row + col      # Anti diagonal index
 
-            # Skip if column or diagonal is already used
-            if col_used[col] or diag1[d1] or diag2[d2]:
-                continue
+      # Skip if column or diagonal is already used
+      if col_used[col] or diag1[d1] or diag2[d2]:
+        continue
 
-            # Place queen: mark column and diagonals
-            col_used[col] = True
-            diag1[d1] = True
-            diag2[d2] = True
+      # Place queen: mark column and diagonals
+      col_used[col] = True
+      diag1[d1] = True
+      diag2[d2] = True
 
-            # Recurse to next row
-            backtrack(row + 1)
+      # Recurse to next row
+      backtrack(row + 1)
 
-            # Backtrack: unmark column and diagonals
-            col_used[col] = False
-            diag1[d1] = False
-            diag2[d2] = False
+      # Backtrack: unmark column and diagonals
+      col_used[col] = False
+      diag1[d1] = False
+      diag2[d2] = False
 
-    backtrack(0)
-    print(count)
+  backtrack(0)
+  print(count)
 
 # Run solution
 solve()
@@ -283,17 +283,17 @@ d1 = row - col + 7  # Range: 0 to 14
 ```python
 # WRONG - ignores reserved squares
 for col in range(8):
-    if col_used[col] or diag1[d1] or diag2[d2]:
-        continue
-    # ... place queen
+  if col_used[col] or diag1[d1] or diag2[d2]:
+    continue
+  # ... place queen
 
 # CORRECT - check reserved squares first
 for col in range(8):
-    if board[row][col] == '*':  # Check reserved first!
-        continue
-    if col_used[col] or diag1[d1] or diag2[d2]:
-        continue
-    # ... place queen
+  if board[row][col] == '*':  # Check reserved first!
+    continue
+  if col_used[col] or diag1[d1] or diag2[d2]:
+    continue
+  # ... place queen
 ```
 
 **Problem:** Queens placed on reserved squares, giving wrong count.

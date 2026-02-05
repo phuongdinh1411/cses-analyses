@@ -102,27 +102,27 @@ Try all possible combinations of items (take or skip each one) and track the max
 
 ```python
 def knapsack_recursive(n, W, weights, values):
-    """
-    Brute force recursive solution.
+  """
+  Brute force recursive solution.
 
-    Time: O(2^n) - exponential
-    Space: O(n) - recursion depth
-    """
-    def solve(i, remaining):
-        if i == n:
-            return 0
+  Time: O(2^n) - exponential
+  Space: O(n) - recursion depth
+  """
+  def solve(i, remaining):
+    if i == n:
+      return 0
 
-        # Option 1: Skip item i
-        skip = solve(i + 1, remaining)
+    # Option 1: Skip item i
+    skip = solve(i + 1, remaining)
 
-        # Option 2: Take item i (if possible)
-        take = 0
-        if weights[i] <= remaining:
-            take = values[i] + solve(i + 1, remaining - weights[i])
+    # Option 2: Take item i (if possible)
+    take = 0
+    if weights[i] <= remaining:
+      take = values[i] + solve(i + 1, remaining - weights[i])
 
-        return max(skip, take)
+    return max(skip, take)
 
-    return solve(0, W)
+  return solve(0, W)
 ```
 
 ### Complexity
@@ -223,54 +223,54 @@ i=3      0   0   0  30  50  60  60  80 [90]  (items 1-3)
 
 ```python
 def knapsack_2d(n, W, weights, values):
-    """
-    2D DP solution for 0/1 Knapsack.
+  """
+  2D DP solution for 0/1 Knapsack.
 
-    Time: O(n * W)
-    Space: O(n * W)
-    """
-    dp = [[0] * (W + 1) for _ in range(n + 1)]
+  Time: O(n * W)
+  Space: O(n * W)
+  """
+  dp = [[0] * (W + 1) for _ in range(n + 1)]
 
-    for i in range(1, n + 1):
-        for j in range(W + 1):
-            # Option 1: Skip item i-1
-            dp[i][j] = dp[i - 1][j]
+  for i in range(1, n + 1):
+    for j in range(W + 1):
+      # Option 1: Skip item i-1
+      dp[i][j] = dp[i - 1][j]
 
-            # Option 2: Take item i-1 (if possible)
-            if weights[i - 1] <= j:
-                dp[i][j] = max(dp[i][j], dp[i - 1][j - weights[i - 1]] + values[i - 1])
+      # Option 2: Take item i-1 (if possible)
+      if weights[i - 1] <= j:
+        dp[i][j] = max(dp[i][j], dp[i - 1][j - weights[i - 1]] + values[i - 1])
 
-    return dp[n][W]
+  return dp[n][W]
 
 
 def knapsack_1d(n, W, weights, values):
-    """
-    Space-optimized 1D DP solution.
+  """
+  Space-optimized 1D DP solution.
 
-    Time: O(n * W)
-    Space: O(W)
-    """
-    dp = [0] * (W + 1)
+  Time: O(n * W)
+  Space: O(W)
+  """
+  dp = [0] * (W + 1)
 
-    for i in range(n):
-        # CRITICAL: Iterate backwards to avoid using updated values
-        for j in range(W, weights[i] - 1, -1):
-            dp[j] = max(dp[j], dp[j - weights[i]] + values[i])
+  for i in range(n):
+    # CRITICAL: Iterate backwards to avoid using updated values
+    for j in range(W, weights[i] - 1, -1):
+      dp[j] = max(dp[j], dp[j - weights[i]] + values[i])
 
-    return dp[W]
+  return dp[W]
 
 
 # Main
 if __name__ == "__main__":
-    n, W = map(int, input().split())
-    weights = []
-    values = []
-    for _ in range(n):
-        w, v = map(int, input().split())
-        weights.append(w)
-        values.append(v)
+  n, W = map(int, input().split())
+  weights = []
+  values = []
+  for _ in range(n):
+    w, v = map(int, input().split())
+    weights.append(w)
+    values.append(v)
 
-    print(knapsack_1d(n, W, weights, values))
+  print(knapsack_1d(n, W, weights, values))
 ```
 
 ### Complexity
@@ -290,7 +290,7 @@ if __name__ == "__main__":
 ```python
 # WRONG - counts same item multiple times
 for j in range(weights[i], W + 1):  # Forward iteration
-    dp[j] = max(dp[j], dp[j - weights[i]] + values[i])
+  dp[j] = max(dp[j], dp[j - weights[i]] + values[i])
 ```
 
 **Problem:** Forward iteration uses already-updated dp[j - w], effectively allowing unlimited copies of each item (unbounded knapsack).
@@ -308,10 +308,10 @@ for j in range(weights[i], W + 1):  # Forward iteration
 ```python
 # WRONG - accessing weights[i] when i goes from 1 to n
 for i in range(1, n + 1):
-    if weights[i] <= j:  # IndexError! weights is 0-indexed
+  if weights[i] <= j:  # IndexError! weights is 0-indexed
 
 # CORRECT
-    if weights[i - 1] <= j:
+  if weights[i - 1] <= j:
 ```
 
 ---

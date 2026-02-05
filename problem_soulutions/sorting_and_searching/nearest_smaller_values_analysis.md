@@ -109,21 +109,21 @@ For each element, scan all previous elements from right to left and find the fir
 
 ```python
 def solve_brute_force(n, arr):
-    """
-    Brute force: Check all previous elements.
+  """
+  Brute force: Check all previous elements.
 
-    Time: O(n^2)
-    Space: O(1)
-    """
-    result = []
-    for i in range(n):
-        found = 0
-        for j in range(i - 1, -1, -1):
-            if arr[j] < arr[i]:
-                found = j + 1  # 1-indexed
-                break
-        result.append(found)
-    return result
+  Time: O(n^2)
+  Space: O(1)
+  """
+  result = []
+  for i in range(n):
+    found = 0
+    for j in range(i - 1, -1, -1):
+      if arr[j] < arr[i]:
+        found = j + 1  # 1-indexed
+        break
+    result.append(found)
+  return result
 ```
 
 ### Complexity
@@ -271,43 +271,43 @@ import sys
 from typing import List
 
 def solve(n: int, arr: List[int]) -> List[int]:
-    """
-    Find nearest smaller element to the left using monotonic stack.
+  """
+  Find nearest smaller element to the left using monotonic stack.
 
-    Time: O(n) - each element pushed and popped at most once
-    Space: O(n) - stack storage
-    """
-    result = []
-    stack = []  # stores (index, value)
+  Time: O(n) - each element pushed and popped at most once
+  Space: O(n) - stack storage
+  """
+  result = []
+  stack = []  # stores (index, value)
 
-    for i in range(n):
-        # Pop elements >= current (they'll never be useful again)
-        while stack and stack[-1][1] >= arr[i]:
-            stack.pop()
+  for i in range(n):
+    # Pop elements >= current (they'll never be useful again)
+    while stack and stack[-1][1] >= arr[i]:
+      stack.pop()
 
-        # Top of stack is nearest smaller, or 0 if empty
-        if stack:
-            result.append(stack[-1][0] + 1)  # 1-indexed
-        else:
-            result.append(0)
+    # Top of stack is nearest smaller, or 0 if empty
+    if stack:
+      result.append(stack[-1][0] + 1)  # 1-indexed
+    else:
+      result.append(0)
 
-        # Push current element
-        stack.append((i, arr[i]))
+    # Push current element
+    stack.append((i, arr[i]))
 
-    return result
+  return result
 
 
 def main():
-    input_data = sys.stdin.read().split()
-    n = int(input_data[0])
-    arr = list(map(int, input_data[1:n+1]))
+  input_data = sys.stdin.read().split()
+  n = int(input_data[0])
+  arr = list(map(int, input_data[1:n+1]))
 
-    result = solve(n, arr)
-    print(' '.join(map(str, result)))
+  result = solve(n, arr)
+  print(' '.join(map(str, result)))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -326,7 +326,7 @@ if __name__ == "__main__":
 ```python
 # WRONG: Using > instead of >=
 while stack and stack[-1][1] > arr[i]:
-    stack.pop()
+  stack.pop()
 ```
 
 **Problem:** If stack top equals current element, it's NOT smaller, so it shouldn't be the answer.
@@ -337,12 +337,12 @@ while stack and stack[-1][1] > arr[i]:
 ```python
 # WRONG: Missing the push step
 while stack and stack[-1][1] >= arr[i]:
-    stack.pop()
+  stack.pop()
 
 if stack:
-    result.append(stack[-1][0] + 1)
+  result.append(stack[-1][0] + 1)
 else:
-    result.append(0)
+  result.append(0)
 
 # MISSING: stack.append((i, arr[i]))
 ```
@@ -368,11 +368,11 @@ result.append(stack[-1][0] + 1)
 ```python
 # WRONG: Checking answer before popping all >= elements
 if stack and stack[-1][1] < arr[i]:
-    result.append(stack[-1][0] + 1)
+  result.append(stack[-1][0] + 1)
 else:
-    while stack and stack[-1][1] >= arr[i]:
-        stack.pop()
-    # Now the answer check is in the wrong place!
+  while stack and stack[-1][1] >= arr[i]:
+    stack.pop()
+  # Now the answer check is in the wrong place!
 ```
 
 **Problem:** You might return an element that isn't actually smaller.

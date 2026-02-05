@@ -201,98 +201,98 @@ For this unweighted problem, max flow or Hopcroft-Karp is preferred.
 from collections import deque
 
 def solve():
-    n, m, k = map(int, input().split())
+  n, m, k = map(int, input().split())
 
-    # Node numbering: 0=source, 1..n=boys, n+1..n+m=girls, n+m+1=sink
-    source = 0
-    sink = n + m + 1
-    total_nodes = n + m + 2
+  # Node numbering: 0=source, 1..n=boys, n+1..n+m=girls, n+m+1=sink
+  source = 0
+  sink = n + m + 1
+  total_nodes = n + m + 2
 
-    # Adjacency list for flow network
-    adj = [[] for _ in range(total_nodes)]
-    capacity = {}
+  # Adjacency list for flow network
+  adj = [[] for _ in range(total_nodes)]
+  capacity = {}
 
-    def add_edge(u, v, cap):
-        adj[u].append(v)
-        adj[v].append(u)
-        capacity[(u, v)] = cap
-        capacity[(v, u)] = 0  # Reverse edge for residual graph
+  def add_edge(u, v, cap):
+    adj[u].append(v)
+    adj[v].append(u)
+    capacity[(u, v)] = cap
+    capacity[(v, u)] = 0  # Reverse edge for residual graph
 
-    # Source to all boys
-    for boy in range(1, n + 1):
-        add_edge(source, boy, 1)
+  # Source to all boys
+  for boy in range(1, n + 1):
+    add_edge(source, boy, 1)
 
-    # All girls to sink
+  # All girls to sink
+  for girl in range(n + 1, n + m + 1):
+    add_edge(girl, sink, 1)
+
+  # Compatible pairs
+  for _ in range(k):
+    a, b = map(int, input().split())
+    boy_node = a
+    girl_node = n + b
+    add_edge(boy_node, girl_node, 1)
+
+  def bfs():
+    """Find augmenting path using BFS"""
+    parent = [-1] * total_nodes
+    visited = [False] * total_nodes
+    visited[source] = True
+    queue = deque([source])
+
+    while queue:
+      u = queue.popleft()
+      for v in adj[u]:
+        if not visited[v] and capacity.get((u, v), 0) > 0:
+          visited[v] = True
+          parent[v] = u
+          if v == sink:
+            return parent
+          queue.append(v)
+    return None
+
+  def max_flow():
+    """Edmonds-Karp (BFS-based Ford-Fulkerson)"""
+    total_flow = 0
+
+    while True:
+      parent = bfs()
+      if parent is None:
+        break
+
+      # Find bottleneck
+      path_flow = float('inf')
+      v = sink
+      while v != source:
+        u = parent[v]
+        path_flow = min(path_flow, capacity[(u, v)])
+        v = u
+
+      # Update residual capacities
+      v = sink
+      while v != source:
+        u = parent[v]
+        capacity[(u, v)] -= path_flow
+        capacity[(v, u)] += path_flow
+        v = u
+
+      total_flow += path_flow
+
+    return total_flow
+
+  result = max_flow()
+  print(result)
+
+  # Extract actual matching from residual graph
+  for boy in range(1, n + 1):
     for girl in range(n + 1, n + m + 1):
-        add_edge(girl, sink, 1)
-
-    # Compatible pairs
-    for _ in range(k):
-        a, b = map(int, input().split())
-        boy_node = a
-        girl_node = n + b
-        add_edge(boy_node, girl_node, 1)
-
-    def bfs():
-        """Find augmenting path using BFS"""
-        parent = [-1] * total_nodes
-        visited = [False] * total_nodes
-        visited[source] = True
-        queue = deque([source])
-
-        while queue:
-            u = queue.popleft()
-            for v in adj[u]:
-                if not visited[v] and capacity.get((u, v), 0) > 0:
-                    visited[v] = True
-                    parent[v] = u
-                    if v == sink:
-                        return parent
-                    queue.append(v)
-        return None
-
-    def max_flow():
-        """Edmonds-Karp (BFS-based Ford-Fulkerson)"""
-        total_flow = 0
-
-        while True:
-            parent = bfs()
-            if parent is None:
-                break
-
-            # Find bottleneck
-            path_flow = float('inf')
-            v = sink
-            while v != source:
-                u = parent[v]
-                path_flow = min(path_flow, capacity[(u, v)])
-                v = u
-
-            # Update residual capacities
-            v = sink
-            while v != source:
-                u = parent[v]
-                capacity[(u, v)] -= path_flow
-                capacity[(v, u)] += path_flow
-                v = u
-
-            total_flow += path_flow
-
-        return total_flow
-
-    result = max_flow()
-    print(result)
-
-    # Extract actual matching from residual graph
-    for boy in range(1, n + 1):
-        for girl in range(n + 1, n + m + 1):
-            # If reverse edge has capacity 1, flow went through this edge
-            if capacity.get((girl, boy), 0) == 1:
-                print(boy, girl - n)
-                break
+      # If reverse edge has capacity 1, flow went through this edge
+      if capacity.get((girl, boy), 0) == 1:
+        print(boy, girl - n)
+        break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ## Common Mistakes

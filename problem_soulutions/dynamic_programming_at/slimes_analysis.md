@@ -105,40 +105,40 @@ import sys
 from functools import lru_cache
 
 def solve_recursive(n: int, sizes: list[int]) -> int:
-    """
-    Recursive solution with memoization.
+  """
+  Recursive solution with memoization.
 
-    Time: O(N^3)
-    Space: O(N^2)
-    """
-    # Compute prefix sums for O(1) range sum queries
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + sizes[i]
+  Time: O(N^3)
+  Space: O(N^2)
+  """
+  # Compute prefix sums for O(1) range sum queries
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + sizes[i]
 
-    def range_sum(i: int, j: int) -> int:
-        return prefix[j + 1] - prefix[i]
+  def range_sum(i: int, j: int) -> int:
+    return prefix[j + 1] - prefix[i]
 
-    @lru_cache(maxsize=None)
-    def dp(i: int, j: int) -> int:
-        # Base case: single slime needs no merging
-        if i == j:
-            return 0
+  @lru_cache(maxsize=None)
+  def dp(i: int, j: int) -> int:
+    # Base case: single slime needs no merging
+    if i == j:
+      return 0
 
-        # Try all split points
-        result = float('inf')
-        for k in range(i, j):
-            cost = dp(i, k) + dp(k + 1, j) + range_sum(i, j)
-            result = min(result, cost)
-        return result
+    # Try all split points
+    result = float('inf')
+    for k in range(i, j):
+      cost = dp(i, k) + dp(k + 1, j) + range_sum(i, j)
+      result = min(result, cost)
+    return result
 
-    return dp(0, n - 1)
+  return dp(0, n - 1)
 
 # Read input and solve
 if __name__ == "__main__":
-    n = int(input())
-    sizes = list(map(int, input().split()))
-    print(solve_recursive(n, sizes))
+  n = int(input())
+  sizes = list(map(int, input().split()))
+  print(solve_recursive(n, sizes))
 ```
 
 ### Complexity
@@ -267,43 +267,43 @@ Total: 30 + 60 + 100 = 190
 
 ```python
 def solve(n: int, sizes: list[int]) -> int:
-    """
-    Iterative interval DP solution for Slimes.
+  """
+  Iterative interval DP solution for Slimes.
 
-    Time: O(N^3)
-    Space: O(N^2)
-    """
-    # Prefix sums for O(1) range sum queries
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + sizes[i]
+  Time: O(N^3)
+  Space: O(N^2)
+  """
+  # Prefix sums for O(1) range sum queries
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + sizes[i]
 
-    # dp[i][j] = minimum cost to merge slimes [i, j]
-    INF = float('inf')
-    dp = [[INF] * n for _ in range(n)]
+  # dp[i][j] = minimum cost to merge slimes [i, j]
+  INF = float('inf')
+  dp = [[INF] * n for _ in range(n)]
 
-    # Base case: single slimes cost nothing
-    for i in range(n):
-        dp[i][i] = 0
+  # Base case: single slimes cost nothing
+  for i in range(n):
+    dp[i][i] = 0
 
-    # Fill DP by increasing interval length
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            range_sum = prefix[j + 1] - prefix[i]
+  # Fill DP by increasing interval length
+  for length in range(2, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      range_sum = prefix[j + 1] - prefix[i]
 
-            # Try all split points
-            for k in range(i, j):
-                cost = dp[i][k] + dp[k + 1][j] + range_sum
-                dp[i][j] = min(dp[i][j], cost)
+      # Try all split points
+      for k in range(i, j):
+        cost = dp[i][k] + dp[k + 1][j] + range_sum
+        dp[i][j] = min(dp[i][j], cost)
 
-    return dp[0][n - 1]
+  return dp[0][n - 1]
 
 
 if __name__ == "__main__":
-    n = int(input())
-    sizes = list(map(int, input().split()))
-    print(solve(n, sizes))
+  n = int(input())
+  sizes = list(map(int, input().split()))
+  print(solve(n, sizes))
 ```
 
 ### Complexity
@@ -322,9 +322,9 @@ if __name__ == "__main__":
 ```python
 # WRONG: Iterating by start/end instead of length
 for i in range(n):
-    for j in range(i, n):
-        for k in range(i, j):
-            dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + ...)
+  for j in range(i, n):
+    for k in range(i, j):
+      dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + ...)
 ```
 
 **Problem:** When computing dp[i][j], the subproblems dp[i][k] and dp[k+1][j] may not have been computed yet.
@@ -332,9 +332,9 @@ for i in range(n):
 **Fix:** Iterate by interval length from smallest to largest:
 ```python
 for length in range(2, n + 1):
-    for i in range(n - length + 1):
-        j = i + length - 1
-        # Now all shorter intervals are already computed
+  for i in range(n - length + 1):
+    j = i + length - 1
+    # Now all shorter intervals are already computed
 ```
 
 ### Mistake 2: Integer Overflow

@@ -72,81 +72,81 @@ import sys
 from sys import stdin
 
 class SegmentTree:
-    def __init__(self, arr):
-        self.n = len(arr)
-        # Each node stores (sum, prefix_max)
-        self.tree = [(0, float('-inf'))] * (4 * self.n)
-        self.build(arr, 1, 0, self.n - 1)
+  def __init__(self, arr):
+    self.n = len(arr)
+    # Each node stores (sum, prefix_max)
+    self.tree = [(0, float('-inf'))] * (4 * self.n)
+    self.build(arr, 1, 0, self.n - 1)
 
-    def build(self, arr, node, start, end):
-        if start == end:
-            self.tree[node] = (arr[start], arr[start])
-        else:
-            mid = (start + end) // 2
-            self.build(arr, 2 * node, start, mid)
-            self.build(arr, 2 * node + 1, mid + 1, end)
-            self.tree[node] = self.merge(self.tree[2 * node],
-                                          self.tree[2 * node + 1])
+  def build(self, arr, node, start, end):
+    if start == end:
+      self.tree[node] = (arr[start], arr[start])
+    else:
+      mid = (start + end) // 2
+      self.build(arr, 2 * node, start, mid)
+      self.build(arr, 2 * node + 1, mid + 1, end)
+      self.tree[node] = self.merge(self.tree[2 * node],
+                     self.tree[2 * node + 1])
 
-    def merge(self, left, right):
-        """Merge two segments."""
-        sum_val = left[0] + right[0]
-        prefix_max = max(left[1], left[0] + right[1])
-        return (sum_val, prefix_max)
+  def merge(self, left, right):
+    """Merge two segments."""
+    sum_val = left[0] + right[0]
+    prefix_max = max(left[1], left[0] + right[1])
+    return (sum_val, prefix_max)
 
-    def update(self, node, start, end, idx, val):
-        if start == end:
-            self.tree[node] = (val, val)
-        else:
-            mid = (start + end) // 2
-            if idx <= mid:
-                self.update(2 * node, start, mid, idx, val)
-            else:
-                self.update(2 * node + 1, mid + 1, end, idx, val)
-            self.tree[node] = self.merge(self.tree[2 * node],
-                                          self.tree[2 * node + 1])
+  def update(self, node, start, end, idx, val):
+    if start == end:
+      self.tree[node] = (val, val)
+    else:
+      mid = (start + end) // 2
+      if idx <= mid:
+        self.update(2 * node, start, mid, idx, val)
+      else:
+        self.update(2 * node + 1, mid + 1, end, idx, val)
+      self.tree[node] = self.merge(self.tree[2 * node],
+                     self.tree[2 * node + 1])
 
-    def query(self, node, start, end, l, r):
-        """Query max prefix sum in range [l, r]."""
-        if r < start or end < l:
-            return (0, float('-inf'))  # Identity element
-        if l <= start and end <= r:
-            return self.tree[node]
+  def query(self, node, start, end, l, r):
+    """Query max prefix sum in range [l, r]."""
+    if r < start or end < l:
+      return (0, float('-inf'))  # Identity element
+    if l <= start and end <= r:
+      return self.tree[node]
 
-        mid = (start + end) // 2
-        left = self.query(2 * node, start, mid, l, r)
-        right = self.query(2 * node + 1, mid + 1, end, l, r)
-        return self.merge(left, right)
+    mid = (start + end) // 2
+    left = self.query(2 * node, start, mid, l, r)
+    right = self.query(2 * node + 1, mid + 1, end, l, r)
+    return self.merge(left, right)
 
-    def point_update(self, idx, val):
-        self.update(1, 0, self.n - 1, idx, val)
+  def point_update(self, idx, val):
+    self.update(1, 0, self.n - 1, idx, val)
 
-    def prefix_max_query(self, k):
-        """Max prefix sum among positions 0 to k."""
-        result = self.query(1, 0, self.n - 1, 0, k)
-        return result[1]
+  def prefix_max_query(self, k):
+    """Max prefix sum among positions 0 to k."""
+    result = self.query(1, 0, self.n - 1, 0, k)
+    return result[1]
 
 
 def solve():
-    input = stdin.readline
-    n, q = map(int, input().split())
-    arr = list(map(int, input().split()))
+  input = stdin.readline
+  n, q = map(int, input().split())
+  arr = list(map(int, input().split()))
 
-    st = SegmentTree(arr)
-    result = []
+  st = SegmentTree(arr)
+  result = []
 
-    for _ in range(q):
-        query = list(map(int, input().split()))
-        if query[0] == 1:
-            # Update: 1 k u (1-indexed)
-            k, u = query[1] - 1, query[2]
-            st.point_update(k, u)
-        else:
-            # Query: 2 k (1-indexed)
-            k = query[1] - 1
-            result.append(st.prefix_max_query(k))
+  for _ in range(q):
+    query = list(map(int, input().split()))
+    if query[0] == 1:
+      # Update: 1 k u (1-indexed)
+      k, u = query[1] - 1, query[2]
+      st.point_update(k, u)
+    else:
+      # Query: 2 k (1-indexed)
+      k = query[1] - 1
+      result.append(st.prefix_max_query(k))
 
-    print('\n'.join(map(str, result)))
+  print('\n'.join(map(str, result)))
 
 solve()
 ```

@@ -128,25 +128,25 @@ For each candidate period p from 1 to n, verify if repeating the prefix of lengt
 
 ```python
 def find_periods_brute_force(s: str) -> list[int]:
-    """
-    Brute force: check each candidate period.
+  """
+  Brute force: check each candidate period.
 
-    Time: O(n^2) - for each of n periods, check up to n characters
-    Space: O(1) - excluding output
-    """
-    n = len(s)
-    periods = []
+  Time: O(n^2) - for each of n periods, check up to n characters
+  Space: O(1) - excluding output
+  """
+  n = len(s)
+  periods = []
 
-    for p in range(1, n + 1):
-        is_period = True
-        for i in range(n):
-            if s[i] != s[i % p]:
-                is_period = False
-                break
-        if is_period:
-            periods.append(p)
+  for p in range(1, n + 1):
+    is_period = True
+    for i in range(n):
+      if s[i] != s[i % p]:
+        is_period = False
+        break
+    if is_period:
+      periods.append(p)
 
-    return periods
+  return periods
 ```
 
 ### Complexity
@@ -257,57 +257,57 @@ Period = 3 means: "abc" repeated forms the string
 
 ```python
 def find_periods_kmp(s: str) -> list[int]:
-    """
-    Optimal solution using KMP failure function.
+  """
+  Optimal solution using KMP failure function.
 
-    Key insight: period = length - border
-    All borders form a chain via the failure function.
+  Key insight: period = length - border
+  All borders form a chain via the failure function.
 
-    Time: O(n) - building lps is O(n), following chain is O(n)
-    Space: O(n) - for the lps array
-    """
-    n = len(s)
+  Time: O(n) - building lps is O(n), following chain is O(n)
+  Space: O(n) - for the lps array
+  """
+  n = len(s)
 
-    # Step 1: Build KMP failure function (lps array)
-    lps = [0] * n
-    length = 0  # length of previous longest prefix suffix
-    i = 1
+  # Step 1: Build KMP failure function (lps array)
+  lps = [0] * n
+  length = 0  # length of previous longest prefix suffix
+  i = 1
 
-    while i < n:
-        if s[i] == s[length]:
-            length += 1
-            lps[i] = length
-            i += 1
-        else:
-            if length != 0:
-                length = lps[length - 1]  # try shorter prefix
-            else:
-                lps[i] = 0
-                i += 1
+  while i < n:
+    if s[i] == s[length]:
+      length += 1
+      lps[i] = length
+      i += 1
+    else:
+      if length != 0:
+        length = lps[length - 1]  # try shorter prefix
+      else:
+        lps[i] = 0
+        i += 1
 
-    # Step 2: Find all periods by following the border chain
-    periods = []
-    border = lps[n - 1]
+  # Step 2: Find all periods by following the border chain
+  periods = []
+  border = lps[n - 1]
 
-    while border > 0:
-        periods.append(n - border)
-        border = lps[border - 1]
+  while border > 0:
+    periods.append(n - border)
+    border = lps[border - 1]
 
-    periods.append(n)  # full string is always a period
+  periods.append(n)  # full string is always a period
 
-    # Step 3: Periods are collected in increasing order already
-    return periods
+  # Step 3: Periods are collected in increasing order already
+  return periods
 
 
 def solve():
-    """Main function to read input and output result."""
-    s = input().strip()
-    periods = find_periods_kmp(s)
-    print(' '.join(map(str, periods)))
+  """Main function to read input and output result."""
+  s = input().strip()
+  periods = find_periods_kmp(s)
+  print(' '.join(map(str, periods)))
 
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 #### Complexity
@@ -327,14 +327,14 @@ if __name__ == "__main__":
 # WRONG - printing borders instead of periods
 border = lps[n - 1]
 while border > 0:
-    periods.append(border)  # This is the BORDER, not the period!
-    border = lps[border - 1]
+  periods.append(border)  # This is the BORDER, not the period!
+  border = lps[border - 1]
 
 # CORRECT - convert border to period
 border = lps[n - 1]
 while border > 0:
-    periods.append(n - border)  # period = length - border
-    border = lps[border - 1]
+  periods.append(n - border)  # period = length - border
+  border = lps[border - 1]
 ```
 
 **Problem:** Border and period are complementary. Border is what overlaps; period is what doesn't.
@@ -347,8 +347,8 @@ while border > 0:
 periods = []
 border = lps[n - 1]
 while border > 0:
-    periods.append(n - border)
-    border = lps[border - 1]
+  periods.append(n - border)
+  border = lps[border - 1]
 # Missing: periods.append(n)
 
 # CORRECT
@@ -365,8 +365,8 @@ periods.append(n)  # The full string is always a valid period
 periods = []
 border = lps[n - 1]
 while border > 0:
-    periods.append(n - border)  # collected in increasing order actually
-    border = lps[border - 1]
+  periods.append(n - border)  # collected in increasing order actually
+  border = lps[border - 1]
 periods.append(n)
 
 # Note: With this implementation, periods ARE in increasing order
@@ -380,12 +380,12 @@ periods.append(n)
 ```python
 # WRONG - starting from i=0
 for i in range(n):
-    # lps[0] should be 0 by definition
+  # lps[0] should be 0 by definition
 
 # CORRECT - start from i=1
 lps[0] = 0  # by definition
 for i in range(1, n):
-    # compute lps[i]
+  # compute lps[i]
 ```
 
 ---

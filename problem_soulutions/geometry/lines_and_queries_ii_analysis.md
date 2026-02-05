@@ -107,17 +107,17 @@ For each query, evaluate all n lines and find the minimum.
 
 ```python
 def solve_brute_force(lines, queries):
-    """
-    Time: O(n * q)
-    Space: O(1)
-    """
-    results = []
-    for x in queries:
-        min_y = float('inf')
-        for m, b in lines:
-            min_y = min(min_y, m * x + b)
-        results.append(min_y)
-    return results
+  """
+  Time: O(n * q)
+  Space: O(1)
+  """
+  results = []
+  for x in queries:
+    min_y = float('inf')
+    for m, b in lines:
+      min_y = min(min_y, m * x + b)
+    results.append(min_y)
+  return results
 ```
 
 ### Complexity
@@ -199,60 +199,60 @@ Query x=2:
 import sys
 
 class LiChaoTree:
-    def __init__(self, lo, hi):
-        self.lo, self.hi = lo, hi
-        self.line = None
-        self.left = self.right = None
+  def __init__(self, lo, hi):
+    self.lo, self.hi = lo, hi
+    self.line = None
+    self.left = self.right = None
 
-    def eval(self, line, x):
-        return line[0] * x + line[1]
+  def eval(self, line, x):
+    return line[0] * x + line[1]
 
-    def insert(self, new_line):
-        if self.line is None:
-            self.line = new_line
-            return
-        lo, hi = self.lo, self.hi
-        mid = (lo + hi) // 2
-        if self.eval(new_line, mid) < self.eval(self.line, mid):
-            self.line, new_line = new_line, self.line
-        if lo == hi:
-            return
-        if self.eval(new_line, lo) < self.eval(self.line, lo):
-            if not self.left:
-                self.left = LiChaoTree(lo, mid)
-            self.left.insert(new_line)
-        else:
-            if not self.right:
-                self.right = LiChaoTree(mid + 1, hi)
-            self.right.insert(new_line)
+  def insert(self, new_line):
+    if self.line is None:
+      self.line = new_line
+      return
+    lo, hi = self.lo, self.hi
+    mid = (lo + hi) // 2
+    if self.eval(new_line, mid) < self.eval(self.line, mid):
+      self.line, new_line = new_line, self.line
+    if lo == hi:
+      return
+    if self.eval(new_line, lo) < self.eval(self.line, lo):
+      if not self.left:
+        self.left = LiChaoTree(lo, mid)
+      self.left.insert(new_line)
+    else:
+      if not self.right:
+        self.right = LiChaoTree(mid + 1, hi)
+      self.right.insert(new_line)
 
-    def query(self, x):
-        result = self.eval(self.line, x) if self.line else float('inf')
-        if self.lo == self.hi:
-            return result
-        mid = (self.lo + self.hi) // 2
-        if x <= mid and self.left:
-            result = min(result, self.left.query(x))
-        elif x > mid and self.right:
-            result = min(result, self.right.query(x))
-        return result
+  def query(self, x):
+    result = self.eval(self.line, x) if self.line else float('inf')
+    if self.lo == self.hi:
+      return result
+    mid = (self.lo + self.hi) // 2
+    if x <= mid and self.left:
+      result = min(result, self.left.query(x))
+    elif x > mid and self.right:
+      result = min(result, self.right.query(x))
+    return result
 
 def solve():
-    data = sys.stdin.read().split()
-    idx = 0
-    n, q = int(data[idx]), int(data[idx+1])
+  data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(data[idx]), int(data[idx+1])
+  idx += 2
+  tree = LiChaoTree(-10**9, 10**9)
+  for _ in range(n):
+    m, b = int(data[idx]), int(data[idx+1])
+    tree.insert((m, b))
     idx += 2
-    tree = LiChaoTree(-10**9, 10**9)
-    for _ in range(n):
-        m, b = int(data[idx]), int(data[idx+1])
-        tree.insert((m, b))
-        idx += 2
-    for _ in range(q):
-        print(tree.query(int(data[idx])))
-        idx += 1
+  for _ in range(q):
+    print(tree.query(int(data[idx])))
+    idx += 1
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -278,15 +278,15 @@ Where C = MAX_X - MIN_X (coordinate range).
 ```python
 # WRONG - always goes left
 if new_lo < cur_lo:
-    self.left.insert(new_line)
+  self.left.insert(new_line)
 else:
-    self.left.insert(new_line)  # Bug: should be right!
+  self.left.insert(new_line)  # Bug: should be right!
 
 # CORRECT
 if new_lo < cur_lo:
-    self.left.insert(new_line)
+  self.left.insert(new_line)
 else:
-    self.right.insert(new_line)
+  self.right.insert(new_line)
 ```
 
 ### Mistake 3: Not Handling Empty Nodes
@@ -294,13 +294,13 @@ else:
 ```python
 # WRONG - crashes on empty node
 def query(self, x):
-    result = self.eval(self.line, x)  # self.line might be None!
+  result = self.eval(self.line, x)  # self.line might be None!
 
 # CORRECT
 def query(self, x):
-    result = float('inf')
-    if self.line is not None:
-        result = self.eval(self.line, x)
+  result = float('inf')
+  if self.line is not None:
+    result = self.eval(self.line, x)
 ```
 
 ---

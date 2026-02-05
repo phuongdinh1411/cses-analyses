@@ -116,28 +116,28 @@ For each query, iterate through the subarray and count frequencies using a hash 
 from collections import Counter
 
 def solve_brute_force(n: int, arr: list, queries: list) -> list:
-    """
-    Brute force solution - count frequencies for each query.
+  """
+  Brute force solution - count frequencies for each query.
 
-    Time: O(q * n)
-    Space: O(n)
-    """
-    results = []
+  Time: O(q * n)
+  Space: O(n)
+  """
+  results = []
 
-    for l, r in queries:
-        # Convert to 0-indexed
-        l -= 1
+  for l, r in queries:
+    # Convert to 0-indexed
+    l -= 1
 
-        # Count frequencies in range
-        freq = Counter(arr[l:r])
+    # Count frequencies in range
+    freq = Counter(arr[l:r])
 
-        # Find mode: max frequency, then min value for ties
-        max_freq = max(freq.values())
-        mode = min(val for val, cnt in freq.items() if cnt == max_freq)
+    # Find mode: max frequency, then min value for ties
+    max_freq = max(freq.values())
+    mode = min(val for val, cnt in freq.items() if cnt == max_freq)
 
-        results.append(mode)
+    results.append(mode)
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -230,100 +230,100 @@ from collections import defaultdict
 from sortedcontainers import SortedList
 
 def solve_mo_algorithm(n: int, arr: list, queries: list) -> list:
-    """
-    Mo's Algorithm for subarray mode queries.
+  """
+  Mo's Algorithm for subarray mode queries.
 
-    Time: O((n + q) * sqrt(n) * log(n))
-    Space: O(n)
-    """
-    input = sys.stdin.readline
+  Time: O((n + q) * sqrt(n) * log(n))
+  Space: O(n)
+  """
+  input = sys.stdin.readline
 
-    # Coordinate compression
-    sorted_vals = sorted(set(arr))
-    compress = {v: i for i, v in enumerate(sorted_vals)}
-    compressed = [compress[x] for x in arr]
+  # Coordinate compression
+  sorted_vals = sorted(set(arr))
+  compress = {v: i for i, v in enumerate(sorted_vals)}
+  compressed = [compress[x] for x in arr]
 
-    # Block size for Mo's algorithm
-    block_size = max(1, isqrt(n))
+  # Block size for Mo's algorithm
+  block_size = max(1, isqrt(n))
 
-    # Attach original indices and sort queries
-    indexed_queries = [(l-1, r-1, i) for i, (l, r) in enumerate(queries)]
-    indexed_queries.sort(key=lambda x: (x[0] // block_size, x[1]))
+  # Attach original indices and sort queries
+  indexed_queries = [(l-1, r-1, i) for i, (l, r) in enumerate(queries)]
+  indexed_queries.sort(key=lambda x: (x[0] // block_size, x[1]))
 
-    # Frequency tracking
-    freq = [0] * len(sorted_vals)
-    count = defaultdict(SortedList)  # count[f] = sorted list of elements with frequency f
-    count[0] = SortedList(range(len(sorted_vals)))
-    max_freq = 0
+  # Frequency tracking
+  freq = [0] * len(sorted_vals)
+  count = defaultdict(SortedList)  # count[f] = sorted list of elements with frequency f
+  count[0] = SortedList(range(len(sorted_vals)))
+  max_freq = 0
 
-    def add(idx):
-        nonlocal max_freq
-        val = compressed[idx]
-        old_freq = freq[val]
-        count[old_freq].remove(val)
-        freq[val] += 1
-        count[freq[val]].add(val)
-        max_freq = max(max_freq, freq[val])
+  def add(idx):
+    nonlocal max_freq
+    val = compressed[idx]
+    old_freq = freq[val]
+    count[old_freq].remove(val)
+    freq[val] += 1
+    count[freq[val]].add(val)
+    max_freq = max(max_freq, freq[val])
 
-    def remove(idx):
-        nonlocal max_freq
-        val = compressed[idx]
-        old_freq = freq[val]
-        count[old_freq].remove(val)
-        freq[val] -= 1
-        count[freq[val]].add(val)
-        # Update max_freq if needed
-        if old_freq == max_freq and len(count[old_freq]) == 0:
-            max_freq -= 1
+  def remove(idx):
+    nonlocal max_freq
+    val = compressed[idx]
+    old_freq = freq[val]
+    count[old_freq].remove(val)
+    freq[val] -= 1
+    count[freq[val]].add(val)
+    # Update max_freq if needed
+    if old_freq == max_freq and len(count[old_freq]) == 0:
+      max_freq -= 1
 
-    def get_mode():
-        if max_freq == 0:
-            return sorted_vals[count[0][0]]
-        return sorted_vals[count[max_freq][0]]
+  def get_mode():
+    if max_freq == 0:
+      return sorted_vals[count[0][0]]
+    return sorted_vals[count[max_freq][0]]
 
-    # Process queries
-    results = [0] * len(queries)
-    cur_l, cur_r = 0, -1
+  # Process queries
+  results = [0] * len(queries)
+  cur_l, cur_r = 0, -1
 
-    for l, r, orig_idx in indexed_queries:
-        # Expand/shrink to reach [l, r]
-        while cur_r < r:
-            cur_r += 1
-            add(cur_r)
-        while cur_l > l:
-            cur_l -= 1
-            add(cur_l)
-        while cur_r > r:
-            remove(cur_r)
-            cur_r -= 1
-        while cur_l < l:
-            remove(cur_l)
-            cur_l += 1
+  for l, r, orig_idx in indexed_queries:
+    # Expand/shrink to reach [l, r]
+    while cur_r < r:
+      cur_r += 1
+      add(cur_r)
+    while cur_l > l:
+      cur_l -= 1
+      add(cur_l)
+    while cur_r > r:
+      remove(cur_r)
+      cur_r -= 1
+    while cur_l < l:
+      remove(cur_l)
+      cur_l += 1
 
-        results[orig_idx] = get_mode()
+    results[orig_idx] = get_mode()
 
-    return results
+  return results
 
 
 def main():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, q = int(input_data[idx]), int(input_data[idx+1])
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(input_data[idx]), int(input_data[idx+1])
+  idx += 2
+  arr = [int(input_data[idx+i]) for i in range(n)]
+  idx += n
+  queries = []
+  for _ in range(q):
+    l, r = int(input_data[idx]), int(input_data[idx+1])
+    queries.append((l, r))
     idx += 2
-    arr = [int(input_data[idx+i]) for i in range(n)]
-    idx += n
-    queries = []
-    for _ in range(q):
-        l, r = int(input_data[idx]), int(input_data[idx+1])
-        queries.append((l, r))
-        idx += 2
 
-    results = solve_mo_algorithm(n, arr, queries)
-    print('\n'.join(map(str, results)))
+  results = solve_mo_algorithm(n, arr, queries)
+  print('\n'.join(map(str, results)))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 #### Complexity
@@ -355,11 +355,11 @@ queries.sort(key=lambda x: (x[0] // block_size, x[1]))
 ```python
 # WRONG
 def remove(idx):
-    val = compressed[idx]
-    count[freq[val]].remove(val)
-    freq[val] -= 1
-    count[freq[val]].add(val)
-    # Missing: update max_freq!
+  val = compressed[idx]
+  count[freq[val]].remove(val)
+  freq[val] -= 1
+  count[freq[val]].add(val)
+  # Missing: update max_freq!
 ```
 
 **Problem:** max_freq stays high even when no elements have that frequency.
@@ -370,8 +370,8 @@ def remove(idx):
 ```python
 # WRONG - 1-indexed input used directly as 0-indexed
 for l, r in queries:
-    while cur_r < r:  # r should be r-1 for 0-indexed
-        add(++cur_r)
+  while cur_r < r:  # r should be r-1 for 0-indexed
+    add(++cur_r)
 ```
 
 **Problem:** Accessing arr[n] causes index out of bounds.

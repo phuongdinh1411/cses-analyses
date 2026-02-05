@@ -175,79 +175,79 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n = int(input_data[idx]); idx += 1
-    m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
-    # Build adjacency list with edge indices
-    adj = defaultdict(list)
-    edges = []
-    for i in range(m):
-        a = int(input_data[idx]); idx += 1
-        b = int(input_data[idx]); idx += 1
-        adj[a].append((b, i))
-        adj[b].append((a, i))
-        edges.append([a, b])
+  # Build adjacency list with edge indices
+  adj = defaultdict(list)
+  edges = []
+  for i in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    adj[a].append((b, i))
+    adj[b].append((a, i))
+    edges.append([a, b])
 
-    # DFS arrays
-    disc = [0] * (n + 1)
-    low = [0] * (n + 1)
-    visited = [False] * (n + 1)
-    timer = [1]
-    has_bridge = [False]
+  # DFS arrays
+  disc = [0] * (n + 1)
+  low = [0] * (n + 1)
+  visited = [False] * (n + 1)
+  timer = [1]
+  has_bridge = [False]
 
-    # Result: direction[i] = True means edge[i] keeps original direction
-    direction = [True] * m
+  # Result: direction[i] = True means edge[i] keeps original direction
+  direction = [True] * m
 
-    def dfs(u, parent_edge_idx):
-        visited[u] = True
-        disc[u] = low[u] = timer[0]
-        timer[0] += 1
+  def dfs(u, parent_edge_idx):
+    visited[u] = True
+    disc[u] = low[u] = timer[0]
+    timer[0] += 1
 
-        for v, edge_idx in adj[u]:
-            if edge_idx == parent_edge_idx:
-                continue
+    for v, edge_idx in adj[u]:
+      if edge_idx == parent_edge_idx:
+        continue
 
-            if visited[v]:
-                # Back edge: orient toward ancestor (v has smaller disc)
-                low[u] = min(low[u], disc[v])
-                if disc[v] < disc[u]:
-                    # v is ancestor, orient u -> v
-                    if edges[edge_idx][0] == u:
-                        direction[edge_idx] = True  # u->v
-                    else:
-                        direction[edge_idx] = False  # flip to u->v
-            else:
-                # Tree edge: orient toward child (u -> v)
-                if edges[edge_idx][0] == u:
-                    direction[edge_idx] = True
-                else:
-                    direction[edge_idx] = False
-
-                dfs(v, edge_idx)
-                low[u] = min(low[u], low[v])
-
-                # Check for bridge
-                if low[v] > disc[u]:
-                    has_bridge[0] = True
-
-    # Run DFS from node 1
-    dfs(1, -1)
-
-    if has_bridge[0]:
-        print("IMPOSSIBLE")
-        return
-
-    # Output oriented edges
-    result = []
-    for i in range(m):
-        a, b = edges[i]
-        if direction[i]:
-            result.append(f"{a} {b}")
+      if visited[v]:
+        # Back edge: orient toward ancestor (v has smaller disc)
+        low[u] = min(low[u], disc[v])
+        if disc[v] < disc[u]:
+          # v is ancestor, orient u -> v
+          if edges[edge_idx][0] == u:
+            direction[edge_idx] = True  # u->v
+          else:
+            direction[edge_idx] = False  # flip to u->v
+      else:
+        # Tree edge: orient toward child (u -> v)
+        if edges[edge_idx][0] == u:
+          direction[edge_idx] = True
         else:
-            result.append(f"{b} {a}")
-    print('\n'.join(result))
+          direction[edge_idx] = False
+
+        dfs(v, edge_idx)
+        low[u] = min(low[u], low[v])
+
+        # Check for bridge
+        if low[v] > disc[u]:
+          has_bridge[0] = True
+
+  # Run DFS from node 1
+  dfs(1, -1)
+
+  if has_bridge[0]:
+    print("IMPOSSIBLE")
+    return
+
+  # Output oriented edges
+  result = []
+  for i in range(m):
+    a, b = edges[i]
+    if direction[i]:
+      result.append(f"{a} {b}")
+    else:
+      result.append(f"{b} {a}")
+  print('\n'.join(result))
 
 solve()
 ```

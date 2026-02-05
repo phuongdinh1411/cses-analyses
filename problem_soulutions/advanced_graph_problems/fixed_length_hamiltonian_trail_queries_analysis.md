@@ -107,29 +107,29 @@ Try all possible paths starting from vertex 1, tracking visited vertices, and co
 
 ```python
 def solve_brute_force(n, edges):
-    """
-    DFS brute force - explores all paths.
-    Time: O(n!) - factorial, too slow
-    Space: O(n)
-    """
-    MOD = 10**9 + 7
-    graph = [[] for _ in range(n)]
-    for a, b in edges:
-        graph[a-1].append(b-1)  # 0-indexed
+  """
+  DFS brute force - explores all paths.
+  Time: O(n!) - factorial, too slow
+  Space: O(n)
+  """
+  MOD = 10**9 + 7
+  graph = [[] for _ in range(n)]
+  for a, b in edges:
+    graph[a-1].append(b-1)  # 0-indexed
 
-    def dfs(node, visited):
-        if len(visited) == n:
-            return 1 if node == n - 1 else 0
+  def dfs(node, visited):
+    if len(visited) == n:
+      return 1 if node == n - 1 else 0
 
-        count = 0
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                count = (count + dfs(neighbor, visited)) % MOD
-                visited.remove(neighbor)
-        return count
+    count = 0
+    for neighbor in graph[node]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        count = (count + dfs(neighbor, visited)) % MOD
+        visited.remove(neighbor)
+    return count
 
-    return dfs(0, {0})
+  return dfs(0, {0})
 ```
 
 ### Complexity
@@ -220,41 +220,41 @@ Path 2: 0 -> 2 -> 1 -> 3  (mask progression: 0001 -> 0101 -> 0111 -> 1111)
 
 ```python
 def solve_bitmask_dp(n, edges):
-    """
-    Bitmask DP solution for Hamiltonian path counting.
+  """
+  Bitmask DP solution for Hamiltonian path counting.
 
-    Time: O(2^n * n^2) - iterate all masks, all vertices, all edges
-    Space: O(2^n * n) - DP table
-    """
-    MOD = 10**9 + 7
+  Time: O(2^n * n^2) - iterate all masks, all vertices, all edges
+  Space: O(2^n * n) - DP table
+  """
+  MOD = 10**9 + 7
 
-    # Build adjacency list (0-indexed)
-    graph = [[] for _ in range(n)]
-    for a, b in edges:
-        graph[a-1].append(b-1)
+  # Build adjacency list (0-indexed)
+  graph = [[] for _ in range(n)]
+  for a, b in edges:
+    graph[a-1].append(b-1)
 
-    # dp[mask][v] = number of paths ending at v with visited set = mask
-    dp = [[0] * n for _ in range(1 << n)]
-    dp[1][0] = 1  # Start at vertex 0, mask = 1 (only bit 0 set)
+  # dp[mask][v] = number of paths ending at v with visited set = mask
+  dp = [[0] * n for _ in range(1 << n)]
+  dp[1][0] = 1  # Start at vertex 0, mask = 1 (only bit 0 set)
 
-    # Process all masks in increasing order of popcount
-    for mask in range(1, 1 << n):
-        for v in range(n):
-            if dp[mask][v] == 0:
-                continue
-            if not (mask & (1 << v)):  # v must be in mask
-                continue
+  # Process all masks in increasing order of popcount
+  for mask in range(1, 1 << n):
+    for v in range(n):
+      if dp[mask][v] == 0:
+        continue
+      if not (mask & (1 << v)):  # v must be in mask
+        continue
 
-            # Try extending to each neighbor
-            for u in graph[v]:
-                if mask & (1 << u):  # u already visited
-                    continue
-                new_mask = mask | (1 << u)
-                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
+      # Try extending to each neighbor
+      for u in graph[v]:
+        if mask & (1 << u):  # u already visited
+          continue
+        new_mask = mask | (1 << u)
+        dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD
 
-    # Answer: paths ending at vertex n-1 with all vertices visited
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n-1]
+  # Answer: paths ending at vertex n-1 with all vertices visited
+  full_mask = (1 << n) - 1
+  return dp[full_mask][n-1]
 
 
 # Read input and solve
@@ -262,15 +262,15 @@ import sys
 input = sys.stdin.readline
 
 def main():
-    n, m = map(int, input().split())
-    edges = []
-    for _ in range(m):
-        a, b = map(int, input().split())
-        edges.append((a, b))
-    print(solve_bitmask_dp(n, edges))
+  n, m = map(int, input().split())
+  edges = []
+  for _ in range(m):
+    a, b = map(int, input().split())
+    edges.append((a, b))
+  print(solve_bitmask_dp(n, edges))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 #### Complexity

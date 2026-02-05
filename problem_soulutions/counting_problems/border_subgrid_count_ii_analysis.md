@@ -119,33 +119,33 @@ Check every possible subgrid by iterating through all cells and validating borde
 
 ```python
 def count_border_subgrids_brute(n, m, grid, border_val=1, interior_val=0):
-    """
-    Brute force: check all subgrids by examining each cell.
+  """
+  Brute force: check all subgrids by examining each cell.
 
-    Time: O(n^2 * m^2 * n * m) worst case
-    Space: O(1)
-    """
-    count = 0
-    for i in range(n):
-        for j in range(m):
-            for h in range(1, n - i + 1):
-                for w in range(1, m - j + 1):
-                    if is_valid_subgrid(grid, i, j, h, w, border_val, interior_val):
-                        count += 1
-    return count
+  Time: O(n^2 * m^2 * n * m) worst case
+  Space: O(1)
+  """
+  count = 0
+  for i in range(n):
+    for j in range(m):
+      for h in range(1, n - i + 1):
+        for w in range(1, m - j + 1):
+          if is_valid_subgrid(grid, i, j, h, w, border_val, interior_val):
+            count += 1
+  return count
 
 def is_valid_subgrid(grid, r, c, h, w, border_val, interior_val):
-    """Check if subgrid has valid border and interior."""
-    for i in range(r, r + h):
-        for j in range(c, c + w):
-            is_border = (i == r or i == r + h - 1 or j == c or j == c + w - 1)
-            if is_border:
-                if grid[i][j] != border_val:
-                    return False
-            else:
-                if grid[i][j] != interior_val:
-                    return False
-    return True
+  """Check if subgrid has valid border and interior."""
+  for i in range(r, r + h):
+    for j in range(c, c + w):
+      is_border = (i == r or i == r + h - 1 or j == c or j == c + w - 1)
+      if is_border:
+        if grid[i][j] != border_val:
+          return False
+      else:
+        if grid[i][j] != interior_val:
+          return False
+  return True
 ```
 
 ### Complexity
@@ -212,58 +212,58 @@ Result: Valid subgrid, count++
 
 ```python
 def count_border_subgrids_optimal(n, m, grid, border_val=1, interior_val=0):
-    """
-    Optimal solution using 2D prefix sums.
+  """
+  Optimal solution using 2D prefix sums.
 
-    Time: O(n^2 * m^2) for enumeration, O(1) per validation
-    Space: O(n * m) for prefix sum arrays
-    """
-    # Build prefix sums
-    border_ps = build_prefix_sum(n, m, grid, border_val)
-    interior_ps = build_prefix_sum(n, m, grid, interior_val)
+  Time: O(n^2 * m^2) for enumeration, O(1) per validation
+  Space: O(n * m) for prefix sum arrays
+  """
+  # Build prefix sums
+  border_ps = build_prefix_sum(n, m, grid, border_val)
+  interior_ps = build_prefix_sum(n, m, grid, interior_val)
 
-    count = 0
-    for i in range(n):
-        for j in range(m):
-            for h in range(1, n - i + 1):
-                for w in range(1, m - j + 1):
-                    if is_valid_with_prefix(border_ps, interior_ps,
-                                            i, j, h, w):
-                        count += 1
-    return count
+  count = 0
+  for i in range(n):
+    for j in range(m):
+      for h in range(1, n - i + 1):
+        for w in range(1, m - j + 1):
+          if is_valid_with_prefix(border_ps, interior_ps,
+                      i, j, h, w):
+            count += 1
+  return count
 
 def build_prefix_sum(n, m, grid, target):
-    """Build 2D prefix sum for cells equal to target."""
-    ps = [[0] * (m + 1) for _ in range(n + 1)]
-    for i in range(n):
-        for j in range(m):
-            ps[i+1][j+1] = (ps[i][j+1] + ps[i+1][j] - ps[i][j]
-                          + (1 if grid[i][j] == target else 0))
-    return ps
+  """Build 2D prefix sum for cells equal to target."""
+  ps = [[0] * (m + 1) for _ in range(n + 1)]
+  for i in range(n):
+    for j in range(m):
+      ps[i+1][j+1] = (ps[i][j+1] + ps[i+1][j] - ps[i][j]
+             + (1 if grid[i][j] == target else 0))
+  return ps
 
 def query_sum(ps, r1, c1, r2, c2):
-    """Query rectangle sum using prefix sums."""
-    return ps[r2+1][c2+1] - ps[r1][c2+1] - ps[r2+1][c1] + ps[r1][c1]
+  """Query rectangle sum using prefix sums."""
+  return ps[r2+1][c2+1] - ps[r1][c2+1] - ps[r2+1][c1] + ps[r1][c1]
 
 def is_valid_with_prefix(border_ps, interior_ps, r, c, h, w):
-    """Validate subgrid using prefix sums."""
-    # Total border_val count in entire subgrid
-    total_border = query_sum(border_ps, r, c, r + h - 1, c + w - 1)
+  """Validate subgrid using prefix sums."""
+  # Total border_val count in entire subgrid
+  total_border = query_sum(border_ps, r, c, r + h - 1, c + w - 1)
 
-    # Small subgrids (no interior) - all cells are border
-    if h < 3 or w < 3:
-        expected = h * w
-        return total_border == expected
+  # Small subgrids (no interior) - all cells are border
+  if h < 3 or w < 3:
+    expected = h * w
+    return total_border == expected
 
-    # Calculate expected border cells
-    expected_border = 2 * (h + w) - 4
+  # Calculate expected border cells
+  expected_border = 2 * (h + w) - 4
 
-    # Check interior region
-    interior_count = query_sum(interior_ps, r + 1, c + 1, r + h - 2, c + w - 2)
-    expected_interior = (h - 2) * (w - 2)
+  # Check interior region
+  interior_count = query_sum(interior_ps, r + 1, c + 1, r + h - 2, c + w - 2)
+  expected_interior = (h - 2) * (w - 2)
 
-    return total_border == expected_border + interior_count and \
-           interior_count == expected_interior
+  return total_border == expected_border + interior_count and \
+     interior_count == expected_interior
 ```
 
 ### Complexity
@@ -298,7 +298,7 @@ interior = query_sum(ps, r + 1, c + 1, r + h - 2, c + w - 2)  # Invalid if h < 3
 
 # CORRECT - check size first
 if h < 3 or w < 3:
-    return all_cells_are_border
+  return all_cells_are_border
 ```
 
 **Problem:** A 2x2 or 1xN subgrid has no interior cells.

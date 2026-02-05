@@ -31,93 +31,93 @@ To construct the SCS:
 
 ```python
 def shortest_supersequence(a, b):
-    m, n = len(a), len(b)
+  m, n = len(a), len(b)
 
-    # LCS DP table
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  # LCS DP table
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if a[i-1] == b[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if a[i-1] == b[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # Backtrack to construct SCS
-    result = []
-    i, j = m, n
+  # Backtrack to construct SCS
+  result = []
+  i, j = m, n
 
-    while i > 0 and j > 0:
-        if a[i-1] == b[j-1]:
-            result.append(a[i-1])
-            i -= 1
-            j -= 1
-        elif dp[i-1][j] > dp[i][j-1]:
-            result.append(a[i-1])
-            i -= 1
-        else:
-            result.append(b[j-1])
-            j -= 1
+  while i > 0 and j > 0:
+    if a[i-1] == b[j-1]:
+      result.append(a[i-1])
+      i -= 1
+      j -= 1
+    elif dp[i-1][j] > dp[i][j-1]:
+      result.append(a[i-1])
+      i -= 1
+    else:
+      result.append(b[j-1])
+      j -= 1
 
-    # Add remaining characters
-    while i > 0:
-        result.append(a[i-1])
-        i -= 1
-    while j > 0:
-        result.append(b[j-1])
-        j -= 1
+  # Add remaining characters
+  while i > 0:
+    result.append(a[i-1])
+    i -= 1
+  while j > 0:
+    result.append(b[j-1])
+    j -= 1
 
-    return ''.join(reversed(result))
+  return ''.join(reversed(result))
 
 def solve():
-    import sys
-    for line in sys.stdin:
-        parts = line.strip().split()
-        if len(parts) < 2:
-            continue
-        a, b = parts[0], parts[1]
-        print(shortest_supersequence(a, b))
+  import sys
+  for line in sys.stdin:
+    parts = line.strip().split()
+    if len(parts) < 2:
+      continue
+    a, b = parts[0], parts[1]
+    print(shortest_supersequence(a, b))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution - Direct SCS DP
 
 ```python
 def solve():
-    import sys
-    for line in sys.stdin:
-        parts = line.strip().split()
-        if len(parts) < 2:
-            continue
-        a, b = parts[0], parts[1]
+  import sys
+  for line in sys.stdin:
+    parts = line.strip().split()
+    if len(parts) < 2:
+      continue
+    a, b = parts[0], parts[1]
 
-        m, n = len(a), len(b)
+    m, n = len(a), len(b)
 
-        # dp[i][j] = shortest supersequence of a[:i] and b[:j]
-        dp = [[""] * (n + 1) for _ in range(m + 1)]
+    # dp[i][j] = shortest supersequence of a[:i] and b[:j]
+    dp = [[""] * (n + 1) for _ in range(m + 1)]
 
-        # Base cases
-        for i in range(1, m + 1):
-            dp[i][0] = a[:i]
-        for j in range(1, n + 1):
-            dp[0][j] = b[:j]
+    # Base cases
+    for i in range(1, m + 1):
+      dp[i][0] = a[:i]
+    for j in range(1, n + 1):
+      dp[0][j] = b[:j]
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if a[i-1] == b[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + a[i-1]
-                else:
-                    if len(dp[i-1][j]) < len(dp[i][j-1]):
-                        dp[i][j] = dp[i-1][j] + a[i-1]
-                    else:
-                        dp[i][j] = dp[i][j-1] + b[j-1]
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if a[i-1] == b[j-1]:
+          dp[i][j] = dp[i-1][j-1] + a[i-1]
+        else:
+          if len(dp[i-1][j]) < len(dp[i][j-1]):
+            dp[i][j] = dp[i-1][j] + a[i-1]
+          else:
+            dp[i][j] = dp[i][j-1] + b[j-1]
 
-        print(dp[m][n])
+    print(dp[m][n])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

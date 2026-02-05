@@ -114,37 +114,37 @@ For each query, iterate through the range and use a set to check for duplicates.
 
 ```python
 def solve_brute_force():
-    """
-    Brute force solution - check each range with a set.
+  """
+  Brute force solution - check each range with a set.
 
-    Time: O(q * n) per query
-    Space: O(n)
-    """
-    import sys
-    input = sys.stdin.readline
+  Time: O(q * n) per query
+  Space: O(n)
+  """
+  import sys
+  input = sys.stdin.readline
 
-    n, q = map(int, input().split())
-    arr = [0] + list(map(int, input().split()))  # 1-indexed
+  n, q = map(int, input().split())
+  arr = [0] + list(map(int, input().split()))  # 1-indexed
 
-    results = []
-    for _ in range(q):
-        query = list(map(int, input().split()))
+  results = []
+  for _ in range(q):
+    query = list(map(int, input().split()))
 
-        if query[0] == 1:  # Update
-            k, u = query[1], query[2]
-            arr[k] = u
-        else:  # Query
-            a, b = query[1], query[2]
-            seen = set()
-            is_distinct = True
-            for i in range(a, b + 1):
-                if arr[i] in seen:
-                    is_distinct = False
-                    break
-                seen.add(arr[i])
-            results.append("YES" if is_distinct else "NO")
+    if query[0] == 1:  # Update
+      k, u = query[1], query[2]
+      arr[k] = u
+    else:  # Query
+      a, b = query[1], query[2]
+      seen = set()
+      is_distinct = True
+      for i in range(a, b + 1):
+        if arr[i] in seen:
+          is_distinct = False
+          break
+        seen.add(arr[i])
+      results.append("YES" if is_distinct else "NO")
 
-    print('\n'.join(results))
+  print('\n'.join(results))
 ```
 
 ### Complexity
@@ -257,114 +257,114 @@ from collections import defaultdict
 from sortedcontainers import SortedList
 
 def solve():
-    """
-    Optimal solution using segment tree for range max queries.
+  """
+  Optimal solution using segment tree for range max queries.
 
-    Time: O((n + q) * log n)
-    Space: O(n)
-    """
-    input = sys.stdin.readline
+  Time: O((n + q) * log n)
+  Space: O(n)
+  """
+  input = sys.stdin.readline
 
-    n, q = map(int, input().split())
-    arr = [0] + list(map(int, input().split()))  # 1-indexed
+  n, q = map(int, input().split())
+  arr = [0] + list(map(int, input().split()))  # 1-indexed
 
-    # Segment tree for range maximum
-    tree = [0] * (4 * n)
+  # Segment tree for range maximum
+  tree = [0] * (4 * n)
 
-    def build(node, start, end):
-        if start == end:
-            tree[node] = prev[start]
-            return
-        mid = (start + end) // 2
-        build(2 * node, start, mid)
-        build(2 * node + 1, mid + 1, end)
-        tree[node] = max(tree[2 * node], tree[2 * node + 1])
+  def build(node, start, end):
+    if start == end:
+      tree[node] = prev[start]
+      return
+    mid = (start + end) // 2
+    build(2 * node, start, mid)
+    build(2 * node + 1, mid + 1, end)
+    tree[node] = max(tree[2 * node], tree[2 * node + 1])
 
-    def update(node, start, end, idx, val):
-        if start == end:
-            tree[node] = val
-            return
-        mid = (start + end) // 2
-        if idx <= mid:
-            update(2 * node, start, mid, idx, val)
-        else:
-            update(2 * node + 1, mid + 1, end, idx, val)
-        tree[node] = max(tree[2 * node], tree[2 * node + 1])
+  def update(node, start, end, idx, val):
+    if start == end:
+      tree[node] = val
+      return
+    mid = (start + end) // 2
+    if idx <= mid:
+      update(2 * node, start, mid, idx, val)
+    else:
+      update(2 * node + 1, mid + 1, end, idx, val)
+    tree[node] = max(tree[2 * node], tree[2 * node + 1])
 
-    def query(node, start, end, l, r):
-        if r < start or end < l:
-            return 0
-        if l <= start and end <= r:
-            return tree[node]
-        mid = (start + end) // 2
-        return max(query(2 * node, start, mid, l, r),
-                   query(2 * node + 1, mid + 1, end, l, r))
+  def query(node, start, end, l, r):
+    if r < start or end < l:
+      return 0
+    if l <= start and end <= r:
+      return tree[node]
+    mid = (start + end) // 2
+    return max(query(2 * node, start, mid, l, r),
+         query(2 * node + 1, mid + 1, end, l, r))
 
-    # pos[v] = sorted list of positions where value v appears
-    pos = defaultdict(SortedList)
-    prev = [0] * (n + 2)  # prev[i] = previous occurrence of arr[i]
+  # pos[v] = sorted list of positions where value v appears
+  pos = defaultdict(SortedList)
+  prev = [0] * (n + 2)  # prev[i] = previous occurrence of arr[i]
 
-    # Initialize
-    for i in range(1, n + 1):
-        v = arr[i]
-        # Find predecessor in pos[v]
-        idx = pos[v].bisect_left(i)
+  # Initialize
+  for i in range(1, n + 1):
+    v = arr[i]
+    # Find predecessor in pos[v]
+    idx = pos[v].bisect_left(i)
+    if idx > 0:
+      prev[i] = pos[v][idx - 1]
+    pos[v].add(i)
+
+  build(1, 1, n)
+
+  results = []
+  for _ in range(q):
+    line = list(map(int, input().split()))
+
+    if line[0] == 1:  # Update arr[k] = u
+      k, u = line[1], line[2]
+      old_val = arr[k]
+
+      if old_val == u:
+        continue  # No change
+
+      # Remove k from pos[old_val]
+      pos[old_val].remove(k)
+      idx = pos[old_val].bisect_left(k)
+      # Update successor's prev if exists
+      if idx < len(pos[old_val]):
+        succ = pos[old_val][idx]
         if idx > 0:
-            prev[i] = pos[v][idx - 1]
-        pos[v].add(i)
+          prev[succ] = pos[old_val][idx - 1]
+        else:
+          prev[succ] = 0
+        update(1, 1, n, succ, prev[succ])
 
-    build(1, 1, n)
+      # Add k to pos[u]
+      arr[k] = u
+      idx = pos[u].bisect_left(k)
+      # Update prev[k]
+      if idx > 0:
+        prev[k] = pos[u][idx - 1]
+      else:
+        prev[k] = 0
+      update(1, 1, n, k, prev[k])
 
-    results = []
-    for _ in range(q):
-        line = list(map(int, input().split()))
+      pos[u].add(k)
+      idx = pos[u].bisect_left(k)
+      # Update successor's prev if exists
+      if idx + 1 < len(pos[u]):
+        succ = pos[u][idx + 1]
+        prev[succ] = k
+        update(1, 1, n, succ, prev[succ])
 
-        if line[0] == 1:  # Update arr[k] = u
-            k, u = line[1], line[2]
-            old_val = arr[k]
+    else:  # Query: check if range [a, b] has all distinct values
+      a, b = line[1], line[2]
+      max_prev = query(1, 1, n, a, b)
+      results.append("YES" if max_prev < a else "NO")
 
-            if old_val == u:
-                continue  # No change
-
-            # Remove k from pos[old_val]
-            pos[old_val].remove(k)
-            idx = pos[old_val].bisect_left(k)
-            # Update successor's prev if exists
-            if idx < len(pos[old_val]):
-                succ = pos[old_val][idx]
-                if idx > 0:
-                    prev[succ] = pos[old_val][idx - 1]
-                else:
-                    prev[succ] = 0
-                update(1, 1, n, succ, prev[succ])
-
-            # Add k to pos[u]
-            arr[k] = u
-            idx = pos[u].bisect_left(k)
-            # Update prev[k]
-            if idx > 0:
-                prev[k] = pos[u][idx - 1]
-            else:
-                prev[k] = 0
-            update(1, 1, n, k, prev[k])
-
-            pos[u].add(k)
-            idx = pos[u].bisect_left(k)
-            # Update successor's prev if exists
-            if idx + 1 < len(pos[u]):
-                succ = pos[u][idx + 1]
-                prev[succ] = k
-                update(1, 1, n, succ, prev[succ])
-
-        else:  # Query: check if range [a, b] has all distinct values
-            a, b = line[1], line[2]
-            max_prev = query(1, 1, n, a, b)
-            results.append("YES" if max_prev < a else "NO")
-
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -383,9 +383,9 @@ if __name__ == "__main__":
 ```python
 # WRONG - Only updating the changed position
 def update_wrong(k, u):
-    arr[k] = u
-    prev[k] = find_prev(k)
-    update_tree(k, prev[k])  # Missing: update successor's prev!
+  arr[k] = u
+  prev[k] = find_prev(k)
+  update_tree(k, prev[k])  # Missing: update successor's prev!
 ```
 
 **Problem:** When you change arr[k], both k's prev AND the successor's prev need updating.
@@ -396,7 +396,7 @@ def update_wrong(k, u):
 ```python
 # WRONG - Using <= instead of <
 if max_prev <= a:  # Should be max_prev < a
-    print("YES")
+  print("YES")
 ```
 
 **Problem:** If max_prev == a, it means some element at position >= a has its duplicate exactly at position a, so there IS a duplicate in range.

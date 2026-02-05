@@ -226,114 +226,114 @@ Answer: -1 (infinite score possible)
 from collections import deque
 
 def high_score(n, m, edges):
-    """
-    Find maximum score from room 1 to room n.
-    Returns -1 if infinite score is possible.
-    """
-    NEG_INF = float('-inf')
+  """
+  Find maximum score from room 1 to room n.
+  Returns -1 if infinite score is possible.
+  """
+  NEG_INF = float('-inf')
 
-    # Initialize distances: room 1 = 0, others = -infinity
-    dist = [NEG_INF] * (n + 1)
-    dist[1] = 0
+  # Initialize distances: room 1 = 0, others = -infinity
+  dist = [NEG_INF] * (n + 1)
+  dist[1] = 0
 
-    # Build adjacency list for reachability check
-    adj = [[] for _ in range(n + 1)]
+  # Build adjacency list for reachability check
+  adj = [[] for _ in range(n + 1)]
+  for a, b, x in edges:
+    adj[a].append(b)
+
+  # Step 1: Bellman-Ford for longest path (n-1 iterations)
+  for _ in range(n - 1):
     for a, b, x in edges:
-        adj[a].append(b)
+      if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+        dist[b] = dist[a] + x
 
-    # Step 1: Bellman-Ford for longest path (n-1 iterations)
-    for _ in range(n - 1):
-        for a, b, x in edges:
-            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
-                dist[b] = dist[a] + x
+  # Step 2: Detect nodes that can be improved (positive cycle reachable)
+  # Run n more iterations to propagate "infinite" status
+  can_improve = [False] * (n + 1)
 
-    # Step 2: Detect nodes that can be improved (positive cycle reachable)
-    # Run n more iterations to propagate "infinite" status
-    can_improve = [False] * (n + 1)
+  for _ in range(n):
+    for a, b, x in edges:
+      if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+        dist[b] = dist[a] + x
+        can_improve[b] = True
+      # Propagate: if source can improve, destination can too
+      if can_improve[a]:
+        can_improve[b] = True
 
-    for _ in range(n):
-        for a, b, x in edges:
-            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
-                dist[b] = dist[a] + x
-                can_improve[b] = True
-            # Propagate: if source can improve, destination can too
-            if can_improve[a]:
-                can_improve[b] = True
+  # Step 3: Check if destination n can be infinitely improved
+  if can_improve[n]:
+    return -1
 
-    # Step 3: Check if destination n can be infinitely improved
-    if can_improve[n]:
-        return -1
-
-    return dist[n]
+  return dist[n]
 
 
 def high_score_with_reachability(n, m, edges):
-    """
-    Alternative approach with explicit reachability checks.
-    More intuitive but slightly more code.
-    """
-    NEG_INF = float('-inf')
+  """
+  Alternative approach with explicit reachability checks.
+  More intuitive but slightly more code.
+  """
+  NEG_INF = float('-inf')
 
-    # Build forward and reverse adjacency lists
-    adj = [[] for _ in range(n + 1)]
-    radj = [[] for _ in range(n + 1)]
+  # Build forward and reverse adjacency lists
+  adj = [[] for _ in range(n + 1)]
+  radj = [[] for _ in range(n + 1)]
+  for a, b, x in edges:
+    adj[a].append((b, x))
+    radj[b].append(a)
+
+  # Check which nodes are reachable from node 1
+  reachable_from_1 = [False] * (n + 1)
+  queue = deque([1])
+  reachable_from_1[1] = True
+  while queue:
+    u = queue.popleft()
+    for v, _ in adj[u]:
+      if not reachable_from_1[v]:
+        reachable_from_1[v] = True
+        queue.append(v)
+
+  # Check which nodes can reach node n (BFS on reverse graph)
+  can_reach_n = [False] * (n + 1)
+  queue = deque([n])
+  can_reach_n[n] = True
+  while queue:
+    u = queue.popleft()
+    for v in radj[u]:
+      if not can_reach_n[v]:
+        can_reach_n[v] = True
+        queue.append(v)
+
+  # Bellman-Ford for longest path
+  dist = [NEG_INF] * (n + 1)
+  dist[1] = 0
+
+  for _ in range(n - 1):
     for a, b, x in edges:
-        adj[a].append((b, x))
-        radj[b].append(a)
+      if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+        dist[b] = dist[a] + x
 
-    # Check which nodes are reachable from node 1
-    reachable_from_1 = [False] * (n + 1)
-    queue = deque([1])
-    reachable_from_1[1] = True
-    while queue:
-        u = queue.popleft()
-        for v, _ in adj[u]:
-            if not reachable_from_1[v]:
-                reachable_from_1[v] = True
-                queue.append(v)
+  # Check for positive cycles on valid paths
+  for _ in range(n):
+    for a, b, x in edges:
+      if dist[a] != NEG_INF and dist[a] + x > dist[b]:
+        # Node b can be improved = part of positive cycle
+        # Check if this cycle is on a path from 1 to n
+        if reachable_from_1[a] and can_reach_n[b]:
+          return -1
+        dist[b] = dist[a] + x
 
-    # Check which nodes can reach node n (BFS on reverse graph)
-    can_reach_n = [False] * (n + 1)
-    queue = deque([n])
-    can_reach_n[n] = True
-    while queue:
-        u = queue.popleft()
-        for v in radj[u]:
-            if not can_reach_n[v]:
-                can_reach_n[v] = True
-                queue.append(v)
-
-    # Bellman-Ford for longest path
-    dist = [NEG_INF] * (n + 1)
-    dist[1] = 0
-
-    for _ in range(n - 1):
-        for a, b, x in edges:
-            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
-                dist[b] = dist[a] + x
-
-    # Check for positive cycles on valid paths
-    for _ in range(n):
-        for a, b, x in edges:
-            if dist[a] != NEG_INF and dist[a] + x > dist[b]:
-                # Node b can be improved = part of positive cycle
-                # Check if this cycle is on a path from 1 to n
-                if reachable_from_1[a] and can_reach_n[b]:
-                    return -1
-                dist[b] = dist[a] + x
-
-    return dist[n]
+  return dist[n]
 
 
 # Read input and solve
 if __name__ == "__main__":
-    n, m = map(int, input().split())
-    edges = []
-    for _ in range(m):
-        a, b, x = map(int, input().split())
-        edges.append((a, b, x))
+  n, m = map(int, input().split())
+  edges = []
+  for _ in range(m):
+    a, b, x = map(int, input().split())
+    edges.append((a, b, x))
 
-    print(high_score(n, m, edges))
+  print(high_score(n, m, edges))
 ```
 
 ### Complexity Analysis
@@ -354,14 +354,14 @@ if __name__ == "__main__":
 ```python
 # WRONG: Detecting any positive cycle
 for a, b, x in edges:
-    if dist[a] + x > dist[b]:
-        return -1  # Wrong! Cycle might not reach n
+  if dist[a] + x > dist[b]:
+    return -1  # Wrong! Cycle might not reach n
 
 # CORRECT: Check if cycle is on path to n
 for a, b, x in edges:
-    if dist[a] + x > dist[b]:
-        if reachable_from_1[a] and can_reach_n[b]:
-            return -1
+  if dist[a] + x > dist[b]:
+    if reachable_from_1[a] and can_reach_n[b]:
+      return -1
 ```
 
 ### Mistake 2: Using BFS/DFS for Longest Path

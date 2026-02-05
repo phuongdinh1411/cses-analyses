@@ -38,116 +38,116 @@ The Trie approach is more efficient for this problem.
 
 ```python
 def solve():
-    s = input().strip()
-    good_bad = input().strip()
-    k = int(input())
+  s = input().strip()
+  good_bad = input().strip()
+  k = int(input())
 
-    def is_bad(c):
-        return good_bad[ord(c) - ord('a')] == '0'
+  def is_bad(c):
+    return good_bad[ord(c) - ord('a')] == '0'
 
-    n = len(s)
-    good_substrings = set()
+  n = len(s)
+  good_substrings = set()
 
-    for i in range(n):
-        bad_count = 0
-        substring = ""
-        for j in range(i, n):
-            substring += s[j]
-            if is_bad(s[j]):
-                bad_count += 1
+  for i in range(n):
+    bad_count = 0
+    substring = ""
+    for j in range(i, n):
+      substring += s[j]
+      if is_bad(s[j]):
+        bad_count += 1
 
-            if bad_count > k:
-                break
+      if bad_count > k:
+        break
 
-            good_substrings.add(substring)
+      good_substrings.add(substring)
 
-    print(len(good_substrings))
+  print(len(good_substrings))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Python Solution using Trie (More Efficient)
 
 ```python
 class TrieNode:
-    def __init__(self):
-        self.children = {}
-        self.is_end = False
+  def __init__(self):
+    self.children = {}
+    self.is_end = False
 
 def solve():
-    s = input().strip()
-    good_bad = input().strip()
-    k = int(input())
+  s = input().strip()
+  good_bad = input().strip()
+  k = int(input())
 
-    def is_bad(c):
-        return good_bad[ord(c) - ord('a')] == '0'
+  def is_bad(c):
+    return good_bad[ord(c) - ord('a')] == '0'
 
-    n = len(s)
-    root = TrieNode()
-    count = 0
+  n = len(s)
+  root = TrieNode()
+  count = 0
 
-    for i in range(n):
-        bad_count = 0
-        node = root
+  for i in range(n):
+    bad_count = 0
+    node = root
 
-        for j in range(i, n):
-            c = s[j]
-            if is_bad(c):
-                bad_count += 1
+    for j in range(i, n):
+      c = s[j]
+      if is_bad(c):
+        bad_count += 1
 
-            if bad_count > k:
-                break
+      if bad_count > k:
+        break
 
-            if c not in node.children:
-                node.children[c] = TrieNode()
-                count += 1  # New unique substring found
+      if c not in node.children:
+        node.children[c] = TrieNode()
+        count += 1  # New unique substring found
 
-            node = node.children[c]
+      node = node.children[c]
 
-    print(count)
+  print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Python Solution using Rolling Hash
 
 ```python
 def solve():
-    s = input().strip()
-    good_bad = input().strip()
-    k = int(input())
+  s = input().strip()
+  good_bad = input().strip()
+  k = int(input())
 
-    def is_bad(c):
-        return good_bad[ord(c) - ord('a')] == '0'
+  def is_bad(c):
+    return good_bad[ord(c) - ord('a')] == '0'
 
-    n = len(s)
-    MOD = 10**18 + 9
-    BASE = 31
+  n = len(s)
+  MOD = 10**18 + 9
+  BASE = 31
 
-    good_substrings = set()
+  good_substrings = set()
 
-    for i in range(n):
-        bad_count = 0
-        hash_val = 0
-        power = 1
+  for i in range(n):
+    bad_count = 0
+    hash_val = 0
+    power = 1
 
-        for j in range(i, n):
-            if is_bad(s[j]):
-                bad_count += 1
+    for j in range(i, n):
+      if is_bad(s[j]):
+        bad_count += 1
 
-            if bad_count > k:
-                break
+      if bad_count > k:
+        break
 
-            # Rolling hash
-            hash_val = (hash_val * BASE + ord(s[j]) - ord('a') + 1) % MOD
-            good_substrings.add((j - i + 1, hash_val))  # (length, hash) pair
+      # Rolling hash
+      hash_val = (hash_val * BASE + ord(s[j]) - ord('a') + 1) % MOD
+      good_substrings.add((j - i + 1, hash_val))  # (length, hash) pair
 
-    print(len(good_substrings))
+  print(len(good_substrings))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -251,47 +251,47 @@ Answer: 1 (Replace 'A' with 'U')
 
 ```python
 def edit_distance(s1: str, s2: str) -> int:
-    """
-    Calculate minimum edit distance between two strings.
+  """
+  Calculate minimum edit distance between two strings.
 
-    Args:
-        s1: Source string
-        s2: Target string
+  Args:
+    s1: Source string
+    s2: Target string
 
-    Returns:
-        Minimum number of operations (insert, delete, replace)
-    """
-    m, n = len(s1), len(s2)
+  Returns:
+    Minimum number of operations (insert, delete, replace)
+  """
+  m, n = len(s1), len(s2)
 
-    # Create DP table
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  # Create DP table
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    # Base cases
-    for i in range(m + 1):
-        dp[i][0] = i  # Delete all chars from s1
-    for j in range(n + 1):
-        dp[0][j] = j  # Insert all chars to make s2
+  # Base cases
+  for i in range(m + 1):
+    dp[i][0] = i  # Delete all chars from s1
+  for j in range(n + 1):
+    dp[0][j] = j  # Insert all chars to make s2
 
-    # Fill DP table
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if s1[i-1] == s2[j-1]:
-                dp[i][j] = dp[i-1][j-1]  # Match: no cost
-            else:
-                dp[i][j] = 1 + min(
-                    dp[i-1][j-1],  # Replace
-                    dp[i-1][j],    # Delete
-                    dp[i][j-1]     # Insert
-                )
+  # Fill DP table
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if s1[i-1] == s2[j-1]:
+        dp[i][j] = dp[i-1][j-1]  # Match: no cost
+      else:
+        dp[i][j] = 1 + min(
+          dp[i-1][j-1],  # Replace
+          dp[i-1][j],    # Delete
+          dp[i][j-1]     # Insert
+        )
 
-    return dp[m][n]
+  return dp[m][n]
 
 
 # Example usage
 if __name__ == "__main__":
-    s1 = input()
-    s2 = input()
-    print(edit_distance(s1, s2))
+  s1 = input()
+  s2 = input()
+  print(edit_distance(s1, s2))
 ```
 
 ### Space Optimization
@@ -302,35 +302,35 @@ We can reduce space from O(m * n) to O(min(m, n)) by using two rows instead of t
 
 ```python
 def edit_distance_optimized(s1: str, s2: str) -> int:
-    """
-    Space-optimized edit distance using O(min(m, n)) space.
-    """
-    # Ensure s2 is the shorter string for space optimization
-    if len(s1) < len(s2):
-        s1, s2 = s2, s1
+  """
+  Space-optimized edit distance using O(min(m, n)) space.
+  """
+  # Ensure s2 is the shorter string for space optimization
+  if len(s1) < len(s2):
+    s1, s2 = s2, s1
 
-    m, n = len(s1), len(s2)
+  m, n = len(s1), len(s2)
 
-    # Use two rows instead of full table
-    prev = list(range(n + 1))
-    curr = [0] * (n + 1)
+  # Use two rows instead of full table
+  prev = list(range(n + 1))
+  curr = [0] * (n + 1)
 
-    for i in range(1, m + 1):
-        curr[0] = i  # Base case: delete i chars
+  for i in range(1, m + 1):
+    curr[0] = i  # Base case: delete i chars
 
-        for j in range(1, n + 1):
-            if s1[i-1] == s2[j-1]:
-                curr[j] = prev[j-1]  # Match
-            else:
-                curr[j] = 1 + min(
-                    prev[j-1],  # Replace
-                    prev[j],    # Delete
-                    curr[j-1]   # Insert
-                )
+    for j in range(1, n + 1):
+      if s1[i-1] == s2[j-1]:
+        curr[j] = prev[j-1]  # Match
+      else:
+        curr[j] = 1 + min(
+          prev[j-1],  # Replace
+          prev[j],    # Delete
+          curr[j-1]   # Insert
+        )
 
-        prev, curr = curr, prev
+    prev, curr = curr, prev
 
-    return prev[n]
+  return prev[n]
 ```
 
 ## Common Mistakes

@@ -201,42 +201,42 @@ Verification for small k values:
 
 ```python
 def two_knights(n: int) -> list[int]:
-    """
-    Calculate non-attacking knight placements for boards 1x1 to nxn.
+  """
+  Calculate non-attacking knight placements for boards 1x1 to nxn.
 
-    Formula: k^2 * (k^2 - 1) / 2 - 4 * (k-1) * (k-2)
+  Formula: k^2 * (k^2 - 1) / 2 - 4 * (k-1) * (k-2)
 
-    Time: O(n) - single pass through board sizes
-    Space: O(1) - constant space (excluding output)
-    """
-    results = []
+  Time: O(n) - single pass through board sizes
+  Space: O(1) - constant space (excluding output)
+  """
+  results = []
 
-    for k in range(1, n + 1):
-        total_squares = k * k
+  for k in range(1, n + 1):
+    total_squares = k * k
 
-        # Total ways to place 2 knights on k^2 squares
-        total_placements = total_squares * (total_squares - 1) // 2
+    # Total ways to place 2 knights on k^2 squares
+    total_placements = total_squares * (total_squares - 1) // 2
 
-        # Attacking pairs: 4 * (k-1) * (k-2)
-        # Each 2x3 or 3x2 rectangle contributes 2 attacking pairs
-        attacking_pairs = 4 * (k - 1) * (k - 2)
+    # Attacking pairs: 4 * (k-1) * (k-2)
+    # Each 2x3 or 3x2 rectangle contributes 2 attacking pairs
+    attacking_pairs = 4 * (k - 1) * (k - 2)
 
-        # Non-attacking = Total - Attacking
-        answer = total_placements - attacking_pairs
-        results.append(answer)
+    # Non-attacking = Total - Attacking
+    answer = total_placements - attacking_pairs
+    results.append(answer)
 
-    return results
+  return results
 
 
 def main():
-    n = int(input())
-    results = two_knights(n)
-    for result in results:
-        print(result)
+  n = int(input())
+  results = two_knights(n)
+  for result in results:
+    print(result)
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 #### Complexity Analysis
@@ -273,7 +273,7 @@ attacking = 4 * (k-1) * (k-2)
 ```python
 # WRONG - incorrect bounds
 rectangles_2x3 = (k-1) * (k-2)  # Should be (k-2) * (k-1)
-                                # Order matters for understanding
+                # Order matters for understanding
 
 # CORRECT - think about it as:
 # - A 2x3 rectangle needs 3 columns: fits (k-2) times horizontally
@@ -289,11 +289,11 @@ rectangles_2x3 = (k - 2) * (k - 1)  # width-fit * height-fit
 ```python
 # WRONG - missing k=1 case or wrong indexing
 for k in range(n):  # 0 to n-1 instead of 1 to n
-    ...
+  ...
 
 # CORRECT
 for k in range(1, n + 1):
-    ...
+  ...
 ```
 
 ---

@@ -110,23 +110,23 @@ Maintain a list of remaining children. For each elimination, compute the target 
 
 ```python
 def josephus_brute_force(n: int, k: int) -> list[int]:
-    """
-    Brute force simulation using list.
+  """
+  Brute force simulation using list.
 
-    Time: O(n^2) - each removal is O(n)
-    Space: O(n)
-    """
-    children = list(range(1, n + 1))
-    result = []
-    current = 0
+  Time: O(n^2) - each removal is O(n)
+  Space: O(n)
+  """
+  children = list(range(1, n + 1))
+  result = []
+  current = 0
 
-    while children:
-        current = (current + k - 1) % len(children)
-        result.append(children.pop(current))
-        if children:
-            current = current % len(children)
+  while children:
+    current = (current + k - 1) % len(children)
+    result.append(children.pop(current))
+    if children:
+      current = current % len(children)
 
-    return result
+  return result
 ```
 
 ### Complexity
@@ -253,30 +253,30 @@ Python's standard library lacks an indexed set, but we can use `sortedcontainers
 from sortedcontainers import SortedList
 
 def josephus_optimal(n: int, k: int) -> list[int]:
-    """
-    Optimal solution using SortedList (balanced BST).
+  """
+  Optimal solution using SortedList (balanced BST).
 
-    Time: O(n log n)
-    Space: O(n)
-    """
-    children = SortedList(range(1, n + 1))
-    result = []
-    pos = 0
+  Time: O(n log n)
+  Space: O(n)
+  """
+  children = SortedList(range(1, n + 1))
+  result = []
+  pos = 0
 
-    while children:
-        pos = (pos + k - 1) % len(children)
-        removed = children.pop(pos)
-        result.append(removed)
-        if children:
-            pos = pos % len(children)
+  while children:
+    pos = (pos + k - 1) % len(children)
+    removed = children.pop(pos)
+    result.append(removed)
+    if children:
+      pos = pos % len(children)
 
-    return result
+  return result
 
 # Main
 if __name__ == "__main__":
-    n, k = map(int, input().split())
-    result = josephus_optimal(n, k)
-    print(" ".join(map(str, result)))
+  n, k = map(int, input().split())
+  result = josephus_optimal(n, k)
+  print(" ".join(map(str, result)))
 ```
 
 **Note:** For CSES submissions, use the C++ version as `sortedcontainers` is not available.
@@ -315,7 +315,7 @@ children.pop(pos)
 # CORRECT: Adjust position for next iteration
 children.pop(pos)
 if children:
-    pos = pos % len(children)
+  pos = pos % len(children)
 ```
 
 **Problem:** After removing element at position `pos`, the new size is smaller.
@@ -331,10 +331,10 @@ if children:
 ```python
 # WRONG: This only gives the FINAL survivor
 def josephus_math(n, k):
-    result = 0
-    for i in range(2, n + 1):
-        result = (result + k) % i
-    return result + 1  # Only the survivor!
+  result = 0
+  for i in range(2, n + 1):
+    result = (result + k) % i
+  return result + 1  # Only the survivor!
 
 # CORRECT: Need simulation for full elimination order
 # Use indexed set as shown above

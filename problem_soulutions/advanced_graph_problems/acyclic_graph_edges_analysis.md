@@ -177,48 +177,48 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n = int(input_data[idx]); idx += 1
-    m = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
+  m = int(input_data[idx]); idx += 1
 
-    # Build adjacency list
-    adj = defaultdict(list)
-    edges = []
-    for _ in range(m):
-        a = int(input_data[idx]); idx += 1
-        b = int(input_data[idx]); idx += 1
-        adj[a].append(b)
-        adj[b].append(a)
-        edges.append((a, b))
+  # Build adjacency list
+  adj = defaultdict(list)
+  edges = []
+  for _ in range(m):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    adj[a].append(b)
+    adj[b].append(a)
+    edges.append((a, b))
 
-    # DFS to compute discovery times
-    disc = [0] * (n + 1)
-    visited = [False] * (n + 1)
-    time = [0]  # Use list to allow modification in nested function
+  # DFS to compute discovery times
+  disc = [0] * (n + 1)
+  visited = [False] * (n + 1)
+  time = [0]  # Use list to allow modification in nested function
 
-    def dfs(u):
-        visited[u] = True
-        disc[u] = time[0]
-        time[0] += 1
-        for v in adj[u]:
-            if not visited[v]:
-                dfs(v)
+  def dfs(u):
+    visited[u] = True
+    disc[u] = time[0]
+    time[0] += 1
+    for v in adj[u]:
+      if not visited[v]:
+        dfs(v)
 
-    # Run DFS on all components
-    for i in range(1, n + 1):
-        if not visited[i]:
-            dfs(i)
+  # Run DFS on all components
+  for i in range(1, n + 1):
+    if not visited[i]:
+      dfs(i)
 
-    # Orient edges based on discovery time
-    result = []
-    for a, b in edges:
-        if disc[a] < disc[b]:
-            result.append(f"{a} {b}")
-        else:
-            result.append(f"{b} {a}")
+  # Orient edges based on discovery time
+  result = []
+  for a, b in edges:
+    if disc[a] < disc[b]:
+      result.append(f"{a} {b}")
+    else:
+      result.append(f"{b} {a}")
 
-    print('\n'.join(result))
+  print('\n'.join(result))
 
 solve()
 ```
@@ -242,8 +242,8 @@ dfs(1)
 
 # CORRECT - Run DFS from all unvisited nodes
 for i in range(1, n + 1):
-    if not visited[i]:
-        dfs(i)
+  if not visited[i]:
+    dfs(i)
 ```
 
 **Problem:** Graph may have multiple connected components.
@@ -257,12 +257,12 @@ for i in range(1, n + 1):
 
 # CORRECT - Use DFS for cleaner discovery time ordering
 def dfs(u):
-    visited[u] = True
-    disc[u] = time[0]
-    time[0] += 1
-    for v in adj[u]:
-        if not visited[v]:
-            dfs(v)
+  visited[u] = True
+  disc[u] = time[0]
+  time[0] += 1
+  for v in adj[u]:
+    if not visited[v]:
+      dfs(v)
 ```
 
 **Problem:** BFS also works but DFS is more intuitive for this problem.
@@ -273,8 +273,8 @@ def dfs(u):
 ```python
 # WRONG - Default recursion limit is ~1000
 def dfs(u):
-    # May cause RecursionError for large graphs
-    ...
+  # May cause RecursionError for large graphs
+  ...
 
 # CORRECT - Increase recursion limit
 import sys

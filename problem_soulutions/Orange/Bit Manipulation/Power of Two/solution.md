@@ -37,95 +37,95 @@ Why this works: If we want bit i to survive, we must include only numbers with b
 
 ```python
 def is_power_of_two(x):
-    return x > 0 and (x & (x - 1)) == 0
+  return x > 0 and (x & (x - 1)) == 0
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        found = False
+    found = False
 
-        # For each bit position
-        for bit in range(31):
-            target = 1 << bit
-            and_result = (1 << 31) - 1  # All bits set
+    # For each bit position
+    for bit in range(31):
+      target = 1 << bit
+      and_result = (1 << 31) - 1  # All bits set
 
-            # AND all numbers that have this bit set
-            has_bit = False
-            for num in arr:
-                if num & target:
-                    and_result &= num
-                    has_bit = True
+      # AND all numbers that have this bit set
+      has_bit = False
+      for num in arr:
+        if num & target:
+          and_result &= num
+          has_bit = True
 
-            # Check if result is a power of 2
-            if has_bit and is_power_of_two(and_result):
-                found = True
-                break
+      # Check if result is a power of 2
+      if has_bit and is_power_of_two(and_result):
+        found = True
+        break
 
-        print("YES" if found else "NO")
+    print("YES" if found else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        result = "NO"
+    result = "NO"
 
-        for bit in range(31):
-            mask = 1 << bit
-            and_val = -1  # All bits set (in two's complement)
+    for bit in range(31):
+      mask = 1 << bit
+      and_val = -1  # All bits set (in two's complement)
 
-            for num in arr:
-                if num & mask:
-                    and_val &= num
+      for num in arr:
+        if num & mask:
+          and_val &= num
 
-            # and_val is power of 2 if exactly one bit is set
-            if and_val > 0 and (and_val & (and_val - 1)) == 0:
-                result = "YES"
-                break
+      # and_val is power of 2 if exactly one bit is set
+      if and_val > 0 and (and_val & (and_val - 1)) == 0:
+        result = "YES"
+        break
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### One-liner Style
 
 ```python
 def solve():
-    t = int(input())
-    for _ in range(t):
-        n = int(input())
-        arr = list(map(int, input().split()))
+  t = int(input())
+  for _ in range(t):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-        def check():
-            for bit in range(31):
-                m = 1 << bit
-                a = -1
-                for x in arr:
-                    if x & m:
-                        a &= x
-                if a > 0 and a & (a-1) == 0:
-                    return True
-            return False
+    def check():
+      for bit in range(31):
+        m = 1 << bit
+        a = -1
+        for x in arr:
+          if x & m:
+            a &= x
+        if a > 0 and a & (a-1) == 0:
+          return True
+      return False
 
-        print("YES" if check() else "NO")
+    print("YES" if check() else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

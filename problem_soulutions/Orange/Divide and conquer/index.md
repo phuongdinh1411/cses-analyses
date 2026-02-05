@@ -48,100 +48,100 @@ Convert each bitmap to the other format, with dimensions right-justified (width 
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    while idx < len(data):
-        fmt = data[idx]
-        if fmt == '#':
-            break
+  while idx < len(data):
+    fmt = data[idx]
+    if fmt == '#':
+      break
 
-        h = int(data[idx + 1])
-        w = int(data[idx + 2])
-        idx += 3
+    h = int(data[idx + 1])
+    w = int(data[idx + 2])
+    idx += 3
 
-        if fmt == 'B':
-            # Read bitmap
-            chars_needed = h * w
-            bitmap_str = ""
-            while len(bitmap_str) < chars_needed:
-                bitmap_str += data[idx]
-                idx += 1
+    if fmt == 'B':
+      # Read bitmap
+      chars_needed = h * w
+      bitmap_str = ""
+      while len(bitmap_str) < chars_needed:
+        bitmap_str += data[idx]
+        idx += 1
 
-            bitmap = [[0] * w for _ in range(h)]
-            for i in range(h):
-                for j in range(w):
-                    bitmap[i][j] = int(bitmap_str[i * w + j])
+      bitmap = [[0] * w for _ in range(h)]
+      for i in range(h):
+        for j in range(w):
+          bitmap[i][j] = int(bitmap_str[i * w + j])
 
-            # Convert B to D
-            def b2d(r, c, height, width):
-                if height == 0 or width == 0:
-                    return ""
+      # Convert B to D
+      def b2d(r, c, height, width):
+        if height == 0 or width == 0:
+          return ""
 
-                total = sum(bitmap[r + i][c + j]
-                           for i in range(height) for j in range(width))
+        total = sum(bitmap[r + i][c + j]
+             for i in range(height) for j in range(width))
 
-                if total == 0:
-                    return "0"
-                if total == height * width:
-                    return "1"
+        if total == 0:
+          return "0"
+        if total == height * width:
+          return "1"
 
-                # Divide into quarters
-                h1, h2 = (height + 1) // 2, height // 2
-                w1, w2 = (width + 1) // 2, width // 2
+        # Divide into quarters
+        h1, h2 = (height + 1) // 2, height // 2
+        w1, w2 = (width + 1) // 2, width // 2
 
-                return ("D" +
-                        b2d(r, c, h1, w1) +          # top-left
-                        b2d(r, c + w1, h1, w2) +     # top-right
-                        b2d(r + h1, c, h2, w1) +     # bottom-left
-                        b2d(r + h1, c + w1, h2, w2)) # bottom-right
+        return ("D" +
+            b2d(r, c, h1, w1) +          # top-left
+            b2d(r, c + w1, h1, w2) +     # top-right
+            b2d(r + h1, c, h2, w1) +     # bottom-left
+            b2d(r + h1, c + w1, h2, w2)) # bottom-right
 
-            result = b2d(0, 0, h, w)
-            print(f"D{h:4d}{w:4d}")
-            for i in range(0, len(result), 50):
-                print(result[i:i+50])
+      result = b2d(0, 0, h, w)
+      print(f"D{h:4d}{w:4d}")
+      for i in range(0, len(result), 50):
+        print(result[i:i+50])
 
-        else:  # fmt == 'D'
-            # Read D format
-            d_str = ""
-            # Estimate characters needed (at most h*w for fully expanded)
-            while idx < len(data) and data[idx] not in ['B', 'D', '#']:
-                d_str += data[idx]
-                idx += 1
+    else:  # fmt == 'D'
+      # Read D format
+      d_str = ""
+      # Estimate characters needed (at most h*w for fully expanded)
+      while idx < len(data) and data[idx] not in ['B', 'D', '#']:
+        d_str += data[idx]
+        idx += 1
 
-            bitmap = [['0'] * w for _ in range(h)]
-            d_idx = [0]
+      bitmap = [['0'] * w for _ in range(h)]
+      d_idx = [0]
 
-            def d2b(r, c, height, width):
-                if height == 0 or width == 0:
-                    return
+      def d2b(r, c, height, width):
+        if height == 0 or width == 0:
+          return
 
-                ch = d_str[d_idx[0]]
-                d_idx[0] += 1
+        ch = d_str[d_idx[0]]
+        d_idx[0] += 1
 
-                if ch == '0' or ch == '1':
-                    for i in range(height):
-                        for j in range(width):
-                            bitmap[r + i][c + j] = ch
-                else:  # 'D'
-                    h1, h2 = (height + 1) // 2, height // 2
-                    w1, w2 = (width + 1) // 2, width // 2
+        if ch == '0' or ch == '1':
+          for i in range(height):
+            for j in range(width):
+              bitmap[r + i][c + j] = ch
+        else:  # 'D'
+          h1, h2 = (height + 1) // 2, height // 2
+          w1, w2 = (width + 1) // 2, width // 2
 
-                    d2b(r, c, h1, w1)
-                    d2b(r, c + w1, h1, w2)
-                    d2b(r + h1, c, h2, w1)
-                    d2b(r + h1, c + w1, h2, w2)
+          d2b(r, c, h1, w1)
+          d2b(r, c + w1, h1, w2)
+          d2b(r + h1, c, h2, w1)
+          d2b(r + h1, c + w1, h2, w2)
 
-            d2b(0, 0, h, w)
-            result = ''.join(''.join(row) for row in bitmap)
+      d2b(0, 0, h, w)
+      result = ''.join(''.join(row) for row in bitmap)
 
-            print(f"B{h:4d}{w:4d}")
-            for i in range(0, len(result), 50):
-                print(result[i:i+50])
+      print(f"B{h:4d}{w:4d}")
+      for i in range(0, len(result), 50):
+        print(result[i:i+50])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -194,51 +194,51 @@ from collections import defaultdict
 sys.setrecursionlimit(100000)
 
 def solve():
-    n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    total_pairs = 0
+  total_pairs = 0
 
-    # cnt[v][d] = number of nodes at distance d in subtree of v
-    # We'll compute this via DFS
+  # cnt[v][d] = number of nodes at distance d in subtree of v
+  # We'll compute this via DFS
 
-    def dfs(u, parent):
-        nonlocal total_pairs
+  def dfs(u, parent):
+    nonlocal total_pairs
 
-        # cnt[d] = count of nodes at distance d from u in u's subtree
-        cnt = [0] * (k + 1)
-        cnt[0] = 1  # u itself at distance 0
+    # cnt[d] = count of nodes at distance d from u in u's subtree
+    cnt = [0] * (k + 1)
+    cnt[0] = 1  # u itself at distance 0
 
-        for v in adj[u]:
-            if v == parent:
-                continue
+    for v in adj[u]:
+      if v == parent:
+        continue
 
-            # Get counts from child subtree
-            child_cnt = dfs(v, u)
+      # Get counts from child subtree
+      child_cnt = dfs(v, u)
 
-            # Count pairs: one node from previous subtrees, one from this child
-            for d1 in range(k + 1):
-                d2 = k - d1 - 1  # -1 because edge u-v adds 1
-                if 0 <= d2 <= k and d2 < len(child_cnt):
-                    total_pairs += cnt[d1] * child_cnt[d2]
+      # Count pairs: one node from previous subtrees, one from this child
+      for d1 in range(k + 1):
+        d2 = k - d1 - 1  # -1 because edge u-v adds 1
+        if 0 <= d2 <= k and d2 < len(child_cnt):
+          total_pairs += cnt[d1] * child_cnt[d2]
 
-            # Merge child counts (shifted by 1 for edge u-v)
-            for d in range(k):
-                if d < len(child_cnt):
-                    cnt[d + 1] += child_cnt[d]
+      # Merge child counts (shifted by 1 for edge u-v)
+      for d in range(k):
+        if d < len(child_cnt):
+          cnt[d + 1] += child_cnt[d]
 
-        return cnt
+    return cnt
 
-    dfs(1, -1)
-    print(total_pairs)
+  dfs(1, -1)
+  print(total_pairs)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -247,68 +247,68 @@ if __name__ == "__main__":
 from collections import defaultdict, deque
 
 def solve():
-    n, k = map(int, input().split())
+  n, k = map(int, input().split())
 
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    result = 0
+  result = 0
 
-    # For each node as root, count paths of length k passing through it
-    visited = [False] * (n + 1)
+  # For each node as root, count paths of length k passing through it
+  visited = [False] * (n + 1)
 
-    def count_at_dist(start, parent, dist):
-        """Count nodes at each distance from start"""
-        counts = defaultdict(int)
-        queue = deque([(start, 0)])
+  def count_at_dist(start, parent, dist):
+    """Count nodes at each distance from start"""
+    counts = defaultdict(int)
+    queue = deque([(start, 0)])
 
-        while queue:
-            node, d = queue.popleft()
-            if d > k:
-                continue
-            counts[d] += 1
+    while queue:
+      node, d = queue.popleft()
+      if d > k:
+        continue
+      counts[d] += 1
 
-            for neighbor in adj[node]:
-                if neighbor != parent and not visited[neighbor]:
-                    queue.append((neighbor, d + 1))
+      for neighbor in adj[node]:
+        if neighbor != parent and not visited[neighbor]:
+          queue.append((neighbor, d + 1))
 
-        return counts
+    return counts
 
-    # Simple O(n * k) approach
-    for root in range(1, n + 1):
-        cnt = [0] * (k + 2)
-        cnt[0] = 1
+  # Simple O(n * k) approach
+  for root in range(1, n + 1):
+    cnt = [0] * (k + 2)
+    cnt[0] = 1
 
-        for child in adj[root]:
-            # Get distances in child subtree
-            child_dist = defaultdict(int)
-            stack = [(child, root, 1)]
+    for child in adj[root]:
+      # Get distances in child subtree
+      child_dist = defaultdict(int)
+      stack = [(child, root, 1)]
 
-            while stack:
-                node, par, d = stack.pop()
-                if d <= k:
-                    child_dist[d] += 1
-                    for nxt in adj[node]:
-                        if nxt != par:
-                            stack.append((nxt, node, d + 1))
+      while stack:
+        node, par, d = stack.pop()
+        if d <= k:
+          child_dist[d] += 1
+          for nxt in adj[node]:
+            if nxt != par:
+              stack.append((nxt, node, d + 1))
 
-            # Count pairs
-            for d, c in child_dist.items():
-                if k - d >= 0:
-                    result += cnt[k - d] * c
+      # Count pairs
+      for d, c in child_dist.items():
+        if k - d >= 0:
+          result += cnt[k - d] * c
 
-            # Merge
-            for d, c in child_dist.items():
-                if d <= k:
-                    cnt[d] += c
+      # Merge
+      for d, c in child_dist.items():
+        if d <= k:
+          cnt[d] += c
 
-    print(result // 2)  # Each pair counted twice
+  print(result // 2)  # Each pair counted twice
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -359,97 +359,97 @@ This is a classic binary search on answer problem. We binary search on the maxim
 
 ```python
 def can_fill(vessels, max_capacity, m):
-    """Check if we can fill all vessels into m containers with given max capacity"""
-    containers_used = 1
-    current_sum = 0
+  """Check if we can fill all vessels into m containers with given max capacity"""
+  containers_used = 1
+  current_sum = 0
 
-    for vessel in vessels:
-        if vessel > max_capacity:
-            return False
+  for vessel in vessels:
+    if vessel > max_capacity:
+      return False
 
-        if current_sum + vessel > max_capacity:
-            containers_used += 1
-            current_sum = vessel
-            if containers_used > m:
-                return False
-        else:
-            current_sum += vessel
+    if current_sum + vessel > max_capacity:
+      containers_used += 1
+      current_sum = vessel
+      if containers_used > m:
+        return False
+    else:
+      current_sum += vessel
 
-    return True
+  return True
 
 def solve():
-    import sys
+  import sys
 
-    for line in sys.stdin:
-        parts = line.split()
-        n, m = int(parts[0]), int(parts[1])
+  for line in sys.stdin:
+    parts = line.split()
+    n, m = int(parts[0]), int(parts[1])
 
-        vessels = list(map(int, input().split()))
+    vessels = list(map(int, input().split()))
 
-        # Binary search on maximum container capacity
-        low = max(vessels)  # At minimum, need to fit largest vessel
-        high = sum(vessels)  # At maximum, one container fits all
+    # Binary search on maximum container capacity
+    low = max(vessels)  # At minimum, need to fit largest vessel
+    high = sum(vessels)  # At maximum, one container fits all
 
-        result = high
+    result = high
 
-        while low <= high:
-            mid = (low + high) // 2
+    while low <= high:
+      mid = (low + high) // 2
 
-            if can_fill(vessels, mid, m):
-                result = mid
-                high = mid - 1
-            else:
-                low = mid + 1
+      if can_fill(vessels, mid, m):
+        result = mid
+        high = mid - 1
+      else:
+        low = mid + 1
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def min_max_capacity(vessels, m):
-    def feasible(capacity):
-        containers = 1
-        current = 0
+  def feasible(capacity):
+    containers = 1
+    current = 0
 
-        for v in vessels:
-            if v > capacity:
-                return False
-            if current + v > capacity:
-                containers += 1
-                current = v
-            else:
-                current += v
+    for v in vessels:
+      if v > capacity:
+        return False
+      if current + v > capacity:
+        containers += 1
+        current = v
+      else:
+        current += v
 
-        return containers <= m
+    return containers <= m
 
-    lo, hi = max(vessels), sum(vessels)
+  lo, hi = max(vessels), sum(vessels)
 
-    while lo < hi:
-        mid = (lo + hi) // 2
-        if feasible(mid):
-            hi = mid
-        else:
-            lo = mid + 1
+  while lo < hi:
+    mid = (lo + hi) // 2
+    if feasible(mid):
+      hi = mid
+    else:
+      lo = mid + 1
 
-    return lo
+  return lo
 
 def solve():
-    import sys
-    lines = sys.stdin.read().strip().split('\n')
-    i = 0
+  import sys
+  lines = sys.stdin.read().strip().split('\n')
+  i = 0
 
-    while i < len(lines):
-        n, m = map(int, lines[i].split())
-        vessels = list(map(int, lines[i + 1].split()))
-        print(min_max_capacity(vessels, m))
-        i += 2
+  while i < len(lines):
+    n, m = map(int, lines[i].split())
+    vessels = list(map(int, lines[i + 1].split()))
+    print(min_max_capacity(vessels, m))
+    i += 2
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -502,36 +502,36 @@ import sys
 sys.setrecursionlimit(10000)
 
 def min_strokes(arr, left, right, painted_height):
-    if left > right:
-        return 0
+  if left > right:
+    return 0
 
-    # Find the plank with minimum height in range
-    min_idx = left
-    for i in range(left, right + 1):
-        if arr[i] < arr[min_idx]:
-            min_idx = i
+  # Find the plank with minimum height in range
+  min_idx = left
+  for i in range(left, right + 1):
+    if arr[i] < arr[min_idx]:
+      min_idx = i
 
-    # Option 1: Paint all planks vertically
-    vertical_strokes = right - left + 1
+  # Option 1: Paint all planks vertically
+  vertical_strokes = right - left + 1
 
-    # Option 2: Paint horizontally up to minimum height, then divide
-    min_height = arr[min_idx]
-    horizontal_strokes = (min_height - painted_height)  # Paint up to min height
+  # Option 2: Paint horizontally up to minimum height, then divide
+  min_height = arr[min_idx]
+  horizontal_strokes = (min_height - painted_height)  # Paint up to min height
 
-    # Recursively solve for left and right parts
-    horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
-    horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
+  # Recursively solve for left and right parts
+  horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
+  horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
 
-    return min(vertical_strokes, horizontal_strokes)
+  return min(vertical_strokes, horizontal_strokes)
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-    print(min_strokes(arr, 0, n - 1, 0))
+  print(min_strokes(arr, 0, n - 1, 0))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
@@ -541,53 +541,53 @@ import sys
 sys.setrecursionlimit(10000)
 
 def build_segment_tree(arr, tree, node, start, end):
-    if start == end:
-        tree[node] = (arr[start], start)
-    else:
-        mid = (start + end) // 2
-        build_segment_tree(arr, tree, 2*node, start, mid)
-        build_segment_tree(arr, tree, 2*node+1, mid+1, end)
-        tree[node] = min(tree[2*node], tree[2*node+1])
+  if start == end:
+    tree[node] = (arr[start], start)
+  else:
+    mid = (start + end) // 2
+    build_segment_tree(arr, tree, 2*node, start, mid)
+    build_segment_tree(arr, tree, 2*node+1, mid+1, end)
+    tree[node] = min(tree[2*node], tree[2*node+1])
 
 def query_min(tree, node, start, end, l, r):
-    if r < start or end < l:
-        return (float('inf'), -1)
-    if l <= start and end <= r:
-        return tree[node]
-    mid = (start + end) // 2
-    left_min = query_min(tree, 2*node, start, mid, l, r)
-    right_min = query_min(tree, 2*node+1, mid+1, end, l, r)
-    return min(left_min, right_min)
+  if r < start or end < l:
+    return (float('inf'), -1)
+  if l <= start and end <= r:
+    return tree[node]
+  mid = (start + end) // 2
+  left_min = query_min(tree, 2*node, start, mid, l, r)
+  right_min = query_min(tree, 2*node+1, mid+1, end, l, r)
+  return min(left_min, right_min)
 
 def min_strokes(arr, tree, n, left, right, painted_height):
-    if left > right:
-        return 0
+  if left > right:
+    return 0
 
-    # Find minimum using segment tree
-    min_val, min_idx = query_min(tree, 1, 0, n-1, left, right)
+  # Find minimum using segment tree
+  min_val, min_idx = query_min(tree, 1, 0, n-1, left, right)
 
-    # Option 1: Vertical strokes
-    vertical = right - left + 1
+  # Option 1: Vertical strokes
+  vertical = right - left + 1
 
-    # Option 2: Horizontal strokes
-    horizontal = (min_val - painted_height)
-    horizontal += min_strokes(arr, tree, n, left, min_idx - 1, min_val)
-    horizontal += min_strokes(arr, tree, n, min_idx + 1, right, min_val)
+  # Option 2: Horizontal strokes
+  horizontal = (min_val - painted_height)
+  horizontal += min_strokes(arr, tree, n, left, min_idx - 1, min_val)
+  horizontal += min_strokes(arr, tree, n, min_idx + 1, right, min_val)
 
-    return min(vertical, horizontal)
+  return min(vertical, horizontal)
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
+  n = int(input())
+  arr = list(map(int, input().split()))
 
-    # Build segment tree for range minimum query
-    tree = [(float('inf'), -1)] * (4 * n)
-    build_segment_tree(arr, tree, 1, 0, n-1)
+  # Build segment tree for range minimum query
+  tree = [(float('inf'), -1)] * (4 * n)
+  build_segment_tree(arr, tree, 1, 0, n-1)
 
-    print(min_strokes(arr, tree, n, 0, n - 1, 0))
+  print(min_strokes(arr, tree, n, 0, n - 1, 0))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -637,78 +637,78 @@ This is a classic divide and conquer problem:
 import math
 
 def distance(p1, p2):
-    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+  return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
 def brute_force(points):
-    min_dist = float('inf')
-    n = len(points)
-    for i in range(n):
-        for j in range(i + 1, n):
-            min_dist = min(min_dist, distance(points[i], points[j]))
-    return min_dist
+  min_dist = float('inf')
+  n = len(points)
+  for i in range(n):
+    for j in range(i + 1, n):
+      min_dist = min(min_dist, distance(points[i], points[j]))
+  return min_dist
 
 def strip_closest(strip, d):
-    min_dist = d
-    # Sort by y coordinate
-    strip.sort(key=lambda p: p[1])
+  min_dist = d
+  # Sort by y coordinate
+  strip.sort(key=lambda p: p[1])
 
-    n = len(strip)
-    for i in range(n):
-        j = i + 1
-        while j < n and (strip[j][1] - strip[i][1]) < min_dist:
-            min_dist = min(min_dist, distance(strip[i], strip[j]))
-            j += 1
+  n = len(strip)
+  for i in range(n):
+    j = i + 1
+    while j < n and (strip[j][1] - strip[i][1]) < min_dist:
+      min_dist = min(min_dist, distance(strip[i], strip[j]))
+      j += 1
 
-    return min_dist
+  return min_dist
 
 def closest_pair(points):
-    n = len(points)
+  n = len(points)
 
-    # Base case: use brute force for small sets
-    if n <= 3:
-        return brute_force(points)
+  # Base case: use brute force for small sets
+  if n <= 3:
+    return brute_force(points)
 
-    mid = n // 2
-    mid_point = points[mid]
+  mid = n // 2
+  mid_point = points[mid]
 
-    # Recursively find minimum in left and right halves
-    dl = closest_pair(points[:mid])
-    dr = closest_pair(points[mid:])
-    d = min(dl, dr)
+  # Recursively find minimum in left and right halves
+  dl = closest_pair(points[:mid])
+  dr = closest_pair(points[mid:])
+  d = min(dl, dr)
 
-    # Build strip of points within distance d from middle line
-    strip = [p for p in points if abs(p[0] - mid_point[0]) < d]
+  # Build strip of points within distance d from middle line
+  strip = [p for p in points if abs(p[0] - mid_point[0]) < d]
 
-    # Find closest points in strip
-    return min(d, strip_closest(strip, d))
+  # Find closest points in strip
+  return min(d, strip_closest(strip, d))
 
 def solve():
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        points = []
-        for _ in range(n):
-            x, y = map(float, input().split())
-            points.append((x, y))
+    points = []
+    for _ in range(n):
+      x, y = map(float, input().split())
+      points.append((x, y))
 
-        # Sort by x coordinate
-        points.sort(key=lambda p: p[0])
+    # Sort by x coordinate
+    points.sort(key=lambda p: p[0])
 
-        if n < 2:
-            print("INFINITY")
-            continue
+    if n < 2:
+      print("INFINITY")
+      continue
 
-        result = closest_pair(points)
+    result = closest_pair(points)
 
-        if result < 10000:
-            print(f"{result:.4f}")
-        else:
-            print("INFINITY")
+    if result < 10000:
+      print(f"{result:.4f}")
+    else:
+      print("INFINITY")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -757,71 +757,71 @@ The key insight is that we only need to check points within distance d of the di
 import math
 
 def distance(p1, p2):
-    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+  return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
 def brute_force(points):
-    min_dist = float('inf')
-    n = len(points)
-    for i in range(n):
-        for j in range(i + 1, n):
-            min_dist = min(min_dist, distance(points[i], points[j]))
-    return min_dist
+  min_dist = float('inf')
+  n = len(points)
+  for i in range(n):
+    for j in range(i + 1, n):
+      min_dist = min(min_dist, distance(points[i], points[j]))
+  return min_dist
 
 def strip_closest(strip, d):
-    min_dist = d
-    # Sort by y coordinate
-    strip.sort(key=lambda p: p[1])
+  min_dist = d
+  # Sort by y coordinate
+  strip.sort(key=lambda p: p[1])
 
-    n = len(strip)
-    for i in range(n):
-        j = i + 1
-        while j < n and (strip[j][1] - strip[i][1]) < min_dist:
-            min_dist = min(min_dist, distance(strip[i], strip[j]))
-            j += 1
+  n = len(strip)
+  for i in range(n):
+    j = i + 1
+    while j < n and (strip[j][1] - strip[i][1]) < min_dist:
+      min_dist = min(min_dist, distance(strip[i], strip[j]))
+      j += 1
 
-    return min_dist
+  return min_dist
 
 def closest_pair(points_sorted_x):
-    n = len(points_sorted_x)
+  n = len(points_sorted_x)
 
-    # Base case
-    if n <= 3:
-        return brute_force(points_sorted_x)
+  # Base case
+  if n <= 3:
+    return brute_force(points_sorted_x)
 
-    mid = n // 2
-    mid_point = points_sorted_x[mid]
+  mid = n // 2
+  mid_point = points_sorted_x[mid]
 
-    # Divide
-    left_half = points_sorted_x[:mid]
-    right_half = points_sorted_x[mid:]
+  # Divide
+  left_half = points_sorted_x[:mid]
+  right_half = points_sorted_x[mid:]
 
-    # Conquer
-    d_left = closest_pair(left_half)
-    d_right = closest_pair(right_half)
-    d = min(d_left, d_right)
+  # Conquer
+  d_left = closest_pair(left_half)
+  d_right = closest_pair(right_half)
+  d = min(d_left, d_right)
 
-    # Build strip
-    strip = [p for p in points_sorted_x if abs(p[0] - mid_point[0]) < d]
+  # Build strip
+  strip = [p for p in points_sorted_x if abs(p[0] - mid_point[0]) < d]
 
-    # Find closest in strip
-    return strip_closest(strip, d)
+  # Find closest in strip
+  return strip_closest(strip, d)
 
 def solve():
-    n = int(input())
-    points = []
+  n = int(input())
+  points = []
 
-    for _ in range(n):
-        x, y = map(float, input().split())
-        points.append((x, y))
+  for _ in range(n):
+    x, y = map(float, input().split())
+    points.append((x, y))
 
-    # Sort by x coordinate
-    points.sort(key=lambda p: p[0])
+  # Sort by x coordinate
+  points.sort(key=lambda p: p[0])
 
-    result = closest_pair(points)
-    print(f"{result:.6f}")
+  result = closest_pair(points)
+  print(f"{result:.6f}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
@@ -830,61 +830,61 @@ if __name__ == "__main__":
 import math
 
 def solve():
-    n = int(input())
-    points = []
+  n = int(input())
+  points = []
 
-    for _ in range(n):
-        x, y = map(float, input().split())
-        points.append((x, y))
+  for _ in range(n):
+    x, y = map(float, input().split())
+    points.append((x, y))
 
-    def dist(p1, p2):
-        return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
+  def dist(p1, p2):
+    return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)
 
-    def closest(px, py):
-        n = len(px)
+  def closest(px, py):
+    n = len(px)
 
-        if n <= 3:
-            min_d = float('inf')
-            for i in range(n):
-                for j in range(i+1, n):
-                    min_d = min(min_d, dist(px[i], px[j]))
-            return min_d
+    if n <= 3:
+      min_d = float('inf')
+      for i in range(n):
+        for j in range(i+1, n):
+          min_d = min(min_d, dist(px[i], px[j]))
+      return min_d
 
-        mid = n // 2
-        mid_x = px[mid][0]
+    mid = n // 2
+    mid_x = px[mid][0]
 
-        # Split py into left and right based on x coordinate
-        pyl = [p for p in py if p[0] <= mid_x]
-        pyr = [p for p in py if p[0] > mid_x]
+    # Split py into left and right based on x coordinate
+    pyl = [p for p in py if p[0] <= mid_x]
+    pyr = [p for p in py if p[0] > mid_x]
 
-        # Handle edge case where all points go to one side
-        if len(pyl) == 0 or len(pyr) == 0:
-            pyl = py[:mid]
-            pyr = py[mid:]
+    # Handle edge case where all points go to one side
+    if len(pyl) == 0 or len(pyr) == 0:
+      pyl = py[:mid]
+      pyr = py[mid:]
 
-        dl = closest(px[:mid], pyl)
-        dr = closest(px[mid:], pyr)
-        d = min(dl, dr)
+    dl = closest(px[:mid], pyl)
+    dr = closest(px[mid:], pyr)
+    d = min(dl, dr)
 
-        # Strip points sorted by y
-        strip = [p for p in py if abs(p[0] - mid_x) < d]
+    # Strip points sorted by y
+    strip = [p for p in py if abs(p[0] - mid_x) < d]
 
-        for i in range(len(strip)):
-            j = i + 1
-            while j < len(strip) and strip[j][1] - strip[i][1] < d:
-                d = min(d, dist(strip[i], strip[j]))
-                j += 1
+    for i in range(len(strip)):
+      j = i + 1
+      while j < len(strip) and strip[j][1] - strip[i][1] < d:
+        d = min(d, dist(strip[i], strip[j]))
+        j += 1
 
-        return d
+    return d
 
-    px = sorted(points, key=lambda p: p[0])
-    py = sorted(points, key=lambda p: p[1])
+  px = sorted(points, key=lambda p: p[0])
+  py = sorted(points, key=lambda p: p[1])
 
-    result = closest(px, py)
-    print(f"{result:.6f}")
+  result = closest(px, py)
+  print(f"{result:.6f}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -943,95 +943,95 @@ Parse the LISP S-expression and use recursion/stack to track the current path su
 import sys
 
 def solve():
-    data = sys.stdin.read()
-    idx = 0
-    n = len(data)
+  data = sys.stdin.read()
+  idx = 0
+  n = len(data)
 
-    def skip_whitespace():
-        nonlocal idx
-        while idx < n and data[idx] in ' \t\n\r':
-            idx += 1
+  def skip_whitespace():
+    nonlocal idx
+    while idx < n and data[idx] in ' \t\n\r':
+      idx += 1
 
-    def parse_int():
-        nonlocal idx
-        skip_whitespace()
-        negative = False
-        if idx < n and data[idx] == '-':
-            negative = True
-            idx += 1
-        num = 0
-        while idx < n and data[idx].isdigit():
-            num = num * 10 + int(data[idx])
-            idx += 1
-        return -num if negative else num
+  def parse_int():
+    nonlocal idx
+    skip_whitespace()
+    negative = False
+    if idx < n and data[idx] == '-':
+      negative = True
+      idx += 1
+    num = 0
+    while idx < n and data[idx].isdigit():
+      num = num * 10 + int(data[idx])
+      idx += 1
+    return -num if negative else num
 
-    def parse_tree(target, current_sum):
-        """Returns True if there's a root-to-leaf path with sum = target"""
-        nonlocal idx
-        skip_whitespace()
+  def parse_tree(target, current_sum):
+    """Returns True if there's a root-to-leaf path with sum = target"""
+    nonlocal idx
+    skip_whitespace()
 
-        if idx >= n or data[idx] != '(':
-            return False
+    if idx >= n or data[idx] != '(':
+      return False
 
-        idx += 1  # Skip '('
-        skip_whitespace()
+    idx += 1  # Skip '('
+    skip_whitespace()
 
-        # Check for empty tree
-        if data[idx] == ')':
-            idx += 1
-            return None  # Empty tree marker
+    # Check for empty tree
+    if data[idx] == ')':
+      idx += 1
+      return None  # Empty tree marker
 
-        # Parse integer
-        value = parse_int()
-        current_sum += value
+    # Parse integer
+    value = parse_int()
+    current_sum += value
 
-        # Parse left subtree
-        left_result = parse_tree(target, current_sum)
+    # Parse left subtree
+    left_result = parse_tree(target, current_sum)
 
-        # Parse right subtree
-        right_result = parse_tree(target, current_sum)
+    # Parse right subtree
+    right_result = parse_tree(target, current_sum)
 
-        skip_whitespace()
-        idx += 1  # Skip ')'
+    skip_whitespace()
+    idx += 1  # Skip ')'
 
-        # If both children are empty (leaf node)
-        if left_result is None and right_result is None:
-            return current_sum == target
+    # If both children are empty (leaf node)
+    if left_result is None and right_result is None:
+      return current_sum == target
 
-        # If one child is empty, check the other
-        if left_result is None:
-            return right_result
-        if right_result is None:
-            return left_result
+    # If one child is empty, check the other
+    if left_result is None:
+      return right_result
+    if right_result is None:
+      return left_result
 
-        # Both children exist
-        return left_result or right_result
+    # Both children exist
+    return left_result or right_result
 
-    while idx < n:
-        skip_whitespace()
-        if idx >= n:
-            break
+  while idx < n:
+    skip_whitespace()
+    if idx >= n:
+      break
 
-        # Check if we have an integer (target)
-        if data[idx].isdigit() or data[idx] == '-':
-            target = parse_int()
-            skip_whitespace()
+    # Check if we have an integer (target)
+    if data[idx].isdigit() or data[idx] == '-':
+      target = parse_int()
+      skip_whitespace()
 
-            if idx >= n or data[idx] != '(':
-                break
+      if idx >= n or data[idx] != '(':
+        break
 
-            # Check for empty tree
-            result = parse_tree(target, 0)
+      # Check for empty tree
+      result = parse_tree(target, 0)
 
-            if result is None:
-                print("no")  # Empty tree
-            else:
-                print("yes" if result else "no")
-        else:
-            idx += 1
+      if result is None:
+        print("no")  # Empty tree
+      else:
+        print("yes" if result else "no")
+    else:
+      idx += 1
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -1041,65 +1041,65 @@ import sys
 import re
 
 def solve():
-    data = sys.stdin.read()
+  data = sys.stdin.read()
 
-    # Extract all tokens: integers and parentheses
-    tokens = re.findall(r'-?\d+|\(|\)', data)
+  # Extract all tokens: integers and parentheses
+  tokens = re.findall(r'-?\d+|\(|\)', data)
 
-    i = 0
+  i = 0
+  while i < len(tokens):
+    # Read target sum
+    target = int(tokens[i])
+    i += 1
+
+    stack = []  # Stack of (value, null_count)
+    current_sum = 0
+    found = False
+
     while i < len(tokens):
-        # Read target sum
-        target = int(tokens[i])
-        i += 1
+      token = tokens[i]
+      i += 1
 
-        stack = []  # Stack of (value, null_count)
-        current_sum = 0
-        found = False
+      if token == '(':
+        if i < len(tokens) and tokens[i] not in '()':
+          # This is a node with a value
+          value = int(tokens[i])
+          i += 1
+          stack.append((value, 0))
+          current_sum += value
+        else:
+          # Empty tree marker
+          if stack:
+            val, null_count = stack[-1]
+            stack[-1] = (val, null_count + 1)
 
-        while i < len(tokens):
-            token = tokens[i]
-            i += 1
+      elif token == ')':
+        if not stack:
+          break  # End of tree
 
-            if token == '(':
-                if i < len(tokens) and tokens[i] not in '()':
-                    # This is a node with a value
-                    value = int(tokens[i])
-                    i += 1
-                    stack.append((value, 0))
-                    current_sum += value
-                else:
-                    # Empty tree marker
-                    if stack:
-                        val, null_count = stack[-1]
-                        stack[-1] = (val, null_count + 1)
+        val, null_count = stack[-1]
 
-            elif token == ')':
-                if not stack:
-                    break  # End of tree
+        if null_count >= 2:
+          # This is a leaf node
+          if current_sum == target:
+            found = True
 
-                val, null_count = stack[-1]
+          # Pop this node
+          stack.pop()
+          current_sum -= val
 
-                if null_count >= 2:
-                    # This is a leaf node
-                    if current_sum == target:
-                        found = True
+          # Update parent's null count
+          if stack:
+            parent_val, parent_null = stack[-1]
+            stack[-1] = (parent_val, parent_null + 1)
+        else:
+          # Not enough children processed yet
+          pass
 
-                    # Pop this node
-                    stack.pop()
-                    current_sum -= val
-
-                    # Update parent's null count
-                    if stack:
-                        parent_val, parent_null = stack[-1]
-                        stack[-1] = (parent_val, parent_null + 1)
-                else:
-                    # Not enough children processed yet
-                    pass
-
-        print("yes" if found else "no")
+    print("yes" if found else "no")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1166,117 +1166,117 @@ import sys
 sys.setrecursionlimit(200000)
 
 def solve():
-    n = int(input())
-    a = list(map(int, input().split()))
+  n = int(input())
+  a = list(map(int, input().split()))
 
-    # Create points (index, prefix_sum)
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + a[i]
+  # Create points (index, prefix_sum)
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + a[i]
 
-    # Points are (i, prefix[i]) for i = 1 to n
-    points = [(i, prefix[i]) for i in range(1, n + 1)]
+  # Points are (i, prefix[i]) for i = 1 to n
+  points = [(i, prefix[i]) for i in range(1, n + 1)]
 
-    def dist_sq(p1, p2):
-        return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+  def dist_sq(p1, p2):
+    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
 
-    def brute_force(pts):
-        min_d = float('inf')
-        for i in range(len(pts)):
-            for j in range(i + 1, len(pts)):
-                min_d = min(min_d, dist_sq(pts[i], pts[j]))
-        return min_d
+  def brute_force(pts):
+    min_d = float('inf')
+    for i in range(len(pts)):
+      for j in range(i + 1, len(pts)):
+        min_d = min(min_d, dist_sq(pts[i], pts[j]))
+    return min_d
 
-    def closest_pair(pts):
-        if len(pts) <= 3:
-            return brute_force(pts)
+  def closest_pair(pts):
+    if len(pts) <= 3:
+      return brute_force(pts)
 
-        mid = len(pts) // 2
-        mid_x = pts[mid][0]
+    mid = len(pts) // 2
+    mid_x = pts[mid][0]
 
-        left = pts[:mid]
-        right = pts[mid:]
+    left = pts[:mid]
+    right = pts[mid:]
 
-        d_left = closest_pair(left)
-        d_right = closest_pair(right)
-        d = min(d_left, d_right)
+    d_left = closest_pair(left)
+    d_right = closest_pair(right)
+    d = min(d_left, d_right)
 
-        # Build strip
-        strip = [p for p in pts if (p[0] - mid_x) ** 2 < d]
-        strip.sort(key=lambda p: p[1])  # Sort by y (prefix sum)
+    # Build strip
+    strip = [p for p in pts if (p[0] - mid_x) ** 2 < d]
+    strip.sort(key=lambda p: p[1])  # Sort by y (prefix sum)
 
-        # Check strip
-        for i in range(len(strip)):
-            j = i + 1
-            while j < len(strip) and (strip[j][1] - strip[i][1]) ** 2 < d:
-                d = min(d, dist_sq(strip[i], strip[j]))
-                j += 1
+    # Check strip
+    for i in range(len(strip)):
+      j = i + 1
+      while j < len(strip) and (strip[j][1] - strip[i][1]) ** 2 < d:
+        d = min(d, dist_sq(strip[i], strip[j]))
+        j += 1
 
-        return d
+    return d
 
-    # Sort by x coordinate
-    points.sort()
+  # Sort by x coordinate
+  points.sort()
 
-    print(closest_pair(points))
+  print(closest_pair(points))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    n = int(input())
-    a = list(map(int, input().split()))
+  n = int(input())
+  a = list(map(int, input().split()))
 
-    # Build prefix sums
-    prefix = [0]
-    for x in a:
-        prefix.append(prefix[-1] + x)
+  # Build prefix sums
+  prefix = [0]
+  for x in a:
+    prefix.append(prefix[-1] + x)
 
-    # Points: (x=index, y=prefix_sum)
-    points = list(range(n + 1))  # indices 0 to n
+  # Points: (x=index, y=prefix_sum)
+  points = list(range(n + 1))  # indices 0 to n
 
-    def dist(i, j):
-        dx = i - j
-        dy = prefix[i] - prefix[j]
-        return dx * dx + dy * dy
+  def dist(i, j):
+    dx = i - j
+    dy = prefix[i] - prefix[j]
+    return dx * dx + dy * dy
 
-    def closest(indices):
-        if len(indices) <= 3:
-            min_d = float('inf')
-            for i in range(len(indices)):
-                for j in range(i + 1, len(indices)):
-                    min_d = min(min_d, dist(indices[i], indices[j]))
-            return min_d
+  def closest(indices):
+    if len(indices) <= 3:
+      min_d = float('inf')
+      for i in range(len(indices)):
+        for j in range(i + 1, len(indices)):
+          min_d = min(min_d, dist(indices[i], indices[j]))
+      return min_d
 
-        mid = len(indices) // 2
-        mid_x = indices[mid]
+    mid = len(indices) // 2
+    mid_x = indices[mid]
 
-        d = min(closest(indices[:mid]), closest(indices[mid:]))
+    d = min(closest(indices[:mid]), closest(indices[mid:]))
 
-        # Merge step
-        strip = [i for i in indices if (i - mid_x) ** 2 < d]
-        strip.sort(key=lambda i: prefix[i])
+    # Merge step
+    strip = [i for i in indices if (i - mid_x) ** 2 < d]
+    strip.sort(key=lambda i: prefix[i])
 
-        for i in range(len(strip)):
-            for j in range(i + 1, len(strip)):
-                if (prefix[strip[j]] - prefix[strip[i]]) ** 2 >= d:
-                    break
-                d = min(d, dist(strip[i], strip[j]))
+    for i in range(len(strip)):
+      for j in range(i + 1, len(strip)):
+        if (prefix[strip[j]] - prefix[strip[i]]) ** 2 >= d:
+          break
+        d = min(d, dist(strip[i], strip[j]))
 
-        return d
+    return d
 
-    # Sort indices by x coordinate (which is just the index itself)
-    points.sort()
+  # Sort indices by x coordinate (which is just the index itself)
+  points.sort()
 
-    # We need i != j, and since points start from 0, we use indices 1 to n
-    points = list(range(1, n + 1))
-    print(closest(points))
+  # We need i != j, and since points start from 0, we use indices 1 to n
+  points = list(range(1, n + 1))
+  print(closest(points))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

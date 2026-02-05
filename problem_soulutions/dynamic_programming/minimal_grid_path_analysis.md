@@ -135,39 +135,39 @@ Row 2: [4, 2, 1]
 
 ```python
 def min_path_sum(grid):
-    """Find minimum path sum from top-left to bottom-right."""
-    n = len(grid)
-    if n == 0:
-        return 0
-    m = len(grid[0])
+  """Find minimum path sum from top-left to bottom-right."""
+  n = len(grid)
+  if n == 0:
+    return 0
+  m = len(grid[0])
 
-    # Create DP table
-    dp = [[0] * m for _ in range(n)]
+  # Create DP table
+  dp = [[0] * m for _ in range(n)]
 
-    # Base case
-    dp[0][0] = grid[0][0]
+  # Base case
+  dp[0][0] = grid[0][0]
 
-    # Fill first row
+  # Fill first row
+  for j in range(1, m):
+    dp[0][j] = dp[0][j-1] + grid[0][j]
+
+  # Fill first column
+  for i in range(1, n):
+    dp[i][0] = dp[i-1][0] + grid[i][0]
+
+  # Fill rest of the table
+  for i in range(1, n):
     for j in range(1, m):
-        dp[0][j] = dp[0][j-1] + grid[0][j]
+      dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
 
-    # Fill first column
-    for i in range(1, n):
-        dp[i][0] = dp[i-1][0] + grid[i][0]
-
-    # Fill rest of the table
-    for i in range(1, n):
-        for j in range(1, m):
-            dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
-
-    return dp[n-1][m-1]
+  return dp[n-1][m-1]
 
 
 # Example usage
 grid = [
-    [1, 3, 1],
-    [1, 5, 1],
-    [4, 2, 1]
+  [1, 3, 1],
+  [1, 5, 1],
+  [4, 2, 1]
 ]
 print(min_path_sum(grid))  # Output: 7
 ```
@@ -178,36 +178,36 @@ To find the actual path (not just the minimum cost), backtrack from the destinat
 
 ```python
 def min_path_sum_with_path(grid):
-    """Find minimum path sum and return the actual path."""
-    n, m = len(grid), len(grid[0])
-    dp = [[0] * m for _ in range(n)]
+  """Find minimum path sum and return the actual path."""
+  n, m = len(grid), len(grid[0])
+  dp = [[0] * m for _ in range(n)]
 
-    # Fill DP table (same as before)
-    dp[0][0] = grid[0][0]
+  # Fill DP table (same as before)
+  dp[0][0] = grid[0][0]
+  for j in range(1, m):
+    dp[0][j] = dp[0][j-1] + grid[0][j]
+  for i in range(1, n):
+    dp[i][0] = dp[i-1][0] + grid[i][0]
+  for i in range(1, n):
     for j in range(1, m):
-        dp[0][j] = dp[0][j-1] + grid[0][j]
-    for i in range(1, n):
-        dp[i][0] = dp[i-1][0] + grid[i][0]
-    for i in range(1, n):
-        for j in range(1, m):
-            dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+      dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
 
-    # Backtrack to find path
-    path = []
-    i, j = n - 1, m - 1
-    while i > 0 or j > 0:
-        path.append((i, j))
-        if i == 0:
-            j -= 1
-        elif j == 0:
-            i -= 1
-        elif dp[i-1][j] < dp[i][j-1]:
-            i -= 1
-        else:
-            j -= 1
-    path.append((0, 0))
+  # Backtrack to find path
+  path = []
+  i, j = n - 1, m - 1
+  while i > 0 or j > 0:
+    path.append((i, j))
+    if i == 0:
+      j -= 1
+    elif j == 0:
+      i -= 1
+    elif dp[i-1][j] < dp[i][j-1]:
+      i -= 1
+    else:
+      j -= 1
+  path.append((0, 0))
 
-    return dp[n-1][m-1], path[::-1]
+  return dp[n-1][m-1], path[::-1]
 ```
 
 ## Space Optimization to O(n)
@@ -216,24 +216,24 @@ Since each row only depends on the current row and the previous row, we can redu
 
 ```python
 def min_path_sum_optimized(grid):
-    """Space-optimized O(n) solution."""
-    n, m = len(grid), len(grid[0])
+  """Space-optimized O(n) solution."""
+  n, m = len(grid), len(grid[0])
 
-    # Use single row
-    dp = [0] * m
+  # Use single row
+  dp = [0] * m
 
-    for i in range(n):
-        for j in range(m):
-            if i == 0 and j == 0:
-                dp[j] = grid[0][0]
-            elif i == 0:
-                dp[j] = dp[j-1] + grid[i][j]
-            elif j == 0:
-                dp[j] = dp[j] + grid[i][j]
-            else:
-                dp[j] = grid[i][j] + min(dp[j], dp[j-1])
+  for i in range(n):
+    for j in range(m):
+      if i == 0 and j == 0:
+        dp[j] = grid[0][0]
+      elif i == 0:
+        dp[j] = dp[j-1] + grid[i][j]
+      elif j == 0:
+        dp[j] = dp[j] + grid[i][j]
+      else:
+        dp[j] = grid[i][j] + min(dp[j], dp[j-1])
 
-    return dp[m-1]
+  return dp[m-1]
 ```
 
 ## Common Mistakes

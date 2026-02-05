@@ -103,19 +103,19 @@ Try all possible combinations of 4 distinct indices and check if their sum equal
 
 ```python
 def solve_brute_force(n, arr, target):
-    """
-    Brute force: Try all combinations of 4 elements.
+  """
+  Brute force: Try all combinations of 4 elements.
 
-    Time: O(n^4)
-    Space: O(1)
-    """
-    for i in range(n):
-        for j in range(i + 1, n):
-            for k in range(j + 1, n):
-                for l in range(k + 1, n):
-                    if arr[i] + arr[j] + arr[k] + arr[l] == target:
-                        return [i + 1, j + 1, k + 1, l + 1]  # 1-indexed
-    return None
+  Time: O(n^4)
+  Space: O(1)
+  """
+  for i in range(n):
+    for j in range(i + 1, n):
+      for k in range(j + 1, n):
+        for l in range(k + 1, n):
+          if arr[i] + arr[j] + arr[k] + arr[l] == target:
+            return [i + 1, j + 1, k + 1, l + 1]  # 1-indexed
+  return None
 ```
 
 ### Complexity
@@ -197,59 +197,59 @@ import sys
 from typing import List, Optional
 
 def solve(n: int, arr: List[int], target: int) -> Optional[List[int]]:
-    """
-    Find four distinct indices whose values sum to target.
+  """
+  Find four distinct indices whose values sum to target.
 
-    Time: O(n^3) - Two nested loops + two-pointer search
-    Space: O(n) - For the indexed array
-    """
-    # Create (value, original_index) pairs and sort by value
-    indexed = [(arr[i], i) for i in range(n)]
-    indexed.sort()
+  Time: O(n^3) - Two nested loops + two-pointer search
+  Space: O(n) - For the indexed array
+  """
+  # Create (value, original_index) pairs and sort by value
+  indexed = [(arr[i], i) for i in range(n)]
+  indexed.sort()
 
-    # Fix first two elements
-    for i in range(n - 3):
-        for j in range(i + 1, n - 2):
-            remaining = target - indexed[i][0] - indexed[j][0]
+  # Fix first two elements
+  for i in range(n - 3):
+    for j in range(i + 1, n - 2):
+      remaining = target - indexed[i][0] - indexed[j][0]
 
-            # Two pointers for the remaining sum
-            left = j + 1
-            right = n - 1
+      # Two pointers for the remaining sum
+      left = j + 1
+      right = n - 1
 
-            while left < right:
-                current_sum = indexed[left][0] + indexed[right][0]
+      while left < right:
+        current_sum = indexed[left][0] + indexed[right][0]
 
-                if current_sum == remaining:
-                    # Collect original indices
-                    indices = [
-                        indexed[i][1],
-                        indexed[j][1],
-                        indexed[left][1],
-                        indexed[right][1]
-                    ]
-                    # Convert to 1-indexed and sort for consistent output
-                    return sorted([idx + 1 for idx in indices])
-                elif current_sum < remaining:
-                    left += 1
-                else:
-                    right -= 1
+        if current_sum == remaining:
+          # Collect original indices
+          indices = [
+            indexed[i][1],
+            indexed[j][1],
+            indexed[left][1],
+            indexed[right][1]
+          ]
+          # Convert to 1-indexed and sort for consistent output
+          return sorted([idx + 1 for idx in indices])
+        elif current_sum < remaining:
+          left += 1
+        else:
+          right -= 1
 
-    return None
+  return None
 
 def main():
-    input_data = sys.stdin.read().split()
-    n = int(input_data[0])
-    x = int(input_data[1])
-    arr = list(map(int, input_data[2:2+n]))
+  input_data = sys.stdin.read().split()
+  n = int(input_data[0])
+  x = int(input_data[1])
+  arr = list(map(int, input_data[2:2+n]))
 
-    result = solve(n, arr, x)
-    if result:
-        print(*result)
-    else:
-        print("IMPOSSIBLE")
+  result = solve(n, arr, x)
+  if result:
+    print(*result)
+  else:
+    print("IMPOSSIBLE")
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -285,7 +285,7 @@ indexed.sort()  # Preserves original index in tuple
 ```python
 # WRONG - May return same index twice for duplicates
 if indexed[i][0] + indexed[j][0] + indexed[left][0] + indexed[right][0] == target:
-    return [i, j, left, right]  # These are sorted positions, not original!
+  return [i, j, left, right]  # These are sorted positions, not original!
 ```
 
 **Problem:** Using sorted positions instead of original indices.

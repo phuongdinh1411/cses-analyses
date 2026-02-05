@@ -173,20 +173,20 @@ Differences:         2  2  2  7  2  2  2
 **Python:**
 ```python
 def solve(n):
-    """
-    Construct permutation where no adjacent elements differ by 1.
-    Time: O(n), Space: O(n) for output
-    """
-    if n == 1:
-        return "1"
-    if n <= 3:
-        return "NO SOLUTION"
+  """
+  Construct permutation where no adjacent elements differ by 1.
+  Time: O(n), Space: O(n) for output
+  """
+  if n == 1:
+    return "1"
+  if n <= 3:
+    return "NO SOLUTION"
 
-    # Even numbers first, then odd numbers
-    evens = list(range(2, n + 1, 2))
-    odds = list(range(1, n + 1, 2))
+  # Even numbers first, then odd numbers
+  evens = list(range(2, n + 1, 2))
+  odds = list(range(1, n + 1, 2))
 
-    return ' '.join(map(str, evens + odds))
+  return ' '.join(map(str, evens + odds))
 
 n = int(input())
 print(solve(n))
@@ -207,15 +207,15 @@ We can also print odd numbers first, then even numbers:
 
 ```python
 def solve_odds_first(n):
-    if n == 1:
-        return "1"
-    if n <= 3:
-        return "NO SOLUTION"
+  if n == 1:
+    return "1"
+  if n <= 3:
+    return "NO SOLUTION"
 
-    odds = list(range(1, n + 1, 2))
-    evens = list(range(2, n + 1, 2))
+  odds = list(range(1, n + 1, 2))
+  evens = list(range(2, n + 1, 2))
 
-    return ' '.join(map(str, odds + evens))
+  return ' '.join(map(str, odds + evens))
 ```
 
 For n=5: Output would be "1 3 5 2 4"
@@ -230,13 +230,13 @@ For n=5: Output would be "1 3 5 2 4"
 ```python
 # WRONG - returns "NO SOLUTION" for n=1
 if n <= 3:
-    return "NO SOLUTION"
+  return "NO SOLUTION"
 
 # CORRECT - n=1 is valid
 if n == 1:
-    return "1"
+  return "1"
 if n <= 3:
-    return "NO SOLUTION"
+  return "NO SOLUTION"
 ```
 
 **Problem:** [1] is a valid permutation with no adjacent pairs to check.
@@ -246,11 +246,11 @@ if n <= 3:
 ```python
 # WRONG - some implementations fail at n=4
 if n < 4:  # This includes n=4!
-    return "NO SOLUTION"
+  return "NO SOLUTION"
 
 # CORRECT
 if n <= 3:  # Only n=2,3 are impossible
-    return "NO SOLUTION"
+  return "NO SOLUTION"
 ```
 
 **Problem:** n=4 has valid solutions like [2, 4, 1, 3].
@@ -270,7 +270,7 @@ print(' '.join(map(str, evens + odds)))  # 2 4 1 3
 ```python
 # WRONG - this creates consecutive numbers adjacent
 for i in range(1, n + 1):
-    print(i, end=' ')
+  print(i, end=' ')
 
 # CORRECT - separate evens and odds
 for i in range(2, n + 1, 2): print(i, end=' ')

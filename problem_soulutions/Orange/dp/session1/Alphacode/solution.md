@@ -45,36 +45,36 @@ This is a classic DP problem similar to climbing stairs:
 
 ```python
 def solve(s):
-    n = len(s)
-    if n == 0 or s[0] == '0':
-        return 0
+  n = len(s)
+  if n == 0 or s[0] == '0':
+    return 0
 
-    # dp[i] = number of ways to decode first i characters
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Empty string
-    dp[1] = 1  # First character (already checked it's not 0)
+  # dp[i] = number of ways to decode first i characters
+  dp = [0] * (n + 1)
+  dp[0] = 1  # Empty string
+  dp[1] = 1  # First character (already checked it's not 0)
 
-    for i in range(2, n + 1):
-        # Single digit decode (1-9)
-        if s[i-1] != '0':
-            dp[i] = dp[i-1]
+  for i in range(2, n + 1):
+    # Single digit decode (1-9)
+    if s[i-1] != '0':
+      dp[i] = dp[i-1]
 
-        # Two digit decode (10-26)
-        two_digit = int(s[i-2:i])
-        if 10 <= two_digit <= 26:
-            dp[i] += dp[i-2]
+    # Two digit decode (10-26)
+    two_digit = int(s[i-2:i])
+    if 10 <= two_digit <= 26:
+      dp[i] += dp[i-2]
 
-    return dp[n]
+  return dp[n]
 
 def main():
-    while True:
-        s = input().strip()
-        if s == '0':
-            break
-        print(solve(s))
+  while True:
+    s = input().strip()
+    if s == '0':
+      break
+    print(solve(s))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity Analysis

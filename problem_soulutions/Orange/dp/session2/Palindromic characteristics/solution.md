@@ -38,115 +38,115 @@ Use DP:
 
 ```python
 def solve():
-    s = input().strip()
-    n = len(s)
+  s = input().strip()
+  n = len(s)
 
-    if n == 0:
-        return
+  if n == 0:
+    return
 
-    # is_pal[i][j] = True if s[i:j+1] is palindrome
-    is_pal = [[False] * n for _ in range(n)]
+  # is_pal[i][j] = True if s[i:j+1] is palindrome
+  is_pal = [[False] * n for _ in range(n)]
 
-    # Base cases: single characters
-    for i in range(n):
-        is_pal[i][i] = True
+  # Base cases: single characters
+  for i in range(n):
+    is_pal[i][i] = True
 
-    # Length 2
-    for i in range(n - 1):
-        is_pal[i][i + 1] = (s[i] == s[i + 1])
+  # Length 2
+  for i in range(n - 1):
+    is_pal[i][i + 1] = (s[i] == s[i + 1])
 
-    # Longer palindromes
-    for length in range(3, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
+  # Longer palindromes
+  for length in range(3, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
 
-    # k_level[i][j] = k-palindrome level
-    k_level = [[0] * n for _ in range(n)]
+  # k_level[i][j] = k-palindrome level
+  k_level = [[0] * n for _ in range(n)]
 
-    # Compute k-levels for all palindromes
-    for length in range(1, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if is_pal[i][j]:
-                if length == 1:
-                    k_level[i][j] = 1
-                else:
-                    # Half length
-                    half_len = length // 2
-                    half_end = i + half_len - 1
-                    # Left half is s[i:i+half_len]
-                    k_level[i][j] = 1 + k_level[i][half_end]
+  # Compute k-levels for all palindromes
+  for length in range(1, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      if is_pal[i][j]:
+        if length == 1:
+          k_level[i][j] = 1
+        else:
+          # Half length
+          half_len = length // 2
+          half_end = i + half_len - 1
+          # Left half is s[i:i+half_len]
+          k_level[i][j] = 1 + k_level[i][half_end]
 
-    # Count palindromes at each k-level
-    count = [0] * (n + 1)
+  # Count palindromes at each k-level
+  count = [0] * (n + 1)
 
-    for i in range(n):
-        for j in range(i, n):
-            if is_pal[i][j]:
-                count[k_level[i][j]] += 1
+  for i in range(n):
+    for j in range(i, n):
+      if is_pal[i][j]:
+        count[k_level[i][j]] += 1
 
-    # A k-palindrome is also a (k-1)-palindrome, etc.
-    # Propagate counts downward
-    for k in range(n, 1, -1):
-        count[k - 1] += count[k]
+  # A k-palindrome is also a (k-1)-palindrome, etc.
+  # Propagate counts downward
+  for k in range(n, 1, -1):
+    count[k - 1] += count[k]
 
-    # Output counts for k = 1 to n
-    print(' '.join(map(str, count[1:n + 1])))
+  # Output counts for k = 1 to n
+  print(' '.join(map(str, count[1:n + 1])))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized Solution
 
 ```python
 def solve():
-    s = input().strip()
-    n = len(s)
+  s = input().strip()
+  n = len(s)
 
-    # is_pal[i][j] = True if s[i:j+1] is palindrome
-    is_pal = [[False] * n for _ in range(n)]
+  # is_pal[i][j] = True if s[i:j+1] is palindrome
+  is_pal = [[False] * n for _ in range(n)]
 
-    for i in range(n):
-        is_pal[i][i] = True
-    for i in range(n - 1):
-        is_pal[i][i + 1] = (s[i] == s[i + 1])
-    for length in range(3, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
+  for i in range(n):
+    is_pal[i][i] = True
+  for i in range(n - 1):
+    is_pal[i][i + 1] = (s[i] == s[i + 1])
+  for length in range(3, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
 
-    # k_level for each palindrome
-    k_level = [[0] * n for _ in range(n)]
+  # k_level for each palindrome
+  k_level = [[0] * n for _ in range(n)]
 
-    # Process by increasing length to use computed half values
-    for length in range(1, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if is_pal[i][j]:
-                if length == 1:
-                    k_level[i][j] = 1
-                else:
-                    half = (length - 1) // 2
-                    # Left half: s[i : i + half + 1]
-                    k_level[i][j] = 1 + k_level[i][i + half]
+  # Process by increasing length to use computed half values
+  for length in range(1, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      if is_pal[i][j]:
+        if length == 1:
+          k_level[i][j] = 1
+        else:
+          half = (length - 1) // 2
+          # Left half: s[i : i + half + 1]
+          k_level[i][j] = 1 + k_level[i][i + half]
 
-    # Count by k-level
-    count = [0] * (n + 2)
-    for i in range(n):
-        for j in range(i, n):
-            if is_pal[i][j]:
-                count[k_level[i][j]] += 1
+  # Count by k-level
+  count = [0] * (n + 2)
+  for i in range(n):
+    for j in range(i, n):
+      if is_pal[i][j]:
+        count[k_level[i][j]] += 1
 
-    # Propagate: k-palindrome is also (k-1)-palindrome
-    for k in range(n, 0, -1):
-        count[k - 1] += count[k]
+  # Propagate: k-palindrome is also (k-1)-palindrome
+  for k in range(n, 0, -1):
+    count[k - 1] += count[k]
 
-    print(' '.join(map(str, count[1:n + 1])))
+  print(' '.join(map(str, count[1:n + 1])))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

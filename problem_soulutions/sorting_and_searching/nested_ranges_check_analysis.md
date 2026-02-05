@@ -127,31 +127,31 @@ Compare every pair of ranges and check containment conditions directly.
 
 ```python
 def solve_brute_force(n, ranges):
-    """
-    Brute force: check all pairs.
+  """
+  Brute force: check all pairs.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    contains = [0] * n
-    contained = [0] * n
+  Time: O(n^2)
+  Space: O(n)
+  """
+  contains = [0] * n
+  contained = [0] * n
 
-    for i in range(n):
-        a_i, b_i = ranges[i]
-        for j in range(n):
-            if i == j:
-                continue
-            a_j, b_j = ranges[j]
+  for i in range(n):
+    a_i, b_i = ranges[i]
+    for j in range(n):
+      if i == j:
+        continue
+      a_j, b_j = ranges[j]
 
-            # Does range i contain range j?
-            if a_i <= a_j and b_j <= b_i:
-                contains[i] = 1
+      # Does range i contain range j?
+      if a_i <= a_j and b_j <= b_i:
+        contains[i] = 1
 
-            # Is range i contained by range j?
-            if a_j <= a_i and b_i <= b_j:
-                contained[i] = 1
+      # Is range i contained by range j?
+      if a_j <= a_i and b_i <= b_j:
+        contained[i] = 1
 
-    return contains, contained
+  return contains, contained
 ```
 
 ### Complexity
@@ -289,52 +289,52 @@ import sys
 from sys import stdin
 
 def solve():
-    input = stdin.readline
-    n = int(input())
+  input = stdin.readline
+  n = int(input())
 
-    # Read ranges with original indices
-    ranges = []
-    for i in range(n):
-        a, b = map(int, input().split())
-        ranges.append((a, b, i))
+  # Read ranges with original indices
+  ranges = []
+  for i in range(n):
+    a, b = map(int, input().split())
+    ranges.append((a, b, i))
 
-    # Sort by start ASC, then end DESC
-    # This ensures: if range A comes before B, then A.start <= B.start
-    # If same start, longer range comes first
-    ranges.sort(key=lambda x: (x[0], -x[1]))
+  # Sort by start ASC, then end DESC
+  # This ensures: if range A comes before B, then A.start <= B.start
+  # If same start, longer range comes first
+  ranges.sort(key=lambda x: (x[0], -x[1]))
 
-    contains = [0] * n
-    contained = [0] * n
+  contains = [0] * n
+  contained = [0] * n
 
-    # Check "contains another" using suffix minimum of end values
-    # If my end >= min_end of all ranges after me, I contain at least one
-    min_end_suffix = [float('inf')] * (n + 1)
-    for i in range(n - 1, -1, -1):
-        min_end_suffix[i] = min(ranges[i][1], min_end_suffix[i + 1])
+  # Check "contains another" using suffix minimum of end values
+  # If my end >= min_end of all ranges after me, I contain at least one
+  min_end_suffix = [float('inf')] * (n + 1)
+  for i in range(n - 1, -1, -1):
+    min_end_suffix[i] = min(ranges[i][1], min_end_suffix[i + 1])
 
-    for i in range(n):
-        a, b, orig_idx = ranges[i]
-        # Check if any range after has end <= my end
-        # (they have start >= my start due to sorting)
-        if i + 1 < n and b >= min_end_suffix[i + 1]:
-            contains[orig_idx] = 1
+  for i in range(n):
+    a, b, orig_idx = ranges[i]
+    # Check if any range after has end <= my end
+    # (they have start >= my start due to sorting)
+    if i + 1 < n and b >= min_end_suffix[i + 1]:
+      contains[orig_idx] = 1
 
-    # Check "contained by another" using prefix maximum of end values
-    # If my end <= max_end of all ranges before me, I'm contained
-    max_end = float('-inf')
-    for i in range(n):
-        a, b, orig_idx = ranges[i]
-        # Check if any range before has end >= my end
-        # (they have start <= my start due to sorting)
-        if b <= max_end:
-            contained[orig_idx] = 1
-        max_end = max(max_end, b)
+  # Check "contained by another" using prefix maximum of end values
+  # If my end <= max_end of all ranges before me, I'm contained
+  max_end = float('-inf')
+  for i in range(n):
+    a, b, orig_idx = ranges[i]
+    # Check if any range before has end >= my end
+    # (they have start <= my start due to sorting)
+    if b <= max_end:
+      contained[orig_idx] = 1
+    max_end = max(max_end, b)
 
-    print(' '.join(map(str, contains)))
-    print(' '.join(map(str, contained)))
+  print(' '.join(map(str, contains)))
+  print(' '.join(map(str, contained)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 #### Complexity
@@ -397,11 +397,11 @@ min_end_suffix = [float('inf')] * (n + 1)
 ```python
 # WRONG: Using max_end for "contains" check
 if b >= max_end:  # This is wrong logic
-    contains[orig_idx] = 1
+  contains[orig_idx] = 1
 
 # CORRECT: Use suffix minimum for "contains"
 if b >= min_end_suffix[i + 1]:  # If my end >= smallest end after me
-    contains[orig_idx] = 1
+  contains[orig_idx] = 1
 ```
 
 **Problem:** "Contains" means my end is >= some later range's end. We need the minimum end after current position.

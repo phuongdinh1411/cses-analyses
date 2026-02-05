@@ -107,19 +107,19 @@ For each query, iterate through the range and compute the OR directly.
 
 ```python
 def solve_brute_force(n, arr, queries):
-    """
-    Brute force: compute OR for each query by iterating through range.
+  """
+  Brute force: compute OR for each query by iterating through range.
 
-    Time: O(q * n) per query
-    Space: O(1)
-    """
-    results = []
-    for l, r in queries:
-        or_result = 0
-        for i in range(l - 1, r):  # Convert to 0-indexed
-            or_result |= arr[i]
-        results.append(or_result)
-    return results
+  Time: O(q * n) per query
+  Space: O(1)
+  """
+  results = []
+  for l, r in queries:
+    or_result = 0
+    for i in range(l - 1, r):  # Convert to 0-indexed
+      or_result |= arr[i]
+    results.append(or_result)
+  return results
 ```
 
 ### Complexity
@@ -203,54 +203,54 @@ Query [2, 4] (1-indexed -> [1, 3] 0-indexed):
 
 ```python
 class SegmentTreeOR:
-    """
-    Segment Tree for range OR queries.
+  """
+  Segment Tree for range OR queries.
 
-    Time: O(n) build, O(log n) query
-    Space: O(n)
-    """
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.size = 1
-        while self.size < self.n:
-            self.size *= 2
+  Time: O(n) build, O(log n) query
+  Space: O(n)
+  """
+  def __init__(self, arr):
+    self.n = len(arr)
+    self.size = 1
+    while self.size < self.n:
+      self.size *= 2
 
-        # Tree array: size * 2 for complete binary tree
-        self.tree = [0] * (2 * self.size)
+    # Tree array: size * 2 for complete binary tree
+    self.tree = [0] * (2 * self.size)
 
-        # Fill leaves
-        for i in range(self.n):
-            self.tree[self.size + i] = arr[i]
+    # Fill leaves
+    for i in range(self.n):
+      self.tree[self.size + i] = arr[i]
 
-        # Build tree bottom-up
-        for i in range(self.size - 1, 0, -1):
-            self.tree[i] = self.tree[2 * i] | self.tree[2 * i + 1]
+    # Build tree bottom-up
+    for i in range(self.size - 1, 0, -1):
+      self.tree[i] = self.tree[2 * i] | self.tree[2 * i + 1]
 
-    def query(self, l, r):
-        """Query OR in range [l, r] (0-indexed)."""
-        result = 0
-        l += self.size
-        r += self.size
+  def query(self, l, r):
+    """Query OR in range [l, r] (0-indexed)."""
+    result = 0
+    l += self.size
+    r += self.size
 
-        while l <= r:
-            if l % 2 == 1:  # l is right child
-                result |= self.tree[l]
-                l += 1
-            if r % 2 == 0:  # r is left child
-                result |= self.tree[r]
-                r -= 1
-            l //= 2
-            r //= 2
+    while l <= r:
+      if l % 2 == 1:  # l is right child
+        result |= self.tree[l]
+        l += 1
+      if r % 2 == 0:  # r is left child
+        result |= self.tree[r]
+        r -= 1
+      l //= 2
+      r //= 2
 
-        return result
+    return result
 
 
 def solve_segment_tree(n, arr, queries):
-    st = SegmentTreeOR(arr)
-    results = []
-    for l, r in queries:
-        results.append(st.query(l - 1, r - 1))  # Convert to 0-indexed
-    return results
+  st = SegmentTreeOR(arr)
+  results = []
+  for l, r in queries:
+    results.append(st.query(l - 1, r - 1))  # Convert to 0-indexed
+  return results
 ```
 
 ### Complexity
@@ -328,47 +328,47 @@ Query [2, 4] (0-indexed [1, 3]):
 import math
 
 class SparseTableOR:
-    """
-    Sparse Table for range OR queries.
+  """
+  Sparse Table for range OR queries.
 
-    Time: O(n log n) build, O(1) query
-    Space: O(n log n)
-    """
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.LOG = max(1, self.n.bit_length())
+  Time: O(n log n) build, O(1) query
+  Space: O(n log n)
+  """
+  def __init__(self, arr):
+    self.n = len(arr)
+    self.LOG = max(1, self.n.bit_length())
 
-        # sparse[i][j] = OR of 2^j elements starting at index i
-        self.sparse = [[0] * self.LOG for _ in range(self.n)]
+    # sparse[i][j] = OR of 2^j elements starting at index i
+    self.sparse = [[0] * self.LOG for _ in range(self.n)]
 
-        # Base case: blocks of size 1
-        for i in range(self.n):
-            self.sparse[i][0] = arr[i]
+    # Base case: blocks of size 1
+    for i in range(self.n):
+      self.sparse[i][0] = arr[i]
 
-        # Build sparse table
-        for j in range(1, self.LOG):
-            for i in range(self.n - (1 << j) + 1):
-                self.sparse[i][j] = (self.sparse[i][j-1] |
-                                     self.sparse[i + (1 << (j-1))][j-1])
+    # Build sparse table
+    for j in range(1, self.LOG):
+      for i in range(self.n - (1 << j) + 1):
+        self.sparse[i][j] = (self.sparse[i][j-1] |
+                  self.sparse[i + (1 << (j-1))][j-1])
 
-        # Precompute log values for O(1) query
-        self.log_table = [0] * (self.n + 1)
-        for i in range(2, self.n + 1):
-            self.log_table[i] = self.log_table[i // 2] + 1
+    # Precompute log values for O(1) query
+    self.log_table = [0] * (self.n + 1)
+    for i in range(2, self.n + 1):
+      self.log_table[i] = self.log_table[i // 2] + 1
 
-    def query(self, l, r):
-        """Query OR in range [l, r] (0-indexed)."""
-        length = r - l + 1
-        k = self.log_table[length]
-        return self.sparse[l][k] | self.sparse[r - (1 << k) + 1][k]
+  def query(self, l, r):
+    """Query OR in range [l, r] (0-indexed)."""
+    length = r - l + 1
+    k = self.log_table[length]
+    return self.sparse[l][k] | self.sparse[r - (1 << k) + 1][k]
 
 
 def solve_sparse_table(n, arr, queries):
-    st = SparseTableOR(arr)
-    results = []
-    for l, r in queries:
-        results.append(st.query(l - 1, r - 1))  # Convert to 0-indexed
-    return results
+  st = SparseTableOR(arr)
+  results = []
+  for l, r in queries:
+    results.append(st.query(l - 1, r - 1))  # Convert to 0-indexed
+  return results
 ```
 
 ### Complexity

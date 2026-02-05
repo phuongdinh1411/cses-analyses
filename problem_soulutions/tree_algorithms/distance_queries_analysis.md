@@ -138,34 +138,34 @@ For each query, run BFS/DFS from node a to find the distance to node b.
 from collections import deque, defaultdict
 
 def solve_brute_force(n, edges, queries):
-    """
-    Brute force: BFS for each query.
+  """
+  Brute force: BFS for each query.
 
-    Time: O(q * n)
-    Space: O(n)
-    """
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
+  Time: O(q * n)
+  Space: O(n)
+  """
+  # Build adjacency list
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
-    def bfs_distance(start, end):
-        if start == end:
-            return 0
-        queue = deque([(start, 0)])
-        visited = {start}
-        while queue:
-            node, dist = queue.popleft()
-            for neighbor in graph[node]:
-                if neighbor == end:
-                    return dist + 1
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append((neighbor, dist + 1))
-        return -1
+  def bfs_distance(start, end):
+    if start == end:
+      return 0
+    queue = deque([(start, 0)])
+    visited = {start}
+    while queue:
+      node, dist = queue.popleft()
+      for neighbor in graph[node]:
+        if neighbor == end:
+          return dist + 1
+        if neighbor not in visited:
+          visited.add(neighbor)
+          queue.append((neighbor, dist + 1))
+    return -1
 
-    return [bfs_distance(a, b) for a, b in queries]
+  return [bfs_distance(a, b) for a, b in queries]
 ```
 
 ### Complexity
@@ -264,77 +264,77 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, q = int(input_data[idx]), int(input_data[idx+1])
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, q = int(input_data[idx]), int(input_data[idx+1])
+  idx += 2
+
+  # Build adjacency list
+  graph = defaultdict(list)
+  for _ in range(n - 1):
+    u, v = int(input_data[idx]), int(input_data[idx+1])
     idx += 2
+    graph[u].append(v)
+    graph[v].append(u)
 
-    # Build adjacency list
-    graph = defaultdict(list)
-    for _ in range(n - 1):
-        u, v = int(input_data[idx]), int(input_data[idx+1])
-        idx += 2
-        graph[u].append(v)
-        graph[v].append(u)
+  # Binary lifting setup
+  LOG = 18  # ceil(log2(2*10^5)) = 18
+  up = [[0] * (n + 1) for _ in range(LOG)]
+  depth = [0] * (n + 1)
 
-    # Binary lifting setup
-    LOG = 18  # ceil(log2(2*10^5)) = 18
-    up = [[0] * (n + 1) for _ in range(LOG)]
-    depth = [0] * (n + 1)
+  # DFS to compute depths and direct parents
+  def dfs(node, parent):
+    up[0][node] = parent
+    for child in graph[node]:
+      if child != parent:
+        depth[child] = depth[node] + 1
+        dfs(child, node)
 
-    # DFS to compute depths and direct parents
-    def dfs(node, parent):
-        up[0][node] = parent
-        for child in graph[node]:
-            if child != parent:
-                depth[child] = depth[node] + 1
-                dfs(child, node)
+  dfs(1, 0)  # Root at node 1
 
-    dfs(1, 0)  # Root at node 1
+  # Build binary lifting table
+  for k in range(1, LOG):
+    for v in range(1, n + 1):
+      up[k][v] = up[k-1][up[k-1][v]]
 
-    # Build binary lifting table
-    for k in range(1, LOG):
-        for v in range(1, n + 1):
-            up[k][v] = up[k-1][up[k-1][v]]
+  def lca(a, b):
+    # Ensure a is deeper
+    if depth[a] < depth[b]:
+      a, b = b, a
 
-    def lca(a, b):
-        # Ensure a is deeper
-        if depth[a] < depth[b]:
-            a, b = b, a
+    diff = depth[a] - depth[b]
 
-        diff = depth[a] - depth[b]
+    # Lift a to same depth as b
+    for k in range(LOG):
+      if diff & (1 << k):
+        a = up[k][a]
 
-        # Lift a to same depth as b
-        for k in range(LOG):
-            if diff & (1 << k):
-                a = up[k][a]
+    if a == b:
+      return a
 
-        if a == b:
-            return a
+    # Binary search for LCA
+    for k in range(LOG - 1, -1, -1):
+      if up[k][a] != up[k][b]:
+        a = up[k][a]
+        b = up[k][b]
 
-        # Binary search for LCA
-        for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a = up[k][a]
-                b = up[k][b]
+    return up[0][a]
 
-        return up[0][a]
+  def distance(a, b):
+    l = lca(a, b)
+    return depth[a] + depth[b] - 2 * depth[l]
 
-    def distance(a, b):
-        l = lca(a, b)
-        return depth[a] + depth[b] - 2 * depth[l]
+  # Process queries
+  results = []
+  for _ in range(q):
+    a, b = int(input_data[idx]), int(input_data[idx+1])
+    idx += 2
+    results.append(str(distance(a, b)))
 
-    # Process queries
-    results = []
-    for _ in range(q):
-        a, b = int(input_data[idx]), int(input_data[idx+1])
-        idx += 2
-        results.append(str(distance(a, b)))
-
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -354,7 +354,7 @@ if __name__ == "__main__":
 # WRONG - depth[root] should be 0, not undefined
 depth = [0] * (n + 1)
 def dfs(node, parent):
-    depth[node] = depth[parent] + 1  # Root's parent is 0, so depth[1] = 1
+  depth[node] = depth[parent] + 1  # Root's parent is 0, so depth[1] = 1
 ```
 
 **Problem:** If root's depth starts at 1 instead of 0, the distance formula gives wrong results.
@@ -378,9 +378,9 @@ LOG = 18  # 2^18 = 262144 > 2*10^5
 ```python
 # WRONG - may cause issues if not handled
 def lca(a, b):
-    if depth[a] < depth[b]:
-        a, b = b, a
-    # ... rest of code
+  if depth[a] < depth[b]:
+    a, b = b, a
+  # ... rest of code
 ```
 
 **Problem:** Query for distance(a, a) should return 0.

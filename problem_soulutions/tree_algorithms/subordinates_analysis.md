@@ -109,28 +109,28 @@ For each node, perform a separate DFS to count all nodes in its subtree.
 
 ```python
 def solve_brute_force(n, parents):
-    """
-    Brute force: DFS from each node.
+  """
+  Brute force: DFS from each node.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    # Build adjacency list (children only)
-    children = [[] for _ in range(n + 1)]
-    for i in range(2, n + 1):
-        children[parents[i - 2]].append(i)
+  Time: O(n^2)
+  Space: O(n)
+  """
+  # Build adjacency list (children only)
+  children = [[] for _ in range(n + 1)]
+  for i in range(2, n + 1):
+    children[parents[i - 2]].append(i)
 
-    def count_subtree(node):
-        count = 1
-        for child in children[node]:
-            count += count_subtree(child)
-        return count
+  def count_subtree(node):
+    count = 1
+    for child in children[node]:
+      count += count_subtree(child)
+    return count
 
-    result = []
-    for i in range(1, n + 1):
-        result.append(count_subtree(i) - 1)  # subtract self
+  result = []
+  for i in range(1, n + 1):
+    result.append(count_subtree(i) - 1)  # subtract self
 
-    return result
+  return result
 ```
 
 ### Complexity
@@ -242,45 +242,45 @@ import sys
 from collections import defaultdict
 
 def solve(n, parents):
-    """
-    Optimal solution using single post-order DFS.
+  """
+  Optimal solution using single post-order DFS.
 
-    Time: O(n) - each node visited once
-    Space: O(n) - recursion stack + children list
-    """
-    # Build children list
-    children = defaultdict(list)
-    for i in range(2, n + 1):
-        boss = parents[i - 2]
-        children[boss].append(i)
+  Time: O(n) - each node visited once
+  Space: O(n) - recursion stack + children list
+  """
+  # Build children list
+  children = defaultdict(list)
+  for i in range(2, n + 1):
+    boss = parents[i - 2]
+    children[boss].append(i)
 
-    subtree = [0] * (n + 1)
+  subtree = [0] * (n + 1)
 
-    def dfs(node):
-        subtree[node] = 1  # count self
-        for child in children[node]:
-            dfs(child)
-            subtree[node] += subtree[child]
+  def dfs(node):
+    subtree[node] = 1  # count self
+    for child in children[node]:
+      dfs(child)
+      subtree[node] += subtree[child]
 
-    sys.setrecursionlimit(300000)
-    dfs(1)
+  sys.setrecursionlimit(300000)
+  dfs(1)
 
-    # Output subordinates (subtree size - 1)
-    return [subtree[i] - 1 for i in range(1, n + 1)]
+  # Output subordinates (subtree size - 1)
+  return [subtree[i] - 1 for i in range(1, n + 1)]
 
 
 def main():
-    n = int(input())
-    if n == 1:
-        print(0)
-        return
-    parents = list(map(int, input().split()))
-    result = solve(n, parents)
-    print(' '.join(map(str, result)))
+  n = int(input())
+  if n == 1:
+    print(0)
+    return
+  parents = list(map(int, input().split()))
+  result = solve(n, parents)
+  print(' '.join(map(str, result)))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -312,7 +312,7 @@ print(subtree[i] - 1)
 ```python
 # WRONG - default recursion limit is ~1000
 def dfs(node):
-    ...
+  ...
 ```
 
 **Problem:** Python's default recursion limit causes stack overflow on deep trees.

@@ -122,24 +122,24 @@ Greedy Selection:
 
 ```python
 def solve():
-    n = int(input())
-    movies = []
-    for _ in range(n):
-        a, b = map(int, input().split())
-        movies.append((a, b))
+  n = int(input())
+  movies = []
+  for _ in range(n):
+    a, b = map(int, input().split())
+    movies.append((a, b))
 
-    # Sort by end time
-    movies.sort(key=lambda x: x[1])
+  # Sort by end time
+  movies.sort(key=lambda x: x[1])
 
-    count = 0
-    last_end = 0
+  count = 0
+  last_end = 0
 
-    for start, end in movies:
-        if start >= last_end:
-            count += 1
-            last_end = end
+  for start, end in movies:
+    if start >= last_end:
+      count += 1
+      last_end = end
 
-    print(count)
+  print(count)
 
 solve()
 ```

@@ -108,32 +108,32 @@ Try all ways to place k bishops, checking each placement for attacks.
 
 ```python
 def solve_brute_force(n, k):
-    """
-    Brute force using backtracking.
+  """
+  Brute force using backtracking.
 
-    Time: O(n^2 choose k) - exponential
-    Space: O(k) for recursion
-    """
-    MOD = 10**9 + 7
+  Time: O(n^2 choose k) - exponential
+  Space: O(k) for recursion
+  """
+  MOD = 10**9 + 7
 
-    def attacks(r1, c1, r2, c2):
-        return abs(r1 - r2) == abs(c1 - c2)
+  def attacks(r1, c1, r2, c2):
+    return abs(r1 - r2) == abs(c1 - c2)
 
-    def backtrack(pos, placed):
-        if len(placed) == k:
-            return 1
+  def backtrack(pos, placed):
+    if len(placed) == k:
+      return 1
 
-        count = 0
-        for p in range(pos, n * n):
-            r, c = p // n, p % n
-            valid = all(not attacks(r, c, pr, pc) for pr, pc in placed)
-            if valid:
-                placed.append((r, c))
-                count = (count + backtrack(p + 1, placed)) % MOD
-                placed.pop()
-        return count
+    count = 0
+    for p in range(pos, n * n):
+      r, c = p // n, p % n
+      valid = all(not attacks(r, c, pr, pc) for pr, pc in placed)
+      if valid:
+        placed.append((r, c))
+        count = (count + backtrack(p + 1, placed)) % MOD
+        placed.pop()
+    return count
 
-    return backtrack(0, []) if k > 0 else 1
+  return backtrack(0, []) if k > 0 else 1
 ```
 
 ### Complexity
@@ -245,59 +245,59 @@ White diags (odd sum):  1,3,5   -> sizes: 2,4,2
 
 ```python
 def solve_optimal(n, k):
-    """
-    Optimal solution using diagonal DP.
+  """
+  Optimal solution using diagonal DP.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    MOD = 10**9 + 7
+  Time: O(n^2)
+  Space: O(n)
+  """
+  MOD = 10**9 + 7
 
-    def get_diagonal_sizes(n, color):
-        """Get sizes of diagonals for given color (0=black, 1=white)."""
-        sizes = []
-        for d in range(2 * n - 1):
-            if d % 2 == color:
-                # Diagonal d has squares where row + col = d
-                size = min(d + 1, 2 * n - 1 - d, n)
-                sizes.append(size)
-        return sizes
+  def get_diagonal_sizes(n, color):
+    """Get sizes of diagonals for given color (0=black, 1=white)."""
+    sizes = []
+    for d in range(2 * n - 1):
+      if d % 2 == color:
+        # Diagonal d has squares where row + col = d
+        size = min(d + 1, 2 * n - 1 - d, n)
+        sizes.append(size)
+    return sizes
 
-    def count_placements(diag_sizes):
-        """Count ways to place 0,1,2,... bishops on these diagonals."""
-        num_diags = len(diag_sizes)
-        max_bishops = num_diags  # At most one bishop per diagonal
+  def count_placements(diag_sizes):
+    """Count ways to place 0,1,2,... bishops on these diagonals."""
+    num_diags = len(diag_sizes)
+    max_bishops = num_diags  # At most one bishop per diagonal
 
-        # dp[j] = ways to place j bishops on diagonals seen so far
-        dp = [0] * (max_bishops + 1)
-        dp[0] = 1
+    # dp[j] = ways to place j bishops on diagonals seen so far
+    dp = [0] * (max_bishops + 1)
+    dp[0] = 1
 
-        for d, size in enumerate(diag_sizes):
-            # Process in reverse to avoid overwriting
-            new_dp = [0] * (max_bishops + 1)
-            for j in range(max_bishops + 1):
-                # Don't place on this diagonal
-                new_dp[j] = dp[j]
-                # Place on this diagonal (if possible)
-                if j > 0 and size > j - 1:
-                    new_dp[j] = (new_dp[j] + dp[j-1] * (size - (j-1))) % MOD
-            dp = new_dp
+    for d, size in enumerate(diag_sizes):
+      # Process in reverse to avoid overwriting
+      new_dp = [0] * (max_bishops + 1)
+      for j in range(max_bishops + 1):
+        # Don't place on this diagonal
+        new_dp[j] = dp[j]
+        # Place on this diagonal (if possible)
+        if j > 0 and size > j - 1:
+          new_dp[j] = (new_dp[j] + dp[j-1] * (size - (j-1))) % MOD
+      dp = new_dp
 
-        return dp
+    return dp
 
-    black_sizes = get_diagonal_sizes(n, 0)
-    white_sizes = get_diagonal_sizes(n, 1)
+  black_sizes = get_diagonal_sizes(n, 0)
+  white_sizes = get_diagonal_sizes(n, 1)
 
-    black_dp = count_placements(black_sizes)
-    white_dp = count_placements(white_sizes)
+  black_dp = count_placements(black_sizes)
+  white_dp = count_placements(white_sizes)
 
-    # Combine: answer = sum of black[i] * white[k-i]
-    result = 0
-    for i in range(min(k + 1, len(black_dp))):
-        if k - i < len(white_dp):
-            result = (result + black_dp[i] * white_dp[k - i]) % MOD
+  # Combine: answer = sum of black[i] * white[k-i]
+  result = 0
+  for i in range(min(k + 1, len(black_dp))):
+    if k - i < len(white_dp):
+      result = (result + black_dp[i] * white_dp[k - i]) % MOD
 
-    return result
+  return result
 ```
 
 ### Complexity
@@ -316,8 +316,8 @@ def solve_optimal(n, k):
 ```python
 # WRONG: Treating all diagonals together
 def wrong_approach(n, k):
-    all_diags = get_all_diagonals(n)
-    return count_placements(all_diags)  # Ignores independence!
+  all_diags = get_all_diagonals(n)
+  return count_placements(all_diags)  # Ignores independence!
 ```
 
 **Problem:** This overcounts because bishops on different colored squares can't attack each other.
@@ -341,12 +341,12 @@ size = min(d + 1, 2 * n - 1 - d, n)
 ```python
 # WRONG: Forward iteration overwrites values we need
 for j in range(max_bishops + 1):
-    if j > 0:
-        dp[j] = (dp[j] + dp[j-1] * available) % MOD
+  if j > 0:
+    dp[j] = (dp[j] + dp[j-1] * available) % MOD
 
 # CORRECT: Either use reverse iteration or new array
 for j in range(max_bishops, 0, -1):
-    dp[j] = (dp[j] + dp[j-1] * available) % MOD
+  dp[j] = (dp[j] + dp[j-1] * available) % MOD
 ```
 
 ---

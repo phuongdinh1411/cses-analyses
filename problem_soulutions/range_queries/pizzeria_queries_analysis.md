@@ -104,17 +104,17 @@ This transforms the problem into **two range minimum queries**!
 
 ```python
 def brute_force(n, prices, queries):
-    """Time: O(q * n), Space: O(n)"""
-    p = prices[:]
-    results = []
-    for query in queries:
-        if query[0] == 1:
-            p[query[1] - 1] = query[2]
-        else:
-            k = query[1]
-            min_cost = min(p[j] + abs((k-1) - j) for j in range(n))
-            results.append(min_cost)
-    return results
+  """Time: O(q * n), Space: O(n)"""
+  p = prices[:]
+  results = []
+  for query in queries:
+    if query[0] == 1:
+      p[query[1] - 1] = query[2]
+    else:
+      k = query[1]
+      min_cost = min(p[j] + abs((k-1) - j) for j in range(n))
+      results.append(min_cost)
+  return results
 ```
 
 With q, n up to 2*10^5, this gives 4*10^10 operations - too slow.
@@ -165,60 +165,60 @@ import sys
 from math import inf
 
 def solve():
-    data = sys.stdin.buffer.read().split()
-    idx = 0
-    n, q = int(data[idx]), int(data[idx+1]); idx += 2
+  data = sys.stdin.buffer.read().split()
+  idx = 0
+  n, q = int(data[idx]), int(data[idx+1]); idx += 2
 
-    prices = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
+  prices = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
 
-    size = 1
-    while size < n: size *= 2
+  size = 1
+  while size < n: size *= 2
 
-    left_tree = [inf] * (2 * size)
-    right_tree = [inf] * (2 * size)
+  left_tree = [inf] * (2 * size)
+  right_tree = [inf] * (2 * size)
 
-    for i in range(1, n + 1):
-        left_tree[size + i - 1] = prices[i] - i
-        right_tree[size + i - 1] = prices[i] + i
+  for i in range(1, n + 1):
+    left_tree[size + i - 1] = prices[i] - i
+    right_tree[size + i - 1] = prices[i] + i
 
-    for i in range(size - 1, 0, -1):
-        left_tree[i] = min(left_tree[2*i], left_tree[2*i+1])
-        right_tree[i] = min(right_tree[2*i], right_tree[2*i+1])
+  for i in range(size - 1, 0, -1):
+    left_tree[i] = min(left_tree[2*i], left_tree[2*i+1])
+    right_tree[i] = min(right_tree[2*i], right_tree[2*i+1])
 
-    def update(tree, pos, val):
-        pos = size + pos - 1
-        tree[pos] = val
-        pos //= 2
-        while pos >= 1:
-            tree[pos] = min(tree[2*pos], tree[2*pos+1])
-            pos //= 2
+  def update(tree, pos, val):
+    pos = size + pos - 1
+    tree[pos] = val
+    pos //= 2
+    while pos >= 1:
+      tree[pos] = min(tree[2*pos], tree[2*pos+1])
+      pos //= 2
 
-    def query(tree, l, r):
-        res = inf
-        l, r = size + l - 1, size + r - 1
-        while l <= r:
-            if l % 2 == 1: res = min(res, tree[l]); l += 1
-            if r % 2 == 0: res = min(res, tree[r]); r -= 1
-            l //= 2; r //= 2
-        return res
+  def query(tree, l, r):
+    res = inf
+    l, r = size + l - 1, size + r - 1
+    while l <= r:
+      if l % 2 == 1: res = min(res, tree[l]); l += 1
+      if r % 2 == 0: res = min(res, tree[r]); r -= 1
+      l //= 2; r //= 2
+    return res
 
-    results = []
-    for _ in range(q):
-        t = int(data[idx]); idx += 1
-        if t == 1:
-            k, x = int(data[idx]), int(data[idx+1]); idx += 2
-            update(left_tree, k, x - k)
-            update(right_tree, k, x + k)
-        else:
-            k = int(data[idx]); idx += 1
-            left_min = query(left_tree, 1, k) + k
-            right_min = query(right_tree, k, n) - k
-            results.append(min(left_min, right_min))
+  results = []
+  for _ in range(q):
+    t = int(data[idx]); idx += 1
+    if t == 1:
+      k, x = int(data[idx]), int(data[idx+1]); idx += 2
+      update(left_tree, k, x - k)
+      update(right_tree, k, x + k)
+    else:
+      k = int(data[idx]); idx += 1
+      left_min = query(left_tree, 1, k) + k
+      right_min = query(right_tree, k, n) - k
+      results.append(min(left_min, right_min))
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity

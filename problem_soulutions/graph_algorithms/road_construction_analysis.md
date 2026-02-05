@@ -178,43 +178,43 @@ import sys
 from sys import stdin
 
 def main():
-    input = stdin.readline
-    n, m = map(int, input().split())
+  input = stdin.readline
+  n, m = map(int, input().split())
 
-    parent = list(range(n + 1))  # 1-indexed
-    size = [1] * (n + 1)
-    num_components = n
-    max_size = 1
+  parent = list(range(n + 1))  # 1-indexed
+  size = [1] * (n + 1)
+  num_components = n
+  max_size = 1
 
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
+  def find(x):
+    if parent[x] != x:
+      parent[x] = find(parent[x])
+    return parent[x]
 
-    results = []
-    for _ in range(m):
-        a, b = map(int, input().split())
+  results = []
+  for _ in range(m):
+    a, b = map(int, input().split())
 
-        root_a = find(a)
-        root_b = find(b)
+    root_a = find(a)
+    root_b = find(b)
 
-        if root_a != root_b:
-            # Union by size
-            if size[root_a] < size[root_b]:
-                root_a, root_b = root_b, root_a
+    if root_a != root_b:
+      # Union by size
+      if size[root_a] < size[root_b]:
+        root_a, root_b = root_b, root_a
 
-            parent[root_b] = root_a
-            size[root_a] += size[root_b]
+      parent[root_b] = root_a
+      size[root_a] += size[root_b]
 
-            num_components -= 1
-            max_size = max(max_size, size[root_a])
+      num_components -= 1
+      max_size = max(max_size, size[root_a])
 
-        results.append(f"{num_components} {max_size}")
+    results.append(f"{num_components} {max_size}")
 
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ## Common Mistakes

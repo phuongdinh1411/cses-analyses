@@ -123,33 +123,33 @@ For each node, perform DFS to collect all colors in its subtree and count distin
 
 ```python
 def solve_brute_force(n, colors, edges):
-    """
-    Brute force: DFS from each node.
+  """
+  Brute force: DFS from each node.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    from collections import defaultdict
+  Time: O(n^2)
+  Space: O(n)
+  """
+  from collections import defaultdict
 
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
-    def collect_colors(node, parent):
-        result = {colors[node - 1]}
-        for child in graph[node]:
-            if child != parent:
-                result.update(collect_colors(child, node))
-        return result
-
-    # For each node, collect subtree colors
-    result = []
-    for node in range(1, n + 1):
-        subtree_colors = collect_colors(node, -1)
-        result.append(len(subtree_colors))
-
+  def collect_colors(node, parent):
+    result = {colors[node - 1]}
+    for child in graph[node]:
+      if child != parent:
+        result.update(collect_colors(child, node))
     return result
+
+  # For each node, collect subtree colors
+  result = []
+  for node in range(1, n + 1):
+    subtree_colors = collect_colors(node, -1)
+    result.append(len(subtree_colors))
+
+  return result
 ```
 
 ### Complexity
@@ -268,67 +268,67 @@ import sys
 from collections import defaultdict
 
 def solve(n, colors, edges):
-    """
-    Small-to-large merging solution.
+  """
+  Small-to-large merging solution.
 
-    Time: O(n log n)
-    Space: O(n)
-    """
-    sys.setrecursionlimit(300000)
+  Time: O(n log n)
+  Space: O(n)
+  """
+  sys.setrecursionlimit(300000)
 
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
-    result = [0] * (n + 1)
+  result = [0] * (n + 1)
 
-    def dfs(node, parent):
-        # Start with current node's color
-        color_set = {colors[node - 1]}
+  def dfs(node, parent):
+    # Start with current node's color
+    color_set = {colors[node - 1]}
 
-        for child in graph[node]:
-            if child != parent:
-                child_set = dfs(child, node)
+    for child in graph[node]:
+      if child != parent:
+        child_set = dfs(child, node)
 
-                # Small-to-large: always merge smaller into larger
-                if len(color_set) < len(child_set):
-                    color_set, child_set = child_set, color_set
+        # Small-to-large: always merge smaller into larger
+        if len(color_set) < len(child_set):
+          color_set, child_set = child_set, color_set
 
-                color_set.update(child_set)
+        color_set.update(child_set)
 
-        result[node] = len(color_set)
-        return color_set
+    result[node] = len(color_set)
+    return color_set
 
-    dfs(1, -1)
-    return result[1:]
+  dfs(1, -1)
+  return result[1:]
 
 
 def main():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n = int(input_data[idx])
+  n = int(input_data[idx])
+  idx += 1
+
+  colors = []
+  for i in range(n):
+    colors.append(int(input_data[idx]))
     idx += 1
 
-    colors = []
-    for i in range(n):
-        colors.append(int(input_data[idx]))
-        idx += 1
+  edges = []
+  for _ in range(n - 1):
+    u = int(input_data[idx])
+    v = int(input_data[idx + 1])
+    edges.append((u, v))
+    idx += 2
 
-    edges = []
-    for _ in range(n - 1):
-        u = int(input_data[idx])
-        v = int(input_data[idx + 1])
-        edges.append((u, v))
-        idx += 2
-
-    result = solve(n, colors, edges)
-    print(' '.join(map(str, result)))
+  result = solve(n, colors, edges)
+  print(' '.join(map(str, result)))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -347,9 +347,9 @@ if __name__ == "__main__":
 ```python
 # WRONG - O(n^2) in worst case
 for child in children:
-    child_set = dfs(child, node)
-    child_set.update(color_set)  # Merging large into small!
-    color_set = child_set
+  child_set = dfs(child, node)
+  child_set.update(color_set)  # Merging large into small!
+  color_set = child_set
 ```
 
 **Problem:** If we merge the parent's (larger) set into child's (smaller) set, we lose the O(n log n) guarantee.
@@ -371,7 +371,7 @@ color_set = {colors[node - 1]}  # Adjust for 0-indexed array
 ```python
 # WRONG - default recursion limit is ~1000 in Python
 def dfs(node, parent):
-    ...
+  ...
 
 # CORRECT - increase limit for large inputs
 import sys

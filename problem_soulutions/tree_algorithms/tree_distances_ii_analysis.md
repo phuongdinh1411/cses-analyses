@@ -114,36 +114,36 @@ Run BFS from each node to compute distances to all other nodes, then sum them.
 
 ```python
 def solve_brute_force(n, edges):
-    """
-    Brute force: BFS from each node.
+  """
+  Brute force: BFS from each node.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    from collections import deque, defaultdict
+  Time: O(n^2)
+  Space: O(n)
+  """
+  from collections import deque, defaultdict
 
-    adj = defaultdict(list)
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = defaultdict(list)
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
-    results = []
-    for start in range(1, n + 1):
-        queue = deque([(start, 0)])
-        visited = {start}
-        total = 0
+  results = []
+  for start in range(1, n + 1):
+    queue = deque([(start, 0)])
+    visited = {start}
+    total = 0
 
-        while queue:
-            node, dist = queue.popleft()
-            total += dist
-            for neighbor in adj[node]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append((neighbor, dist + 1))
+    while queue:
+      node, dist = queue.popleft()
+      total += dist
+      for neighbor in adj[node]:
+        if neighbor not in visited:
+          visited.add(neighbor)
+          queue.append((neighbor, dist + 1))
 
-        results.append(total)
+    results.append(total)
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -294,81 +294,81 @@ import sys
 from collections import defaultdict
 
 def solve(n, edges):
-    """
-    Rerooting DP solution.
+  """
+  Rerooting DP solution.
 
-    Time: O(n) - two DFS passes
-    Space: O(n) - adjacency list and arrays
-    """
-    if n == 1:
-        print(0)
-        return
+  Time: O(n) - two DFS passes
+  Space: O(n) - adjacency list and arrays
+  """
+  if n == 1:
+    print(0)
+    return
 
-    # Build adjacency list
-    adj = defaultdict(list)
-    for a, b in edges:
-        adj[a].append(b)
-        adj[b].append(a)
+  # Build adjacency list
+  adj = defaultdict(list)
+  for a, b in edges:
+    adj[a].append(b)
+    adj[b].append(a)
 
-    subtree_size = [0] * (n + 1)
-    subtree_dist = [0] * (n + 1)
-    answer = [0] * (n + 1)
+  subtree_size = [0] * (n + 1)
+  subtree_dist = [0] * (n + 1)
+  answer = [0] * (n + 1)
 
-    # Pass 1: Calculate subtree sizes and distances (iterative)
-    parent = [0] * (n + 1)
-    order = []
-    visited = [False] * (n + 1)
-    stack = [1]
+  # Pass 1: Calculate subtree sizes and distances (iterative)
+  parent = [0] * (n + 1)
+  order = []
+  visited = [False] * (n + 1)
+  stack = [1]
 
-    while stack:
-        node = stack.pop()
-        if visited[node]:
-            continue
-        visited[node] = True
-        order.append(node)
-        for neighbor in adj[node]:
-            if not visited[neighbor]:
-                parent[neighbor] = node
-                stack.append(neighbor)
+  while stack:
+    node = stack.pop()
+    if visited[node]:
+      continue
+    visited[node] = True
+    order.append(node)
+    for neighbor in adj[node]:
+      if not visited[neighbor]:
+        parent[neighbor] = node
+        stack.append(neighbor)
 
-    # Process in reverse order (post-order)
-    for node in reversed(order):
-        subtree_size[node] = 1
-        subtree_dist[node] = 0
-        for neighbor in adj[node]:
-            if neighbor != parent[node]:
-                subtree_size[node] += subtree_size[neighbor]
-                subtree_dist[node] += subtree_dist[neighbor] + subtree_size[neighbor]
+  # Process in reverse order (post-order)
+  for node in reversed(order):
+    subtree_size[node] = 1
+    subtree_dist[node] = 0
+    for neighbor in adj[node]:
+      if neighbor != parent[node]:
+        subtree_size[node] += subtree_size[neighbor]
+        subtree_dist[node] += subtree_dist[neighbor] + subtree_size[neighbor]
 
-    # Pass 2: Rerooting (process in order)
-    answer[1] = subtree_dist[1]
-    for node in order:
-        for neighbor in adj[node]:
-            if neighbor != parent[node]:
-                answer[neighbor] = answer[node] + n - 2 * subtree_size[neighbor]
+  # Pass 2: Rerooting (process in order)
+  answer[1] = subtree_dist[1]
+  for node in order:
+    for neighbor in adj[node]:
+      if neighbor != parent[node]:
+        answer[neighbor] = answer[node] + n - 2 * subtree_size[neighbor]
 
-    # Output
-    for i in range(1, n + 1):
-        print(answer[i])
+  # Output
+  for i in range(1, n + 1):
+    print(answer[i])
 
 
 def main():
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n = int(input_data[idx]); idx += 1
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
 
-    edges = []
-    for _ in range(n - 1):
-        a = int(input_data[idx]); idx += 1
-        b = int(input_data[idx]); idx += 1
-        edges.append((a, b))
+  edges = []
+  for _ in range(n - 1):
+    a = int(input_data[idx]); idx += 1
+    b = int(input_data[idx]); idx += 1
+    edges.append((a, b))
 
-    solve(n, edges)
+  solve(n, edges)
 
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(300000)
-    main()
+  sys.setrecursionlimit(300000)
+  main()
 ```
 
 ### Complexity
@@ -405,12 +405,12 @@ answer[child] = answer[parent] + n - 2 * subtree_size[child]
 ```python
 # WRONG - including parent in subtree
 for neighbor in adj[node]:
-    subtree_size[node] += subtree_size[neighbor]
+  subtree_size[node] += subtree_size[neighbor]
 
 # CORRECT - exclude parent
 for neighbor in adj[node]:
-    if neighbor != parent[node]:
-        subtree_size[node] += subtree_size[neighbor]
+  if neighbor != parent[node]:
+    subtree_size[node] += subtree_size[neighbor]
 ```
 
 **Problem:** Parent is not part of the subtree.
@@ -421,9 +421,9 @@ for neighbor in adj[node]:
 ```python
 # WRONG - recursive DFS on deep trees
 def dfs(node, parent):
-    for child in adj[node]:
-        if child != parent:
-            dfs(child, node)  # May overflow for n=200000
+  for child in adj[node]:
+    if child != parent:
+      dfs(child, node)  # May overflow for n=200000
 
 # CORRECT - use iterative approach or increase recursion limit
 sys.setrecursionlimit(300000)

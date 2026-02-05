@@ -78,43 +78,43 @@ import sys
 from sys import stdin
 
 def solve():
-    input = stdin.readline
-    n, m = map(int, input().split())
+  input = stdin.readline
+  n, m = map(int, input().split())
 
-    parent = list(range(n + 1))
-    rank = [0] * (n + 1)
-    components = n
+  parent = list(range(n + 1))
+  rank = [0] * (n + 1)
+  components = n
 
-    def find(x):
-        if parent[x] != x:
-            parent[x] = find(parent[x])
-        return parent[x]
+  def find(x):
+    if parent[x] != x:
+      parent[x] = find(parent[x])
+    return parent[x]
 
-    def union(a, b):
-        nonlocal components
-        ra, rb = find(a), find(b)
-        if ra == rb:
-            return False  # Already connected
+  def union(a, b):
+    nonlocal components
+    ra, rb = find(a), find(b)
+    if ra == rb:
+      return False  # Already connected
 
-        # Union by rank
-        if rank[ra] < rank[rb]:
-            ra, rb = rb, ra
-        parent[rb] = ra
-        if rank[ra] == rank[rb]:
-            rank[ra] += 1
+    # Union by rank
+    if rank[ra] < rank[rb]:
+      ra, rb = rb, ra
+    parent[rb] = ra
+    if rank[ra] == rank[rb]:
+      rank[ra] += 1
 
-        components -= 1
-        return True
+    components -= 1
+    return True
 
-    for i in range(1, m + 1):
-        a, b = map(int, input().split())
-        union(a, b)
+  for i in range(1, m + 1):
+    a, b = map(int, input().split())
+    union(a, b)
 
-        if components == 1:
-            print(i)
-            return
+    if components == 1:
+      print(i)
+      return
 
-    print("IMPOSSIBLE")
+  print("IMPOSSIBLE")
 
 solve()
 ```

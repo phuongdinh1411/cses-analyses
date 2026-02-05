@@ -105,19 +105,19 @@ For each query, iterate through the range and sum all elements.
 
 ```python
 def solve_brute_force(n, arr, queries):
-    """
-    Brute force: sum each range directly.
+  """
+  Brute force: sum each range directly.
 
-    Time: O(q * n)
-    Space: O(1)
-    """
-    results = []
-    for a, b in queries:
-        total = 0
-        for i in range(a - 1, b):  # Convert to 0-indexed
-            total += arr[i]
-        results.append(total)
-    return results
+  Time: O(q * n)
+  Space: O(1)
+  """
+  results = []
+  for a, b in queries:
+    total = 0
+    for i in range(a - 1, b):  # Convert to 0-indexed
+      total += arr[i]
+    results.append(total)
+  return results
 ```
 
 ### Complexity
@@ -199,21 +199,21 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    n, q = map(int, input().split())
-    arr = list(map(int, input().split()))
+  n, q = map(int, input().split())
+  arr = list(map(int, input().split()))
 
-    # Build prefix sum array (1-indexed)
-    prefix = [0] * (n + 1)
-    for i in range(n):
-        prefix[i + 1] = prefix[i] + arr[i]
+  # Build prefix sum array (1-indexed)
+  prefix = [0] * (n + 1)
+  for i in range(n):
+    prefix[i + 1] = prefix[i] + arr[i]
 
-    # Answer queries
-    results = []
-    for _ in range(q):
-        a, b = map(int, input().split())
-        results.append(prefix[b] - prefix[a - 1])
+  # Answer queries
+  results = []
+  for _ in range(q):
+    a, b = map(int, input().split())
+    results.append(prefix[b] - prefix[a - 1])
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 solve()
 ```

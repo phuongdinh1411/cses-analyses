@@ -101,23 +101,23 @@ Recursively explore all possible paths of length k from the start node, counting
 
 ```python
 def brute_force(n, adj, a, k):
-    """
-    Count cycles using DFS. TLE for large k.
-    Time: O(n^k), Space: O(k)
-    """
-    MOD = 10**9 + 7
+  """
+  Count cycles using DFS. TLE for large k.
+  Time: O(n^k), Space: O(k)
+  """
+  MOD = 10**9 + 7
 
-    def dfs(node, remaining):
-        if remaining == 0:
-            return 1 if node == a else 0
+  def dfs(node, remaining):
+    if remaining == 0:
+      return 1 if node == a else 0
 
-        count = 0
-        for next_node in range(n):
-            if adj[node][next_node]:
-                count = (count + dfs(next_node, remaining - 1)) % MOD
-        return count
+    count = 0
+    for next_node in range(n):
+      if adj[node][next_node]:
+        count = (count + dfs(next_node, remaining - 1)) % MOD
+    return count
 
-    return dfs(a, k)
+  return dfs(a, k)
 ```
 
 ### Complexity
@@ -217,72 +217,72 @@ A^3 diagonal: [1, 1, 1]
 
 ```python
 def solve(n, adj, queries):
-    """
-    Matrix exponentiation solution for cycle counting.
+  """
+  Matrix exponentiation solution for cycle counting.
 
-    Time: O(n^3 * log(k) * q) - can optimize with caching
-    Space: O(n^2)
-    """
-    MOD = 10**9 + 7
+  Time: O(n^3 * log(k) * q) - can optimize with caching
+  Space: O(n^2)
+  """
+  MOD = 10**9 + 7
 
-    def matrix_mult(A, B):
-        """Multiply two n x n matrices with modular arithmetic."""
-        C = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for j in range(n):
-                for k in range(n):
-                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
-        return C
+  def matrix_mult(A, B):
+    """Multiply two n x n matrices with modular arithmetic."""
+    C = [[0] * n for _ in range(n)]
+    for i in range(n):
+      for j in range(n):
+        for k in range(n):
+          C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD
+    return C
 
-    def matrix_power(M, p):
-        """Compute M^p using binary exponentiation."""
-        # Initialize result as identity matrix
-        result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-        base = [row[:] for row in M]  # Copy matrix
+  def matrix_power(M, p):
+    """Compute M^p using binary exponentiation."""
+    # Initialize result as identity matrix
+    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    base = [row[:] for row in M]  # Copy matrix
 
-        while p > 0:
-            if p & 1:  # If p is odd
-                result = matrix_mult(result, base)
-            base = matrix_mult(base, base)
-            p >>= 1
+    while p > 0:
+      if p & 1:  # If p is odd
+        result = matrix_mult(result, base)
+      base = matrix_mult(base, base)
+      p >>= 1
 
-        return result
+    return result
 
-    results = []
-    for a, k in queries:
-        powered = matrix_power(adj, k)
-        results.append(powered[a - 1][a - 1])  # 1-indexed to 0-indexed
+  results = []
+  for a, k in queries:
+    powered = matrix_power(adj, k)
+    results.append(powered[a - 1][a - 1])  # 1-indexed to 0-indexed
 
-    return results
+  return results
 
 
 # Main
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n, q = int(input_data[idx]), int(input_data[idx + 1])
+  n, q = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+
+  adj = []
+  for i in range(n):
+    row = [int(input_data[idx + j]) for j in range(n)]
+    adj.append(row)
+    idx += n
+
+  queries = []
+  for _ in range(q):
+    a, k = int(input_data[idx]), int(input_data[idx + 1])
+    queries.append((a, k))
     idx += 2
 
-    adj = []
-    for i in range(n):
-        row = [int(input_data[idx + j]) for j in range(n)]
-        adj.append(row)
-        idx += n
-
-    queries = []
-    for _ in range(q):
-        a, k = int(input_data[idx]), int(input_data[idx + 1])
-        queries.append((a, k))
-        idx += 2
-
-    for ans in solve(n, adj, queries):
-        print(ans)
+  for ans in solve(n, adj, queries):
+    print(ans)
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity

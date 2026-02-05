@@ -110,28 +110,28 @@ from collections import defaultdict
 sys.setrecursionlimit(300000)
 
 def solve():
-    n = int(input())
-    if n == 1:
-        print(1)
-        return
+  n = int(input())
+  if n == 1:
+    print(1)
+    return
 
-    parents = list(map(int, input().split()))
+  parents = list(map(int, input().split()))
 
-    # Build adjacency list
-    children = defaultdict(list)
-    for i, p in enumerate(parents):
-        children[p].append(i + 2)  # Node i+2 has parent p
+  # Build adjacency list
+  children = defaultdict(list)
+  for i, p in enumerate(parents):
+    children[p].append(i + 2)  # Node i+2 has parent p
 
-    subtree_size = [0] * (n + 1)
+  subtree_size = [0] * (n + 1)
 
-    def dfs(node):
-        subtree_size[node] = 1
-        for child in children[node]:
-            dfs(child)
-            subtree_size[node] += subtree_size[child]
+  def dfs(node):
+    subtree_size[node] = 1
+    for child in children[node]:
+      dfs(child)
+      subtree_size[node] += subtree_size[child]
 
-    dfs(1)
-    print(' '.join(map(str, subtree_size[1:])))
+  dfs(1)
+  print(' '.join(map(str, subtree_size[1:])))
 
 solve()
 ```
@@ -161,37 +161,37 @@ solve()
 
 ```python
 def solve_iterative():
-    n = int(input())
-    if n == 1:
-        print(1)
-        return
+  n = int(input())
+  if n == 1:
+    print(1)
+    return
 
-    parents = list(map(int, input().split()))
+  parents = list(map(int, input().split()))
 
-    # Build adjacency list
-    children = [[] for _ in range(n + 1)]
-    for i, p in enumerate(parents):
-        children[p].append(i + 2)
+  # Build adjacency list
+  children = [[] for _ in range(n + 1)]
+  for i, p in enumerate(parents):
+    children[p].append(i + 2)
 
-    subtree_size = [0] * (n + 1)
+  subtree_size = [0] * (n + 1)
 
-    # Iterative DFS using stack
-    stack = [(1, False)]  # (node, is_processed)
+  # Iterative DFS using stack
+  stack = [(1, False)]  # (node, is_processed)
 
-    while stack:
-        node, processed = stack.pop()
+  while stack:
+    node, processed = stack.pop()
 
-        if processed:
-            # All children processed, compute subtree size
-            subtree_size[node] = 1 + sum(subtree_size[c] for c in children[node])
-        else:
-            # Push self for processing after children
-            stack.append((node, True))
-            # Push children
-            for child in children[node]:
-                stack.append((child, False))
+    if processed:
+      # All children processed, compute subtree size
+      subtree_size[node] = 1 + sum(subtree_size[c] for c in children[node])
+    else:
+      # Push self for processing after children
+      stack.append((node, True))
+      # Push children
+      for child in children[node]:
+        stack.append((child, False))
 
-    print(' '.join(map(str, subtree_size[1:])))
+  print(' '.join(map(str, subtree_size[1:])))
 
 solve_iterative()
 ```
@@ -242,7 +242,7 @@ Output: 5 3 1 1 1
 ```python
 # WRONG - will crash for deep trees
 def dfs(node):
-    ...
+  ...
 
 # CORRECT - increase recursion limit
 import sys
@@ -257,11 +257,11 @@ sys.setrecursionlimit(300000)
 ```python
 # WRONG - nodes are 1-indexed
 for i, p in enumerate(parents):
-    children[p].append(i)  # Should be i+2
+  children[p].append(i)  # Should be i+2
 
 # CORRECT
 for i, p in enumerate(parents):
-    children[p].append(i + 2)  # Node indices start at 2
+  children[p].append(i + 2)  # Node indices start at 2
 ```
 
 **Problem:** The parent array describes nodes 2 through n
@@ -275,8 +275,8 @@ parents = list(map(int, input().split()))  # Empty input!
 
 # CORRECT
 if n == 1:
-    print(1)
-    return
+  print(1)
+  return
 ```
 
 ---

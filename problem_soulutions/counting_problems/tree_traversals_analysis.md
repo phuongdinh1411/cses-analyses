@@ -121,30 +121,30 @@ Generate all possible traversal orderings by trying every permutation of childre
 from itertools import permutations
 
 def count_traversals_brute(n, parents):
-    """
-    Brute force: enumerate all orderings.
+  """
+  Brute force: enumerate all orderings.
 
-    Time: O(n! * n) in worst case
-    Space: O(n)
-    """
-    # Build adjacency list
-    children = [[] for _ in range(n + 1)]
-    for i, p in enumerate(parents, start=2):
-        children[p].append(i)
+  Time: O(n! * n) in worst case
+  Space: O(n)
+  """
+  # Build adjacency list
+  children = [[] for _ in range(n + 1)]
+  for i, p in enumerate(parents, start=2):
+    children[p].append(i)
 
-    def count_orderings(node):
-        if not children[node]:
-            return 1
+  def count_orderings(node):
+    if not children[node]:
+      return 1
 
-        total = 0
-        for perm in permutations(children[node]):
-            product = 1
-            for child in perm:
-                product *= count_orderings(child)
-            total += product
-        return total
+    total = 0
+    for perm in permutations(children[node]):
+      product = 1
+      for child in perm:
+        product *= count_orderings(child)
+      total += product
+    return total
 
-    return count_orderings(1)
+  return count_orderings(1)
 ```
 
 ### Complexity
@@ -210,39 +210,39 @@ Output: 4
 
 ```python
 def count_traversals(n, parents):
-    """
-    Count tree traversal orderings using factorial product.
+  """
+  Count tree traversal orderings using factorial product.
 
-    Time: O(n)
-    Space: O(n)
-    """
-    MOD = 10**9 + 7
+  Time: O(n)
+  Space: O(n)
+  """
+  MOD = 10**9 + 7
 
-    # Precompute factorials
-    fact = [1] * (n + 1)
-    for i in range(1, n + 1):
-        fact[i] = fact[i-1] * i % MOD
+  # Precompute factorials
+  fact = [1] * (n + 1)
+  for i in range(1, n + 1):
+    fact[i] = fact[i-1] * i % MOD
 
-    # Count children for each node
-    children_count = [0] * (n + 1)
-    for i, p in enumerate(parents, start=2):
-        children_count[p] += 1
+  # Count children for each node
+  children_count = [0] * (n + 1)
+  for i, p in enumerate(parents, start=2):
+    children_count[p] += 1
 
-    # Compute product of factorials
-    result = 1
-    for v in range(1, n + 1):
-        result = result * fact[children_count[v]] % MOD
+  # Compute product of factorials
+  result = 1
+  for v in range(1, n + 1):
+    result = result * fact[children_count[v]] % MOD
 
-    return result
+  return result
 
 
 def solve():
-    n = int(input())
-    if n == 1:
-        print(1)
-        return
-    parents = list(map(int, input().split()))
-    print(count_traversals(n, parents))
+  n = int(input())
+  if n == 1:
+    print(1)
+    return
+  parents = list(map(int, input().split()))
+  print(count_traversals(n, parents))
 ```
 
 ### Complexity
@@ -262,12 +262,12 @@ def solve():
 # WRONG - Integer overflow for large n
 result = 1
 for v in range(1, n + 1):
-    result *= factorial(children_count[v])  # Overflows!
+  result *= factorial(children_count[v])  # Overflows!
 
 # CORRECT - Apply modulo at each step
 result = 1
 for v in range(1, n + 1):
-    result = result * fact[children_count[v]] % MOD
+  result = result * fact[children_count[v]] % MOD
 ```
 
 **Problem:** Factorials grow extremely fast; 21! exceeds 64-bit integers.
@@ -278,11 +278,11 @@ for v in range(1, n + 1):
 ```python
 # WRONG - Parents are for nodes 2..n, not 1..n
 for i, p in enumerate(parents):  # i starts at 0
-    children_count[p] += 1
+  children_count[p] += 1
 
 # CORRECT - Parents start at node 2
 for i, p in enumerate(parents, start=2):
-    children_count[p] += 1
+  children_count[p] += 1
 ```
 
 **Problem:** Node 1 is the root with no parent in input.
@@ -296,8 +296,8 @@ parents = list(map(int, input().split()))  # Empty for n=1
 
 # CORRECT - Handle n=1 separately
 if n == 1:
-    print(1)
-    return
+  print(1)
+  return
 ```
 
 ---

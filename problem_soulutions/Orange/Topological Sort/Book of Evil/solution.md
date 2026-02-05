@@ -36,53 +36,53 @@ Key insight: The farthest affected settlement from any node must be one of the t
 from collections import deque
 
 def solve():
-    n, m, d = map(int, input().split())
-    affected = set(map(int, input().split()))
+  n, m, d = map(int, input().split())
+  affected = set(map(int, input().split()))
 
-    adj = [[] for _ in range(n + 1)]
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = [[] for _ in range(n + 1)]
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    def bfs(start):
-        """Returns distances from start to all nodes"""
-        dist = [-1] * (n + 1)
-        dist[start] = 0
-        queue = deque([start])
+  def bfs(start):
+    """Returns distances from start to all nodes"""
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    queue = deque([start])
 
-        while queue:
-            u = queue.popleft()
-            for v in adj[u]:
-                if dist[v] == -1:
-                    dist[v] = dist[u] + 1
-                    queue.append(v)
+    while queue:
+      u = queue.popleft()
+      for v in adj[u]:
+        if dist[v] == -1:
+          dist[v] = dist[u] + 1
+          queue.append(v)
 
-        return dist
+    return dist
 
-    # Find first endpoint: farthest affected node from any affected node
-    first_affected = next(iter(affected))
-    dist_from_first = bfs(first_affected)
+  # Find first endpoint: farthest affected node from any affected node
+  first_affected = next(iter(affected))
+  dist_from_first = bfs(first_affected)
 
-    u = max(affected, key=lambda x: dist_from_first[x])
+  u = max(affected, key=lambda x: dist_from_first[x])
 
-    # Find second endpoint: farthest affected node from u
-    dist_from_u = bfs(u)
-    v = max(affected, key=lambda x: dist_from_u[x])
+  # Find second endpoint: farthest affected node from u
+  dist_from_u = bfs(u)
+  v = max(affected, key=lambda x: dist_from_u[x])
 
-    # Get distances from both endpoints
-    dist_from_v = bfs(v)
+  # Get distances from both endpoints
+  dist_from_v = bfs(v)
 
-    # Count settlements where max distance to affected is <= d
-    result = 0
-    for i in range(1, n + 1):
-        if max(dist_from_u[i], dist_from_v[i]) <= d:
-            result += 1
+  # Count settlements where max distance to affected is <= d
+  result = 0
+  for i in range(1, n + 1):
+    if max(dist_from_u[i], dist_from_v[i]) <= d:
+      result += 1
 
-    print(result)
+  print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with DFS
@@ -92,47 +92,47 @@ import sys
 sys.setrecursionlimit(200000)
 
 def solve():
-    n, m, d = map(int, input().split())
-    affected = list(map(int, input().split()))
-    affected_set = set(affected)
+  n, m, d = map(int, input().split())
+  affected = list(map(int, input().split()))
+  affected_set = set(affected)
 
-    adj = [[] for _ in range(n + 1)]
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
+  adj = [[] for _ in range(n + 1)]
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    adj[a].append(b)
+    adj[b].append(a)
 
-    def dfs(start):
-        dist = [-1] * (n + 1)
-        dist[start] = 0
-        stack = [start]
+  def dfs(start):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    stack = [start]
 
-        while stack:
-            u = stack.pop()
-            for v in adj[u]:
-                if dist[v] == -1:
-                    dist[v] = dist[u] + 1
-                    stack.append(v)
+    while stack:
+      u = stack.pop()
+      for v in adj[u]:
+        if dist[v] == -1:
+          dist[v] = dist[u] + 1
+          stack.append(v)
 
-        return dist
+    return dist
 
-    # Find diameter endpoints among affected nodes
-    dist1 = dfs(affected[0])
-    u = max(affected, key=lambda x: dist1[x])
+  # Find diameter endpoints among affected nodes
+  dist1 = dfs(affected[0])
+  u = max(affected, key=lambda x: dist1[x])
 
-    dist_u = dfs(u)
-    v = max(affected, key=lambda x: dist_u[x])
+  dist_u = dfs(u)
+  v = max(affected, key=lambda x: dist_u[x])
 
-    dist_v = dfs(v)
+  dist_v = dfs(v)
 
-    # Count valid positions
-    count = sum(1 for i in range(1, n + 1)
-                if max(dist_u[i], dist_v[i]) <= d)
+  # Count valid positions
+  count = sum(1 for i in range(1, n + 1)
+        if max(dist_u[i], dist_v[i]) <= d)
 
-    print(count)
+  print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

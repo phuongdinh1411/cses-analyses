@@ -35,84 +35,84 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    m = int(input())
+  n = int(input())
+  arr = list(map(int, input().split()))
+  m = int(input())
 
-    INF = float('inf')
+  INF = float('inf')
 
-    # Segment tree with lazy propagation
-    tree = [0] * (4 * n)
-    lazy = [0] * (4 * n)
+  # Segment tree with lazy propagation
+  tree = [0] * (4 * n)
+  lazy = [0] * (4 * n)
 
-    def build(node, start, end):
-        if start == end:
-            tree[node] = arr[start]
-            return
-        mid = (start + end) // 2
-        build(2*node, start, mid)
-        build(2*node+1, mid+1, end)
-        tree[node] = min(tree[2*node], tree[2*node+1])
+  def build(node, start, end):
+    if start == end:
+      tree[node] = arr[start]
+      return
+    mid = (start + end) // 2
+    build(2*node, start, mid)
+    build(2*node+1, mid+1, end)
+    tree[node] = min(tree[2*node], tree[2*node+1])
 
-    def push_down(node):
-        if lazy[node] != 0:
-            lazy[2*node] += lazy[node]
-            lazy[2*node+1] += lazy[node]
-            tree[2*node] += lazy[node]
-            tree[2*node+1] += lazy[node]
-            lazy[node] = 0
+  def push_down(node):
+    if lazy[node] != 0:
+      lazy[2*node] += lazy[node]
+      lazy[2*node+1] += lazy[node]
+      tree[2*node] += lazy[node]
+      tree[2*node+1] += lazy[node]
+      lazy[node] = 0
 
-    def update(node, start, end, l, r, val):
-        if r < start or end < l:
-            return
-        if l <= start and end <= r:
-            tree[node] += val
-            lazy[node] += val
-            return
-        push_down(node)
-        mid = (start + end) // 2
-        update(2*node, start, mid, l, r, val)
-        update(2*node+1, mid+1, end, l, r, val)
-        tree[node] = min(tree[2*node], tree[2*node+1])
+  def update(node, start, end, l, r, val):
+    if r < start or end < l:
+      return
+    if l <= start and end <= r:
+      tree[node] += val
+      lazy[node] += val
+      return
+    push_down(node)
+    mid = (start + end) // 2
+    update(2*node, start, mid, l, r, val)
+    update(2*node+1, mid+1, end, l, r, val)
+    tree[node] = min(tree[2*node], tree[2*node+1])
 
-    def query(node, start, end, l, r):
-        if r < start or end < l:
-            return INF
-        if l <= start and end <= r:
-            return tree[node]
-        push_down(node)
-        mid = (start + end) // 2
-        return min(query(2*node, start, mid, l, r),
-                   query(2*node+1, mid+1, end, l, r))
+  def query(node, start, end, l, r):
+    if r < start or end < l:
+      return INF
+    if l <= start and end <= r:
+      return tree[node]
+    push_down(node)
+    mid = (start + end) // 2
+    return min(query(2*node, start, mid, l, r),
+         query(2*node+1, mid+1, end, l, r))
 
-    build(1, 0, n-1)
+  build(1, 0, n-1)
 
-    results = []
-    for _ in range(m):
-        line = list(map(int, input().split()))
+  results = []
+  for _ in range(m):
+    line = list(map(int, input().split()))
 
-        if len(line) == 2:
-            # RMQ query
-            lf, rg = line
-            if lf <= rg:
-                results.append(query(1, 0, n-1, lf, rg))
-            else:
-                # Circular: [lf, n-1] and [0, rg]
-                results.append(min(query(1, 0, n-1, lf, n-1),
-                                   query(1, 0, n-1, 0, rg)))
-        else:
-            # Inc update
-            lf, rg, v = line
-            if lf <= rg:
-                update(1, 0, n-1, lf, rg, v)
-            else:
-                update(1, 0, n-1, lf, n-1, v)
-                update(1, 0, n-1, 0, rg, v)
+    if len(line) == 2:
+      # RMQ query
+      lf, rg = line
+      if lf <= rg:
+        results.append(query(1, 0, n-1, lf, rg))
+      else:
+        # Circular: [lf, n-1] and [0, rg]
+        results.append(min(query(1, 0, n-1, lf, n-1),
+                 query(1, 0, n-1, 0, rg)))
+    else:
+      # Inc update
+      lf, rg, v = line
+      if lf <= rg:
+        update(1, 0, n-1, lf, rg, v)
+      else:
+        update(1, 0, n-1, lf, n-1, v)
+        update(1, 0, n-1, 0, rg, v)
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

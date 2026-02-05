@@ -160,29 +160,29 @@ Sum: floor(100/5) + floor(100/25) + floor(100/125) + ...
 
 ```python
 def trailing_zeros(n: int) -> int:
-    """
-    Count trailing zeros in n! using Legendre's formula.
+  """
+  Count trailing zeros in n! using Legendre's formula.
 
-    Time: O(log_5(n)) - we divide by 5 each iteration
-    Space: O(1) - only using a few variables
-    """
-    count = 0
-    power_of_5 = 5
+  Time: O(log_5(n)) - we divide by 5 each iteration
+  Space: O(1) - only using a few variables
+  """
+  count = 0
+  power_of_5 = 5
 
-    while power_of_5 <= n:
-        count += n // power_of_5
-        power_of_5 *= 5
+  while power_of_5 <= n:
+    count += n // power_of_5
+    power_of_5 *= 5
 
-    return count
+  return count
 
 
 def main():
-    n = int(input())
-    print(trailing_zeros(n))
+  n = int(input())
+  print(trailing_zeros(n))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -201,7 +201,7 @@ if __name__ == "__main__":
 ```python
 # WRONG
 def trailing_zeros_wrong(n):
-    return n // 5  # Misses extra factors from 25, 125, etc.
+  return n // 5  # Misses extra factors from 25, 125, etc.
 ```
 
 **Problem:** This only counts numbers divisible by 5 once, but 25 contributes 2 fives, 125 contributes 3, etc.
@@ -223,9 +223,9 @@ def trailing_zeros_wrong(n):
 ```python
 # UNNECESSARY
 def trailing_zeros_overcomplicated(n):
-    count_2 = sum(n // (2**i) for i in range(1, 32) if 2**i <= n)
-    count_5 = sum(n // (5**i) for i in range(1, 14) if 5**i <= n)
-    return min(count_2, count_5)
+  count_2 = sum(n // (2**i) for i in range(1, 32) if 2**i <= n)
+  count_5 = sum(n // (5**i) for i in range(1, 14) if 5**i <= n)
+  return min(count_2, count_5)
 ```
 
 **Problem:** While mathematically correct, this is unnecessary work.

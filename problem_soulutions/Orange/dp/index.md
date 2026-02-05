@@ -58,36 +58,36 @@ This is a classic DP problem similar to climbing stairs:
 
 ```python
 def solve(s):
-    n = len(s)
-    if n == 0 or s[0] == '0':
-        return 0
+  n = len(s)
+  if n == 0 or s[0] == '0':
+    return 0
 
-    # dp[i] = number of ways to decode first i characters
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Empty string
-    dp[1] = 1  # First character (already checked it's not 0)
+  # dp[i] = number of ways to decode first i characters
+  dp = [0] * (n + 1)
+  dp[0] = 1  # Empty string
+  dp[1] = 1  # First character (already checked it's not 0)
 
-    for i in range(2, n + 1):
-        # Single digit decode (1-9)
-        if s[i-1] != '0':
-            dp[i] = dp[i-1]
+  for i in range(2, n + 1):
+    # Single digit decode (1-9)
+    if s[i-1] != '0':
+      dp[i] = dp[i-1]
 
-        # Two digit decode (10-26)
-        two_digit = int(s[i-2:i])
-        if 10 <= two_digit <= 26:
-            dp[i] += dp[i-2]
+    # Two digit decode (10-26)
+    two_digit = int(s[i-2:i])
+    if 10 <= two_digit <= 26:
+      dp[i] += dp[i-2]
 
-    return dp[n]
+  return dp[n]
 
 def main():
-    while True:
-        s = input().strip()
-        if s == '0':
-            break
-        print(solve(s))
+  while True:
+    s = input().strip()
+    if s == '0':
+      break
+    print(solve(s))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ##### Complexity Analysis
@@ -149,63 +149,63 @@ sys.setrecursionlimit(100000)
 memo = {}
 
 def solve(n):
-    if n == 0:
-        return 0
+  if n == 0:
+    return 0
 
-    if n in memo:
-        return memo[n]
+  if n in memo:
+    return memo[n]
 
-    # Either keep the coin or exchange it
-    exchanged = solve(n // 2) + solve(n // 3) + solve(n // 4)
-    result = max(n, exchanged)
+  # Either keep the coin or exchange it
+  exchanged = solve(n // 2) + solve(n // 3) + solve(n // 4)
+  result = max(n, exchanged)
 
-    memo[n] = result
-    return result
+  memo[n] = result
+  return result
 
 def main():
-    try:
-        while True:
-            n = int(input())
-            print(solve(n))
-    except EOFError:
-        pass
+  try:
+    while True:
+      n = int(input())
+      print(solve(n))
+  except EOFError:
+    pass
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ##### Alternative
 
 ```python
 def solve_iterative(n):
-    if n < 12:
-        return n
+  if n < 12:
+    return n
 
-    # Use dictionary for sparse memoization
-    dp = {}
+  # Use dictionary for sparse memoization
+  dp = {}
 
-    def get_value(x):
-        if x < 12:
-            return x
-        if x in dp:
-            return dp[x]
+  def get_value(x):
+    if x < 12:
+      return x
+    if x in dp:
+      return dp[x]
 
-        result = max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
-        dp[x] = result
-        return result
+    result = max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
+    dp[x] = result
+    return result
 
-    return get_value(n)
+  return get_value(n)
 
 def main():
-    try:
-        while True:
-            n = int(input())
-            print(solve_iterative(n))
-    except EOFError:
-        pass
+  try:
+    while True:
+      n = int(input())
+      print(solve_iterative(n))
+  except EOFError:
+    pass
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ##### Complexity Analysis
@@ -254,56 +254,56 @@ Use dynamic programming where `dp[i]` = number of ways to make amount `i`.
 
 ```python
 def solve():
-    # Precompute cubic coins: 1, 8, 27, 64, ..., 9261
-    coins = [i**3 for i in range(1, 22)]  # 1^3 to 21^3
+  # Precompute cubic coins: 1, 8, 27, 64, ..., 9261
+  coins = [i**3 for i in range(1, 22)]  # 1^3 to 21^3
 
-    # Precompute dp for all amounts up to 10000
-    MAX_AMOUNT = 10000
-    dp = [0] * (MAX_AMOUNT + 1)
-    dp[0] = 1  # One way to make 0: use no coins
+  # Precompute dp for all amounts up to 10000
+  MAX_AMOUNT = 10000
+  dp = [0] * (MAX_AMOUNT + 1)
+  dp[0] = 1  # One way to make 0: use no coins
 
-    # For each coin, update all amounts that can use it
-    for coin in coins:
-        for amount in range(coin, MAX_AMOUNT + 1):
-            dp[amount] += dp[amount - coin]
+  # For each coin, update all amounts that can use it
+  for coin in coins:
+    for amount in range(coin, MAX_AMOUNT + 1):
+      dp[amount] += dp[amount - coin]
 
-    # Process queries
-    import sys
-    for line in sys.stdin:
-        n = int(line.strip())
-        print(dp[n])
+  # Process queries
+  import sys
+  for line in sys.stdin:
+    n = int(line.strip())
+    print(dp[n])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def count_ways(amount):
-    coins = [i**3 for i in range(1, 22)]
+  coins = [i**3 for i in range(1, 22)]
 
-    dp = [0] * (amount + 1)
-    dp[0] = 1
+  dp = [0] * (amount + 1)
+  dp[0] = 1
 
-    for coin in coins:
-        if coin > amount:
-            break
-        for i in range(coin, amount + 1):
-            dp[i] += dp[i - coin]
+  for coin in coins:
+    if coin > amount:
+      break
+    for i in range(coin, amount + 1):
+      dp[i] += dp[i - coin]
 
-    return dp[amount]
+  return dp[amount]
 
 def solve():
-    while True:
-        try:
-            n = int(input())
-            print(count_ways(n))
-        except EOFError:
-            break
+  while True:
+    try:
+      n = int(input())
+      print(count_ways(n))
+    except EOFError:
+      break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Solution with Memoization
@@ -312,27 +312,27 @@ if __name__ == "__main__":
 from functools import lru_cache
 
 def solve():
-    coins = tuple(i**3 for i in range(1, 22))
+  coins = tuple(i**3 for i in range(1, 22))
 
-    @lru_cache(maxsize=None)
-    def count(amount, idx):
-        if amount == 0:
-            return 1
-        if amount < 0 or idx >= len(coins):
-            return 0
+  @lru_cache(maxsize=None)
+  def count(amount, idx):
+    if amount == 0:
+      return 1
+    if amount < 0 or idx >= len(coins):
+      return 0
 
-        # Don't use current coin OR use it (and stay at same index for unlimited use)
-        return count(amount, idx + 1) + count(amount - coins[idx], idx)
+    # Don't use current coin OR use it (and stay at same index for unlimited use)
+    return count(amount, idx + 1) + count(amount - coins[idx], idx)
 
-    while True:
-        try:
-            n = int(input())
-            print(count(n, 0))
-        except EOFError:
-            break
+  while True:
+    try:
+      n = int(input())
+      print(count(n, 0))
+    except EOFError:
+      break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -385,57 +385,57 @@ Transitions:
 
 ```python
 def solve():
-    n = int(input())
-    k = int(input())
+  n = int(input())
+  k = int(input())
 
-    # dp[i][0] = valid i-digit numbers ending with 0
-    # dp[i][1] = valid i-digit numbers ending with non-zero
+  # dp[i][0] = valid i-digit numbers ending with 0
+  # dp[i][1] = valid i-digit numbers ending with non-zero
 
-    # First digit cannot be 0 (would make it not N digits)
-    # dp[1][0] = 0 (first digit can't be 0)
-    # dp[1][1] = k-1 (digits 1 to k-1)
+  # First digit cannot be 0 (would make it not N digits)
+  # dp[1][0] = 0 (first digit can't be 0)
+  # dp[1][1] = k-1 (digits 1 to k-1)
 
-    dp = [[0, 0] for _ in range(n + 1)]
-    dp[1][0] = 0  # First digit cannot be 0
-    dp[1][1] = k - 1  # First digit can be 1 to k-1
+  dp = [[0, 0] for _ in range(n + 1)]
+  dp[1][0] = 0  # First digit cannot be 0
+  dp[1][1] = k - 1  # First digit can be 1 to k-1
 
-    for i in range(2, n + 1):
-        # Ending with 0: previous must end with non-zero
-        dp[i][0] = dp[i-1][1]
+  for i in range(2, n + 1):
+    # Ending with 0: previous must end with non-zero
+    dp[i][0] = dp[i-1][1]
 
-        # Ending with non-zero: previous can be anything
-        # (k-1) choices for the current non-zero digit
-        dp[i][1] = (dp[i-1][0] + dp[i-1][1]) * (k - 1)
+    # Ending with non-zero: previous can be anything
+    # (k-1) choices for the current non-zero digit
+    dp[i][1] = (dp[i-1][0] + dp[i-1][1]) * (k - 1)
 
-    # Total valid N-digit numbers
-    print(dp[n][0] + dp[n][1])
+  # Total valid N-digit numbers
+  print(dp[n][0] + dp[n][1])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space Optimized Solution
 
 ```python
 def solve():
-    n = int(input())
-    k = int(input())
+  n = int(input())
+  k = int(input())
 
-    # Only need previous state
-    end_zero = 0      # Numbers ending with 0
-    end_nonzero = k - 1  # Numbers ending with non-zero (first digit: 1 to k-1)
+  # Only need previous state
+  end_zero = 0      # Numbers ending with 0
+  end_nonzero = k - 1  # Numbers ending with non-zero (first digit: 1 to k-1)
 
-    for i in range(2, n + 1):
-        new_end_zero = end_nonzero
-        new_end_nonzero = (end_zero + end_nonzero) * (k - 1)
+  for i in range(2, n + 1):
+    new_end_zero = end_nonzero
+    new_end_nonzero = (end_zero + end_nonzero) * (k - 1)
 
-        end_zero = new_end_zero
-        end_nonzero = new_end_nonzero
+    end_zero = new_end_zero
+    end_nonzero = new_end_nonzero
 
-    print(end_zero + end_nonzero)
+  print(end_zero + end_nonzero)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -486,75 +486,75 @@ Output the character in `patt` that is present at the minimum index in `str`. Pr
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        str_input, patt = input().split()
+  for _ in range(t):
+    str_input, patt = input().split()
 
-        # Create set of characters in str for O(1) lookup
-        str_chars = set(str_input)
+    # Create set of characters in str for O(1) lookup
+    str_chars = set(str_input)
 
-        result = "No character present"
+    result = "No character present"
 
-        # Find first character in patt that exists in str
-        for char in patt:
-            if char in str_chars:
-                result = char
-                break
+    # Find first character in patt that exists in str
+    for char in patt:
+      if char in str_chars:
+        result = char
+        break
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        str_input, patt = input().split()
+  for _ in range(t):
+    str_input, patt = input().split()
 
-        # Map each character to its first occurrence index in str
-        char_index = {}
-        for i, char in enumerate(str_input):
-            if char not in char_index:
-                char_index[char] = i
+    # Map each character to its first occurrence index in str
+    char_index = {}
+    for i, char in enumerate(str_input):
+      if char not in char_index:
+        char_index[char] = i
 
-        min_index = float('inf')
-        result_char = None
+    min_index = float('inf')
+    result_char = None
 
-        # Find character in patt with minimum index in str
-        for char in patt:
-            if char in char_index and char_index[char] < min_index:
-                min_index = char_index[char]
-                result_char = char
+    # Find character in patt with minimum index in str
+    for char in patt:
+      if char in char_index and char_index[char] < min_index:
+        min_index = char_index[char]
+        result_char = char
 
-        if result_char:
-            print(result_char)
-        else:
-            print("No character present")
+    if result_char:
+      print(result_char)
+    else:
+      print("No character present")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### One-liner
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        s, p = input().split()
-        chars = set(s)
-        result = next((c for c in p if c in chars), "No character present")
-        print(result)
+  for _ in range(t):
+    s, p = input().split()
+    chars = set(s)
+    result = next((c for c in p if c in chars), "No character present")
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -610,102 +610,102 @@ Strategy:
 
 ```python
 def solve():
-    m, n = map(int, input().split())
-    B = []
-    for _ in range(m):
-        row = list(map(int, input().split()))
-        B.append(row)
+  m, n = map(int, input().split())
+  B = []
+  for _ in range(m):
+    row = list(map(int, input().split()))
+    B.append(row)
 
-    # Initialize A with all 1s
-    A = [[1] * n for _ in range(m)]
+  # Initialize A with all 1s
+  A = [[1] * n for _ in range(m)]
 
-    # For each B[i][j] = 0, entire row i and column j of A must be 0
-    for i in range(m):
-        for j in range(n):
-            if B[i][j] == 0:
-                # Set row i to all 0s
-                for k in range(n):
-                    A[i][k] = 0
-                # Set column j to all 0s
-                for k in range(m):
-                    A[k][j] = 0
+  # For each B[i][j] = 0, entire row i and column j of A must be 0
+  for i in range(m):
+    for j in range(n):
+      if B[i][j] == 0:
+        # Set row i to all 0s
+        for k in range(n):
+          A[i][k] = 0
+        # Set column j to all 0s
+        for k in range(m):
+          A[k][j] = 0
 
-    # Verify: compute B' from A
-    # B'[i][j] = (OR of row i) OR (OR of column j)?
-    # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
-    # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
+  # Verify: compute B' from A
+  # B'[i][j] = (OR of row i) OR (OR of column j)?
+  # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
+  # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
 
-    # Precompute row OR and column OR
-    row_or = [0] * m
-    col_or = [0] * n
+  # Precompute row OR and column OR
+  row_or = [0] * m
+  col_or = [0] * n
 
-    for i in range(m):
-        for j in range(n):
-            row_or[i] |= A[i][j]
-            col_or[j] |= A[i][j]
+  for i in range(m):
+    for j in range(n):
+      row_or[i] |= A[i][j]
+      col_or[j] |= A[i][j]
 
-    # B'[i][j] = row_or[i] | col_or[j]
-    valid = True
-    for i in range(m):
-        for j in range(n):
-            computed = row_or[i] | col_or[j]
-            if computed != B[i][j]:
-                valid = False
-                break
-        if not valid:
-            break
+  # B'[i][j] = row_or[i] | col_or[j]
+  valid = True
+  for i in range(m):
+    for j in range(n):
+      computed = row_or[i] | col_or[j]
+      if computed != B[i][j]:
+        valid = False
+        break
+    if not valid:
+      break
 
-    if valid:
-        print("YES")
-        for row in A:
-            print(' '.join(map(str, row)))
-    else:
-        print("NO")
+  if valid:
+    print("YES")
+    for row in A:
+      print(' '.join(map(str, row)))
+  else:
+    print("NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    m, n = map(int, input().split())
-    B = [list(map(int, input().split())) for _ in range(m)]
+  m, n = map(int, input().split())
+  B = [list(map(int, input().split())) for _ in range(m)]
 
-    # For B[i][j] = 0: row i and col j in A must be all 0s
-    # For B[i][j] = 1: at least one of row i or col j in A must have a 1
+  # For B[i][j] = 0: row i and col j in A must be all 0s
+  # For B[i][j] = 1: at least one of row i or col j in A must have a 1
 
-    zero_rows = set()
-    zero_cols = set()
+  zero_rows = set()
+  zero_cols = set()
 
-    for i in range(m):
-        for j in range(n):
-            if B[i][j] == 0:
-                zero_rows.add(i)
-                zero_cols.add(j)
+  for i in range(m):
+    for j in range(n):
+      if B[i][j] == 0:
+        zero_rows.add(i)
+        zero_cols.add(j)
 
-    # Build A: 1 unless in zero_row or zero_col
-    A = [[0 if i in zero_rows or j in zero_cols else 1
-          for j in range(n)] for i in range(m)]
+  # Build A: 1 unless in zero_row or zero_col
+  A = [[0 if i in zero_rows or j in zero_cols else 1
+     for j in range(n)] for i in range(m)]
 
-    # Verify
-    row_or = [any(A[i]) for i in range(m)]
-    col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
+  # Verify
+  row_or = [any(A[i]) for i in range(m)]
+  col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
 
-    for i in range(m):
-        for j in range(n):
-            expected = 1 if (row_or[i] or col_or[j]) else 0
-            if expected != B[i][j]:
-                print("NO")
-                return
+  for i in range(m):
+    for j in range(n):
+      expected = 1 if (row_or[i] or col_or[j]) else 0
+      if expected != B[i][j]:
+        print("NO")
+        return
 
-    print("YES")
-    for row in A:
-        print(' '.join(map(str, row)))
+  print("YES")
+  for row in A:
+    print(' '.join(map(str, row)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -758,73 +758,73 @@ Answer: max(dp[h-1][j]) for all j.
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        h, w = map(int, input().split())
-        stones = []
-        for _ in range(h):
-            row = list(map(int, input().split()))
-            stones.append(row)
+  for _ in range(t):
+    h, w = map(int, input().split())
+    stones = []
+    for _ in range(h):
+      row = list(map(int, input().split()))
+      stones.append(row)
 
-        # dp[i][j] = max stones to reach (i, j)
-        dp = [[0] * w for _ in range(h)]
+    # dp[i][j] = max stones to reach (i, j)
+    dp = [[0] * w for _ in range(h)]
 
-        # Base case: first row
-        for j in range(w):
-            dp[0][j] = stones[0][j]
+    # Base case: first row
+    for j in range(w):
+      dp[0][j] = stones[0][j]
 
-        # Fill DP
-        for i in range(1, h):
-            for j in range(w):
-                # Can come from (i-1, j-1), (i-1, j), (i-1, j+1)
-                best = dp[i-1][j]  # directly above
+    # Fill DP
+    for i in range(1, h):
+      for j in range(w):
+        # Can come from (i-1, j-1), (i-1, j), (i-1, j+1)
+        best = dp[i-1][j]  # directly above
 
-                if j > 0:
-                    best = max(best, dp[i-1][j-1])  # above-left
-                if j < w - 1:
-                    best = max(best, dp[i-1][j+1])  # above-right
+        if j > 0:
+          best = max(best, dp[i-1][j-1])  # above-left
+        if j < w - 1:
+          best = max(best, dp[i-1][j+1])  # above-right
 
-                dp[i][j] = stones[i][j] + best
+        dp[i][j] = stones[i][j] + best
 
-        # Answer is max in last row
-        print(max(dp[h-1]))
+    # Answer is max in last row
+    print(max(dp[h-1]))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        h, w = map(int, input().split())
-        stones = []
-        for _ in range(h):
-            row = list(map(int, input().split()))
-            stones.append(row)
+  for _ in range(t):
+    h, w = map(int, input().split())
+    stones = []
+    for _ in range(h):
+      row = list(map(int, input().split()))
+      stones.append(row)
 
-        # Only need previous row
-        prev = stones[0][:]
+    # Only need previous row
+    prev = stones[0][:]
 
-        for i in range(1, h):
-            curr = [0] * w
-            for j in range(w):
-                best = prev[j]
-                if j > 0:
-                    best = max(best, prev[j-1])
-                if j < w - 1:
-                    best = max(best, prev[j+1])
-                curr[j] = stones[i][j] + best
-            prev = curr
+    for i in range(1, h):
+      curr = [0] * w
+      for j in range(w):
+        best = prev[j]
+        if j > 0:
+          best = max(best, prev[j-1])
+        if j < w - 1:
+          best = max(best, prev[j+1])
+        curr[j] = stones[i][j] + best
+      prev = curr
 
-        print(max(prev))
+    print(max(prev))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -871,93 +871,93 @@ To construct the SCS:
 
 ```python
 def shortest_supersequence(a, b):
-    m, n = len(a), len(b)
+  m, n = len(a), len(b)
 
-    # LCS DP table
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  # LCS DP table
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if a[i-1] == b[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if a[i-1] == b[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # Backtrack to construct SCS
-    result = []
-    i, j = m, n
+  # Backtrack to construct SCS
+  result = []
+  i, j = m, n
 
-    while i > 0 and j > 0:
-        if a[i-1] == b[j-1]:
-            result.append(a[i-1])
-            i -= 1
-            j -= 1
-        elif dp[i-1][j] > dp[i][j-1]:
-            result.append(a[i-1])
-            i -= 1
-        else:
-            result.append(b[j-1])
-            j -= 1
+  while i > 0 and j > 0:
+    if a[i-1] == b[j-1]:
+      result.append(a[i-1])
+      i -= 1
+      j -= 1
+    elif dp[i-1][j] > dp[i][j-1]:
+      result.append(a[i-1])
+      i -= 1
+    else:
+      result.append(b[j-1])
+      j -= 1
 
-    # Add remaining characters
-    while i > 0:
-        result.append(a[i-1])
-        i -= 1
-    while j > 0:
-        result.append(b[j-1])
-        j -= 1
+  # Add remaining characters
+  while i > 0:
+    result.append(a[i-1])
+    i -= 1
+  while j > 0:
+    result.append(b[j-1])
+    j -= 1
 
-    return ''.join(reversed(result))
+  return ''.join(reversed(result))
 
 def solve():
-    import sys
-    for line in sys.stdin:
-        parts = line.strip().split()
-        if len(parts) < 2:
-            continue
-        a, b = parts[0], parts[1]
-        print(shortest_supersequence(a, b))
+  import sys
+  for line in sys.stdin:
+    parts = line.strip().split()
+    if len(parts) < 2:
+      continue
+    a, b = parts[0], parts[1]
+    print(shortest_supersequence(a, b))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    import sys
-    for line in sys.stdin:
-        parts = line.strip().split()
-        if len(parts) < 2:
-            continue
-        a, b = parts[0], parts[1]
+  import sys
+  for line in sys.stdin:
+    parts = line.strip().split()
+    if len(parts) < 2:
+      continue
+    a, b = parts[0], parts[1]
 
-        m, n = len(a), len(b)
+    m, n = len(a), len(b)
 
-        # dp[i][j] = shortest supersequence of a[:i] and b[:j]
-        dp = [[""] * (n + 1) for _ in range(m + 1)]
+    # dp[i][j] = shortest supersequence of a[:i] and b[:j]
+    dp = [[""] * (n + 1) for _ in range(m + 1)]
 
-        # Base cases
-        for i in range(1, m + 1):
-            dp[i][0] = a[:i]
-        for j in range(1, n + 1):
-            dp[0][j] = b[:j]
+    # Base cases
+    for i in range(1, m + 1):
+      dp[i][0] = a[:i]
+    for j in range(1, n + 1):
+      dp[0][j] = b[:j]
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if a[i-1] == b[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + a[i-1]
-                else:
-                    if len(dp[i-1][j]) < len(dp[i][j-1]):
-                        dp[i][j] = dp[i-1][j] + a[i-1]
-                    else:
-                        dp[i][j] = dp[i][j-1] + b[j-1]
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if a[i-1] == b[j-1]:
+          dp[i][j] = dp[i-1][j-1] + a[i-1]
+        else:
+          if len(dp[i-1][j]) < len(dp[i][j-1]):
+            dp[i][j] = dp[i-1][j] + a[i-1]
+          else:
+            dp[i][j] = dp[i][j-1] + b[j-1]
 
-        print(dp[m][n])
+    print(dp[m][n])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1008,97 +1008,97 @@ Alternatively, use direct DP:
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    while True:
-        line = input()
-        if not line:
-            break
-        s = line.strip()
-        if not s:
-            continue
+  while True:
+    line = input()
+    if not line:
+      break
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
+    n = len(s)
 
-        # LPS via LCS with reverse
-        rev = s[::-1]
+    # LPS via LCS with reverse
+    rev = s[::-1]
 
-        # Space-optimized LCS
-        prev = [0] * (n + 1)
-        curr = [0] * (n + 1)
+    # Space-optimized LCS
+    prev = [0] * (n + 1)
+    curr = [0] * (n + 1)
 
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if s[i-1] == rev[j-1]:
-                    curr[j] = prev[j-1] + 1
-                else:
-                    curr[j] = max(prev[j], curr[j-1])
-            prev, curr = curr, prev
+    for i in range(1, n + 1):
+      for j in range(1, n + 1):
+        if s[i-1] == rev[j-1]:
+          curr[j] = prev[j-1] + 1
+        else:
+          curr[j] = max(prev[j], curr[j-1])
+      prev, curr = curr, prev
 
-        lps = prev[n]
-        print(n - lps)
+    lps = prev[n]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    while True:
-        line = input()
-        if not line:
-            break
-        s = line.strip()
-        if not s:
-            continue
+  while True:
+    line = input()
+    if not line:
+      break
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
+    n = len(s)
 
-        # dp[i][j] = min insertions for s[i:j+1]
-        # Use only 2 rows since dp[i] depends on dp[i+1]
-        # Actually for gap-based DP:
+    # dp[i][j] = min insertions for s[i:j+1]
+    # Use only 2 rows since dp[i] depends on dp[i+1]
+    # Actually for gap-based DP:
 
-        # dp[length][start] but we can optimize
-        # Use dp[j] = min insertions for substring ending at j with some length
+    # dp[length][start] but we can optimize
+    # Use dp[j] = min insertions for substring ending at j with some length
 
-        # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
+    # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
 
-        # Direct approach with LPS
-        # dp[i][j] = LPS of s[i:j+1]
-        # dp[i][i] = 1
-        # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
-        #          = max(dp[i+1][j], dp[i][j-1]) otherwise
+    # Direct approach with LPS
+    # dp[i][j] = LPS of s[i:j+1]
+    # dp[i][i] = 1
+    # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
+    #          = max(dp[i+1][j], dp[i][j-1]) otherwise
 
-        if n <= 1:
-            print(0)
-            continue
+    if n <= 1:
+      print(0)
+      continue
 
-        # Space optimized: process by length
-        prev = [1] * n  # length 1 substrings
-        curr = [0] * n
+    # Space optimized: process by length
+    prev = [1] * n  # length 1 substrings
+    curr = [0] * n
 
-        for length in range(2, n + 1):
-            for i in range(n - length + 1):
-                j = i + length - 1
-                if s[i] == s[j]:
-                    curr[i] = prev[i+1] + 2 if length > 2 else 2
-                else:
-                    curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
-                    # Actually need different indexing
+    for length in range(2, n + 1):
+      for i in range(n - length + 1):
+        j = i + length - 1
+        if s[i] == s[j]:
+          curr[i] = prev[i+1] + 2 if length > 2 else 2
+        else:
+          curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
+          # Actually need different indexing
 
-            prev, curr = curr, [0] * n
+      prev, curr = curr, [0] * n
 
-        lps = prev[0]
-        print(n - lps)
+    lps = prev[0]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Cleaner LCS Solution
@@ -1108,30 +1108,30 @@ import sys
 sys.setrecursionlimit(10000)
 
 def solve():
-    for line in sys.stdin:
-        s = line.strip()
-        if not s:
-            continue
+  for line in sys.stdin:
+    s = line.strip()
+    if not s:
+      continue
 
-        n = len(s)
-        rev = s[::-1]
+    n = len(s)
+    rev = s[::-1]
 
-        # LCS of s and rev = LPS of s
-        # dp[i][j] = LCS of s[:i] and rev[:j]
-        dp = [[0] * (n + 1) for _ in range(2)]
+    # LCS of s and rev = LPS of s
+    # dp[i][j] = LCS of s[:i] and rev[:j]
+    dp = [[0] * (n + 1) for _ in range(2)]
 
-        for i in range(1, n + 1):
-            for j in range(1, n + 1):
-                if s[i-1] == rev[j-1]:
-                    dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
-                else:
-                    dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, n + 1):
+        if s[i-1] == rev[j-1]:
+          dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
+        else:
+          dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
 
-        lps = dp[n % 2][n]
-        print(n - lps)
+    lps = dp[n % 2][n]
+    print(n - lps)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1176,111 +1176,111 @@ Standard LCS problem but on sequences of words instead of characters.
 
 ```python
 def solve():
-    import sys
+  import sys
 
-    lines = sys.stdin.read().strip().split('\n')
-    i = 0
+  lines = sys.stdin.read().strip().split('\n')
+  i = 0
 
-    while i < len(lines):
-        # Read first text until '#'
-        text1 = []
-        while i < len(lines) and lines[i].strip() != '#':
-            text1.extend(lines[i].split())
-            i += 1
-        i += 1  # skip '#'
+  while i < len(lines):
+    # Read first text until '#'
+    text1 = []
+    while i < len(lines) and lines[i].strip() != '#':
+      text1.extend(lines[i].split())
+      i += 1
+    i += 1  # skip '#'
 
-        # Read second text until '#' or EOF
-        text2 = []
-        while i < len(lines) and lines[i].strip() != '#':
-            text2.extend(lines[i].split())
-            i += 1
-        i += 1  # skip '#'
+    # Read second text until '#' or EOF
+    text2 = []
+    while i < len(lines) and lines[i].strip() != '#':
+      text2.extend(lines[i].split())
+      i += 1
+    i += 1  # skip '#'
 
-        if not text1 or not text2:
-            continue
+    if not text1 or not text2:
+      continue
 
-        # LCS on word arrays
-        m, n = len(text1), len(text2)
-        dp = [[0] * (n + 1) for _ in range(m + 1)]
+    # LCS on word arrays
+    m, n = len(text1), len(text2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if text1[i-1] == text2[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + 1
-                else:
-                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if text1[i-1] == text2[j-1]:
+          dp[i][j] = dp[i-1][j-1] + 1
+        else:
+          dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-        # Backtrack to get LCS
-        lcs = []
-        i, j = m, n
-        while i > 0 and j > 0:
-            if text1[i-1] == text2[j-1]:
-                lcs.append(text1[i-1])
-                i -= 1
-                j -= 1
-            elif dp[i-1][j] > dp[i][j-1]:
-                i -= 1
-            else:
-                j -= 1
+    # Backtrack to get LCS
+    lcs = []
+    i, j = m, n
+    while i > 0 and j > 0:
+      if text1[i-1] == text2[j-1]:
+        lcs.append(text1[i-1])
+        i -= 1
+        j -= 1
+      elif dp[i-1][j] > dp[i][j-1]:
+        i -= 1
+      else:
+        j -= 1
 
-        lcs.reverse()
-        print(' '.join(lcs))
+    lcs.reverse()
+    print(' '.join(lcs))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def lcs_words(words1, words2):
-    m, n = len(words1), len(words2)
+  m, n = len(words1), len(words2)
 
-    # dp[i][j] = LCS length of words1[:i] and words2[:j]
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  # dp[i][j] = LCS length of words1[:i] and words2[:j]
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if words1[i-1] == words2[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if words1[i-1] == words2[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # Reconstruct
-    result = []
-    i, j = m, n
-    while i > 0 and j > 0:
-        if words1[i-1] == words2[j-1]:
-            result.append(words1[i-1])
-            i -= 1
-            j -= 1
-        elif dp[i-1][j] >= dp[i][j-1]:
-            i -= 1
-        else:
-            j -= 1
+  # Reconstruct
+  result = []
+  i, j = m, n
+  while i > 0 and j > 0:
+    if words1[i-1] == words2[j-1]:
+      result.append(words1[i-1])
+      i -= 1
+      j -= 1
+    elif dp[i-1][j] >= dp[i][j-1]:
+      i -= 1
+    else:
+      j -= 1
 
-    return result[::-1]
+  return result[::-1]
 
 def solve():
-    import sys
-    content = sys.stdin.read()
+  import sys
+  content = sys.stdin.read()
 
-    # Split by '#' to get test cases
-    parts = content.strip().split('#')
+  # Split by '#' to get test cases
+  parts = content.strip().split('#')
 
-    i = 0
-    while i + 1 < len(parts):
-        text1 = parts[i].split()
-        text2 = parts[i + 1].split()
+  i = 0
+  while i + 1 < len(parts):
+    text1 = parts[i].split()
+    text2 = parts[i + 1].split()
 
-        if text1 and text2:
-            result = lcs_words(text1, text2)
-            print(' '.join(result))
+    if text1 and text2:
+      result = lcs_words(text1, text2)
+      print(' '.join(result))
 
-        i += 2
+    i += 2
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1333,115 +1333,115 @@ This is a **Longest Common Subsequence (LCS)** problem! Tom needs to find checkp
 
 ```python
 def lcs(agnes, tom):
-    """Find longest common subsequence length"""
-    m, n = len(agnes), len(tom)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  """Find longest common subsequence length"""
+  m, n = len(agnes), len(tom)
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if agnes[i-1] == tom[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if agnes[i-1] == tom[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    return dp[m][n]
+  return dp[m][n]
 
 def solve():
-    d = int(input())
+  d = int(input())
 
-    for _ in range(d):
-        # Read Agnes' route
-        agnes = []
-        line = input().split()
-        for x in line:
-            val = int(x)
-            if val == 0:
-                break
-            agnes.append(val)
+  for _ in range(d):
+    # Read Agnes' route
+    agnes = []
+    line = input().split()
+    for x in line:
+      val = int(x)
+      if val == 0:
+        break
+      agnes.append(val)
 
-        max_meetings = 0
+    max_meetings = 0
 
-        # Read Tom's routes
-        while True:
-            line = input().split()
+    # Read Tom's routes
+    while True:
+      line = input().split()
 
-            # Check for end of data set
-            if line[0] == '0':
-                break
+      # Check for end of data set
+      if line[0] == '0':
+        break
 
-            tom = []
-            for x in line:
-                val = int(x)
-                if val == 0:
-                    break
-                tom.append(val)
+      tom = []
+      for x in line:
+        val = int(x)
+        if val == 0:
+          break
+        tom.append(val)
 
-            # Compute LCS
-            meetings = lcs(agnes, tom)
-            max_meetings = max(max_meetings, meetings)
+      # Compute LCS
+      meetings = lcs(agnes, tom)
+      max_meetings = max(max_meetings, meetings)
 
-        print(max_meetings)
+    print(max_meetings)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def lcs_optimized(agnes, tom):
-    """LCS with O(n) space"""
-    m, n = len(agnes), len(tom)
-    prev = [0] * (n + 1)
-    curr = [0] * (n + 1)
+  """LCS with O(n) space"""
+  m, n = len(agnes), len(tom)
+  prev = [0] * (n + 1)
+  curr = [0] * (n + 1)
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if agnes[i-1] == tom[j-1]:
-                curr[j] = prev[j-1] + 1
-            else:
-                curr[j] = max(prev[j], curr[j-1])
-        prev, curr = curr, [0] * (n + 1)
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if agnes[i-1] == tom[j-1]:
+        curr[j] = prev[j-1] + 1
+      else:
+        curr[j] = max(prev[j], curr[j-1])
+    prev, curr = curr, [0] * (n + 1)
 
-    return prev[n]
+  return prev[n]
 
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    d = int(data[idx])
-    idx += 1
+  d = int(data[idx])
+  idx += 1
 
-    for _ in range(d):
-        # Read Agnes' route
-        agnes = []
-        while data[idx] != '0':
-            agnes.append(int(data[idx]))
-            idx += 1
-        idx += 1  # Skip the 0
+  for _ in range(d):
+    # Read Agnes' route
+    agnes = []
+    while data[idx] != '0':
+      agnes.append(int(data[idx]))
+      idx += 1
+    idx += 1  # Skip the 0
 
-        max_meetings = 0
+    max_meetings = 0
 
-        # Read Tom's routes
-        while True:
-            if data[idx] == '0':
-                idx += 1
-                break
+    # Read Tom's routes
+    while True:
+      if data[idx] == '0':
+        idx += 1
+        break
 
-            tom = []
-            while data[idx] != '0':
-                tom.append(int(data[idx]))
-                idx += 1
-            idx += 1  # Skip the 0
+      tom = []
+      while data[idx] != '0':
+        tom.append(int(data[idx]))
+        idx += 1
+      idx += 1  # Skip the 0
 
-            meetings = lcs_optimized(agnes, tom)
-            max_meetings = max(max_meetings, meetings)
+      meetings = lcs_optimized(agnes, tom)
+      max_meetings = max(max_meetings, meetings)
 
-        print(max_meetings)
+    print(max_meetings)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1490,67 +1490,67 @@ Extend the 2D LCS DP to 3D:
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        # 3D DP
-        dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
+    # 3D DP
+    dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-                for l in range(1, k + 1):
-                    if X[i-1] == Y[j-1] == Z[l-1]:
-                        dp[i][j][l] = dp[i-1][j-1][l-1] + 1
-                    else:
-                        dp[i][j][l] = max(dp[i-1][j][l],
-                                         dp[i][j-1][l],
-                                         dp[i][j][l-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        for l in range(1, k + 1):
+          if X[i-1] == Y[j-1] == Z[l-1]:
+            dp[i][j][l] = dp[i-1][j-1][l-1] + 1
+          else:
+            dp[i][j][l] = max(dp[i-1][j][l],
+                    dp[i][j-1][l],
+                    dp[i][j][l-1])
 
-        print(dp[n][m][k])
+    print(dp[n][m][k])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        # Only need 2 layers: current and previous for first dimension
-        prev = [[0] * (k + 1) for _ in range(m + 1)]
-        curr = [[0] * (k + 1) for _ in range(m + 1)]
+    # Only need 2 layers: current and previous for first dimension
+    prev = [[0] * (k + 1) for _ in range(m + 1)]
+    curr = [[0] * (k + 1) for _ in range(m + 1)]
 
-        for i in range(1, n + 1):
-            # Also need prev_j for second dimension
-            prev_j = [0] * (k + 1)
+    for i in range(1, n + 1):
+      # Also need prev_j for second dimension
+      prev_j = [0] * (k + 1)
 
-            for j in range(1, m + 1):
-                prev_l = 0
-                for l in range(1, k + 1):
-                    if X[i-1] == Y[j-1] == Z[l-1]:
-                        curr[j][l] = prev[j-1][l-1] + 1
-                    else:
-                        curr[j][l] = max(prev[j][l],
-                                        curr[j-1][l],
-                                        curr[j][l-1])
+      for j in range(1, m + 1):
+        prev_l = 0
+        for l in range(1, k + 1):
+          if X[i-1] == Y[j-1] == Z[l-1]:
+            curr[j][l] = prev[j-1][l-1] + 1
+          else:
+            curr[j][l] = max(prev[j][l],
+                    curr[j-1][l],
+                    curr[j][l-1])
 
-            prev, curr = curr, [[0] * (k + 1) for _ in range(m + 1)]
+      prev, curr = curr, [[0] * (k + 1) for _ in range(m + 1)]
 
-        print(prev[m][k])
+    print(prev[m][k])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Recursive
@@ -1560,34 +1560,34 @@ import sys
 sys.setrecursionlimit(1000000)
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        memo = {}
+    memo = {}
 
-        def lcs(i, j, l):
-            if i == 0 or j == 0 or l == 0:
-                return 0
+    def lcs(i, j, l):
+      if i == 0 or j == 0 or l == 0:
+        return 0
 
-            if (i, j, l) in memo:
-                return memo[(i, j, l)]
+      if (i, j, l) in memo:
+        return memo[(i, j, l)]
 
-            if X[i-1] == Y[j-1] == Z[l-1]:
-                result = lcs(i-1, j-1, l-1) + 1
-            else:
-                result = max(lcs(i-1, j, l), lcs(i, j-1, l), lcs(i, j, l-1))
+      if X[i-1] == Y[j-1] == Z[l-1]:
+        result = lcs(i-1, j-1, l-1) + 1
+      else:
+        result = max(lcs(i-1, j, l), lcs(i, j-1, l), lcs(i, j, l-1))
 
-            memo[(i, j, l)] = result
-            return result
+      memo[(i, j, l)] = result
+      return result
 
-        print(lcs(n, m, k))
+    print(lcs(n, m, k))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1636,103 +1636,103 @@ Use two DP tables:
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        a = input().strip()
-        b = input().strip()
+  for case in range(1, t + 1):
+    a = input().strip()
+    b = input().strip()
 
-        m, n = len(a), len(b)
+    m, n = len(a), len(b)
 
-        # LCS DP
-        lcs = [[0] * (n + 1) for _ in range(m + 1)]
+    # LCS DP
+    lcs = [[0] * (n + 1) for _ in range(m + 1)]
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if a[i-1] == b[j-1]:
-                    lcs[i][j] = lcs[i-1][j-1] + 1
-                else:
-                    lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if a[i-1] == b[j-1]:
+          lcs[i][j] = lcs[i-1][j-1] + 1
+        else:
+          lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
 
-        # SCS length
-        scs_len = m + n - lcs[m][n]
+    # SCS length
+    scs_len = m + n - lcs[m][n]
 
-        # Count SCS: cnt[i][j] = ways to form SCS of a[:i] and b[:j]
-        cnt = [[0] * (n + 1) for _ in range(m + 1)]
-        cnt[0][0] = 1
+    # Count SCS: cnt[i][j] = ways to form SCS of a[:i] and b[:j]
+    cnt = [[0] * (n + 1) for _ in range(m + 1)]
+    cnt[0][0] = 1
 
-        # Base cases
-        for i in range(1, m + 1):
-            cnt[i][0] = 1
-        for j in range(1, n + 1):
-            cnt[0][j] = 1
+    # Base cases
+    for i in range(1, m + 1):
+      cnt[i][0] = 1
+    for j in range(1, n + 1):
+      cnt[0][j] = 1
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if a[i-1] == b[j-1]:
-                    # Must take this character (extends LCS)
-                    cnt[i][j] = cnt[i-1][j-1]
-                else:
-                    # Choose which character to append
-                    # Only count paths that maintain optimal LCS
-                    if lcs[i-1][j] > lcs[i][j-1]:
-                        cnt[i][j] = cnt[i-1][j]
-                    elif lcs[i][j-1] > lcs[i-1][j]:
-                        cnt[i][j] = cnt[i][j-1]
-                    else:
-                        cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if a[i-1] == b[j-1]:
+          # Must take this character (extends LCS)
+          cnt[i][j] = cnt[i-1][j-1]
+        else:
+          # Choose which character to append
+          # Only count paths that maintain optimal LCS
+          if lcs[i-1][j] > lcs[i][j-1]:
+            cnt[i][j] = cnt[i-1][j]
+          elif lcs[i][j-1] > lcs[i-1][j]:
+            cnt[i][j] = cnt[i][j-1]
+          else:
+            cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
 
-        print(f"Case {case}: {scs_len} {cnt[m][n]}")
+    print(f"Case {case}: {scs_len} {cnt[m][n]}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        a = input().strip()
-        b = input().strip()
+  for case in range(1, t + 1):
+    a = input().strip()
+    b = input().strip()
 
-        m, n = len(a), len(b)
+    m, n = len(a), len(b)
 
-        # dp[i][j] = (scs_length, count) for a[:i] and b[:j]
-        # scs_length = i + j - lcs[i][j]
+    # dp[i][j] = (scs_length, count) for a[:i] and b[:j]
+    # scs_length = i + j - lcs[i][j]
 
-        lcs = [[0] * (n + 1) for _ in range(m + 1)]
-        cnt = [[0] * (n + 1) for _ in range(m + 1)]
+    lcs = [[0] * (n + 1) for _ in range(m + 1)]
+    cnt = [[0] * (n + 1) for _ in range(m + 1)]
 
-        # Base: empty strings
-        cnt[0][0] = 1
-        for i in range(1, m + 1):
-            cnt[i][0] = 1  # Only one way: use all of a
-        for j in range(1, n + 1):
-            cnt[0][j] = 1  # Only one way: use all of b
+    # Base: empty strings
+    cnt[0][0] = 1
+    for i in range(1, m + 1):
+      cnt[i][0] = 1  # Only one way: use all of a
+    for j in range(1, n + 1):
+      cnt[0][j] = 1  # Only one way: use all of b
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if a[i-1] == b[j-1]:
-                    lcs[i][j] = lcs[i-1][j-1] + 1
-                    cnt[i][j] = cnt[i-1][j-1]
-                else:
-                    lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if a[i-1] == b[j-1]:
+          lcs[i][j] = lcs[i-1][j-1] + 1
+          cnt[i][j] = cnt[i-1][j-1]
+        else:
+          lcs[i][j] = max(lcs[i-1][j], lcs[i][j-1])
 
-                    if lcs[i-1][j] > lcs[i][j-1]:
-                        cnt[i][j] = cnt[i-1][j]
-                    elif lcs[i][j-1] > lcs[i-1][j]:
-                        cnt[i][j] = cnt[i][j-1]
-                    else:
-                        cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
+          if lcs[i-1][j] > lcs[i][j-1]:
+            cnt[i][j] = cnt[i-1][j]
+          elif lcs[i][j-1] > lcs[i-1][j]:
+            cnt[i][j] = cnt[i][j-1]
+          else:
+            cnt[i][j] = cnt[i-1][j] + cnt[i][j-1]
 
-        scs_len = m + n - lcs[m][n]
-        print(f"Case {case}: {scs_len} {cnt[m][n]}")
+    scs_len = m + n - lcs[m][n]
+    print(f"Case {case}: {scs_len} {cnt[m][n]}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1784,115 +1784,115 @@ Use DP:
 
 ```python
 def solve():
-    s = input().strip()
-    n = len(s)
+  s = input().strip()
+  n = len(s)
 
-    if n == 0:
-        return
+  if n == 0:
+    return
 
-    # is_pal[i][j] = True if s[i:j+1] is palindrome
-    is_pal = [[False] * n for _ in range(n)]
+  # is_pal[i][j] = True if s[i:j+1] is palindrome
+  is_pal = [[False] * n for _ in range(n)]
 
-    # Base cases: single characters
-    for i in range(n):
-        is_pal[i][i] = True
+  # Base cases: single characters
+  for i in range(n):
+    is_pal[i][i] = True
 
-    # Length 2
-    for i in range(n - 1):
-        is_pal[i][i + 1] = (s[i] == s[i + 1])
+  # Length 2
+  for i in range(n - 1):
+    is_pal[i][i + 1] = (s[i] == s[i + 1])
 
-    # Longer palindromes
-    for length in range(3, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
+  # Longer palindromes
+  for length in range(3, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
 
-    # k_level[i][j] = k-palindrome level
-    k_level = [[0] * n for _ in range(n)]
+  # k_level[i][j] = k-palindrome level
+  k_level = [[0] * n for _ in range(n)]
 
-    # Compute k-levels for all palindromes
-    for length in range(1, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if is_pal[i][j]:
-                if length == 1:
-                    k_level[i][j] = 1
-                else:
-                    # Half length
-                    half_len = length // 2
-                    half_end = i + half_len - 1
-                    # Left half is s[i:i+half_len]
-                    k_level[i][j] = 1 + k_level[i][half_end]
+  # Compute k-levels for all palindromes
+  for length in range(1, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      if is_pal[i][j]:
+        if length == 1:
+          k_level[i][j] = 1
+        else:
+          # Half length
+          half_len = length // 2
+          half_end = i + half_len - 1
+          # Left half is s[i:i+half_len]
+          k_level[i][j] = 1 + k_level[i][half_end]
 
-    # Count palindromes at each k-level
-    count = [0] * (n + 1)
+  # Count palindromes at each k-level
+  count = [0] * (n + 1)
 
-    for i in range(n):
-        for j in range(i, n):
-            if is_pal[i][j]:
-                count[k_level[i][j]] += 1
+  for i in range(n):
+    for j in range(i, n):
+      if is_pal[i][j]:
+        count[k_level[i][j]] += 1
 
-    # A k-palindrome is also a (k-1)-palindrome, etc.
-    # Propagate counts downward
-    for k in range(n, 1, -1):
-        count[k - 1] += count[k]
+  # A k-palindrome is also a (k-1)-palindrome, etc.
+  # Propagate counts downward
+  for k in range(n, 1, -1):
+    count[k - 1] += count[k]
 
-    # Output counts for k = 1 to n
-    print(' '.join(map(str, count[1:n + 1])))
+  # Output counts for k = 1 to n
+  print(' '.join(map(str, count[1:n + 1])))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    s = input().strip()
-    n = len(s)
+  s = input().strip()
+  n = len(s)
 
-    # is_pal[i][j] = True if s[i:j+1] is palindrome
-    is_pal = [[False] * n for _ in range(n)]
+  # is_pal[i][j] = True if s[i:j+1] is palindrome
+  is_pal = [[False] * n for _ in range(n)]
 
-    for i in range(n):
-        is_pal[i][i] = True
-    for i in range(n - 1):
-        is_pal[i][i + 1] = (s[i] == s[i + 1])
-    for length in range(3, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
+  for i in range(n):
+    is_pal[i][i] = True
+  for i in range(n - 1):
+    is_pal[i][i + 1] = (s[i] == s[i + 1])
+  for length in range(3, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      is_pal[i][j] = (s[i] == s[j]) and is_pal[i + 1][j - 1]
 
-    # k_level for each palindrome
-    k_level = [[0] * n for _ in range(n)]
+  # k_level for each palindrome
+  k_level = [[0] * n for _ in range(n)]
 
-    # Process by increasing length to use computed half values
-    for length in range(1, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if is_pal[i][j]:
-                if length == 1:
-                    k_level[i][j] = 1
-                else:
-                    half = (length - 1) // 2
-                    # Left half: s[i : i + half + 1]
-                    k_level[i][j] = 1 + k_level[i][i + half]
+  # Process by increasing length to use computed half values
+  for length in range(1, n + 1):
+    for i in range(n - length + 1):
+      j = i + length - 1
+      if is_pal[i][j]:
+        if length == 1:
+          k_level[i][j] = 1
+        else:
+          half = (length - 1) // 2
+          # Left half: s[i : i + half + 1]
+          k_level[i][j] = 1 + k_level[i][i + half]
 
-    # Count by k-level
-    count = [0] * (n + 2)
-    for i in range(n):
-        for j in range(i, n):
-            if is_pal[i][j]:
-                count[k_level[i][j]] += 1
+  # Count by k-level
+  count = [0] * (n + 2)
+  for i in range(n):
+    for j in range(i, n):
+      if is_pal[i][j]:
+        count[k_level[i][j]] += 1
 
-    # Propagate: k-palindrome is also (k-1)-palindrome
-    for k in range(n, 0, -1):
-        count[k - 1] += count[k]
+  # Propagate: k-palindrome is also (k-1)-palindrome
+  for k in range(n, 0, -1):
+    count[k - 1] += count[k]
 
-    print(' '.join(map(str, count[1:n + 1])))
+  print(' '.join(map(str, count[1:n + 1])))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -1945,57 +1945,57 @@ The descending sort for same strength ensures we don't pick two members with sam
 import bisect
 
 def solve():
-    n = int(input())
-    members = []
+  n = int(input())
+  members = []
 
-    for i in range(n):
-        s, b = map(int, input().split())
-        members.append((s, b, i + 1))  # (strength, beauty, original_index)
+  for i in range(n):
+    s, b = map(int, input().split())
+    members.append((s, b, i + 1))  # (strength, beauty, original_index)
 
-    # Sort by strength ascending, then beauty descending (for same strength)
-    members.sort(key=lambda x: (x[0], -x[1]))
+  # Sort by strength ascending, then beauty descending (for same strength)
+  members.sort(key=lambda x: (x[0], -x[1]))
 
-    # LIS on beauty with index tracking
-    # dp[i] = smallest ending beauty for LIS of length i+1
-    # parent tracking for reconstruction
+  # LIS on beauty with index tracking
+  # dp[i] = smallest ending beauty for LIS of length i+1
+  # parent tracking for reconstruction
 
-    dp = []  # (beauty, index in members)
-    dp_idx = []  # index in members array for each dp entry
-    parent = [-1] * n
-    pos = [-1] * n  # position in LIS for each member
+  dp = []  # (beauty, index in members)
+  dp_idx = []  # index in members array for each dp entry
+  parent = [-1] * n
+  pos = [-1] * n  # position in LIS for each member
 
-    for i, (s, b, orig_idx) in enumerate(members):
-        # Binary search for position
-        idx = bisect.bisect_left(dp, b)
+  for i, (s, b, orig_idx) in enumerate(members):
+    # Binary search for position
+    idx = bisect.bisect_left(dp, b)
 
-        if idx == len(dp):
-            dp.append(b)
-            dp_idx.append(i)
-        else:
-            dp[idx] = b
-            dp_idx[idx] = i
+    if idx == len(dp):
+      dp.append(b)
+      dp_idx.append(i)
+    else:
+      dp[idx] = b
+      dp_idx[idx] = i
 
-        pos[i] = idx
-        if idx > 0:
-            parent[i] = dp_idx[idx - 1]
+    pos[i] = idx
+    if idx > 0:
+      parent[i] = dp_idx[idx - 1]
 
-    # Reconstruct LIS
-    lis_length = len(dp)
-    result = []
+  # Reconstruct LIS
+  lis_length = len(dp)
+  result = []
 
-    # Find the last element in LIS
-    curr = dp_idx[lis_length - 1]
-    while curr != -1:
-        result.append(members[curr][2])  # original index
-        curr = parent[curr]
+  # Find the last element in LIS
+  curr = dp_idx[lis_length - 1]
+  while curr != -1:
+    result.append(members[curr][2])  # original index
+    curr = parent[curr]
 
-    result.reverse()
+  result.reverse()
 
-    print(lis_length)
-    print(' '.join(map(str, result)))
+  print(lis_length)
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -2004,56 +2004,56 @@ if __name__ == "__main__":
 import bisect
 
 def solve():
-    n = int(input())
-    members = []
+  n = int(input())
+  members = []
 
-    for i in range(n):
-        s, b = map(int, input().split())
-        members.append((s, b, i + 1))
+  for i in range(n):
+    s, b = map(int, input().split())
+    members.append((s, b, i + 1))
 
-    # Sort: strength ascending, beauty descending for same strength
-    members.sort(key=lambda x: (x[0], -x[1]))
+  # Sort: strength ascending, beauty descending for same strength
+  members.sort(key=lambda x: (x[0], -x[1]))
 
-    # Extract beauties for LIS
-    beauties = [m[1] for m in members]
+  # Extract beauties for LIS
+  beauties = [m[1] for m in members]
 
-    # LIS with reconstruction
-    tails = []  # tails[i] = smallest ending value for LIS of length i+1
-    tail_indices = []
-    predecessor = [-1] * n
-    lis_pos = [0] * n
+  # LIS with reconstruction
+  tails = []  # tails[i] = smallest ending value for LIS of length i+1
+  tail_indices = []
+  predecessor = [-1] * n
+  lis_pos = [0] * n
 
-    for i in range(n):
-        b = beauties[i]
-        pos = bisect.bisect_left(tails, b)
+  for i in range(n):
+    b = beauties[i]
+    pos = bisect.bisect_left(tails, b)
 
-        if pos == len(tails):
-            tails.append(b)
-            tail_indices.append(i)
-        else:
-            tails[pos] = b
-            tail_indices[pos] = i
+    if pos == len(tails):
+      tails.append(b)
+      tail_indices.append(i)
+    else:
+      tails[pos] = b
+      tail_indices[pos] = i
 
-        lis_pos[i] = pos
-        if pos > 0:
-            predecessor[i] = tail_indices[pos - 1]
+    lis_pos[i] = pos
+    if pos > 0:
+      predecessor[i] = tail_indices[pos - 1]
 
-    # Reconstruct
-    lis_len = len(tails)
-    path = []
-    idx = tail_indices[-1]
+  # Reconstruct
+  lis_len = len(tails)
+  path = []
+  idx = tail_indices[-1]
 
-    while idx != -1:
-        path.append(members[idx][2])
-        idx = predecessor[idx]
+  while idx != -1:
+    path.append(members[idx][2])
+    idx = predecessor[idx]
 
-    path.reverse()
+  path.reverse()
 
-    print(lis_len)
-    print(' '.join(map(str, path)))
+  print(lis_len)
+  print(' '.join(map(str, path)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2097,184 +2097,184 @@ Iterate over possible L0 values, compute L1, then verify if the assignment is co
 
 ```python
 def solve():
-    s = input().strip()
-    t = input().strip()
+  s = input().strip()
+  t = input().strip()
 
-    c0 = s.count('0')
-    c1 = s.count('1')
-    n = len(s)
-    m = len(t)
+  c0 = s.count('0')
+  c1 = s.count('1')
+  n = len(s)
+  m = len(t)
 
-    # Special case: all same characters in s
-    first_char = s[0]
+  # Special case: all same characters in s
+  first_char = s[0]
 
-    count = 0
+  count = 0
 
-    # Try all possible lengths for r_first_char
-    # c0 * L0 + c1 * L1 = m
-    # L0 >= 1, L1 >= 1
+  # Try all possible lengths for r_first_char
+  # c0 * L0 + c1 * L1 = m
+  # L0 >= 1, L1 >= 1
 
-    for L_first in range(1, m + 1):
-        # Remaining length after assigning L_first to first_char
-        if first_char == '0':
-            L0 = L_first
-            if c1 == 0:
-                if c0 * L0 == m:
-                    # Check consistency
-                    r0 = t[:L0]
-                    # Verify all 0s map to r0
-                    valid = True
-                    pos = 0
-                    for ch in s:
-                        if t[pos:pos + L0] != r0:
-                            valid = False
-                            break
-                        pos += L0
-                    if valid:
-                        count += 1
-                continue
-
-            remaining = m - c0 * L0
-            if remaining <= 0 or remaining % c1 != 0:
-                continue
-            L1 = remaining // c1
-            if L1 <= 0:
-                continue
-        else:
-            L1 = L_first
-            if c0 == 0:
-                if c1 * L1 == m:
-                    r1 = t[:L1]
-                    valid = True
-                    pos = 0
-                    for ch in s:
-                        if t[pos:pos + L1] != r1:
-                            valid = False
-                            break
-                        pos += L1
-                    if valid:
-                        count += 1
-                continue
-
-            remaining = m - c1 * L1
-            if remaining <= 0 or remaining % c0 != 0:
-                continue
-            L0 = remaining // c0
-            if L0 <= 0:
-                continue
-
-        # Verify consistency
-        r0, r1 = None, None
-        valid = True
-        pos = 0
-
-        for ch in s:
-            if ch == '0':
-                substr = t[pos:pos + L0]
-                if r0 is None:
-                    r0 = substr
-                elif r0 != substr:
-                    valid = False
-                    break
-                pos += L0
-            else:
-                substr = t[pos:pos + L1]
-                if r1 is None:
-                    r1 = substr
-                elif r1 != substr:
-                    valid = False
-                    break
-                pos += L1
-
-        if valid and r0 != r1:
+  for L_first in range(1, m + 1):
+    # Remaining length after assigning L_first to first_char
+    if first_char == '0':
+      L0 = L_first
+      if c1 == 0:
+        if c0 * L0 == m:
+          # Check consistency
+          r0 = t[:L0]
+          # Verify all 0s map to r0
+          valid = True
+          pos = 0
+          for ch in s:
+            if t[pos:pos + L0] != r0:
+              valid = False
+              break
+            pos += L0
+          if valid:
             count += 1
+        continue
 
-    print(count)
+      remaining = m - c0 * L0
+      if remaining <= 0 or remaining % c1 != 0:
+        continue
+      L1 = remaining // c1
+      if L1 <= 0:
+        continue
+    else:
+      L1 = L_first
+      if c0 == 0:
+        if c1 * L1 == m:
+          r1 = t[:L1]
+          valid = True
+          pos = 0
+          for ch in s:
+            if t[pos:pos + L1] != r1:
+              valid = False
+              break
+            pos += L1
+          if valid:
+            count += 1
+        continue
+
+      remaining = m - c1 * L1
+      if remaining <= 0 or remaining % c0 != 0:
+        continue
+      L0 = remaining // c0
+      if L0 <= 0:
+        continue
+
+    # Verify consistency
+    r0, r1 = None, None
+    valid = True
+    pos = 0
+
+    for ch in s:
+      if ch == '0':
+        substr = t[pos:pos + L0]
+        if r0 is None:
+          r0 = substr
+        elif r0 != substr:
+          valid = False
+          break
+        pos += L0
+      else:
+        substr = t[pos:pos + L1]
+        if r1 is None:
+          r1 = substr
+        elif r1 != substr:
+          valid = False
+          break
+        pos += L1
+
+    if valid and r0 != r1:
+      count += 1
+
+  print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    s = input().strip()
-    t = input().strip()
+  s = input().strip()
+  t = input().strip()
 
-    c0 = s.count('0')
-    c1 = s.count('1')
-    m = len(t)
+  c0 = s.count('0')
+  c1 = s.count('1')
+  m = len(t)
 
-    MOD = (1 << 61) - 1
-    BASE = 31
+  MOD = (1 << 61) - 1
+  BASE = 31
 
-    # Precompute hashes and powers
-    h = [0] * (m + 1)
-    pw = [1] * (m + 1)
+  # Precompute hashes and powers
+  h = [0] * (m + 1)
+  pw = [1] * (m + 1)
 
-    for i in range(m):
-        h[i + 1] = (h[i] * BASE + ord(t[i])) % MOD
-        pw[i + 1] = (pw[i] * BASE) % MOD
+  for i in range(m):
+    h[i + 1] = (h[i] * BASE + ord(t[i])) % MOD
+    pw[i + 1] = (pw[i] * BASE) % MOD
 
-    def get_hash(l, r):  # hash of t[l:r]
-        return (h[r] - h[l] * pw[r - l] % MOD + MOD) % MOD
+  def get_hash(l, r):  # hash of t[l:r]
+    return (h[r] - h[l] * pw[r - l] % MOD + MOD) % MOD
 
-    count = 0
+  count = 0
 
-    for L0 in range(1, m + 1):
-        if c1 == 0:
-            if c0 * L0 == m:
-                # Check all 0s consistent
-                hash0 = get_hash(0, L0)
-                valid = True
-                pos = 0
-                for ch in s:
-                    if get_hash(pos, pos + L0) != hash0:
-                        valid = False
-                        break
-                    pos += L0
-                if valid:
-                    count += 1
-            continue
-
-        remaining = m - c0 * L0
-        if remaining <= 0 or remaining % c1 != 0:
-            continue
-        L1 = remaining // c1
-        if L1 <= 0:
-            continue
-
-        # Verify with hashing
-        hash0, hash1 = None, None
+  for L0 in range(1, m + 1):
+    if c1 == 0:
+      if c0 * L0 == m:
+        # Check all 0s consistent
+        hash0 = get_hash(0, L0)
         valid = True
         pos = 0
-
         for ch in s:
-            if ch == '0':
-                curr = get_hash(pos, pos + L0)
-                if hash0 is None:
-                    hash0 = curr
-                elif hash0 != curr:
-                    valid = False
-                    break
-                pos += L0
-            else:
-                curr = get_hash(pos, pos + L1)
-                if hash1 is None:
-                    hash1 = curr
-                elif hash1 != curr:
-                    valid = False
-                    break
-                pos += L1
+          if get_hash(pos, pos + L0) != hash0:
+            valid = False
+            break
+          pos += L0
+        if valid:
+          count += 1
+      continue
 
-        if valid and hash0 != hash1:
-            count += 1
+    remaining = m - c0 * L0
+    if remaining <= 0 or remaining % c1 != 0:
+      continue
+    L1 = remaining // c1
+    if L1 <= 0:
+      continue
 
-    print(count)
+    # Verify with hashing
+    hash0, hash1 = None, None
+    valid = True
+    pos = 0
+
+    for ch in s:
+      if ch == '0':
+        curr = get_hash(pos, pos + L0)
+        if hash0 is None:
+          hash0 = curr
+        elif hash0 != curr:
+          valid = False
+          break
+        pos += L0
+      else:
+        curr = get_hash(pos, pos + L1)
+        if hash1 is None:
+          hash1 = curr
+        elif hash1 != curr:
+          valid = False
+          break
+        pos += L1
+
+    if valid and hash0 != hash1:
+      count += 1
+
+  print(count)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2324,49 +2324,49 @@ Transform to LIS: Map Prince's sequence to positions 1, 2, ..., p+1. Then for ea
 import bisect
 
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    case = 0
-    while True:
-        line = input().split()
-        if not line:
-            break
+  case = 0
+  while True:
+    line = input().split()
+    if not line:
+      break
 
-        n, p, q = int(line[0]), int(line[1]), int(line[2])
-        case += 1
+    n, p, q = int(line[0]), int(line[1]), int(line[2])
+    case += 1
 
-        prince = list(map(int, input().split()))
-        princess = list(map(int, input().split()))
+    prince = list(map(int, input().split()))
+    princess = list(map(int, input().split()))
 
-        # Map prince's sequence to positions
-        pos = {}
-        for i, val in enumerate(prince):
-            pos[val] = i
+    # Map prince's sequence to positions
+    pos = {}
+    for i, val in enumerate(prince):
+      pos[val] = i
 
-        # Transform princess's sequence
-        transformed = []
-        for val in princess:
-            if val in pos:
-                transformed.append(pos[val])
+    # Transform princess's sequence
+    transformed = []
+    for val in princess:
+      if val in pos:
+        transformed.append(pos[val])
 
-        # LIS on transformed sequence
-        if not transformed:
-            print(f"Case {case}: 0")
-            continue
+    # LIS on transformed sequence
+    if not transformed:
+      print(f"Case {case}: 0")
+      continue
 
-        tails = []
-        for x in transformed:
-            idx = bisect.bisect_left(tails, x)
-            if idx == len(tails):
-                tails.append(x)
-            else:
-                tails[idx] = x
+    tails = []
+    for x in transformed:
+      idx = bisect.bisect_left(tails, x)
+      if idx == len(tails):
+        tails.append(x)
+      else:
+        tails[idx] = x
 
-        print(f"Case {case}: {len(tails)}")
+    print(f"Case {case}: {len(tails)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -2376,42 +2376,42 @@ import bisect
 import sys
 
 def solve():
-    input = sys.stdin.readline
-    case = 0
+  input = sys.stdin.readline
+  case = 0
 
-    while True:
-        try:
-            line = input()
-            if not line.strip():
-                break
-            n, p, q = map(int, line.split())
-        except:
-            break
+  while True:
+    try:
+      line = input()
+      if not line.strip():
+        break
+      n, p, q = map(int, line.split())
+    except:
+      break
 
-        case += 1
+    case += 1
 
-        prince = list(map(int, input().split()))
-        princess = list(map(int, input().split()))
+    prince = list(map(int, input().split()))
+    princess = list(map(int, input().split()))
 
-        # Create position map for prince
-        prince_pos = {v: i for i, v in enumerate(prince)}
+    # Create position map for prince
+    prince_pos = {v: i for i, v in enumerate(prince)}
 
-        # Convert princess to positions in prince's sequence
-        seq = [prince_pos[v] for v in princess if v in prince_pos]
+    # Convert princess to positions in prince's sequence
+    seq = [prince_pos[v] for v in princess if v in prince_pos]
 
-        # LIS
-        dp = []
-        for x in seq:
-            pos = bisect.bisect_left(dp, x)
-            if pos == len(dp):
-                dp.append(x)
-            else:
-                dp[pos] = x
+    # LIS
+    dp = []
+    for x in seq:
+      pos = bisect.bisect_left(dp, x)
+      if pos == len(dp):
+        dp.append(x)
+      else:
+        dp[pos] = x
 
-        print(f"Case {case}: {len(dp)}")
+    print(f"Case {case}: {len(dp)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2464,100 +2464,100 @@ This equals the Longest Increasing Subsequence of the reversed sequence.
 import bisect
 
 def longest_non_increasing(arr):
-    """Find length of longest non-increasing subsequence"""
-    if not arr:
-        return 0
+  """Find length of longest non-increasing subsequence"""
+  if not arr:
+    return 0
 
-    # Reverse and find LIS with non-strict inequality
-    # Or: find longest non-decreasing in reversed array
-    # Equivalent to finding LIS on negated values
+  # Reverse and find LIS with non-strict inequality
+  # Or: find longest non-decreasing in reversed array
+  # Equivalent to finding LIS on negated values
 
-    # For non-increasing: each next element <= previous
-    # Use LIS on negated values with bisect_right for non-strict
+  # For non-increasing: each next element <= previous
+  # Use LIS on negated values with bisect_right for non-strict
 
-    tails = []
-    for x in arr:
-        neg_x = -x
-        # bisect_right for non-strict (allowing equal)
-        idx = bisect.bisect_right(tails, neg_x)
-        if idx == len(tails):
-            tails.append(neg_x)
-        else:
-            tails[idx] = neg_x
+  tails = []
+  for x in arr:
+    neg_x = -x
+    # bisect_right for non-strict (allowing equal)
+    idx = bisect.bisect_right(tails, neg_x)
+    if idx == len(tails):
+      tails.append(neg_x)
+    else:
+      tails[idx] = neg_x
 
-    return len(tails)
+  return len(tails)
 
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
-    case = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
+  case = 0
 
+  while idx < len(data):
+    missiles = []
     while idx < len(data):
-        missiles = []
-        while idx < len(data):
-            h = int(data[idx])
-            idx += 1
-            if h == -1:
-                break
-            missiles.append(h)
+      h = int(data[idx])
+      idx += 1
+      if h == -1:
+        break
+      missiles.append(h)
 
-        if not missiles:
-            break
+    if not missiles:
+      break
 
-        case += 1
-        result = longest_non_increasing(missiles)
+    case += 1
+    result = longest_non_increasing(missiles)
 
-        if case > 1:
-            print()
-        print(f"Test #{case}:")
-        print(f"  maximum possible number of missiles intercepted: {result}")
+    if case > 1:
+      print()
+    print(f"Test #{case}:")
+    print(f"  maximum possible number of missiles intercepted: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    import sys
-    data = list(map(int, sys.stdin.read().split()))
-    idx = 0
-    case = 0
+  import sys
+  data = list(map(int, sys.stdin.read().split()))
+  idx = 0
+  case = 0
 
+  while idx < len(data):
+    missiles = []
     while idx < len(data):
-        missiles = []
-        while idx < len(data):
-            h = data[idx]
-            idx += 1
-            if h == -1:
-                break
-            missiles.append(h)
+      h = data[idx]
+      idx += 1
+      if h == -1:
+        break
+      missiles.append(h)
 
-        if not missiles:
-            break
+    if not missiles:
+      break
 
-        case += 1
-        n = len(missiles)
+    case += 1
+    n = len(missiles)
 
-        # dp[i] = length of longest non-increasing subsequence ending at i
-        dp = [1] * n
+    # dp[i] = length of longest non-increasing subsequence ending at i
+    dp = [1] * n
 
-        for i in range(1, n):
-            for j in range(i):
-                if missiles[j] >= missiles[i]:
-                    dp[i] = max(dp[i], dp[j] + 1)
+    for i in range(1, n):
+      for j in range(i):
+        if missiles[j] >= missiles[i]:
+          dp[i] = max(dp[i], dp[j] + 1)
 
-        result = max(dp)
+    result = max(dp)
 
-        if case > 1:
-            print()
-        print(f"Test #{case}:")
-        print(f"  maximum possible number of missiles intercepted: {result}")
+    if case > 1:
+      print()
+    print(f"Test #{case}:")
+    print(f"  maximum possible number of missiles intercepted: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2606,101 +2606,101 @@ A block can be placed on another if both base dimensions are strictly smaller.
 
 ```python
 def solve():
-    case = 0
+  case = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case += 1
+    case += 1
 
-        # Generate all rotations
-        blocks = []  # (base1, base2, height)
+    # Generate all rotations
+    blocks = []  # (base1, base2, height)
 
-        for _ in range(n):
-            dims = list(map(int, input().split()))
-            x, y, z = dims
+    for _ in range(n):
+      dims = list(map(int, input().split()))
+      x, y, z = dims
 
-            # All 3 rotations (choosing each dimension as height)
-            # Store as (min_base, max_base, height) for consistent comparison
-            rotations = [
-                (min(y, z), max(y, z), x),
-                (min(x, z), max(x, z), y),
-                (min(x, y), max(x, y), z)
-            ]
+      # All 3 rotations (choosing each dimension as height)
+      # Store as (min_base, max_base, height) for consistent comparison
+      rotations = [
+        (min(y, z), max(y, z), x),
+        (min(x, z), max(x, z), y),
+        (min(x, y), max(x, y), z)
+      ]
 
-            for rot in rotations:
-                blocks.append(rot)
+      for rot in rotations:
+        blocks.append(rot)
 
-        # Sort by base area (or by first dimension)
-        blocks.sort()
+    # Sort by base area (or by first dimension)
+    blocks.sort()
 
-        m = len(blocks)
+    m = len(blocks)
 
-        # dp[i] = max height of tower with blocks[i] on top
-        dp = [b[2] for b in blocks]  # Initialize with just the block's height
+    # dp[i] = max height of tower with blocks[i] on top
+    dp = [b[2] for b in blocks]  # Initialize with just the block's height
 
-        for i in range(1, m):
-            for j in range(i):
-                # blocks[j] can be below blocks[i] if strictly smaller base
-                if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
-                    dp[i] = max(dp[i], dp[j] + blocks[i][2])
+    for i in range(1, m):
+      for j in range(i):
+        # blocks[j] can be below blocks[i] if strictly smaller base
+        if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
+          dp[i] = max(dp[i], dp[j] + blocks[i][2])
 
-        max_height = max(dp)
-        print(f"Case {case}: maximum height = {max_height}")
+    max_height = max(dp)
+    print(f"Case {case}: maximum height = {max_height}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
-    case = 0
+  import sys
+  input = sys.stdin.readline
+  case = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case += 1
-        blocks = []
+    case += 1
+    blocks = []
 
-        for _ in range(n):
-            x, y, z = map(int, input().split())
+    for _ in range(n):
+      x, y, z = map(int, input().split())
 
-            # Generate all orientations
-            # (width, depth, height) - width <= depth for consistency
-            dims = sorted([x, y, z])
-            a, b, c = dims
+      # Generate all orientations
+      # (width, depth, height) - width <= depth for consistency
+      dims = sorted([x, y, z])
+      a, b, c = dims
 
-            # Three unique orientations
-            blocks.append((a, b, c))  # smallest two as base
-            blocks.append((a, c, b))  # smallest and largest as base
-            blocks.append((b, c, a))  # two largest as base
+      # Three unique orientations
+      blocks.append((a, b, c))  # smallest two as base
+      blocks.append((a, c, b))  # smallest and largest as base
+      blocks.append((b, c, a))  # two largest as base
 
-        # Remove duplicates and sort
-        blocks = list(set(blocks))
-        blocks.sort()
+    # Remove duplicates and sort
+    blocks = list(set(blocks))
+    blocks.sort()
 
-        m = len(blocks)
-        dp = [0] * m
+    m = len(blocks)
+    dp = [0] * m
 
-        for i in range(m):
-            dp[i] = blocks[i][2]  # height of current block
+    for i in range(m):
+      dp[i] = blocks[i][2]  # height of current block
 
-            for j in range(i):
-                if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
-                    dp[i] = max(dp[i], dp[j] + blocks[i][2])
+      for j in range(i):
+        if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
+          dp[i] = max(dp[i], dp[j] + blocks[i][2])
 
-        print(f"Case {case}: maximum height = {max(dp)}")
+    print(f"Case {case}: maximum height = {max(dp)}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2757,72 +2757,72 @@ Use binary search for O(n log n) LIS/LDS computation.
 import bisect
 
 def compute_lis_ending(arr):
-    """For each i, compute length of LIS ending at i"""
-    n = len(arr)
-    lis = [0] * n
-    tails = []
+  """For each i, compute length of LIS ending at i"""
+  n = len(arr)
+  lis = [0] * n
+  tails = []
 
-    for i in range(n):
-        pos = bisect.bisect_left(tails, arr[i])
-        lis[i] = pos + 1
+  for i in range(n):
+    pos = bisect.bisect_left(tails, arr[i])
+    lis[i] = pos + 1
 
-        if pos == len(tails):
-            tails.append(arr[i])
-        else:
-            tails[pos] = arr[i]
+    if pos == len(tails):
+      tails.append(arr[i])
+    else:
+      tails[pos] = arr[i]
 
-    return lis
+  return lis
 
 def compute_lds_starting(arr):
-    """For each i, compute length of LDS starting at i"""
-    n = len(arr)
-    lds = [0] * n
-    tails = []
+  """For each i, compute length of LDS starting at i"""
+  n = len(arr)
+  lds = [0] * n
+  tails = []
 
-    # Process from right to left
-    for i in range(n - 1, -1, -1):
-        pos = bisect.bisect_left(tails, arr[i])
-        lds[i] = pos + 1
+  # Process from right to left
+  for i in range(n - 1, -1, -1):
+    pos = bisect.bisect_left(tails, arr[i])
+    lds[i] = pos + 1
 
-        if pos == len(tails):
-            tails.append(arr[i])
-        else:
-            tails[pos] = arr[i]
+    if pos == len(tails):
+      tails.append(arr[i])
+    else:
+      tails[pos] = arr[i]
 
-    return lds
+  return lds
 
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    while idx < len(data):
-        n = int(data[idx])
-        idx += 1
+  while idx < len(data):
+    n = int(data[idx])
+    idx += 1
 
-        arr = []
-        for _ in range(n):
-            arr.append(int(data[idx]))
-            idx += 1
+    arr = []
+    for _ in range(n):
+      arr.append(int(data[idx]))
+      idx += 1
 
-        # Compute LIS ending at each position
-        lis = compute_lis_ending(arr)
+    # Compute LIS ending at each position
+    lis = compute_lis_ending(arr)
 
-        # Compute LDS starting at each position
-        lds = compute_lds_starting(arr)
+    # Compute LDS starting at each position
+    lds = compute_lds_starting(arr)
 
-        # Find max Wavio length
-        max_wavio = 0
-        for i in range(n):
-            # Wavio with peak at i
-            k = min(lis[i], lds[i])
-            wavio_len = 2 * k - 1
-            max_wavio = max(max_wavio, wavio_len)
+    # Find max Wavio length
+    max_wavio = 0
+    for i in range(n):
+      # Wavio with peak at i
+      k = min(lis[i], lds[i])
+      wavio_len = 2 * k - 1
+      max_wavio = max(max_wavio, wavio_len)
 
-        print(max_wavio)
+    print(max_wavio)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
@@ -2832,45 +2832,45 @@ import bisect
 import sys
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    while idx < len(input_data):
-        n = int(input_data[idx])
-        idx += 1
+  while idx < len(input_data):
+    n = int(input_data[idx])
+    idx += 1
 
-        arr = [int(input_data[idx + i]) for i in range(n)]
-        idx += n
+    arr = [int(input_data[idx + i]) for i in range(n)]
+    idx += n
 
-        # LIS[i] = length of longest strictly increasing subsequence ending at i
-        LIS = [0] * n
-        tails = []
-        for i in range(n):
-            pos = bisect.bisect_left(tails, arr[i])
-            LIS[i] = pos + 1
-            if pos == len(tails):
-                tails.append(arr[i])
-            else:
-                tails[pos] = arr[i]
+    # LIS[i] = length of longest strictly increasing subsequence ending at i
+    LIS = [0] * n
+    tails = []
+    for i in range(n):
+      pos = bisect.bisect_left(tails, arr[i])
+      LIS[i] = pos + 1
+      if pos == len(tails):
+        tails.append(arr[i])
+      else:
+        tails[pos] = arr[i]
 
-        # LDS[i] = length of longest strictly decreasing subsequence starting at i
-        # Equivalent to LIS from right with negated values
-        LDS = [0] * n
-        tails = []
-        for i in range(n - 1, -1, -1):
-            pos = bisect.bisect_left(tails, arr[i])
-            LDS[i] = pos + 1
-            if pos == len(tails):
-                tails.append(arr[i])
-            else:
-                tails[pos] = arr[i]
+    # LDS[i] = length of longest strictly decreasing subsequence starting at i
+    # Equivalent to LIS from right with negated values
+    LDS = [0] * n
+    tails = []
+    for i in range(n - 1, -1, -1):
+      pos = bisect.bisect_left(tails, arr[i])
+      LDS[i] = pos + 1
+      if pos == len(tails):
+        tails.append(arr[i])
+      else:
+        tails[pos] = arr[i]
 
-        # Maximum Wavio length
-        result = max(2 * min(LIS[i], LDS[i]) - 1 for i in range(n))
-        print(result)
+    # Maximum Wavio length
+    result = max(2 * min(LIS[i], LDS[i]) - 1 for i in range(n))
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -2921,128 +2921,128 @@ Modified LCS where we track consecutive matches:
 
 ```python
 def solve():
-    while True:
-        k = int(input())
-        if k == 0:
-            break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-        s1 = input().strip()
-        s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-        n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-        # dp[i][j] = length of consecutive match ending at s1[i-1], s2[j-1]
-        # best[i][j] = best valid LCS length ending before or at (i,j)
-        dp = [[0] * (m + 1) for _ in range(n + 1)]
-        best = [[0] * (m + 1) for _ in range(n + 1)]
+    # dp[i][j] = length of consecutive match ending at s1[i-1], s2[j-1]
+    # best[i][j] = best valid LCS length ending before or at (i,j)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    best = [[0] * (m + 1) for _ in range(n + 1)]
 
-        result = 0
+    result = 0
 
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-                # Update best from previous positions
-                best[i][j] = max(best[i-1][j], best[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        # Update best from previous positions
+        best[i][j] = max(best[i-1][j], best[i][j-1])
 
-                if s1[i-1] == s2[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          dp[i][j] = dp[i-1][j-1] + 1
 
-                    # If segment length >= k, it's valid
-                    if dp[i][j] >= k:
-                        # Can extend previous best by segment length
-                        # best[i-dp[i][j]][j-dp[i][j]] + dp[i][j]
-                        seg_start_i = i - dp[i][j]
-                        seg_start_j = j - dp[i][j]
-                        candidate = best[seg_start_i][seg_start_j] + dp[i][j]
-                        best[i][j] = max(best[i][j], candidate)
-                        result = max(result, best[i][j])
-                else:
-                    dp[i][j] = 0
+          # If segment length >= k, it's valid
+          if dp[i][j] >= k:
+            # Can extend previous best by segment length
+            # best[i-dp[i][j]][j-dp[i][j]] + dp[i][j]
+            seg_start_i = i - dp[i][j]
+            seg_start_j = j - dp[i][j]
+            candidate = best[seg_start_i][seg_start_j] + dp[i][j]
+            best[i][j] = max(best[i][j], candidate)
+            result = max(result, best[i][j])
+        else:
+          dp[i][j] = 0
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    while True:
-        k = int(input())
-        if k == 0:
-            break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-        s1 = input().strip()
-        s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-        n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-        # match[i][j] = length of matching segment ending at i,j
-        match = [[0] * (m + 1) for _ in range(n + 1)]
+    # match[i][j] = length of matching segment ending at i,j
+    match = [[0] * (m + 1) for _ in range(n + 1)]
 
-        # dp[i][j] = max LCS with valid segments ending at or before i,j
-        dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # dp[i][j] = max LCS with valid segments ending at or before i,j
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-                # Propagate best from neighbors
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        # Propagate best from neighbors
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-                if s1[i-1] == s2[j-1]:
-                    match[i][j] = match[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          match[i][j] = match[i-1][j-1] + 1
 
-                    # Check all valid segment lengths >= k
-                    for seg_len in range(k, match[i][j] + 1):
-                        prev_i = i - seg_len
-                        prev_j = j - seg_len
-                        dp[i][j] = max(dp[i][j], dp[prev_i][prev_j] + seg_len)
+          # Check all valid segment lengths >= k
+          for seg_len in range(k, match[i][j] + 1):
+            prev_i = i - seg_len
+            prev_j = j - seg_len
+            dp[i][j] = max(dp[i][j], dp[prev_i][prev_j] + seg_len)
 
-        print(dp[n][m])
+    print(dp[n][m])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    while True:
-        k = int(input())
-        if k == 0:
-            break
+  while True:
+    k = int(input())
+    if k == 0:
+      break
 
-        s1 = input().strip()
-        s2 = input().strip()
+    s1 = input().strip()
+    s2 = input().strip()
 
-        n, m = len(s1), len(s2)
+    n, m = len(s1), len(s2)
 
-        # match[i][j] = consecutive match length ending at i-1, j-1
-        match = [[0] * (m + 1) for _ in range(n + 1)]
-        dp = [[0] * (m + 1) for _ in range(n + 1)]
+    # match[i][j] = consecutive match length ending at i-1, j-1
+    match = [[0] * (m + 1) for _ in range(n + 1)]
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-                if s1[i-1] == s2[j-1]:
-                    match[i][j] = match[i-1][j-1] + 1
+        if s1[i-1] == s2[j-1]:
+          match[i][j] = match[i-1][j-1] + 1
 
-                    if match[i][j] >= k:
-                        # Use segment of exactly k or extend
-                        start_i = i - k
-                        start_j = j - k
-                        dp[i][j] = max(dp[i][j], dp[start_i][start_j] + k)
+          if match[i][j] >= k:
+            # Use segment of exactly k or extend
+            start_i = i - k
+            start_j = j - k
+            dp[i][j] = max(dp[i][j], dp[start_i][start_j] + k)
 
-                        # Or extend existing segment
-                        if match[i][j] > k:
-                            dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
+            # Or extend existing segment
+            if match[i][j] > k:
+              dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
 
-        print(dp[n][m])
+    print(dp[n][m])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3088,108 +3088,108 @@ Use DP to find all achievable sums up to total/2.
 
 ```python
 def solve():
-    n = int(input())
+  n = int(input())
 
-    for _ in range(n):
-        m = int(input())
-        coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-        total = sum(coins)
-        target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-        # dp[i] = True if sum i is achievable
-        dp = [False] * (target + 1)
-        dp[0] = True
+    # dp[i] = True if sum i is achievable
+    dp = [False] * (target + 1)
+    dp[0] = True
 
-        for coin in coins:
-            # Process in reverse to avoid using same coin twice
-            for s in range(target, coin - 1, -1):
-                if dp[s - coin]:
-                    dp[s] = True
+    for coin in coins:
+      # Process in reverse to avoid using same coin twice
+      for s in range(target, coin - 1, -1):
+        if dp[s - coin]:
+          dp[s] = True
 
-        # Find largest achievable sum <= target
-        for s in range(target, -1, -1):
-            if dp[s]:
-                best = s
-                break
+    # Find largest achievable sum <= target
+    for s in range(target, -1, -1):
+      if dp[s]:
+        best = s
+        break
 
-        # Minimum difference
-        print(total - 2 * best)
+    # Minimum difference
+    print(total - 2 * best)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    n = int(input())
+  n = int(input())
 
-    for _ in range(n):
-        m = int(input())
-        coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-        total = sum(coins)
-        target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-        # Use integer as bitset for achievable sums
-        achievable = 1  # bit 0 set = sum 0 achievable
+    # Use integer as bitset for achievable sums
+    achievable = 1  # bit 0 set = sum 0 achievable
 
-        for coin in coins:
-            achievable |= (achievable << coin)
+    for coin in coins:
+      achievable |= (achievable << coin)
 
-        # Mask to only consider sums <= target
-        mask = (1 << (target + 1)) - 1
-        achievable &= mask
+    # Mask to only consider sums <= target
+    mask = (1 << (target + 1)) - 1
+    achievable &= mask
 
-        # Find highest set bit
-        best = achievable.bit_length() - 1
+    # Find highest set bit
+    best = achievable.bit_length() - 1
 
-        print(total - 2 * best)
+    print(total - 2 * best)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Recursive
 
 ```python
 def solve():
-    n = int(input())
+  n = int(input())
 
-    for _ in range(n):
-        m = int(input())
-        coins = list(map(int, input().split()))
+  for _ in range(n):
+    m = int(input())
+    coins = list(map(int, input().split()))
 
-        total = sum(coins)
-        target = total // 2
+    total = sum(coins)
+    target = total // 2
 
-        memo = {}
+    memo = {}
 
-        def can_make(idx, remaining):
-            if remaining == 0:
-                return True
-            if idx == m or remaining < 0:
-                return False
+    def can_make(idx, remaining):
+      if remaining == 0:
+        return True
+      if idx == m or remaining < 0:
+        return False
 
-            if (idx, remaining) in memo:
-                return memo[(idx, remaining)]
+      if (idx, remaining) in memo:
+        return memo[(idx, remaining)]
 
-            result = can_make(idx + 1, remaining) or \
-                     can_make(idx + 1, remaining - coins[idx])
+      result = can_make(idx + 1, remaining) or \
+          can_make(idx + 1, remaining - coins[idx])
 
-            memo[(idx, remaining)] = result
-            return result
+      memo[(idx, remaining)] = result
+      return result
 
-        # Find largest achievable sum
-        for s in range(target, -1, -1):
-            if can_make(0, s):
-                print(total - 2 * s)
-                break
+    # Find largest achievable sum
+    for s in range(target, -1, -1):
+      if can_make(0, s):
+        print(total - 2 * s)
+        break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3248,138 +3248,138 @@ Track which items are selected for reconstruction.
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().strip().split('\n')
-    idx = 0
-    first = True
+  import sys
+  data = sys.stdin.read().strip().split('\n')
+  idx = 0
+  first = True
 
-    while idx < len(data):
-        # Skip empty lines
-        while idx < len(data) and not data[idx].strip():
-            idx += 1
+  while idx < len(data):
+    # Skip empty lines
+    while idx < len(data) and not data[idx].strip():
+      idx += 1
 
-        if idx >= len(data):
-            break
+    if idx >= len(data):
+      break
 
-        t, w = map(int, data[idx].split())
-        idx += 1
+    t, w = map(int, data[idx].split())
+    idx += 1
 
-        n = int(data[idx])
-        idx += 1
+    n = int(data[idx])
+    idx += 1
 
-        treasures = []
-        for _ in range(n):
-            d, v = map(int, data[idx].split())
-            treasures.append((d, v))
-            idx += 1
+    treasures = []
+    for _ in range(n):
+      d, v = map(int, data[idx].split())
+      treasures.append((d, v))
+      idx += 1
 
-        # Calculate time cost for each treasure
-        costs = [3 * w * d for d, v in treasures]
-        values = [v for d, v in treasures]
+    # Calculate time cost for each treasure
+    costs = [3 * w * d for d, v in treasures]
+    values = [v for d, v in treasures]
 
-        # 0/1 Knapsack
-        # dp[c] = max gold with time capacity c
-        dp = [0] * (t + 1)
-        # For reconstruction: track which items
-        parent = [[-1] * (t + 1) for _ in range(n + 1)]
+    # 0/1 Knapsack
+    # dp[c] = max gold with time capacity c
+    dp = [0] * (t + 1)
+    # For reconstruction: track which items
+    parent = [[-1] * (t + 1) for _ in range(n + 1)]
 
-        for i in range(n):
-            for c in range(t, costs[i] - 1, -1):
-                if dp[c - costs[i]] + values[i] > dp[c]:
-                    dp[c] = dp[c - costs[i]] + values[i]
+    for i in range(n):
+      for c in range(t, costs[i] - 1, -1):
+        if dp[c - costs[i]] + values[i] > dp[c]:
+          dp[c] = dp[c - costs[i]] + values[i]
 
-        # Reconstruction with separate tracking
-        # Re-run with full tracking
-        dp2 = [[0] * (t + 1) for _ in range(n + 1)]
+    # Reconstruction with separate tracking
+    # Re-run with full tracking
+    dp2 = [[0] * (t + 1) for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for c in range(t + 1):
-                dp2[i][c] = dp2[i-1][c]
-                if c >= costs[i-1] and dp2[i-1][c - costs[i-1]] + values[i-1] > dp2[i][c]:
-                    dp2[i][c] = dp2[i-1][c - costs[i-1]] + values[i-1]
+    for i in range(1, n + 1):
+      for c in range(t + 1):
+        dp2[i][c] = dp2[i-1][c]
+        if c >= costs[i-1] and dp2[i-1][c - costs[i-1]] + values[i-1] > dp2[i][c]:
+          dp2[i][c] = dp2[i-1][c - costs[i-1]] + values[i-1]
 
-        # Backtrack to find items
-        selected = []
-        c = t
-        for i in range(n, 0, -1):
-            if dp2[i][c] != dp2[i-1][c]:
-                selected.append(i - 1)
-                c -= costs[i-1]
+    # Backtrack to find items
+    selected = []
+    c = t
+    for i in range(n, 0, -1):
+      if dp2[i][c] != dp2[i-1][c]:
+        selected.append(i - 1)
+        c -= costs[i-1]
 
-        selected.reverse()
+    selected.reverse()
 
-        # Output
-        if not first:
-            print()
-        first = False
+    # Output
+    if not first:
+      print()
+    first = False
 
-        print(dp[t])
-        print(len(selected))
-        for i in selected:
-            print(treasures[i][0], treasures[i][1])
+    print(dp[t])
+    print(len(selected))
+    for i in selected:
+      print(treasures[i][0], treasures[i][1])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized with Reconstruction
 
 ```python
 def solve():
-    import sys
-    input_data = sys.stdin.read().strip().split('\n')
-    idx = 0
-    first = True
+  import sys
+  input_data = sys.stdin.read().strip().split('\n')
+  idx = 0
+  first = True
 
-    while idx < len(input_data):
-        while idx < len(input_data) and not input_data[idx].strip():
-            idx += 1
+  while idx < len(input_data):
+    while idx < len(input_data) and not input_data[idx].strip():
+      idx += 1
 
-        if idx >= len(input_data):
-            break
+    if idx >= len(input_data):
+      break
 
-        t, w = map(int, input_data[idx].split())
-        idx += 1
+    t, w = map(int, input_data[idx].split())
+    idx += 1
 
-        n = int(input_data[idx])
-        idx += 1
+    n = int(input_data[idx])
+    idx += 1
 
-        treasures = []
-        for _ in range(n):
-            d, v = map(int, input_data[idx].split())
-            treasures.append((d, v))
-            idx += 1
+    treasures = []
+    for _ in range(n):
+      d, v = map(int, input_data[idx].split())
+      treasures.append((d, v))
+      idx += 1
 
-        # Time costs
-        costs = [3 * w * d for d, v in treasures]
-        values = [v for d, v in treasures]
+    # Time costs
+    costs = [3 * w * d for d, v in treasures]
+    values = [v for d, v in treasures]
 
-        # DP with item tracking
-        # dp[c] = (max_value, set of item indices)
-        INF = float('inf')
-        dp = [(0, []) for _ in range(t + 1)]
+    # DP with item tracking
+    # dp[c] = (max_value, set of item indices)
+    INF = float('inf')
+    dp = [(0, []) for _ in range(t + 1)]
 
-        for i in range(n):
-            for c in range(t, costs[i] - 1, -1):
-                prev_val, prev_items = dp[c - costs[i]]
-                new_val = prev_val + values[i]
+    for i in range(n):
+      for c in range(t, costs[i] - 1, -1):
+        prev_val, prev_items = dp[c - costs[i]]
+        new_val = prev_val + values[i]
 
-                if new_val > dp[c][0]:
-                    dp[c] = (new_val, prev_items + [i])
+        if new_val > dp[c][0]:
+          dp[c] = (new_val, prev_items + [i])
 
-        max_gold, selected = dp[t]
+    max_gold, selected = dp[t]
 
-        if not first:
-            print()
-        first = False
+    if not first:
+      print()
+    first = False
 
-        print(max_gold)
-        print(len(selected))
-        for i in selected:
-            print(treasures[i][0], treasures[i][1])
+    print(max_gold)
+    print(len(selected))
+    for i in selected:
+      print(treasures[i][0], treasures[i][1])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3429,128 +3429,128 @@ Since we need sum ≥ P, track sums up to some reasonable limit (P + max_coin or
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        price = int(input())
-        n = int(input())
-        coins = [int(input()) for _ in range(n)]
+  for _ in range(t):
+    price = int(input())
+    n = int(input())
+    coins = [int(input()) for _ in range(n)]
 
-        # Maximum sum we might need to consider
-        # At most price + max single coin (to avoid overpaying too much)
-        max_sum = min(price + max(coins), sum(coins))
+    # Maximum sum we might need to consider
+    # At most price + max single coin (to avoid overpaying too much)
+    max_sum = min(price + max(coins), sum(coins))
 
-        INF = float('inf')
+    INF = float('inf')
 
-        # dp[s] = minimum coins to achieve sum exactly s
-        dp = [INF] * (max_sum + 1)
-        dp[0] = 0
+    # dp[s] = minimum coins to achieve sum exactly s
+    dp = [INF] * (max_sum + 1)
+    dp[0] = 0
 
-        for coin in coins:
-            # Process in reverse (0/1 knapsack)
-            for s in range(max_sum, coin - 1, -1):
-                if dp[s - coin] != INF:
-                    dp[s] = min(dp[s], dp[s - coin] + 1)
+    for coin in coins:
+      # Process in reverse (0/1 knapsack)
+      for s in range(max_sum, coin - 1, -1):
+        if dp[s - coin] != INF:
+          dp[s] = min(dp[s], dp[s - coin] + 1)
 
-        # Find minimum sum >= price with minimum coins
-        best_sum = -1
-        best_coins = INF
+    # Find minimum sum >= price with minimum coins
+    best_sum = -1
+    best_coins = INF
 
-        for s in range(price, max_sum + 1):
-            if dp[s] != INF:
-                if dp[s] < best_coins:
-                    best_sum = s
-                    best_coins = dp[s]
-                    break  # First valid sum >= price with minimum coins
+    for s in range(price, max_sum + 1):
+      if dp[s] != INF:
+        if dp[s] < best_coins:
+          best_sum = s
+          best_coins = dp[s]
+          break  # First valid sum >= price with minimum coins
 
-        # Actually need to find minimum sum first, then minimum coins for that sum
-        # Re-interpret: find smallest sum >= price that is achievable
-        for s in range(price, max_sum + 1):
-            if dp[s] != INF:
-                print(s, dp[s])
-                break
+    # Actually need to find minimum sum first, then minimum coins for that sum
+    # Re-interpret: find smallest sum >= price that is achievable
+    for s in range(price, max_sum + 1):
+      if dp[s] != INF:
+        print(s, dp[s])
+        break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        price = int(input())
-        n = int(input())
-        coins = [int(input()) for _ in range(n)]
+  for _ in range(t):
+    price = int(input())
+    n = int(input())
+    coins = [int(input()) for _ in range(n)]
 
-        total = sum(coins)
-        max_sum = total  # Could be smarter but safe
+    total = sum(coins)
+    max_sum = total  # Could be smarter but safe
 
-        INF = float('inf')
+    INF = float('inf')
 
-        # dp[s] = minimum number of coins to make sum s
-        dp = [INF] * (max_sum + 1)
-        dp[0] = 0
+    # dp[s] = minimum number of coins to make sum s
+    dp = [INF] * (max_sum + 1)
+    dp[0] = 0
 
-        for coin in coins:
-            for s in range(max_sum, coin - 1, -1):
-                if dp[s - coin] < INF:
-                    dp[s] = min(dp[s], dp[s - coin] + 1)
+    for coin in coins:
+      for s in range(max_sum, coin - 1, -1):
+        if dp[s - coin] < INF:
+          dp[s] = min(dp[s], dp[s - coin] + 1)
 
-        # Find smallest achievable sum >= price
-        result_sum = -1
-        result_coins = -1
+    # Find smallest achievable sum >= price
+    result_sum = -1
+    result_coins = -1
 
-        for s in range(price, max_sum + 1):
-            if dp[s] < INF:
-                result_sum = s
-                result_coins = dp[s]
-                break
+    for s in range(price, max_sum + 1):
+      if dp[s] < INF:
+        result_sum = s
+        result_coins = dp[s]
+        break
 
-        print(result_sum, result_coins)
+    print(result_sum, result_coins)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        price = int(input())
-        n = int(input())
-        coins = [int(input()) for _ in range(n)]
+  for _ in range(t):
+    price = int(input())
+    n = int(input())
+    coins = [int(input()) for _ in range(n)]
 
-        # Limit search space
-        max_coin = max(coins)
-        limit = price + max_coin
+    # Limit search space
+    max_coin = max(coins)
+    limit = price + max_coin
 
-        INF = n + 1  # Can't use more than n coins
+    INF = n + 1  # Can't use more than n coins
 
-        dp = [INF] * (limit + 1)
-        dp[0] = 0
+    dp = [INF] * (limit + 1)
+    dp[0] = 0
 
-        for coin in coins:
-            for s in range(limit, coin - 1, -1):
-                if dp[s - coin] < INF:
-                    dp[s] = min(dp[s], dp[s - coin] + 1)
+    for coin in coins:
+      for s in range(limit, coin - 1, -1):
+        if dp[s - coin] < INF:
+          dp[s] = min(dp[s], dp[s - coin] + 1)
 
-        # Find minimum achievable sum >= price
-        for s in range(price, limit + 1):
-            if dp[s] < INF:
-                print(s, dp[s])
-                break
+    # Find minimum achievable sum >= price
+    for s in range(price, limit + 1):
+      if dp[s] < INF:
+        print(s, dp[s])
+        break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3605,116 +3605,116 @@ For a hanging stick, it only uses half its length of container space.
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        n, L = map(int, input().split())
+  for case in range(1, t + 1):
+    n, L = map(int, input().split())
 
-        sticks = []
-        for _ in range(n):
-            a, v = map(int, input().split())
-            sticks.append((a, v))
+    sticks = []
+    for _ in range(n):
+      a, v = map(int, input().split())
+      sticks.append((a, v))
 
-        # Multiply L by 2 to avoid floating point
-        L *= 2
+    # Multiply L by 2 to avoid floating point
+    L *= 2
 
-        # dp[capacity][hanging_count] = max value
-        # hanging_count: 0, 1, or 2
-        INF = float('-inf')
+    # dp[capacity][hanging_count] = max value
+    # hanging_count: 0, 1, or 2
+    INF = float('-inf')
 
-        # Initialize
-        dp = [[INF] * 3 for _ in range(L + 1)]
-        dp[0][0] = 0
+    # Initialize
+    dp = [[INF] * 3 for _ in range(L + 1)]
+    dp[0][0] = 0
 
-        for a, v in sticks:
-            full_len = a * 2  # full stick length (doubled)
-            half_len = a      # half length (since L is doubled)
+    for a, v in sticks:
+      full_len = a * 2  # full stick length (doubled)
+      half_len = a      # half length (since L is doubled)
 
-            # Process in reverse for 0/1 knapsack
-            new_dp = [row[:] for row in dp]
+      # Process in reverse for 0/1 knapsack
+      new_dp = [row[:] for row in dp]
 
-            for c in range(L + 1):
-                for h in range(3):
-                    if dp[c][h] == INF:
-                        continue
+      for c in range(L + 1):
+        for h in range(3):
+          if dp[c][h] == INF:
+            continue
 
-                    # Option 1: Place stick fully inside (uses full length)
-                    if c + full_len <= L:
-                        new_dp[c + full_len][h] = max(new_dp[c + full_len][h], dp[c][h] + v)
+          # Option 1: Place stick fully inside (uses full length)
+          if c + full_len <= L:
+            new_dp[c + full_len][h] = max(new_dp[c + full_len][h], dp[c][h] + v)
 
-                    # Option 2: Place stick hanging over edge (uses half length)
-                    if h < 2 and c + half_len <= L:
-                        new_dp[c + half_len][h + 1] = max(new_dp[c + half_len][h + 1], dp[c][h] + v)
+          # Option 2: Place stick hanging over edge (uses half length)
+          if h < 2 and c + half_len <= L:
+            new_dp[c + half_len][h + 1] = max(new_dp[c + half_len][h + 1], dp[c][h] + v)
 
-            dp = new_dp
+      dp = new_dp
 
-        # Find maximum value
-        result = 0
-        for c in range(L + 1):
-            for h in range(3):
-                if dp[c][h] != INF:
-                    result = max(result, dp[c][h])
+    # Find maximum value
+    result = 0
+    for c in range(L + 1):
+      for h in range(3):
+        if dp[c][h] != INF:
+          result = max(result, dp[c][h])
 
-        print(f"Case #{case}: {result}")
+    print(f"Case #{case}: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for case in range(1, t + 1):
-        n, L = map(int, input().split())
+  for case in range(1, t + 1):
+    n, L = map(int, input().split())
 
-        sticks = []
-        for _ in range(n):
-            a, v = map(int, input().split())
-            sticks.append((a, v))
+    sticks = []
+    for _ in range(n):
+      a, v = map(int, input().split())
+      sticks.append((a, v))
 
-        # Use 2*L to handle half-lengths as integers
-        capacity = 2 * L
-        NEG_INF = float('-inf')
+    # Use 2*L to handle half-lengths as integers
+    capacity = 2 * L
+    NEG_INF = float('-inf')
 
-        # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
-        dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
-        dp[0][0] = 0
+    # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
+    dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
+    dp[0][0] = 0
 
-        for length, value in sticks:
-            full_cost = 2 * length  # fully inside
-            half_cost = length       # hanging (uses only half)
+    for length, value in sticks:
+      full_cost = 2 * length  # fully inside
+      half_cost = length       # hanging (uses only half)
 
-            # Process backwards
-            for c in range(capacity, -1, -1):
-                for e in range(3):
-                    if dp[c][e] == NEG_INF:
-                        continue
+      # Process backwards
+      for c in range(capacity, -1, -1):
+        for e in range(3):
+          if dp[c][e] == NEG_INF:
+            continue
 
-                    # Option A: place fully inside
-                    nc = c + full_cost
-                    if nc <= capacity:
-                        dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
+          # Option A: place fully inside
+          nc = c + full_cost
+          if nc <= capacity:
+            dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
 
-                    # Option B: place hanging
-                    if e < 2:
-                        nc = c + half_cost
-                        if nc <= capacity:
-                            dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
+          # Option B: place hanging
+          if e < 2:
+            nc = c + half_cost
+            if nc <= capacity:
+              dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
 
-        # Get max value
-        ans = 0
-        for c in range(capacity + 1):
-            for e in range(3):
-                if dp[c][e] != NEG_INF:
-                    ans = max(ans, dp[c][e])
+    # Get max value
+    ans = 0
+    for c in range(capacity + 1):
+      for e in range(3):
+        if dp[c][e] != NEG_INF:
+          ans = max(ans, dp[c][e])
 
-        print(f"Case #{case}: {ans}")
+    print(f"Case #{case}: {ans}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3771,60 +3771,60 @@ This is a 0/1 Knapsack problem:
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, w = map(int, input().split())
+  for _ in range(t):
+    n, w = map(int, input().split())
 
-        questions = []
-        for _ in range(n):
-            c, p, ti = map(int, input().split())
-            questions.append((ti, c * p))  # (time_cost, value)
+    questions = []
+    for _ in range(n):
+      c, p, ti = map(int, input().split())
+      questions.append((ti, c * p))  # (time_cost, value)
 
-        # 0/1 Knapsack
-        dp = [0] * (w + 1)
+    # 0/1 Knapsack
+    dp = [0] * (w + 1)
 
-        for time_cost, value in questions:
-            for capacity in range(w, time_cost - 1, -1):
-                dp[capacity] = max(dp[capacity], dp[capacity - time_cost] + value)
+    for time_cost, value in questions:
+      for capacity in range(w, time_cost - 1, -1):
+        dp[capacity] = max(dp[capacity], dp[capacity - time_cost] + value)
 
-        print(dp[w])
+    print(dp[w])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, w = map(int, input().split())
+  for _ in range(t):
+    n, w = map(int, input().split())
 
-        questions = []
-        for _ in range(n):
-            c, p, ti = map(int, input().split())
-            questions.append((ti, c * p))
+    questions = []
+    for _ in range(n):
+      c, p, ti = map(int, input().split())
+      questions.append((ti, c * p))
 
-        # 2D DP for clarity
-        # dp[i][j] = max value using first i questions with capacity j
-        dp = [[0] * (w + 1) for _ in range(n + 1)]
+    # 2D DP for clarity
+    # dp[i][j] = max value using first i questions with capacity j
+    dp = [[0] * (w + 1) for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            time_cost, value = questions[i - 1]
-            for j in range(w + 1):
-                # Don't take question i
-                dp[i][j] = dp[i - 1][j]
-                # Take question i (if possible)
-                if j >= time_cost:
-                    dp[i][j] = max(dp[i][j], dp[i - 1][j - time_cost] + value)
+    for i in range(1, n + 1):
+      time_cost, value = questions[i - 1]
+      for j in range(w + 1):
+        # Don't take question i
+        dp[i][j] = dp[i - 1][j]
+        # Take question i (if possible)
+        if j >= time_cost:
+          dp[i][j] = max(dp[i][j], dp[i - 1][j - time_cost] + value)
 
-        print(dp[n][w])
+    print(dp[n][w])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -3881,133 +3881,133 @@ dp[i][j] = minimum weight to get at least i oxygen and j nitrogen
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    c = int(input())
+  c = int(input())
 
-    for _ in range(c):
-        line = input().split()
-        t_req, a_req = int(line[0]), int(line[1])
+  for _ in range(c):
+    line = input().split()
+    t_req, a_req = int(line[0]), int(line[1])
 
-        n = int(input())
+    n = int(input())
 
-        cylinders = []
-        for _ in range(n):
-            parts = input().split()
-            ti, ai, wi = int(parts[0]), int(parts[1]), int(parts[2])
-            cylinders.append((ti, ai, wi))
+    cylinders = []
+    for _ in range(n):
+      parts = input().split()
+      ti, ai, wi = int(parts[0]), int(parts[1]), int(parts[2])
+      cylinders.append((ti, ai, wi))
 
-        INF = float('inf')
+    INF = float('inf')
 
-        # dp[o][n] = min weight to get at least o oxygen and n nitrogen
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+    # dp[o][n] = min weight to get at least o oxygen and n nitrogen
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        for ti, ai, wi in cylinders:
-            # Process in reverse (0/1 knapsack)
-            for o in range(t_req, -1, -1):
-                for ni in range(a_req, -1, -1):
-                    if dp[o][ni] < INF:
-                        # New oxygen and nitrogen (cap at requirements)
-                        new_o = min(o + ti, t_req)
-                        new_n = min(ni + ai, a_req)
-                        dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
+    for ti, ai, wi in cylinders:
+      # Process in reverse (0/1 knapsack)
+      for o in range(t_req, -1, -1):
+        for ni in range(a_req, -1, -1):
+          if dp[o][ni] < INF:
+            # New oxygen and nitrogen (cap at requirements)
+            new_o = min(o + ti, t_req)
+            new_n = min(ni + ai, a_req)
+            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
 
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    c = int(data[idx])
+  c = int(data[idx])
+  idx += 1
+
+  for _ in range(c):
+    t_req = int(data[idx])
+    a_req = int(data[idx + 1])
+    idx += 2
+
+    n = int(data[idx])
     idx += 1
 
-    for _ in range(c):
-        t_req = int(data[idx])
-        a_req = int(data[idx + 1])
-        idx += 2
+    cylinders = []
+    for _ in range(n):
+      ti = int(data[idx])
+      ai = int(data[idx + 1])
+      wi = int(data[idx + 2])
+      idx += 3
+      cylinders.append((ti, ai, wi))
 
-        n = int(data[idx])
-        idx += 1
+    INF = float('inf')
 
-        cylinders = []
-        for _ in range(n):
-            ti = int(data[idx])
-            ai = int(data[idx + 1])
-            wi = int(data[idx + 2])
-            idx += 3
-            cylinders.append((ti, ai, wi))
+    # dp[oxygen][nitrogen] = min weight
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        INF = float('inf')
+    for oxy, nit, weight in cylinders:
+      new_dp = [row[:] for row in dp]
 
-        # dp[oxygen][nitrogen] = min weight
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+      for o in range(t_req + 1):
+        for n in range(a_req + 1):
+          if dp[o][n] == INF:
+            continue
 
-        for oxy, nit, weight in cylinders:
-            new_dp = [row[:] for row in dp]
+          # Add this cylinder
+          no = min(o + oxy, t_req)
+          nn = min(n + nit, a_req)
+          new_dp[no][nn] = min(new_dp[no][nn], dp[o][n] + weight)
 
-            for o in range(t_req + 1):
-                for n in range(a_req + 1):
-                    if dp[o][n] == INF:
-                        continue
+      dp = new_dp
 
-                    # Add this cylinder
-                    no = min(o + oxy, t_req)
-                    nn = min(n + nit, a_req)
-                    new_dp[no][nn] = min(new_dp[no][nn], dp[o][n] + weight)
-
-            dp = new_dp
-
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### In-Place Solution
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    c = int(input())
+  c = int(input())
 
-    for _ in range(c):
-        t_req, a_req = map(int, input().split())
-        n = int(input())
+  for _ in range(c):
+    t_req, a_req = map(int, input().split())
+    n = int(input())
 
-        INF = 10**9
+    INF = 10**9
 
-        # dp[o][n] = min weight for o oxygen, n nitrogen
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+    # dp[o][n] = min weight for o oxygen, n nitrogen
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        for _ in range(n):
-            ti, ai, wi = map(int, input().split())
+    for _ in range(n):
+      ti, ai, wi = map(int, input().split())
 
-            # Reverse iteration for 0/1 knapsack
-            for o in range(t_req, -1, -1):
-                for ni in range(a_req, -1, -1):
-                    if dp[o][ni] < INF:
-                        new_o = min(o + ti, t_req)
-                        new_n = min(ni + ai, a_req)
-                        dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
+      # Reverse iteration for 0/1 knapsack
+      for o in range(t_req, -1, -1):
+        for ni in range(a_req, -1, -1):
+          if dp[o][ni] < INF:
+            new_o = min(o + ti, t_req)
+            new_n = min(ni + ai, a_req)
+            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
 
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

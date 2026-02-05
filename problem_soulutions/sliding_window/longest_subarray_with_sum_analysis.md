@@ -158,28 +158,28 @@ Array: [2, 1, 5, 1, 3, 2]  Target: 8
 **Python:**
 ```python
 def longest_subarray_positive(arr, target):
-    """
-    Sliding window for positive-only arrays.
-    Time: O(n), Space: O(1)
-    """
-    n = len(arr)
-    left = 0
-    current_sum = 0
-    max_length = 0
+  """
+  Sliding window for positive-only arrays.
+  Time: O(n), Space: O(1)
+  """
+  n = len(arr)
+  left = 0
+  current_sum = 0
+  max_length = 0
 
-    for right in range(n):
-        current_sum += arr[right]
+  for right in range(n):
+    current_sum += arr[right]
 
-        # Shrink window while sum exceeds target
-        while current_sum > target and left <= right:
-            current_sum -= arr[left]
-            left += 1
+    # Shrink window while sum exceeds target
+    while current_sum > target and left <= right:
+      current_sum -= arr[left]
+      left += 1
 
-        # Check if we found target sum
-        if current_sum == target:
-            max_length = max(max_length, right - left + 1)
+    # Check if we found target sum
+    if current_sum == target:
+      max_length = max(max_length, right - left + 1)
 
-    return max_length
+  return max_length
 ```
 
 ### Complexity
@@ -246,27 +246,27 @@ Result: max_length = 5 (subarray [1, -3, 4, -1, 2])
 **Python:**
 ```python
 def longest_subarray_general(arr, target):
-    """
-    Hash map approach for arrays with any integers.
-    Time: O(n), Space: O(n)
-    """
-    prefix_map = {0: -1}  # Handle subarrays starting at index 0
-    prefix_sum = 0
-    max_length = 0
+  """
+  Hash map approach for arrays with any integers.
+  Time: O(n), Space: O(n)
+  """
+  prefix_map = {0: -1}  # Handle subarrays starting at index 0
+  prefix_sum = 0
+  max_length = 0
 
-    for i, num in enumerate(arr):
-        prefix_sum += num
+  for i, num in enumerate(arr):
+    prefix_sum += num
 
-        # Check if (prefix_sum - target) exists
-        if prefix_sum - target in prefix_map:
-            length = i - prefix_map[prefix_sum - target]
-            max_length = max(max_length, length)
+    # Check if (prefix_sum - target) exists
+    if prefix_sum - target in prefix_map:
+      length = i - prefix_map[prefix_sum - target]
+      max_length = max(max_length, length)
 
-        # Store first occurrence only (for maximum length)
-        if prefix_sum not in prefix_map:
-            prefix_map[prefix_sum] = i
+    # Store first occurrence only (for maximum length)
+    if prefix_sum not in prefix_map:
+      prefix_map[prefix_sum] = i
 
-    return max_length
+  return max_length
 ```
 
 ### Complexity
@@ -285,13 +285,13 @@ def longest_subarray_general(arr, target):
 ```python
 # WRONG - Does not work with negative numbers!
 def wrong_approach(arr, target):
-    left = 0
-    current_sum = 0
-    for right in range(len(arr)):
-        current_sum += arr[right]
-        while current_sum > target:  # May never trigger or wrong shrink
-            current_sum -= arr[left]
-            left += 1
+  left = 0
+  current_sum = 0
+  for right in range(len(arr)):
+    current_sum += arr[right]
+    while current_sum > target:  # May never trigger or wrong shrink
+      current_sum -= arr[left]
+      left += 1
 ```
 
 **Problem:** Negative numbers break monotonicity. Shrinking might increase the sum!
@@ -305,7 +305,7 @@ prefix_map[prefix_sum] = i  # Always updates
 
 # CORRECT - Keep first occurrence for maximum length
 if prefix_sum not in prefix_map:
-    prefix_map[prefix_sum] = i
+  prefix_map[prefix_sum] = i
 ```
 
 **Problem:** Overwriting gives shorter subarrays.

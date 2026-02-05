@@ -135,26 +135,26 @@ After each update, run Kadane's algorithm on the entire array to find the maximu
 
 ```python
 def kadane(arr):
-    """Find maximum subarray sum using Kadane's algorithm."""
-    max_ending_here = 0
-    max_so_far = 0  # At least 0 (empty subarray)
-    for x in arr:
-        max_ending_here = max(0, max_ending_here + x)
-        max_so_far = max(max_so_far, max_ending_here)
-    return max_so_far
+  """Find maximum subarray sum using Kadane's algorithm."""
+  max_ending_here = 0
+  max_so_far = 0  # At least 0 (empty subarray)
+  for x in arr:
+    max_ending_here = max(0, max_ending_here + x)
+    max_so_far = max(max_so_far, max_ending_here)
+  return max_so_far
 
 def brute_force(n, q, arr, updates):
-    """
-    Brute force: run Kadane after each update.
+  """
+  Brute force: run Kadane after each update.
 
-    Time: O(n * q)
-    Space: O(1)
-    """
-    results = []
-    for k, x in updates:
-        arr[k - 1] = x  # 1-indexed to 0-indexed
-        results.append(kadane(arr))
-    return results
+  Time: O(n * q)
+  Space: O(1)
+  """
+  results = []
+  for k, x in updates:
+    arr[k - 1] = x  # 1-indexed to 0-indexed
+    results.append(kadane(arr))
+  return results
 ```
 
 ### Complexity
@@ -276,85 +276,85 @@ from dataclasses import dataclass
 
 @dataclass
 class Node:
-    """Segment tree node storing maximum subarray information."""
-    total: int = 0        # Sum of range
-    prefix: int = 0       # Max prefix sum (from left boundary)
-    suffix: int = 0       # Max suffix sum (to right boundary)
-    max_sub: int = 0      # Max subarray sum in range
+  """Segment tree node storing maximum subarray information."""
+  total: int = 0        # Sum of range
+  prefix: int = 0       # Max prefix sum (from left boundary)
+  suffix: int = 0       # Max suffix sum (to right boundary)
+  max_sub: int = 0      # Max subarray sum in range
 
 def make_leaf(val):
-    """Create a leaf node for a single element."""
-    # For a single element, all four values consider just that element
-    # But we allow "empty" subarrays implicitly by taking max with 0 at the root
-    return Node(val, val, val, val)
+  """Create a leaf node for a single element."""
+  # For a single element, all four values consider just that element
+  # But we allow "empty" subarrays implicitly by taking max with 0 at the root
+  return Node(val, val, val, val)
 
 def merge(left, right):
-    """Merge two nodes into their parent."""
-    return Node(
-        total=left.total + right.total,
-        prefix=max(left.prefix, left.total + right.prefix),
-        suffix=max(right.suffix, right.total + left.suffix),
-        max_sub=max(left.max_sub, right.max_sub, left.suffix + right.prefix)
-    )
+  """Merge two nodes into their parent."""
+  return Node(
+    total=left.total + right.total,
+    prefix=max(left.prefix, left.total + right.prefix),
+    suffix=max(right.suffix, right.total + left.suffix),
+    max_sub=max(left.max_sub, right.max_sub, left.suffix + right.prefix)
+  )
 
 class SegmentTree:
-    """Segment tree for maximum subarray sum queries with point updates."""
+  """Segment tree for maximum subarray sum queries with point updates."""
 
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.size = 1
-        while self.size < self.n:
-            self.size *= 2
+  def __init__(self, arr):
+    self.n = len(arr)
+    self.size = 1
+    while self.size < self.n:
+      self.size *= 2
 
-        # Initialize tree with neutral nodes
-        self.tree = [Node() for _ in range(2 * self.size)]
+    # Initialize tree with neutral nodes
+    self.tree = [Node() for _ in range(2 * self.size)]
 
-        # Build leaves
-        for i in range(self.n):
-            self.tree[self.size + i] = make_leaf(arr[i])
+    # Build leaves
+    for i in range(self.n):
+      self.tree[self.size + i] = make_leaf(arr[i])
 
-        # Build internal nodes
-        for i in range(self.size - 1, 0, -1):
-            self.tree[i] = merge(self.tree[2 * i], self.tree[2 * i + 1])
+    # Build internal nodes
+    for i in range(self.size - 1, 0, -1):
+      self.tree[i] = merge(self.tree[2 * i], self.tree[2 * i + 1])
 
-    def update(self, pos, val):
-        """Update position pos (0-indexed) to value val."""
-        pos += self.size
-        self.tree[pos] = make_leaf(val)
+  def update(self, pos, val):
+    """Update position pos (0-indexed) to value val."""
+    pos += self.size
+    self.tree[pos] = make_leaf(val)
 
-        # Propagate up
-        pos //= 2
-        while pos >= 1:
-            self.tree[pos] = merge(self.tree[2 * pos], self.tree[2 * pos + 1])
-            pos //= 2
+    # Propagate up
+    pos //= 2
+    while pos >= 1:
+      self.tree[pos] = merge(self.tree[2 * pos], self.tree[2 * pos + 1])
+      pos //= 2
 
-    def query(self):
-        """Return maximum subarray sum (at least 0 for empty subarray)."""
-        return max(0, self.tree[1].max_sub)
+  def query(self):
+    """Return maximum subarray sum (at least 0 for empty subarray)."""
+    return max(0, self.tree[1].max_sub)
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n = int(input_data[idx]); idx += 1
-    q = int(input_data[idx]); idx += 1
+  n = int(input_data[idx]); idx += 1
+  q = int(input_data[idx]); idx += 1
 
-    arr = [int(input_data[idx + i]) for i in range(n)]
-    idx += n
+  arr = [int(input_data[idx + i]) for i in range(n)]
+  idx += n
 
-    st = SegmentTree(arr)
+  st = SegmentTree(arr)
 
-    results = []
-    for _ in range(q):
-        k = int(input_data[idx]); idx += 1
-        x = int(input_data[idx]); idx += 1
-        st.update(k - 1, x)  # Convert to 0-indexed
-        results.append(st.query())
+  results = []
+  for _ in range(q):
+    k = int(input_data[idx]); idx += 1
+    x = int(input_data[idx]); idx += 1
+    st.update(k - 1, x)  # Convert to 0-indexed
+    results.append(st.query())
 
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity

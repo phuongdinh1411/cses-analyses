@@ -95,14 +95,14 @@ For each window position, scan all k elements to find the maximum.
 
 ```python
 def solve_brute_force(n, k, arr):
-    """
-    Brute force: check every element in each window.
-    Time: O(n*k), Space: O(1)
-    """
-    result = []
-    for i in range(n - k + 1):
-        result.append(max(arr[i:i+k]))
-    return result
+  """
+  Brute force: check every element in each window.
+  Time: O(n*k), Space: O(1)
+  """
+  result = []
+  for i in range(n - k + 1):
+    result.append(max(arr[i:i+k]))
+  return result
 ```
 
 ### Complexity
@@ -216,28 +216,28 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    n, k = map(int, input().split())
-    arr = list(map(int, input().split()))
+  n, k = map(int, input().split())
+  arr = list(map(int, input().split()))
 
-    dq = deque()  # stores indices
-    result = []
+  dq = deque()  # stores indices
+  result = []
 
-    for i in range(n):
-        # Remove indices outside current window
-        while dq and dq[0] <= i - k:
-            dq.popleft()
+  for i in range(n):
+    # Remove indices outside current window
+    while dq and dq[0] <= i - k:
+      dq.popleft()
 
-        # Remove indices of smaller elements (they can never be max)
-        while dq and arr[dq[-1]] <= arr[i]:
-            dq.pop()
+    # Remove indices of smaller elements (they can never be max)
+    while dq and arr[dq[-1]] <= arr[i]:
+      dq.pop()
 
-        dq.append(i)
+    dq.append(i)
 
-        # Record maximum when window is complete
-        if i >= k - 1:
-            result.append(arr[dq[0]])
+    # Record maximum when window is complete
+    if i >= k - 1:
+      result.append(arr[dq[0]])
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 solve()
 ```
@@ -288,11 +288,11 @@ dq.append(i)  # storing index
 ```python
 # WRONG - maintains increasing order (gives minimum!)
 while dq and arr[dq[-1]] >= arr[i]:
-    dq.pop()
+  dq.pop()
 
 # CORRECT - maintains decreasing order (gives maximum)
 while dq and arr[dq[-1]] <= arr[i]:
-    dq.pop()
+  dq.pop()
 ```
 
 **Problem:** Using >= instead of <= gives you minimum, not maximum.
@@ -303,11 +303,11 @@ while dq and arr[dq[-1]] <= arr[i]:
 ```python
 # WRONG - outputs too early
 if i >= k:
-    result.append(arr[dq[0]])
+  result.append(arr[dq[0]])
 
 # CORRECT - window complete at index k-1
 if i >= k - 1:
-    result.append(arr[dq[0]])
+  result.append(arr[dq[0]])
 ```
 
 **Problem:** First complete window is at index k-1 (0-indexed).

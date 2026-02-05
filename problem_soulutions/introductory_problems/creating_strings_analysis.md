@@ -115,21 +115,21 @@ Generate all n! permutations, store them in a set to remove duplicates, then sor
 
 ```python
 def solve_brute_force(s):
-    """
-    Brute force: generate all permutations, deduplicate with set.
+  """
+  Brute force: generate all permutations, deduplicate with set.
 
-    Time: O(n! * n) - generate all permutations, each of length n
-    Space: O(n! * n) - store all unique permutations
-    """
-    from itertools import permutations
+  Time: O(n! * n) - generate all permutations, each of length n
+  Space: O(n! * n) - store all unique permutations
+  """
+  from itertools import permutations
 
-    # Generate all permutations and deduplicate
-    unique = set(''.join(p) for p in permutations(s))
+  # Generate all permutations and deduplicate
+  unique = set(''.join(p) for p in permutations(s))
 
-    # Sort lexicographically
-    result = sorted(unique)
+  # Sort lexicographically
+  result = sorted(unique)
 
-    return result
+  return result
 ```
 
 ### Complexity
@@ -257,43 +257,43 @@ Note: Each branch only uses available characters
 
 ```python
 def solve(s):
-    """
-    Optimal solution using backtracking with character frequency.
+  """
+  Optimal solution using backtracking with character frequency.
 
-    Time: O(n! / (f1! * f2! * ... * fk!)) - only unique permutations
-    Space: O(n) - recursion depth + character count storage
-    """
-    from collections import Counter
+  Time: O(n! / (f1! * f2! * ... * fk!)) - only unique permutations
+  Space: O(n) - recursion depth + character count storage
+  """
+  from collections import Counter
 
-    n = len(s)
-    char_count = Counter(s)
-    chars = sorted(char_count.keys())  # Sorted for lexicographic order
-    result = []
+  n = len(s)
+  char_count = Counter(s)
+  chars = sorted(char_count.keys())  # Sorted for lexicographic order
+  result = []
 
-    def backtrack(current):
-        if len(current) == n:
-            result.append(current)
-            return
+  def backtrack(current):
+    if len(current) == n:
+      result.append(current)
+      return
 
-        for c in chars:
-            if char_count[c] > 0:
-                char_count[c] -= 1
-                backtrack(current + c)
-                char_count[c] += 1
+    for c in chars:
+      if char_count[c] > 0:
+        char_count[c] -= 1
+        backtrack(current + c)
+        char_count[c] += 1
 
-    backtrack("")
-    return result
+  backtrack("")
+  return result
 
 
 def main():
-    s = input().strip()
-    result = solve(s)
-    print(len(result))
-    print('\n'.join(result))
+  s = input().strip()
+  result = solve(s)
+  print(len(result))
+  print('\n'.join(result))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 **Alternative C++ using next_permutation:**
@@ -316,14 +316,14 @@ For the worst case (all unique characters), P = n! which matches brute force. Bu
 ```python
 # WRONG - generates duplicate permutations
 def wrong_solve(s, index, current, result):
-    if index == len(s):
-        result.append(current)
-        return
-    for i in range(len(s)):
-        if not used[i]:
-            used[i] = True
-            wrong_solve(s, index + 1, current + s[i], result)
-            used[i] = False
+  if index == len(s):
+    result.append(current)
+    return
+  for i in range(len(s)):
+    if not used[i]:
+      used[i] = True
+      wrong_solve(s, index + 1, current + s[i], result)
+      used[i] = False
 ```
 
 **Problem:** Treating positions as distinct means swapping two 'a's creates a "new" permutation.
@@ -335,8 +335,8 @@ def wrong_solve(s, index, current, result):
 # WRONG - output may not be in alphabetical order
 char_count = Counter(s)
 for c in char_count:  # Dictionary order, not alphabetical!
-    if char_count[c] > 0:
-        ...
+  if char_count[c] > 0:
+    ...
 ```
 
 **Problem:** Iterating over a Counter doesn't guarantee alphabetical order.
@@ -347,8 +347,8 @@ for c in char_count:  # Dictionary order, not alphabetical!
 ```python
 # INEFFICIENT
 def backtrack(current):  # current is a string
-    ...
-    backtrack(current + c)  # Creates new string each time
+  ...
+  backtrack(current + c)  # Creates new string each time
 ```
 
 **Problem:** String concatenation creates a new string object each time, O(n) per operation.

@@ -35,56 +35,56 @@ Use dynamic programming where `dp[i]` = number of ways to make amount `i`.
 
 ```python
 def solve():
-    # Precompute cubic coins: 1, 8, 27, 64, ..., 9261
-    coins = [i**3 for i in range(1, 22)]  # 1^3 to 21^3
+  # Precompute cubic coins: 1, 8, 27, 64, ..., 9261
+  coins = [i**3 for i in range(1, 22)]  # 1^3 to 21^3
 
-    # Precompute dp for all amounts up to 10000
-    MAX_AMOUNT = 10000
-    dp = [0] * (MAX_AMOUNT + 1)
-    dp[0] = 1  # One way to make 0: use no coins
+  # Precompute dp for all amounts up to 10000
+  MAX_AMOUNT = 10000
+  dp = [0] * (MAX_AMOUNT + 1)
+  dp[0] = 1  # One way to make 0: use no coins
 
-    # For each coin, update all amounts that can use it
-    for coin in coins:
-        for amount in range(coin, MAX_AMOUNT + 1):
-            dp[amount] += dp[amount - coin]
+  # For each coin, update all amounts that can use it
+  for coin in coins:
+    for amount in range(coin, MAX_AMOUNT + 1):
+      dp[amount] += dp[amount - coin]
 
-    # Process queries
-    import sys
-    for line in sys.stdin:
-        n = int(line.strip())
-        print(dp[n])
+  # Process queries
+  import sys
+  for line in sys.stdin:
+    n = int(line.strip())
+    print(dp[n])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution (Per-Query)
 
 ```python
 def count_ways(amount):
-    coins = [i**3 for i in range(1, 22)]
+  coins = [i**3 for i in range(1, 22)]
 
-    dp = [0] * (amount + 1)
-    dp[0] = 1
+  dp = [0] * (amount + 1)
+  dp[0] = 1
 
-    for coin in coins:
-        if coin > amount:
-            break
-        for i in range(coin, amount + 1):
-            dp[i] += dp[i - coin]
+  for coin in coins:
+    if coin > amount:
+      break
+    for i in range(coin, amount + 1):
+      dp[i] += dp[i - coin]
 
-    return dp[amount]
+  return dp[amount]
 
 def solve():
-    while True:
-        try:
-            n = int(input())
-            print(count_ways(n))
-        except EOFError:
-            break
+  while True:
+    try:
+      n = int(input())
+      print(count_ways(n))
+    except EOFError:
+      break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Solution with Memoization
@@ -93,27 +93,27 @@ if __name__ == "__main__":
 from functools import lru_cache
 
 def solve():
-    coins = tuple(i**3 for i in range(1, 22))
+  coins = tuple(i**3 for i in range(1, 22))
 
-    @lru_cache(maxsize=None)
-    def count(amount, idx):
-        if amount == 0:
-            return 1
-        if amount < 0 or idx >= len(coins):
-            return 0
+  @lru_cache(maxsize=None)
+  def count(amount, idx):
+    if amount == 0:
+      return 1
+    if amount < 0 or idx >= len(coins):
+      return 0
 
-        # Don't use current coin OR use it (and stay at same index for unlimited use)
-        return count(amount, idx + 1) + count(amount - coins[idx], idx)
+    # Don't use current coin OR use it (and stay at same index for unlimited use)
+    return count(amount, idx + 1) + count(amount - coins[idx], idx)
 
-    while True:
-        try:
-            n = int(input())
-            print(count(n, 0))
-        except EOFError:
-            break
+  while True:
+    try:
+      n = int(input())
+      print(count(n, 0))
+    except EOFError:
+      break
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

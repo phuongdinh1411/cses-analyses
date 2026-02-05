@@ -96,16 +96,16 @@ Directly multiply 1 x 2 x 3 x ... x n without considering overflow.
 **Python:**
 ```python
 def factorial_naive(n):
-    """
-    Naive factorial calculation (overflows for large n).
+  """
+  Naive factorial calculation (overflows for large n).
 
-    Time: O(n)
-    Space: O(1)
-    """
-    result = 1
-    for i in range(1, n + 1):
-        result *= i
-    return result
+  Time: O(n)
+  Space: O(1)
+  """
+  result = 1
+  for i in range(1, n + 1):
+    result *= i
+  return result
 ```
 
 ### Complexity
@@ -177,36 +177,36 @@ Calculation with modular arithmetic:
 **Python:**
 ```python
 def count_permutations(n, mod=10**9 + 7):
-    """
-    Calculate n! with modular arithmetic.
+  """
+  Calculate n! with modular arithmetic.
 
-    Time: O(n)
-    Space: O(1)
-    """
-    result = 1
-    for i in range(1, n + 1):
-        result = (result * i) % mod
-    return result
+  Time: O(n)
+  Space: O(1)
+  """
+  result = 1
+  for i in range(1, n + 1):
+    result = (result * i) % mod
+  return result
 
 
 # For multiple queries: precompute factorials
 def precompute_factorials(max_n, mod=10**9 + 7):
-    """
-    Precompute factorials for efficient queries.
+  """
+  Precompute factorials for efficient queries.
 
-    Time: O(max_n)
-    Space: O(max_n)
-    """
-    fact = [1] * (max_n + 1)
-    for i in range(1, max_n + 1):
-        fact[i] = (fact[i - 1] * i) % mod
-    return fact
+  Time: O(max_n)
+  Space: O(max_n)
+  """
+  fact = [1] * (max_n + 1)
+  for i in range(1, max_n + 1):
+    fact[i] = (fact[i - 1] * i) % mod
+  return fact
 
 
 # Example usage
 if __name__ == "__main__":
-    n = int(input())
-    print(count_permutations(n))
+  n = int(input())
+  print(count_permutations(n))
 ```
 
 ### Complexity
@@ -233,44 +233,44 @@ This requires computing **modular inverse** using Fermat's Little Theorem:
 **Python:**
 ```python
 def mod_pow(base, exp, mod):
-    """Fast modular exponentiation."""
-    result = 1
-    base %= mod
-    while exp > 0:
-        if exp & 1:
-            result = (result * base) % mod
-        exp >>= 1
-        base = (base * base) % mod
-    return result
+  """Fast modular exponentiation."""
+  result = 1
+  base %= mod
+  while exp > 0:
+    if exp & 1:
+      result = (result * base) % mod
+    exp >>= 1
+    base = (base * base) % mod
+  return result
 
 
 def mod_inverse(a, mod):
-    """Modular inverse using Fermat's Little Theorem."""
-    return mod_pow(a, mod - 2, mod)
+  """Modular inverse using Fermat's Little Theorem."""
+  return mod_pow(a, mod - 2, mod)
 
 
 def nPr(n, r, mod=10**9 + 7):
-    """
-    Calculate P(n,r) = n! / (n-r)!
+  """
+  Calculate P(n,r) = n! / (n-r)!
 
-    Time: O(n) or O(1) with precomputation
-    Space: O(1)
-    """
-    if r > n:
-        return 0
+  Time: O(n) or O(1) with precomputation
+  Space: O(1)
+  """
+  if r > n:
+    return 0
 
-    result = 1
-    for i in range(n - r + 1, n + 1):
-        result = (result * i) % mod
-    return result
+  result = 1
+  for i in range(n - r + 1, n + 1):
+    result = (result * i) % mod
+  return result
 
 
 # Alternative with precomputed factorials
 def nPr_precomputed(n, r, fact, inv_fact, mod=10**9 + 7):
-    """P(n,r) with precomputed factorials and inverses."""
-    if r > n:
-        return 0
-    return (fact[n] * inv_fact[n - r]) % mod
+  """P(n,r) with precomputed factorials and inverses."""
+  if r > n:
+    return 0
+  return (fact[n] * inv_fact[n - r]) % mod
 ```
 
 ---
@@ -282,10 +282,10 @@ def nPr_precomputed(n, r, fact, inv_fact, mod=10**9 + 7):
 ```python
 # WRONG - Overflow occurs
 def factorial_wrong(n, mod):
-    result = 1
-    for i in range(1, n + 1):
-        result *= i
-    return result % mod  # Too late! Overflow already happened
+  result = 1
+  for i in range(1, n + 1):
+    result *= i
+  return result % mod  # Too late! Overflow already happened
 ```
 
 **Problem:** Integer overflow before the modulo operation.
@@ -296,7 +296,7 @@ def factorial_wrong(n, mod):
 ```python
 # WRONG - Integer division doesn't work in modular arithmetic
 def nPr_wrong(n, r, mod):
-    return (factorial(n) // factorial(n - r)) % mod
+  return (factorial(n) // factorial(n - r)) % mod
 ```
 
 **Problem:** Division in modular arithmetic requires modular inverse.
@@ -307,10 +307,10 @@ def nPr_wrong(n, r, mod):
 ```python
 # WRONG - Crashes on n = 0
 def factorial_wrong(n, mod):
-    result = 1
-    for i in range(1, n + 1):  # Correct loop but...
-        result = (result * i) % mod
-    return result  # Works, but consider 0! = 1 explicitly
+  result = 1
+  for i in range(1, n + 1):  # Correct loop but...
+    result = (result * i) % mod
+  return result  # Works, but consider 0! = 1 explicitly
 ```
 
 **Fix:** Explicitly handle n = 0 case if needed.

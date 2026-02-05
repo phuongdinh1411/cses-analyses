@@ -95,32 +95,32 @@ Check every possible substring and find the smallest one containing all characte
 
 ```python
 def min_window_brute(s: str, t: str) -> str:
-    """
-    Brute force: Check all substrings.
-    Time: O(n^2 * m) where n = len(s), m = len(t)
-    Space: O(m)
-    """
-    def contains_all(window: str, target: str) -> bool:
-        from collections import Counter
-        t_count = Counter(target)
-        for c in window:
-            if c in t_count:
-                t_count[c] -= 1
-                if t_count[c] == 0:
-                    del t_count[c]
-        return len(t_count) == 0
+  """
+  Brute force: Check all substrings.
+  Time: O(n^2 * m) where n = len(s), m = len(t)
+  Space: O(m)
+  """
+  def contains_all(window: str, target: str) -> bool:
+    from collections import Counter
+    t_count = Counter(target)
+    for c in window:
+      if c in t_count:
+        t_count[c] -= 1
+        if t_count[c] == 0:
+          del t_count[c]
+    return len(t_count) == 0
 
-    min_window = ""
-    min_len = float('inf')
+  min_window = ""
+  min_len = float('inf')
 
-    for i in range(len(s)):
-        for j in range(i + len(t), len(s) + 1):
-            window = s[i:j]
-            if contains_all(window, t) and len(window) < min_len:
-                min_len = len(window)
-                min_window = window
+  for i in range(len(s)):
+    for j in range(i + len(t), len(s) + 1):
+      window = s[i:j]
+      if contains_all(window, t) and len(window) < min_len:
+        min_len = len(window)
+        min_window = window
 
-    return min_window
+  return min_window
 ```
 
 ### Complexity
@@ -213,51 +213,51 @@ Window 2: [B A N C]            len=4, valid (MINIMUM)
 from collections import Counter
 
 def min_window(s: str, t: str) -> str:
-    """
-    Optimal sliding window solution.
-    Time: O(n + m)
-    Space: O(m)
-    """
-    if not s or not t or len(s) < len(t):
-        return ""
+  """
+  Optimal sliding window solution.
+  Time: O(n + m)
+  Space: O(m)
+  """
+  if not s or not t or len(s) < len(t):
+    return ""
 
-    # Character frequency required
-    t_count = Counter(t)
-    required = len(t_count)
+  # Character frequency required
+  t_count = Counter(t)
+  required = len(t_count)
 
-    # Window state
-    window_count = {}
-    formed = 0
-    left = 0
+  # Window state
+  window_count = {}
+  formed = 0
+  left = 0
 
-    # Result tracking
-    min_len = float('inf')
-    result = (0, 0)
+  # Result tracking
+  min_len = float('inf')
+  result = (0, 0)
 
-    for right in range(len(s)):
-        # Expand: add s[right] to window
-        char = s[right]
-        window_count[char] = window_count.get(char, 0) + 1
+  for right in range(len(s)):
+    # Expand: add s[right] to window
+    char = s[right]
+    window_count[char] = window_count.get(char, 0) + 1
 
-        # Check if this character's count matches requirement
-        if char in t_count and window_count[char] == t_count[char]:
-            formed += 1
+    # Check if this character's count matches requirement
+    if char in t_count and window_count[char] == t_count[char]:
+      formed += 1
 
-        # Shrink: contract window from left while valid
-        while formed == required and left <= right:
-            # Update result if current window is smaller
-            if right - left + 1 < min_len:
-                min_len = right - left + 1
-                result = (left, right + 1)
+    # Shrink: contract window from left while valid
+    while formed == required and left <= right:
+      # Update result if current window is smaller
+      if right - left + 1 < min_len:
+        min_len = right - left + 1
+        result = (left, right + 1)
 
-            # Remove s[left] from window
-            left_char = s[left]
-            window_count[left_char] -= 1
-            if left_char in t_count and window_count[left_char] < t_count[left_char]:
-                formed -= 1
-            left += 1
+      # Remove s[left] from window
+      left_char = s[left]
+      window_count[left_char] -= 1
+      if left_char in t_count and window_count[left_char] < t_count[left_char]:
+        formed -= 1
+      left += 1
 
-    return s[result[0]:result[1]] if min_len != float('inf') else ""
+  return s[result[0]:result[1]] if min_len != float('inf') else ""
 ```
 
 ### Complexity
@@ -276,7 +276,7 @@ def min_window(s: str, t: str) -> str:
 ```python
 # WRONG
 if char in t_count:
-    formed += 1  # Increments even if already have enough
+  formed += 1  # Increments even if already have enough
 ```
 
 **Problem:** We only want to increment `formed` when we reach the exact required count, not on every occurrence.
@@ -284,7 +284,7 @@ if char in t_count:
 **Fix:** Check if count equals (not exceeds) the requirement:
 ```python
 if char in t_count and window_count[char] == t_count[char]:
-    formed += 1
+  formed += 1
 ```
 
 ### Mistake 2: Using Total Characters Instead of Unique Characters

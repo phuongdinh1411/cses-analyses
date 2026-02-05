@@ -103,31 +103,31 @@ Try all possible orderings using DFS and count valid Hamiltonian paths.
 
 ```python
 def solve_brute_force(n, edges):
-    """
-    Brute force DFS solution.
+  """
+  Brute force DFS solution.
 
-    Time: O(n! * n)
-    Space: O(n)
-    """
-    MOD = 10**9 + 7
-    graph = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        graph[a].append(b)
+  Time: O(n! * n)
+  Space: O(n)
+  """
+  MOD = 10**9 + 7
+  graph = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    graph[a].append(b)
 
-    def dfs(node, visited, count):
-        if count == n:
-            return 1 if node == n else 0
+  def dfs(node, visited, count):
+    if count == n:
+      return 1 if node == n else 0
 
-        total = 0
-        for neighbor in graph[node]:
-            if neighbor not in visited:
-                visited.add(neighbor)
-                total = (total + dfs(neighbor, visited, count + 1)) % MOD
-                visited.remove(neighbor)
-        return total
+    total = 0
+    for neighbor in graph[node]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        total = (total + dfs(neighbor, visited, count + 1)) % MOD
+        visited.remove(neighbor)
+    return total
 
-    visited = {1}
-    return dfs(1, visited, 1)
+  visited = {1}
+  return dfs(1, visited, 1)
 ```
 
 ### Complexity
@@ -224,59 +224,59 @@ Path 2: 0 -> 2 -> 1 -> 3
 
 ```python
 def solve_hamiltonian(n, m, edges):
-    """
-    Bitmask DP solution for counting Hamiltonian paths.
+  """
+  Bitmask DP solution for counting Hamiltonian paths.
 
-    Time: O(2^n * n^2)
-    Space: O(2^n * n)
-    """
-    MOD = 10**9 + 7
+  Time: O(2^n * n^2)
+  Space: O(2^n * n)
+  """
+  MOD = 10**9 + 7
 
-    # Build adjacency list (0-indexed)
-    graph = [[] for _ in range(n)]
-    for a, b in edges:
-        graph[a - 1].append(b - 1)
+  # Build adjacency list (0-indexed)
+  graph = [[] for _ in range(n)]
+  for a, b in edges:
+    graph[a - 1].append(b - 1)
 
-    # dp[mask][i] = number of ways to reach city i with visited set = mask
-    dp = [[0] * n for _ in range(1 << n)]
-    dp[1][0] = 1  # Start at city 0, only city 0 visited
+  # dp[mask][i] = number of ways to reach city i with visited set = mask
+  dp = [[0] * n for _ in range(1 << n)]
+  dp[1][0] = 1  # Start at city 0, only city 0 visited
 
-    # Process all masks in order
-    for mask in range(1 << n):
-        for i in range(n):
-            if dp[mask][i] == 0:
-                continue
-            if not (mask & (1 << i)):  # City i must be in mask
-                continue
+  # Process all masks in order
+  for mask in range(1 << n):
+    for i in range(n):
+      if dp[mask][i] == 0:
+        continue
+      if not (mask & (1 << i)):  # City i must be in mask
+        continue
 
-            # Try extending to each neighbor
-            for j in graph[i]:
-                if mask & (1 << j):  # Skip if already visited
-                    continue
-                new_mask = mask | (1 << j)
-                dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD
+      # Try extending to each neighbor
+      for j in graph[i]:
+        if mask & (1 << j):  # Skip if already visited
+          continue
+        new_mask = mask | (1 << j)
+        dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD
 
-    # Answer: all cities visited, ending at city n-1
-    full_mask = (1 << n) - 1
-    return dp[full_mask][n - 1]
+  # Answer: all cities visited, ending at city n-1
+  full_mask = (1 << n) - 1
+  return dp[full_mask][n - 1]
 
 
 # Read input and solve
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, m = int(input_data[idx]), int(input_data[idx + 1])
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx + 1])
+  idx += 2
+  edges = []
+  for _ in range(m):
+    a, b = int(input_data[idx]), int(input_data[idx + 1])
+    edges.append((a, b))
     idx += 2
-    edges = []
-    for _ in range(m):
-        a, b = int(input_data[idx]), int(input_data[idx + 1])
-        edges.append((a, b))
-        idx += 2
-    print(solve_hamiltonian(n, m, edges))
+  print(solve_hamiltonian(n, m, edges))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 #### Complexity
@@ -295,7 +295,7 @@ if __name__ == "__main__":
 ```python
 # WRONG: Starting from all cities
 for i in range(n):
-    dp[1 << i][i] = 1
+  dp[1 << i][i] = 1
 
 # CORRECT: Must start from city 0 (city 1 in 1-indexed)
 dp[1][0] = 1

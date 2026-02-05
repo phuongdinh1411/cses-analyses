@@ -152,14 +152,14 @@ We can use a single 1D array if we iterate **budget in reverse**.
 **Forward iteration (WRONG for 0/1):**
 ```python
 for budget in range(price, x+1):  # LEFT to RIGHT
-    dp[budget] = max(dp[budget], dp[budget-price] + pages)
+  dp[budget] = max(dp[budget], dp[budget-price] + pages)
 ```
 Problem: When computing `dp[5]`, we might use an already-updated `dp[3]`, which means we used the same book twice!
 
 **Reverse iteration (CORRECT):**
 ```python
 for budget in range(x, price-1, -1):  # RIGHT to LEFT
-    dp[budget] = max(dp[budget], dp[budget-price] + pages)
+  dp[budget] = max(dp[budget], dp[budget-price] + pages)
 ```
 When computing `dp[5]`, `dp[3]` hasn't been updated yet, so it still represents the state before considering this book.
 
@@ -189,57 +189,57 @@ j=2: dp[2] = max(0, dp[0]+3) = 3    -> [0,0,3,3,3,3,3]  Correct!
 
 ```python
 def book_shop_2d(n, x, prices, pages):
-    """
-    2D DP solution - easier to understand
-    Time: O(n * x), Space: O(n * x)
-    """
-    # dp[i][j] = max pages using first i books with budget j
-    dp = [[0] * (x + 1) for _ in range(n + 1)]
+  """
+  2D DP solution - easier to understand
+  Time: O(n * x), Space: O(n * x)
+  """
+  # dp[i][j] = max pages using first i books with budget j
+  dp = [[0] * (x + 1) for _ in range(n + 1)]
 
-    for i in range(1, n + 1):
-        price = prices[i - 1]
-        page = pages[i - 1]
+  for i in range(1, n + 1):
+    price = prices[i - 1]
+    page = pages[i - 1]
 
-        for j in range(x + 1):
-            # Option 1: Skip this book
-            dp[i][j] = dp[i - 1][j]
+    for j in range(x + 1):
+      # Option 1: Skip this book
+      dp[i][j] = dp[i - 1][j]
 
-            # Option 2: Take this book (if affordable)
-            if j >= price:
-                dp[i][j] = max(dp[i][j], dp[i - 1][j - price] + page)
+      # Option 2: Take this book (if affordable)
+      if j >= price:
+        dp[i][j] = max(dp[i][j], dp[i - 1][j - price] + page)
 
-    return dp[n][x]
+  return dp[n][x]
 ```
 
 ### Python - 1D Version (Space Optimized)
 
 ```python
 def book_shop_1d(n, x, prices, pages):
-    """
-    1D DP solution - space optimized
-    Time: O(n * x), Space: O(x)
-    """
-    dp = [0] * (x + 1)
+  """
+  1D DP solution - space optimized
+  Time: O(n * x), Space: O(x)
+  """
+  dp = [0] * (x + 1)
 
-    for i in range(n):
-        price = prices[i]
-        page = pages[i]
+  for i in range(n):
+    price = prices[i]
+    page = pages[i]
 
-        # CRITICAL: Iterate budget in REVERSE
-        for j in range(x, price - 1, -1):
-            dp[j] = max(dp[j], dp[j - price] + page)
+    # CRITICAL: Iterate budget in REVERSE
+    for j in range(x, price - 1, -1):
+      dp[j] = max(dp[j], dp[j - price] + page)
 
-    return dp[x]
+  return dp[x]
 
 # Read input and solve
 def main():
-    n, x = map(int, input().split())
-    prices = list(map(int, input().split()))
-    pages = list(map(int, input().split()))
-    print(book_shop_1d(n, x, prices, pages))
+  n, x = map(int, input().split())
+  prices = list(map(int, input().split()))
+  pages = list(map(int, input().split()))
+  print(book_shop_1d(n, x, prices, pages))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ## Why Iterate Budget in Reverse? (Key Concept)
@@ -262,11 +262,11 @@ This is the most important concept in 0/1 Knapsack space optimization.
 ```python
 # WRONG - This solves UNBOUNDED knapsack (each book can be bought multiple times)
 for j in range(price, x + 1):
-    dp[j] = max(dp[j], dp[j - price] + page)
+  dp[j] = max(dp[j], dp[j - price] + page)
 
 # CORRECT - 0/1 knapsack (each book bought at most once)
 for j in range(x, price - 1, -1):
-    dp[j] = max(dp[j], dp[j - price] + page)
+  dp[j] = max(dp[j], dp[j - price] + page)
 ```
 
 ### Mistake 2: Forgetting Affordability Check
@@ -274,11 +274,11 @@ for j in range(x, price - 1, -1):
 ```python
 # WRONG - May access negative index
 for j in range(x, -1, -1):
-    dp[j] = max(dp[j], dp[j - price] + page)  # j - price could be negative!
+  dp[j] = max(dp[j], dp[j - price] + page)  # j - price could be negative!
 
 # CORRECT - Only consider budgets where we can afford the book
 for j in range(x, price - 1, -1):
-    dp[j] = max(dp[j], dp[j - price] + page)
+  dp[j] = max(dp[j], dp[j - price] + page)
 ```
 
 ### Mistake 3: Off-by-One in 2D Indexing
@@ -286,11 +286,11 @@ for j in range(x, price - 1, -1):
 ```python
 # WRONG - prices and pages are 0-indexed
 for i in range(1, n + 1):
-    price = prices[i]  # IndexError when i = n
+  price = prices[i]  # IndexError when i = n
 
 # CORRECT
 for i in range(1, n + 1):
-    price = prices[i - 1]  # Adjust for 0-indexing
+  price = prices[i - 1]  # Adjust for 0-indexing
 ```
 
 ### Mistake 4: Not Initializing Base Case

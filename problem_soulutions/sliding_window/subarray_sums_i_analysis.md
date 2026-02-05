@@ -106,20 +106,20 @@ Check every possible subarray and count those with sum equal to target.
 
 ```python
 def count_subarrays_brute(n, x, arr):
-    """
-    Brute force: check all subarrays.
-    Time: O(n^2), Space: O(1)
-    """
-    count = 0
-    for i in range(n):
-        current_sum = 0
-        for j in range(i, n):
-            current_sum += arr[j]
-            if current_sum == x:
-                count += 1
-            elif current_sum > x:
-                break  # Optimization: sum can only increase
-    return count
+  """
+  Brute force: check all subarrays.
+  Time: O(n^2), Space: O(1)
+  """
+  count = 0
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, n):
+      current_sum += arr[j]
+      if current_sum == x:
+        count += 1
+      elif current_sum > x:
+        break  # Optimization: sum can only increase
+  return count
 ```
 
 ### Complexity
@@ -227,33 +227,33 @@ Window evolution (target = 7):
 
 ```python
 def count_subarrays(n, x, arr):
-    """
-    Two-pointer sliding window for positive arrays.
-    Time: O(n), Space: O(1)
-    """
-    count = 0
-    current_sum = 0
-    left = 0
+  """
+  Two-pointer sliding window for positive arrays.
+  Time: O(n), Space: O(1)
+  """
+  count = 0
+  current_sum = 0
+  left = 0
 
-    for right in range(n):
-        current_sum += arr[right]
+  for right in range(n):
+    current_sum += arr[right]
 
-        # Shrink window while sum exceeds target
-        while current_sum > x and left <= right:
-            current_sum -= arr[left]
-            left += 1
+    # Shrink window while sum exceeds target
+    while current_sum > x and left <= right:
+      current_sum -= arr[left]
+      left += 1
 
-        # Check if current window matches target
-        if current_sum == x:
-            count += 1
+    # Check if current window matches target
+    if current_sum == x:
+      count += 1
 
-    return count
+  return count
 
 # Main
 if __name__ == "__main__":
-    n, x = map(int, input().split())
-    arr = list(map(int, input().split()))
-    print(count_subarrays(n, x, arr))
+  n, x = map(int, input().split())
+  arr = list(map(int, input().split()))
+  print(count_subarrays(n, x, arr))
 ```
 
 ### Complexity
@@ -288,14 +288,14 @@ if __name__ == "__main__":
 ```python
 # WRONG
 while current_sum > x:
-    current_sum -= arr[left]
-    left += 1
+  current_sum -= arr[left]
+  left += 1
 # If left > right, we access invalid elements next iteration
 
 # CORRECT
 while current_sum > x and left <= right:
-    current_sum -= arr[left]
-    left += 1
+  current_sum -= arr[left]
+  left += 1
 ```
 
 **Problem:** Window can become empty, causing issues.

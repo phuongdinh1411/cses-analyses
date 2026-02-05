@@ -40,13 +40,13 @@ Incrementally add edges to the graph. After each addition, run Kruskal's algorit
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -56,69 +56,69 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_fields):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    while len(dist) != number_of_fields - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            mst += edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  mst = 0
+  while len(dist) != number_of_fields - 1 and i < len(graph):
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+      mst += edge.weight
 
-    if len(dist) == number_of_fields - 1:
-        return mst
-    else:
-        return -1
+  if len(dist) == number_of_fields - 1:
+    return mst
+  else:
+    return -1
 
 
 def solution():
-    T = int(input())
+  T = int(input())
 
-    for t in range(T):
-        global graph, dist
-        graph = []
-        N, M = map(int, input().split())
-        print('Case {0}:'.format(t + 1))
-        for i in range(M):
-            x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
-            if i < N - 1:
-                print(-1)
-            else:
-                dist = []
-                make_set(N)
-                minimum_distance = kruskal(N)
-                print(minimum_distance)
+  for t in range(T):
+    global graph, dist
+    graph = []
+    N, M = map(int, input().split())
+    print('Case {0}:'.format(t + 1))
+    for i in range(M):
+      x, y, z = map(int, input().split())
+      graph.append(Triad(x, y, z))
+      if i < N - 1:
+        print(-1)
+      else:
+        dist = []
+        make_set(N)
+        minimum_distance = kruskal(N)
+        print(minimum_distance)
 
 
 solution()
@@ -159,13 +159,13 @@ Use Kruskal's algorithm to find MST. Sum weights of edges not in MST (edges that
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -175,67 +175,67 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    saved = 0
-    while len(dist) != number_of_cities - 1:
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-        else:
-            saved += edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  saved = 0
+  while len(dist) != number_of_cities - 1:
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+    else:
+      saved += edge.weight
 
-    for j in range(i, len(graph)):
-        saved += graph[j].weight
+  for j in range(i, len(graph)):
+    saved += graph[j].weight
 
-    return saved
+  return saved
 
 
 def solution():
-    while True:
-        global graph, dist
-        graph = []
-        dist = []
-        m, n = map(int, input().split())
-        if m == 0:
-            break
-        for _ in range(n):
-            x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
+  while True:
+    global graph, dist
+    graph = []
+    dist = []
+    m, n = map(int, input().split())
+    if m == 0:
+      break
+    for _ in range(n):
+      x, y, z = map(int, input().split())
+      graph.append(Triad(x, y, z))
 
-        make_set(m)
+    make_set(m)
 
-        print(kruskal(m))
+    print(kruskal(m))
 
 
 solution()
@@ -278,13 +278,13 @@ Map station names to indices using dictionary. Apply Kruskal's algorithm to find
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -294,73 +294,73 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    while len(dist) != number_of_cities - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            mst += edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  mst = 0
+  while len(dist) != number_of_cities - 1 and i < len(graph):
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+      mst += edge.weight
 
-    if len(dist) == number_of_cities - 1:
-        return mst
-    else:
-        return 'Impossible'
+  if len(dist) == number_of_cities - 1:
+    return mst
+  else:
+    return 'Impossible'
 
 
 def solution():
-    while True:
-        global graph, dist
-        graph = []
-        dist = []
-        station_dictionary = {}
-        s, c = map(int, input().split())
-        if s == 0:
-            break
+  while True:
+    global graph, dist
+    graph = []
+    dist = []
+    station_dictionary = {}
+    s, c = map(int, input().split())
+    if s == 0:
+      break
 
-        for i in range(s):
-            station = input().strip()
-            station_dictionary[station] = i
-        for _ in range(c):
-            x, y, z = input().split()
-            graph.append(Triad(station_dictionary[x], station_dictionary[y], int(z)))
+    for i in range(s):
+      station = input().strip()
+      station_dictionary[station] = i
+    for _ in range(c):
+      x, y, z = input().split()
+      graph.append(Triad(station_dictionary[x], station_dictionary[y], int(z)))
 
-        input()
+    input()
 
-        make_set(s)
+    make_set(s)
 
-        print(kruskal(s))
+    print(kruskal(s))
 
 
 solution()
@@ -402,13 +402,13 @@ Modified Kruskal's algorithm. Only add edge to MST if its cost < airport cost A.
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -418,69 +418,69 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities, airport_cost):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    n_airports = number_of_cities
-    while len(dist) != number_of_cities - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            if edge.weight < airport_cost:
-                n_airports -= 1
-                mst += edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  mst = 0
+  n_airports = number_of_cities
+  while len(dist) != number_of_cities - 1 and i < len(graph):
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+      if edge.weight < airport_cost:
+        n_airports -= 1
+        mst += edge.weight
 
-    return mst + n_airports * airport_cost, n_airports
+  return mst + n_airports * airport_cost, n_airports
 
 
 def solution():
-    T = int(input())
+  T = int(input())
 
-    for t in range(T):
-        global graph, dist
-        graph = []
-        dist = []
-        N, M, A = map(int, input().split())
+  for t in range(T):
+    global graph, dist
+    graph = []
+    dist = []
+    N, M, A = map(int, input().split())
 
-        for _ in range(M):
-            x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
+    for _ in range(M):
+      x, y, z = map(int, input().split())
+      graph.append(Triad(x, y, z))
 
-        make_set(N)
+    make_set(N)
 
-        cost, n_airports = kruskal(N, A)
+    cost, n_airports = kruskal(N, A)
 
-        print('Case #{0}: {1} {2}'.format(t + 1, cost, n_airports))
+    print('Case #{0}: {1} {2}'.format(t + 1, cost, n_airports))
 
 
 solution()
@@ -522,13 +522,13 @@ Use Kruskal's algorithm to build MST. Track the maximum edge weight added to MST
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -538,70 +538,70 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    minimum_distance = 0
-    while len(dist) != number_of_cities - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            minimum_distance = edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  minimum_distance = 0
+  while len(dist) != number_of_cities - 1 and i < len(graph):
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+      minimum_distance = edge.weight
 
-    if len(dist) == number_of_cities - 1:
-        return minimum_distance
-    else:
-        return 'IMPOSSIBLE'
+  if len(dist) == number_of_cities - 1:
+    return minimum_distance
+  else:
+    return 'IMPOSSIBLE'
 
 
 def solution():
-    while True:
-        global graph, dist
-        graph = []
-        dist = []
-        N, M = map(int, input().split())
+  while True:
+    global graph, dist
+    graph = []
+    dist = []
+    N, M = map(int, input().split())
 
-        if N == 0 and M == 0:
-            break
+    if N == 0 and M == 0:
+      break
 
-        for _ in range(M):
-            x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
+    for _ in range(M):
+      x, y, z = map(int, input().split())
+      graph.append(Triad(x, y, z))
 
-        make_set(N)
+    make_set(N)
 
-        minimum_distance = kruskal(N)
+    minimum_distance = kruskal(N)
 
-        print(minimum_distance)
+    print(minimum_distance)
 
 
 solution()
@@ -643,10 +643,10 @@ Parse adjacency matrix to create edge list. Apply Kruskal's algorithm with edges
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
 
 parent = []
@@ -656,71 +656,71 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for i in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for i in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities):
-    graph.sort(key=lambda _edge: (_edge.weight, _edge.source))
-    i = 0
-    while len(dist) != number_of_cities - 1:
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
+  graph.sort(key=lambda _edge: (_edge.weight, _edge.source))
+  i = 0
+  while len(dist) != number_of_cities - 1:
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
 
 
 def print_MST():
-    ans = 0
-    for e in dist:
-        source = chr(e.source + 65)
-        target = chr(e.target + 65)
-        print("{0}-{1} {2}".format(source, target, e.weight))
-        ans += e.weight
+  ans = 0
+  for e in dist:
+    source = chr(e.source + 65)
+    target = chr(e.target + 65)
+    print("{0}-{1} {2}".format(source, target, e.weight))
+    ans += e.weight
 
 
 def solution():
-    number_of_test_cases = int(input())
+  number_of_test_cases = int(input())
 
-    for t in range(number_of_test_cases):
-        global graph, dist
-        graph = []
-        dist = []
-        number_of_cities = int(input())
-        for i in range(number_of_cities):
-            securities = input().split(', ')
-            for j in range(i):
-                security = int(securities[j])
-                if security > 0:
-                    graph.append(Triad(j, i, security))
-        make_set(number_of_cities)
-        kruskal(number_of_cities)
-        print('Case {0}:'.format(t + 1))
-        print_MST()
+  for t in range(number_of_test_cases):
+    global graph, dist
+    graph = []
+    dist = []
+    number_of_cities = int(input())
+    for i in range(number_of_cities):
+      securities = input().split(', ')
+      for j in range(i):
+        security = int(securities[j])
+        if security > 0:
+          graph.append(Triad(j, i, security))
+    make_set(number_of_cities)
+    kruskal(number_of_cities)
+    print('Case {0}:'.format(t + 1))
+    print_MST()
 
 
 solution()
@@ -762,13 +762,13 @@ Model as MST problem: nodes are lock combinations. Edge weight = minimum rotatio
 
 ```python
 class Triad:
-    def __init__(self, source, target, weight):
-        self.source = source
-        self.target = target
-        self.weight = weight
+  def __init__(self, source, target, weight):
+    self.source = source
+    self.target = target
+    self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+  def __repr__(self):
+    return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
 
 
 parent = []
@@ -778,80 +778,80 @@ graph = []
 
 
 def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
+  global parent, ranks, dist
+  parent = [i for i in range(V + 1)]
+  ranks = [0 for _ in range(V + 1)]
 
 
 def find_set(u):
-    if parent[u] != u:
-        parent[u] = find_set(parent[u])
-    return parent[u]
+  if parent[u] != u:
+    parent[u] = find_set(parent[u])
+  return parent[u]
 
 
 def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
-    if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
-        parent[vp] = up
-    elif ranks[up] < ranks[vp]:
-        parent[up] = vp
-    else:
-        parent[up] = vp
-        ranks[vp] += 1
+  up = find_set(u)
+  vp = find_set(v)
+  if up == vp:
+    return
+  if ranks[up] > ranks[vp]:
+    parent[vp] = up
+  elif ranks[up] < ranks[vp]:
+    parent[up] = vp
+  else:
+    parent[up] = vp
+    ranks[vp] += 1
 
 
 def kruskal(number_of_cities):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    while len(dist) != number_of_cities - 1:
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
-        if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            mst += edge.weight
+  graph.sort(key=lambda _edge: _edge.weight)
+  i = 0
+  mst = 0
+  while len(dist) != number_of_cities - 1:
+    edge = graph[i]
+    i += 1
+    u = find_set(edge.source)
+    v = find_set(edge.target)
+    if u != v:
+      dist.append(edge)
+      union_set(u, v)
+      mst += edge.weight
 
-    return mst
+  return mst
 
 
 def calculate_rolls(start, stop):
-    rolls = 0
-    for i in range(4):
-        sta, sto = int(start[i]), int(stop[i])
-        rolls += min(abs(sta - sto), 10 - abs(sta - sto))
+  rolls = 0
+  for i in range(4):
+    sta, sto = int(start[i]), int(stop[i])
+    rolls += min(abs(sta - sto), 10 - abs(sta - sto))
 
-    return rolls
+  return rolls
 
 
 def solution():
-    number_of_test_cases = int(input())
+  number_of_test_cases = int(input())
 
-    for t in range(number_of_test_cases):
-        global graph, dist
-        graph = []
-        dist = []
-        line = input().split()
-        number_of_locks = int(line[0])
-        line[0] = '0000'
-        initial = 100
-        for i in range(1, number_of_locks + 1):
-            initial = min(initial, calculate_rolls('0000', line[i]))
-        for i in range(1, number_of_locks + 1):
-            for j in range(i + 1, number_of_locks + 1):
-                source = line[i]
-                target = line[j]
-                weight = calculate_rolls(source, target)
-                graph.append(Triad(i, j, weight))
+  for t in range(number_of_test_cases):
+    global graph, dist
+    graph = []
+    dist = []
+    line = input().split()
+    number_of_locks = int(line[0])
+    line[0] = '0000'
+    initial = 100
+    for i in range(1, number_of_locks + 1):
+      initial = min(initial, calculate_rolls('0000', line[i]))
+    for i in range(1, number_of_locks + 1):
+      for j in range(i + 1, number_of_locks + 1):
+        source = line[i]
+        target = line[j]
+        weight = calculate_rolls(source, target)
+        graph.append(Triad(i, j, weight))
 
-        make_set(number_of_locks)
+    make_set(number_of_locks)
 
-        print(kruskal(number_of_locks) + initial)
+    print(kruskal(number_of_locks) + initial)
 
 
 solution()

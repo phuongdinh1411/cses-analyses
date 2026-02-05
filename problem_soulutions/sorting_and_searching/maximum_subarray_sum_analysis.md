@@ -162,37 +162,37 @@ Answer: 7 (subarray [4, -1, -2, 1, 5])
 
 ```python
 def max_subarray_sum(arr):
-    """
-    Find maximum subarray sum using Kadane's algorithm.
+  """
+  Find maximum subarray sum using Kadane's algorithm.
 
-    Args:
-        arr: List of integers (can be negative)
+  Args:
+    arr: List of integers (can be negative)
 
-    Returns:
-        Maximum sum of any contiguous subarray
-    """
-    if not arr:
-        return 0
+  Returns:
+    Maximum sum of any contiguous subarray
+  """
+  if not arr:
+    return 0
 
-    current_sum = max_sum = arr[0]
+  current_sum = max_sum = arr[0]
 
-    for i in range(1, len(arr)):
-        # Either extend previous subarray or start fresh
-        current_sum = max(arr[i], current_sum + arr[i])
-        max_sum = max(max_sum, current_sum)
+  for i in range(1, len(arr)):
+    # Either extend previous subarray or start fresh
+    current_sum = max(arr[i], current_sum + arr[i])
+    max_sum = max(max_sum, current_sum)
 
-    return max_sum
+  return max_sum
 
 
 # CSES solution with input handling
 def solve():
-    n = int(input())
-    arr = list(map(int, input().split()))
-    print(max_subarray_sum(arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(max_subarray_sum(arr))
 
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ## Common Mistakes
@@ -204,8 +204,8 @@ if __name__ == "__main__":
 max_sum = 0
 current_sum = 0
 for x in arr:
-    current_sum = max(x, current_sum + x)
-    max_sum = max(max_sum, current_sum)
+  current_sum = max(x, current_sum + x)
+  max_sum = max(max_sum, current_sum)
 
 # Array: [-5, -2, -3] -> Returns 0 (wrong!)
 # Correct answer: -2

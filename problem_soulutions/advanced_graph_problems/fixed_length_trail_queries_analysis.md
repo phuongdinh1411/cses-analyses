@@ -116,33 +116,33 @@ For each query, run DFS from node a, counting all paths that reach node b in exa
 
 ```python
 def solve_brute_force(n, edges, queries):
-    """
-    Brute force: DFS for each query.
+  """
+  Brute force: DFS for each query.
 
-    Time: O(q * n^k) - exponential in k
-    Space: O(k) - recursion depth
-    """
-    MOD = 10**9 + 7
+  Time: O(q * n^k) - exponential in k
+  Space: O(k) - recursion depth
+  """
+  MOD = 10**9 + 7
 
-    # Build adjacency list
-    adj = [[] for _ in range(n + 1)]
-    for a, b in edges:
-        adj[a].append(b)
+  # Build adjacency list
+  adj = [[] for _ in range(n + 1)]
+  for a, b in edges:
+    adj[a].append(b)
 
-    def count_paths(start, end, steps):
-        if steps == 0:
-            return 1 if start == end else 0
+  def count_paths(start, end, steps):
+    if steps == 0:
+      return 1 if start == end else 0
 
-        total = 0
-        for neighbor in adj[start]:
-            total += count_paths(neighbor, end, steps - 1)
-        return total % MOD
+    total = 0
+    for neighbor in adj[start]:
+      total += count_paths(neighbor, end, steps - 1)
+    return total % MOD
 
-    results = []
-    for a, b, k in queries:
-        results.append(count_paths(a, b, k))
+  results = []
+  for a, b, k in queries:
+    results.append(count_paths(a, b, k))
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -227,70 +227,70 @@ import sys
 from collections import defaultdict
 
 def solve():
-    input_data = sys.stdin.read().split()
-    idx = 0
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n, m, q = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
+  n, m, q = int(input_data[idx]), int(input_data[idx+1]), int(input_data[idx+2])
+  idx += 3
+
+  MOD = 10**9 + 7
+
+  # Build adjacency matrix
+  adj = [[0] * n for _ in range(n)]
+  for _ in range(m):
+    a, b = int(input_data[idx]) - 1, int(input_data[idx+1]) - 1
+    idx += 2
+    adj[a][b] += 1  # Handle multiple edges
+
+  def matrix_mult(A, B):
+    """Multiply two n x n matrices modulo MOD."""
+    result = [[0] * n for _ in range(n)]
+    for i in range(n):
+      for k in range(n):
+        if A[i][k] == 0:
+          continue
+        for j in range(n):
+          result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
+    return result
+
+  def matrix_power(matrix, power):
+    """Compute matrix^power using binary exponentiation."""
+    # Identity matrix
+    result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+
+    base = [row[:] for row in matrix]  # Copy matrix
+
+    while power > 0:
+      if power & 1:
+        result = matrix_mult(result, base)
+      base = matrix_mult(base, base)
+      power >>= 1
+
+    return result
+
+  # Collect unique k values and precompute
+  queries = []
+  k_values = set()
+  for _ in range(q):
+    a, b, k = int(input_data[idx]) - 1, int(input_data[idx+1]) - 1, int(input_data[idx+2])
     idx += 3
+    queries.append((a, b, k))
+    k_values.add(k)
 
-    MOD = 10**9 + 7
+  # Precompute matrix powers for unique k values
+  powers = {}
+  for k in k_values:
+    powers[k] = matrix_power(adj, k)
 
-    # Build adjacency matrix
-    adj = [[0] * n for _ in range(n)]
-    for _ in range(m):
-        a, b = int(input_data[idx]) - 1, int(input_data[idx+1]) - 1
-        idx += 2
-        adj[a][b] += 1  # Handle multiple edges
+  # Answer queries
+  results = []
+  for a, b, k in queries:
+    results.append(powers[k][a][b])
 
-    def matrix_mult(A, B):
-        """Multiply two n x n matrices modulo MOD."""
-        result = [[0] * n for _ in range(n)]
-        for i in range(n):
-            for k in range(n):
-                if A[i][k] == 0:
-                    continue
-                for j in range(n):
-                    result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % MOD
-        return result
-
-    def matrix_power(matrix, power):
-        """Compute matrix^power using binary exponentiation."""
-        # Identity matrix
-        result = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-
-        base = [row[:] for row in matrix]  # Copy matrix
-
-        while power > 0:
-            if power & 1:
-                result = matrix_mult(result, base)
-            base = matrix_mult(base, base)
-            power >>= 1
-
-        return result
-
-    # Collect unique k values and precompute
-    queries = []
-    k_values = set()
-    for _ in range(q):
-        a, b, k = int(input_data[idx]) - 1, int(input_data[idx+1]) - 1, int(input_data[idx+2])
-        idx += 3
-        queries.append((a, b, k))
-        k_values.add(k)
-
-    # Precompute matrix powers for unique k values
-    powers = {}
-    for k in k_values:
-        powers[k] = matrix_power(adj, k)
-
-    # Answer queries
-    results = []
-    for a, b, k in queries:
-        results.append(powers[k][a][b])
-
-    print('\n'.join(map(str, results)))
+  print('\n'.join(map(str, results)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity

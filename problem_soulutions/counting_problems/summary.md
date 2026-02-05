@@ -150,209 +150,209 @@ Welcome to the Counting Problems section! This category covers combinatorics and
 #### 1. Permutations and Combinations
 ```python
 def factorial(n, mod=None):
-    if n < 0:
-        return 0
-    if n <= 1:
-        return 1
-    
-    result = 1
-    for i in range(2, n + 1):
-        result *= i
-        if mod:
-            result %= mod
-    
-    return result
+  if n < 0:
+    return 0
+  if n <= 1:
+    return 1
+  
+  result = 1
+  for i in range(2, n + 1):
+    result *= i
+    if mod:
+      result %= mod
+  
+  return result
 
 def permutations(n, r, mod=None):
-    if r > n or r < 0:
-        return 0
-    
-    result = 1
-    for i in range(n - r + 1, n + 1):
-        result *= i
-        if mod:
-            result %= mod
-    
-    return result
+  if r > n or r < 0:
+    return 0
+  
+  result = 1
+  for i in range(n - r + 1, n + 1):
+    result *= i
+    if mod:
+      result %= mod
+  
+  return result
 
 def combinations(n, r, mod=None):
-    if r > n or r < 0:
-        return 0
-    if r > n - r:
-        r = n - r
-    
-    result = 1
-    for i in range(r):
-        result = result * (n - i) // (i + 1)
-        if mod:
-            result %= mod
-    
-    return result
+  if r > n or r < 0:
+    return 0
+  if r > n - r:
+    r = n - r
+  
+  result = 1
+  for i in range(r):
+    result = result * (n - i) // (i + 1)
+    if mod:
+      result %= mod
+  
+  return result
 
 def combinations_with_repetition(n, r, mod=None):
-    return combinations(n + r - 1, r, mod)
+  return combinations(n + r - 1, r, mod)
 
 def multinomial_coefficient(n, k_list, mod=None):
-    if sum(k_list) != n:
-        return 0
-    
-    result = factorial(n, mod)
-    for k in k_list:
-        result = result // factorial(k, mod)
-        if mod:
-            result %= mod
-    
-    return result
+  if sum(k_list) != n:
+    return 0
+  
+  result = factorial(n, mod)
+  for k in k_list:
+    result = result // factorial(k, mod)
+    if mod:
+      result %= mod
+  
+  return result
 ```
 
 #### 2. Inclusion-Exclusion Principle
 ```python
 def inclusion_exclusion_sets(sets):
-    n = len(sets)
-    total = 0
+  n = len(sets)
+  total = 0
+  
+  # Generate all non-empty subsets
+  for mask in range(1, 1 << n):
+    intersection = set(sets[0]) if sets else set()
     
-    # Generate all non-empty subsets
-    for mask in range(1, 1 << n):
-        intersection = set(sets[0]) if sets else set()
-        
-        # Find intersection of sets in current subset
-        for i in range(n):
-            if mask & (1 << i):
-                intersection &= set(sets[i])
-        
-        # Add or subtract based on subset size
-        if bin(mask).count('1') % 2 == 1:
-            total += len(intersection)
-        else:
-            total -= len(intersection)
+    # Find intersection of sets in current subset
+    for i in range(n):
+      if mask & (1 << i):
+        intersection &= set(sets[i])
     
-    return total
+    # Add or subtract based on subset size
+    if bin(mask).count('1') % 2 == 1:
+      total += len(intersection)
+    else:
+      total -= len(intersection)
+  
+  return total
 
 def count_divisible_by_any(numbers, divisors):
-    n = len(divisors)
-    total = 0
+  n = len(divisors)
+  total = 0
+  
+  for mask in range(1, 1 << n):
+    lcm = 1
+    for i in range(n):
+      if mask & (1 << i):
+        lcm = lcm * divisors[i] // gcd(lcm, divisors[i])
     
-    for mask in range(1, 1 << n):
-        lcm = 1
-        for i in range(n):
-            if mask & (1 << i):
-                lcm = lcm * divisors[i] // gcd(lcm, divisors[i])
-        
-        count = sum(1 for num in numbers if num % lcm == 0)
-        
-        if bin(mask).count('1') % 2 == 1:
-            total += count
-        else:
-            total -= count
+    count = sum(1 for num in numbers if num % lcm == 0)
     
-    return total
+    if bin(mask).count('1') % 2 == 1:
+      total += count
+    else:
+      total -= count
+  
+  return total
 
 def derangements(n, mod=None):
-    if n == 0:
-        return 1
-    if n == 1:
-        return 0
+  if n == 0:
+    return 1
+  if n == 1:
+    return 0
+  
+  # Using inclusion-exclusion: !n = n! * sum((-1)^k / k!)
+  result = 0
+  factorial_n = factorial(n, mod)
+  
+  for k in range(n + 1):
+    term = factorial_n // factorial(k, mod)
+    if k % 2 == 0:
+      result += term
+    else:
+      result -= term
     
-    # Using inclusion-exclusion: !n = n! * sum((-1)^k / k!)
-    result = 0
-    factorial_n = factorial(n, mod)
-    
-    for k in range(n + 1):
-        term = factorial_n // factorial(k, mod)
-        if k % 2 == 0:
-            result += term
-        else:
-            result -= term
-        
-        if mod:
-            result %= mod
-    
-    return result
+    if mod:
+      result %= mod
+  
+  return result
 ```
 
 #### 3. Catalan Numbers and Applications
 ```python
 def catalan_number(n, mod=None):
-    if n <= 1:
-        return 1
-    
-    # C(n) = (2n)! / ((n+1)! * n!)
-    numerator = factorial(2 * n, mod)
-    denominator = (factorial(n + 1, mod) * factorial(n, mod)) % mod if mod else factorial(n + 1) * factorial(n)
-    
-    if mod:
-        # Use modular inverse for division
-        return (numerator * mod_inverse(denominator, mod)) % mod
-    else:
-        return numerator // denominator
+  if n <= 1:
+    return 1
+  
+  # C(n) = (2n)! / ((n+1)! * n!)
+  numerator = factorial(2 * n, mod)
+  denominator = (factorial(n + 1, mod) * factorial(n, mod)) % mod if mod else factorial(n + 1) * factorial(n)
+  
+  if mod:
+    # Use modular inverse for division
+    return (numerator * mod_inverse(denominator, mod)) % mod
+  else:
+    return numerator // denominator
 
 def catalan_numbers_sequence(n, mod=None):
-    if n == 0:
-        return [1]
-    
-    catalan = [0] * (n + 1)
-    catalan[0] = 1
-    
-    for i in range(1, n + 1):
-        for j in range(i):
-            catalan[i] += catalan[j] * catalan[i - 1 - j]
-            if mod:
-                catalan[i] %= mod
-    
-    return catalan
+  if n == 0:
+    return [1]
+  
+  catalan = [0] * (n + 1)
+  catalan[0] = 1
+  
+  for i in range(1, n + 1):
+    for j in range(i):
+      catalan[i] += catalan[j] * catalan[i - 1 - j]
+      if mod:
+        catalan[i] %= mod
+  
+  return catalan
 
 def count_binary_trees(n, mod=None):
-    return catalan_number(n, mod)
+  return catalan_number(n, mod)
 
 def count_valid_parentheses(n, mod=None):
-    return catalan_number(n, mod)
+  return catalan_number(n, mod)
 
 def count_dyck_paths(n, mod=None):
-    return catalan_number(n, mod)
+  return catalan_number(n, mod)
 ```
 
 #### 4. Stars and Bars Method
 ```python
 def stars_and_bars(n, k, mod=None):
-    """
-    Count ways to distribute n identical objects into k distinct boxes
-    Equivalent to C(n + k - 1, k - 1)
-    """
-    return combinations(n + k - 1, k - 1, mod)
+  """
+  Count ways to distribute n identical objects into k distinct boxes
+  Equivalent to C(n + k - 1, k - 1)
+  """
+  return combinations(n + k - 1, k - 1, mod)
 
 def positive_stars_and_bars(n, k, mod=None):
-    """
-    Count ways to distribute n identical objects into k distinct boxes
-    with at least one object in each box
-    Equivalent to C(n - 1, k - 1)
-    """
-    if n < k:
-        return 0
-    return combinations(n - 1, k - 1, mod)
+  """
+  Count ways to distribute n identical objects into k distinct boxes
+  with at least one object in each box
+  Equivalent to C(n - 1, k - 1)
+  """
+  if n < k:
+    return 0
+  return combinations(n - 1, k - 1, mod)
 
 def bounded_stars_and_bars(n, k, limits, mod=None):
-    """
-    Count ways to distribute n identical objects into k distinct boxes
-    with each box having at most limit[i] objects
-    """
-    total = 0
+  """
+  Count ways to distribute n identical objects into k distinct boxes
+  with each box having at most limit[i] objects
+  """
+  total = 0
+  
+  # Use inclusion-exclusion
+  for mask in range(1 << k):
+    temp_n = n
+    sign = 1
     
-    # Use inclusion-exclusion
-    for mask in range(1 << k):
-        temp_n = n
-        sign = 1
-        
-        for i in range(k):
-            if mask & (1 << i):
-                temp_n -= limits[i] + 1
-                sign *= -1
-        
-        if temp_n >= 0:
-            total += sign * combinations(temp_n + k - 1, k - 1, mod)
-            if mod:
-                total %= mod
+    for i in range(k):
+      if mask & (1 << i):
+        temp_n -= limits[i] + 1
+        sign *= -1
     
-    return total
+    if temp_n >= 0:
+      total += sign * combinations(temp_n + k - 1, k - 1, mod)
+      if mod:
+        total %= mod
+  
+  return total
 ```
 
 ### Advanced Counting Techniques
@@ -360,147 +360,147 @@ def bounded_stars_and_bars(n, k, limits, mod=None):
 #### 1. Burnside's Lemma
 ```python
 def burnside_lemma(actions, elements):
-    """
-    Count distinct orbits under group actions
-    actions: list of functions representing group actions
-    elements: list of elements to act upon
-    """
-    total_fixed = 0
-    
-    for action in actions:
-        fixed_count = 0
-        for element in elements:
-            if action(element) == element:
-                fixed_count += 1
-        total_fixed += fixed_count
-    
-    return total_fixed // len(actions)
+  """
+  Count distinct orbits under group actions
+  actions: list of functions representing group actions
+  elements: list of elements to act upon
+  """
+  total_fixed = 0
+  
+  for action in actions:
+    fixed_count = 0
+    for element in elements:
+      if action(element) == element:
+        fixed_count += 1
+    total_fixed += fixed_count
+  
+  return total_fixed // len(actions)
 
 def count_necklaces(n, k):
-    """
-    Count distinct necklaces with n beads and k colors
-    considering rotations as equivalent
-    """
-    def gcd(a, b):
-        while b:
-            a, b = b, a % b
-        return a
-    
-    total = 0
-    for i in range(n):
-        total += k ** gcd(i, n)
-    
-    return total // n
+  """
+  Count distinct necklaces with n beads and k colors
+  considering rotations as equivalent
+  """
+  def gcd(a, b):
+    while b:
+      a, b = b, a % b
+    return a
+  
+  total = 0
+  for i in range(n):
+    total += k ** gcd(i, n)
+  
+  return total // n
 
 def count_binary_strings_rotations(n):
-    """
-    Count distinct binary strings of length n
-    considering rotations as equivalent
-    """
-    def gcd(a, b):
-        while b:
-            a, b = b, a % b
-        return a
-    
-    total = 0
-    for i in range(n):
-        total += 2 ** gcd(i, n)
-    
-    return total // n
+  """
+  Count distinct binary strings of length n
+  considering rotations as equivalent
+  """
+  def gcd(a, b):
+    while b:
+      a, b = b, a % b
+    return a
+  
+  total = 0
+  for i in range(n):
+    total += 2 ** gcd(i, n)
+  
+  return total // n
 ```
 
 #### 2. Modular Arithmetic Operations
 ```python
 def mod_inverse(a, mod):
-    """Find modular inverse using extended Euclidean algorithm"""
-    def extended_gcd(a, b):
-        if a == 0:
-            return b, 0, 1
-        gcd, x1, y1 = extended_gcd(b % a, a)
-        x = y1 - (b // a) * x1
-        y = x1
-        return gcd, x, y
-    
-    gcd, x, y = extended_gcd(a, mod)
-    if gcd != 1:
-        raise ValueError("Modular inverse doesn't exist")
-    
-    return (x % mod + mod) % mod
+  """Find modular inverse using extended Euclidean algorithm"""
+  def extended_gcd(a, b):
+    if a == 0:
+      return b, 0, 1
+    gcd, x1, y1 = extended_gcd(b % a, a)
+    x = y1 - (b // a) * x1
+    y = x1
+    return gcd, x, y
+  
+  gcd, x, y = extended_gcd(a, mod)
+  if gcd != 1:
+    raise ValueError("Modular inverse doesn't exist")
+  
+  return (x % mod + mod) % mod
 
 def mod_power(base, exp, mod):
-    """Fast modular exponentiation"""
-    result = 1
-    base %= mod
-    
-    while exp > 0:
-        if exp % 2 == 1:
-            result = (result * base) % mod
-        exp >>= 1
-        base = (base * base) % mod
-    
-    return result
+  """Fast modular exponentiation"""
+  result = 1
+  base %= mod
+  
+  while exp > 0:
+    if exp % 2 == 1:
+      result = (result * base) % mod
+    exp >>= 1
+    base = (base * base) % mod
+  
+  return result
 
 def mod_factorial(n, mod):
-    """Compute n! mod mod"""
-    result = 1
-    for i in range(2, n + 1):
-        result = (result * i) % mod
-    return result
+  """Compute n! mod mod"""
+  result = 1
+  for i in range(2, n + 1):
+    result = (result * i) % mod
+  return result
 
 def mod_combinations(n, r, mod):
-    """Compute C(n,r) mod mod"""
-    if r > n or r < 0:
-        return 0
-    if r > n - r:
-        r = n - r
-    
-    numerator = 1
-    denominator = 1
-    
-    for i in range(r):
-        numerator = (numerator * (n - i)) % mod
-        denominator = (denominator * (i + 1)) % mod
-    
-    return (numerator * mod_inverse(denominator, mod)) % mod
+  """Compute C(n,r) mod mod"""
+  if r > n or r < 0:
+    return 0
+  if r > n - r:
+    r = n - r
+  
+  numerator = 1
+  denominator = 1
+  
+  for i in range(r):
+    numerator = (numerator * (n - i)) % mod
+    denominator = (denominator * (i + 1)) % mod
+  
+  return (numerator * mod_inverse(denominator, mod)) % mod
 ```
 
 #### 3. Probability and Expected Value
 ```python
 def probability_union(events, probabilities):
-    """
-    Calculate P(A1 ∪ A2 ∪ ... ∪ An) using inclusion-exclusion
-    """
-    n = len(events)
-    total = 0
+  """
+  Calculate P(A1 ∪ A2 ∪ ... ∪ An) using inclusion-exclusion
+  """
+  n = len(events)
+  total = 0
+  
+  for mask in range(1, 1 << n):
+    intersection_prob = 1
+    for i in range(n):
+      if mask & (1 << i):
+        intersection_prob *= probabilities[i]
     
-    for mask in range(1, 1 << n):
-        intersection_prob = 1
-        for i in range(n):
-            if mask & (1 << i):
-                intersection_prob *= probabilities[i]
-        
-        if bin(mask).count('1') % 2 == 1:
-            total += intersection_prob
-        else:
-            total -= intersection_prob
-    
-    return total
+    if bin(mask).count('1') % 2 == 1:
+      total += intersection_prob
+    else:
+      total -= intersection_prob
+  
+  return total
 
 def expected_value_outcomes(outcomes, probabilities):
-    """Calculate expected value E[X] = Σ x * P(x)"""
-    return sum(outcome * prob for outcome, prob in zip(outcomes, probabilities))
+  """Calculate expected value E[X] = Σ x * P(x)"""
+  return sum(outcome * prob for outcome, prob in zip(outcomes, probabilities))
 
 def geometric_distribution_expected(p):
-    """Expected number of trials until first success"""
-    return 1 / p
+  """Expected number of trials until first success"""
+  return 1 / p
 
 def coupon_collector_expected(n):
-    """
-    Expected number of trials to collect all n coupons
-    E[X] = n * H_n where H_n is n-th harmonic number
-    """
-    harmonic = sum(1 / i for i in range(1, n + 1))
-    return n * harmonic
+  """
+  Expected number of trials to collect all n coupons
+  E[X] = n * H_n where H_n is n-th harmonic number
+  """
+  harmonic = sum(1 / i for i in range(1, n + 1))
+  return n * harmonic
 ```
 
 ## Tips for Success

@@ -36,36 +36,36 @@ Generate all combinations of 6 numbers from the given set using backtracking. Si
 
 ```python
 def solve():
-    first_case = True
+  first_case = True
 
-    while True:
-        line = input().split()
-        k = int(line[0])
+  while True:
+    line = input().split()
+    k = int(line[0])
 
-        if k == 0:
-            break
+    if k == 0:
+      break
 
-        numbers = list(map(int, line[1:k+1]))
+    numbers = list(map(int, line[1:k+1]))
 
-        if not first_case:
-            print()  # Blank line between test cases
-        first_case = False
+    if not first_case:
+      print()  # Blank line between test cases
+    first_case = False
 
-        # Generate all combinations of 6 numbers
-        def generate_combinations(start, current):
-            if len(current) == 6:
-                print(' '.join(map(str, current)))
-                return
+    # Generate all combinations of 6 numbers
+    def generate_combinations(start, current):
+      if len(current) == 6:
+        print(' '.join(map(str, current)))
+        return
 
-            for i in range(start, len(numbers)):
-                current.append(numbers[i])
-                generate_combinations(i + 1, current)
-                current.pop()
+      for i in range(start, len(numbers)):
+        current.append(numbers[i])
+        generate_combinations(i + 1, current)
+        current.pop()
 
-        generate_combinations(0, [])
+    generate_combinations(0, [])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Using itertools
@@ -74,27 +74,27 @@ if __name__ == "__main__":
 from itertools import combinations
 
 def solve():
-    first_case = True
+  first_case = True
 
-    while True:
-        line = input().split()
-        k = int(line[0])
+  while True:
+    line = input().split()
+    k = int(line[0])
 
-        if k == 0:
-            break
+    if k == 0:
+      break
 
-        numbers = list(map(int, line[1:k+1]))
+    numbers = list(map(int, line[1:k+1]))
 
-        if not first_case:
-            print()
-        first_case = False
+    if not first_case:
+      print()
+    first_case = False
 
-        # Generate all combinations of 6 numbers
-        for combo in combinations(numbers, 6):
-            print(' '.join(map(str, combo)))
+    # Generate all combinations of 6 numbers
+    for combo in combinations(numbers, 6):
+      print(' '.join(map(str, combo)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -38,17 +38,17 @@ Two points are on the same ray if they have the same angle from origin. For each
 
 ```python
 def solution():
-    n, x0, y0 = map(int, input().strip().split())
-    shots = set()
-    for i in range(n):
-        x, y = map(int, input().strip().split())
-        x, y = x - x0, y - y0
-        angle = 1e4
-        if y != 0:
-            angle = x / y
-        shots.add(angle)
+  n, x0, y0 = map(int, input().strip().split())
+  shots = set()
+  for i in range(n):
+    x, y = map(int, input().strip().split())
+    x, y = x - x0, y - y0
+    angle = 1e4
+    if y != 0:
+      angle = x / y
+    shots.add(angle)
 
-    print(len(shots))
+  print(len(shots))
 
 
 solution()
@@ -96,40 +96,40 @@ import queue
 
 
 class Node:
-    def __init__(self, noti_index, app_index):
-        self.noti_index = noti_index
-        self.app_index = app_index
+  def __init__(self, noti_index, app_index):
+    self.noti_index = noti_index
+    self.app_index = app_index
 
-    def __lt__(self, other):
-        return self.noti_index < other.noti_index
+  def __lt__(self, other):
+    return self.noti_index < other.noti_index
 
 
 def solution():
-    n, q = map(int, input().strip().split())
-    apps = [set() for i in range(n + 1)]
-    noti_queue = queue.Queue()
-    current_noti = 0
-    read_noti = 0
-    current_noti_index = 1
-    for i in range(q):
-        q1, q2 = map(int, input().split())
-        if q1 == 1:
-            apps[q2].add(current_noti_index)
-            noti_queue.put(Node(current_noti_index, q2))
-            current_noti_index += 1
-            current_noti += 1
-        if q1 == 2:
-            current_noti -= len(apps[q2])
-            apps[q2].clear()
-        if q1 == 3:
-            while read_noti < q2:
-                to_be_read = noti_queue.get()
-                if to_be_read.noti_index in apps[to_be_read.app_index]:
-                    current_noti -= 1
-                    apps[to_be_read.app_index].remove(to_be_read.noti_index)
-                read_noti += 1
+  n, q = map(int, input().strip().split())
+  apps = [set() for i in range(n + 1)]
+  noti_queue = queue.Queue()
+  current_noti = 0
+  read_noti = 0
+  current_noti_index = 1
+  for i in range(q):
+    q1, q2 = map(int, input().split())
+    if q1 == 1:
+      apps[q2].add(current_noti_index)
+      noti_queue.put(Node(current_noti_index, q2))
+      current_noti_index += 1
+      current_noti += 1
+    if q1 == 2:
+      current_noti -= len(apps[q2])
+      apps[q2].clear()
+    if q1 == 3:
+      while read_noti < q2:
+        to_be_read = noti_queue.get()
+        if to_be_read.noti_index in apps[to_be_read.app_index]:
+          current_noti -= 1
+          apps[to_be_read.app_index].remove(to_be_read.noti_index)
+        read_noti += 1
 
-        print(current_noti)
+    print(current_noti)
 
 
 solution()
@@ -173,20 +173,20 @@ Use a set to count distinct elements in O(n). Compare set size with X to determi
 
 ```python
 def check_distinct(_n, _x, _a):
-    distinct_set = set(_a)
-    if len(distinct_set) == _x:
-        return 'Good'
-    if len(distinct_set) < _x:
-        return 'Bad'
-    return 'Average'
+  distinct_set = set(_a)
+  if len(distinct_set) == _x:
+    return 'Good'
+  if len(distinct_set) < _x:
+    return 'Bad'
+  return 'Average'
 
 
 def solution():
-    T = int(input())
-    for i in range(T):
-        N, X = map(int, input().strip().split())
-        A = list(map(int, input().strip().split()))
-        print(check_distinct(N, X, A))
+  T = int(input())
+  for i in range(T):
+    N, X = map(int, input().strip().split())
+    A = list(map(int, input().strip().split()))
+    print(check_distinct(N, X, A))
 
 
 solution()
@@ -233,70 +233,70 @@ import sys
 
 
 class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+  def __init__(self, value):
+    self.value = value
+    self.left = None
+    self.right = None
 
 
 def add_node(root, x):
-    if root is None:
-        return Node(x)
-    if x < root.value:
-        root.left = add_node(root.left, x)
-    elif x > root.value:
-        root.right = add_node(root.right, x)
-    return root
+  if root is None:
+    return Node(x)
+  if x < root.value:
+    root.left = add_node(root.left, x)
+  elif x > root.value:
+    root.right = add_node(root.right, x)
+  return root
 
 
 def max_value_node(root):
-    current = root
-    while current.right is not None:
-        current = current.right
-    return current.value
+  current = root
+  while current.right is not None:
+    current = current.right
+  return current.value
 
 
 def __find_min_loss(root):
-    if root is None or root.left is None:
-        return -1
-    return root.value - max_value_node(root.left)
+  if root is None or root.left is None:
+    return -1
+  return root.value - max_value_node(root.left)
 
 
 def find_min_loss(root, min_loss):
-    if root is None:
-        return min_loss
-    current_min_loss = __find_min_loss(root)
-    if current_min_loss != -1 and min_loss > current_min_loss:
-        min_loss = current_min_loss
+  if root is None:
+    return min_loss
+  current_min_loss = __find_min_loss(root)
+  if current_min_loss != -1 and min_loss > current_min_loss:
+    min_loss = current_min_loss
 
-    min_loss_right = find_min_loss(root.right, min_loss)
-    min_loss_left = find_min_loss(root.left, min_loss_right)
+  min_loss_right = find_min_loss(root.right, min_loss)
+  min_loss_left = find_min_loss(root.left, min_loss_right)
 
-    return min_loss_left
+  return min_loss_left
 
 
 def minimum_loss(price):
-    n = len(price)
-    root = Node(price[0])
-    for i in range(1, n):
-        add_node(root, price[i])
+  n = len(price)
+  root = Node(price[0])
+  for i in range(1, n):
+    add_node(root, price[i])
 
-    min_loss = 1e16
-    return find_min_loss(root, min_loss)
+  min_loss = 1e16
+  return find_min_loss(root, min_loss)
 
 
 if __name__ == '__main__':
-    fptr = sys.stdout
+  fptr = sys.stdout
 
-    n = int(input())
+  n = int(input())
 
-    price = list(map(int, input().rstrip().split()))
+  price = list(map(int, input().rstrip().split()))
 
-    result = minimum_loss(price)
+  result = minimum_loss(price)
 
-    fptr.write(str(result) + '\n')
+  fptr.write(str(result) + '\n')
 
-    fptr.close()
+  fptr.close()
 ```
 
 ##### Complexity Analysis
@@ -335,23 +335,23 @@ Use a set to store IDs of friends inside the class. For each arriving friend, ch
 
 ```python
 def check_exist(_in, _out):
-    inside_class = set(_in)
-    for stu in _out:
-        if stu in inside_class:
-            print('YES')
-        else:
-            print('NO')
-        inside_class.add(stu)
+  inside_class = set(_in)
+  for stu in _out:
+    if stu in inside_class:
+      print('YES')
+    else:
+      print('NO')
+    inside_class.add(stu)
 
 
 def solution():
-    T = int(input())
-    for i in range(T):
-        N, M = map(int, input().strip().split())
-        A = list(map(int, input().strip().split()))
-        inside_class = A[:N]
-        outside_class = A[N:]
-        check_exist(inside_class, outside_class)
+  T = int(input())
+  for i in range(T):
+    N, M = map(int, input().strip().split())
+    A = list(map(int, input().strip().split()))
+    inside_class = A[:N]
+    outside_class = A[N:]
+    check_exist(inside_class, outside_class)
 
 
 solution()
@@ -393,44 +393,44 @@ Build a Binary Search Tree from memorized years. For each exam question, search 
 
 ```python
 class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+  def __init__(self, value):
+    self.value = value
+    self.left = None
+    self.right = None
 
 
 def add_node(root, x):
-    if root is None:
-        return Node(x)
-    if x < root.value:
-        root.left = add_node(root.left, x)
-    elif x > root.value:
-        root.right = add_node(root.right, x)
-    return root
+  if root is None:
+    return Node(x)
+  if x < root.value:
+    root.left = add_node(root.left, x)
+  elif x > root.value:
+    root.right = add_node(root.right, x)
+  return root
 
 
 def search_node(root, x):
-    if root is None or root.value == x:
-        return root
-    if root.value < x:
-        return search_node(root.right, x)
-    return search_node(root.left, x)
+  if root is None or root.value == x:
+    return root
+  if root.value < x:
+    return search_node(root.right, x)
+  return search_node(root.left, x)
 
 
 def solution():
-    n = int(input().strip())
+  n = int(input().strip())
 
-    root = Node(int(input()))
-    for i in range(n - 1):
-        add_node(root, int(input()))
-    m = int(input().strip())
-    mark = 0
-    for i in range(m):
-        year = int(input())
-        if search_node(root, year) is not None:
-            mark += 1
+  root = Node(int(input()))
+  for i in range(n - 1):
+    add_node(root, int(input()))
+  m = int(input().strip())
+  mark = 0
+  for i in range(m):
+    year = int(input())
+    if search_node(root, year) is not None:
+      mark += 1
 
-    print(mark)
+  print(mark)
 
 
 solution()
@@ -472,51 +472,51 @@ import re
 
 
 class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+  def __init__(self, value):
+    self.value = value
+    self.left = None
+    self.right = None
 
 
 def add_node(root, x):
-    if root is None:
-        return Node(x)
-    if x < root.value:
-        root.left = add_node(root.left, x)
-    elif x > root.value:
-        root.right = add_node(root.right, x)
-    return root
+  if root is None:
+    return Node(x)
+  if x < root.value:
+    root.left = add_node(root.left, x)
+  elif x > root.value:
+    root.right = add_node(root.right, x)
+  return root
 
 
 def print_tree(root):
-    if root is None:
-        return
-    print_tree(root.left)
-    print(root.value)
-    print_tree(root.right)
+  if root is None:
+    return
+  print_tree(root.left)
+  print(root.value)
+  print_tree(root.right)
 
 
 def solution():
-    root = None
-    while True:
-        new_line = None
-        new_words = []
-        try:
-            new_line = input().strip()
-            new_words = list(map(lambda word: re.sub('[^a-z]+', '', word.lower()), re.compile(r'[^A-Za-z]').split(new_line)))
-        except Exception:
-            break
+  root = None
+  while True:
+    new_line = None
+    new_words = []
+    try:
+      new_line = input().strip()
+      new_words = list(map(lambda word: re.sub('[^a-z]+', '', word.lower()), re.compile(r'[^A-Za-z]').split(new_line)))
+    except Exception:
+      break
 
-        new_words = list(filter(lambda x: x is not '', new_words))
+    new_words = list(filter(lambda x: x is not '', new_words))
 
-        if root is None:
-            if len(new_words) > 0:
-                root = Node(new_words[0])
+    if root is None:
+      if len(new_words) > 0:
+        root = Node(new_words[0])
 
-        for word in new_words:
-            add_node(root, word)
+    for word in new_words:
+      add_node(root, word)
 
-    print_tree(root)
+  print_tree(root)
 
 
 solution()
@@ -560,60 +560,60 @@ import re
 
 
 class Node:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
+  def __init__(self, value):
+    self.value = value
+    self.left = None
+    self.right = None
 
 
 def add_node(root, x):
-    if root is None:
-        return Node(x)
-    if x < root.value:
-        root.left = add_node(root.left, x)
-    elif x > root.value:
-        root.right = add_node(root.right, x)
-    return root
+  if root is None:
+    return Node(x)
+  if x < root.value:
+    root.left = add_node(root.left, x)
+  elif x > root.value:
+    root.right = add_node(root.right, x)
+  return root
 
 
 def print_tree(root):
-    if root is None:
-        return
-    print_tree(root.left)
-    print(root.value)
-    print_tree(root.right)
+  if root is None:
+    return
+  print_tree(root.left)
+  print(root.value)
+  print_tree(root.right)
 
 
 def solution():
-    root = None
-    imcompleted_word = None
-    while True:
+  root = None
+  imcompleted_word = None
+  while True:
 
-        try:
-            new_line = input().strip()
-            new_words = list(map(lambda word: re.sub('[^a-z\-]+', '', word.lower()), re.compile(r'[^A-Za-z\-]').split(new_line)))
-        except Exception:
-            break
+    try:
+      new_line = input().strip()
+      new_words = list(map(lambda word: re.sub('[^a-z\-]+', '', word.lower()), re.compile(r'[^A-Za-z\-]').split(new_line)))
+    except Exception:
+      break
 
-        new_words = list(filter(lambda x: x is not '', new_words))
+    new_words = list(filter(lambda x: x is not '', new_words))
 
-        if imcompleted_word is not None and len(new_words) > 0:
-            new_words[0] = imcompleted_word[:-1] + new_words[0]
+    if imcompleted_word is not None and len(new_words) > 0:
+      new_words[0] = imcompleted_word[:-1] + new_words[0]
 
-        if len(new_words) and new_words[-1].endswith('-'):
-            imcompleted_word = new_words[-1]
-            new_words = new_words[:-1]
-        else:
-            imcompleted_word = None
+    if len(new_words) and new_words[-1].endswith('-'):
+      imcompleted_word = new_words[-1]
+      new_words = new_words[:-1]
+    else:
+      imcompleted_word = None
 
-        if root is None:
-            if len(new_words) > 0 and not new_words[0].endswith('-'):
-                root = Node(new_words[0])
+    if root is None:
+      if len(new_words) > 0 and not new_words[0].endswith('-'):
+        root = Node(new_words[0])
 
-        for word in new_words:
-            add_node(root, word)
+    for word in new_words:
+      add_node(root, word)
 
-    print_tree(root)
+  print_tree(root)
 
 
 solution()

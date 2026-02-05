@@ -55,36 +55,36 @@ To minimize the number of changed digits while making the digit sum at least k:
 
 ```python
 def solve():
-    k = int(input())
-    n = input().strip()
+  k = int(input())
+  n = input().strip()
 
-    # Get all digits
-    digits = [int(c) for c in n]
-    current_sum = sum(digits)
+  # Get all digits
+  digits = [int(c) for c in n]
+  current_sum = sum(digits)
 
-    # If already >= k, no changes needed
-    if current_sum >= k:
-        print(0)
-        return
+  # If already >= k, no changes needed
+  if current_sum >= k:
+    print(0)
+    return
 
-    # Sort digits to change smallest ones first (maximize gain)
-    digits.sort()
+  # Sort digits to change smallest ones first (maximize gain)
+  digits.sort()
 
-    changes = 0
-    i = 0
+  changes = 0
+  i = 0
 
-    while current_sum < k:
-        # Change digit to 9
-        gain = 9 - digits[i]
-        if gain > 0:
-            changes += 1
-            current_sum += gain
-        i += 1
+  while current_sum < k:
+    # Change digit to 9
+    gain = 9 - digits[i]
+    if gain > 0:
+      changes += 1
+      current_sum += gain
+    i += 1
 
-    print(changes)
+  print(changes)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

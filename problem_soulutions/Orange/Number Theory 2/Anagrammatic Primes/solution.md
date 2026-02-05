@@ -41,121 +41,121 @@ Precompute all anagrammatic primes up to 10^7.
 
 ```python
 def solve():
-    # Precompute all anagrammatic primes up to 10^7
-    MAX = 10**7
+  # Precompute all anagrammatic primes up to 10^7
+  MAX = 10**7
 
-    def is_prime(n):
-        if n < 2:
-            return False
-        if n == 2:
-            return True
-        if n % 2 == 0:
-            return False
-        for i in range(3, int(n**0.5) + 1, 2):
-            if n % i == 0:
-                return False
-        return True
+  def is_prime(n):
+    if n < 2:
+      return False
+    if n == 2:
+      return True
+    if n % 2 == 0:
+      return False
+    for i in range(3, int(n**0.5) + 1, 2):
+      if n % i == 0:
+        return False
+    return True
 
-    def get_permutations(n):
-        from itertools import permutations
-        digits = str(n)
-        perms = set()
-        for p in permutations(digits):
-            if p[0] != '0':  # No leading zeros
-                perms.add(int(''.join(p)))
-        return perms
+  def get_permutations(n):
+    from itertools import permutations
+    digits = str(n)
+    perms = set()
+    for p in permutations(digits):
+      if p[0] != '0':  # No leading zeros
+        perms.add(int(''.join(p)))
+    return perms
 
-    def is_anagrammatic_prime(n):
-        perms = get_permutations(n)
-        return all(is_prime(p) for p in perms)
+  def is_anagrammatic_prime(n):
+    perms = get_permutations(n)
+    return all(is_prime(p) for p in perms)
 
-    # Find all anagrammatic primes
-    anagrammatic = []
+  # Find all anagrammatic primes
+  anagrammatic = []
 
-    # Single digit primes are anagrammatic
-    for p in [2, 3, 5, 7]:
-        anagrammatic.append(p)
+  # Single digit primes are anagrammatic
+  for p in [2, 3, 5, 7]:
+    anagrammatic.append(p)
 
-    # For multi-digit, check candidates
-    # Multi-digit anagrammatic primes: 11, R2 (11 is prime)
-    # After checking: 2, 3, 5, 7, 11, R19, R23, ... repunits
+  # For multi-digit, check candidates
+  # Multi-digit anagrammatic primes: 11, R2 (11 is prime)
+  # After checking: 2, 3, 5, 7, 11, R19, R23, ... repunits
 
-    # Actually, let's just check small numbers
-    for n in range(10, 1000):
-        if is_anagrammatic_prime(n):
-            anagrammatic.append(n)
+  # Actually, let's just check small numbers
+  for n in range(10, 1000):
+    if is_anagrammatic_prime(n):
+      anagrammatic.append(n)
 
-    # For larger numbers, only repdigit 1s (repunits) could work
-    # But 111 = 3 * 37, 1111 = 11 * 101, etc.
-    # Check repunits
-    for length in range(3, 8):
-        repunit = int('1' * length)
-        if is_prime(repunit):
-            anagrammatic.append(repunit)
+  # For larger numbers, only repdigit 1s (repunits) could work
+  # But 111 = 3 * 37, 1111 = 11 * 101, etc.
+  # Check repunits
+  for length in range(3, 8):
+    repunit = int('1' * length)
+    if is_prime(repunit):
+      anagrammatic.append(repunit)
 
-    anagrammatic.sort()
+  anagrammatic.sort()
 
-    # For each query
-    import sys
-    for line in sys.stdin:
-        n = int(line.strip())
-        if n == 0:
-            break
+  # For each query
+  import sys
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
 
-        # Find next power of 10 > n
-        power = 1
-        while power <= n:
-            power *= 10
+    # Find next power of 10 > n
+    power = 1
+    while power <= n:
+      power *= 10
 
-        # Find smallest anagrammatic prime in (n, power)
-        result = 0
-        for p in anagrammatic:
-            if p > n and p < power:
-                result = p
-                break
+    # Find smallest anagrammatic prime in (n, power)
+    result = 0
+    for p in anagrammatic:
+      if p > n and p < power:
+        result = p
+        break
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Precomputed Solution
 
 ```python
 def solve():
-    # Known anagrammatic primes up to 10^7
-    # Single digits: 2, 3, 5, 7
-    # Two digits: 11
-    # Beyond that: only R2 = 11 works in reasonable range
-    # R19 = 1111111111111111111 (19 ones) is prime but > 10^7
+  # Known anagrammatic primes up to 10^7
+  # Single digits: 2, 3, 5, 7
+  # Two digits: 11
+  # Beyond that: only R2 = 11 works in reasonable range
+  # R19 = 1111111111111111111 (19 ones) is prime but > 10^7
 
-    # For this problem, anagrammatic primes are: 2, 3, 5, 7, 11
-    # After 11, next would be a repunit prime but those are very large
+  # For this problem, anagrammatic primes are: 2, 3, 5, 7, 11
+  # After 11, next would be a repunit prime but those are very large
 
-    anagrammatic = [2, 3, 5, 7, 11]
+  anagrammatic = [2, 3, 5, 7, 11]
 
-    import sys
-    for line in sys.stdin:
-        n = int(line.strip())
-        if n == 0:
-            break
+  import sys
+  for line in sys.stdin:
+    n = int(line.strip())
+    if n == 0:
+      break
 
-        # Next power of 10
-        limit = 10
-        while limit <= n:
-            limit *= 10
+    # Next power of 10
+    limit = 10
+    while limit <= n:
+      limit *= 10
 
-        result = 0
-        for p in anagrammatic:
-            if n < p < limit:
-                result = p
-                break
+    result = 0
+    for p in anagrammatic:
+      if n < p < limit:
+        result = p
+        break
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

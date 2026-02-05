@@ -43,133 +43,133 @@ dp[i][j] = minimum weight to get at least i oxygen and j nitrogen
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    c = int(input())
+  c = int(input())
 
-    for _ in range(c):
-        line = input().split()
-        t_req, a_req = int(line[0]), int(line[1])
+  for _ in range(c):
+    line = input().split()
+    t_req, a_req = int(line[0]), int(line[1])
 
-        n = int(input())
+    n = int(input())
 
-        cylinders = []
-        for _ in range(n):
-            parts = input().split()
-            ti, ai, wi = int(parts[0]), int(parts[1]), int(parts[2])
-            cylinders.append((ti, ai, wi))
+    cylinders = []
+    for _ in range(n):
+      parts = input().split()
+      ti, ai, wi = int(parts[0]), int(parts[1]), int(parts[2])
+      cylinders.append((ti, ai, wi))
 
-        INF = float('inf')
+    INF = float('inf')
 
-        # dp[o][n] = min weight to get at least o oxygen and n nitrogen
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+    # dp[o][n] = min weight to get at least o oxygen and n nitrogen
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        for ti, ai, wi in cylinders:
-            # Process in reverse (0/1 knapsack)
-            for o in range(t_req, -1, -1):
-                for ni in range(a_req, -1, -1):
-                    if dp[o][ni] < INF:
-                        # New oxygen and nitrogen (cap at requirements)
-                        new_o = min(o + ti, t_req)
-                        new_n = min(ni + ai, a_req)
-                        dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
+    for ti, ai, wi in cylinders:
+      # Process in reverse (0/1 knapsack)
+      for o in range(t_req, -1, -1):
+        for ni in range(a_req, -1, -1):
+          if dp[o][ni] < INF:
+            # New oxygen and nitrogen (cap at requirements)
+            new_o = min(o + ti, t_req)
+            new_n = min(ni + ai, a_req)
+            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
 
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
 
-    c = int(data[idx])
+  c = int(data[idx])
+  idx += 1
+
+  for _ in range(c):
+    t_req = int(data[idx])
+    a_req = int(data[idx + 1])
+    idx += 2
+
+    n = int(data[idx])
     idx += 1
 
-    for _ in range(c):
-        t_req = int(data[idx])
-        a_req = int(data[idx + 1])
-        idx += 2
+    cylinders = []
+    for _ in range(n):
+      ti = int(data[idx])
+      ai = int(data[idx + 1])
+      wi = int(data[idx + 2])
+      idx += 3
+      cylinders.append((ti, ai, wi))
 
-        n = int(data[idx])
-        idx += 1
+    INF = float('inf')
 
-        cylinders = []
-        for _ in range(n):
-            ti = int(data[idx])
-            ai = int(data[idx + 1])
-            wi = int(data[idx + 2])
-            idx += 3
-            cylinders.append((ti, ai, wi))
+    # dp[oxygen][nitrogen] = min weight
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        INF = float('inf')
+    for oxy, nit, weight in cylinders:
+      new_dp = [row[:] for row in dp]
 
-        # dp[oxygen][nitrogen] = min weight
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+      for o in range(t_req + 1):
+        for n in range(a_req + 1):
+          if dp[o][n] == INF:
+            continue
 
-        for oxy, nit, weight in cylinders:
-            new_dp = [row[:] for row in dp]
+          # Add this cylinder
+          no = min(o + oxy, t_req)
+          nn = min(n + nit, a_req)
+          new_dp[no][nn] = min(new_dp[no][nn], dp[o][n] + weight)
 
-            for o in range(t_req + 1):
-                for n in range(a_req + 1):
-                    if dp[o][n] == INF:
-                        continue
+      dp = new_dp
 
-                    # Add this cylinder
-                    no = min(o + oxy, t_req)
-                    nn = min(n + nit, a_req)
-                    new_dp[no][nn] = min(new_dp[no][nn], dp[o][n] + weight)
-
-            dp = new_dp
-
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### In-Place Solution
 
 ```python
 def solve():
-    import sys
-    input = sys.stdin.readline
+  import sys
+  input = sys.stdin.readline
 
-    c = int(input())
+  c = int(input())
 
-    for _ in range(c):
-        t_req, a_req = map(int, input().split())
-        n = int(input())
+  for _ in range(c):
+    t_req, a_req = map(int, input().split())
+    n = int(input())
 
-        INF = 10**9
+    INF = 10**9
 
-        # dp[o][n] = min weight for o oxygen, n nitrogen
-        dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
-        dp[0][0] = 0
+    # dp[o][n] = min weight for o oxygen, n nitrogen
+    dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
+    dp[0][0] = 0
 
-        for _ in range(n):
-            ti, ai, wi = map(int, input().split())
+    for _ in range(n):
+      ti, ai, wi = map(int, input().split())
 
-            # Reverse iteration for 0/1 knapsack
-            for o in range(t_req, -1, -1):
-                for ni in range(a_req, -1, -1):
-                    if dp[o][ni] < INF:
-                        new_o = min(o + ti, t_req)
-                        new_n = min(ni + ai, a_req)
-                        dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
+      # Reverse iteration for 0/1 knapsack
+      for o in range(t_req, -1, -1):
+        for ni in range(a_req, -1, -1):
+          if dp[o][ni] < INF:
+            new_o = min(o + ti, t_req)
+            new_n = min(ni + ai, a_req)
+            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
 
-        print(dp[t_req][a_req])
+    print(dp[t_req][a_req])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

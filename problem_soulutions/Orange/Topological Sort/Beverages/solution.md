@@ -35,65 +35,65 @@ import heapq
 from collections import defaultdict
 
 def solve():
-    case_num = 0
+  case_num = 0
 
-    try:
-        while True:
-            n = int(input())
-            case_num += 1
+  try:
+    while True:
+      n = int(input())
+      case_num += 1
 
-            # Read beverage names and create mapping
-            beverages = []
-            name_to_id = {}
+      # Read beverage names and create mapping
+      beverages = []
+      name_to_id = {}
 
-            for i in range(n):
-                name = input().strip()
-                beverages.append(name)
-                name_to_id[name] = i
+      for i in range(n):
+        name = input().strip()
+        beverages.append(name)
+        name_to_id[name] = i
 
-            # Build graph
-            graph = defaultdict(list)
-            in_degree = [0] * n
+      # Build graph
+      graph = defaultdict(list)
+      in_degree = [0] * n
 
-            m = int(input())
-            for _ in range(m):
-                line = input().split()
-                b1, b2 = line[0], line[1]
-                u, v = name_to_id[b1], name_to_id[b2]
-                graph[u].append(v)
-                in_degree[v] += 1
+      m = int(input())
+      for _ in range(m):
+        line = input().split()
+        b1, b2 = line[0], line[1]
+        u, v = name_to_id[b1], name_to_id[b2]
+        graph[u].append(v)
+        in_degree[v] += 1
 
-            # Read blank line
-            try:
-                input()
-            except:
-                pass
-
-            # Topological sort using min-heap (to get lexicographically smallest by input order)
-            heap = []
-            for i in range(n):
-                if in_degree[i] == 0:
-                    heapq.heappush(heap, i)
-
-            result = []
-            while heap:
-                u = heapq.heappop(heap)
-                result.append(beverages[u])
-
-                for v in graph[u]:
-                    in_degree[v] -= 1
-                    if in_degree[v] == 0:
-                        heapq.heappush(heap, v)
-
-            # Output
-            print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
-            print()
-
-    except EOFError:
+      # Read blank line
+      try:
+        input()
+      except:
         pass
 
+      # Topological sort using min-heap (to get lexicographically smallest by input order)
+      heap = []
+      for i in range(n):
+        if in_degree[i] == 0:
+          heapq.heappush(heap, i)
+
+      result = []
+      while heap:
+        u = heapq.heappop(heap)
+        result.append(beverages[u])
+
+        for v in graph[u]:
+          in_degree[v] -= 1
+          if in_degree[v] == 0:
+            heapq.heappush(heap, v)
+
+      # Output
+      print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
+      print()
+
+  except EOFError:
+    pass
+
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with Kahn's Algorithm
@@ -102,74 +102,74 @@ if __name__ == "__main__":
 import heapq
 
 def topological_sort(n, graph, in_degree):
-    """Topological sort with tie-breaking by index (input order)"""
-    result = []
-    heap = [i for i in range(n) if in_degree[i] == 0]
-    heapq.heapify(heap)
+  """Topological sort with tie-breaking by index (input order)"""
+  result = []
+  heap = [i for i in range(n) if in_degree[i] == 0]
+  heapq.heapify(heap)
 
-    while heap:
-        u = heapq.heappop(heap)
-        result.append(u)
+  while heap:
+    u = heapq.heappop(heap)
+    result.append(u)
 
-        for v in graph[u]:
-            in_degree[v] -= 1
-            if in_degree[v] == 0:
-                heapq.heappush(heap, v)
+    for v in graph[u]:
+      in_degree[v] -= 1
+      if in_degree[v] == 0:
+        heapq.heappush(heap, v)
 
-    return result
+  return result
 
 def solve():
-    import sys
-    input_data = sys.stdin.read().split('\n')
-    idx = 0
-    case_num = 0
+  import sys
+  input_data = sys.stdin.read().split('\n')
+  idx = 0
+  case_num = 0
 
-    while idx < len(input_data):
-        try:
-            n = int(input_data[idx])
-        except:
-            break
+  while idx < len(input_data):
+    try:
+      n = int(input_data[idx])
+    except:
+      break
 
-        idx += 1
-        case_num += 1
+    idx += 1
+    case_num += 1
 
-        # Read beverages
-        beverages = []
-        name_to_id = {}
-        for i in range(n):
-            name = input_data[idx].strip()
-            beverages.append(name)
-            name_to_id[name] = i
-            idx += 1
+    # Read beverages
+    beverages = []
+    name_to_id = {}
+    for i in range(n):
+      name = input_data[idx].strip()
+      beverages.append(name)
+      name_to_id[name] = i
+      idx += 1
 
-        # Read constraints
-        m = int(input_data[idx])
-        idx += 1
+    # Read constraints
+    m = int(input_data[idx])
+    idx += 1
 
-        graph = [[] for _ in range(n)]
-        in_degree = [0] * n
+    graph = [[] for _ in range(n)]
+    in_degree = [0] * n
 
-        for _ in range(m):
-            parts = input_data[idx].split()
-            b1, b2 = parts[0], parts[1]
-            u, v = name_to_id[b1], name_to_id[b2]
-            graph[u].append(v)
-            in_degree[v] += 1
-            idx += 1
+    for _ in range(m):
+      parts = input_data[idx].split()
+      b1, b2 = parts[0], parts[1]
+      u, v = name_to_id[b1], name_to_id[b2]
+      graph[u].append(v)
+      in_degree[v] += 1
+      idx += 1
 
-        # Skip blank line
-        if idx < len(input_data) and input_data[idx].strip() == '':
-            idx += 1
+    # Skip blank line
+    if idx < len(input_data) and input_data[idx].strip() == '':
+      idx += 1
 
-        # Topological sort
-        order = topological_sort(n, graph, in_degree)
-        result = [beverages[i] for i in order]
+    # Topological sort
+    order = topological_sort(n, graph, in_degree)
+    result = [beverages[i] for i in order]
 
-        print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
-        print()
+    print(f"Case #{case_num}: Dilbert should drink beverages in this order: {' '.join(result)}.")
+    print()
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

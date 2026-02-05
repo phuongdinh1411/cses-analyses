@@ -52,21 +52,21 @@ The key insight is that to minimize the total number of moves, we should sort th
 
 ```python
 def solve():
-    n = int(input())
-    a = list(map(int, input().split()))
+  n = int(input())
+  a = list(map(int, input().split()))
 
-    # Sort the array
-    a.sort()
+  # Sort the array
+  a.sort()
 
-    # Calculate minimum moves by matching sorted array to [1, 2, ..., n]
-    total_moves = 0
-    for i in range(n):
-        total_moves += abs(a[i] - (i + 1))
+  # Calculate minimum moves by matching sorted array to [1, 2, ..., n]
+  total_moves = 0
+  for i in range(n):
+    total_moves += abs(a[i] - (i + 1))
 
-    print(total_moves)
+  print(total_moves)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -102,22 +102,22 @@ Enumerate all possible subgrids and check each cell individually.
 
 ```python
 def count_filled_subgrids_brute(grid):
-    """
-    Brute force: check all subgrids cell by cell.
-    Time: O(n^2 * m^2 * n * m) = O(n^3 * m^3)
-    Space: O(1)
-    """
-    n, m = len(grid), len(grid[0])
-    count = 0
+  """
+  Brute force: check all subgrids cell by cell.
+  Time: O(n^2 * m^2 * n * m) = O(n^3 * m^3)
+  Space: O(1)
+  """
+  n, m = len(grid), len(grid[0])
+  count = 0
 
-    for i in range(n):
-        for j in range(m):
-            for h in range(1, n - i + 1):
-                for w in range(1, m - j + 1):
-                    if all(grid[i+di][j+dj] == 1
-                           for di in range(h) for dj in range(w)):
-                        count += 1
-    return count
+  for i in range(n):
+    for j in range(m):
+      for h in range(1, n - i + 1):
+        for w in range(1, m - j + 1):
+          if all(grid[i+di][j+dj] == 1
+             for di in range(h) for dj in range(w)):
+            count += 1
+  return count
 ```
 
 ### Complexity
@@ -211,54 +211,54 @@ Range Query using Inclusion-Exclusion:
 
 ```python
 def count_filled_subgrids(grid):
-    """
-    Optimal solution using 2D prefix sum.
-    Time: O(n^2 * m^2) for enumeration, O(1) per query
-    Space: O(n * m) for prefix array
-    """
-    n, m = len(grid), len(grid[0])
+  """
+  Optimal solution using 2D prefix sum.
+  Time: O(n^2 * m^2) for enumeration, O(1) per query
+  Space: O(n * m) for prefix array
+  """
+  n, m = len(grid), len(grid[0])
 
-    # Build prefix sum (1-indexed for easier boundary handling)
-    prefix = [[0] * (m + 1) for _ in range(n + 1)]
-    for i in range(n):
-        for j in range(m):
-            prefix[i+1][j+1] = (grid[i][j] + prefix[i][j+1]
-                               + prefix[i+1][j] - prefix[i][j])
+  # Build prefix sum (1-indexed for easier boundary handling)
+  prefix = [[0] * (m + 1) for _ in range(n + 1)]
+  for i in range(n):
+    for j in range(m):
+      prefix[i+1][j+1] = (grid[i][j] + prefix[i][j+1]
+               + prefix[i+1][j] - prefix[i][j])
 
-    def range_sum(r1, c1, r2, c2):
-        """Get sum of rectangle from (r1,c1) to (r2,c2) inclusive."""
-        return (prefix[r2+1][c2+1] - prefix[r1][c2+1]
-                - prefix[r2+1][c1] + prefix[r1][c1])
+  def range_sum(r1, c1, r2, c2):
+    """Get sum of rectangle from (r1,c1) to (r2,c2) inclusive."""
+    return (prefix[r2+1][c2+1] - prefix[r1][c2+1]
+        - prefix[r2+1][c1] + prefix[r1][c1])
 
-    count = 0
-    for i in range(n):
-        for j in range(m):
-            for h in range(1, n - i + 1):
-                for w in range(1, m - j + 1):
-                    total = range_sum(i, j, i + h - 1, j + w - 1)
-                    if total == h * w:  # All cells are 1
-                        count += 1
-    return count
+  count = 0
+  for i in range(n):
+    for j in range(m):
+      for h in range(1, n - i + 1):
+        for w in range(1, m - j + 1):
+          total = range_sum(i, j, i + h - 1, j + w - 1)
+          if total == h * w:  # All cells are 1
+            count += 1
+  return count
 
 
 # Main function for CSES submission
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
-    n, m = int(input_data[idx]), int(input_data[idx+1])
-    idx += 2
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
+  n, m = int(input_data[idx]), int(input_data[idx+1])
+  idx += 2
 
-    grid = []
-    for i in range(n):
-        row = [int(input_data[idx + j]) for j in range(m)]
-        grid.append(row)
-        idx += m
+  grid = []
+  for i in range(n):
+    row = [int(input_data[idx + j]) for j in range(m)]
+    grid.append(row)
+    idx += m
 
-    print(count_filled_subgrids(grid))
+  print(count_filled_subgrids(grid))
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity

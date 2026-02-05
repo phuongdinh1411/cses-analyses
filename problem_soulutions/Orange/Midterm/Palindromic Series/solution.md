@@ -42,75 +42,75 @@ For each test case, print "YES" if the string is palindrome, "NO" otherwise.
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = input().strip()
-        digits = [int(d) for d in n]
-        length = sum(digits)
+  for _ in range(t):
+    n = input().strip()
+    digits = [int(d) for d in n]
+    length = sum(digits)
 
-        # Build string of given length by repeating digits
-        result = []
-        idx = 0
-        for i in range(length):
-            result.append(digits[idx])
-            idx = (idx + 1) % len(digits)
+    # Build string of given length by repeating digits
+    result = []
+    idx = 0
+    for i in range(length):
+      result.append(digits[idx])
+      idx = (idx + 1) % len(digits)
 
-        # Check palindrome
-        is_palindrome = result == result[::-1]
-        print("YES" if is_palindrome else "NO")
+    # Check palindrome
+    is_palindrome = result == result[::-1]
+    print("YES" if is_palindrome else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized Solution (Without Building Full String)
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = input().strip()
-        digits = [int(d) for d in n]
-        length = sum(digits)
-        num_digits = len(digits)
+  for _ in range(t):
+    n = input().strip()
+    digits = [int(d) for d in n]
+    length = sum(digits)
+    num_digits = len(digits)
 
-        # Check palindrome without building full string
-        is_palindrome = True
-        for i in range(length // 2):
-            left_digit = digits[i % num_digits]
-            right_digit = digits[(length - 1 - i) % num_digits]
-            if left_digit != right_digit:
-                is_palindrome = False
-                break
+    # Check palindrome without building full string
+    is_palindrome = True
+    for i in range(length // 2):
+      left_digit = digits[i % num_digits]
+      right_digit = digits[(length - 1 - i) % num_digits]
+      if left_digit != right_digit:
+        is_palindrome = False
+        break
 
-        print("YES" if is_palindrome else "NO")
+    print("YES" if is_palindrome else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def is_palindrome_series(n_str):
-    digits = list(n_str)
-    length = sum(int(d) for d in digits)
-    num_digits = len(digits)
+  digits = list(n_str)
+  length = sum(int(d) for d in digits)
+  num_digits = len(digits)
 
-    # Build and check
-    s = ''.join(digits[i % num_digits] for i in range(length))
-    return s == s[::-1]
+  # Build and check
+  s = ''.join(digits[i % num_digits] for i in range(length))
+  return s == s[::-1]
 
 def solve():
-    t = int(input())
-    for _ in range(t):
-        n = input().strip()
-        print("YES" if is_palindrome_series(n) else "NO")
+  t = int(input())
+  for _ in range(t):
+    n = input().strip()
+    print("YES" if is_palindrome_series(n) else "NO")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

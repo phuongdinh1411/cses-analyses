@@ -103,22 +103,22 @@ Simulate the actual process: repeatedly scan left to right, collecting the next 
 
 ```python
 def solve_simulation(n, arr):
-    """
-    Brute force: simulate the collection process.
+  """
+  Brute force: simulate the collection process.
 
-    Time: O(n^2) worst case
-    Space: O(1)
-    """
-    rounds = 0
-    next_to_collect = 1
+  Time: O(n^2) worst case
+  Space: O(1)
+  """
+  rounds = 0
+  next_to_collect = 1
 
-    while next_to_collect <= n:
-        rounds += 1
-        for num in arr:
-            if num == next_to_collect:
-                next_to_collect += 1
+  while next_to_collect <= n:
+    rounds += 1
+    for num in arr:
+      if num == next_to_collect:
+        next_to_collect += 1
 
-    return rounds
+  return rounds
 ```
 
 ### Complexity
@@ -198,31 +198,31 @@ Total rounds: 1 + 2 inversions = 3
 
 ```python
 def solve_optimal(n, arr):
-    """
-    Optimal solution using position tracking.
+  """
+  Optimal solution using position tracking.
 
-    Time: O(n) - single pass to build positions, single pass to count
-    Space: O(n) - position array
-    """
-    # Build position array (1-indexed values)
-    pos = [0] * (n + 1)
-    for i, val in enumerate(arr):
-        pos[val] = i
+  Time: O(n) - single pass to build positions, single pass to count
+  Space: O(n) - position array
+  """
+  # Build position array (1-indexed values)
+  pos = [0] * (n + 1)
+  for i, val in enumerate(arr):
+    pos[val] = i
 
-    # Count rounds: start with 1, add 1 for each inversion
-    rounds = 1
-    for k in range(1, n):
-        if pos[k + 1] < pos[k]:
-            rounds += 1
+  # Count rounds: start with 1, add 1 for each inversion
+  rounds = 1
+  for k in range(1, n):
+    if pos[k + 1] < pos[k]:
+      rounds += 1
 
-    return rounds
+  return rounds
 
 
 # Main I/O
 if __name__ == "__main__":
-    n = int(input())
-    arr = list(map(int, input().split()))
-    print(solve_optimal(n, arr))
+  n = int(input())
+  arr = list(map(int, input().split()))
+  print(solve_optimal(n, arr))
 ```
 
 ### Complexity
@@ -242,12 +242,12 @@ if __name__ == "__main__":
 # WRONG - using 0-indexed for values
 pos = [0] * n
 for i, val in enumerate(arr):
-    pos[val] = i  # Error when val = n
+  pos[val] = i  # Error when val = n
 
 # CORRECT - size n+1 for 1-indexed values
 pos = [0] * (n + 1)
 for i, val in enumerate(arr):
-    pos[val] = i
+  pos[val] = i
 ```
 
 **Problem:** Array index out of bounds when value equals n.
@@ -259,14 +259,14 @@ for i, val in enumerate(arr):
 # WRONG
 rounds = 0
 for k in range(1, n):
-    if pos[k + 1] < pos[k]:
-        rounds += 1
+  if pos[k + 1] < pos[k]:
+    rounds += 1
 
 # CORRECT
 rounds = 1  # Always need at least one round
 for k in range(1, n):
-    if pos[k + 1] < pos[k]:
-        rounds += 1
+  if pos[k + 1] < pos[k]:
+    rounds += 1
 ```
 
 **Problem:** Even a sorted array needs 1 round to collect all numbers.
@@ -277,11 +277,11 @@ for k in range(1, n):
 ```python
 # WRONG - goes out of bounds
 for k in range(1, n + 1):
-    if pos[k + 1] < pos[k]:  # pos[n+1] doesn't exist!
+  if pos[k + 1] < pos[k]:  # pos[n+1] doesn't exist!
 
 # CORRECT
 for k in range(1, n):  # k goes from 1 to n-1
-    if pos[k + 1] < pos[k]:
+  if pos[k + 1] < pos[k]:
 ```
 
 ---

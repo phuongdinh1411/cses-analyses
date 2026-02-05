@@ -36,36 +36,36 @@ The key insight is based on number theory:
 
 ```python
 def solve():
-    n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
-    # Read happy boys
-    line = list(map(int, input().split()))
-    b = line[0]
-    happy_boys = set(line[1:b+1]) if b > 0 else set()
+  # Read happy boys
+  line = list(map(int, input().split()))
+  b = line[0]
+  happy_boys = set(line[1:b+1]) if b > 0 else set()
 
-    # Read happy girls
-    line = list(map(int, input().split()))
-    g = line[0]
-    happy_girls = set(line[1:g+1]) if g > 0 else set()
+  # Read happy girls
+  line = list(map(int, input().split()))
+  g = line[0]
+  happy_girls = set(line[1:g+1]) if g > 0 else set()
 
-    # Simulate for n * m days (covers full cycle)
-    for day in range(n * m):
-        boy = day % n
-        girl = day % m
+  # Simulate for n * m days (covers full cycle)
+  for day in range(n * m):
+    boy = day % n
+    girl = day % m
 
-        # If either is happy, both become happy
-        if boy in happy_boys or girl in happy_girls:
-            happy_boys.add(boy)
-            happy_girls.add(girl)
+    # If either is happy, both become happy
+    if boy in happy_boys or girl in happy_girls:
+      happy_boys.add(boy)
+      happy_girls.add(girl)
 
-    # Check if everyone is happy
-    if len(happy_boys) == n and len(happy_girls) == m:
-        print("Yes")
-    else:
-        print("No")
+  # Check if everyone is happy
+  if len(happy_boys) == n and len(happy_girls) == m:
+    print("Yes")
+  else:
+    print("No")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution using GCD
@@ -74,38 +74,38 @@ if __name__ == "__main__":
 import math
 
 def solve():
-    n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
-    line = list(map(int, input().split()))
-    b = line[0]
-    happy_boys = [False] * n
-    for i in range(1, b + 1):
-        happy_boys[line[i]] = True
+  line = list(map(int, input().split()))
+  b = line[0]
+  happy_boys = [False] * n
+  for i in range(1, b + 1):
+    happy_boys[line[i]] = True
 
-    line = list(map(int, input().split()))
-    g = line[0]
-    happy_girls = [False] * m
-    for i in range(1, g + 1):
-        happy_girls[line[i]] = True
+  line = list(map(int, input().split()))
+  g = line[0]
+  happy_girls = [False] * m
+  for i in range(1, g + 1):
+    happy_girls[line[i]] = True
 
-    # Simulate for lcm(n, m) days - use n*m as upper bound
-    lcm = (n * m) // math.gcd(n, m)
+  # Simulate for lcm(n, m) days - use n*m as upper bound
+  lcm = (n * m) // math.gcd(n, m)
 
-    for day in range(lcm):
-        boy = day % n
-        girl = day % m
+  for day in range(lcm):
+    boy = day % n
+    girl = day % m
 
-        if happy_boys[boy] or happy_girls[girl]:
-            happy_boys[boy] = True
-            happy_girls[girl] = True
+    if happy_boys[boy] or happy_girls[girl]:
+      happy_boys[boy] = True
+      happy_girls[girl] = True
 
-    if all(happy_boys) and all(happy_girls):
-        print("Yes")
-    else:
-        print("No")
+  if all(happy_boys) and all(happy_girls):
+    print("Yes")
+  else:
+    print("No")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -108,33 +108,33 @@ For each customer (in order of arrival), scan all existing rooms to find one tha
 
 ```python
 def solve_brute_force(n, customers):
-    """
-    Brute force solution - check all rooms for each customer.
+  """
+  Brute force solution - check all rooms for each customer.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    # customers[i] = (arrival, departure, original_index)
-    indexed = [(customers[i][0], customers[i][1], i) for i in range(n)]
-    indexed.sort()  # Sort by arrival time
+  Time: O(n^2)
+  Space: O(n)
+  """
+  # customers[i] = (arrival, departure, original_index)
+  indexed = [(customers[i][0], customers[i][1], i) for i in range(n)]
+  indexed.sort()  # Sort by arrival time
 
-    room_end_times = []  # room_end_times[r] = departure day of current guest in room r
-    assignments = [0] * n
+  room_end_times = []  # room_end_times[r] = departure day of current guest in room r
+  assignments = [0] * n
 
-    for arrival, departure, orig_idx in indexed:
-        assigned = False
-        for room_id in range(len(room_end_times)):
-            if room_end_times[room_id] < arrival:  # Room is free
-                room_end_times[room_id] = departure
-                assignments[orig_idx] = room_id + 1
-                assigned = True
-                break
+  for arrival, departure, orig_idx in indexed:
+    assigned = False
+    for room_id in range(len(room_end_times)):
+      if room_end_times[room_id] < arrival:  # Room is free
+        room_end_times[room_id] = departure
+        assignments[orig_idx] = room_id + 1
+        assigned = True
+        break
 
-        if not assigned:
-            room_end_times.append(departure)
-            assignments[orig_idx] = len(room_end_times)
+    if not assigned:
+      room_end_times.append(departure)
+      assignments[orig_idx] = len(room_end_times)
 
-    return len(room_end_times), assignments
+  return len(room_end_times), assignments
 ```
 
 ### Complexity
@@ -231,54 +231,54 @@ import heapq
 from sys import stdin, stdout
 
 def solve():
-    """
-    Optimal solution using priority queue.
+  """
+  Optimal solution using priority queue.
 
-    Time: O(n log n) - sorting + heap operations
-    Space: O(n) - heap and assignments array
-    """
-    input_data = stdin.read().split()
-    idx = 0
-    n = int(input_data[idx]); idx += 1
+  Time: O(n log n) - sorting + heap operations
+  Space: O(n) - heap and assignments array
+  """
+  input_data = stdin.read().split()
+  idx = 0
+  n = int(input_data[idx]); idx += 1
 
-    customers = []
-    for i in range(n):
-        a = int(input_data[idx]); idx += 1
-        d = int(input_data[idx]); idx += 1
-        customers.append((a, d, i))
+  customers = []
+  for i in range(n):
+    a = int(input_data[idx]); idx += 1
+    d = int(input_data[idx]); idx += 1
+    customers.append((a, d, i))
 
-    # Sort by arrival time
-    customers.sort()
+  # Sort by arrival time
+  customers.sort()
 
-    # Min-heap: (departure_time, room_id)
-    occupied_rooms = []
-    # Min-heap of available room IDs for reuse
-    free_rooms = []
-    room_count = 0
-    assignments = [0] * n
+  # Min-heap: (departure_time, room_id)
+  occupied_rooms = []
+  # Min-heap of available room IDs for reuse
+  free_rooms = []
+  room_count = 0
+  assignments = [0] * n
 
-    for arrival, departure, orig_idx in customers:
-        # Free up rooms that have ended before this arrival
-        while occupied_rooms and occupied_rooms[0][0] < arrival:
-            _, freed_room = heapq.heappop(occupied_rooms)
-            heapq.heappush(free_rooms, freed_room)
+  for arrival, departure, orig_idx in customers:
+    # Free up rooms that have ended before this arrival
+    while occupied_rooms and occupied_rooms[0][0] < arrival:
+      _, freed_room = heapq.heappop(occupied_rooms)
+      heapq.heappush(free_rooms, freed_room)
 
-        if free_rooms:
-            # Reuse the smallest numbered free room
-            room_id = heapq.heappop(free_rooms)
-        else:
-            # Create new room
-            room_count += 1
-            room_id = room_count
+    if free_rooms:
+      # Reuse the smallest numbered free room
+      room_id = heapq.heappop(free_rooms)
+    else:
+      # Create new room
+      room_count += 1
+      room_id = room_count
 
-        assignments[orig_idx] = room_id
-        heapq.heappush(occupied_rooms, (departure, room_id))
+    assignments[orig_idx] = room_id
+    heapq.heappush(occupied_rooms, (departure, room_id))
 
-    stdout.write(f"{room_count}\n")
-    stdout.write(" ".join(map(str, assignments)) + "\n")
+  stdout.write(f"{room_count}\n")
+  stdout.write(" ".join(map(str, assignments)) + "\n")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity
@@ -297,8 +297,8 @@ if __name__ == "__main__":
 ```python
 # WRONG: Using <= instead of <
 while occupied_rooms and occupied_rooms[0][0] <= arrival:
-    # This frees a room ending on day 2 for someone arriving day 2
-    # But they actually overlap on day 2!
+  # This frees a room ending on day 2 for someone arriving day 2
+  # But they actually overlap on day 2!
 ```
 
 **Problem:** If Customer A departs on day 2 and Customer B arrives on day 2, they overlap (both use the room on day 2).
@@ -338,10 +338,10 @@ room_id = len(occupied_rooms) + 1  # Creates too many rooms
 **Fix:** Track freed room IDs in a separate structure and reuse them:
 ```python
 if free_rooms:
-    room_id = heapq.heappop(free_rooms)
+  room_id = heapq.heappop(free_rooms)
 else:
-    room_count += 1
-    room_id = room_count
+  room_count += 1
+  room_id = room_count
 ```
 
 ---

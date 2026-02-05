@@ -220,65 +220,65 @@ from collections import defaultdict
 sys.setrecursionlimit(200001)
 
 def find_sccs(n: int, edges: list) -> tuple:
-    """
-    Find strongly connected components using Kosaraju's algorithm.
+  """
+  Find strongly connected components using Kosaraju's algorithm.
 
-    Args:
-        n: Number of nodes (1-indexed)
-        edges: List of (u, v) directed edges
+  Args:
+    n: Number of nodes (1-indexed)
+    edges: List of (u, v) directed edges
 
-    Returns:
-        (num_sccs, component_id) where component_id[i] is the SCC of node i
-    """
-    # Build adjacency lists
-    graph = defaultdict(list)      # Original graph
-    reversed_graph = defaultdict(list)  # Reversed graph
+  Returns:
+    (num_sccs, component_id) where component_id[i] is the SCC of node i
+  """
+  # Build adjacency lists
+  graph = defaultdict(list)      # Original graph
+  reversed_graph = defaultdict(list)  # Reversed graph
 
-    for u, v in edges:
-        graph[u].append(v)
-        reversed_graph[v].append(u)
+  for u, v in edges:
+    graph[u].append(v)
+    reversed_graph[v].append(u)
 
-    # Pass 1: DFS on original graph, record finish order
-    visited = [False] * (n + 1)
-    finish_stack = []
+  # Pass 1: DFS on original graph, record finish order
+  visited = [False] * (n + 1)
+  finish_stack = []
 
-    def dfs_pass1(node):
-        visited[node] = True
-        for neighbor in graph[node]:
-            if not visited[neighbor]:
-                dfs_pass1(neighbor)
-        finish_stack.append(node)
+  def dfs_pass1(node):
+    visited[node] = True
+    for neighbor in graph[node]:
+      if not visited[neighbor]:
+        dfs_pass1(neighbor)
+    finish_stack.append(node)
 
-    for node in range(1, n + 1):
-        if not visited[node]:
-            dfs_pass1(node)
+  for node in range(1, n + 1):
+    if not visited[node]:
+      dfs_pass1(node)
 
-    # Pass 2: DFS on reversed graph in decreasing finish time order
-    visited = [False] * (n + 1)
-    component_id = [0] * (n + 1)
-    current_scc = 0
+  # Pass 2: DFS on reversed graph in decreasing finish time order
+  visited = [False] * (n + 1)
+  component_id = [0] * (n + 1)
+  current_scc = 0
 
-    def dfs_pass2(node, scc_id):
-        visited[node] = True
-        component_id[node] = scc_id
-        for neighbor in reversed_graph[node]:
-            if not visited[neighbor]:
-                dfs_pass2(neighbor, scc_id)
+  def dfs_pass2(node, scc_id):
+    visited[node] = True
+    component_id[node] = scc_id
+    for neighbor in reversed_graph[node]:
+      if not visited[neighbor]:
+        dfs_pass2(neighbor, scc_id)
 
-    while finish_stack:
-        node = finish_stack.pop()
-        if not visited[node]:
-            current_scc += 1
-            dfs_pass2(node, current_scc)
+  while finish_stack:
+    node = finish_stack.pop()
+    if not visited[node]:
+      current_scc += 1
+      dfs_pass2(node, current_scc)
 
-    return current_scc, component_id
+  return current_scc, component_id
 
 # Read input
 n, m = map(int, input().split())
 edges = []
 for _ in range(m):
-    u, v = map(int, input().split())
-    edges.append((u, v))
+  u, v = map(int, input().split())
+  edges.append((u, v))
 
 # Find SCCs
 num_sccs, component_id = find_sccs(n, edges)

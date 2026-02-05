@@ -174,28 +174,28 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    t = int(input())
-    results = []
+  t = int(input())
+  results = []
 
-    for _ in range(t):
-        x1, y1, x2, y2, x3, y3 = map(int, input().split())
+  for _ in range(t):
+    x1, y1, x2, y2, x3, y3 = map(int, input().split())
 
-        # Vector from P1 to P2
-        v1x, v1y = x2 - x1, y2 - y1
-        # Vector from P1 to P3
-        v2x, v2y = x3 - x1, y3 - y1
+    # Vector from P1 to P2
+    v1x, v1y = x2 - x1, y2 - y1
+    # Vector from P1 to P3
+    v2x, v2y = x3 - x1, y3 - y1
 
-        # Cross product: v1 x v2
-        cross = v1x * v2y - v1y * v2x
+    # Cross product: v1 x v2
+    cross = v1x * v2y - v1y * v2x
 
-        if cross > 0:
-            results.append("LEFT")
-        elif cross < 0:
-            results.append("RIGHT")
-        else:
-            results.append("TOUCH")
+    if cross > 0:
+      results.append("LEFT")
+    elif cross < 0:
+      results.append("RIGHT")
+    else:
+      results.append("TOUCH")
 
-    print('\n'.join(results))
+  print('\n'.join(results))
 
 solve()
 ```
@@ -234,11 +234,11 @@ v1x, v1y = x2 - x1, y2 - y1
 ```python
 # WRONG - CSES wants "TOUCH" not "ON_LINE"
 if cross == 0:
-    return "ON_LINE"  # Will get Wrong Answer!
+  return "ON_LINE"  # Will get Wrong Answer!
 
 # CORRECT
 if cross == 0:
-    return "TOUCH"
+  return "TOUCH"
 ```
 
 **Problem:** The expected output format is specific to the problem.
@@ -277,14 +277,14 @@ if cross == 0:
 
 ```python
 def cross_product(o, a, b):
-    """
-    Compute cross product of vectors OA and OB.
-    Returns:
-      > 0 if O->A->B is counterclockwise (B is LEFT of OA)
-      < 0 if O->A->B is clockwise (B is RIGHT of OA)
-      = 0 if O, A, B are collinear
-    """
-    return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+  """
+  Compute cross product of vectors OA and OB.
+  Returns:
+   > 0 if O->A->B is counterclockwise (B is LEFT of OA)
+   < 0 if O->A->B is clockwise (B is RIGHT of OA)
+   = 0 if O, A, B are collinear
+  """
+  return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
 ```
 
 ---

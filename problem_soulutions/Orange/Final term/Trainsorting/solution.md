@@ -43,67 +43,67 @@ This can be solved using LIS (Longest Increasing Subsequence) and LDS (Longest D
 
 ```python
 def longest_increasing_subsequence(arr):
-    """Returns array where lis[i] = length of LIS ending at index i"""
-    n = len(arr)
-    if n == 0:
-        return []
+  """Returns array where lis[i] = length of LIS ending at index i"""
+  n = len(arr)
+  if n == 0:
+    return []
 
-    lis = [1] * n
+  lis = [1] * n
 
-    for i in range(1, n):
-        for j in range(i):
-            if arr[j] < arr[i]:
-                lis[i] = max(lis[i], lis[j] + 1)
+  for i in range(1, n):
+    for j in range(i):
+      if arr[j] < arr[i]:
+        lis[i] = max(lis[i], lis[j] + 1)
 
-    return lis
+  return lis
 
 def longest_decreasing_subsequence(arr):
-    """Returns array where lds[i] = length of LDS ending at index i"""
-    n = len(arr)
-    if n == 0:
-        return []
+  """Returns array where lds[i] = length of LDS ending at index i"""
+  n = len(arr)
+  if n == 0:
+    return []
 
-    lds = [1] * n
+  lds = [1] * n
 
-    for i in range(1, n):
-        for j in range(i):
-            if arr[j] > arr[i]:
-                lds[i] = max(lds[i], lds[j] + 1)
+  for i in range(1, n):
+    for j in range(i):
+      if arr[j] > arr[i]:
+        lds[i] = max(lds[i], lds[j] + 1)
 
-    return lds
+  return lds
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
+  for _ in range(t):
+    n = int(input())
 
-        if n == 0:
-            print(0)
-            continue
+    if n == 0:
+      print(0)
+      continue
 
-        weights = []
-        for _ in range(n):
-            weights.append(int(input()))
+    weights = []
+    for _ in range(n):
+      weights.append(int(input()))
 
-        # LIS[i] = longest increasing subsequence ending at i
-        # This represents cars added to the back
-        lis = longest_increasing_subsequence(weights)
+    # LIS[i] = longest increasing subsequence ending at i
+    # This represents cars added to the back
+    lis = longest_increasing_subsequence(weights)
 
-        # LDS[i] = longest decreasing subsequence ending at i
-        # This represents cars added to the front
-        lds = longest_decreasing_subsequence(weights)
+    # LDS[i] = longest decreasing subsequence ending at i
+    # This represents cars added to the front
+    lds = longest_decreasing_subsequence(weights)
 
-        # For each position i as the "pivot" car, the maximum train length is
-        # LIS[i] + LDS[i] - 1 (subtract 1 because car i is counted twice)
-        max_length = 0
-        for i in range(n):
-            max_length = max(max_length, lis[i] + lds[i] - 1)
+    # For each position i as the "pivot" car, the maximum train length is
+    # LIS[i] + LDS[i] - 1 (subtract 1 because car i is counted twice)
+    max_length = 0
+    for i in range(n):
+      max_length = max(max_length, lis[i] + lds[i] - 1)
 
-        print(max_length)
+    print(max_length)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Optimized O(n log n) Solution
@@ -112,45 +112,45 @@ if __name__ == "__main__":
 import bisect
 
 def lis_lengths(arr):
-    """O(n log n) LIS computation"""
-    n = len(arr)
-    lis = [1] * n
-    tails = []
+  """O(n log n) LIS computation"""
+  n = len(arr)
+  lis = [1] * n
+  tails = []
 
-    for i, x in enumerate(arr):
-        pos = bisect.bisect_left(tails, x)
-        if pos == len(tails):
-            tails.append(x)
-        else:
-            tails[pos] = x
-        lis[i] = pos + 1
+  for i, x in enumerate(arr):
+    pos = bisect.bisect_left(tails, x)
+    if pos == len(tails):
+      tails.append(x)
+    else:
+      tails[pos] = x
+    lis[i] = pos + 1
 
-    return lis
+  return lis
 
 def lds_lengths(arr):
-    """O(n log n) LDS computation"""
-    return lis_lengths([-x for x in arr])
+  """O(n log n) LDS computation"""
+  return lis_lengths([-x for x in arr])
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
+  for _ in range(t):
+    n = int(input())
 
-        if n == 0:
-            print(0)
-            continue
+    if n == 0:
+      print(0)
+      continue
 
-        weights = [int(input()) for _ in range(n)]
+    weights = [int(input()) for _ in range(n)]
 
-        lis = lis_lengths(weights)
-        lds = lds_lengths(weights)
+    lis = lis_lengths(weights)
+    lds = lds_lengths(weights)
 
-        max_length = max(lis[i] + lds[i] - 1 for i in range(n))
-        print(max_length)
+    max_length = max(lis[i] + lds[i] - 1 for i in range(n))
+    print(max_length)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

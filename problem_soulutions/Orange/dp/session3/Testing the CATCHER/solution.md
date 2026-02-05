@@ -39,100 +39,100 @@ This equals the Longest Increasing Subsequence of the reversed sequence.
 import bisect
 
 def longest_non_increasing(arr):
-    """Find length of longest non-increasing subsequence"""
-    if not arr:
-        return 0
+  """Find length of longest non-increasing subsequence"""
+  if not arr:
+    return 0
 
-    # Reverse and find LIS with non-strict inequality
-    # Or: find longest non-decreasing in reversed array
-    # Equivalent to finding LIS on negated values
+  # Reverse and find LIS with non-strict inequality
+  # Or: find longest non-decreasing in reversed array
+  # Equivalent to finding LIS on negated values
 
-    # For non-increasing: each next element <= previous
-    # Use LIS on negated values with bisect_right for non-strict
+  # For non-increasing: each next element <= previous
+  # Use LIS on negated values with bisect_right for non-strict
 
-    tails = []
-    for x in arr:
-        neg_x = -x
-        # bisect_right for non-strict (allowing equal)
-        idx = bisect.bisect_right(tails, neg_x)
-        if idx == len(tails):
-            tails.append(neg_x)
-        else:
-            tails[idx] = neg_x
+  tails = []
+  for x in arr:
+    neg_x = -x
+    # bisect_right for non-strict (allowing equal)
+    idx = bisect.bisect_right(tails, neg_x)
+    if idx == len(tails):
+      tails.append(neg_x)
+    else:
+      tails[idx] = neg_x
 
-    return len(tails)
+  return len(tails)
 
 def solve():
-    import sys
-    data = sys.stdin.read().split()
-    idx = 0
-    case = 0
+  import sys
+  data = sys.stdin.read().split()
+  idx = 0
+  case = 0
 
+  while idx < len(data):
+    missiles = []
     while idx < len(data):
-        missiles = []
-        while idx < len(data):
-            h = int(data[idx])
-            idx += 1
-            if h == -1:
-                break
-            missiles.append(h)
+      h = int(data[idx])
+      idx += 1
+      if h == -1:
+        break
+      missiles.append(h)
 
-        if not missiles:
-            break
+    if not missiles:
+      break
 
-        case += 1
-        result = longest_non_increasing(missiles)
+    case += 1
+    result = longest_non_increasing(missiles)
 
-        if case > 1:
-            print()
-        print(f"Test #{case}:")
-        print(f"  maximum possible number of missiles intercepted: {result}")
+    if case > 1:
+      print()
+    print(f"Test #{case}:")
+    print(f"  maximum possible number of missiles intercepted: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution - Direct DP
 
 ```python
 def solve():
-    import sys
-    data = list(map(int, sys.stdin.read().split()))
-    idx = 0
-    case = 0
+  import sys
+  data = list(map(int, sys.stdin.read().split()))
+  idx = 0
+  case = 0
 
+  while idx < len(data):
+    missiles = []
     while idx < len(data):
-        missiles = []
-        while idx < len(data):
-            h = data[idx]
-            idx += 1
-            if h == -1:
-                break
-            missiles.append(h)
+      h = data[idx]
+      idx += 1
+      if h == -1:
+        break
+      missiles.append(h)
 
-        if not missiles:
-            break
+    if not missiles:
+      break
 
-        case += 1
-        n = len(missiles)
+    case += 1
+    n = len(missiles)
 
-        # dp[i] = length of longest non-increasing subsequence ending at i
-        dp = [1] * n
+    # dp[i] = length of longest non-increasing subsequence ending at i
+    dp = [1] * n
 
-        for i in range(1, n):
-            for j in range(i):
-                if missiles[j] >= missiles[i]:
-                    dp[i] = max(dp[i], dp[j] + 1)
+    for i in range(1, n):
+      for j in range(i):
+        if missiles[j] >= missiles[i]:
+          dp[i] = max(dp[i], dp[j] + 1)
 
-        result = max(dp)
+    result = max(dp)
 
-        if case > 1:
-            print()
-        print(f"Test #{case}:")
-        print(f"  maximum possible number of missiles intercepted: {result}")
+    if case > 1:
+      print()
+    print(f"Test #{case}:")
+    print(f"  maximum possible number of missiles intercepted: {result}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -110,27 +110,27 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    n, m, k = map(int, input().split())
-    grid = []
-    for _ in range(n):
-        grid.append(list(map(int, input().split())))
+  n, m, k = map(int, input().split())
+  grid = []
+  for _ in range(n):
+    grid.append(list(map(int, input().split())))
 
-    count = 0
-    for i in range(n - k + 1):
-        for j in range(m - k + 1):
-            if is_filled(grid, i, j, k):
-                count += 1
+  count = 0
+  for i in range(n - k + 1):
+    for j in range(m - k + 1):
+      if is_filled(grid, i, j, k):
+        count += 1
 
-    print(count)
+  print(count)
 
 def is_filled(grid, r, c, k):
-    """Check if k x k subgrid starting at (r,c) is uniform."""
-    val = grid[r][c]
-    for i in range(r, r + k):
-        for j in range(c, c + k):
-            if grid[i][j] != val:
-                return False
-    return True
+  """Check if k x k subgrid starting at (r,c) is uniform."""
+  val = grid[r][c]
+  for i in range(r, r + k):
+    for j in range(c, c + k):
+      if grid[i][j] != val:
+        return False
+  return True
 
 solve()
 ```
@@ -228,45 +228,45 @@ import sys
 input = sys.stdin.readline
 
 def solve():
-    n, m, k = map(int, input().split())
-    grid = []
-    for _ in range(n):
-        grid.append(list(map(int, input().split())))
+  n, m, k = map(int, input().split())
+  grid = []
+  for _ in range(n):
+    grid.append(list(map(int, input().split())))
 
-    # Build 2D prefix sum
-    prefix = [[0] * (m + 1) for _ in range(n + 1)]
-    for i in range(n):
-        for j in range(m):
-            prefix[i+1][j+1] = (grid[i][j] + prefix[i][j+1]
-                               + prefix[i+1][j] - prefix[i][j])
+  # Build 2D prefix sum
+  prefix = [[0] * (m + 1) for _ in range(n + 1)]
+  for i in range(n):
+    for j in range(m):
+      prefix[i+1][j+1] = (grid[i][j] + prefix[i][j+1]
+               + prefix[i+1][j] - prefix[i][j])
 
-    def subgrid_sum(r1, c1, r2, c2):
-        """Sum of subgrid from (r1,c1) to (r2,c2) inclusive."""
-        return (prefix[r2+1][c2+1] - prefix[r1][c2+1]
-                - prefix[r2+1][c1] + prefix[r1][c1])
+  def subgrid_sum(r1, c1, r2, c2):
+    """Sum of subgrid from (r1,c1) to (r2,c2) inclusive."""
+    return (prefix[r2+1][c2+1] - prefix[r1][c2+1]
+        - prefix[r2+1][c1] + prefix[r1][c1])
 
-    count = 0
-    target_cells = k * k
+  count = 0
+  target_cells = k * k
 
-    for i in range(n - k + 1):
-        for j in range(m - k + 1):
-            val = grid[i][j]
-            actual_sum = subgrid_sum(i, j, i + k - 1, j + k - 1)
-            if actual_sum == target_cells * val:
-                # Verify with early-termination check (handles collision cases)
-                if is_truly_filled(grid, i, j, k):
-                    count += 1
+  for i in range(n - k + 1):
+    for j in range(m - k + 1):
+      val = grid[i][j]
+      actual_sum = subgrid_sum(i, j, i + k - 1, j + k - 1)
+      if actual_sum == target_cells * val:
+        # Verify with early-termination check (handles collision cases)
+        if is_truly_filled(grid, i, j, k):
+          count += 1
 
-    print(count)
+  print(count)
 
 def is_truly_filled(grid, r, c, k):
-    """Double-check uniformity (handles hash collision-like cases)."""
-    val = grid[r][c]
-    for i in range(r, r + k):
-        for j in range(c, c + k):
-            if grid[i][j] != val:
-                return False
-    return True
+  """Double-check uniformity (handles hash collision-like cases)."""
+  val = grid[r][c]
+  for i in range(r, r + k):
+    for j in range(c, c + k):
+      if grid[i][j] != val:
+        return False
+  return True
 
 solve()
 ```
@@ -287,8 +287,8 @@ solve()
 ```python
 # WRONG - goes out of bounds
 for i in range(n - k):  # Should be n - k + 1
-    for j in range(m - k):
-        ...
+  for j in range(m - k):
+    ...
 ```
 
 **Problem:** Misses the last valid row/column of subgrids.
@@ -304,7 +304,7 @@ for i in range(n - k):  # Should be n - k + 1
 ```python
 # WRONG - assumes sum equality means uniformity
 if subgrid_sum == k * k * grid[r][c]:
-    count += 1  # False positive possible!
+  count += 1  # False positive possible!
 ```
 
 **Problem:** Different values can sum to same total (e.g., [1,3] vs [2,2]).

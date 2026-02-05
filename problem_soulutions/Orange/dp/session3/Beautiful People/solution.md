@@ -37,57 +37,57 @@ The descending sort for same strength ensures we don't pick two members with sam
 import bisect
 
 def solve():
-    n = int(input())
-    members = []
+  n = int(input())
+  members = []
 
-    for i in range(n):
-        s, b = map(int, input().split())
-        members.append((s, b, i + 1))  # (strength, beauty, original_index)
+  for i in range(n):
+    s, b = map(int, input().split())
+    members.append((s, b, i + 1))  # (strength, beauty, original_index)
 
-    # Sort by strength ascending, then beauty descending (for same strength)
-    members.sort(key=lambda x: (x[0], -x[1]))
+  # Sort by strength ascending, then beauty descending (for same strength)
+  members.sort(key=lambda x: (x[0], -x[1]))
 
-    # LIS on beauty with index tracking
-    # dp[i] = smallest ending beauty for LIS of length i+1
-    # parent tracking for reconstruction
+  # LIS on beauty with index tracking
+  # dp[i] = smallest ending beauty for LIS of length i+1
+  # parent tracking for reconstruction
 
-    dp = []  # (beauty, index in members)
-    dp_idx = []  # index in members array for each dp entry
-    parent = [-1] * n
-    pos = [-1] * n  # position in LIS for each member
+  dp = []  # (beauty, index in members)
+  dp_idx = []  # index in members array for each dp entry
+  parent = [-1] * n
+  pos = [-1] * n  # position in LIS for each member
 
-    for i, (s, b, orig_idx) in enumerate(members):
-        # Binary search for position
-        idx = bisect.bisect_left(dp, b)
+  for i, (s, b, orig_idx) in enumerate(members):
+    # Binary search for position
+    idx = bisect.bisect_left(dp, b)
 
-        if idx == len(dp):
-            dp.append(b)
-            dp_idx.append(i)
-        else:
-            dp[idx] = b
-            dp_idx[idx] = i
+    if idx == len(dp):
+      dp.append(b)
+      dp_idx.append(i)
+    else:
+      dp[idx] = b
+      dp_idx[idx] = i
 
-        pos[i] = idx
-        if idx > 0:
-            parent[i] = dp_idx[idx - 1]
+    pos[i] = idx
+    if idx > 0:
+      parent[i] = dp_idx[idx - 1]
 
-    # Reconstruct LIS
-    lis_length = len(dp)
-    result = []
+  # Reconstruct LIS
+  lis_length = len(dp)
+  result = []
 
-    # Find the last element in LIS
-    curr = dp_idx[lis_length - 1]
-    while curr != -1:
-        result.append(members[curr][2])  # original index
-        curr = parent[curr]
+  # Find the last element in LIS
+  curr = dp_idx[lis_length - 1]
+  while curr != -1:
+    result.append(members[curr][2])  # original index
+    curr = parent[curr]
 
-    result.reverse()
+  result.reverse()
 
-    print(lis_length)
-    print(' '.join(map(str, result)))
+  print(lis_length)
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution - Cleaner Reconstruction
@@ -96,56 +96,56 @@ if __name__ == "__main__":
 import bisect
 
 def solve():
-    n = int(input())
-    members = []
+  n = int(input())
+  members = []
 
-    for i in range(n):
-        s, b = map(int, input().split())
-        members.append((s, b, i + 1))
+  for i in range(n):
+    s, b = map(int, input().split())
+    members.append((s, b, i + 1))
 
-    # Sort: strength ascending, beauty descending for same strength
-    members.sort(key=lambda x: (x[0], -x[1]))
+  # Sort: strength ascending, beauty descending for same strength
+  members.sort(key=lambda x: (x[0], -x[1]))
 
-    # Extract beauties for LIS
-    beauties = [m[1] for m in members]
+  # Extract beauties for LIS
+  beauties = [m[1] for m in members]
 
-    # LIS with reconstruction
-    tails = []  # tails[i] = smallest ending value for LIS of length i+1
-    tail_indices = []
-    predecessor = [-1] * n
-    lis_pos = [0] * n
+  # LIS with reconstruction
+  tails = []  # tails[i] = smallest ending value for LIS of length i+1
+  tail_indices = []
+  predecessor = [-1] * n
+  lis_pos = [0] * n
 
-    for i in range(n):
-        b = beauties[i]
-        pos = bisect.bisect_left(tails, b)
+  for i in range(n):
+    b = beauties[i]
+    pos = bisect.bisect_left(tails, b)
 
-        if pos == len(tails):
-            tails.append(b)
-            tail_indices.append(i)
-        else:
-            tails[pos] = b
-            tail_indices[pos] = i
+    if pos == len(tails):
+      tails.append(b)
+      tail_indices.append(i)
+    else:
+      tails[pos] = b
+      tail_indices[pos] = i
 
-        lis_pos[i] = pos
-        if pos > 0:
-            predecessor[i] = tail_indices[pos - 1]
+    lis_pos[i] = pos
+    if pos > 0:
+      predecessor[i] = tail_indices[pos - 1]
 
-    # Reconstruct
-    lis_len = len(tails)
-    path = []
-    idx = tail_indices[-1]
+  # Reconstruct
+  lis_len = len(tails)
+  path = []
+  idx = tail_indices[-1]
 
-    while idx != -1:
-        path.append(members[idx][2])
-        idx = predecessor[idx]
+  while idx != -1:
+    path.append(members[idx][2])
+    idx = predecessor[idx]
 
-    path.reverse()
+  path.reverse()
 
-    print(lis_len)
-    print(' '.join(map(str, path)))
+  print(lis_len)
+  print(' '.join(map(str, path)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

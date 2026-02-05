@@ -37,45 +37,45 @@ import heapq
 from collections import defaultdict
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    base_time = [0] * (n + 1)
-    deps = [[] for _ in range(n + 1)]  # deps[u] = topics that depend on u
-    out_degree = [0] * (n + 1)  # number of topics u depends on
+  base_time = [0] * (n + 1)
+  deps = [[] for _ in range(n + 1)]  # deps[u] = topics that depend on u
+  out_degree = [0] * (n + 1)  # number of topics u depends on
 
-    for u in range(1, n + 1):
-        line = list(map(int, input().split()))
-        base_time[u] = line[0]
-        d = line[1]
-        for v in line[2:2+d]:
-            deps[u].append(v)
-            out_degree[v] += 1
+  for u in range(1, n + 1):
+    line = list(map(int, input().split()))
+    base_time[u] = line[0]
+    d = line[1]
+    for v in line[2:2+d]:
+      deps[u].append(v)
+      out_degree[v] += 1
 
-    # Process in reverse order using min-heap
-    # Start with topics that have no dependents (out_degree = 0)
-    heap = []
-    for u in range(1, n + 1):
-        if out_degree[u] == 0:
-            heapq.heappush(heap, (base_time[u], u))
+  # Process in reverse order using min-heap
+  # Start with topics that have no dependents (out_degree = 0)
+  heap = []
+  for u in range(1, n + 1):
+    if out_degree[u] == 0:
+      heapq.heappush(heap, (base_time[u], u))
 
-    max_meeting = 0
-    recap_time = n - 1  # First topic processed has recap = n-1
+  max_meeting = 0
+  recap_time = n - 1  # First topic processed has recap = n-1
 
-    while heap:
-        dur, u = heapq.heappop(heap)
-        total_time = dur + recap_time
-        max_meeting = max(max_meeting, total_time)
-        recap_time -= 1
+  while heap:
+    dur, u = heapq.heappop(heap)
+    total_time = dur + recap_time
+    max_meeting = max(max_meeting, total_time)
+    recap_time -= 1
 
-        for v in deps[u]:
-            out_degree[v] -= 1
-            if out_degree[v] == 0:
-                heapq.heappush(heap, (base_time[v], v))
+    for v in deps[u]:
+      out_degree[v] -= 1
+      if out_degree[v] == 0:
+        heapq.heappush(heap, (base_time[v], v))
 
-    print(max_meeting)
+  print(max_meeting)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Explanation
@@ -84,42 +84,42 @@ if __name__ == "__main__":
 import heapq
 
 def solve():
-    n = int(input())
+  n = int(input())
 
-    time = [0] * (n + 1)
-    prereqs = [[] for _ in range(n + 1)]
-    dep_count = [0] * (n + 1)
+  time = [0] * (n + 1)
+  prereqs = [[] for _ in range(n + 1)]
+  dep_count = [0] * (n + 1)
 
-    for i in range(1, n + 1):
-        parts = list(map(int, input().split()))
-        time[i] = parts[0]
-        d = parts[1]
-        prereqs[i] = parts[2:2+d]
-        for p in prereqs[i]:
-            dep_count[p] += 1
+  for i in range(1, n + 1):
+    parts = list(map(int, input().split()))
+    time[i] = parts[0]
+    d = parts[1]
+    prereqs[i] = parts[2:2+d]
+    for p in prereqs[i]:
+      dep_count[p] += 1
 
-    # Reverse topological sort: process nodes with no dependents first
-    # Assign highest recap times to smallest base durations
-    pq = [(time[i], i) for i in range(1, n + 1) if dep_count[i] == 0]
-    heapq.heapify(pq)
+  # Reverse topological sort: process nodes with no dependents first
+  # Assign highest recap times to smallest base durations
+  pq = [(time[i], i) for i in range(1, n + 1) if dep_count[i] == 0]
+  heapq.heapify(pq)
 
-    ans = 0
-    position = n - 1  # Recap time for current position
+  ans = 0
+  position = n - 1  # Recap time for current position
 
-    while pq:
-        t, u = heapq.heappop(pq)
-        ans = max(ans, t + position)
-        position -= 1
+  while pq:
+    t, u = heapq.heappop(pq)
+    ans = max(ans, t + position)
+    position -= 1
 
-        for p in prereqs[u]:
-            dep_count[p] -= 1
-            if dep_count[p] == 0:
-                heapq.heappush(pq, (time[p], p))
+    for p in prereqs[u]:
+      dep_count[p] -= 1
+      if dep_count[p] == 0:
+        heapq.heappush(pq, (time[p], p))
 
-    print(ans)
+  print(ans)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

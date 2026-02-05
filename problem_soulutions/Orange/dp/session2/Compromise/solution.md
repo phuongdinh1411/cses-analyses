@@ -31,111 +31,111 @@ Standard LCS problem but on sequences of words instead of characters.
 
 ```python
 def solve():
-    import sys
+  import sys
 
-    lines = sys.stdin.read().strip().split('\n')
-    i = 0
+  lines = sys.stdin.read().strip().split('\n')
+  i = 0
 
-    while i < len(lines):
-        # Read first text until '#'
-        text1 = []
-        while i < len(lines) and lines[i].strip() != '#':
-            text1.extend(lines[i].split())
-            i += 1
-        i += 1  # skip '#'
+  while i < len(lines):
+    # Read first text until '#'
+    text1 = []
+    while i < len(lines) and lines[i].strip() != '#':
+      text1.extend(lines[i].split())
+      i += 1
+    i += 1  # skip '#'
 
-        # Read second text until '#' or EOF
-        text2 = []
-        while i < len(lines) and lines[i].strip() != '#':
-            text2.extend(lines[i].split())
-            i += 1
-        i += 1  # skip '#'
+    # Read second text until '#' or EOF
+    text2 = []
+    while i < len(lines) and lines[i].strip() != '#':
+      text2.extend(lines[i].split())
+      i += 1
+    i += 1  # skip '#'
 
-        if not text1 or not text2:
-            continue
+    if not text1 or not text2:
+      continue
 
-        # LCS on word arrays
-        m, n = len(text1), len(text2)
-        dp = [[0] * (n + 1) for _ in range(m + 1)]
+    # LCS on word arrays
+    m, n = len(text1), len(text2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-        for i in range(1, m + 1):
-            for j in range(1, n + 1):
-                if text1[i-1] == text2[j-1]:
-                    dp[i][j] = dp[i-1][j-1] + 1
-                else:
-                    dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+    for i in range(1, m + 1):
+      for j in range(1, n + 1):
+        if text1[i-1] == text2[j-1]:
+          dp[i][j] = dp[i-1][j-1] + 1
+        else:
+          dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-        # Backtrack to get LCS
-        lcs = []
-        i, j = m, n
-        while i > 0 and j > 0:
-            if text1[i-1] == text2[j-1]:
-                lcs.append(text1[i-1])
-                i -= 1
-                j -= 1
-            elif dp[i-1][j] > dp[i][j-1]:
-                i -= 1
-            else:
-                j -= 1
+    # Backtrack to get LCS
+    lcs = []
+    i, j = m, n
+    while i > 0 and j > 0:
+      if text1[i-1] == text2[j-1]:
+        lcs.append(text1[i-1])
+        i -= 1
+        j -= 1
+      elif dp[i-1][j] > dp[i][j-1]:
+        i -= 1
+      else:
+        j -= 1
 
-        lcs.reverse()
-        print(' '.join(lcs))
+    lcs.reverse()
+    print(' '.join(lcs))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def lcs_words(words1, words2):
-    m, n = len(words1), len(words2)
+  m, n = len(words1), len(words2)
 
-    # dp[i][j] = LCS length of words1[:i] and words2[:j]
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
+  # dp[i][j] = LCS length of words1[:i] and words2[:j]
+  dp = [[0] * (n + 1) for _ in range(m + 1)]
 
-    for i in range(1, m + 1):
-        for j in range(1, n + 1):
-            if words1[i-1] == words2[j-1]:
-                dp[i][j] = dp[i-1][j-1] + 1
-            else:
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+  for i in range(1, m + 1):
+    for j in range(1, n + 1):
+      if words1[i-1] == words2[j-1]:
+        dp[i][j] = dp[i-1][j-1] + 1
+      else:
+        dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-    # Reconstruct
-    result = []
-    i, j = m, n
-    while i > 0 and j > 0:
-        if words1[i-1] == words2[j-1]:
-            result.append(words1[i-1])
-            i -= 1
-            j -= 1
-        elif dp[i-1][j] >= dp[i][j-1]:
-            i -= 1
-        else:
-            j -= 1
+  # Reconstruct
+  result = []
+  i, j = m, n
+  while i > 0 and j > 0:
+    if words1[i-1] == words2[j-1]:
+      result.append(words1[i-1])
+      i -= 1
+      j -= 1
+    elif dp[i-1][j] >= dp[i][j-1]:
+      i -= 1
+    else:
+      j -= 1
 
-    return result[::-1]
+  return result[::-1]
 
 def solve():
-    import sys
-    content = sys.stdin.read()
+  import sys
+  content = sys.stdin.read()
 
-    # Split by '#' to get test cases
-    parts = content.strip().split('#')
+  # Split by '#' to get test cases
+  parts = content.strip().split('#')
 
-    i = 0
-    while i + 1 < len(parts):
-        text1 = parts[i].split()
-        text2 = parts[i + 1].split()
+  i = 0
+  while i + 1 < len(parts):
+    text1 = parts[i].split()
+    text2 = parts[i + 1].split()
 
-        if text1 and text2:
-            result = lcs_words(text1, text2)
-            print(' '.join(result))
+    if text1 and text2:
+      result = lcs_words(text1, text2)
+      print(' '.join(result))
 
-        i += 2
+    i += 2
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

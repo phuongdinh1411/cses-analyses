@@ -267,113 +267,113 @@ S[n][k] = (k * S[n-1][k] + S[n-1][k-1]) % MOD
 
 ```python
 def stirling_second_kind(n: int, k: int, mod: int = None) -> int:
-    """
-    Compute S(n, k) - Stirling number of the second kind.
-    Counts partitions of n elements into k non-empty subsets.
+  """
+  Compute S(n, k) - Stirling number of the second kind.
+  Counts partitions of n elements into k non-empty subsets.
 
-    Time: O(n * k)
-    Space: O(k) with space optimization
-    """
-    if k > n or k < 0:
-        return 0
-    if k == 0:
-        return 1 if n == 0 else 0
+  Time: O(n * k)
+  Space: O(k) with space optimization
+  """
+  if k > n or k < 0:
+    return 0
+  if k == 0:
+    return 1 if n == 0 else 0
 
-    # Space-optimized DP
-    dp = [0] * (k + 1)
-    dp[0] = 1
+  # Space-optimized DP
+  dp = [0] * (k + 1)
+  dp[0] = 1
 
-    for i in range(1, n + 1):
-        # Traverse right to left to avoid overwriting
-        for j in range(min(i, k), 0, -1):
-            dp[j] = j * dp[j] + dp[j - 1]
-            if mod:
-                dp[j] %= mod
+  for i in range(1, n + 1):
+    # Traverse right to left to avoid overwriting
+    for j in range(min(i, k), 0, -1):
+      dp[j] = j * dp[j] + dp[j - 1]
+      if mod:
+        dp[j] %= mod
 
-    return dp[k]
+  return dp[k]
 
 
 def stirling_first_kind_unsigned(n: int, k: int, mod: int = None) -> int:
-    """
-    Compute |s(n, k)| - Unsigned Stirling number of the first kind.
-    Counts permutations of n elements with exactly k cycles.
+  """
+  Compute |s(n, k)| - Unsigned Stirling number of the first kind.
+  Counts permutations of n elements with exactly k cycles.
 
-    Time: O(n * k)
-    Space: O(k) with space optimization
-    """
-    if k > n or k < 0:
-        return 0
-    if k == 0:
-        return 1 if n == 0 else 0
+  Time: O(n * k)
+  Space: O(k) with space optimization
+  """
+  if k > n or k < 0:
+    return 0
+  if k == 0:
+    return 1 if n == 0 else 0
 
-    # Space-optimized DP
-    dp = [0] * (k + 1)
-    dp[0] = 1
+  # Space-optimized DP
+  dp = [0] * (k + 1)
+  dp[0] = 1
 
-    for i in range(1, n + 1):
-        # Traverse right to left to avoid overwriting
-        for j in range(min(i, k), 0, -1):
-            dp[j] = (i - 1) * dp[j] + dp[j - 1]
-            if mod:
-                dp[j] %= mod
-        dp[0] = 0  # s(i, 0) = 0 for i > 0
+  for i in range(1, n + 1):
+    # Traverse right to left to avoid overwriting
+    for j in range(min(i, k), 0, -1):
+      dp[j] = (i - 1) * dp[j] + dp[j - 1]
+      if mod:
+        dp[j] %= mod
+    dp[0] = 0  # s(i, 0) = 0 for i > 0
 
-    return dp[k]
+  return dp[k]
 
 
 def stirling_second_kind_table(n: int, mod: int = None) -> list:
-    """
-    Build full table of S(i, j) for 0 <= i <= n, 0 <= j <= i.
+  """
+  Build full table of S(i, j) for 0 <= i <= n, 0 <= j <= i.
 
-    Time: O(n^2)
-    Space: O(n^2)
-    """
-    S = [[0] * (n + 1) for _ in range(n + 1)]
-    S[0][0] = 1
+  Time: O(n^2)
+  Space: O(n^2)
+  """
+  S = [[0] * (n + 1) for _ in range(n + 1)]
+  S[0][0] = 1
 
-    for i in range(1, n + 1):
-        for j in range(1, i + 1):
-            S[i][j] = j * S[i-1][j] + S[i-1][j-1]
-            if mod:
-                S[i][j] %= mod
+  for i in range(1, n + 1):
+    for j in range(1, i + 1):
+      S[i][j] = j * S[i-1][j] + S[i-1][j-1]
+      if mod:
+        S[i][j] %= mod
 
-    return S
+  return S
 
 
 def stirling_first_kind_table(n: int, mod: int = None) -> list:
-    """
-    Build full table of |s(i, j)| for 0 <= i <= n, 0 <= j <= i.
+  """
+  Build full table of |s(i, j)| for 0 <= i <= n, 0 <= j <= i.
 
-    Time: O(n^2)
-    Space: O(n^2)
-    """
-    s = [[0] * (n + 1) for _ in range(n + 1)]
-    s[0][0] = 1
+  Time: O(n^2)
+  Space: O(n^2)
+  """
+  s = [[0] * (n + 1) for _ in range(n + 1)]
+  s[0][0] = 1
 
-    for i in range(1, n + 1):
-        for j in range(1, i + 1):
-            s[i][j] = (i - 1) * s[i-1][j] + s[i-1][j-1]
-            if mod:
-                s[i][j] %= mod
+  for i in range(1, n + 1):
+    for j in range(1, i + 1):
+      s[i][j] = (i - 1) * s[i-1][j] + s[i-1][j-1]
+      if mod:
+        s[i][j] %= mod
 
-    return s
+  return s
 
 
 # Example usage
 if __name__ == "__main__":
-    print("S(4, 2) =", stirling_second_kind(4, 2))  # Output: 7
-    print("|s(4, 2)| =", stirling_first_kind_unsigned(4, 2))  # Output: 11
+  print("S(4, 2) =", stirling_second_kind(4, 2))  # Output: 7
+  print("|s(4, 2)| =", stirling_first_kind_unsigned(4, 2))  # Output: 11
 
-    # Print full tables
-    print("\nStirling Second Kind Table S(n,k):")
-    S = stirling_second_kind_table(5)
-    for i in range(6):
-        print(f"n={i}:", S[i][:i+1])
+  # Print full tables
+  print("\nStirling Second Kind Table S(n,k):")
+  S = stirling_second_kind_table(5)
+  for i in range(6):
+    print(f"n={i}:", S[i][:i+1])
 
-    print("\nStirling First Kind Table |s(n,k)|:")
-    s = stirling_first_kind_table(5)
-    for i in range(6):
-        print(f"n={i}:", s[i][:i+1])
+  print("\nStirling First Kind Table |s(n,k)|:")
+  s = stirling_first_kind_table(5)
+  for i in range(6):
+    print(f"n={i}:", s[i][:i+1])
 ```
 
 ---

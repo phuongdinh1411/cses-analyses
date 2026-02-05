@@ -33,88 +33,88 @@ Use DFS/backtracking to find all paths of exactly 8 consecutive emeralds. To avo
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        grid = []
-        for i in range(n):
-            grid.append(input().strip())
+  for _ in range(t):
+    n = int(input())
+    grid = []
+    for i in range(n):
+      grid.append(input().strip())
 
-        # Directions: up, down, left, right
-        dx = [-1, 1, 0, 0]
-        dy = [0, 0, -1, 1]
+    # Directions: up, down, left, right
+    dx = [-1, 1, 0, 0]
+    dy = [0, 0, -1, 1]
 
-        # Set to store unique octaves (as frozensets of positions)
-        octaves = set()
+    # Set to store unique octaves (as frozensets of positions)
+    octaves = set()
 
-        def dfs(x, y, path, visited):
-            if len(path) == 8:
-                # Store as frozenset to make it hashable and order-independent
-                octaves.add(frozenset(path))
-                return
+    def dfs(x, y, path, visited):
+      if len(path) == 8:
+        # Store as frozenset to make it hashable and order-independent
+        octaves.add(frozenset(path))
+        return
 
-            for i in range(4):
-                nx, ny = x + dx[i], y + dy[i]
-                if 0 <= nx < n and 0 <= ny < n and (nx, ny) not in visited and grid[nx][ny] == 'X':
-                    visited.add((nx, ny))
-                    path.append((nx, ny))
-                    dfs(nx, ny, path, visited)
-                    path.pop()
-                    visited.remove((nx, ny))
+      for i in range(4):
+        nx, ny = x + dx[i], y + dy[i]
+        if 0 <= nx < n and 0 <= ny < n and (nx, ny) not in visited and grid[nx][ny] == 'X':
+          visited.add((nx, ny))
+          path.append((nx, ny))
+          dfs(nx, ny, path, visited)
+          path.pop()
+          visited.remove((nx, ny))
 
-        # Start DFS from each emerald
-        for i in range(n):
-            for j in range(n):
-                if grid[i][j] == 'X':
-                    visited = {(i, j)}
-                    path = [(i, j)]
-                    dfs(i, j, path, visited)
+    # Start DFS from each emerald
+    for i in range(n):
+      for j in range(n):
+        if grid[i][j] == 'X':
+          visited = {(i, j)}
+          path = [(i, j)]
+          dfs(i, j, path, visited)
 
-        print(len(octaves))
+    print(len(octaves))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with Bitmask
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n = int(input())
-        grid = []
-        for i in range(n):
-            grid.append(input().strip())
+  for _ in range(t):
+    n = int(input())
+    grid = []
+    for i in range(n):
+      grid.append(input().strip())
 
-        dx = [-1, 1, 0, 0]
-        dy = [0, 0, -1, 1]
+    dx = [-1, 1, 0, 0]
+    dy = [0, 0, -1, 1]
 
-        octaves = set()
+    octaves = set()
 
-        def dfs(x, y, bitmask, count):
-            if count == 8:
-                octaves.add(bitmask)
-                return
+    def dfs(x, y, bitmask, count):
+      if count == 8:
+        octaves.add(bitmask)
+        return
 
-            for i in range(4):
-                nx, ny = x + dx[i], y + dy[i]
-                bit = nx * n + ny
-                if 0 <= nx < n and 0 <= ny < n and not (bitmask & (1 << bit)) and grid[nx][ny] == 'X':
-                    dfs(nx, ny, bitmask | (1 << bit), count + 1)
+      for i in range(4):
+        nx, ny = x + dx[i], y + dy[i]
+        bit = nx * n + ny
+        if 0 <= nx < n and 0 <= ny < n and not (bitmask & (1 << bit)) and grid[nx][ny] == 'X':
+          dfs(nx, ny, bitmask | (1 << bit), count + 1)
 
-        for i in range(n):
-            for j in range(n):
-                if grid[i][j] == 'X':
-                    bit = i * n + j
-                    dfs(i, j, 1 << bit, 1)
+    for i in range(n):
+      for j in range(n):
+        if grid[i][j] == 'X':
+          bit = i * n + j
+          dfs(i, j, 1 << bit, 1)
 
-        print(len(octaves))
+    print(len(octaves))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

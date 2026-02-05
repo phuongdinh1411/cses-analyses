@@ -151,27 +151,27 @@ Pointers exhausted. Result: 2 matches
 
 ```python
 def solve():
-    n, m, k = map(int, input().split())
-    applicants = sorted(map(int, input().split()))
-    apartments = sorted(map(int, input().split()))
+  n, m, k = map(int, input().split())
+  applicants = sorted(map(int, input().split()))
+  apartments = sorted(map(int, input().split()))
 
-    count = 0
-    i = j = 0
+  count = 0
+  i = j = 0
 
-    while i < n and j < m:
-        if apartments[j] < applicants[i] - k:
-            # Apartment too small, try next apartment
-            j += 1
-        elif apartments[j] > applicants[i] + k:
-            # Apartment too big, skip this applicant
-            i += 1
-        else:
-            # Match found
-            count += 1
-            i += 1
-            j += 1
+  while i < n and j < m:
+    if apartments[j] < applicants[i] - k:
+      # Apartment too small, try next apartment
+      j += 1
+    elif apartments[j] > applicants[i] + k:
+      # Apartment too big, skip this applicant
+      i += 1
+    else:
+      # Match found
+      count += 1
+      i += 1
+      j += 1
 
-    print(count)
+  print(count)
 
 solve()
 ```

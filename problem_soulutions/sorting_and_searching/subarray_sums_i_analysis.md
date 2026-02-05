@@ -113,22 +113,22 @@ Check every possible subarray by trying all pairs of start and end positions.
 
 ```python
 def solve_brute_force(n, x, arr):
-    """
-    Brute force: check all subarrays.
+  """
+  Brute force: check all subarrays.
 
-    Time: O(n^2)
-    Space: O(1)
-    """
-    count = 0
+  Time: O(n^2)
+  Space: O(1)
+  """
+  count = 0
 
-    for i in range(n):
-        current_sum = 0
-        for j in range(i, n):
-            current_sum += arr[j]
-            if current_sum == x:
-                count += 1
+  for i in range(n):
+    current_sum = 0
+    for j in range(i, n):
+      current_sum += arr[j]
+      if current_sum == x:
+        count += 1
 
-    return count
+  return count
 ```
 
 ### Complexity
@@ -256,47 +256,47 @@ Subarrays with sum 7:
 from collections import defaultdict
 
 def solve_optimal(n, x, arr):
-    """
-    Optimal solution using prefix sum + hash map.
+  """
+  Optimal solution using prefix sum + hash map.
 
-    Time: O(n) - single pass
-    Space: O(n) - hash map storage
-    """
-    count_map = defaultdict(int)
-    count_map[0] = 1  # Empty prefix (crucial!)
+  Time: O(n) - single pass
+  Space: O(n) - hash map storage
+  """
+  count_map = defaultdict(int)
+  count_map[0] = 1  # Empty prefix (crucial!)
 
-    prefix_sum = 0
-    count = 0
+  prefix_sum = 0
+  count = 0
 
-    for num in arr:
-        prefix_sum += num
+  for num in arr:
+    prefix_sum += num
 
-        # How many times have we seen (prefix_sum - x)?
-        complement = prefix_sum - x
-        count += count_map[complement]
+    # How many times have we seen (prefix_sum - x)?
+    complement = prefix_sum - x
+    count += count_map[complement]
 
-        # Add current prefix sum to map
-        count_map[prefix_sum] += 1
+    # Add current prefix sum to map
+    count_map[prefix_sum] += 1
 
-    return count
+  return count
 
 
 def main():
-    import sys
-    input_data = sys.stdin.read().split()
-    idx = 0
+  import sys
+  input_data = sys.stdin.read().split()
+  idx = 0
 
-    n = int(input_data[idx])
-    x = int(input_data[idx + 1])
-    idx += 2
+  n = int(input_data[idx])
+  x = int(input_data[idx + 1])
+  idx += 2
 
-    arr = [int(input_data[idx + i]) for i in range(n)]
+  arr = [int(input_data[idx + i]) for i in range(n)]
 
-    print(solve_optimal(n, x, arr))
+  print(solve_optimal(n, x, arr))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity
@@ -326,9 +326,9 @@ count_map = {}  # Missing initial {0: 1}
 ```python
 # WRONG - may count current element against itself
 for num in arr:
-    prefix_sum += num
-    count_map[prefix_sum] += 1      # Adding BEFORE checking
-    count += count_map[prefix_sum - x]  # May incorrectly match itself
+  prefix_sum += num
+  count_map[prefix_sum] += 1      # Adding BEFORE checking
+  count += count_map[prefix_sum - x]  # May incorrectly match itself
 ```
 
 **Problem:** This can cause issues when prefix_sum - x equals prefix_sum (when x = 0), though this problem has positive x.
@@ -393,29 +393,29 @@ Since all elements are **positive**, we can also use a sliding window approach:
 
 ```python
 def solve_sliding_window(n, x, arr):
-    """
-    Alternative using sliding window (works because all elements are positive).
+  """
+  Alternative using sliding window (works because all elements are positive).
 
-    Time: O(n)
-    Space: O(1)
-    """
-    left = 0
-    current_sum = 0
-    count = 0
+  Time: O(n)
+  Space: O(1)
+  """
+  left = 0
+  current_sum = 0
+  count = 0
 
-    for right in range(n):
-        current_sum += arr[right]
+  for right in range(n):
+    current_sum += arr[right]
 
-        # Shrink window while sum > x
-        while current_sum > x and left <= right:
-            current_sum -= arr[left]
-            left += 1
+    # Shrink window while sum > x
+    while current_sum > x and left <= right:
+      current_sum -= arr[left]
+      left += 1
 
-        # Check if current window has sum = x
-        if current_sum == x:
-            count += 1
+    # Check if current window has sum = x
+    if current_sum == x:
+      count += 1
 
-    return count
+  return count
 ```
 
 **Note:** This approach only works because all elements are positive. With negative numbers, you must use the prefix sum + hash map approach (see Subarray Sums II).

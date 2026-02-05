@@ -32,40 +32,40 @@ import heapq
 from collections import defaultdict
 
 def solve():
-    n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
-    adj = defaultdict(list)
-    in_degree = [0] * (n + 1)
+  adj = defaultdict(list)
+  in_degree = [0] * (n + 1)
 
-    for _ in range(m):
-        x, y = map(int, input().split())
-        adj[x].append(y)
-        in_degree[y] += 1
+  for _ in range(m):
+    x, y = map(int, input().split())
+    adj[x].append(y)
+    in_degree[y] += 1
 
-    # Min-heap for lexicographically smallest order
-    heap = []
-    for i in range(1, n + 1):
-        if in_degree[i] == 0:
-            heapq.heappush(heap, i)
+  # Min-heap for lexicographically smallest order
+  heap = []
+  for i in range(1, n + 1):
+    if in_degree[i] == 0:
+      heapq.heappush(heap, i)
 
-    result = []
+  result = []
 
-    while heap:
-        u = heapq.heappop(heap)
-        result.append(u)
+  while heap:
+    u = heapq.heappop(heap)
+    result.append(u)
 
-        for v in adj[u]:
-            in_degree[v] -= 1
-            if in_degree[v] == 0:
-                heapq.heappush(heap, v)
+    for v in adj[u]:
+      in_degree[v] -= 1
+      if in_degree[v] == 0:
+        heapq.heappush(heap, v)
 
-    if len(result) < n:
-        print("Sandro fails.")
-    else:
-        print(' '.join(map(str, result)))
+  if len(result) < n:
+    print("Sandro fails.")
+  else:
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution with DFS
@@ -76,53 +76,53 @@ from collections import defaultdict
 sys.setrecursionlimit(20000)
 
 def solve():
-    n, m = map(int, input().split())
+  n, m = map(int, input().split())
 
-    adj = defaultdict(list)
+  adj = defaultdict(list)
 
-    for _ in range(m):
-        x, y = map(int, input().split())
-        adj[x].append(y)
+  for _ in range(m):
+    x, y = map(int, input().split())
+    adj[x].append(y)
 
-    # Sort adjacency lists in reverse for lexicographic order with DFS
-    for u in adj:
-        adj[u].sort(reverse=True)
+  # Sort adjacency lists in reverse for lexicographic order with DFS
+  for u in adj:
+    adj[u].sort(reverse=True)
 
-    WHITE, GRAY, BLACK = 0, 1, 2
-    color = [WHITE] * (n + 1)
-    result = []
-    has_cycle = False
+  WHITE, GRAY, BLACK = 0, 1, 2
+  color = [WHITE] * (n + 1)
+  result = []
+  has_cycle = False
 
-    def dfs(u):
-        nonlocal has_cycle
-        if has_cycle:
-            return
+  def dfs(u):
+    nonlocal has_cycle
+    if has_cycle:
+      return
 
-        color[u] = GRAY
+    color[u] = GRAY
 
-        for v in adj[u]:
-            if color[v] == GRAY:
-                has_cycle = True
-                return
-            if color[v] == WHITE:
-                dfs(v)
+    for v in adj[u]:
+      if color[v] == GRAY:
+        has_cycle = True
+        return
+      if color[v] == WHITE:
+        dfs(v)
 
-        color[u] = BLACK
-        result.append(u)
+    color[u] = BLACK
+    result.append(u)
 
-    # Process vertices in order for lexicographic result
-    for i in range(n, 0, -1):
-        if color[i] == WHITE:
-            dfs(i)
+  # Process vertices in order for lexicographic result
+  for i in range(n, 0, -1):
+    if color[i] == WHITE:
+      dfs(i)
 
-    if has_cycle or len(result) < n:
-        print("Sandro fails.")
-    else:
-        result.reverse()
-        print(' '.join(map(str, result)))
+  if has_cycle or len(result) < n:
+    print("Sandro fails.")
+  else:
+    result.reverse()
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

@@ -63,21 +63,21 @@ The key insight is that to minimize the total number of moves, we should sort th
 
 ```python
 def solve():
-    n = int(input())
-    a = list(map(int, input().split()))
+  n = int(input())
+  a = list(map(int, input().split()))
 
-    # Sort the array
-    a.sort()
+  # Sort the array
+  a.sort()
 
-    # Calculate minimum moves by matching sorted array to [1, 2, ..., n]
-    total_moves = 0
-    for i in range(n):
-        total_moves += abs(a[i] - (i + 1))
+  # Calculate minimum moves by matching sorted array to [1, 2, ..., n]
+  total_moves = 0
+  for i in range(n):
+    total_moves += abs(a[i] - (i + 1))
 
-    print(total_moves)
+  print(total_moves)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -123,125 +123,125 @@ This is a backtracking/DFS problem. We need to:
 
 ```python
 def solve():
-    # Knight move offsets
-    moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-             (1, -2), (1, 2), (2, -1), (2, 1)]
+  # Knight move offsets
+  moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+      (1, -2), (1, 2), (2, -1), (2, 1)]
 
-    case_num = 0
+  case_num = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case_num += 1
+    case_num += 1
 
-        # Read board configuration
-        rows = []
-        total_squares = 0
+    # Read board configuration
+    rows = []
+    total_squares = 0
 
-        for i in range(n):
-            offset, count = map(int, input().split())
-            rows.append((offset, count))
-            total_squares += count
+    for i in range(n):
+      offset, count = map(int, input().split())
+      rows.append((offset, count))
+      total_squares += count
 
-        # Create board: board[r] contains set of valid columns for row r
-        board = []
-        for offset, count in rows:
-            board.append(set(range(offset, offset + count)))
+    # Create board: board[r] contains set of valid columns for row r
+    board = []
+    for offset, count in rows:
+      board.append(set(range(offset, offset + count)))
 
-        # Find starting position (first cell in first row)
-        start_r, start_c = 0, rows[0][0]
+    # Find starting position (first cell in first row)
+    start_r, start_c = 0, rows[0][0]
 
-        # DFS with backtracking to find maximum reachable
-        max_reached = [0]
+    # DFS with backtracking to find maximum reachable
+    max_reached = [0]
 
-        def is_valid(r, c):
-            return 0 <= r < n and c in board[r]
+    def is_valid(r, c):
+      return 0 <= r < n and c in board[r]
 
-        def dfs(r, c, visited):
-            max_reached[0] = max(max_reached[0], len(visited))
+    def dfs(r, c, visited):
+      max_reached[0] = max(max_reached[0], len(visited))
 
-            for dr, dc in moves:
-                nr, nc = r + dr, c + dc
-                if is_valid(nr, nc) and (nr, nc) not in visited:
-                    visited.add((nr, nc))
-                    dfs(nr, nc, visited)
-                    visited.remove((nr, nc))
+      for dr, dc in moves:
+        nr, nc = r + dr, c + dc
+        if is_valid(nr, nc) and (nr, nc) not in visited:
+          visited.add((nr, nc))
+          dfs(nr, nc, visited)
+          visited.remove((nr, nc))
 
-        visited = {(start_r, start_c)}
-        dfs(start_r, start_c, visited)
+    visited = {(start_r, start_c)}
+    dfs(start_r, start_c, visited)
 
-        unreachable = total_squares - max_reached[0]
-        print(f"Case {case_num}, {unreachable} squares can not be reached.")
+    unreachable = total_squares - max_reached[0]
+    print(f"Case {case_num}, {unreachable} squares can not be reached.")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Optimized
 
 ```python
 def solve():
-    moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-             (1, -2), (1, 2), (2, -1), (2, 1)]
+  moves = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+      (1, -2), (1, 2), (2, -1), (2, 1)]
 
-    case_num = 0
+  case_num = 0
 
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        case_num += 1
+    case_num += 1
 
-        # Read board
-        rows = []
-        total_squares = 0
-        max_col = 0
+    # Read board
+    rows = []
+    total_squares = 0
+    max_col = 0
 
-        for i in range(n):
-            offset, count = map(int, input().split())
-            rows.append((offset, count))
-            total_squares += count
-            max_col = max(max_col, offset + count)
+    for i in range(n):
+      offset, count = map(int, input().split())
+      rows.append((offset, count))
+      total_squares += count
+      max_col = max(max_col, offset + count)
 
-        # Create 2D grid for faster lookup
-        # grid[r][c] = True if cell exists
-        grid = [[False] * max_col for _ in range(n)]
-        for r, (offset, count) in enumerate(rows):
-            for c in range(offset, offset + count):
-                grid[r][c] = True
+    # Create 2D grid for faster lookup
+    # grid[r][c] = True if cell exists
+    grid = [[False] * max_col for _ in range(n)]
+    for r, (offset, count) in enumerate(rows):
+      for c in range(offset, offset + count):
+        grid[r][c] = True
 
-        start_r, start_c = 0, rows[0][0]
-        max_reached = [0]
+    start_r, start_c = 0, rows[0][0]
+    max_reached = [0]
 
-        def is_valid(r, c):
-            return 0 <= r < n and 0 <= c < max_col and grid[r][c]
+    def is_valid(r, c):
+      return 0 <= r < n and 0 <= c < max_col and grid[r][c]
 
-        def dfs(r, c, count, visited):
-            max_reached[0] = max(max_reached[0], count)
+    def dfs(r, c, count, visited):
+      max_reached[0] = max(max_reached[0], count)
 
-            # Early termination if we've reached all squares
-            if count == total_squares:
-                return
+      # Early termination if we've reached all squares
+      if count == total_squares:
+        return
 
-            for dr, dc in moves:
-                nr, nc = r + dr, c + dc
-                if is_valid(nr, nc) and not visited[nr][nc]:
-                    visited[nr][nc] = True
-                    dfs(nr, nc, count + 1, visited)
-                    visited[nr][nc] = False
+      for dr, dc in moves:
+        nr, nc = r + dr, c + dc
+        if is_valid(nr, nc) and not visited[nr][nc]:
+          visited[nr][nc] = True
+          dfs(nr, nc, count + 1, visited)
+          visited[nr][nc] = False
 
-        visited = [[False] * max_col for _ in range(n)]
-        visited[start_r][start_c] = True
-        dfs(start_r, start_c, 1, visited)
+    visited = [[False] * max_col for _ in range(n)]
+    visited[start_r][start_c] = True
+    dfs(start_r, start_c, 1, visited)
 
-        unreachable = total_squares - max_reached[0]
-        print(f"Case {case_num}, {unreachable} squares can not be reached.")
+    unreachable = total_squares - max_reached[0]
+    print(f"Case {case_num}, {unreachable} squares can not be reached.")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -289,57 +289,57 @@ Use a set to track available "last visit" times. Initially, time 0 is available 
 
 ```python
 def solve():
-    n = int(input())
-    times = list(map(int, input().split()))
+  n = int(input())
+  times = list(map(int, input().split()))
 
-    available = {0}  # Times when rooms were last visited
-    rooms = 1  # Start with 1 room (the initial room)
+  available = {0}  # Times when rooms were last visited
+  rooms = 1  # Start with 1 room (the initial room)
 
-    for i, t in enumerate(times, 1):
-        if t in available:
-            # Revisiting a room - remove old time, add current time
-            available.remove(t)
-            available.add(i)
-        else:
-            # New room
-            rooms += 1
-            available.add(i)
+  for i, t in enumerate(times, 1):
+    if t in available:
+      # Revisiting a room - remove old time, add current time
+      available.remove(t)
+      available.add(i)
+    else:
+      # New room
+      rooms += 1
+      available.add(i)
 
-    print(rooms)
+  print(rooms)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
-    n = int(input())
-    notes = list(map(int, input().split()))
+  n = int(input())
+  notes = list(map(int, input().split()))
 
-    # Track which timestamps are "used" (a room was last visited at that time)
-    used = [False] * (n + 1)
-    used[0] = True  # Initial room at time 0
-    rooms = 1
+  # Track which timestamps are "used" (a room was last visited at that time)
+  used = [False] * (n + 1)
+  used[0] = True  # Initial room at time 0
+  rooms = 1
 
-    for i in range(n):
-        t = notes[i]
-        current_time = i + 1
+  for i in range(n):
+    t = notes[i]
+    current_time = i + 1
 
-        if used[t]:
-            # Revisiting room that was last visited at time t
-            used[t] = False
-            used[current_time] = True
-        else:
-            # Must be a new room
-            rooms += 1
-            used[current_time] = True
+    if used[t]:
+      # Revisiting room that was last visited at time t
+      used[t] = False
+      used[current_time] = True
+    else:
+      # Must be a new room
+      rooms += 1
+      used[current_time] = True
 
-    print(rooms)
+  print(rooms)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -388,26 +388,26 @@ In the single line print the answer to the problem - the maximum total income th
 
 ```python
 def solve():
-    n, k = map(int, input().split())
-    a = list(map(int, input().split()))
+  n, k = map(int, input().split())
+  a = list(map(int, input().split()))
 
-    # Flip negative numbers starting from smallest (most negative)
-    for i in range(n):
-        if a[i] < 0 and k > 0:
-            a[i] = -a[i]
-            k -= 1
+  # Flip negative numbers starting from smallest (most negative)
+  for i in range(n):
+    if a[i] < 0 and k > 0:
+      a[i] = -a[i]
+      k -= 1
 
-    # Sort again to find the minimum element
-    a.sort()
+  # Sort again to find the minimum element
+  a.sort()
 
-    # If k is odd, flip the smallest element
-    if k % 2 == 1:
-        a[0] = -a[0]
+  # If k is odd, flip the smallest element
+  if k % 2 == 1:
+    a[0] = -a[0]
 
-    print(sum(a))
+  print(sum(a))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -473,36 +473,36 @@ To minimize the number of changed digits while making the digit sum at least k:
 
 ```python
 def solve():
-    k = int(input())
-    n = input().strip()
+  k = int(input())
+  n = input().strip()
 
-    # Get all digits
-    digits = [int(c) for c in n]
-    current_sum = sum(digits)
+  # Get all digits
+  digits = [int(c) for c in n]
+  current_sum = sum(digits)
 
-    # If already >= k, no changes needed
-    if current_sum >= k:
-        print(0)
-        return
+  # If already >= k, no changes needed
+  if current_sum >= k:
+    print(0)
+    return
 
-    # Sort digits to change smallest ones first (maximize gain)
-    digits.sort()
+  # Sort digits to change smallest ones first (maximize gain)
+  digits.sort()
 
-    changes = 0
-    i = 0
+  changes = 0
+  i = 0
 
-    while current_sum < k:
-        # Change digit to 9
-        gain = 9 - digits[i]
-        if gain > 0:
-            changes += 1
-            current_sum += gain
-        i += 1
+  while current_sum < k:
+    # Change digit to 9
+    gain = 9 - digits[i]
+    if gain > 0:
+      changes += 1
+      current_sum += gain
+    i += 1
 
-    print(changes)
+  print(changes)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -557,152 +557,152 @@ For each segment between gas stations:
 
 ```python
 def solve():
+  while True:
+    events = []
+
     while True:
-        events = []
+      line = input().split()
+      dist = int(line[0])
+      event_type = line[1]
 
-        while True:
-            line = input().split()
-            dist = int(line[0])
-            event_type = line[1]
+      if event_type == "Fuel":
+        consumption = int(line[3])
+        events.append((dist, "fuel", consumption))
 
-            if event_type == "Fuel":
-                consumption = int(line[3])
-                events.append((dist, "fuel", consumption))
+        if dist == 0 and consumption == 0:
+          return
 
-                if dist == 0 and consumption == 0:
-                    return
+      elif event_type == "Leak":
+        events.append((dist, "leak", 0))
+      elif event_type == "Gas":
+        events.append((dist, "gas", 0))
+      elif event_type == "Mechanic":
+        events.append((dist, "mechanic", 0))
+      elif event_type == "Goal":
+        events.append((dist, "goal", 0))
+        break
 
-            elif event_type == "Leak":
-                events.append((dist, "leak", 0))
-            elif event_type == "Gas":
-                events.append((dist, "gas", 0))
-            elif event_type == "Mechanic":
-                events.append((dist, "mechanic", 0))
-            elif event_type == "Goal":
-                events.append((dist, "goal", 0))
-                break
+    # Simulate to find minimum tank size
+    # Binary search on tank capacity
 
-        # Simulate to find minimum tank size
-        # Binary search on tank capacity
+    def can_complete(tank_capacity):
+      fuel = tank_capacity
+      consumption = 0  # litres per 100 km
+      leak_rate = 0    # litres per km
+      prev_dist = 0
 
-        def can_complete(tank_capacity):
-            fuel = tank_capacity
-            consumption = 0  # litres per 100 km
-            leak_rate = 0    # litres per km
-            prev_dist = 0
+      for dist, event, val in events:
+        delta = dist - prev_dist
 
-            for dist, event, val in events:
-                delta = dist - prev_dist
+        if delta > 0:
+          # Fuel used = (consumption/100) * delta + leak_rate * delta
+          fuel_used = (consumption / 100) * delta + leak_rate * delta
+          fuel -= fuel_used
 
-                if delta > 0:
-                    # Fuel used = (consumption/100) * delta + leak_rate * delta
-                    fuel_used = (consumption / 100) * delta + leak_rate * delta
-                    fuel -= fuel_used
+          if fuel < -1e-9:
+            return False
 
-                    if fuel < -1e-9:
-                        return False
+        if event == "fuel":
+          consumption = val
+        elif event == "leak":
+          leak_rate += 1
+        elif event == "gas":
+          fuel = tank_capacity
+        elif event == "mechanic":
+          leak_rate = 0
+        elif event == "goal":
+          pass
 
-                if event == "fuel":
-                    consumption = val
-                elif event == "leak":
-                    leak_rate += 1
-                elif event == "gas":
-                    fuel = tank_capacity
-                elif event == "mechanic":
-                    leak_rate = 0
-                elif event == "goal":
-                    pass
+        prev_dist = dist
 
-                prev_dist = dist
+      return fuel >= -1e-9
 
-            return fuel >= -1e-9
+    # Binary search for minimum tank capacity
+    lo, hi = 0.0, 1e9
 
-        # Binary search for minimum tank capacity
-        lo, hi = 0.0, 1e9
+    for _ in range(100):  # Enough iterations for precision
+      mid = (lo + hi) / 2
+      if can_complete(mid):
+        hi = mid
+      else:
+        lo = mid
 
-        for _ in range(100):  # Enough iterations for precision
-            mid = (lo + hi) / 2
-            if can_complete(mid):
-                hi = mid
-            else:
-                lo = mid
-
-        print(f"{hi:.3f}")
+    print(f"{hi:.3f}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Alternative
 
 ```python
 def solve():
+  while True:
+    events = []
+
     while True:
-        events = []
+      parts = input().split()
+      dist = int(parts[0])
+      event = parts[1]
 
-        while True:
-            parts = input().split()
-            dist = int(parts[0])
-            event = parts[1]
+      if event == "Fuel":
+        rate = int(parts[3])
+        if dist == 0 and rate == 0:
+          return
+        events.append((dist, "fuel", rate))
+      elif event == "Leak":
+        events.append((dist, "leak", 0))
+      elif event == "Gas":
+        events.append((dist, "gas", 0))
+      elif event == "Mechanic":
+        events.append((dist, "mech", 0))
+      elif event == "Goal":
+        events.append((dist, "goal", 0))
+        break
 
-            if event == "Fuel":
-                rate = int(parts[3])
-                if dist == 0 and rate == 0:
-                    return
-                events.append((dist, "fuel", rate))
-            elif event == "Leak":
-                events.append((dist, "leak", 0))
-            elif event == "Gas":
-                events.append((dist, "gas", 0))
-            elif event == "Mechanic":
-                events.append((dist, "mech", 0))
-            elif event == "Goal":
-                events.append((dist, "goal", 0))
-                break
+    # Find min tank by checking each segment between gas stations
+    # Tank must be large enough for worst segment
 
-        # Find min tank by checking each segment between gas stations
-        # Tank must be large enough for worst segment
+    def simulate(capacity):
+      tank = capacity
+      cons = 0
+      leak = 0
+      pos = 0
 
-        def simulate(capacity):
-            tank = capacity
-            cons = 0
-            leak = 0
-            pos = 0
+      for d, e, v in events:
+        dist = d - pos
 
-            for d, e, v in events:
-                dist = d - pos
+        if dist > 0:
+          usage = cons * dist / 100 + leak * dist
+          tank -= usage
+          if tank < -1e-9:
+            return False
 
-                if dist > 0:
-                    usage = cons * dist / 100 + leak * dist
-                    tank -= usage
-                    if tank < -1e-9:
-                        return False
+        if e == "fuel":
+          cons = v
+        elif e == "leak":
+          leak += 1
+        elif e == "gas":
+          tank = capacity
+        elif e == "mech":
+          leak = 0
 
-                if e == "fuel":
-                    cons = v
-                elif e == "leak":
-                    leak += 1
-                elif e == "gas":
-                    tank = capacity
-                elif e == "mech":
-                    leak = 0
+        pos = d
 
-                pos = d
+      return True
 
-            return True
+    lo, hi = 0, 2e7
+    for _ in range(100):
+      mid = (lo + hi) / 2
+      if simulate(mid):
+        hi = mid
+      else:
+        lo = mid
 
-        lo, hi = 0, 2e7
-        for _ in range(100):
-            mid = (lo + hi) / 2
-            if simulate(mid):
-                hi = mid
-            else:
-                lo = mid
-
-        print(f"{hi:.3f}")
+    print(f"{hi:.3f}")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis
@@ -751,25 +751,25 @@ The key insight is to think about the flow of wine between adjacent houses. At e
 
 ```python
 def solve():
-    while True:
-        n = int(input())
-        if n == 0:
-            break
+  while True:
+    n = int(input())
+    if n == 0:
+      break
 
-        a = list(map(int, input().split()))
+    a = list(map(int, input().split()))
 
-        # Calculate total work using prefix sum approach
-        total_work = 0
-        carry = 0  # Wine that needs to be transported to the right
+    # Calculate total work using prefix sum approach
+    total_work = 0
+    carry = 0  # Wine that needs to be transported to the right
 
-        for i in range(n):
-            carry += a[i]
-            total_work += abs(carry)
+    for i in range(n):
+      carry += a[i]
+      total_work += abs(carry)
 
-        print(total_work)
+    print(total_work)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ##### Complexity Analysis

@@ -30,75 +30,75 @@ Output the character in `patt` that is present at the minimum index in `str`. Pr
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        str_input, patt = input().split()
+  for _ in range(t):
+    str_input, patt = input().split()
 
-        # Create set of characters in str for O(1) lookup
-        str_chars = set(str_input)
+    # Create set of characters in str for O(1) lookup
+    str_chars = set(str_input)
 
-        result = "No character present"
+    result = "No character present"
 
-        # Find first character in patt that exists in str
-        for char in patt:
-            if char in str_chars:
-                result = char
-                break
+    # Find first character in patt that exists in str
+    for char in patt:
+      if char in str_chars:
+        result = char
+        break
 
-        print(result)
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution (Finding Minimum Index)
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        str_input, patt = input().split()
+  for _ in range(t):
+    str_input, patt = input().split()
 
-        # Map each character to its first occurrence index in str
-        char_index = {}
-        for i, char in enumerate(str_input):
-            if char not in char_index:
-                char_index[char] = i
+    # Map each character to its first occurrence index in str
+    char_index = {}
+    for i, char in enumerate(str_input):
+      if char not in char_index:
+        char_index[char] = i
 
-        min_index = float('inf')
-        result_char = None
+    min_index = float('inf')
+    result_char = None
 
-        # Find character in patt with minimum index in str
-        for char in patt:
-            if char in char_index and char_index[char] < min_index:
-                min_index = char_index[char]
-                result_char = char
+    # Find character in patt with minimum index in str
+    for char in patt:
+      if char in char_index and char_index[char] < min_index:
+        min_index = char_index[char]
+        result_char = char
 
-        if result_char:
-            print(result_char)
-        else:
-            print("No character present")
+    if result_char:
+      print(result_char)
+    else:
+      print("No character present")
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### One-liner Style Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        s, p = input().split()
-        chars = set(s)
-        result = next((c for c in p if c in chars), "No character present")
-        print(result)
+  for _ in range(t):
+    s, p = input().split()
+    chars = set(s)
+    result = next((c for c in p if c in chars), "No character present")
+    print(result)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

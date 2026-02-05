@@ -34,57 +34,57 @@ Use a set to track available "last visit" times. Initially, time 0 is available 
 
 ```python
 def solve():
-    n = int(input())
-    times = list(map(int, input().split()))
+  n = int(input())
+  times = list(map(int, input().split()))
 
-    available = {0}  # Times when rooms were last visited
-    rooms = 1  # Start with 1 room (the initial room)
+  available = {0}  # Times when rooms were last visited
+  rooms = 1  # Start with 1 room (the initial room)
 
-    for i, t in enumerate(times, 1):
-        if t in available:
-            # Revisiting a room - remove old time, add current time
-            available.remove(t)
-            available.add(i)
-        else:
-            # New room
-            rooms += 1
-            available.add(i)
+  for i, t in enumerate(times, 1):
+    if t in available:
+      # Revisiting a room - remove old time, add current time
+      available.remove(t)
+      available.add(i)
+    else:
+      # New room
+      rooms += 1
+      available.add(i)
 
-    print(rooms)
+  print(rooms)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-    n = int(input())
-    notes = list(map(int, input().split()))
+  n = int(input())
+  notes = list(map(int, input().split()))
 
-    # Track which timestamps are "used" (a room was last visited at that time)
-    used = [False] * (n + 1)
-    used[0] = True  # Initial room at time 0
-    rooms = 1
+  # Track which timestamps are "used" (a room was last visited at that time)
+  used = [False] * (n + 1)
+  used[0] = True  # Initial room at time 0
+  rooms = 1
 
-    for i in range(n):
-        t = notes[i]
-        current_time = i + 1
+  for i in range(n):
+    t = notes[i]
+    current_time = i + 1
 
-        if used[t]:
-            # Revisiting room that was last visited at time t
-            used[t] = False
-            used[current_time] = True
-        else:
-            # Must be a new room
-            rooms += 1
-            used[current_time] = True
+    if used[t]:
+      # Revisiting room that was last visited at time t
+      used[t] = False
+      used[current_time] = True
+    else:
+      # Must be a new room
+      rooms += 1
+      used[current_time] = True
 
-    print(rooms)
+  print(rooms)
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

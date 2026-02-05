@@ -262,11 +262,11 @@ Actually, the result depends on graph structure. In this particular fully connec
 ```python
 # WRONG: Using low[v] instead of disc[v] for back edges
 if v != parent[u]:
-    low[u] = min(low[u], low[v])  # INCORRECT!
+  low[u] = min(low[u], low[v])  # INCORRECT!
 
 # CORRECT: Use disc[v] for back edges (visited non-parent neighbors)
 if v != parent[u]:
-    low[u] = min(low[u], disc[v])  # CORRECT!
+  low[u] = min(low[u], disc[v])  # CORRECT!
 ```
 
 **Problem:** Using `low[v]` can propagate incorrect values across back edges that don't represent actual reachability.
@@ -276,15 +276,15 @@ if v != parent[u]:
 ```python
 # WRONG: Treating root the same as other nodes
 if low[v] >= disc[u]:
-    is_articulation[u] = True  # Wrong for root!
+  is_articulation[u] = True  # Wrong for root!
 
 # CORRECT: Root is AP only if it has 2+ DFS children
 if parent[u] == -1:
-    if children > 1:
-        is_articulation[u] = True
+  if children > 1:
+    is_articulation[u] = True
 else:
-    if low[v] >= disc[u]:
-        is_articulation[u] = True
+  if low[v] >= disc[u]:
+    is_articulation[u] = True
 ```
 
 **Problem:** The root always satisfies `low[v] >= disc[u]` for its children, but it's only an AP if removing it creates multiple disconnected subtrees.
@@ -294,13 +294,13 @@ else:
 ```python
 # WRONG: Not excluding parent from back edge check
 for v in graph[u]:
-    if disc[v] != -1:
-        low[u] = min(low[u], disc[v])  # Includes parent!
+  if disc[v] != -1:
+    low[u] = min(low[u], disc[v])  # Includes parent!
 
 # CORRECT: Explicitly exclude parent
 for v in graph[u]:
-    if disc[v] != -1 and v != parent[u]:
-        low[u] = min(low[u], disc[v])
+  if disc[v] != -1 and v != parent[u]:
+    low[u] = min(low[u], disc[v])
 ```
 
 **Problem:** The edge to parent is a tree edge, not a back edge. Including it gives incorrect low values.
@@ -310,7 +310,7 @@ for v in graph[u]:
 ```python
 # WRONG for multigraphs: Using simple parent check
 if v != parent[u]:
-    ...
+  ...
 
 # CORRECT for multigraphs: Track edge index or use edge count
 # If there are multiple edges between u and parent,
@@ -364,81 +364,81 @@ import sys
 from collections import defaultdict
 
 def find_articulation_points(n, edges):
-    """
-    Find all articulation points in an undirected graph.
+  """
+  Find all articulation points in an undirected graph.
 
-    Time: O(V + E)
-    Space: O(V + E) for adjacency list, O(V) for arrays
-    """
-    # Build adjacency list
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
+  Time: O(V + E)
+  Space: O(V + E) for adjacency list, O(V) for arrays
+  """
+  # Build adjacency list
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
-    # Initialize arrays
-    disc = [-1] * (n + 1)      # Discovery time
-    low = [-1] * (n + 1)       # Low-link value
-    parent = [-1] * (n + 1)    # Parent in DFS tree
-    is_ap = [False] * (n + 1)  # Is articulation point?
-    timer = [0]                # Use list for mutable closure
+  # Initialize arrays
+  disc = [-1] * (n + 1)      # Discovery time
+  low = [-1] * (n + 1)       # Low-link value
+  parent = [-1] * (n + 1)    # Parent in DFS tree
+  is_ap = [False] * (n + 1)  # Is articulation point?
+  timer = [0]                # Use list for mutable closure
 
-    def dfs(u):
-        children = 0
-        disc[u] = low[u] = timer[0]
-        timer[0] += 1
+  def dfs(u):
+    children = 0
+    disc[u] = low[u] = timer[0]
+    timer[0] += 1
 
-        for v in graph[u]:
-            if disc[v] == -1:  # Not visited
-                children += 1
-                parent[v] = u
-                dfs(v)
+    for v in graph[u]:
+      if disc[v] == -1:  # Not visited
+        children += 1
+        parent[v] = u
+        dfs(v)
 
-                # Update low-link from child
-                low[u] = min(low[u], low[v])
+        # Update low-link from child
+        low[u] = min(low[u], low[v])
 
-                # Articulation point conditions
-                # Condition 1: u is root with 2+ children
-                if parent[u] == -1 and children > 1:
-                    is_ap[u] = True
+        # Articulation point conditions
+        # Condition 1: u is root with 2+ children
+        if parent[u] == -1 and children > 1:
+          is_ap[u] = True
 
-                # Condition 2: u is not root and no back edge from v's subtree
-                if parent[u] != -1 and low[v] >= disc[u]:
-                    is_ap[u] = True
+        # Condition 2: u is not root and no back edge from v's subtree
+        if parent[u] != -1 and low[v] >= disc[u]:
+          is_ap[u] = True
 
-            elif v != parent[u]:  # Back edge (not to parent)
-                low[u] = min(low[u], disc[v])
+      elif v != parent[u]:  # Back edge (not to parent)
+        low[u] = min(low[u], disc[v])
 
-    # Run DFS from each unvisited vertex (handles disconnected graphs)
-    for i in range(1, n + 1):
-        if disc[i] == -1:
-            dfs(i)
+  # Run DFS from each unvisited vertex (handles disconnected graphs)
+  for i in range(1, n + 1):
+    if disc[i] == -1:
+      dfs(i)
 
-    # Collect articulation points
-    return [i for i in range(1, n + 1) if is_ap[i]]
+  # Collect articulation points
+  return [i for i in range(1, n + 1) if is_ap[i]]
 
 
 def solve():
-    input = sys.stdin.readline
-    n, m = map(int, input().split())
+  input = sys.stdin.readline
+  n, m = map(int, input().split())
 
-    edges = []
-    for _ in range(m):
-        u, v = map(int, input().split())
-        edges.append((u, v))
+  edges = []
+  for _ in range(m):
+    u, v = map(int, input().split())
+    edges.append((u, v))
 
-    result = find_articulation_points(n, edges)
+  result = find_articulation_points(n, edges)
 
-    if result:
-        print(len(result))
-        print(' '.join(map(str, sorted(result))))
-    else:
-        print(0)
+  if result:
+    print(len(result))
+    print(' '.join(map(str, sorted(result))))
+  else:
+    print(0)
 
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(200005)
-    solve()
+  sys.setrecursionlimit(200005)
+  solve()
 ```
 
 ---

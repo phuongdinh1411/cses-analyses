@@ -109,35 +109,35 @@ For each cube, try placing it on every existing tower where it fits, or create a
 
 ```python
 def solve_brute_force(cubes):
-    """
-    Brute force: try all valid placements.
+  """
+  Brute force: try all valid placements.
 
-    Time: O(n! * n) in worst case
-    Space: O(n) for recursion stack
-    """
-    def backtrack(idx, towers):
-        if idx == len(cubes):
-            return len(towers)
+  Time: O(n! * n) in worst case
+  Space: O(n) for recursion stack
+  """
+  def backtrack(idx, towers):
+    if idx == len(cubes):
+      return len(towers)
 
-        cube = cubes[idx]
-        min_towers = float('inf')
+    cube = cubes[idx]
+    min_towers = float('inf')
 
-        # Try placing on existing tower
-        for i in range(len(towers)):
-            if towers[i] > cube:  # Can place
-                old_top = towers[i]
-                towers[i] = cube
-                min_towers = min(min_towers, backtrack(idx + 1, towers))
-                towers[i] = old_top  # Restore
-
-        # Try creating new tower
-        towers.append(cube)
+    # Try placing on existing tower
+    for i in range(len(towers)):
+      if towers[i] > cube:  # Can place
+        old_top = towers[i]
+        towers[i] = cube
         min_towers = min(min_towers, backtrack(idx + 1, towers))
-        towers.pop()
+        towers[i] = old_top  # Restore
 
-        return min_towers
+    # Try creating new tower
+    towers.append(cube)
+    min_towers = min(min_towers, backtrack(idx + 1, towers))
+    towers.pop()
 
-    return backtrack(0, [])
+    return min_towers
+
+  return backtrack(0, [])
 ```
 
 ### Complexity
@@ -240,112 +240,112 @@ Final Towers (top to bottom):
 import bisect
 
 def solve_optimal(n, cubes):
-    """
-    Greedy with binary search using sorted list.
+  """
+  Greedy with binary search using sorted list.
 
-    Time: O(n log n)
-    Space: O(n)
-    """
-    tower_tops = []  # Sorted list of tower tops
+  Time: O(n log n)
+  Space: O(n)
+  """
+  tower_tops = []  # Sorted list of tower tops
 
-    for cube in cubes:
-        # Find smallest top > cube (upper_bound)
-        pos = bisect.bisect_right(tower_tops, cube)
+  for cube in cubes:
+    # Find smallest top > cube (upper_bound)
+    pos = bisect.bisect_right(tower_tops, cube)
 
-        if pos < len(tower_tops):
-            # Place on existing tower, update top
-            tower_tops[pos] = cube
-        else:
-            # Create new tower
-            tower_tops.append(cube)
+    if pos < len(tower_tops):
+      # Place on existing tower, update top
+      tower_tops[pos] = cube
+    else:
+      # Create new tower
+      tower_tops.append(cube)
 
-        # Keep sorted (append preserves order since cube <= all elements after pos)
-        # But we replaced at pos, need to re-sort that section
-        # Actually, bisect_right + replace may break sorting!
-        # Must use a proper approach
+    # Keep sorted (append preserves order since cube <= all elements after pos)
+    # But we replaced at pos, need to re-sort that section
+    # Actually, bisect_right + replace may break sorting!
+    # Must use a proper approach
 
-    return len(tower_tops)
+  return len(tower_tops)
 
 
 def solve_optimal_correct(n, cubes):
-    """
-    Correct greedy with binary search.
+  """
+  Correct greedy with binary search.
 
-    Since we need upper_bound and then replace, we can use
-    a list but must maintain sortedness.
+  Since we need upper_bound and then replace, we can use
+  a list but must maintain sortedness.
 
-    Time: O(n log n)
-    Space: O(n)
-    """
-    from sortedcontainers import SortedList
+  Time: O(n log n)
+  Space: O(n)
+  """
+  from sortedcontainers import SortedList
 
-    tower_tops = SortedList()
+  tower_tops = SortedList()
 
-    for cube in cubes:
-        # Find index of smallest element > cube
-        pos = tower_tops.bisect_right(cube)
+  for cube in cubes:
+    # Find index of smallest element > cube
+    pos = tower_tops.bisect_right(cube)
 
-        if pos < len(tower_tops):
-            # Remove old top, add new (cube becomes top)
-            tower_tops.pop(pos)
-            tower_tops.add(cube)
-        else:
-            # No valid tower, create new one
-            tower_tops.add(cube)
+    if pos < len(tower_tops):
+      # Remove old top, add new (cube becomes top)
+      tower_tops.pop(pos)
+      tower_tops.add(cube)
+    else:
+      # No valid tower, create new one
+      tower_tops.add(cube)
 
-    return len(tower_tops)
+  return len(tower_tops)
 
 
 # For competitive programming without SortedList:
 def solve_with_bisect(n, cubes):
-    """
-    Using bisect with manual list management.
+  """
+  Using bisect with manual list management.
 
-    Key insight: tower_tops stays sorted because:
-    - We replace element at bisect_right position with smaller value
-    - This maintains sorted order
+  Key insight: tower_tops stays sorted because:
+  - We replace element at bisect_right position with smaller value
+  - This maintains sorted order
 
-    Time: O(n log n)
-    Space: O(n)
-    """
-    tower_tops = []
+  Time: O(n log n)
+  Space: O(n)
+  """
+  tower_tops = []
 
-    for cube in cubes:
-        # bisect_right: find first position where element > cube
-        pos = bisect.bisect_right(tower_tops, cube)
+  for cube in cubes:
+    # bisect_right: find first position where element > cube
+    pos = bisect.bisect_right(tower_tops, cube)
 
-        if pos == len(tower_tops):
-            # No tower has top > cube, create new
-            tower_tops.append(cube)
-        else:
-            # tower_tops[pos] > cube, place cube there
-            tower_tops[pos] = cube
+    if pos == len(tower_tops):
+      # No tower has top > cube, create new
+      tower_tops.append(cube)
+    else:
+      # tower_tops[pos] > cube, place cube there
+      tower_tops[pos] = cube
 
-    return len(tower_tops)
+  return len(tower_tops)
 
 
 # Standard input/output version
 def main():
-    import bisect
+  import bisect
 
-    n = int(input())
-    cubes = list(map(int, input().split()))
+  n = int(input())
+  cubes = list(map(int, input().split()))
 
-    tower_tops = []
+  tower_tops = []
 
-    for cube in cubes:
-        pos = bisect.bisect_right(tower_tops, cube)
+  for cube in cubes:
+    pos = bisect.bisect_right(tower_tops, cube)
 
-        if pos == len(tower_tops):
-            tower_tops.append(cube)
-        else:
-            tower_tops[pos] = cube
+    if pos == len(tower_tops):
+      tower_tops.append(cube)
+    else:
+      tower_tops[pos] = cube
 
-    print(len(tower_tops))
+  print(len(tower_tops))
 
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 ### Complexity

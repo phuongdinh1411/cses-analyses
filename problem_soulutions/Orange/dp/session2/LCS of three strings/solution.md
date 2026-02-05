@@ -35,67 +35,67 @@ Extend the 2D LCS DP to 3D:
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        # 3D DP
-        dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
+    # 3D DP
+    dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
 
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-                for l in range(1, k + 1):
-                    if X[i-1] == Y[j-1] == Z[l-1]:
-                        dp[i][j][l] = dp[i-1][j-1][l-1] + 1
-                    else:
-                        dp[i][j][l] = max(dp[i-1][j][l],
-                                         dp[i][j-1][l],
-                                         dp[i][j][l-1])
+    for i in range(1, n + 1):
+      for j in range(1, m + 1):
+        for l in range(1, k + 1):
+          if X[i-1] == Y[j-1] == Z[l-1]:
+            dp[i][j][l] = dp[i-1][j-1][l-1] + 1
+          else:
+            dp[i][j][l] = max(dp[i-1][j][l],
+                    dp[i][j-1][l],
+                    dp[i][j][l-1])
 
-        print(dp[n][m][k])
+    print(dp[n][m][k])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Space-Optimized Solution
 
 ```python
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        # Only need 2 layers: current and previous for first dimension
-        prev = [[0] * (k + 1) for _ in range(m + 1)]
-        curr = [[0] * (k + 1) for _ in range(m + 1)]
+    # Only need 2 layers: current and previous for first dimension
+    prev = [[0] * (k + 1) for _ in range(m + 1)]
+    curr = [[0] * (k + 1) for _ in range(m + 1)]
 
-        for i in range(1, n + 1):
-            # Also need prev_j for second dimension
-            prev_j = [0] * (k + 1)
+    for i in range(1, n + 1):
+      # Also need prev_j for second dimension
+      prev_j = [0] * (k + 1)
 
-            for j in range(1, m + 1):
-                prev_l = 0
-                for l in range(1, k + 1):
-                    if X[i-1] == Y[j-1] == Z[l-1]:
-                        curr[j][l] = prev[j-1][l-1] + 1
-                    else:
-                        curr[j][l] = max(prev[j][l],
-                                        curr[j-1][l],
-                                        curr[j][l-1])
+      for j in range(1, m + 1):
+        prev_l = 0
+        for l in range(1, k + 1):
+          if X[i-1] == Y[j-1] == Z[l-1]:
+            curr[j][l] = prev[j-1][l-1] + 1
+          else:
+            curr[j][l] = max(prev[j][l],
+                    curr[j-1][l],
+                    curr[j][l-1])
 
-            prev, curr = curr, [[0] * (k + 1) for _ in range(m + 1)]
+      prev, curr = curr, [[0] * (k + 1) for _ in range(m + 1)]
 
-        print(prev[m][k])
+    print(prev[m][k])
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Recursive Solution with Memoization
@@ -105,34 +105,34 @@ import sys
 sys.setrecursionlimit(1000000)
 
 def solve():
-    t = int(input())
+  t = int(input())
 
-    for _ in range(t):
-        n, m, k = map(int, input().split())
-        parts = input().split()
-        X, Y, Z = parts[0], parts[1], parts[2]
+  for _ in range(t):
+    n, m, k = map(int, input().split())
+    parts = input().split()
+    X, Y, Z = parts[0], parts[1], parts[2]
 
-        memo = {}
+    memo = {}
 
-        def lcs(i, j, l):
-            if i == 0 or j == 0 or l == 0:
-                return 0
+    def lcs(i, j, l):
+      if i == 0 or j == 0 or l == 0:
+        return 0
 
-            if (i, j, l) in memo:
-                return memo[(i, j, l)]
+      if (i, j, l) in memo:
+        return memo[(i, j, l)]
 
-            if X[i-1] == Y[j-1] == Z[l-1]:
-                result = lcs(i-1, j-1, l-1) + 1
-            else:
-                result = max(lcs(i-1, j, l), lcs(i, j-1, l), lcs(i, j, l-1))
+      if X[i-1] == Y[j-1] == Z[l-1]:
+        result = lcs(i-1, j-1, l-1) + 1
+      else:
+        result = max(lcs(i-1, j, l), lcs(i, j-1, l), lcs(i, j, l-1))
 
-            memo[(i, j, l)] = result
-            return result
+      memo[(i, j, l)] = result
+      return result
 
-        print(lcs(n, m, k))
+    print(lcs(n, m, k))
 
 if __name__ == "__main__":
-    solve()
+  solve()
 ```
 
 ### Complexity Analysis

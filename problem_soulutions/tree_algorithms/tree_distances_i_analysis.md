@@ -120,36 +120,36 @@ For each node, run BFS to find the distance to all other nodes and take the maxi
 
 ```python
 def solve_brute_force(n, edges):
-    """
-    Brute force: BFS from each node.
+  """
+  Brute force: BFS from each node.
 
-    Time: O(n^2)
-    Space: O(n)
-    """
-    from collections import deque, defaultdict
+  Time: O(n^2)
+  Space: O(n)
+  """
+  from collections import deque, defaultdict
 
-    graph = defaultdict(list)
-    for u, v in edges:
-        graph[u].append(v)
-        graph[v].append(u)
+  graph = defaultdict(list)
+  for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
 
-    results = []
-    for start in range(1, n + 1):
-        queue = deque([(start, 0)])
-        visited = {start}
-        max_dist = 0
+  results = []
+  for start in range(1, n + 1):
+    queue = deque([(start, 0)])
+    visited = {start}
+    max_dist = 0
 
-        while queue:
-            node, dist = queue.popleft()
-            max_dist = max(max_dist, dist)
-            for neighbor in graph[node]:
-                if neighbor not in visited:
-                    visited.add(neighbor)
-                    queue.append((neighbor, dist + 1))
+    while queue:
+      node, dist = queue.popleft()
+      max_dist = max(max_dist, dist)
+      for neighbor in graph[node]:
+        if neighbor not in visited:
+          visited.add(neighbor)
+          queue.append((neighbor, dist + 1))
 
-        results.append(max_dist)
+    results.append(max_dist)
 
-    return results
+  return results
 ```
 
 ### Complexity
@@ -255,52 +255,52 @@ import sys
 from collections import defaultdict, deque
 
 def solve():
-    input = sys.stdin.readline
-    n = int(input())
+  input = sys.stdin.readline
+  n = int(input())
 
-    graph = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        graph[a].append(b)
-        graph[b].append(a)
+  graph = defaultdict(list)
+  for _ in range(n - 1):
+    a, b = map(int, input().split())
+    graph[a].append(b)
+    graph[b].append(a)
 
-    def bfs(start):
-        """Returns (distances array, farthest node)"""
-        dist = [-1] * (n + 1)
-        dist[start] = 0
-        queue = deque([start])
-        farthest = start
+  def bfs(start):
+    """Returns (distances array, farthest node)"""
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    queue = deque([start])
+    farthest = start
 
-        while queue:
-            node = queue.popleft()
-            for neighbor in graph[node]:
-                if dist[neighbor] == -1:
-                    dist[neighbor] = dist[node] + 1
-                    queue.append(neighbor)
-                    if dist[neighbor] > dist[farthest]:
-                        farthest = neighbor
+    while queue:
+      node = queue.popleft()
+      for neighbor in graph[node]:
+        if dist[neighbor] == -1:
+          dist[neighbor] = dist[node] + 1
+          queue.append(neighbor)
+          if dist[neighbor] > dist[farthest]:
+            farthest = neighbor
 
-        return dist, farthest
+    return dist, farthest
 
-    # Step 1: Find first diameter endpoint
-    _, endpoint_a = bfs(1)
+  # Step 1: Find first diameter endpoint
+  _, endpoint_a = bfs(1)
 
-    # Step 2: Find second endpoint and distances from A
-    dist_from_a, endpoint_b = bfs(endpoint_a)
+  # Step 2: Find second endpoint and distances from A
+  dist_from_a, endpoint_b = bfs(endpoint_a)
 
-    # Step 3: Get distances from B
-    dist_from_b, _ = bfs(endpoint_b)
+  # Step 3: Get distances from B
+  dist_from_b, _ = bfs(endpoint_b)
 
-    # Step 4: Answer is max of distances to both endpoints
-    result = []
-    for i in range(1, n + 1):
-        result.append(max(dist_from_a[i], dist_from_b[i]))
+  # Step 4: Answer is max of distances to both endpoints
+  result = []
+  for i in range(1, n + 1):
+    result.append(max(dist_from_a[i], dist_from_b[i]))
 
-    print(' '.join(map(str, result)))
+  print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-    sys.setrecursionlimit(300000)
-    solve()
+  sys.setrecursionlimit(300000)
+  solve()
 ```
 
 ### Complexity
@@ -332,10 +332,10 @@ dist_from_a, endpoint_b = bfs(endpoint_a)  # endpoint_a = 1, still works
 ```python
 # WRONG - stack overflow for n=200000
 def dfs(node, parent, dist):
-    # ... recursive calls
-    for child in graph[node]:
-        if child != parent:
-            dfs(child, node, dist + 1)  # May cause stack overflow!
+  # ... recursive calls
+  for child in graph[node]:
+    if child != parent:
+      dfs(child, node, dist + 1)  # May cause stack overflow!
 ```
 
 **Problem:** Python's default recursion limit (~1000) is too small.

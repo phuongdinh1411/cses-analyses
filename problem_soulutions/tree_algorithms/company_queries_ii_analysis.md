@@ -105,30 +105,30 @@ Depths: node 1 = 0, nodes 2,3 = 1, nodes 4,5 = 2
 
 ```python
 def solve_brute_force(n, parents, queries):
-    """
-    Time: O(q * n) - each query may traverse O(n) ancestors
-    Space: O(n)
-    """
-    parent = [0] * (n + 1)
-    for i in range(2, n + 1):
-        parent[i] = parents[i - 2]
+  """
+  Time: O(q * n) - each query may traverse O(n) ancestors
+  Space: O(n)
+  """
+  parent = [0] * (n + 1)
+  for i in range(2, n + 1):
+    parent[i] = parents[i - 2]
 
-    depth = [0] * (n + 1)
-    for i in range(2, n + 1):
-        node = i
-        while node != 0:
-            depth[i] += 1
-            node = parent[node]
-        depth[i] -= 1
+  depth = [0] * (n + 1)
+  for i in range(2, n + 1):
+    node = i
+    while node != 0:
+      depth[i] += 1
+      node = parent[node]
+    depth[i] -= 1
 
-    def lca(a, b):
-        while depth[a] > depth[b]: a = parent[a]
-        while depth[b] > depth[a]: b = parent[b]
-        while a != b:
-            a, b = parent[a], parent[b]
-        return a
+  def lca(a, b):
+    while depth[a] > depth[b]: a = parent[a]
+    while depth[b] > depth[a]: b = parent[b]
+    while a != b:
+      a, b = parent[a], parent[b]
+    return a
 
-    return [lca(a, b) for a, b in queries]
+  return [lca(a, b) for a, b in queries]
 ```
 
 | Metric | Value | Explanation |
@@ -186,54 +186,54 @@ from collections import deque
 input = sys.stdin.readline
 
 def solve():
-    n, q = map(int, input().split())
-    if n == 1:
-        for _ in range(q): print(1)
-        return
+  n, q = map(int, input().split())
+  if n == 1:
+    for _ in range(q): print(1)
+    return
 
-    parents = list(map(int, input().split()))
-    LOG = 18
-    parent = [0] * (n + 1)
-    for i in range(2, n + 1):
-        parent[i] = parents[i - 2]
+  parents = list(map(int, input().split()))
+  LOG = 18
+  parent = [0] * (n + 1)
+  for i in range(2, n + 1):
+    parent[i] = parents[i - 2]
 
-    # Compute depths using BFS
-    depth = [0] * (n + 1)
-    children = [[] for _ in range(n + 1)]
-    for i in range(2, n + 1):
-        children[parent[i]].append(i)
+  # Compute depths using BFS
+  depth = [0] * (n + 1)
+  children = [[] for _ in range(n + 1)]
+  for i in range(2, n + 1):
+    children[parent[i]].append(i)
 
-    queue = deque([1])
-    while queue:
-        node = queue.popleft()
-        for child in children[node]:
-            depth[child] = depth[node] + 1
-            queue.append(child)
+  queue = deque([1])
+  while queue:
+    node = queue.popleft()
+    for child in children[node]:
+      depth[child] = depth[node] + 1
+      queue.append(child)
 
-    # Build binary lifting table
-    up = [[0] * (n + 1) for _ in range(LOG)]
+  # Build binary lifting table
+  up = [[0] * (n + 1) for _ in range(LOG)]
+  for i in range(1, n + 1):
+    up[0][i] = parent[i]
+  for k in range(1, LOG):
     for i in range(1, n + 1):
-        up[0][i] = parent[i]
-    for k in range(1, LOG):
-        for i in range(1, n + 1):
-            up[k][i] = up[k-1][up[k-1][i]]
+      up[k][i] = up[k-1][up[k-1][i]]
 
-    def lca(a, b):
-        if depth[a] < depth[b]: a, b = b, a
-        diff = depth[a] - depth[b]
-        for k in range(LOG):
-            if diff & (1 << k): a = up[k][a]
-        if a == b: return a
-        for k in range(LOG - 1, -1, -1):
-            if up[k][a] != up[k][b]:
-                a, b = up[k][a], up[k][b]
-        return up[0][a]
+  def lca(a, b):
+    if depth[a] < depth[b]: a, b = b, a
+    diff = depth[a] - depth[b]
+    for k in range(LOG):
+      if diff & (1 << k): a = up[k][a]
+    if a == b: return a
+    for k in range(LOG - 1, -1, -1):
+      if up[k][a] != up[k][b]:
+        a, b = up[k][a], up[k][b]
+    return up[0][a]
 
-    results = []
-    for _ in range(q):
-        a, b = map(int, input().split())
-        results.append(str(lca(a, b)))
-    print('\n'.join(results))
+  results = []
+  for _ in range(q):
+    a, b = map(int, input().split())
+    results.append(str(lca(a, b)))
+  print('\n'.join(results))
 
 solve()
 ```
@@ -254,8 +254,8 @@ solve()
 ```python
 # WRONG - checking from k=0 to LOG-1
 for k in range(LOG):
-    if up[k][a] != up[k][b]:
-        a, b = up[k][a], up[k][b]
+  if up[k][a] != up[k][b]:
+    a, b = up[k][a], up[k][b]
 ```
 
 **Problem:** Must make largest jumps first that don't overshoot the LCA.
@@ -267,7 +267,7 @@ for k in range(LOG):
 # WRONG - missing early return after depth equalization
 diff = depth[a] - depth[b]
 for k in range(LOG):
-    if diff & (1 << k): a = up[k][a]
+  if diff & (1 << k): a = up[k][a]
 # Should check: if a == b: return a
 ```
 

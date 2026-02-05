@@ -100,26 +100,26 @@ Try all possible dice rolls recursively. For each sum, try subtracting 1, 2, 3, 
 
 ```python
 def solve_recursive(n):
-    """
-    Recursive solution - for understanding only.
+  """
+  Recursive solution - for understanding only.
 
-    Time: O(6^n) - exponential, will TLE
-    Space: O(n) - recursion depth
-    """
-    MOD = 10**9 + 7
+  Time: O(6^n) - exponential, will TLE
+  Space: O(n) - recursion depth
+  """
+  MOD = 10**9 + 7
 
-    def count_ways(target):
-        if target == 0:
-            return 1  # Found a valid combination
-        if target < 0:
-            return 0  # Invalid, overshot
+  def count_ways(target):
+    if target == 0:
+      return 1  # Found a valid combination
+    if target < 0:
+      return 0  # Invalid, overshot
 
-        total = 0
-        for dice in range(1, 7):  # Roll 1 to 6
-            total += count_ways(target - dice)
-        return total % MOD
+    total = 0
+    for dice in range(1, 7):  # Roll 1 to 6
+      total += count_ways(target - dice)
+    return total % MOD
 
-    return count_ways(n)
+  return count_ways(n)
 ```
 
 ### Why This Is Too Slow
@@ -243,24 +243,24 @@ Sum 4: 8 ways
 
 ```python
 def solve_dp(n):
-    """
-    Bottom-up DP solution.
+  """
+  Bottom-up DP solution.
 
-    Time: O(n) - single pass, 6 operations per element
-    Space: O(n) - dp array
-    """
-    MOD = 10**9 + 7
+  Time: O(n) - single pass, 6 operations per element
+  Space: O(n) - dp array
+  """
+  MOD = 10**9 + 7
 
-    # dp[i] = number of ways to make sum i
-    dp = [0] * (n + 1)
-    dp[0] = 1  # Base case: one way to make sum 0
+  # dp[i] = number of ways to make sum i
+  dp = [0] * (n + 1)
+  dp[0] = 1  # Base case: one way to make sum 0
 
-    for i in range(1, n + 1):
-        for dice in range(1, 7):
-            if i >= dice:
-                dp[i] = (dp[i] + dp[i - dice]) % MOD
+  for i in range(1, n + 1):
+    for dice in range(1, 7):
+      if i >= dice:
+        dp[i] = (dp[i] + dp[i - dice]) % MOD
 
-    return dp[n]
+  return dp[n]
 
 # Read input and solve
 n = int(input())
@@ -343,13 +343,13 @@ The difference is in loop structure:
 ```python
 # PERMUTATIONS (this problem) - inner loop over choices
 for i in range(1, n + 1):       # For each sum
-    for dice in range(1, 7):    # Try each dice value
-        dp[i] += dp[i - dice]
+  for dice in range(1, 7):    # Try each dice value
+    dp[i] += dp[i - dice]
 
 # COMBINATIONS - outer loop over choices
 for dice in range(1, 7):        # For each dice value
-    for i in range(dice, n + 1): # Update all reachable sums
-        dp[i] += dp[i - dice]
+  for i in range(dice, n + 1): # Update all reachable sums
+    dp[i] += dp[i - dice]
 ```
 
 ---
