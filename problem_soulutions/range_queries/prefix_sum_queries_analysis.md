@@ -228,93 +228,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> pll;
-const ll NEG_INF = LLONG_MIN / 2;
-
-class SegmentTree {
-    int n;
-    vector<pll> tree;
-
-    pll merge(const pll& l, const pll& r) {
-        return {l.first + r.first, max(l.second, l.first + r.second)};
-    }
-
-    void build(const vector<ll>& arr, int node, int start, int end) {
-        if (start == end) {
-            tree[node] = {arr[start], arr[start]};
-            return;
-        }
-        int mid = (start + end) / 2;
-        build(arr, 2*node, start, mid);
-        build(arr, 2*node+1, mid+1, end);
-        tree[node] = merge(tree[2*node], tree[2*node+1]);
-    }
-
-    void update(int node, int start, int end, int pos, ll val) {
-        if (start == end) {
-            tree[node] = {val, val};
-            return;
-        }
-        int mid = (start + end) / 2;
-        if (pos <= mid) update(2*node, start, mid, pos, val);
-        else update(2*node+1, mid+1, end, pos, val);
-        tree[node] = merge(tree[2*node], tree[2*node+1]);
-    }
-
-    pll query(int node, int start, int end, int l, int r) {
-        if (r < start || end < l) return {0, NEG_INF};
-        if (l <= start && end <= r) return tree[node];
-        int mid = (start + end) / 2;
-        return merge(query(2*node, start, mid, l, r),
-                     query(2*node+1, mid+1, end, l, r));
-    }
-
-public:
-    SegmentTree(const vector<ll>& arr) : n(arr.size() - 1) {
-        tree.resize(4 * n + 1);
-        build(arr, 1, 1, n);
-    }
-
-    void update(int pos, ll val) { update(1, 1, n, pos, val); }
-    ll query(int l, int r) { return query(1, 1, n, l, r).second; }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<ll> arr(n + 1);
-    for (int i = 1; i <= n; i++) cin >> arr[i];
-
-    SegmentTree st(arr);
-
-    while (q--) {
-        int type;
-        cin >> type;
-        if (type == 1) {
-            int k; ll u;
-            cin >> k >> u;
-            st.update(k, u);
-        } else {
-            int a, b;
-            cin >> a >> b;
-            cout << st.query(a, b) << '\n';
-        }
-    }
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -388,18 +301,21 @@ Values up to 10^9, sums can reach 2 x 10^14. Use `long long`.
 ## Related Problems
 
 ### Easier (Do First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sums |
 | [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) | Segment tree basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Update Queries](https://cses.fi/problemset/task/1651) | Lazy propagation |
 | [Maximum Subarray](https://leetcode.com/problems/maximum-subarray/) | Kadane's algorithm |
 
 ### Harder (Do After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polynomial Queries](https://cses.fi/problemset/task/1736) | Complex lazy propagation |

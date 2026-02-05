@@ -185,42 +185,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <iostream>
-using namespace std;
-
-/**
- * Count trailing zeros in n! using Legendre's formula.
- *
- * Time: O(log_5(n))
- * Space: O(1)
- */
-long long trailingZeros(long long n) {
-    long long count = 0;
-    long long powerOf5 = 5;
-
-    while (powerOf5 <= n) {
-        count += n / powerOf5;
-        powerOf5 *= 5;
-    }
-
-    return count;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    long long n;
-    cin >> n;
-    cout << trailingZeros(n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -249,15 +213,6 @@ def trailing_zeros_wrong(n):
 - Correct answer: 25//5 + 25//25 = 5 + 1 = 6
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - potential overflow for large n
-int powerOf5 = 5;
-while (powerOf5 <= n) {
-    count += n / powerOf5;
-    powerOf5 *= 5;  // Can overflow int!
-}
-```
 
 **Problem:** For n up to 10^9, power_of_5 can exceed INT_MAX.
 
@@ -314,12 +269,14 @@ def trailing_zeros_overcomplicated(n):
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [LeetCode 172: Factorial Trailing Zeroes](https://leetcode.com/problems/factorial-trailing-zeroes/) | Same problem, smaller constraints |
 | [CSES: Counting Divisors](https://cses.fi/problemset/task/1713) | Counting divisors instead of prime factors |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES: Common Divisors](https://cses.fi/problemset/task/1081) | GCD and factorization |

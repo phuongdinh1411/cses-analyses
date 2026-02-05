@@ -273,53 +273,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> graph(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        graph[a-1].push_back(b-1);  // 0-indexed
-    }
-
-    // dp[mask][v] = count of paths ending at v with visited = mask
-    vector<vector<long long>> dp(1 << n, vector<long long>(n, 0));
-    dp[1][0] = 1;  // Start at vertex 0
-
-    for (int mask = 1; mask < (1 << n); mask++) {
-        for (int v = 0; v < n; v++) {
-            if (dp[mask][v] == 0) continue;
-            if (!(mask & (1 << v))) continue;
-
-            for (int u : graph[v]) {
-                if (mask & (1 << u)) continue;  // Already visited
-                int new_mask = mask | (1 << u);
-                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
-            }
-        }
-    }
-
-    int full_mask = (1 << n) - 1;
-    cout << dp[full_mask][n-1] << "\n";
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -357,16 +311,6 @@ if mask & (1 << v):  # Check if bit v is set
 
 **Problem:** `mask & v` doesn't check if vertex v is visited
 **Fix:** Use `mask & (1 << v)` to check bit at position v
-
-### Mistake 3: Integer Overflow in C++
-
-```cpp
-// WRONG - overflow before modulo
-dp[new_mask][u] = dp[new_mask][u] + dp[mask][v];
-
-// CORRECT - use long long and apply modulo
-dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
-```
 
 **Problem:** Sum can overflow 32-bit integers
 **Fix:** Use `long long` for DP array and apply modulo after each addition

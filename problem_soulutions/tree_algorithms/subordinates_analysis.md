@@ -283,50 +283,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> children[200005];
-int subtree[200005];
-
-void dfs(int node) {
-    subtree[node] = 1;
-    for (int child : children[node]) {
-        dfs(child);
-        subtree[node] += subtree[child];
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    // Build children list from parent array
-    for (int i = 2; i <= n; i++) {
-        int boss;
-        cin >> boss;
-        children[boss].push_back(i);
-    }
-
-    dfs(1);
-
-    // Output subordinates (subtree - 1)
-    for (int i = 1; i <= n; i++) {
-        cout << subtree[i] - 1;
-        if (i < n) cout << " ";
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -411,17 +367,20 @@ boss = parents[i - 2]  # employee i's boss is at index i-2
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | Basic DFS traversal | Understand tree traversal fundamentals |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances I](https://cses.fi/problemset/task/1132) | Find farthest node from each node |
 | [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances to all other nodes |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Company Queries I](https://cses.fi/problemset/task/1687) | k-th ancestor queries (binary lifting) |

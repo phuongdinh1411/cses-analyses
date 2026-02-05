@@ -264,47 +264,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    // dp[j] = permutations with j inversions
-    vector<long long> dp(k + 1, 0);
-    dp[0] = 1;
-
-    for (int i = 2; i <= n; i++) {
-        // Build prefix sum
-        vector<long long> prefix(k + 2, 0);
-        for (int j = 0; j <= k; j++) {
-            prefix[j + 1] = (prefix[j] + dp[j]) % MOD;
-        }
-
-        // Update dp using prefix sums
-        vector<long long> new_dp(k + 1, 0);
-        for (int j = 0; j <= k; j++) {
-            int left = max(0, j - (i - 1));
-            new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD;
-        }
-
-        dp = new_dp;
-    }
-
-    cout << dp[k] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -317,14 +276,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Forgetting Modular Subtraction Can Go Negative
-
-```cpp
-// WRONG - can produce negative result
-new_dp[j] = (prefix[j + 1] - prefix[left]) % MOD;
-
-// CORRECT - add MOD before taking modulo
-new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD;
-```
 
 **Problem:** In C++, `(-1) % MOD` gives `-1`, not `MOD - 1`.
 **Fix:** Always add MOD before taking modulo after subtraction.
@@ -389,18 +340,21 @@ prefix[j+1] = prefix[j] + dp[j]
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Coin Combinations I](https://cses.fi/problemset/task/1635) | Basic counting DP |
 | [Dice Combinations](https://cses.fi/problemset/task/1633) | Sum over recent states |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Counting valid sequences |
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Grid-based counting |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Counting Necklaces](https://cses.fi/problemset/task/2209) | Burnside's lemma |

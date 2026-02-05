@@ -246,83 +246,6 @@ s = input().strip()
 print(count_distinct_substrings(s))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> buildSuffixArray(const string& s) {
-    int n = s.size();
-    vector<int> sa(n), rank(n), tmp(n);
-
-    for (int i = 0; i < n; i++) {
-        sa[i] = i;
-        rank[i] = s[i];
-    }
-
-    for (int k = 1; k < n; k *= 2) {
-        auto cmp = [&](int a, int b) {
-            if (rank[a] != rank[b]) return rank[a] < rank[b];
-            int ra = (a + k < n) ? rank[a + k] : -1;
-            int rb = (b + k < n) ? rank[b + k] : -1;
-            return ra < rb;
-        };
-        sort(sa.begin(), sa.end(), cmp);
-
-        tmp[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
-        }
-        rank = tmp;
-    }
-    return sa;
-}
-
-vector<int> buildLCPArray(const string& s, const vector<int>& sa) {
-    int n = s.size();
-    vector<int> rank(n), lcp(n);
-
-    for (int i = 0; i < n; i++) {
-        rank[sa[i]] = i;
-    }
-
-    int k = 0;
-    for (int i = 0; i < n; i++) {
-        if (rank[i] == 0) {
-            k = 0;
-            continue;
-        }
-        int j = sa[rank[i] - 1];
-        while (i + k < n && j + k < n && s[i + k] == s[j + k]) {
-            k++;
-        }
-        lcp[rank[i]] = k;
-        if (k > 0) k--;
-    }
-    return lcp;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-
-    int n = s.size();
-    vector<int> sa = buildSuffixArray(s);
-    vector<int> lcp = buildLCPArray(s, sa);
-
-    long long total = (long long)n * (n + 1) / 2;
-    long long duplicates = 0;
-    for (int x : lcp) duplicates += x;
-
-    cout << total - duplicates << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -335,14 +258,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG
-int total = n * (n + 1) / 2;  // Overflows for n = 10^5
-
-// CORRECT
-long long total = (long long)n * (n + 1) / 2;
-```
 
 **Problem:** n*(n+1) can exceed 2^31 for n = 10^5.
 **Fix:** Cast to `long long` before multiplication.

@@ -314,100 +314,7 @@ if __name__ == "__main__":
     solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-
-const int MAXN = 505;
-vector<int> adj[MAXN];
-ll capacity[MAXN][MAXN];
-int parent_node[MAXN];
-int n, m;
-
-ll bfs() {
-    // Returns bottleneck of augmenting path, or 0 if no path exists
-    fill(parent_node, parent_node + n + 1, -1);
-    parent_node[1] = 1;
-
-    queue<pair<int, ll>> q;
-    q.push({1, LLONG_MAX});
-
-    while (!q.empty()) {
-        int node = q.front().first;
-        ll flow = q.front().second;
-        q.pop();
-
-        if (node == n) {
-            return flow;
-        }
-
-        for (int neighbor : adj[node]) {
-            if (parent_node[neighbor] == -1 && capacity[node][neighbor] > 0) {
-                parent_node[neighbor] = node;
-                ll new_flow = min(flow, capacity[node][neighbor]);
-                q.push({neighbor, new_flow});
-            }
-        }
-    }
-
-    return 0;
-}
-
-ll max_flow() {
-    ll total = 0;
-    ll bottleneck;
-
-    while ((bottleneck = bfs()) > 0) {
-        total += bottleneck;
-
-        // Update residual capacities along the path
-        int current = n;
-        while (current != 1) {
-            int prev = parent_node[current];
-            capacity[prev][current] -= bottleneck;
-            capacity[current][prev] += bottleneck;
-            current = prev;
-        }
-    }
-
-    return total;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-
-    // Initialize capacity matrix
-    memset(capacity, 0, sizeof(capacity));
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        ll c;
-        cin >> a >> b >> c;
-
-        // Add edges to adjacency list (only once per pair)
-        if (capacity[a][b] == 0 && capacity[b][a] == 0) {
-            adj[a].push_back(b);
-            adj[b].push_back(a);
-        }
-
-        // Handle multiple edges: add capacities
-        capacity[a][b] += c;
-    }
-
-    cout << max_flow() << "\n";
-
-    return 0;
-}
-```
-
-## Common Mistakes
+### Common Mistakes
 
 ### 1. Forgetting Reverse Edges
 
@@ -434,15 +341,7 @@ With capacities up to 10^9 and potentially 500 * 1000 total flow:
 - Use `long long` in C++ or Python's arbitrary precision
 
 **Wrong** (C++):
-```cpp
-int capacity[MAXN][MAXN];  // Can overflow!
-```
-
 **Correct**:
-```cpp
-long long capacity[MAXN][MAXN];
-```
-
 ### 3. Not Handling Parallel Edges
 
 Multiple edges between same nodes should have capacities added:

@@ -336,54 +336,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<pair<int, int>> movies(n);
-    for (int i = 0; i < n; i++) {
-        cin >> movies[i].second >> movies[i].first;  // Store as (end, start)
-    }
-
-    // Sort by end time
-    sort(movies.begin(), movies.end());
-
-    // Multiset of member end times
-    multiset<int> member_ends;
-    for (int i = 0; i < k; i++) {
-        member_ends.insert(0);
-    }
-
-    int count = 0;
-
-    for (auto& [end, start] : movies) {
-        // Find largest end time <= start
-        // upper_bound gives first element > start
-        // We want the element just before that
-        auto it = member_ends.upper_bound(start);
-
-        if (it != member_ends.begin()) {
-            --it;  // Now points to largest value <= start
-            member_ends.erase(it);
-            member_ends.insert(end);
-            count++;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -397,80 +349,25 @@ int main() {
 
 ### Mistake 1: Sorting by Start Time Instead of End Time
 
-```cpp
-// WRONG
-sort(movies.begin(), movies.end());  // Sorts by start time by default if pair is (start, end)
-
-// CORRECT
-sort(movies.begin(), movies.end(), [](auto& a, auto& b) {
-    return a.second < b.second;  // Sort by end time
-});
-```
-
 **Problem:** Greedy interval scheduling MUST sort by end time to work correctly.
 **Fix:** Always sort by end time for maximum non-overlapping intervals.
 
 ### Mistake 2: Using lower_bound Instead of upper_bound
-
-```cpp
-// WRONG
-auto it = member_ends.lower_bound(start);  // First element >= start
-
-// CORRECT
-auto it = member_ends.upper_bound(start);  // First element > start
---it;  // Now largest element <= start
-```
 
 **Problem:** `lower_bound` finds first element >= start, but we need the largest element <= start.
 **Fix:** Use `upper_bound` and decrement (with boundary check).
 
 ### Mistake 3: Forgetting Boundary Check
 
-```cpp
-// WRONG
-auto it = member_ends.upper_bound(start);
---it;  // CRASH if it == begin()
-member_ends.erase(it);
-
-// CORRECT
-auto it = member_ends.upper_bound(start);
-if (it != member_ends.begin()) {
-    --it;
-    member_ends.erase(it);
-    member_ends.insert(end);
-    count++;
-}
-```
-
 **Problem:** If all members are busy (all end times > start), upper_bound returns begin().
 **Fix:** Check if iterator equals begin() before decrementing.
 
 ### Mistake 4: Using set Instead of multiset
 
-```cpp
-// WRONG
-set<int> member_ends;  // No duplicates allowed!
-
-// CORRECT
-multiset<int> member_ends;  // Allows duplicates
-```
-
 **Problem:** Multiple members can have the same end time. A set would collapse them.
 **Fix:** Use multiset to handle duplicate end times.
 
 ### Mistake 5: Not Removing Before Inserting
-
-```cpp
-// WRONG
-// Just insert new end time without removing old one
-member_ends.insert(end);
-count++;
-
-// CORRECT
-member_ends.erase(it);  // Remove old end time
-member_ends.insert(end);  // Insert new end time
-count++;
-```
 
 **Problem:** Member count grows beyond k if we don't remove the old end time.
 **Fix:** Always remove the old end time before inserting the new one.
@@ -527,18 +424,21 @@ This is O(k) per operation in the worst case.
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Movie Festival](https://cses.fi/problemset/task/1629) | Single member version - master this first |
 | [LeetCode 435: Non-overlapping Intervals](https://leetcode.com/problems/non-overlapping-intervals/) | Minimum removals for non-overlap |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Room Allocation](https://cses.fi/problemset/task/1164) | Find minimum rooms needed (opposite direction) |
 | [LeetCode 253: Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) | Minimum meeting rooms needed |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 1235: Maximum Profit in Job Scheduling](https://leetcode.com/problems/maximum-profit-in-job-scheduling/) | Weighted interval scheduling with DP |

@@ -234,61 +234,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    long long target;
-    cin >> n >> target;
-
-    // Store (value, original_index) pairs
-    vector<pair<long long, int>> indexed(n);
-    for (int i = 0; i < n; i++) {
-        cin >> indexed[i].first;
-        indexed[i].second = i;
-    }
-
-    // Sort by value
-    sort(indexed.begin(), indexed.end());
-
-    for (int i = 0; i < n - 2; i++) {
-        long long remaining = target - indexed[i].first;
-        int left = i + 1;
-        int right = n - 1;
-
-        while (left < right) {
-            long long current_sum = indexed[left].first + indexed[right].first;
-
-            if (current_sum == remaining) {
-                // Found triplet - get original 1-indexed positions
-                vector<int> positions = {
-                    indexed[i].second + 1,
-                    indexed[left].second + 1,
-                    indexed[right].second + 1
-                };
-                sort(positions.begin(), positions.end());
-                cout << positions[0] << " " << positions[1] << " " << positions[2] << "\n";
-                return 0;
-            } else if (current_sum < remaining) {
-                left++;
-            } else {
-                right--;
-            }
-        }
-    }
-
-    cout << "IMPOSSIBLE\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -324,14 +269,6 @@ for i in range(n):
 **Fix:** Start `left = i + 1` to ensure all three indices are distinct.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - may overflow with 10^9 values
-int sum = arr[i] + arr[left] + arr[right];  // Can be up to 3*10^9
-
-// CORRECT
-long long sum = (long long)arr[i] + arr[left] + arr[right];
-```
 
 **Problem:** Three values each up to 10^9 can sum to 3*10^9, exceeding int range.
 **Fix:** Use `long long` for sums in C++.

@@ -293,62 +293,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    int minGirth = INT_MAX;
-
-    // BFS from each node
-    for (int start = 1; start <= n; start++) {
-        vector<int> dist(n + 1, -1);
-        vector<int> parent(n + 1, -1);
-
-        dist[start] = 0;
-        queue<int> q;
-        q.push(start);
-
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-
-            for (int v : adj[u]) {
-                if (dist[v] == -1) {
-                    dist[v] = dist[u] + 1;
-                    parent[v] = u;
-                    q.push(v);
-                } else if (parent[u] != v) {
-                    // Found a cycle
-                    int cycleLength = dist[u] + dist[v] + 1;
-                    minGirth = min(minGirth, cycleLength);
-                }
-            }
-        }
-    }
-
-    cout << (minGirth == INT_MAX ? -1 : minGirth) << "\n";
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|

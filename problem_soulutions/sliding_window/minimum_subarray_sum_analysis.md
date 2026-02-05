@@ -117,25 +117,6 @@ def min_subarray_brute(arr):
     return min_sum
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long minSubarrayBrute(vector<int>& arr) {
-    int n = arr.size();
-    long long minSum = LLONG_MAX;
-
-    for (int i = 0; i < n; i++) {
-        long long currentSum = 0;
-        for (int j = i; j < n; j++) {
-            currentSum += arr[j];
-            minSum = min(minSum, currentSum);
-        }
-    }
-    return minSum;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -282,43 +263,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long minSubarraySum(vector<int>& arr) {
-    if (arr.empty()) return 0;
-
-    long long currentMin = arr[0];
-    long long globalMin = arr[0];
-
-    for (int i = 1; i < (int)arr.size(); i++) {
-        // Decide: extend current subarray or start new
-        currentMin = min((long long)arr[i], currentMin + arr[i]);
-        // Update global minimum
-        globalMin = min(globalMin, currentMin);
-    }
-
-    return globalMin;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << minSubarraySum(arr) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -350,14 +294,6 @@ def min_subarray(arr):
 
 **Problem:** No check for empty input.
 **Fix:** Add `if not arr: return 0` at the start.
-
-### Mistake 3: Integer Overflow in C++
-
-```cpp
-// WRONG - Can overflow with large values
-int currentMin = arr[0];
-currentMin = min(arr[i], currentMin + arr[i]);
-```
 
 **Problem:** With n=10^5 elements of magnitude 10^4, sum can reach 10^9.
 **Fix:** Use `long long` for sum variables.
@@ -413,18 +349,21 @@ global_min = 0
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Maximum Subarray Sum (CSES)](https://cses.fi/problemset/task/1643) | Classic Kadane's - learn the pattern |
 | [Maximum Subarray (LeetCode 53)](https://leetcode.com/problems/maximum-subarray/) | Same problem, max instead of min |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) | Track both min and max products |
 | [Maximum Sum Circular Subarray](https://leetcode.com/problems/maximum-sum-circular-subarray/) | Array wraps around |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Sums I (CSES)](https://cses.fi/problemset/task/1660) | Count subarrays with target sum |

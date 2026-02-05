@@ -249,65 +249,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    string s;
-    cin >> n >> s;
-
-    // dp[j] = count of valid arrangements where last element has rank j
-    vector<long long> dp(n, 0);
-    dp[0] = 1;  // Base case: single element at rank 0
-
-    for (int i = 2; i <= n; i++) {
-        // Build prefix sums of previous dp
-        vector<long long> prefix(i, 0);
-        prefix[0] = dp[0];
-        for (int j = 1; j < i - 1; j++) {
-            prefix[j] = (prefix[j - 1] + dp[j]) % MOD;
-        }
-
-        vector<long long> new_dp(n, 0);
-
-        if (s[i - 2] == '<') {
-            // Previous rank must be smaller than current rank
-            for (int j = 1; j < i; j++) {
-                new_dp[j] = prefix[j - 1];
-            }
-        } else {  // '>'
-            // Previous rank must be >= current rank (before insertion)
-            for (int j = 0; j < i; j++) {
-                if (j == 0) {
-                    new_dp[j] = (i >= 2) ? prefix[i - 2] : 0;
-                } else {
-                    new_dp[j] = (prefix[i - 2] - prefix[j - 1] + MOD) % MOD;
-                }
-            }
-        }
-
-        dp = new_dp;
-    }
-
-    long long ans = 0;
-    for (int j = 0; j < n; j++) {
-        ans = (ans + dp[j]) % MOD;
-    }
-
-    cout << ans << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -404,18 +345,21 @@ dp = [[0] * n for _ in range(n + 1)]
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [LCS - AtCoder DP E](https://atcoder.jp/contests/dp/tasks/dp_e) | Basic string DP concepts |
 | [Longest Increasing Subsequence](https://atcoder.jp/contests/dp/tasks/dp_q) | Understanding relative ordering |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Matching - AtCoder DP O](https://atcoder.jp/contests/dp/tasks/dp_o) | Bitmask DP for permutation counting |
 | [Grouping - AtCoder DP U](https://atcoder.jp/contests/dp/tasks/dp_u) | Subset DP with constraints |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Tower - AtCoder DP X](https://atcoder.jp/contests/dp/tasks/dp_x) | Greedy + DP combination |

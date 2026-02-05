@@ -281,66 +281,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    // (arrival, departure, original_index)
-    vector<tuple<int, int, int>> customers(n);
-    for (int i = 0; i < n; i++) {
-        int a, d;
-        cin >> a >> d;
-        customers[i] = {a, d, i};
-    }
-
-    // Sort by arrival time
-    sort(customers.begin(), customers.end());
-
-    // Min-heap: (departure_time, room_id)
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> occupied;
-    // Min-heap of free room IDs
-    priority_queue<int, vector<int>, greater<int>> freeRooms;
-
-    int roomCount = 0;
-    vector<int> assignments(n);
-
-    for (auto& [arrival, departure, origIdx] : customers) {
-        // Free rooms that ended before this arrival
-        while (!occupied.empty() && occupied.top().first < arrival) {
-            freeRooms.push(occupied.top().second);
-            occupied.pop();
-        }
-
-        int roomId;
-        if (!freeRooms.empty()) {
-            roomId = freeRooms.top();
-            freeRooms.pop();
-        } else {
-            roomId = ++roomCount;
-        }
-
-        assignments[origIdx] = roomId;
-        occupied.push({departure, roomId});
-    }
-
-    cout << roomCount << "\n";
-    for (int i = 0; i < n; i++) {
-        cout << assignments[i] << " \n"[i == n - 1];
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -444,18 +384,21 @@ else:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Restaurant Customers (CSES)](https://cses.fi/problemset/task/1619) | Basic sweep line, just count max overlap |
 | [Movie Festival (CSES)](https://cses.fi/problemset/task/1629) | Interval scheduling (max non-overlapping) |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Meeting Rooms II (LeetCode 253)](https://leetcode.com/problems/meeting-rooms-ii/) | Same problem, just return room count |
 | [Car Pooling (LeetCode 1094)](https://leetcode.com/problems/car-pooling/) | Capacity constraint on single vehicle |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [My Calendar III (LeetCode 732)](https://leetcode.com/problems/my-calendar-iii/) | Dynamic event insertion |

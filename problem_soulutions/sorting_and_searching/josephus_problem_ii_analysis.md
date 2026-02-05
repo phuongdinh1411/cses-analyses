@@ -245,53 +245,6 @@ Initial:        After removing 3:    After removing 6:
                     count from 4        count from 4
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace std;
-using namespace __gnu_pbds;
-
-// Indexed set: ordered_set with order statistics
-typedef tree<int, null_type, less<int>, rb_tree_tag,
-             tree_order_statistics_node_update> indexed_set;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    indexed_set children;
-    for (int i = 1; i <= n; i++) {
-        children.insert(i);
-    }
-
-    int pos = 0;
-    while (!children.empty()) {
-        // Find target position (0-indexed)
-        pos = (pos + k - 1) % children.size();
-
-        // Get element at this position
-        auto it = children.find_by_order(pos);
-        cout << *it << " ";
-
-        // Remove the element
-        children.erase(it);
-
-        // Adjust position for next iteration
-        if (!children.empty()) {
-            pos = pos % children.size();
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Code (Python with SortedList)
 
 Python's standard library lacks an indexed set, but we can use `sortedcontainers.SortedList`:
@@ -369,14 +322,6 @@ if children:
 **Fix:** Take modulo with new size if non-empty.
 
 ### Mistake 3: Confusing 0-indexed vs 1-indexed
-
-```cpp
-// WRONG: Inserting 0-indexed children
-for (int i = 0; i < n; i++) children.insert(i);  // Children 0..n-1
-
-// CORRECT: Children are numbered 1 to n
-for (int i = 1; i <= n; i++) children.insert(i);  // Children 1..n
-```
 
 **Problem:** The problem uses 1-indexed children.
 **Fix:** Insert values 1 to n, not 0 to n-1.

@@ -122,48 +122,6 @@ Output: 3, 8, -1
 | 2 | 8 | {5,5,7,8} | ->end | 8 | Remove 8 |
 | 3 | 3 | {5,5,7} | ->5 (begin) | -1 | No ticket |
 
-## C++ Solution with Multiset
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    multiset<int> tickets;
-    for (int i = 0; i < n; i++) {
-        int price;
-        cin >> price;
-        tickets.insert(price);
-    }
-
-    for (int i = 0; i < m; i++) {
-        int budget;
-        cin >> budget;
-
-        // Find first element > budget
-        auto it = tickets.upper_bound(budget);
-
-        if (it == tickets.begin()) {
-            // No ticket <= budget exists
-            cout << -1 << "\n";
-        } else {
-            // Move to largest element <= budget
-            --it;
-            cout << *it << "\n";
-            tickets.erase(it);  // Remove this specific element
-        }
-    }
-
-    return 0;
-}
-```
-
 **Key points:**
 - `upper_bound(x)` returns iterator to first element > x
 - If `upper_bound == begin()`, no element <= x exists
@@ -236,62 +194,11 @@ solve()
 
 ### 1. Using lower_bound Instead of upper_bound
 
-```cpp
-// WRONG: lower_bound finds first >= x
-auto it = tickets.lower_bound(budget);
---it;  // This fails when budget equals an element
-
-// Example: multiset = {3, 5, 8}, budget = 5
-// lower_bound(5) -> points to 5
-// --lower_bound(5) -> points to 3 (WRONG! Should be 5)
-```
-
 ### 2. Iterator Invalidation After Erase
-
-```cpp
-// WRONG: Using iterator after erase
-auto it = tickets.upper_bound(budget);
---it;
-tickets.erase(it);
-cout << *it;  // UNDEFINED BEHAVIOR! Iterator is invalid
-
-// CORRECT: Save value before erase
-auto it = tickets.upper_bound(budget);
---it;
-int price = *it;  // Save first
-tickets.erase(it);
-cout << price;
-```
 
 ### 3. Forgetting begin() Check
 
-```cpp
-// WRONG: No check for empty result
-auto it = tickets.upper_bound(budget);
---it;  // CRASH if upper_bound returns begin()!
-cout << *it;
-
-// CORRECT: Always check
-auto it = tickets.upper_bound(budget);
-if (it == tickets.begin()) {
-    cout << -1;
-} else {
-    --it;
-    cout << *it;
-    tickets.erase(it);
-}
-```
-
 ### 4. Using erase(value) Instead of erase(iterator)
-
-```cpp
-// WRONG for duplicates: Removes ALL elements with this value
-tickets.erase(5);  // Removes ALL 5s!
-
-// CORRECT: Removes exactly one element
-auto it = tickets.find(5);
-tickets.erase(it);  // Removes only ONE 5
-```
 
 ## Complexity Analysis
 

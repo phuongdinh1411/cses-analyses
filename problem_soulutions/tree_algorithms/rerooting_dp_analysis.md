@@ -285,73 +285,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-long long subtree_size[MAXN], dp_down[MAXN], answer[MAXN];
-int n;
-
-void dfs_down(int node, int parent) {
-    subtree_size[node] = 1;
-    dp_down[node] = 0;
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs_down(child, node);
-            subtree_size[node] += subtree_size[child];
-            dp_down[node] += dp_down[child] + subtree_size[child];
-        }
-    }
-}
-
-void dfs_up(int node, int parent, long long contribution_from_above) {
-    answer[node] = dp_down[node] + contribution_from_above;
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            long long nodes_outside = n - subtree_size[child];
-            long long child_contribution = dp_down[child] + subtree_size[child];
-            long long new_contribution = (answer[node] - child_contribution) + nodes_outside;
-            dfs_up(child, node, new_contribution);
-        }
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-
-    if (n == 1) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    dfs_down(1, 0);
-    dfs_up(1, 0, 0);
-
-    for (int i = 1; i <= n; i++) {
-        cout << answer[i] << " \n"[i == n];
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -390,14 +324,6 @@ new_contribution = (answer[node] - child_contribution) + nodes_outside
 **Problem:** When we move root to child, all nodes outside get 1 farther.
 
 ### Mistake 3: Using Wrong Data Types
-
-```cpp
-// WRONG - integer overflow for large trees
-int dp_down[MAXN];  // Sum of distances can exceed 2^31
-
-// CORRECT
-long long dp_down[MAXN];
-```
 
 **Problem:** With n = 2*10^5 nodes, distance sums can reach ~10^10.
 

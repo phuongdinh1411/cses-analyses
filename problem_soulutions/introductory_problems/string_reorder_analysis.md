@@ -90,24 +90,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string s;
-    cin >> s;
-    sort(s.begin(), s.end());
-    cout << s << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -177,35 +159,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string s;
-    cin >> s;
-
-    int freq[26] = {0};
-    for (char c : s) {
-        freq[c - 'a']++;
-    }
-
-    string result;
-    result.reserve(s.length());
-
-    for (int i = 0; i < 26; i++) {
-        result.append(freq[i], 'a' + i);
-    }
-
-    cout << result << "\n";
-    return 0;
-}
 ```
 
 ### Complexity
@@ -281,17 +234,20 @@ freq[ord(c) - ord('a')]
 ## Related Problems
 
 ### Easier
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Repetitions (CSES)](https://cses.fi/problemset/task/1069) | Basic character iteration |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Palindrome Reorder (CSES)](https://cses.fi/problemset/task/1755) | Arrange into palindrome |
 | [Sort Characters By Frequency (LeetCode)](https://leetcode.com/problems/sort-characters-by-frequency/) | Sort by frequency, not alphabetically |
 
 ### Harder
+
 | Problem | New Concept |
 |---------|-------------|
 | [Creating Strings (CSES)](https://cses.fi/problemset/task/1622) | Generate all permutations |

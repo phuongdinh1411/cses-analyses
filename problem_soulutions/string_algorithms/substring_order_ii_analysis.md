@@ -299,74 +299,6 @@ k = int(input())
 print(solve(s, k))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> buildSuffixArray(const string& s) {
-    int n = s.size();
-    vector<int> sa(n), rank(n), tmp(n);
-
-    for (int i = 0; i < n; i++) {
-        sa[i] = i;
-        rank[i] = s[i];
-    }
-
-    for (int k = 1; k < n; k *= 2) {
-        auto cmp = [&](int a, int b) {
-            if (rank[a] != rank[b]) return rank[a] < rank[b];
-            int ra = (a + k < n) ? rank[a + k] : -1;
-            int rb = (b + k < n) ? rank[b + k] : -1;
-            return ra < rb;
-        };
-        sort(sa.begin(), sa.end(), cmp);
-
-        tmp[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
-        }
-        rank = tmp;
-
-        if (rank[sa[n-1]] == n - 1) break;
-    }
-
-    return sa;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    long long k;
-    cin >> s >> k;
-
-    int n = s.size();
-    vector<int> sa = buildSuffixArray(s);
-
-    // Prefix sums of substring counts
-    vector<long long> cumulative(n);
-    long long total = 0;
-    for (int i = 0; i < n; i++) {
-        total += n - sa[i];
-        cumulative[i] = total;
-    }
-
-    // Binary search for the suffix containing k-th substring
-    int idx = lower_bound(cumulative.begin(), cumulative.end(), k) - cumulative.begin();
-
-    long long prev = (idx > 0) ? cumulative[idx - 1] : 0;
-    int length = k - prev;
-    int start = sa[idx];
-
-    cout << s.substr(start, length) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -379,16 +311,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Using 32-bit integers for k
-
-```cpp
-// WRONG - k can be up to n(n+1)/2 = 5 * 10^9 for n = 10^5
-int k;
-cin >> k;
-
-// CORRECT
-long long k;
-cin >> k;
-```
 
 **Problem:** With n = 10^5, total substrings = ~5 * 10^9, exceeding int range.
 **Fix:** Use `long long` for k and cumulative counts.
@@ -464,18 +386,21 @@ while left < right:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [CSES - Distinct Substrings](https://cses.fi/problemset/task/2105) | Learn suffix array basics |
 | [CSES - Substring Order I](https://cses.fi/problemset/task/2108) | Similar but counts distinct |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Longest Repeating Substring](https://cses.fi/problemset/task/2106) | Use max LCP value |
 | [CSES - String Matching](https://cses.fi/problemset/task/1753) | Pattern matching with suffix array |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES - Repeating Substring](https://cses.fi/problemset/task/2107) | Finding repeated patterns |

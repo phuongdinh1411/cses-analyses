@@ -251,85 +251,6 @@ for _ in range(m):
 print(max_flow(n, edges))
 ```
 
-### C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 505;
-long long capacity[MAXN][MAXN];
-vector<int> adj[MAXN];
-int parent_node[MAXN];
-int n, m;
-
-bool bfs(int source, int sink) {
-    fill(parent_node, parent_node + n + 1, -1);
-    queue<int> q;
-    q.push(source);
-    parent_node[source] = source;
-
-    while (!q.empty()) {
-        int u = q.front();
-        q.pop();
-
-        for (int v : adj[u]) {
-            if (parent_node[v] == -1 && capacity[u][v] > 0) {
-                parent_node[v] = u;
-                if (v == sink) return true;
-                q.push(v);
-            }
-        }
-    }
-    return false;
-}
-
-long long maxFlow(int source, int sink) {
-    long long total_flow = 0;
-
-    while (bfs(source, sink)) {
-        // Find bottleneck
-        long long path_flow = LLONG_MAX;
-        for (int v = sink; v != source; v = parent_node[v]) {
-            int u = parent_node[v];
-            path_flow = min(path_flow, capacity[u][v]);
-        }
-
-        // Update capacities
-        for (int v = sink; v != source; v = parent_node[v]) {
-            int u = parent_node[v];
-            capacity[u][v] -= path_flow;
-            capacity[v][u] += path_flow;
-        }
-
-        total_flow += path_flow;
-    }
-
-    return total_flow;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        long long c;
-        cin >> a >> b >> c;
-
-        capacity[a][b] += c;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    cout << maxFlow(1, n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity Analysis
 
 | Metric | Value | Explanation |
@@ -370,14 +291,6 @@ capacity[a][b] += c
 **Fix:** Use += instead of = when setting capacity.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - May overflow
-int path_flow = INT_MAX;
-
-// CORRECT - Use long long for large capacities
-long long path_flow = LLONG_MAX;
-```
 
 **Problem:** Capacities up to 10^9, total flow can exceed int range.
 **Fix:** Use `long long` for capacity and flow variables.
@@ -434,12 +347,14 @@ while bfs(source, sink, parent):
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [CSES - Labyrinth](https://cses.fi/problemset/task/1193) | BFS fundamentals |
 | [CSES - Shortest Routes I](https://cses.fi/problemset/task/1671) | Graph traversal basics |
 
 ### Similar Difficulty (CSES Graph Problems)
+
 | Problem | Key Concept |
 |---------|-------------|
 | [CSES - Police Chase](https://cses.fi/problemset/task/1695) | Min Cut (dual of Max Flow) |
@@ -447,6 +362,7 @@ while bfs(source, sink, parent):
 | [CSES - Distinct Routes](https://cses.fi/problemset/task/1711) | Edge-disjoint paths |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES - Coin Grid](https://cses.fi/problemset/task/1709) | Min vertex cover |

@@ -252,47 +252,6 @@ if __name__ == "__main__":
     print(count_sequences(n, k))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-using namespace std;
-
-const long long MOD = 1e9 + 7;
-
-long long mod_pow(long long base, long long exp, long long mod) {
-    // Binary exponentiation
-    long long result = 1;
-    base %= mod;
-
-    while (exp > 0) {
-        if (exp & 1) {  // If exp is odd
-            result = (result * base) % mod;
-        }
-        base = (base * base) % mod;
-        exp >>= 1;  // Divide exp by 2
-    }
-
-    return result;
-}
-
-long long count_sequences(int n, int k) {
-    if (k == 0) return 1;
-    if (n == 0) return 0;
-    return mod_pow(n, k, MOD);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-    cout << count_sequences(n, k) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -305,15 +264,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflows for large n, k
-long long result = 1;
-for (int i = 0; i < k; i++) {
-    result *= n;  // Overflows before taking mod!
-}
-return result % mod;
-```
 
 **Problem:** Multiplying before taking mod causes overflow.
 **Fix:** Take mod after each multiplication: `result = (result * n) % mod;`
@@ -391,18 +341,21 @@ MOD = 1000000007  # Also integer
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Exponentiation](https://cses.fi/problemset/task/1095) | Basic modular exponentiation |
 | [Exponentiation II](https://cses.fi/problemset/task/1712) | Fermat's little theorem extension |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Counting Rooms](https://cses.fi/problemset/task/1192) | Flood fill counting |
 | [Dice Combinations](https://cses.fi/problemset/task/1633) | DP instead of direct formula |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers |

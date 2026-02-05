@@ -118,28 +118,6 @@ def max_sum_brute_force(arr, k):
     return max_sum
 ```
 
-**C++:**
-```cpp
-#include <vector>
-#include <algorithm>
-#include <climits>
-using namespace std;
-
-int maxSumBruteForce(vector<int>& arr, int k) {
-    int n = arr.size();
-    int maxSum = INT_MIN;
-
-    for (int i = 0; i <= n - k; i++) {
-        int windowSum = 0;
-        for (int j = i; j < i + k; j++) {
-            windowSum += arr[j];
-        }
-        maxSum = max(maxSum, windowSum);
-    }
-    return maxSum;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -248,49 +226,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int maxSumSlidingWindow(vector<int>& arr, int k) {
-    int n = arr.size();
-
-    // Calculate initial window sum
-    long long currentSum = 0;
-    for (int i = 0; i < k; i++) {
-        currentSum += arr[i];
-    }
-    long long maxSum = currentSum;
-
-    // Slide the window
-    for (int i = k; i < n; i++) {
-        currentSum = currentSum - arr[i - k] + arr[i];
-        maxSum = max(maxSum, currentSum);
-    }
-
-    return maxSum;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << maxSumSlidingWindow(arr, k) << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -333,16 +268,6 @@ max_sum = current_sum  # Initialize with first window
 **Problem:** If all windows have negative sums, returning 0 is wrong.
 **Fix:** Initialize max_sum with the first window's sum.
 
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - int may overflow for large values
-int currentSum = 0;
-
-// CORRECT - use long long for safety
-long long currentSum = 0;
-```
-
 **Problem:** Sum of 10^5 elements each up to 10^4 can exceed int range.
 **Fix:** Use `long long` for sum variables.
 
@@ -384,11 +309,13 @@ long long currentSum = 0;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Maximum Element](https://cses.fi/problemset/task/1643) | Basic array traversal, simpler version |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Sliding Window Maximum](https://cses.fi/problemset/task/1076) | Find max (not sum) in each window, needs deque |
@@ -396,6 +323,7 @@ long long currentSum = 0;
 | [LeetCode 643: Maximum Average Subarray I](https://leetcode.com/problems/maximum-average-subarray-i/) | Same problem, find average instead |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | Variable window with target sum |

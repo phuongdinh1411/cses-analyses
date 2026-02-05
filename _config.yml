@@ -49,4 +49,5 @@ kramdown:
   entity_output: as_char
   toc_levels: [1,2,3]
   smart_quotes: lsquo,rsquo,ldquo,rdquo
+  typographic_symbols: {ndash: --, mdash: --}
   enable_coderay: false

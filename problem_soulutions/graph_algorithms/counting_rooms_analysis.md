@@ -148,69 +148,6 @@ grid = [input().strip() for _ in range(n)]
 print(count_rooms_bfs(n, m, grid))
 ```
 
-### C++ (BFS)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, m;
-vector<string> grid;
-vector<vector<bool>> visited;
-int dx[] = {0, 0, 1, -1};
-int dy[] = {1, -1, 0, 0};
-
-void bfs(int startRow, int startCol) {
-    queue<pair<int, int>> q;
-    q.push({startRow, startCol});
-    visited[startRow][startCol] = true;
-
-    while (!q.empty()) {
-        auto [row, col] = q.front();
-        q.pop();
-
-        for (int i = 0; i < 4; i++) {
-            int newRow = row + dx[i];
-            int newCol = col + dy[i];
-
-            if (newRow >= 0 && newRow < n &&
-                newCol >= 0 && newCol < m &&
-                !visited[newRow][newCol] &&
-                grid[newRow][newCol] == '.') {
-                visited[newRow][newCol] = true;
-                q.push({newRow, newCol});
-            }
-        }
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-    grid.resize(n);
-    visited.assign(n, vector<bool>(m, false));
-
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    int roomCount = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == '.' && !visited[i][j]) {
-                bfs(i, j);
-                roomCount++;
-            }
-        }
-    }
-
-    cout << roomCount << "\n";
-    return 0;
-}
-```
-
 ## Implementation: DFS Approach
 
 DFS explores as deep as possible before backtracking. Simpler to implement but watch for stack overflow on large grids.
@@ -248,69 +185,6 @@ def count_rooms_dfs(n, m, grid):
 n, m = map(int, input().split())
 grid = [input().strip() for _ in range(n)]
 print(count_rooms_dfs(n, m, grid))
-```
-
-### C++ (DFS - Iterative)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, m;
-vector<string> grid;
-vector<vector<bool>> visited;
-int dx[] = {0, 0, 1, -1};
-int dy[] = {1, -1, 0, 0};
-
-void dfs(int startRow, int startCol) {
-    stack<pair<int, int>> st;
-    st.push({startRow, startCol});
-    visited[startRow][startCol] = true;
-
-    while (!st.empty()) {
-        auto [row, col] = st.top();
-        st.pop();
-
-        for (int i = 0; i < 4; i++) {
-            int newRow = row + dx[i];
-            int newCol = col + dy[i];
-
-            if (newRow >= 0 && newRow < n &&
-                newCol >= 0 && newCol < m &&
-                !visited[newRow][newCol] &&
-                grid[newRow][newCol] == '.') {
-                visited[newRow][newCol] = true;
-                st.push({newRow, newCol});
-            }
-        }
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-    grid.resize(n);
-    visited.assign(n, vector<bool>(m, false));
-
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    int roomCount = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == '.' && !visited[i][j]) {
-                dfs(i, j);
-                roomCount++;
-            }
-        }
-    }
-
-    cout << roomCount << "\n";
-    return 0;
-}
 ```
 
 ## Common Mistakes

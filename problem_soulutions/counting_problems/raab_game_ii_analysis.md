@@ -141,33 +141,6 @@ def count_sequences_brute(n, k):
     return total
 ```
 
-```cpp
-#include <iostream>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-long long dfs(int n, int current, int moves_left) {
-    if (moves_left == 0) return 1;
-
-    long long count = 0;
-    for (int next = 1; next <= n; next++) {
-        if (next != current) {
-            count = (count + dfs(n, next, moves_left - 1)) % MOD;
-        }
-    }
-    return count;
-}
-
-long long countSequencesBrute(int n, int k) {
-    long long total = 0;
-    for (int start = 1; start <= n; start++) {
-        total = (total + dfs(n, start, k)) % MOD;
-    }
-    return total;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -289,44 +262,6 @@ def count_moves(n, k):
     return (n * pow(n - 1, k, MOD)) % MOD
 ```
 
-```cpp
-#include <iostream>
-using namespace std;
-
-const long long MOD = 1e9 + 7;
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-
-    while (exp > 0) {
-        if (exp & 1) {
-            result = (result * base) % mod;
-        }
-        base = (base * base) % mod;
-        exp >>= 1;
-    }
-    return result;
-}
-
-long long countSequences(int n, int k) {
-    if (n == 1) {
-        return (k <= 1) ? 1 : 0;
-    }
-    if (k == 0) return 0;
-
-    // n * (n-1)^(k-1)
-    return (n * power(n - 1, k - 1, MOD)) % MOD;
-}
-
-int main() {
-    int n, k;
-    cin >> n >> k;
-    cout << countSequences(n, k) << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -422,12 +357,14 @@ result = n * pow(n - 1, k - 1, MOD)
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Exponentiation](https://cses.fi/problemset/task/1095) | Learn modular exponentiation |
 | [Exponentiation II](https://cses.fi/problemset/task/1712) | Advanced modular arithmetic |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Counting Rooms](https://cses.fi/problemset/task/1192) | Grid-based counting |
@@ -435,6 +372,7 @@ result = n * pow(n - 1, k - 1, MOD)
 | [Distributing Apples](https://cses.fi/problemset/task/1716) | Stars and bars technique |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers |

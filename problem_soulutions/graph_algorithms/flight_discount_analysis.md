@@ -80,7 +80,9 @@ Original Graph:              State-Space Graph:
 
     3         6                    (1,0) ----3----> (2,0) ----6----> (3,0)
 1 -----> 2 -----> 3                  |  \            |  \
+
 |                 ^                  |   \1.5        |   \3
+
 |       10        |                  |    \          |    \
 +------------ ----+                  |     v         |     v
                                      |    (2,1) ----6----> (3,1)
@@ -175,71 +177,6 @@ if __name__ == "__main__":
     n, m = 3, 4
     flights = [(1, 2, 3), (2, 3, 6), (1, 3, 10), (2, 1, 1)]
     print(flight_discount(n, flights))  # Output: 5
-```
-
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, pair<int, int>> pli;  // (cost, (node, used))
-
-const ll INF = 1e18;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<pair<int, ll>>> adj(n + 1);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        ll cost;
-        cin >> u >> v >> cost;
-        adj[u].push_back({v, cost});
-    }
-
-    // dist[node][used_coupon]
-    vector<array<ll, 2>> dist(n + 1, {INF, INF});
-    dist[1][0] = 0;
-
-    // Priority queue: (cost, (node, used))
-    priority_queue<pli, vector<pli>, greater<pli>> pq;
-    pq.push({0, {1, 0}});
-
-    while (!pq.empty()) {
-        auto [d, state] = pq.top();
-        auto [u, used] = state;
-        pq.pop();
-
-        if (d > dist[u][used]) continue;
-
-        for (auto [v, cost] : adj[u]) {
-            // Option 1: Don't use coupon
-            ll new_dist = d + cost;
-            if (new_dist < dist[v][used]) {
-                dist[v][used] = new_dist;
-                pq.push({new_dist, {v, used}});
-            }
-
-            // Option 2: Use coupon (if available)
-            if (used == 0) {
-                new_dist = d + cost / 2;
-                if (new_dist < dist[v][1]) {
-                    dist[v][1] = new_dist;
-                    pq.push({new_dist, {v, 1}});
-                }
-            }
-        }
-    }
-
-    cout << min(dist[n][0], dist[n][1]) << "\n";
-    return 0;
-}
 ```
 
 ## Common Mistakes

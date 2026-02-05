@@ -270,55 +270,6 @@ if __name__ == "__main__":
     two_sets(n)
 ```
 
-#### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    long long n;
-    cin >> n;
-
-    long long total_sum = n * (n + 1) / 2;
-
-    // Check if partition is possible
-    if (total_sum % 2 == 1) {
-        cout << "NO" << endl;
-        return 0;
-    }
-
-    long long target = total_sum / 2;
-    vector<long long> set1, set2;
-
-    // Greedy: assign from largest to smallest
-    for (long long i = n; i >= 1; i--) {
-        if (i <= target) {
-            set1.push_back(i);
-            target -= i;
-        } else {
-            set2.push_back(i);
-        }
-    }
-
-    // Output result
-    cout << "YES" << endl;
-    cout << set1.size() << endl;
-    for (int i = 0; i < set1.size(); i++) {
-        cout << set1[i] << (i < set1.size() - 1 ? " " : "\n");
-    }
-    cout << set2.size() << endl;
-    for (int i = 0; i < set2.size(); i++) {
-        cout << set2[i] << (i < set2.size() - 1 ? " " : "\n");
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -420,14 +371,6 @@ if n % 2 == 0:
 
 ### Mistake 2: Integer Overflow
 
-```cpp
-// WRONG - May overflow for large n
-int total = n * (n + 1) / 2;  // n=10^6 causes overflow
-
-// CORRECT
-long long total = (long long)n * (n + 1) / 2;
-```
-
 **Problem:** For n = 10^6, n*(n+1) exceeds int range.
 **Fix:** Use long long in C++ or Python's arbitrary precision integers.
 
@@ -500,18 +443,21 @@ for i in range(1, n + 1):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Missing Number](https://cses.fi/problemset/task/1083) | Uses triangular number formula |
 | [Permutations](https://cses.fi/problemset/task/1070) | Basic construction problem |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Apple Division](https://cses.fi/problemset/task/1623) | Arbitrary weights, minimize difference |
 | [Coin Piles](https://cses.fi/problemset/task/1754) | Different mathematical condition |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Two Sets II](https://cses.fi/problemset/task/1093) | Count ways using DP |

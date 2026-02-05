@@ -121,23 +121,6 @@ def solve_simulation(n, arr):
     return rounds
 ```
 
-```cpp
-int solveSimulation(int n, vector<int>& arr) {
-    int rounds = 0;
-    int nextToCollect = 1;
-
-    while (nextToCollect <= n) {
-        rounds++;
-        for (int num : arr) {
-            if (num == nextToCollect) {
-                nextToCollect++;
-            }
-        }
-    }
-    return rounds;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -242,36 +225,6 @@ if __name__ == "__main__":
     print(solve_optimal(n, arr))
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> pos(n + 1);
-    for (int i = 0; i < n; i++) {
-        int x;
-        cin >> x;
-        pos[x] = i;
-    }
-
-    int rounds = 1;
-    for (int k = 1; k < n; k++) {
-        if (pos[k + 1] < pos[k]) {
-            rounds++;
-        }
-    }
-
-    cout << rounds << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -367,6 +320,7 @@ for k in range(1, n):  # k goes from 1 to n-1
 ## Related Problems
 
 ### Similar Difficulty (CSES)
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Collecting Numbers II](https://cses.fi/problemset/task/2217) | Dynamic updates with swaps |
@@ -374,12 +328,14 @@ for k in range(1, n):  # k goes from 1 to n-1
 | [Ferris Wheel](https://cses.fi/problemset/task/1090) | Greedy pairing |
 
 ### Related Concepts (LeetCode)
+
 | Problem | Connection |
 |---------|------------|
 | [Count Inversions](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | General inversion counting |
 | [Minimum Swaps to Sort](https://leetcode.com/problems/minimum-swaps-to-sort/) | Position-based analysis |
 
 ### Harder Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | [Collecting Numbers II](https://cses.fi/problemset/task/2217) | Segment trees or efficient updates |

@@ -330,80 +330,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 100005;
-vector<int> graph[MAXN];
-long long dp[MAXN], ans[MAXN];
-int n;
-long long m;
-
-void dfs1(int v, int parent) {
-    dp[v] = 1;
-    for (int u : graph[v]) {
-        if (u != parent) {
-            dfs1(u, v);
-            dp[v] = dp[v] * (dp[u] + 1) % m;
-        }
-    }
-}
-
-void dfs2(int v, int parent, long long from_parent) {
-    vector<int> children;
-    for (int u : graph[v]) {
-        if (u != parent) {
-            children.push_back(u);
-        }
-    }
-
-    int k = children.size();
-    vector<long long> prefix(k + 1, 1), suffix(k + 1, 1);
-
-    for (int i = 0; i < k; i++) {
-        prefix[i + 1] = prefix[i] * (dp[children[i]] + 1) % m;
-    }
-    for (int i = k - 1; i >= 0; i--) {
-        suffix[i] = suffix[i + 1] * (dp[children[i]] + 1) % m;
-    }
-
-    ans[v] = prefix[k] * (from_parent + 1) % m;
-
-    for (int i = 0; i < k; i++) {
-        int u = children[i];
-        long long siblings = prefix[i] * suffix[i + 1] % m;
-        long long contribution = (from_parent + 1) * siblings % m;
-        dfs2(u, v, contribution);
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < n - 1; i++) {
-        int x, y;
-        cin >> x >> y;
-        graph[x].push_back(y);
-        graph[y].push_back(x);
-    }
-
-    dfs1(1, -1);
-    dfs2(1, -1, 0);
-
-    for (int v = 1; v <= n; v++) {
-        cout << ans[v] << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -443,14 +369,6 @@ dfs2(1, -1, 0)  # Root has no parent contribution
 
 ### Mistake 3: Modular arithmetic overflow
 
-```cpp
-// WRONG
-dp[v] = dp[v] * (dp[u] + 1);  // May overflow before mod
-
-// CORRECT
-dp[v] = dp[v] * (dp[u] + 1) % m;
-```
-
 **Problem:** Multiplying large numbers can overflow before taking mod.
 **Fix:** Take mod after each multiplication.
 
@@ -489,18 +407,21 @@ dp[v] = dp[v] * (dp[u] + 1) % m;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Tree Diameter](https://cses.fi/problemset/task/1131) | Basic tree DFS |
 | [Tree Distances I](https://cses.fi/problemset/task/1132) | Simpler rerooting |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum-based rerooting |
 | [AtCoder DP P - Independent Set](https://atcoder.jp/contests/dp/tasks/dp_p) | Tree DP without rerooting |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - Tree Painting](https://codeforces.com/contest/1187/problem/E) | More complex rerooting |

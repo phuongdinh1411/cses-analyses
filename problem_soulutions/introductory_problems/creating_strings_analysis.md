@@ -296,95 +296,7 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-string s;
-map<char, int> charCount;
-vector<char> chars;
-vector<string> result;
-
-void backtrack(string& current) {
-    if (current.length() == n) {
-        result.push_back(current);
-        return;
-    }
-
-    for (char c : chars) {
-        if (charCount[c] > 0) {
-            charCount[c]--;
-            current.push_back(c);
-            backtrack(current);
-            current.pop_back();
-            charCount[c]++;
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> s;
-    n = s.length();
-
-    // Count character frequencies
-    for (char c : s) {
-        charCount[c]++;
-    }
-
-    // Get sorted unique characters
-    for (auto& p : charCount) {
-        chars.push_back(p.first);
-    }
-
-    // Generate permutations
-    string current = "";
-    backtrack(current);
-
-    // Output
-    cout << result.size() << "\n";
-    for (const string& str : result) {
-        cout << str << "\n";
-    }
-
-    return 0;
-}
-```
-
 **Alternative C++ using next_permutation:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string s;
-    cin >> s;
-
-    // Sort to start from lexicographically smallest
-    sort(s.begin(), s.end());
-
-    vector<string> result;
-    do {
-        result.push_back(s);
-    } while (next_permutation(s.begin(), s.end()));
-
-    cout << result.size() << "\n";
-    for (const string& str : result) {
-        cout << str << "\n";
-    }
-
-    return 0;
-}
-```
 
 ### Complexity
 
@@ -493,17 +405,20 @@ backtrack(current + c)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Permutations (LeetCode 46)](https://leetcode.com/problems/permutations/) | Basic permutation without duplicates |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Permutations II (LeetCode 47)](https://leetcode.com/problems/permutations-ii/) | Same concept with array input |
 | [Apple Division (CSES)](https://cses.fi/problemset/task/1623) | Backtracking to enumerate subsets |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Chessboard and Queens (CSES)](https://cses.fi/problemset/task/1624) | Backtracking with constraints |

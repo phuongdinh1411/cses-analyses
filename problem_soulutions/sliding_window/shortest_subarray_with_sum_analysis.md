@@ -116,26 +116,6 @@ def solve_brute_force(arr, target):
     return min_len if min_len != float('inf') else 0
 ```
 
-```cpp
-int solveBruteForce(vector<int>& arr, int target) {
-    int n = arr.size();
-    int minLen = INT_MAX;
-
-    for (int i = 0; i < n; i++) {
-        long long currSum = 0;
-        for (int j = i; j < n; j++) {
-            currSum += arr[j];
-            if (currSum >= target) {
-                minLen = min(minLen, j - i + 1);
-                break;
-            }
-        }
-    }
-
-    return minLen == INT_MAX ? 0 : minLen;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -264,48 +244,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int solveOptimal(vector<int>& arr, long long target) {
-    int n = arr.size();
-    int left = 0;
-    long long currSum = 0;
-    int minLen = INT_MAX;
-
-    for (int right = 0; right < n; right++) {
-        currSum += arr[right];
-
-        // Contract window while sum is sufficient
-        while (currSum >= target) {
-            minLen = min(minLen, right - left + 1);
-            currSum -= arr[left];
-            left++;
-        }
-    }
-
-    return minLen == INT_MAX ? 0 : minLen;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long target;
-    cin >> n >> target;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << solveOptimal(arr, target) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -349,17 +287,6 @@ arr = [2, -1, 3, 4, -2]  # Has negatives!
 
 ### Mistake 3: Integer Overflow
 
-```cpp
-// WRONG - overflow with large sums
-int currSum = 0;  // int may overflow
-for (int i = 0; i < n; i++) {
-    currSum += arr[i];  // Can exceed INT_MAX
-}
-
-// CORRECT
-long long currSum = 0;  // Use long long
-```
-
 **Problem:** Sum of 10^5 elements each up to 10^4 can exceed INT_MAX.
 **Fix:** Use `long long` for cumulative sums.
 
@@ -402,18 +329,21 @@ long long currSum = 0;  // Use long long
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | Basic prefix sums and counting |
 | [Maximum Subarray Sum](https://cses.fi/problemset/task/1643) | Kadane's algorithm foundation |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | Handles negative numbers with prefix sums |
 | [LeetCode 209](https://leetcode.com/problems/minimum-size-subarray-sum/) | Same problem, different platform |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 862](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Negative numbers, monotonic deque |

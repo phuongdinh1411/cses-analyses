@@ -342,101 +342,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 7;
-bool visited[N][N];
-string path;
-int dr[] = {-1, 1, 0, 0};  // U, D, L, R
-int dc[] = {0, 0, -1, 1};
-
-bool isValid(int r, int c) {
-    return r >= 0 && r < N && c >= 0 && c < N && !visited[r][c];
-}
-
-int charToDir(char c) {
-    if (c == 'U') return 0;
-    if (c == 'D') return 1;
-    if (c == 'L') return 2;
-    return 3;  // R
-}
-
-int dfs(int row, int col, int step) {
-    // Base case: completed all moves
-    if (step == 48) {
-        return (row == 6 && col == 0) ? 1 : 0;
-    }
-
-    // Reached end too early
-    if (row == 6 && col == 0) {
-        return 0;
-    }
-
-    int count = 0;
-
-    for (int d = 0; d < 4; d++) {
-        // Skip if path specifies a different direction
-        if (path[step] != '?' && d != charToDir(path[step])) {
-            continue;
-        }
-
-        int nr = row + dr[d];
-        int nc = col + dc[d];
-
-        if (!isValid(nr, nc)) continue;
-
-        // PRUNING 1: Wall-split detection
-        if (d < 2) {  // Vertical move (U or D)
-            bool leftValid = isValid(row, col - 1);
-            bool rightValid = isValid(row, col + 1);
-            bool aheadBlocked = !isValid(row + 2*dr[d], col);
-            if (leftValid && rightValid && aheadBlocked) continue;
-        } else {  // Horizontal move (L or R)
-            bool upValid = isValid(row - 1, col);
-            bool downValid = isValid(row + 1, col);
-            bool aheadBlocked = !isValid(row, col + 2*dc[d]);
-            if (upValid && downValid && aheadBlocked) continue;
-        }
-
-        // PRUNING 2: Dead-end detection
-        int neighbors = 0;
-        for (int d2 = 0; d2 < 4; d2++) {
-            if (isValid(nr + dr[d2], nc + dc[d2])) {
-                neighbors++;
-            }
-        }
-        if (neighbors == 0 && !(nr == 6 && nc == 0 && step == 47)) {
-            continue;
-        }
-
-        visited[nr][nc] = true;
-        count += dfs(nr, nc, step + 1);
-        visited[nr][nc] = false;
-    }
-
-    return count;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> path;
-
-    memset(visited, false, sizeof(visited));
-    visited[0][0] = true;
-
-    cout << dfs(0, 0, 0) << "\n";
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -529,18 +435,21 @@ dc = [0, 0, 1, -1]   # Wrong: R and L swapped
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Chessboard and Queens (CSES 1624)](https://cses.fi/problemset/task/1624) | Basic backtracking on grid |
 | [N-Queens (LeetCode 51)](https://leetcode.com/problems/n-queens/) | Classic backtracking |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Unique Paths III (LeetCode 980)](https://leetcode.com/problems/unique-paths-iii/) | Visit all cells, obstacles present |
 | [Word Search II (LeetCode 212)](https://leetcode.com/problems/word-search-ii/) | Backtracking with trie pruning |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Sudoku Solver (LeetCode 37)](https://leetcode.com/problems/sudoku-solver/) | Constraint propagation |

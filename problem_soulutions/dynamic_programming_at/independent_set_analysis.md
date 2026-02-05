@@ -217,52 +217,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-vector<int> graph[100005];
-long long dp[100005][2];
-
-void dfs(int v, int parent) {
-    dp[v][0] = 1;  // white
-    dp[v][1] = 1;  // black
-
-    for (int child : graph[v]) {
-        if (child == parent) continue;
-        dfs(child, v);
-
-        // If v is white, child can be white or black
-        dp[v][0] = dp[v][0] * (dp[child][0] + dp[child][1]) % MOD;
-        // If v is black, child must be white
-        dp[v][1] = dp[v][1] * dp[child][0] % MOD;
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (int i = 0; i < n - 1; i++) {
-        int x, y;
-        cin >> x >> y;
-        graph[x].push_back(y);
-        graph[y].push_back(x);
-    }
-
-    dfs(1, -1);
-    cout << (dp[1][0] + dp[1][1]) % MOD << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -372,11 +326,13 @@ sys.setrecursionlimit(200005)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [AtCoder DP-G: Longest Path](https://atcoder.jp/contests/dp/tasks/dp_g) | Basic tree/DAG DP |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES Tree Matching](https://cses.fi/problemset/task/1130) | Maximize matched edges instead of counting |
@@ -384,6 +340,7 @@ sys.setrecursionlimit(200005)
 | [AtCoder DP-V: Subtree](https://atcoder.jp/contests/dp/tasks/dp_v) | Re-rooting technique extension |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES Finding a Centroid](https://cses.fi/problemset/task/1648) | Centroid decomposition |

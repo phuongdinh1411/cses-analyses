@@ -111,23 +111,6 @@ def max_subarray_brute(arr):
     return max_sum
 ```
 
-**C++:**
-```cpp
-long long maxSubarrayBrute(vector<int>& arr) {
-    int n = arr.size();
-    long long maxSum = arr[0];
-
-    for (int i = 0; i < n; i++) {
-        long long currentSum = 0;
-        for (int j = i; j < n; j++) {
-            currentSum += arr[j];
-            maxSum = max(maxSum, currentSum);
-        }
-    }
-    return maxSum;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -254,36 +237,6 @@ def solve():
 solve()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    long long currentSum = arr[0];
-    long long maxSum = arr[0];
-
-    for (int i = 1; i < n; i++) {
-        currentSum = max(arr[i], currentSum + arr[i]);
-        maxSum = max(maxSum, currentSum);
-    }
-
-    cout << maxSum << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -309,16 +262,6 @@ max_sum = arr[0]
 
 **Problem:** If all elements are negative, the answer would incorrectly be 0.
 **Fix:** Initialize with the first element, not 0.
-
-### Mistake 2: Integer Overflow (C++)
-
-```cpp
-// WRONG
-int currentSum = arr[0];  // May overflow
-
-// CORRECT
-long long currentSum = arr[0];  // Use long long
-```
 
 **Problem:** With n = 2*10^5 and values up to 10^9, sum can reach 2*10^14.
 **Fix:** Use `long long` in C++ for the sum variables.
@@ -387,11 +330,13 @@ max_sum = max(max_sum, current_sum)  # Update after
 ## Related Problems
 
 ### Same Technique (CSES)
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Maximum Subarray Sum II](https://cses.fi/problemset/task/1644) | Subarray length between a and b |
 
 ### Related Concepts (CSES)
+
 | Problem | Technique Connection |
 |---------|---------------------|
 | [Subarray Sums I](https://cses.fi/problemset/task/1661) | Prefix sums + hash map |
@@ -399,6 +344,7 @@ max_sum = max(max_sum, current_sum)  # Update after
 | [Subarray Divisibility](https://cses.fi/problemset/task/1662) | Prefix sums modulo n |
 
 ### Harder Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | Maximum Product Subarray | Track min and max (negatives flip sign) |

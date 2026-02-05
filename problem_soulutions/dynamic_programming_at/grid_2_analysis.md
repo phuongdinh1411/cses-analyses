@@ -435,104 +435,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-vector<long long> fact, inv_fact;
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp & 1) result = result * base % mod;
-        base = base * base % mod;
-        exp >>= 1;
-    }
-    return result;
-}
-
-void precompute(int max_n) {
-    fact.resize(max_n + 1);
-    inv_fact.resize(max_n + 1);
-
-    fact[0] = 1;
-    for (int i = 1; i <= max_n; i++) {
-        fact[i] = fact[i-1] * i % MOD;
-    }
-
-    inv_fact[max_n] = power(fact[max_n], MOD - 2, MOD);
-    for (int i = max_n - 1; i >= 0; i--) {
-        inv_fact[i] = inv_fact[i + 1] * (i + 1) % MOD;
-    }
-}
-
-long long nCr(int n, int r) {
-    if (r < 0 || r > n) return 0;
-    return fact[n] * inv_fact[r] % MOD * inv_fact[n - r] % MOD;
-}
-
-long long countPaths(int r1, int c1, int r2, int c2) {
-    int dr = r2 - r1;
-    int dc = c2 - c1;
-    if (dr < 0 || dc < 0) return 0;
-    return nCr(dr + dc, dr);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int h, w, n;
-    cin >> h >> w >> n;
-
-    precompute(h + w);
-
-    // Read obstacles (convert to 0-indexed)
-    vector<pair<int, int>> points(n);
-    for (int i = 0; i < n; i++) {
-        int r, c;
-        cin >> r >> c;
-        points[i] = {r - 1, c - 1};
-    }
-
-    // Sort by distance from start
-    sort(points.begin(), points.end(), [](const auto& a, const auto& b) {
-        return (a.first + a.second) < (b.first + b.second);
-    });
-
-    // Add destination
-    points.push_back({h - 1, w - 1});
-
-    int m = points.size();
-    vector<long long> dp(m);
-
-    for (int i = 0; i < m; i++) {
-        int ri = points[i].first;
-        int ci = points[i].second;
-
-        // Total paths from start
-        dp[i] = countPaths(0, 0, ri, ci);
-
-        // Subtract paths through earlier obstacles
-        for (int j = 0; j < i; j++) {
-            int rj = points[j].first;
-            int cj = points[j].second;
-
-            if (rj <= ri && cj <= ci) {
-                dp[i] = (dp[i] - dp[j] * countPaths(rj, cj, ri, ci) % MOD + MOD) % MOD;
-            }
-        }
-    }
-
-    cout << dp[m - 1] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -556,14 +458,6 @@ dp = [[0] * w for _ in range(h)]  # 10^10 cells!
 
 ### Mistake 2: Forgetting to Handle Negative Modulo
 
-```cpp
-// WRONG - Can produce negative result
-dp[i] = (dp[i] - dp[j] * paths) % MOD;
-
-// CORRECT - Add MOD before final modulo
-dp[i] = (dp[i] - dp[j] * paths % MOD + MOD) % MOD;
-```
-
 **Problem:** Subtraction can yield negative intermediate values.
 **Fix:** Add MOD before taking final modulo to ensure positive result.
 
@@ -577,16 +471,6 @@ for i, (ri, ci) in enumerate(obstacles):
 
 **Problem:** Inclusion-exclusion requires processing points in reachability order.
 **Fix:** Sort obstacles by (row + column) so earlier obstacles can always reach later ones.
-
-### Mistake 4: Integer Overflow in C++
-
-```cpp
-// WRONG - Overflow before modulo
-dp[i] = dp[i] - dp[j] * countPaths(rj, cj, ri, ci);
-
-// CORRECT - Apply modulo to intermediate product
-dp[i] = (dp[i] - dp[j] * countPaths(rj, cj, ri, ci) % MOD + MOD) % MOD;
-```
 
 **Problem:** Product of two numbers near 10^9 overflows 32-bit and can overflow 64-bit without care.
 **Fix:** Apply modulo operations at each multiplication step.
@@ -645,6 +529,7 @@ points.append((h - 1, w - 1))
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Grid 1 (AtCoder DP-H)](https://atcoder.jp/contests/dp/tasks/dp_h) | Basic grid path DP without the inclusion-exclusion twist |
@@ -652,6 +537,7 @@ points.append((h - 1, w - 1))
 | [Unique Paths II (LeetCode 63)](https://leetcode.com/problems/unique-paths-ii/) | Grid DP with obstacles (small grid version) |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Counting Paths (CSES)](https://cses.fi/problemset/task/1638) | Similar grid path counting |
@@ -659,6 +545,7 @@ points.append((h - 1, w - 1))
 | [Elevator Rides (CSES)](https://cses.fi/problemset/task/1653) | Bitmask DP with similar complexity analysis |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Walk (AtCoder DP-R)](https://atcoder.jp/contests/dp/tasks/dp_r) | Matrix exponentiation for path counting |

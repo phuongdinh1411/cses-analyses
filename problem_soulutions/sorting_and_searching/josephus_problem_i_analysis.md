@@ -243,45 +243,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> children(n);
-    for (int i = 0; i < n; i++) {
-        children[i] = i + 1;
-    }
-
-    int index = 0;
-    while (!children.empty()) {
-        // Move to next position to eliminate (k=2 means skip 1)
-        index = (index + 1) % children.size();
-        cout << children[index];
-        children.erase(children.begin() + index);
-
-        if (!children.empty()) {
-            cout << " ";
-            // Adjust index if we removed the last element
-            if (index == (int)children.size()) {
-                index = 0;
-            }
-        }
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -298,57 +259,6 @@ int main() {
 > **The Trick:** Use a data structure that supports O(log n) removal and O(log n) access by index.
 
 For larger inputs, we can use a balanced BST or indexed set (like GNU C++ `pb_ds` or a segment tree) to achieve O(n log n) time.
-
-### Code (C++ with Ordered Set)
-
-```cpp
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace std;
-using namespace __gnu_pbds;
-
-typedef tree<int, null_type, less<int>, rb_tree_tag,
-             tree_order_statistics_node_update> ordered_set;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    ordered_set children;
-    for (int i = 1; i <= n; i++) {
-        children.insert(i);
-    }
-
-    int index = 0;
-    bool first = true;
-
-    while (!children.empty()) {
-        // Calculate next index to eliminate
-        index = (index + 1) % children.size();
-
-        // Find element at this index
-        auto it = children.find_by_order(index);
-
-        if (!first) cout << " ";
-        first = false;
-        cout << *it;
-
-        children.erase(it);
-
-        // Adjust index for next iteration
-        if (!children.empty() && index >= (int)children.size()) {
-            index = 0;
-        }
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
 
 ### Complexity
 
@@ -467,18 +377,21 @@ This runs in O(n) time and O(1) space but only gives the final survivor.
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | Array rotation problems | Practice with circular indexing |
 | Basic simulation problems | Build simulation skills |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Josephus Problem II](https://cses.fi/problemset/task/2163) | Variable step size k |
 | [Find the Winner (LeetCode 1823)](https://leetcode.com/problems/find-the-winner-of-the-circular-game/) | Same problem, only return survivor |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Elimination Game (LeetCode 390)](https://leetcode.com/problems/elimination-game/) | Alternating direction elimination |

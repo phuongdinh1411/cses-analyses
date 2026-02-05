@@ -285,50 +285,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a - 1].push_back(b - 1);  // 0-indexed
-    }
-
-    // dp[mask][v] = number of paths visiting vertices in mask, ending at v
-    vector<vector<long long>> dp(1 << n, vector<long long>(n, 0));
-    dp[1][0] = 1;  // Start at vertex 0
-
-    for (int mask = 1; mask < (1 << n); mask++) {
-        for (int v = 0; v < n; v++) {
-            if (dp[mask][v] == 0) continue;
-            if (!(mask & (1 << v))) continue;
-
-            for (int u : adj[v]) {
-                if (mask & (1 << u)) continue;  // Already visited
-                int new_mask = mask | (1 << u);
-                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
-            }
-        }
-    }
-
-    int full_mask = (1 << n) - 1;
-    cout << dp[full_mask][n - 1] << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

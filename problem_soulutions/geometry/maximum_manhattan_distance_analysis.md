@@ -130,22 +130,6 @@ def solve_brute_force(points):
     return max_dist
 ```
 
-```cpp
-long long solveBruteForce(vector<pair<long long, long long>>& points) {
-    int n = points.size();
-    long long maxDist = 0;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            long long dist = abs(points[i].first - points[j].first)
-                           + abs(points[i].second - points[j].second);
-            maxDist = max(maxDist, dist);
-        }
-    }
-    return maxDist;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -205,8 +189,10 @@ Original Coordinates:           Rotated Coordinates (45 deg):
 
 y                               v (x-y)
 ^                               ^
+
 |     (3,3)                     |
 |   (2,2)                       |
+
 | (1,1)                         0--*--*--*--*--> u (x+y)
 *(0,0)                          0  2  4  6
 +---------> x
@@ -247,38 +233,6 @@ def solve():
 solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    long long minU = LLONG_MAX, maxU = LLONG_MIN;
-    long long minV = LLONG_MAX, maxV = LLONG_MIN;
-
-    for (int i = 0; i < n; i++) {
-        long long x, y;
-        cin >> x >> y;
-
-        long long u = x + y;  // rotated coordinate 1
-        long long v = x - y;  // rotated coordinate 2
-
-        minU = min(minU, u);
-        maxU = max(maxU, u);
-        minV = min(minV, v);
-        maxV = max(maxV, v);
-    }
-
-    cout << max(maxU - minU, maxV - minV) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -291,16 +245,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow with int
-int u = x + y;
-int dist = maxU - minU;
-
-// CORRECT - use long long
-long long u = x + y;
-long long dist = maxU - minU;
-```
 
 **Problem:** With coordinates up to 10^9, x+y can reach 2*10^9, exceeding int range.
 **Fix:** Use `long long` for all calculations.
@@ -369,6 +313,7 @@ u = x + y
 ## Related Problems
 
 ### Similar Difficulty (CSES)
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Point Location Test](https://cses.fi/problemset/task/2189) | Cross product for point-line relationship |
@@ -376,6 +321,7 @@ u = x + y
 | [Nearest Smaller Values](https://cses.fi/problemset/task/1645) | 1D analogue using monotonic stack |
 
 ### LeetCode Problems
+
 | Problem | Connection |
 |---------|------------|
 | [K Closest Points to Origin](https://leetcode.com/problems/k-closest-points-to-origin/) | Distance-based, but Euclidean |
@@ -383,6 +329,7 @@ u = x + y
 | [Best Position for a Service Centre](https://leetcode.com/problems/best-position-for-a-service-centre/) | Geometric median problem |
 
 ### Harder Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | 3D Manhattan Distance | Use 2^3 = 8 transformations |

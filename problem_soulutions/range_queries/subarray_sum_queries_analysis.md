@@ -357,95 +357,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node {
-    long long total;    // Sum of range
-    long long prefix;   // Max prefix sum
-    long long suffix;   // Max suffix sum
-    long long max_sub;  // Max subarray sum
-
-    Node() : total(0), prefix(0), suffix(0), max_sub(0) {}
-    Node(long long v) : total(v), prefix(v), suffix(v), max_sub(v) {}
-};
-
-Node merge(const Node& L, const Node& R) {
-    Node res;
-    res.total = L.total + R.total;
-    res.prefix = max(L.prefix, L.total + R.prefix);
-    res.suffix = max(R.suffix, R.total + L.suffix);
-    res.max_sub = max({L.max_sub, R.max_sub, L.suffix + R.prefix});
-    return res;
-}
-
-class SegmentTree {
-private:
-    int n, size;
-    vector<Node> tree;
-
-public:
-    SegmentTree(const vector<long long>& arr) {
-        n = arr.size();
-        size = 1;
-        while (size < n) size *= 2;
-
-        tree.resize(2 * size);
-
-        // Build leaves
-        for (int i = 0; i < n; i++) {
-            tree[size + i] = Node(arr[i]);
-        }
-
-        // Build internal nodes
-        for (int i = size - 1; i >= 1; i--) {
-            tree[i] = merge(tree[2 * i], tree[2 * i + 1]);
-        }
-    }
-
-    void update(int pos, long long val) {
-        pos += size;
-        tree[pos] = Node(val);
-
-        for (pos /= 2; pos >= 1; pos /= 2) {
-            tree[pos] = merge(tree[2 * pos], tree[2 * pos + 1]);
-        }
-    }
-
-    long long query() {
-        return max(0LL, tree[1].max_sub);
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    SegmentTree st(arr);
-
-    while (q--) {
-        int k;
-        long long x;
-        cin >> k >> x;
-        st.update(k - 1, x);
-        cout << st.query() << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -482,16 +393,6 @@ prefix = max(left.prefix, left.total + right.prefix)
 
 **Problem:** The best prefix might extend into the right child, requiring all of left.
 **Fix:** Consider both staying in left and extending through all of left into right.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - int can overflow with 2*10^5 elements of magnitude 10^9
-int total;
-
-// CORRECT
-long long total;
-```
 
 **Problem:** Maximum sum can be 2*10^5 * 10^9 = 2*10^14, exceeding int range.
 **Fix:** Use long long for all accumulating values.

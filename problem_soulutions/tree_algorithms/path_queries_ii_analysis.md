@@ -455,142 +455,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-
-vector<int> adj[MAXN];
-int values[MAXN], parent_node[MAXN], depth[MAXN];
-int subtree_size[MAXN], heavy[MAXN], head[MAXN], pos[MAXN];
-int seg_tree[4 * MAXN];
-int current_pos = 0;
-
-void dfs_size(int node, int par) {
-    parent_node[node] = par;
-    subtree_size[node] = 1;
-    heavy[node] = 0;
-    int max_child = 0;
-    for (int child : adj[node]) {
-        if (child != par) {
-            depth[child] = depth[node] + 1;
-            dfs_size(child, node);
-            subtree_size[node] += subtree_size[child];
-            if (subtree_size[child] > max_child) {
-                max_child = subtree_size[child];
-                heavy[node] = child;
-            }
-        }
-    }
-}
-
-void decompose(int node, int h) {
-    head[node] = h;
-    pos[node] = current_pos++;
-    if (heavy[node]) {
-        decompose(heavy[node], h);
-    }
-    for (int child : adj[node]) {
-        if (child != parent_node[node] && child != heavy[node]) {
-            decompose(child, child);
-        }
-    }
-}
-
-void build(int node, int start, int end, int arr[]) {
-    if (start == end) {
-        seg_tree[node] = arr[start];
-    } else {
-        int mid = (start + end) / 2;
-        build(2 * node, start, mid, arr);
-        build(2 * node + 1, mid + 1, end, arr);
-        seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1]);
-    }
-}
-
-void update(int node, int start, int end, int idx, int val) {
-    if (start == end) {
-        seg_tree[node] = val;
-    } else {
-        int mid = (start + end) / 2;
-        if (idx <= mid) {
-            update(2 * node, start, mid, idx, val);
-        } else {
-            update(2 * node + 1, mid + 1, end, idx, val);
-        }
-        seg_tree[node] = max(seg_tree[2 * node], seg_tree[2 * node + 1]);
-    }
-}
-
-int query(int node, int start, int end, int l, int r) {
-    if (r < start || end < l) return 0;
-    if (l <= start && end <= r) return seg_tree[node];
-    int mid = (start + end) / 2;
-    return max(query(2 * node, start, mid, l, r),
-               query(2 * node + 1, mid + 1, end, l, r));
-}
-
-int path_max(int a, int b, int n) {
-    int result = 0;
-    while (head[a] != head[b]) {
-        if (depth[head[a]] < depth[head[b]]) swap(a, b);
-        result = max(result, query(1, 0, n - 1, pos[head[a]], pos[a]));
-        a = parent_node[head[a]];
-    }
-    if (depth[a] > depth[b]) swap(a, b);
-    result = max(result, query(1, 0, n - 1, pos[a], pos[b]));
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    for (int i = 1; i <= n; i++) {
-        cin >> values[i];
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    depth[1] = 0;
-    dfs_size(1, 0);
-    decompose(1, 1);
-
-    int arr[n];
-    for (int i = 1; i <= n; i++) {
-        arr[pos[i]] = values[i];
-    }
-    build(1, 0, n - 1, arr);
-
-    while (q--) {
-        int type;
-        cin >> type;
-        if (type == 1) {
-            int s, x;
-            cin >> s >> x;
-            update(1, 0, n - 1, pos[s], x);
-        } else {
-            int a, b;
-            cin >> a >> b;
-            cout << path_max(a, b, n) << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -695,6 +559,7 @@ def dfs(node, par):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Path Queries](https://cses.fi/problemset/task/1138) | Subtree sums with Euler tour |
@@ -702,6 +567,7 @@ def dfs(node, par):
 | [Company Queries II](https://cses.fi/problemset/task/1688) | LCA with binary lifting |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subtree Queries](https://cses.fi/problemset/task/1137) | Subtree updates instead of path |
@@ -709,6 +575,7 @@ def dfs(node, par):
 | [Path Queries (SPOJ QTREE)](https://www.spoj.com/problems/QTREE/) | Classic HLD problem |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Vertex Set Path Composite](https://judge.yosupo.jp/problem/vertex_set_path_composite) | Non-commutative operations on paths |

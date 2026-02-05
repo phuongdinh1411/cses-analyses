@@ -238,68 +238,6 @@ def main():
     print('\n'.join(map(str, results)))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef vector<vector<long long>> Matrix;
-const long long MOD = 1e9 + 7;
-
-Matrix multiply(const Matrix& A, const Matrix& B, int n) {
-    Matrix C(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matpow(Matrix M, long long k, int n) {
-    Matrix result(n, vector<long long>(n, 0));
-    // Identity matrix
-    for (int i = 0; i < n; i++) result[i][i] = 1;
-
-    while (k > 0) {
-        if (k & 1) result = multiply(result, M, n);
-        M = multiply(M, M, n);
-        k >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    Matrix adj(n, vector<long long>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> adj[i][j];
-        }
-    }
-
-    while (q--) {
-        int a, b;
-        long long k;
-        cin >> a >> b >> k;
-        a--; b--;  // 0-indexed
-
-        Matrix result = matpow(adj, k, n);
-        cout << (result[a][b] > 0 ? 1 : 0) << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -343,14 +281,6 @@ Paths of length 2 from 1 to 3: 1->2->3
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflow for large k
-int result = A[i][k] * B[k][j];
-
-// CORRECT - use modular arithmetic
-long long result = (A[i][k] * B[k][j]) % MOD;
-```
 
 **Problem:** k up to 10^9 causes overflow in path counts.
 **Fix:** Use modular arithmetic or just check if value > 0.

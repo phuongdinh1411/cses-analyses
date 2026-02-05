@@ -91,9 +91,11 @@ Planet connections:
 
 Binary Lifting Table:
 +--------+--------+--------+--------+--------+
+
 | Planet | j=0    | j=1    | j=2    | j=3    |
 |        | (2^0=1)| (2^1=2)| (2^2=4)| (2^3=8)|
 +--------+--------+--------+--------+--------+
+
 |   1    |   2    |   3    |   2    |   2    |
 |   2    |   3    |   1    |   3    |   3    |
 |   3    |   1    |   2    |   1    |   1    |
@@ -228,57 +230,6 @@ def solve():
 
 if __name__ == "__main__":
     solve()
-```
-
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int LOG = 30;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    // jump[j][i] = destination from planet i after 2^j teleports
-    vector<vector<int>> jump(LOG, vector<int>(n));
-
-    // Base case: direct successors (0-indexed)
-    for (int i = 0; i < n; i++) {
-        cin >> jump[0][i];
-        jump[0][i]--;  // Convert to 0-indexed
-    }
-
-    // Build binary lifting table
-    for (int j = 1; j < LOG; j++) {
-        for (int i = 0; i < n; i++) {
-            jump[j][i] = jump[j - 1][jump[j - 1][i]];
-        }
-    }
-
-    // Answer queries
-    while (q--) {
-        int x, k;
-        cin >> x >> k;
-        x--;  // Convert to 0-indexed
-
-        // Decompose k into powers of 2
-        for (int j = 0; j < LOG; j++) {
-            if (k & (1 << j)) {
-                x = jump[j][x];
-            }
-        }
-
-        cout << x + 1 << '\n';  // Convert back to 1-indexed
-    }
-
-    return 0;
-}
 ```
 
 ## Complexity Analysis

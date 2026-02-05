@@ -36,16 +36,19 @@ Given an a x b rectangle, find the minimum number of cuts needed to divide it in
 ```
 Initial 2x3 rectangle:
 +---+---+---+
+
 |           |
 +---+---+---+
 
 Cut 1: Vertical cut after column 2 -> creates 2x2 and 2x1
 +---+---+   +---+
+
 |       |   |   |
 +---+---+   +---+
 
 Cut 2: Horizontal cut on 2x1 -> creates two 1x1 squares
 +---+---+   +---+
+
 |       |   |   |
 +---+---+   +---+
             +---+
@@ -164,49 +167,6 @@ def rectangle_cutting(a: int, b: int) -> int:
 if __name__ == "__main__":
     a, b = map(int, input().split())
     print(rectangle_cutting(a, b))
-```
-
-### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int a, b;
-    cin >> a >> b;
-
-    // Initialize DP table with large value
-    const int INF = 1e9;
-    vector<vector<int>> dp(a + 1, vector<int>(b + 1, INF));
-
-    // Fill DP table
-    for (int i = 1; i <= a; i++) {
-        for (int j = 1; j <= b; j++) {
-            // Base case: square needs no cuts
-            if (i == j) {
-                dp[i][j] = 0;
-                continue;
-            }
-
-            // Try all horizontal cuts (cut at row k)
-            for (int k = 1; k < j; k++) {
-                dp[i][j] = min(dp[i][j], dp[i][k] + dp[i][j - k] + 1);
-            }
-
-            // Try all vertical cuts (cut at column k)
-            for (int k = 1; k < i; k++) {
-                dp[i][j] = min(dp[i][j], dp[k][j] + dp[i - k][j] + 1);
-            }
-        }
-    }
-
-    cout << dp[a][b] << "\n";
-    return 0;
-}
 ```
 
 ## Common Mistakes

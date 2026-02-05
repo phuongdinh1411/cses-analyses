@@ -247,39 +247,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> sticks(n);
-    for (int i = 0; i < n; i++) {
-        cin >> sticks[i];
-    }
-
-    sort(sticks.begin(), sticks.end());
-
-    long long median = sticks[n / 2];
-    long long cost = 0;
-
-    for (int i = 0; i < n; i++) {
-        cost += abs(sticks[i] - median);
-    }
-
-    cout << cost << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -309,25 +276,9 @@ cost = sum(abs(s - target) for s in sticks)
 
 ### Mistake 2: Integer Overflow
 
-```cpp
-// WRONG (in some languages)
-int cost = 0;
-for (int s : sticks) {
-    cost += abs(s - median);  // Can overflow if cost > 2^31
-}
-```
-
 **Problem:** With n = 2 x 10^5 sticks and values up to 10^9, the sum can reach ~2 x 10^14.
 
 **Fix:** Use `long long` for the cost variable.
-
-```cpp
-// CORRECT
-long long cost = 0;
-for (int i = 0; i < n; i++) {
-    cost += abs(sticks[i] - median);
-}
-```
 
 ### Mistake 3: Forgetting to Sort
 

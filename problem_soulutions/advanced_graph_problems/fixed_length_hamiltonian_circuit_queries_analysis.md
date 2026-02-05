@@ -305,56 +305,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n + 1);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-    }
-
-    // dp[mask][v] = paths visiting mask cities, ending at v
-    vector<vector<long long>> dp(1 << n, vector<long long>(n + 1, 0));
-
-    // Base case: at city 1, only city 1 visited
-    dp[1][1] = 1;
-
-    for (int mask = 1; mask < (1 << n); mask++) {
-        for (int v = 1; v <= n; v++) {
-            // Check if v is in mask (0-indexed bit)
-            if (!(mask & (1 << (v - 1)))) continue;
-            if (dp[mask][v] == 0) continue;
-
-            for (int u : adj[v]) {
-                // Check if u is NOT in mask
-                if (mask & (1 << (u - 1))) continue;
-
-                int new_mask = mask | (1 << (u - 1));
-                dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
-            }
-        }
-    }
-
-    // All cities visited (full_mask), ending at city n
-    int full_mask = (1 << n) - 1;
-    cout << dp[full_mask][n] << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -450,12 +400,14 @@ dp[1][1] = 1  # mask=1 means city 1 is visited
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Grid Paths](https://cses.fi/problemset/task/1638) | Basic DP counting paths |
 | [Counting Paths](https://cses.fi/problemset/task/1643) | DP on DAG |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Round Trip](https://cses.fi/problemset/task/1669) | Find any cycle, not count |
@@ -463,6 +415,7 @@ dp[1][1] = 1  # mask=1 means city 1 is visited
 | [Graph Girth](https://cses.fi/problemset/task/1707) | Shortest cycle length |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Elevator Rides](https://cses.fi/problemset/task/1653) | Bitmask DP with optimization |

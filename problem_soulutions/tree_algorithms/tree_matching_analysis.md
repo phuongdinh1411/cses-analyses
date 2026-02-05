@@ -344,59 +344,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-int dp[MAXN][2];  // dp[node][0] = unmatched, dp[node][1] = matched
-
-void dfs(int node, int parent) {
-    int sum_children = 0;
-    int best_gain = INT_MIN;
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs(child, node);
-
-            int best_child = max(dp[child][0], dp[child][1]);
-            sum_children += best_child;
-
-            // Gain if we match with this child
-            int gain = dp[child][0] + 1 - best_child;
-            best_gain = max(best_gain, gain);
-        }
-    }
-
-    dp[node][0] = sum_children;
-    dp[node][1] = (best_gain != INT_MIN) ? sum_children + best_gain : 0;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    dfs(1, -1);
-
-    cout << max(dp[1][0], dp[1][1]) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -493,12 +440,14 @@ def dfs(node, parent):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates (CSES)](https://cses.fi/problemset/task/1674) | Basic tree DP - counting subtree sizes |
 | [Tree Diameter (CSES)](https://cses.fi/problemset/task/1131) | Tree traversal and path computation |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances I (CSES)](https://cses.fi/problemset/task/1132) | Different DP state (distance instead of matching) |
@@ -506,6 +455,7 @@ def dfs(node, parent):
 | [Binary Tree Cameras (LC)](https://leetcode.com/problems/binary-tree-cameras/) | Three states: covered, has camera, not covered |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Finding a Centroid (CSES)](https://cses.fi/problemset/task/1674) | Centroid decomposition |

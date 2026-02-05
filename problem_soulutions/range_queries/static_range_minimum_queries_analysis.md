@@ -295,62 +295,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-const int LOG = 18;
-
-int arr[MAXN];
-int st[MAXN][LOG];
-int log_table[MAXN];
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Precompute log values
-    log_table[1] = 0;
-    for (int i = 2; i <= n; i++) {
-        log_table[i] = log_table[i / 2] + 1;
-    }
-
-    // Build sparse table
-    for (int i = 0; i < n; i++) {
-        st[i][0] = arr[i];
-    }
-
-    for (int j = 1; j < LOG; j++) {
-        for (int i = 0; i + (1 << j) <= n; i++) {
-            st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
-        }
-    }
-
-    // Answer queries
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        l--; r--;  // Convert to 0-indexed
-
-        int len = r - l + 1;
-        int k = log_table[len];
-        cout << min(st[l][k], st[r - (1 << k) + 1][k]) << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -406,14 +350,6 @@ ans = min(st[l][k], st[r - (1 << k) + 1][k])
 
 ### Mistake 4: Insufficient Table Size
 
-```cpp
-// WRONG - LOG too small
-const int LOG = 10;  // Only handles n up to 1024
-
-// CORRECT - LOG = 18 handles n up to 2^18 = 262144
-const int LOG = 18;
-```
-
 ---
 
 ## Edge Cases
@@ -465,17 +401,20 @@ const int LOG = 18;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries (CSES)](https://cses.fi/problemset/task/1646) | Simpler prefix sum approach |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Minimum Query (SPOJ)](https://www.spoj.com/problems/RMQSQ/) | Same concept, different judge |
 | [Static Range Maximum (variant)](https://cses.fi/problemset/task/1647) | Use max instead of min |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Dynamic Range Minimum Queries (CSES)](https://cses.fi/problemset/task/1649) | Adds point updates - need Segment Tree |

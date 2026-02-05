@@ -238,41 +238,6 @@ activities = [tuple(map(int, input().split())) for _ in range(n)]
 print(solve_optimal(n, activities))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<array<long long, 3>> dp(n);
-
-    // Read first day and initialize base case
-    for (int j = 0; j < 3; j++) {
-        cin >> dp[0][j];
-    }
-
-    // Fill DP table
-    for (int i = 1; i < n; i++) {
-        long long a, b, c;
-        cin >> a >> b >> c;
-
-        dp[i][0] = a + max(dp[i-1][1], dp[i-1][2]);
-        dp[i][1] = b + max(dp[i-1][0], dp[i-1][2]);
-        dp[i][2] = c + max(dp[i-1][0], dp[i-1][1]);
-    }
-
-    cout << max({dp[n-1][0], dp[n-1][1], dp[n-1][2]}) << "\n";
-    return 0;
-}
-```
-
 ### Space-Optimized Version
 
 Since we only need the previous day's values, we can reduce space to O(1):
@@ -329,16 +294,6 @@ dp[i][0] = activities[i][0] + max(dp[i-1])  # Includes dp[i-1][0]!
 **Problem:** This allows choosing activity A on both day i-1 and day i.
 **Fix:** Explicitly exclude the same activity: `max(dp[i-1][1], dp[i-1][2])`
 
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - int may overflow
-int dp[n][3];  // Max value = 10^4 * 10^5 = 10^9
-
-// CORRECT
-long long dp[n][3];  // Use 64-bit integers
-```
-
 ---
 
 ## Edge Cases
@@ -374,12 +329,14 @@ long long dp[n][3];  // Use 64-bit integers
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Frog 1](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic 1D DP introduction |
 | [Frog 2](https://atcoder.jp/contests/dp/tasks/dp_b) | DP with k choices |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Paint House](https://leetcode.com/problems/paint-house/) | Nearly identical - minimize cost instead |
@@ -387,6 +344,7 @@ long long dp[n][3];  // Use 64-bit integers
 | [Best Time to Buy and Sell Stock with Cooldown](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/) | State machine with hold/sold/cooldown |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Paint House II](https://leetcode.com/problems/paint-house-ii/) | K colors instead of 3, requires O(n*k) optimization |

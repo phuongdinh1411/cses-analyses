@@ -212,85 +212,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class UnionFind {
-public:
-    vector<int> parent, rank_;
-
-    UnionFind(int n) : parent(n), rank_(n, 0) {
-        iota(parent.begin(), parent.end(), 0);
-    }
-
-    int find(int x) {
-        if (parent[x] != x) parent[x] = find(parent[x]);
-        return parent[x];
-    }
-
-    bool unite(int x, int y) {
-        int px = find(x), py = find(y);
-        if (px == py) return false;
-        if (rank_[px] < rank_[py]) swap(px, py);
-        parent[py] = px;
-        if (rank_[px] == rank_[py]) rank_[px]++;
-        return true;
-    }
-
-    bool connected(int x, int y) {
-        return find(x) == find(y);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<tuple<long long, int, int, int>> edges(m);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        long long w;
-        cin >> a >> b >> w;
-        edges[i] = {w, a - 1, b - 1, i};
-    }
-
-    sort(edges.begin(), edges.end());
-
-    vector<string> result(m, "NO");
-    UnionFind uf(n);
-
-    int i = 0;
-    while (i < m) {
-        int j = i;
-        while (j < m && get<0>(edges[j]) == get<0>(edges[i])) j++;
-
-        // Check edges in this weight group
-        for (int k = i; k < j; k++) {
-            auto [w, u, v, idx] = edges[k];
-            if (!uf.connected(u, v)) {
-                result[idx] = "YES";
-            }
-        }
-
-        // Union all edges in this weight group
-        for (int k = i; k < j; k++) {
-            auto [w, u, v, idx] = edges[k];
-            uf.unite(u, v);
-        }
-
-        i = j;
-    }
-
-    for (const auto& r : result) cout << r << '\n';
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -500,18 +421,21 @@ edges.append((w, a, b, i))  # Should subtract 1 from a and b
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Road Reparation](https://cses.fi/problemset/task/1675) | Basic MST with Kruskal's |
 | [Building Roads](https://cses.fi/problemset/task/1666) | Union-Find basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Company Queries II](https://cses.fi/problemset/task/1688) | LCA queries on tree |
 | [Distance Queries](https://cses.fi/problemset/task/1135) | Path queries with LCA |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Path Queries II](https://cses.fi/problemset/task/2134) | Heavy-light decomposition |

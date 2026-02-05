@@ -318,78 +318,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-using ll = long long;
-const ll MOD = 1e9 + 7;
-
-typedef vector<vector<ll>> Matrix;
-
-Matrix multiply(const Matrix& A, const Matrix& B, int n) {
-    Matrix C(n, vector<ll>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < n; k++) {
-            if (A[i][k] == 0) continue;
-            for (int j = 0; j < n; j++) {
-                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matpow(Matrix M, ll p, int n) {
-    // Initialize result as identity matrix
-    Matrix result(n, vector<ll>(n, 0));
-    for (int i = 0; i < n; i++) {
-        result[i][i] = 1;
-    }
-
-    while (p > 0) {
-        if (p & 1) {
-            result = multiply(result, M, n);
-        }
-        M = multiply(M, M, n);
-        p >>= 1;
-    }
-
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    ll k;
-    cin >> n >> k;
-
-    Matrix adj(n, vector<ll>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> adj[i][j];
-        }
-    }
-
-    Matrix result = matpow(adj, k, n);
-
-    ll total = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            total = (total + result[i][j]) % MOD;
-        }
-    }
-
-    cout << total << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -402,15 +330,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflow for large values
-C[i][j] += A[i][k] * B[k][j];
-C[i][j] %= MOD;
-
-// CORRECT - mod at each step
-C[i][j] = (C[i][j] + (A[i][k] * B[k][j]) % MOD) % MOD;
-```
 
 **Problem:** A[i][k] and B[k][j] can each be up to 10^9, their product exceeds 32-bit integer range.
 **Fix:** Use 64-bit integers (long long in C++) and apply modulo during multiplication.
@@ -494,18 +413,21 @@ base = [row[:] for row in M]
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Fibonacci (CSES)](https://cses.fi/problemset/task/1722) | Basic matrix exponentiation |
 | [Power of Two](https://leetcode.com/problems/power-of-two/) | Understanding binary exponentiation |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Graph Paths I (CSES)](https://cses.fi/problemset/task/1723) | Paths from 1 to N specifically |
 | [Graph Paths II (CSES)](https://cses.fi/problemset/task/1724) | Shortest path with exactly K edges |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Throwing Dice (CSES)](https://cses.fi/problemset/task/1096) | Matrix exponentiation for dice sequences |

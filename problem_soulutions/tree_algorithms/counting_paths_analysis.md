@@ -420,117 +420,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-const int LOG = 18;
-
-vector<int> adj[MAXN];
-int parent[LOG][MAXN];
-int depth[MAXN];
-int diff[MAXN];
-long long result[MAXN];
-int n, m;
-
-void dfs_init(int node, int par, int d) {
-    parent[0][node] = par;
-    depth[node] = d;
-    for (int neighbor : adj[node]) {
-        if (neighbor != par) {
-            dfs_init(neighbor, node, d + 1);
-        }
-    }
-}
-
-void build_lca() {
-    for (int k = 1; k < LOG; k++) {
-        for (int v = 1; v <= n; v++) {
-            parent[k][v] = parent[k-1][parent[k-1][v]];
-        }
-    }
-}
-
-int lca(int u, int v) {
-    if (depth[u] < depth[v]) swap(u, v);
-
-    int diff_depth = depth[u] - depth[v];
-    for (int k = 0; k < LOG; k++) {
-        if ((diff_depth >> k) & 1) {
-            u = parent[k][u];
-        }
-    }
-
-    if (u == v) return u;
-
-    for (int k = LOG - 1; k >= 0; k--) {
-        if (parent[k][u] != parent[k][v]) {
-            u = parent[k][u];
-            v = parent[k][v];
-        }
-    }
-
-    return parent[0][u];
-}
-
-void dfs_sum(int node, int par) {
-    result[node] = diff[node];
-    for (int neighbor : adj[node]) {
-        if (neighbor != par) {
-            dfs_sum(neighbor, node);
-            result[node] += result[neighbor];
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    // Initialize LCA
-    dfs_init(1, 0, 0);
-    build_lca();
-
-    // Process paths
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        int c = lca(a, b);
-
-        diff[a]++;
-        diff[b]++;
-        diff[c]--;
-        if (parent[0][c] != 0) {
-            diff[parent[0][c]]--;
-        }
-    }
-
-    // Compute subtree sums
-    dfs_sum(1, 0);
-
-    // Output
-    for (int i = 1; i <= n; i++) {
-        cout << result[i];
-        if (i < n) cout << " ";
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -623,12 +512,14 @@ def dfs_wrong(node, par):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates](https://cses.fi/problemset/task/1674) | Basic subtree counting with DFS |
 | [Tree Distances I](https://cses.fi/problemset/task/1132) | DFS on trees, max depth |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Path Queries](https://cses.fi/problemset/task/1138) | Uses similar path decomposition |
@@ -636,6 +527,7 @@ def dfs_wrong(node, par):
 | [Path Queries II](https://cses.fi/problemset/task/2134) | Path queries with updates |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Tree Isomorphism I](https://cses.fi/problemset/task/1700) | Tree hashing |

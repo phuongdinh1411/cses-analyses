@@ -272,56 +272,6 @@ machines = list(map(int, input().split()))
 print(solve(n, t, machines))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long target;
-    cin >> n >> target;
-
-    vector<long long> machines(n);
-    long long min_time = LLONG_MAX;
-    for (int i = 0; i < n; i++) {
-        cin >> machines[i];
-        min_time = min(min_time, machines[i]);
-    }
-
-    // Feasibility check: can we produce target products in given time?
-    auto can_produce = [&](long long time) -> bool {
-        long long total = 0;
-        for (int i = 0; i < n; i++) {
-            total += time / machines[i];
-            // Overflow protection and early exit
-            if (total >= target) return true;
-        }
-        return false;
-    };
-
-    // Binary search on answer
-    long long lo = 1;
-    long long hi = min_time * target;
-
-    while (lo < hi) {
-        long long mid = lo + (hi - lo) / 2;
-        if (can_produce(mid)) {
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
-    }
-
-    cout << lo << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -335,38 +285,11 @@ int main() {
 
 ### Mistake 1: Integer Overflow in Check Function
 
-```cpp
-// WRONG - may overflow before comparison
-long long total = 0;
-for (int i = 0; i < n; i++) {
-    total += time / machines[i];  // total can exceed LLONG_MAX
-}
-return total >= target;
-```
-
 **Problem:** If time is large and machines are fast, total can overflow.
 
 **Fix:** Early exit when total >= target, or check for overflow:
 
-```cpp
-// CORRECT
-long long total = 0;
-for (int i = 0; i < n; i++) {
-    total += time / machines[i];
-    if (total >= target) return true;  // Early exit prevents overflow
-}
-return false;
-```
-
 ### Mistake 2: Wrong Upper Bound
-
-```cpp
-// WRONG - upper bound too small
-long long hi = target;  // May not be enough if machines are slow!
-
-// WRONG - upper bound causes overflow
-long long hi = max_machine * target;  // Use MIN, not MAX!
-```
 
 **Problem:** If machines are slow, we need more time than just target.
 
@@ -374,25 +297,7 @@ long long hi = max_machine * target;  // Use MIN, not MAX!
 
 ### Mistake 3: Using Wrong Mid Calculation
 
-```cpp
-// POTENTIALLY WRONG in some languages
-long long mid = (lo + hi) / 2;  // Can overflow if lo + hi > LLONG_MAX
-
-// CORRECT
-long long mid = lo + (hi - lo) / 2;  // Safe from overflow
-```
-
 ### Mistake 4: Off-by-One in Binary Search
-
-```cpp
-// WRONG - infinite loop when lo = hi - 1
-while (lo <= hi) {
-    mid = (lo + hi) / 2;
-    if (can_produce(mid)) {
-        hi = mid;  // Should be hi = mid - 1 for this loop style
-    }
-}
-```
 
 **Fix:** Use the `lo < hi` pattern with `hi = mid` and `lo = mid + 1`.
 

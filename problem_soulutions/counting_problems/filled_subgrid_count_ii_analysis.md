@@ -120,28 +120,6 @@ def count_filled_subgrids_brute(grid):
     return count
 ```
 
-```cpp
-int countFilledBrute(vector<vector<int>>& grid) {
-    int n = grid.size(), m = grid[0].size();
-    int count = 0;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            for (int h = 1; h <= n - i; h++) {
-                for (int w = 1; w <= m - j; w++) {
-                    bool valid = true;
-                    for (int di = 0; di < h && valid; di++)
-                        for (int dj = 0; dj < w && valid; dj++)
-                            if (grid[i+di][j+dj] != 1) valid = false;
-                    if (valid) count++;
-                }
-            }
-        }
-    }
-    return count;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -283,56 +261,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> grid(n, vector<int>(m));
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++)
-            cin >> grid[i][j];
-
-    // Build 2D prefix sum (1-indexed)
-    vector<vector<long long>> prefix(n + 1, vector<long long>(m + 1, 0));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            prefix[i+1][j+1] = grid[i][j] + prefix[i][j+1]
-                             + prefix[i+1][j] - prefix[i][j];
-        }
-    }
-
-    // Lambda for range sum query
-    auto rangeSum = [&](int r1, int c1, int r2, int c2) -> long long {
-        return prefix[r2+1][c2+1] - prefix[r1][c2+1]
-             - prefix[r2+1][c1] + prefix[r1][c1];
-    };
-
-    long long count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            for (int h = 1; h <= n - i; h++) {
-                for (int w = 1; w <= m - j; w++) {
-                    long long total = rangeSum(i, j, i + h - 1, j + w - 1);
-                    if (total == (long long)h * w) {
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -369,18 +297,6 @@ sum = prefix[r2+1][c2+1] - prefix[r1][c2+1] - prefix[r2+1][c1] + prefix[r1][c1]
 
 **Problem:** Incorrect range sum calculation.
 **Fix:** Remember to add back the top-left corner (subtracted twice).
-
-### Mistake 3: Integer Overflow in C++
-
-```cpp
-// WRONG - may overflow with large grids
-int total = rangeSum(i, j, i + h - 1, j + w - 1);
-if (total == h * w)  // h * w may overflow int
-
-// CORRECT - use long long
-long long total = rangeSum(i, j, i + h - 1, j + w - 1);
-if (total == (long long)h * w)
-```
 
 ---
 
@@ -420,18 +336,21 @@ if (total == (long long)h * w)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | 1D prefix sum basics |
 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | 1D prefix sum application |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Forest Queries](https://cses.fi/problemset/task/1652) | 2D prefix sum, simpler query |
 | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | 1D variant with hash map |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) | Updates require segment tree |

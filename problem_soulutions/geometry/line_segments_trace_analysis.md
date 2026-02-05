@@ -291,91 +291,6 @@ def trace_segments(n, segments):
     return path
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef pair<long long, long long> Point;
-
-vector<Point> traceSegments(int n, vector<array<long long, 4>>& segments) {
-    // Build graph using map
-    map<Point, vector<Point>> graph;
-
-    for (auto& seg : segments) {
-        Point p1 = {seg[0], seg[1]};
-        Point p2 = {seg[2], seg[3]};
-
-        graph[p1].push_back(p2);
-        graph[p2].push_back(p1);
-    }
-
-    // Find starting point (degree 1)
-    Point start = {LLONG_MAX, LLONG_MAX};
-    for (auto& [point, neighbors] : graph) {
-        if (neighbors.size() == 1) {
-            start = point;
-            break;
-        }
-    }
-
-    if (start.first == LLONG_MAX) {
-        return {};  // No valid start
-    }
-
-    // Traverse path
-    vector<Point> path;
-    set<Point> visited;
-    Point current = start;
-
-    path.push_back(current);
-    visited.insert(current);
-
-    while (true) {
-        Point nextPoint = {LLONG_MAX, LLONG_MAX};
-
-        for (Point& neighbor : graph[current]) {
-            if (visited.find(neighbor) == visited.end()) {
-                nextPoint = neighbor;
-                break;
-            }
-        }
-
-        if (nextPoint.first == LLONG_MAX) break;
-
-        path.push_back(nextPoint);
-        visited.insert(nextPoint);
-        current = nextPoint;
-    }
-
-    return path;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<array<long long, 4>> segments(n);
-    for (int i = 0; i < n; i++) {
-        cin >> segments[i][0] >> segments[i][1]
-            >> segments[i][2] >> segments[i][3];
-    }
-
-    vector<Point> result = traceSegments(n, segments);
-
-    for (auto& p : result) {
-        cout << "(" << p.first << "," << p.second << ") ";
-    }
-    cout << endl;
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -469,6 +384,7 @@ if start is None:
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Technique |
 |---------|-----------|
 | [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Sweep line algorithm |
@@ -477,6 +393,7 @@ if start is None:
 | [Convex Hull](https://cses.fi/problemset/task/2195) | Graham scan / Andrew's algorithm |
 
 ### LeetCode Problems
+
 | Problem | Connection |
 |---------|------------|
 | [Valid Path](https://leetcode.com/problems/find-if-path-exists-in-graph/) | Graph traversal basics |

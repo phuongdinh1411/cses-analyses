@@ -186,30 +186,6 @@ def solve():
 solve()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (int i = 0; i < (1 << n); i++) {
-        int gray = i ^ (i >> 1);
-        for (int j = n - 1; j >= 0; j--) {
-            cout << ((gray >> j) & 1);
-        }
-        cout << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -252,47 +228,6 @@ def solve():
         print(code)
 
 solve()
-```
-
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<string> grayCode(int n) {
-    if (n == 1) {
-        return {"0", "1"};
-    }
-
-    vector<string> prev = grayCode(n - 1);
-    vector<string> result;
-
-    // Prepend 0 to original
-    for (const string& code : prev) {
-        result.push_back("0" + code);
-    }
-
-    // Prepend 1 to reversed
-    for (int i = prev.size() - 1; i >= 0; i--) {
-        result.push_back("1" + prev[i]);
-    }
-
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (const string& code : grayCode(n)) {
-        cout << code << '\n';
-    }
-
-    return 0;
-}
 ```
 
 ### Complexity
@@ -345,20 +280,6 @@ for i in range(2**n):  # Or equivalently: range(1 << n)
 **Problem:** Missing the last Gray code in the sequence.
 **Fix:** Loop should cover all 2^n values from 0 to 2^n - 1.
 
-### Mistake 4: Printing Bits in Wrong Order (C++)
-
-```cpp
-// WRONG - prints bits in reverse order
-for (int j = 0; j < n; j++) {
-    cout << ((gray >> j) & 1);
-}
-
-// CORRECT - prints MSB first
-for (int j = n - 1; j >= 0; j--) {
-    cout << ((gray >> j) & 1);
-}
-```
-
 ---
 
 ## Edge Cases
@@ -395,18 +316,21 @@ for (int j = n - 1; j >= 0; j--) {
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Bit Strings](https://cses.fi/problemset/task/1617) | Basic bit counting |
 | [Two Sets](https://cses.fi/problemset/task/1092) | Understanding binary subsets |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Gray Code (LeetCode 89)](https://leetcode.com/problems/gray-code/) | Same concept, return as integers |
 | [Circular Permutation](https://leetcode.com/problems/circular-permutation-in-binary-representation/) | Gray code with specific starting point |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Creating Strings](https://cses.fi/problemset/task/1622) | Permutation generation |

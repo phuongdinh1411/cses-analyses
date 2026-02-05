@@ -123,23 +123,6 @@ def solve_brute_force(n, arr, queries):
     return results
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> solveBruteForce(int n, vector<int>& arr, vector<pair<int,int>>& queries) {
-    vector<int> results;
-    for (auto& [l, r] : queries) {
-        int maxVal = arr[l - 1];  // Convert to 0-indexed
-        for (int i = l - 1; i < r; i++) {
-            maxVal = max(maxVal, arr[i]);
-        }
-        results.push_back(maxVal);
-    }
-    return results;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -295,56 +278,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-const int MAXLOG = 18;
-
-int st[MAXN][MAXLOG];
-int LOG[MAXN];
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    // Precompute logs
-    LOG[1] = 0;
-    for (int i = 2; i <= n; i++) {
-        LOG[i] = LOG[i / 2] + 1;
-    }
-
-    // Read array and initialize base case
-    for (int i = 0; i < n; i++) {
-        cin >> st[i][0];
-    }
-
-    // Build sparse table
-    for (int j = 1; j < MAXLOG; j++) {
-        for (int i = 0; i + (1 << j) <= n; i++) {
-            st[i][j] = max(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
-        }
-    }
-
-    // Answer queries
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        l--; r--;  // Convert to 0-indexed
-
-        int len = r - l + 1;
-        int k = LOG[len];
-        cout << max(st[l][k], st[r - (1 << k) + 1][k]) << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -370,14 +303,6 @@ LOG[i] = LOG[i // 2] + 1
 **Fix:** Precompute integer logarithms in a table.
 
 ### Mistake 2: Off-by-One in Sparse Table Bounds
-
-```cpp
-// WRONG
-for (int i = 0; i + (1 << j) < n; i++)  // Missing the last valid range
-
-// CORRECT
-for (int i = 0; i + (1 << j) <= n; i++)  // Include boundary
-```
 
 **Problem:** Missing valid ranges at the end of the array.
 **Fix:** Use `<= n` instead of `< n` for the loop bound.

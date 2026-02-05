@@ -273,39 +273,6 @@ if __name__ == "__main__":
     print(knapsack_1d(n, W, weights, values))
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, W;
-    cin >> n >> W;
-
-    vector<int> weight(n), value(n);
-    for (int i = 0; i < n; i++) {
-        cin >> weight[i] >> value[i];
-    }
-
-    // Space-optimized 1D DP
-    vector<long long> dp(W + 1, 0);
-
-    for (int i = 0; i < n; i++) {
-        // Iterate backwards to maintain 0/1 property
-        for (int j = W; j >= weight[i]; j--) {
-            dp[j] = max(dp[j], dp[j - weight[i]] + (long long)value[i]);
-        }
-    }
-
-    cout << dp[W] << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -331,14 +298,6 @@ for j in range(weights[i], W + 1):  # Forward iteration
 **Fix:** Iterate backwards: `for j in range(W, weights[i] - 1, -1)`
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - may overflow with large values
-int dp[W + 1];  // v_i can be up to 10^9, sum can exceed int
-
-// CORRECT
-long long dp[W + 1];
-```
 
 **Problem:** Values up to 10^9, summed across items, can overflow 32-bit integers.
 
@@ -393,12 +352,14 @@ for i in range(1, n + 1):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Frog 1](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic DP introduction |
 | [Coin Combinations I](https://cses.fi/problemset/task/1635) | Simpler unbounded version |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Knapsack 2](https://atcoder.jp/contests/dp/tasks/dp_e) | DP on values when W is huge |
@@ -406,6 +367,7 @@ for i in range(1, n + 1):
 | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | Target is sum/2 |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Money Sums](https://cses.fi/problemset/task/1745) | Track all achievable sums |

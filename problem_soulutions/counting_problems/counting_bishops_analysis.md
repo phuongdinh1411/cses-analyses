@@ -300,65 +300,6 @@ def solve_optimal(n, k):
     return result
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-vector<int> getDiagonalSizes(int n, int color) {
-    vector<int> sizes;
-    for (int d = 0; d < 2 * n - 1; d++) {
-        if (d % 2 == color) {
-            int size = min({d + 1, 2 * n - 1 - d, n});
-            sizes.push_back(size);
-        }
-    }
-    return sizes;
-}
-
-vector<long long> countPlacements(const vector<int>& diagSizes) {
-    int numDiags = diagSizes.size();
-    vector<long long> dp(numDiags + 1, 0);
-    dp[0] = 1;
-
-    for (int d = 0; d < numDiags; d++) {
-        int size = diagSizes[d];
-        // Process in reverse to avoid overwriting
-        for (int j = min(d + 1, numDiags); j >= 1; j--) {
-            if (size > j - 1) {
-                dp[j] = (dp[j] + dp[j-1] * (size - (j - 1))) % MOD;
-            }
-        }
-    }
-    return dp;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> blackSizes = getDiagonalSizes(n, 0);
-    vector<int> whiteSizes = getDiagonalSizes(n, 1);
-
-    vector<long long> blackDp = countPlacements(blackSizes);
-    vector<long long> whiteDp = countPlacements(whiteSizes);
-
-    long long result = 0;
-    for (int i = 0; i <= k && i < blackDp.size(); i++) {
-        if (k - i < whiteDp.size()) {
-            result = (result + blackDp[i] * whiteDp[k - i]) % MOD;
-        }
-    }
-
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -445,18 +386,21 @@ for j in range(max_bishops, 0, -1):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Grid Paths](https://cses.fi/problemset/task/1638) | Basic grid DP |
 | [Coin Combinations I](https://cses.fi/problemset/task/1635) | Counting with DP |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Two Sets II](https://cses.fi/problemset/task/1093) | Partition counting with DP |
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Combinatorial counting |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Bitmask DP on grids |

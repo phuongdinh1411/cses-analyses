@@ -269,46 +269,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    map<long long, long long> prefix_count;
-    prefix_count[0] = 1;  // Empty prefix
-
-    long long prefix_sum = 0;
-    long long count = 0;
-
-    for (int i = 0; i < n; i++) {
-        prefix_sum += arr[i];
-        // How many previous prefixes give us target sum?
-        if (prefix_count.find(prefix_sum - x) != prefix_count.end()) {
-            count += prefix_count[prefix_sum - x];
-        }
-        // Record current prefix
-        prefix_count[prefix_sum]++;
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -336,16 +296,6 @@ for num in arr:
 **Problem:** Misses subarrays starting from index 0. If `arr = [7]` and `target = 7`, the answer should be 1, but this returns 0.
 
 **Fix:** Always initialize with `prefix_count[0] = 1` to represent the empty prefix.
-
-### Mistake 2: Integer Overflow in C++
-
-```cpp
-// WRONG
-int prefix_sum = 0;  // int overflows!
-
-// CORRECT
-long long prefix_sum = 0;  // Use long long
-```
 
 **Problem:** With values up to 10^9 and n up to 2 x 10^5, prefix sums can reach 2 x 10^14, exceeding int range.
 
@@ -424,12 +374,14 @@ for right in range(n):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subarray Sums I (CSES 1660)](https://cses.fi/problemset/task/1660) | Positive-only version, use sliding window |
 | [Two Sum (LeetCode)](https://leetcode.com/problems/two-sum/) | Same complement technique, simpler context |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarray Sum Equals K (LeetCode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) | Same problem, different platform |
@@ -437,6 +389,7 @@ for right in range(n):
 | [Continuous Subarray Sum (LeetCode 523)](https://leetcode.com/problems/continuous-subarray-sum/) | Divisibility variant with length >= 2 |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Count Number of Nice Subarrays (LeetCode 1248)](https://leetcode.com/problems/count-number-of-nice-subarrays/) | Prefix count of odd numbers |

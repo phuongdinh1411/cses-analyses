@@ -264,90 +264,7 @@ def count_segment_rectangles(height, start, end):
     return count
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long countUniformSubgrids(vector<string>& grid) {
-    int n = grid.size(), m = grid[0].size();
-    vector<int> height(m, 0);
-    vector<char> prevChar(m, '\0');
-    long long total = 0;
-
-    for (int i = 0; i < n; i++) {
-        // Update heights
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == prevChar[j]) {
-                height[j]++;
-            } else {
-                height[j] = 1;
-                prevChar[j] = grid[i][j];
-            }
-        }
-
-        // Count rectangles using segments
-        int j = 0;
-        while (j < m) {
-            char letter = grid[i][j];
-            int start = j;
-
-            // Collect segment heights
-            vector<int> segHeights;
-            while (j < m && grid[i][j] == letter) {
-                segHeights.push_back(height[j]);
-                j++;
-            }
-
-            // Count using histogram method
-            total += countHistogramRectangles(segHeights);
-        }
-    }
-    return total;
-}
-
-long long countHistogramRectangles(vector<int>& heights) {
-    long long count = 0;
-    int n = heights.size();
-    stack<pair<int, int>> stk; // (start_index, height)
-
-    for (int i = 0; i <= n; i++) {
-        int h = (i < n) ? heights[i] : 0;
-        int start = i;
-
-        while (!stk.empty() && stk.top().second >= h) {
-            auto [idx, prevH] = stk.top();
-            stk.pop();
-            int width = i - idx;
-            // Count rectangles with height in range (h, prevH]
-            count += (long long)(prevH - h) * width * (width + 1) / 2;
-            start = idx;
-        }
-        if (h > 0) {
-            stk.push({start, h});
-        }
-    }
-    return count;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    cout << countUniformSubgrids(grid) << "\n";
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -442,11 +359,13 @@ count += (long long)width * (width + 1) / 2 * height
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [CSES - Rectangle Cutting](https://cses.fi/problemset/task/1744) | Basic 2D DP grid problem |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Counting Rooms](https://cses.fi/problemset/task/1192) | Grid counting with flood fill |
@@ -454,6 +373,7 @@ count += (long long)width * (width + 1) / 2 * height
 | [LeetCode - Count Submatrices With All Ones](https://leetcode.com/problems/count-submatrices-with-all-ones/) | Binary grid version |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES - Grid Paths](https://cses.fi/problemset/task/1078) | Grid path counting with constraints |

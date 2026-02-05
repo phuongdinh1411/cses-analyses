@@ -205,45 +205,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <iostream>
-using namespace std;
-
-string canEmptyPiles(long long a, long long b) {
-    // Condition 1: Sum divisible by 3
-    if ((a + b) % 3 != 0) {
-        return "NO";
-    }
-    // Condition 2: a <= 2*b (y >= 0)
-    if (a > 2 * b) {
-        return "NO";
-    }
-    // Condition 3: b <= 2*a (x >= 0)
-    if (b > 2 * a) {
-        return "NO";
-    }
-    return "YES";
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t;
-    cin >> t;
-
-    while (t--) {
-        long long a, b;
-        cin >> a >> b;
-        cout << canEmptyPiles(a, b) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -287,18 +248,6 @@ def wrong_solution(a, b):
 **Problem:** Divisibility alone doesn't ensure non-negative x and y.
 **Fix:** Check both `a <= 2*b` and `b <= 2*a`.
 
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow with int
-int a, b;
-if ((a + b) % 3 == 0)  // a + b could overflow!
-
-// CORRECT - use long long
-long long a, b;
-if ((a + b) % 3 == 0)
-```
-
 **Problem:** With a, b up to 10^9, their sum can exceed int range.
 **Fix:** Use `long long` in C++.
 
@@ -339,18 +288,21 @@ if ((a + b) % 3 == 0)
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Gray Code (CSES)](https://cses.fi/problemset/task/2205) | Bit manipulation pattern |
 | [Tower of Hanoi (CSES)](https://cses.fi/problemset/task/2165) | Recursive structure |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Josephus Problem I (CSES)](https://cses.fi/problemset/task/2162) | Mathematical recurrence |
 | [Josephus Problem II (CSES)](https://cses.fi/problemset/task/2163) | Efficient simulation |
 
 ### LeetCode Related
+
 | Problem | Connection |
 |---------|------------|
 | [Water and Jug Problem](https://leetcode.com/problems/water-and-jug-problem/) | GCD-based Diophantine |

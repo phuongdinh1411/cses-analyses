@@ -193,8 +193,10 @@ All cells filled -> count = 1
 ```
 Initial Grid:        After filling:
 +---+---+            +---+---+
+
 | 1 | ? |            | 1 | 2 |
 +---+---+            +---+---+
+
 | ? | 1 |            | 2 | 1 |
 +---+---+            +---+---+
 
@@ -256,88 +258,6 @@ def solve_optimized(n, grid):
         return count
 
     return backtrack(0)
-```
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-class GridCompletion {
-    int n;
-    vector<vector<int>> grid;
-    vector<int> row_mask, col_mask;  // Bitmasks for used values
-    vector<pair<int,int>> empty_cells;
-
-public:
-    int solve(int n_, vector<vector<int>>& g) {
-        n = n_;
-        grid = g;
-        row_mask.assign(n, 0);
-        col_mask.assign(n, 0);
-
-        // Initialize masks and find empty cells
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0) {
-                    empty_cells.push_back({i, j});
-                } else {
-                    row_mask[i] |= (1 << grid[i][j]);
-                    col_mask[j] |= (1 << grid[i][j]);
-                }
-            }
-        }
-
-        return backtrack(0);
-    }
-
-private:
-    int backtrack(int idx) {
-        if (idx == (int)empty_cells.size()) {
-            return 1;
-        }
-
-        int r = empty_cells[idx].first;
-        int c = empty_cells[idx].second;
-        int used = row_mask[r] | col_mask[c];
-        long long count = 0;
-
-        for (int val = 1; val <= n; val++) {
-            if (!(used & (1 << val))) {  // Value not used
-                row_mask[r] |= (1 << val);
-                col_mask[c] |= (1 << val);
-
-                count = (count + backtrack(idx + 1)) % MOD;
-
-                row_mask[r] ^= (1 << val);
-                col_mask[c] ^= (1 << val);
-            }
-        }
-
-        return count;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<vector<int>> grid(n, vector<int>(n));
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> grid[i][j];
-        }
-    }
-
-    GridCompletion solver;
-    cout << solver.solve(n, grid) << "\n";
-
-    return 0;
-}
 ```
 
 ### Complexity
@@ -444,18 +364,21 @@ def solve(n, grid):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Creating Strings](https://cses.fi/problemset/task/1622) | Basic backtracking and permutations |
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Grid + backtracking + constraint checking |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Grid Paths](https://cses.fi/problemset/task/1078) | Fixed start/end, path counting |
 | [Apple Division](https://cses.fi/problemset/task/1623) | Subset enumeration with backtracking |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Bitmask DP on grid |

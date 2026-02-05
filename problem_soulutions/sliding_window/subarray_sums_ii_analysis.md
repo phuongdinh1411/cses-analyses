@@ -247,42 +247,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    map<long long, long long> prefix_count;
-    prefix_count[0] = 1;  // Empty prefix
-
-    long long current_prefix = 0;
-    long long count = 0;
-
-    for (int i = 0; i < n; i++) {
-        long long num;
-        cin >> num;
-        current_prefix += num;
-
-        // How many previous prefixes give us target?
-        count += prefix_count[current_prefix - x];
-
-        // Record this prefix
-        prefix_count[current_prefix]++;
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -322,26 +286,10 @@ for num in arr:
 
 ### Mistake 3: Integer Overflow
 
-```cpp
-// WRONG
-int current_prefix = 0;  // May overflow!
-int count = 0;           // May overflow!
-
-// CORRECT
-long long current_prefix = 0;
-long long count = 0;
-```
-
 **Problem:** With values up to 10^9 and n up to 2*10^5, prefix sum can reach 2*10^14.
 **Fix:** Use `long long` for prefix sums and count.
 
 ### Mistake 4: Using unordered_map Without Care
-
-```cpp
-// POTENTIALLY PROBLEMATIC
-unordered_map<long long, long long> prefix_count;
-// Can be hacked to O(n^2) in competitive programming
-```
 
 **Safer Option:** Use `map` (O(log n) per operation) or custom hash for `unordered_map`.
 
@@ -384,18 +332,21 @@ unordered_map<long long, long long> prefix_count;
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Link | Why It Helps |
 |---------|------|--------------|
 | Subarray Sums I | [CSES 1660](https://cses.fi/problemset/task/1660) | Sliding window for positive-only arrays |
 | Static Range Sum | [CSES 1646](https://cses.fi/problemset/task/1646) | Basic prefix sum understanding |
 
 ### Similar Difficulty
+
 | Problem | Link | Key Difference |
 |---------|------|----------------|
 | Subarray Divisibility | [CSES 1662](https://cses.fi/problemset/task/1662) | Modular arithmetic with prefix sums |
 | Two Sum | [CSES 1640](https://cses.fi/problemset/task/1640) | Hash map for complement search |
 
 ### Harder (Do These After)
+
 | Problem | Link | New Concept |
 |---------|------|-------------|
 | Sum of Three Values | [CSES 1641](https://cses.fi/problemset/task/1641) | Extended to three numbers |

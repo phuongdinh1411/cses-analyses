@@ -239,37 +239,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<pair<long long, long long>> v(n);
-    for (int i = 0; i < n; i++) {
-        cin >> v[i].first >> v[i].second;
-    }
-
-    // Shoelace formula
-    long long area = 0;
-    for (int i = 0; i < n; i++) {
-        int j = (i + 1) % n;
-        area += v[i].first * v[j].second;
-        area -= v[j].first * v[i].second;
-    }
-
-    cout << abs(area) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -282,16 +251,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow with int
-int area = 0;
-area += v[i].first * v[j].second;
-
-// CORRECT - use long long
-long long area = 0;
-area += v[i].first * v[j].second;
-```
 
 **Problem:** With coordinates up to 10^9, the product can reach 10^18, exceeding int range.
 **Fix:** Always use `long long` in C++ or Python's unlimited integers.
@@ -376,6 +335,7 @@ print(abs(area))
 ## Related Problems
 
 ### CSES Geometry Problems
+
 | Problem | Link | Key Concept |
 |---------|------|-------------|
 | Point Location Test | [CSES 2189](https://cses.fi/problemset/task/2189) | Cross product for point-line relation |
@@ -385,6 +345,7 @@ print(abs(area))
 | Point in Polygon | [CSES 2192](https://cses.fi/problemset/task/2192) | Ray casting + cross product |
 
 ### Similar LeetCode Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Largest Triangle Area](https://leetcode.com/problems/largest-triangle-area/) | Find max area among all triangles |

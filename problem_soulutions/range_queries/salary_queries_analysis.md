@@ -336,107 +336,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class BIT {
-private:
-    vector<int> tree;
-    int n;
-
-public:
-    BIT(int size) : n(size + 1), tree(size + 2, 0) {}
-
-    void update(int i, int delta) {
-        for (; i <= n; i += i & (-i))
-            tree[i] += delta;
-    }
-
-    int query(int i) {
-        int sum = 0;
-        for (; i > 0; i -= i & (-i))
-            sum += tree[i];
-        return sum;
-    }
-
-    int range_query(int l, int r) {
-        if (l > r) return 0;
-        return query(r) - query(l - 1);
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<int> salaries(n);
-    for (int i = 0; i < n; i++) {
-        cin >> salaries[i];
-    }
-
-    // Read all queries
-    vector<tuple<char, int, int>> queries(q);
-    for (int i = 0; i < q; i++) {
-        char type;
-        int a, b;
-        cin >> type >> a >> b;
-        queries[i] = {type, a, b};
-    }
-
-    // Collect all values for coordinate compression
-    set<int> all_values(salaries.begin(), salaries.end());
-    for (auto& [type, a, b] : queries) {
-        if (type == '?') {
-            all_values.insert(a);
-            all_values.insert(b);
-        } else {
-            all_values.insert(b);
-        }
-    }
-
-    // Create compression mapping
-    vector<int> sorted_values(all_values.begin(), all_values.end());
-    map<int, int> compress;
-    for (int i = 0; i < (int)sorted_values.size(); i++) {
-        compress[sorted_values[i]] = i + 1;  // 1-indexed
-    }
-
-    // Initialize BIT
-    BIT bit(sorted_values.size());
-    vector<int> current_salaries = salaries;
-    for (int sal : salaries) {
-        bit.update(compress[sal], 1);
-    }
-
-    // Process queries
-    for (auto& [type, a, b] : queries) {
-        if (type == '?') {
-            // Count salaries in range [a, b]
-            int l = compress[a];
-            int r = compress[b];
-            cout << bit.range_query(l, r) << '\n';
-        } else {
-            // Update salary of employee a to b
-            int k = a, new_sal = b;
-            int old_sal = current_salaries[k - 1];
-
-            bit.update(compress[old_sal], -1);
-            bit.update(compress[new_sal], 1);
-
-            current_salaries[k - 1] = new_sal;
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -541,12 +440,14 @@ all_values.add(query_b)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries (CSES 1646)](https://cses.fi/problemset/task/1646) | Basic prefix sum concept |
 | [Dynamic Range Sum Queries (CSES 1648)](https://cses.fi/problemset/task/1648) | BIT fundamentals |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Update Queries (CSES 1651)](https://cses.fi/problemset/task/1651) | Range updates instead of point updates |
@@ -554,6 +455,7 @@ all_values.add(query_b)
 | [Range Sum Query - Mutable (LeetCode 307)](https://leetcode.com/problems/range-sum-query-mutable/) | Sum instead of count |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polynomial Queries (CSES 1736)](https://cses.fi/problemset/task/1736) | Complex range updates |

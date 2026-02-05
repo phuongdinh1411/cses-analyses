@@ -155,29 +155,6 @@ arr = [7, 3, 5, 3, 6, 2, 9, 8]
 print(lis_n_squared(arr))  # Output: 4
 ```
 
-```cpp
-// C++ O(n^2) solution
-#include <bits/stdc++.h>
-using namespace std;
-
-int lis_n_squared(vector<int>& arr) {
-    int n = arr.size();
-    if (n == 0) return 0;
-
-    vector<int> dp(n, 1);
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 0; j < i; j++) {
-            if (arr[j] < arr[i]) {
-                dp[i] = max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-
-    return *max_element(dp.begin(), dp.end());
-}
-```
-
 ## O(n log n) Solution: Binary Search Optimization
 
 The O(n^2) solution is too slow for n = 2x10^5. We need O(n log n).
@@ -298,45 +275,6 @@ def lis_nlogn(arr):
 # Example
 arr = [7, 3, 5, 3, 6, 2, 9, 8]
 print(lis_nlogn(arr))  # Output: 4
-```
-
-```cpp
-// C++ O(n log n) solution
-#include <bits/stdc++.h>
-using namespace std;
-
-int lis_nlogn(vector<int>& arr) {
-    vector<int> tails;
-
-    for (int num : arr) {
-        // lower_bound = first element >= num
-        auto it = lower_bound(tails.begin(), tails.end(), num);
-
-        if (it == tails.end()) {
-            tails.push_back(num);
-        } else {
-            *it = num;
-        }
-    }
-
-    return tails.size();
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << lis_nlogn(arr) << "\n";
-    return 0;
-}
 ```
 
 ## Why bisect_left (lower_bound) and NOT bisect_right?

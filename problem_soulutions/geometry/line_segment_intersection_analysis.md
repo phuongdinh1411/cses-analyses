@@ -222,63 +222,6 @@ else:
     print("NO")
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> Point;
-
-ll cross(Point o, Point a, Point b) {
-    return (a.first - o.first) * (b.second - o.second)
-         - (a.second - o.second) * (b.first - o.first);
-}
-
-bool onSegment(Point p, Point q, Point r) {
-    return min(p.first, r.first) <= q.first && q.first <= max(p.first, r.first) &&
-           min(p.second, r.second) <= q.second && q.second <= max(p.second, r.second);
-}
-
-bool segmentsIntersect(Point p1, Point p2, Point p3, Point p4) {
-    ll d1 = cross(p3, p4, p1);
-    ll d2 = cross(p3, p4, p2);
-    ll d3 = cross(p1, p2, p3);
-    ll d4 = cross(p1, p2, p4);
-
-    // General case
-    if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) &&
-        ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
-        return true;
-    }
-
-    // Collinear cases
-    if (d1 == 0 && onSegment(p3, p1, p4)) return true;
-    if (d2 == 0 && onSegment(p3, p2, p4)) return true;
-    if (d3 == 0 && onSegment(p1, p3, p2)) return true;
-    if (d4 == 0 && onSegment(p1, p4, p2)) return true;
-
-    return false;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    ll x1, y1, x2, y2, x3, y3, x4, y4;
-    cin >> x1 >> y1 >> x2 >> y2;
-    cin >> x3 >> y3 >> x4 >> y4;
-
-    if (segmentsIntersect({x1, y1}, {x2, y2}, {x3, y3}, {x4, y4})) {
-        cout << "YES\n";
-    } else {
-        cout << "NO\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -306,13 +249,6 @@ def intersect_wrong(p1, p2, p3, p4):
 **Fix:** Add explicit checks for when cross products are zero.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - int may overflow with coordinates up to 10^9
-int cross(pair<int,int> o, pair<int,int> a, pair<int,int> b) {
-    return (a.first - o.first) * (b.second - o.second) - ...;
-}
-```
 
 **Problem:** With coordinates up to 10^9, products can exceed 10^18.
 **Fix:** Use `long long` for all calculations.
@@ -372,17 +308,20 @@ if d1 * d2 <= 0 and d3 * d4 <= 0:  # Too permissive!
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Point Location Test](https://cses.fi/problemset/task/2189) | Learn cross product basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Polygon Area](https://cses.fi/problemset/task/2191) | Use cross product for area |
 | [Point in Polygon](https://cses.fi/problemset/task/2192) | Ray casting with segment tests |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem |

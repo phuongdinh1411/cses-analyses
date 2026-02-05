@@ -261,92 +261,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-int sz[MAXN], bit[MAXN];
-bool removed[MAXN];
-int n, k1, k2;
-long long result = 0;
-
-void bit_update(int i, int d) {
-    for (++i; i <= n + 1; i += i & (-i)) bit[i] += d;
-}
-
-int bit_query(int i) {
-    if (i < 0) return 0;
-    int s = 0;
-    for (++i; i > 0; i -= i & (-i)) s += bit[i];
-    return s;
-}
-
-int bit_range(int lo, int hi) {
-    return lo > hi ? 0 : bit_query(hi) - bit_query(lo - 1);
-}
-
-void get_size(int u, int p) {
-    sz[u] = 1;
-    for (int v : adj[u])
-        if (v != p && !removed[v]) { get_size(v, u); sz[u] += sz[v]; }
-}
-
-int get_centroid(int u, int p, int tree_sz) {
-    for (int v : adj[u])
-        if (v != p && !removed[v] && sz[v] > tree_sz / 2)
-            return get_centroid(v, u, tree_sz);
-    return u;
-}
-
-void get_depths(int u, int p, int d, vector<int>& depths) {
-    if (d > k2) return;
-    depths.push_back(d);
-    for (int v : adj[u])
-        if (v != p && !removed[v]) get_depths(v, u, d + 1, depths);
-}
-
-void process(int u) {
-    get_size(u, -1);
-    int c = get_centroid(u, -1, sz[u]);
-    removed[c] = true;
-
-    int max_d = 0;
-    for (int v : adj[c]) {
-        if (removed[v]) continue;
-        vector<int> depths;
-        get_depths(v, c, 1, depths);
-
-        for (int d : depths) {
-            int lo = max(0, k1 - d), hi = k2 - d;
-            if (hi >= 0) result += bit_range(lo, hi);
-        }
-        for (int d : depths) { bit_update(d, 1); max_d = max(max_d, d); }
-    }
-
-    for (int d = 0; d <= max_d; d++) {
-        int v = bit_range(d, d);
-        if (v > 0) bit_update(d, -v);
-    }
-
-    for (int v : adj[c]) if (!removed[v]) process(v);
-}
-
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    cin >> n >> k1 >> k2;
-    for (int i = 0; i < n - 1; i++) {
-        int a, b; cin >> a >> b;
-        adj[a].push_back(b); adj[b].push_back(a);
-    }
-    process(1);
-    cout << result << "\n";
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -414,17 +328,20 @@ for v in adj[centroid]:
 ## Related Problems
 
 ### Easier (Do First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Fixed Length Paths I (CSES 2080)](https://cses.fi/problemset/task/2080) | Exact length k, simpler |
 | [Tree Diameter (CSES 1131)](https://cses.fi/problemset/task/1131) | Basic tree traversal |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Path Queries II (CSES 2134)](https://cses.fi/problemset/task/2134) | Different operations |
 
 ### Harder (Do After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Distance Queries (CSES 1135)](https://cses.fi/problemset/task/1135) | LCA + preprocessing |

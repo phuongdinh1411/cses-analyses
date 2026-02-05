@@ -257,71 +257,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> Point;
-
-ll cross(Point O, Point A, Point B) {
-    return (A.first - O.first) * (B.second - O.second)
-         - (A.second - O.second) * (B.first - O.first);
-}
-
-vector<Point> convexHull(vector<Point>& points) {
-    sort(points.begin(), points.end());
-    points.erase(unique(points.begin(), points.end()), points.end());
-
-    int n = points.size();
-    if (n <= 1) return points;
-
-    vector<Point> hull;
-
-    // Build lower hull
-    for (int i = 0; i < n; i++) {
-        while (hull.size() >= 2 && cross(hull[hull.size()-2], hull[hull.size()-1], points[i]) <= 0)
-            hull.pop_back();
-        hull.push_back(points[i]);
-    }
-
-    // Build upper hull
-    int lower_size = hull.size();
-    for (int i = n - 2; i >= 0; i--) {
-        while (hull.size() > lower_size && cross(hull[hull.size()-2], hull[hull.size()-1], points[i]) <= 0)
-            hull.pop_back();
-        hull.push_back(points[i]);
-    }
-
-    hull.pop_back();  // Remove duplicate endpoint
-    return hull;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<Point> points(n);
-    for (int i = 0; i < n; i++) {
-        cin >> points[i].first >> points[i].second;
-    }
-
-    vector<Point> hull = convexHull(points);
-
-    cout << hull.size() << "\n";
-    for (auto& p : hull) {
-        cout << p.first << " " << p.second << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -334,19 +269,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow in Cross Product
-
-```cpp
-// WRONG - may overflow with int
-int cross(Point O, Point A, Point B) {
-    return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
-}
-
-// CORRECT - use long long
-long long cross(Point O, Point A, Point B) {
-    return (long long)(A.x - O.x) * (B.y - O.y)
-         - (long long)(A.y - O.y) * (B.x - O.x);
-}
-```
 
 **Problem:** With coordinates up to 10^9, the product can reach 10^18.
 **Fix:** Use `long long` for cross product calculations.
@@ -425,12 +347,14 @@ points = sorted(set(points))
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Point Location Test](https://cses.fi/problemset/task/2189) | Practice cross product for orientation |
 | [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Understand geometric primitives |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Polygon Area](https://cses.fi/problemset/task/2191) | Apply cross product for area calculation |
@@ -438,6 +362,7 @@ points = sorted(set(points))
 | [Erect the Fence (LeetCode 587)](https://leetcode.com/problems/erect-the-fence/) | Same problem, include collinear points |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem with convex hull |

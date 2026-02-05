@@ -271,91 +271,6 @@ def solve_multi_source_dijkstra(n: int, edges: List[Tuple[int,int,int]],
     return [dist[q - 1] if dist[q - 1] != float('inf') else -1 for q in queries]
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<long long> solveMultiSourceDijkstra(
-    int n,
-    vector<tuple<int,int,int>>& edges,
-    vector<int>& shops,
-    vector<int>& queries) {
-
-    // Build adjacency list (0-indexed)
-    vector<vector<pair<int,int>>> adj(n);
-    for (auto& [a, b, w] : edges) {
-        adj[a-1].push_back({b-1, w});
-        adj[b-1].push_back({a-1, w});
-    }
-
-    // Multi-source Dijkstra
-    const long long INF = 1e18;
-    vector<long long> dist(n, INF);
-    priority_queue<pair<long long,int>, vector<pair<long long,int>>, greater<>> pq;
-
-    // Initialize: all shops at distance 0
-    for (int shop : shops) {
-        dist[shop - 1] = 0;
-        pq.push({0, shop - 1});
-    }
-
-    // Dijkstra relaxation
-    while (!pq.empty()) {
-        auto [d, u] = pq.top();
-        pq.pop();
-        if (d > dist[u]) continue;
-
-        for (auto [v, w] : adj[u]) {
-            if (dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
-                pq.push({dist[v], v});
-            }
-        }
-    }
-
-    // Answer queries
-    vector<long long> result;
-    for (int q : queries) {
-        result.push_back(dist[q - 1] == INF ? -1 : dist[q - 1]);
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<tuple<int,int,int>> edges(m);
-    for (int i = 0; i < m; i++) {
-        int a, b, w;
-        cin >> a >> b >> w;
-        edges[i] = {a, b, w};
-    }
-
-    int k;
-    cin >> k;
-    vector<int> shops(k);
-    for (int i = 0; i < k; i++) cin >> shops[i];
-
-    int q;
-    cin >> q;
-    vector<int> queries(q);
-    for (int i = 0; i < q; i++) cin >> queries[i];
-
-    auto result = solveMultiSourceDijkstra(n, edges, shops, queries);
-    for (auto ans : result) {
-        cout << ans << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -411,14 +326,6 @@ while queue:
 
 ### Mistake 4: Integer Overflow
 
-```cpp
-// WRONG in C++: overflow with int
-int dist[n];  // weights up to 10^6, n up to 10^5 -> max dist ~10^11
-
-// CORRECT
-long long dist[n];
-```
-
 ---
 
 ## Edge Cases
@@ -456,6 +363,7 @@ long long dist[n];
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Link | Relevance |
 |---------|------|-----------|
 | Shortest Routes I | [cses.fi/problemset/task/1671](https://cses.fi/problemset/task/1671) | Single-source Dijkstra |
@@ -464,6 +372,7 @@ long long dist[n];
 | High Score | [cses.fi/problemset/task/1673](https://cses.fi/problemset/task/1673) | Longest path with negative detection |
 
 ### LeetCode Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | [01 Matrix](https://leetcode.com/problems/01-matrix/) | Multi-source BFS on grid |

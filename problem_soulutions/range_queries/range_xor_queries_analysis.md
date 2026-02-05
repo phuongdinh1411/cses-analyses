@@ -253,37 +253,6 @@ def solve():
 solve()
 ```
 
-**C++ Solution:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    // Build prefix XOR array
-    vector<int> prefix(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int x;
-        cin >> x;
-        prefix[i] = prefix[i - 1] ^ x;
-    }
-
-    // Answer queries
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << (prefix[b] ^ prefix[a - 1]) << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -320,16 +289,6 @@ result = prefix[b] ^ prefix[a - 1]
 
 **Problem:** CSES problems typically use 1-indexed input.
 **Fix:** Design prefix array to work with 1-indexed queries directly.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - using int when values could be large
-int prefix[200001];
-
-// CORRECT - int is fine for XOR (no overflow), but be careful with sums
-// For XOR specifically, int is sufficient since XOR doesn't increase magnitude
-```
 
 **Note:** XOR operations don't cause overflow since the result is bounded by the maximum input value.
 

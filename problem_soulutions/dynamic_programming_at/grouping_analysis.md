@@ -294,59 +294,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<vector<long long>> a(n, vector<long long>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> a[i][j];
-        }
-    }
-
-    // Precompute cost for each subset
-    vector<long long> cost(1 << n, 0);
-    for (int mask = 0; mask < (1 << n); mask++) {
-        for (int i = 0; i < n; i++) {
-            if (!(mask & (1 << i))) continue;
-            for (int j = i + 1; j < n; j++) {
-                if (mask & (1 << j)) {
-                    cost[mask] += a[i][j];
-                }
-            }
-        }
-    }
-
-    // dp[mask] = max score for optimal partition
-    vector<long long> dp(1 << n, 0);
-
-    for (int mask = 0; mask < (1 << n); mask++) {
-        dp[mask] = cost[mask];  // entire mask as one group
-
-        // Try all submasks
-        for (int sub = mask; sub > 0; sub = (sub - 1) & mask) {
-            int complement = mask ^ sub;
-            if (complement > 0) {
-                dp[mask] = max(dp[mask], dp[sub] + dp[complement]);
-            }
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -376,14 +323,6 @@ while sub >= 0:  # includes sub=0
 **Fix:** Only consider non-empty submasks where complement is also non-empty.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG: may overflow with int
-int cost[1 << 16];  // a[i][j] up to 10^9, sum can exceed int
-
-// CORRECT
-long long cost[1 << 16];
-```
 
 **Problem:** With N=16 and values up to 10^9, sum can reach ~10^12.
 **Fix:** Use 64-bit integers (long long in C++, int in Python is fine).
@@ -444,18 +383,21 @@ while sub > 0:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Matching](https://atcoder.jp/contests/dp/tasks/dp_o) | Basic bitmask DP |
 | [Traveling Salesman](https://atcoder.jp/contests/dp/tasks/dp_o) | Bitmask DP with state |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [SOS DP Problems](https://codeforces.com/blog/entry/45223) | Sum over subsets technique |
 | [Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | Simpler partition criteria |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Steiner Tree](https://judge.yosupo.jp/problem/steiner_tree) | Subset DP on graphs |

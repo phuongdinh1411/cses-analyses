@@ -193,65 +193,6 @@ def count_coprime_pairs_optimized(n):
     return result
 ```
 
-### C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class MobiusSieve {
-public:
-    vector<int> mu;
-    vector<int> primes;
-    vector<long long> prefix_mu;
-
-    MobiusSieve(int n) : mu(n + 1), prefix_mu(n + 2, 0) {
-        vector<bool> is_prime(n + 1, true);
-        mu[1] = 1;
-
-        for (int i = 2; i <= n; i++) {
-            if (is_prime[i]) {
-                primes.push_back(i);
-                mu[i] = -1;
-            }
-            for (int p : primes) {
-                if ((long long)i * p > n) break;
-                is_prime[i * p] = false;
-                if (i % p == 0) { mu[i * p] = 0; break; }
-                else { mu[i * p] = -mu[i]; }
-            }
-        }
-        for (int i = 1; i <= n; i++)
-            prefix_mu[i] = prefix_mu[i - 1] + mu[i];
-    }
-
-    long long countCoprimePairs(int m) {
-        long long result = 0;
-        for (int d = 1; d <= m; d++)
-            result += (long long)mu[d] * (m / d) * (m / d);
-        return result;
-    }
-
-    long long countCoprimePairsOptimized(int m) {
-        long long result = 0;
-        for (int d = 1, d_max; d <= m; d = d_max + 1) {
-            int q = m / d;
-            d_max = m / q;
-            long long mu_sum = prefix_mu[d_max] - prefix_mu[d - 1];
-            result += mu_sum * (long long)q * q;
-        }
-        return result;
-    }
-};
-
-long long countSquareFree(int n, MobiusSieve& sieve) {
-    long long result = 0;
-    for (int d = 1; (long long)d * d <= n; d++)
-        result += (long long)sieve.mu[d] * (n / ((long long)d * d));
-    return result;
-}
-```
-
 ### Complexity
 
 | Operation | Time | Space |
@@ -279,14 +220,6 @@ for i in range(2, n + 1):
 **Fix:** Track square-free property during sieve.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG
-int result = mu[d] * (n / d) * (n / d);  // Overflow!
-
-// CORRECT
-long long result = (long long)mu[d] * (n / d) * (n / d);
-```
 
 ### Mistake 3: Wrong Sign in Multiplication
 

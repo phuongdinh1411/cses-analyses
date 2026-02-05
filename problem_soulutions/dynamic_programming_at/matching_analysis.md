@@ -280,55 +280,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    const int MOD = 1e9 + 7;
-
-    int n;
-    cin >> n;
-
-    vector<vector<int>> compat(n, vector<int>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> compat[i][j];
-        }
-    }
-
-    // dp[mask] = ways to match first popcount(mask) men with women in mask
-    vector<long long> dp(1 << n, 0);
-    dp[0] = 1;
-
-    for (int mask = 0; mask < (1 << n); mask++) {
-        int man_idx = __builtin_popcount(mask);
-
-        if (man_idx >= n) continue;
-
-        for (int woman = 0; woman < n; woman++) {
-            // Skip if woman already matched
-            if ((mask >> woman) & 1) continue;
-
-            // Check compatibility
-            if (compat[man_idx][woman] == 1) {
-                int new_mask = mask | (1 << woman);
-                dp[new_mask] = (dp[new_mask] + dp[mask]) % MOD;
-            }
-        }
-    }
-
-    cout << dp[(1 << n) - 1] << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

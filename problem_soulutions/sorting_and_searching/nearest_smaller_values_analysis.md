@@ -310,51 +310,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Stack stores pairs: (index, value)
-    stack<pair<int, int>> st;
-
-    for (int i = 0; i < n; i++) {
-        // Pop elements >= current
-        while (!st.empty() && st.top().second >= arr[i]) {
-            st.pop();
-        }
-
-        // Output answer (1-indexed, or 0 if none)
-        if (st.empty()) {
-            cout << 0;
-        } else {
-            cout << st.top().first + 1;
-        }
-
-        if (i < n - 1) cout << " ";
-
-        // Push current element
-        st.push({i, arr[i]});
-    }
-
-    cout << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -470,11 +425,13 @@ else:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | Basic stack operations |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Next Greater Element I](https://leetcode.com/problems/next-greater-element-i/) | Finding greater instead of smaller |
@@ -482,6 +439,7 @@ else:
 | [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) | Next greater with distance calculation |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Largest Rectangle in Histogram](https://leetcode.com/problems/largest-rectangle-in-histogram/) | Using both left and right boundaries |

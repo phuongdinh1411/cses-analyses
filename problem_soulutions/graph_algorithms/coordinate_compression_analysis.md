@@ -67,51 +67,7 @@ print(f"Compressed: {compressed}")  # [3, 0, 2, 0, 1]
 print(f"Mapping: {mapping}")        # {5: 0, 500000: 1, 999999: 2, 1000000: 3}
 ```
 
-### C++ Solution
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> compress(vector<int>& arr) {
-    // Create sorted copy of unique values
-    vector<int> sorted_unique = arr;
-    sort(sorted_unique.begin(), sorted_unique.end());
-    sorted_unique.erase(unique(sorted_unique.begin(), sorted_unique.end()),
-                        sorted_unique.end());
-
-    // Create mapping using binary search
-    vector<int> compressed(arr.size());
-    for (int i = 0; i < arr.size(); i++) {
-        compressed[i] = lower_bound(sorted_unique.begin(),
-                                    sorted_unique.end(),
-                                    arr[i]) - sorted_unique.begin();
-    }
-
-    return compressed;
-}
-
-// Alternative: using map for O(1) lookup after building
-vector<int> compressWithMap(vector<int>& arr) {
-    vector<int> sorted_unique = arr;
-    sort(sorted_unique.begin(), sorted_unique.end());
-    sorted_unique.erase(unique(sorted_unique.begin(), sorted_unique.end()),
-                        sorted_unique.end());
-
-    map<int, int> valToIdx;
-    for (int i = 0; i < sorted_unique.size(); i++) {
-        valToIdx[sorted_unique[i]] = i;
-    }
-
-    vector<int> compressed(arr.size());
-    for (int i = 0; i < arr.size(); i++) {
-        compressed[i] = valToIdx[arr[i]];
-    }
-
-    return compressed;
-}
-```
-
-## Common Applications
+### Common Applications
 
 ### 1. Range Queries with Large Values
 

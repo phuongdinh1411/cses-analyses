@@ -328,63 +328,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-int subtree_size[MAXN];
-int n;
-
-void dfs(int node, int parent) {
-    subtree_size[node] = 1;
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs(child, node);
-            subtree_size[node] += subtree_size[child];
-        }
-    }
-}
-
-int find_centroid(int node, int parent) {
-    for (int child : adj[node]) {
-        if (child != parent) {
-            // Child subtree too large -> move toward it
-            if (subtree_size[child] > n / 2) {
-                return find_centroid(child, node);
-            }
-        }
-    }
-    // Parent subtree too large -> move toward parent
-    if (n - subtree_size[node] > n / 2) {
-        return find_centroid(parent, node);
-    }
-    return node;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n;
-
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    dfs(1, -1);
-    cout << find_centroid(1, -1) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -467,18 +410,21 @@ if subtree_size[child] > n // 2:  # This is wrong if child was computed as desce
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates (CSES)](https://cses.fi/problemset/task/1674) | Practice computing subtree sizes |
 | [Tree Diameter (CSES)](https://cses.fi/problemset/task/1131) | Basic tree DFS traversal |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances I (CSES)](https://cses.fi/problemset/task/1132) | Uses similar subtree size technique |
 | [Tree Distances II (CSES)](https://cses.fi/problemset/task/1133) | Re-rooting technique on trees |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Fixed-Length Paths II (CSES)](https://cses.fi/problemset/task/2081) | Uses centroid as building block |

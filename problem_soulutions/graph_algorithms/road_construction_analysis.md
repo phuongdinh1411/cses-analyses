@@ -217,67 +217,6 @@ if __name__ == "__main__":
     main()
 ```
 
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class DSU {
-public:
-    vector<int> parent, size;
-    int num_components, max_size;
-
-    DSU(int n) : parent(n + 1), size(n + 1, 1),
-                 num_components(n), max_size(1) {
-        iota(parent.begin(), parent.end(), 0);
-    }
-
-    int find(int x) {
-        if (parent[x] != x) {
-            parent[x] = find(parent[x]);
-        }
-        return parent[x];
-    }
-
-    void unite(int a, int b) {
-        int root_a = find(a);
-        int root_b = find(b);
-
-        if (root_a == root_b) return;
-
-        if (size[root_a] < size[root_b]) {
-            swap(root_a, root_b);
-        }
-
-        parent[root_b] = root_a;
-        size[root_a] += size[root_b];
-
-        num_components--;
-        max_size = max(max_size, size[root_a]);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    DSU dsu(n);
-
-    while (m--) {
-        int a, b;
-        cin >> a >> b;
-        dsu.unite(a, b);
-        cout << dsu.num_components << " " << dsu.max_size << "\n";
-    }
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 | Mistake | Problem | Fix |

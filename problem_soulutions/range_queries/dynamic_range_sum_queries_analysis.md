@@ -260,84 +260,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class FenwickTree {
-    vector<long long> bit;
-    int n;
-
-public:
-    FenwickTree(int n) : n(n), bit(n + 1, 0) {}
-
-    void build(const vector<long long>& arr) {
-        for (int i = 1; i <= n; i++) {
-            bit[i] += arr[i];
-            int j = i + (i & -i);
-            if (j <= n) bit[j] += bit[i];
-        }
-    }
-
-    void update(int k, long long delta) {
-        while (k <= n) {
-            bit[k] += delta;
-            k += k & -k;
-        }
-    }
-
-    long long prefix(int r) {
-        long long sum = 0;
-        while (r > 0) {
-            sum += bit[r];
-            r -= r & -r;
-        }
-        return sum;
-    }
-
-    long long query(int l, int r) {
-        return prefix(r) - prefix(l - 1);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> arr(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> arr[i];
-    }
-
-    FenwickTree ft(n);
-    ft.build(arr);
-
-    while (q--) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-            int k;
-            long long u;
-            cin >> k >> u;
-            ft.update(k, u - arr[k]);
-            arr[k] = u;
-        } else {
-            int a, b;
-            cin >> a >> b;
-            cout << ft.query(a, b) << '\n';
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -432,88 +354,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class SegmentTree {
-    vector<long long> tree;
-    int n;
-
-    void build(const vector<long long>& arr, int node, int start, int end) {
-        if (start == end) {
-            tree[node] = arr[start];
-        } else {
-            int mid = (start + end) / 2;
-            build(arr, 2 * node, start, mid);
-            build(arr, 2 * node + 1, mid + 1, end);
-            tree[node] = tree[2 * node] + tree[2 * node + 1];
-        }
-    }
-
-    void update(int node, int start, int end, int idx, long long val) {
-        if (start == end) {
-            tree[node] = val;
-        } else {
-            int mid = (start + end) / 2;
-            if (idx <= mid)
-                update(2 * node, start, mid, idx, val);
-            else
-                update(2 * node + 1, mid + 1, end, idx, val);
-            tree[node] = tree[2 * node] + tree[2 * node + 1];
-        }
-    }
-
-    long long query(int node, int start, int end, int l, int r) {
-        if (r < start || end < l) return 0;
-        if (l <= start && end <= r) return tree[node];
-        int mid = (start + end) / 2;
-        return query(2 * node, start, mid, l, r) +
-               query(2 * node + 1, mid + 1, end, l, r);
-    }
-
-public:
-    SegmentTree(const vector<long long>& arr) : n(arr.size()), tree(4 * n) {
-        build(arr, 1, 0, n - 1);
-    }
-
-    void update(int idx, long long val) { update(1, 0, n - 1, idx, val); }
-    long long query(int l, int r) { return query(1, 0, n - 1, l, r); }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) cin >> arr[i];
-
-    SegmentTree st(arr);
-
-    while (q--) {
-        int type;
-        cin >> type;
-        if (type == 1) {
-            int k;
-            long long u;
-            cin >> k >> u;
-            st.update(k - 1, u);  // Convert to 0-indexed
-        } else {
-            int a, b;
-            cin >> a >> b;
-            cout << st.query(a - 1, b - 1) << '\n';  // Convert to 0-indexed
-        }
-    }
-
-    return 0;
-}
-```
-
 ---
 
 ## Common Mistakes
@@ -529,14 +369,6 @@ st.update(k - 1, u)  # Convert to 0-indexed
 ```
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG: Using int for sums
-int tree[4 * N];  // Sum of 2*10^5 elements, each up to 10^9
-
-// CORRECT: Use long long
-long long tree[4 * N];  // Max sum: 2*10^14
-```
 
 ### Mistake 3: BIT Update Delta vs Value
 
@@ -601,11 +433,13 @@ tree = [0] * (4 * n)  # Accounts for all levels of recursion
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Prefix sums without updates |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Dynamic Range Minimum Queries](https://cses.fi/problemset/task/1649) | Min instead of sum (requires Segment Tree) |
@@ -613,6 +447,7 @@ tree = [0] * (4 * n)  # Accounts for all levels of recursion
 | [Range Sum Query - Mutable (LC 307)](https://leetcode.com/problems/range-sum-query-mutable/) | Same problem on LeetCode |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Range Updates and Sums](https://cses.fi/problemset/task/1735) | Lazy propagation |

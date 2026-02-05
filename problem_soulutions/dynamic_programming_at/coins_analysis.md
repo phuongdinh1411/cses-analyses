@@ -229,50 +229,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<double> p(n);
-    for (int i = 0; i < n; i++) {
-        cin >> p[i];
-    }
-
-    // dp[j] = probability of exactly j heads
-    vector<double> dp(n + 1, 0.0);
-    dp[0] = 1.0;
-
-    for (int i = 0; i < n; i++) {
-        // Process backwards to avoid overwriting values we need
-        for (int j = i + 1; j >= 0; j--) {
-            if (j > 0) {
-                dp[j] = p[i] * dp[j - 1] + (1 - p[i]) * dp[j];
-            } else {
-                dp[j] = (1 - p[i]) * dp[j];
-            }
-        }
-    }
-
-    // Sum probabilities where heads > tails (heads > n/2)
-    double result = 0.0;
-    for (int j = n / 2 + 1; j <= n; j++) {
-        result += dp[j];
-    }
-
-    cout << fixed << setprecision(10) << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -356,17 +312,20 @@ print(f"{result:.10f}")
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Knapsack 1](https://atcoder.jp/contests/dp/tasks/dp_d) | Basic counting DP with similar structure |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Sushi](https://atcoder.jp/contests/dp/tasks/dp_j) | Expected value instead of probability |
 | [Dice Combinations (CSES)](https://cses.fi/problemset/task/1633) | Counting ways with equal probabilities |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Matching](https://atcoder.jp/contests/dp/tasks/dp_o) | Bitmask DP with probabilities |

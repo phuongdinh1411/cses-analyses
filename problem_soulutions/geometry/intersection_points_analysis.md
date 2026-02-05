@@ -231,77 +231,7 @@ def main():
 main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> tree;
-int m;
-
-void update(int i, int d) {
-    for (++i; i <= m; i += i & (-i)) tree[i] += d;
-}
-
-int query(int i) {
-    int s = 0;
-    for (++i; i > 0; i -= i & (-i)) s += tree[i];
-    return s;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<tuple<int,int,int,int>> events;
-    set<int> y_set;
-
-    for (int i = 0; i < n; i++) {
-        int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
-        y_set.insert(y1);
-        y_set.insert(y2);
-
-        if (y1 == y2) {  // Horizontal
-            int xmin = min(x1, x2), xmax = max(x1, x2);
-            events.push_back({xmax, 1, y1, y1});
-        } else {  // Vertical
-            int ymin = min(y1, y2), ymax = max(y1, y2);
-            events.push_back({x1, 0, ymin, ymax});
-            events.push_back({x1, 2, ymin, ymax});
-        }
-    }
-
-    vector<int> ys(y_set.begin(), y_set.end());
-    map<int, int> y_idx;
-    for (int i = 0; i < (int)ys.size(); i++) y_idx[ys[i]] = i;
-    m = ys.size();
-    tree.assign(m + 1, 0);
-
-    sort(events.begin(), events.end());
-    long long ans = 0;
-
-    for (auto& [x, t, a, b] : events) {
-        int ai = y_idx[a], bi = y_idx[b];
-        if (t == 0) {  // Add
-            for (int yi = ai; yi <= bi; yi++) update(yi, 1);
-        } else if (t == 1) {  // Query
-            ans += query(ai) - (ai > 0 ? query(ai - 1) : 0);
-        } else {  // Remove
-            for (int yi = ai; yi <= bi; yi++) update(yi, -1);
-        }
-    }
-
-    cout << ans << "\n";
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|

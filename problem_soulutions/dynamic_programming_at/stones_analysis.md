@@ -219,45 +219,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> moves(k);
-    for (int i = 0; i < k; i++) {
-        cin >> moves[i];
-    }
-
-    // dp[i] = true if position i is winning for player to move
-    vector<bool> dp(n + 1, false);
-
-    // Base case: dp[0] = false (no moves = lose)
-
-    for (int i = 1; i <= n; i++) {
-        for (int move : moves) {
-            if (move <= i && !dp[i - move]) {
-                // Found a move to losing position -> this is winning
-                dp[i] = true;
-                break;
-            }
-        }
-    }
-
-    cout << (dp[n] ? "First" : "Second") << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

@@ -240,53 +240,6 @@ grid = [input().strip() for _ in range(h)]
 print(solve(h, w, grid))
 ```
 
-**C++ Solution:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int h, w;
-    cin >> h >> w;
-
-    vector<string> grid(h);
-    for (int i = 0; i < h; i++) {
-        cin >> grid[i];
-    }
-
-    // Edge case: start or end is wall
-    if (grid[0][0] == '#' || grid[h-1][w-1] == '#') {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    vector<vector<long long>> dp(h, vector<long long>(w, 0));
-    dp[0][0] = 1;
-
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            if (grid[i][j] == '#') {
-                dp[i][j] = 0;
-            } else if (i == 0 && j == 0) {
-                continue;  // Already initialized
-            } else {
-                long long from_top = (i > 0) ? dp[i-1][j] : 0;
-                long long from_left = (j > 0) ? dp[i][j-1] : 0;
-                dp[i][j] = (from_top + from_left) % MOD;
-            }
-        }
-    }
-
-    cout << dp[h-1][w-1] << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -337,16 +290,6 @@ dp[0][0] = 1
 if grid[0][0] == '#' or grid[h-1][w-1] == '#':
     return 0
 dp[0][0] = 1
-```
-
-### Mistake 2: Integer Overflow (C++)
-
-```cpp
-// WRONG - overflow before modulo
-dp[i][j] = dp[i-1][j] + dp[i][j-1];
-
-// CORRECT - use long long and apply modulo
-dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD;
 ```
 
 ### Mistake 3: Not Resetting Wall Cells in Space-Optimized Version
@@ -401,17 +344,20 @@ if grid[i][j] == '#':
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Unique Paths (LC 62)](https://leetcode.com/problems/unique-paths/) | Same problem without obstacles |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Unique Paths II (LC 63)](https://leetcode.com/problems/unique-paths-ii/) | Nearly identical problem |
 | [CSES Grid Paths](https://cses.fi/problemset/task/1638) | Same concept, different platform |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Grid 2 (AtCoder DP Y)](https://atcoder.jp/contests/dp/tasks/dp_y) | Sparse obstacles, combinatorics |

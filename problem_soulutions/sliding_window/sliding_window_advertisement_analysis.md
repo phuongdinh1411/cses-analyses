@@ -242,50 +242,6 @@ def solve():
 solve()
 ```
 
-**C++ (Deque):**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    deque<int> dq;  // stores indices
-
-    for (int i = 0; i < n; i++) {
-        // Remove indices outside current window
-        while (!dq.empty() && dq.front() <= i - k) {
-            dq.pop_front();
-        }
-
-        // Remove indices of smaller elements
-        while (!dq.empty() && arr[dq.back()] <= arr[i]) {
-            dq.pop_back();
-        }
-
-        dq.push_back(i);
-
-        // Output maximum when window is complete
-        if (i >= k - 1) {
-            cout << arr[dq.front()];
-            if (i < n - 1) cout << " ";
-        }
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -302,45 +258,6 @@ int main() {
 > **The Trick:** Use a balanced BST (multiset) that supports O(log k) insertion, deletion, and max queries.
 
 ### Code
-
-**C++ (Multiset):**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    multiset<int> window;
-
-    for (int i = 0; i < n; i++) {
-        window.insert(arr[i]);
-
-        // Remove element leaving the window
-        if (i >= k) {
-            window.erase(window.find(arr[i - k]));
-        }
-
-        // Output maximum when window is complete
-        if (i >= k - 1) {
-            cout << *window.rbegin();
-            if (i < n - 1) cout << " ";
-        }
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
 
 ### Complexity
 
@@ -435,11 +352,13 @@ if i >= k - 1:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Sum of Two Values](https://cses.fi/problemset/task/1640) | Basic sliding window concept |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Sliding Window Minimum](https://cses.fi/problemset/task/1076) | Same technique, flip comparison |
@@ -447,6 +366,7 @@ if i >= k - 1:
 | [Playlist](https://cses.fi/problemset/task/1141) | Variable window with distinct elements |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Sums II](https://cses.fi/problemset/task/1661) | Prefix sums with hash map |

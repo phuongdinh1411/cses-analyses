@@ -221,87 +221,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long INF = 1e18;
-
-class SegmentTree {
-    int n, size;
-    vector<long long> tree;
-public:
-    SegmentTree(int n) : n(n) {
-        size = 1;
-        while (size < n) size *= 2;
-        tree.assign(2 * size, INF);
-    }
-
-    void build(const vector<long long>& v) {
-        for (int i = 0; i < n; i++) tree[size + i] = v[i];
-        for (int i = size - 1; i >= 1; i--)
-            tree[i] = min(tree[2*i], tree[2*i+1]);
-    }
-
-    void update(int pos, long long val) {
-        pos += size;
-        tree[pos] = val;
-        for (pos /= 2; pos >= 1; pos /= 2)
-            tree[pos] = min(tree[2*pos], tree[2*pos+1]);
-    }
-
-    long long query(int l, int r) {
-        long long res = INF;
-        for (l += size, r += size; l <= r; l /= 2, r /= 2) {
-            if (l % 2 == 1) res = min(res, tree[l++]);
-            if (r % 2 == 0) res = min(res, tree[r--]);
-        }
-        return res;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> prices(n), left_vals(n), right_vals(n);
-    for (int i = 0; i < n; i++) {
-        cin >> prices[i];
-        left_vals[i] = prices[i] - i;
-        right_vals[i] = prices[i] + i;
-    }
-
-    SegmentTree left_tree(n), right_tree(n);
-    left_tree.build(left_vals);
-    right_tree.build(right_vals);
-
-    while (q--) {
-        int type;
-        cin >> type;
-        if (type == 1) {
-            int k; long long x;
-            cin >> k >> x;
-            k--;
-            left_tree.update(k, x - k);
-            right_tree.update(k, x + k);
-        } else {
-            int k;
-            cin >> k;
-            k--;
-            long long left_min = left_tree.query(0, k) + k;
-            long long right_min = right_tree.query(k, n-1) - k;
-            cout << min(left_min, right_min) << "\n";
-        }
-    }
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -329,16 +248,6 @@ update(left_tree, k, x - k)
 left_min = query(left_tree, 1, k - 1)
 ```
 **Fix:** Include k in both queries: `[1, k]` and `[k, n]`.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG
-int left_val = price - index;  // May overflow
-
-// CORRECT
-long long left_val = (long long)price - index;
-```
 
 ---
 
@@ -370,18 +279,21 @@ long long left_val = (long long)price - index;
 ## Related Problems
 
 ### Easier
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Dynamic Range Minimum Queries](https://cses.fi/problemset/task/1649) | Basic segment tree |
 | [Range Minimum Queries](https://cses.fi/problemset/task/1647) | Static RMQ |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Polynomial Queries](https://cses.fi/problemset/task/1736) | Lazy propagation |
 | [Range Update Queries](https://cses.fi/problemset/task/1651) | Range updates |
 
 ### LeetCode Related
+
 | Problem | Connection |
 |---------|------------|
 | [Shortest Distance to a Character](https://leetcode.com/problems/shortest-distance-to-a-character/) | Similar concept, simpler |

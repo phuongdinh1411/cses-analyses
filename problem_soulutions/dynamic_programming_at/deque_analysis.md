@@ -233,49 +233,7 @@ if __name__ == "__main__":
     solve()
 ```
 
-#### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-
-    // dp[i][j] = max score difference for current player on interval [i, j]
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-
-    // Base case: single elements
-    for (int i = 0; i < n; i++) {
-        dp[i][i] = a[i];
-    }
-
-    // Fill by increasing interval length
-    for (int len = 2; len <= n; len++) {
-        for (int i = 0; i <= n - len; i++) {
-            int j = i + len - 1;
-            long long take_left = a[i] - dp[i + 1][j];
-            long long take_right = a[j] - dp[i][j - 1];
-            dp[i][j] = max(take_left, take_right);
-        }
-    }
-
-    cout << dp[0][n - 1] << "\n";
-
-    return 0;
-}
-```
-
-### Complexity
+##### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -318,13 +276,6 @@ for i in range(n):
 **Problem:** When computing dp[i][j], we need dp[i+1][j] and dp[i][j-1] to be ready.
 **Fix:** Iterate by interval length, from smallest to largest.
 
-### Mistake 4: Integer Overflow (C++)
-
-```cpp
-// WRONG - Using int
-vector<vector<int>> dp(n, vector<int>(n, 0));
-```
-
 **Problem:** With a_i up to 10^9 and N up to 3000, differences can exceed int range.
 **Fix:** Use `long long` for the DP table and intermediate calculations.
 
@@ -366,6 +317,7 @@ vector<vector<int>> dp(n, vector<int>(n, 0));
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Removal Game](https://cses.fi/problemset/task/1097) | Identical problem |
@@ -373,6 +325,7 @@ vector<vector<int>> dp(n, vector<int>(n, 0));
 | [LeetCode 877 - Stone Game](https://leetcode.com/problems/stone-game/) | Even length, alternating parity trick |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 1140 - Stone Game II](https://leetcode.com/problems/stone-game-ii/) | Variable number of piles per turn |

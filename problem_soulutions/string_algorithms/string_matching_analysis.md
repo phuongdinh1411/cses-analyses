@@ -301,81 +301,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> buildLPS(const string& pattern) {
-    int m = pattern.size();
-    vector<int> lps(m, 0);
-    int length = 0;
-    int i = 1;
-
-    while (i < m) {
-        if (pattern[i] == pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length != 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-int kmpCount(const string& text, const string& pattern) {
-    int n = text.size();
-    int m = pattern.size();
-
-    if (m == 0 || m > n) return 0;
-
-    vector<int> lps = buildLPS(pattern);
-    int count = 0;
-    int i = 0;  // Index for text
-    int j = 0;  // Index for pattern
-
-    while (i < n) {
-        if (text[i] == pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j == m) {
-            count++;
-            j = lps[j - 1];
-        } else if (i < n && text[i] != pattern[j]) {
-            if (j != 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return count;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string text, pattern;
-    cin >> text >> pattern;
-
-    cout << kmpCount(text, pattern) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -458,66 +383,6 @@ def solve():
 
 if __name__ == "__main__":
     solve()
-```
-
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> zAlgorithm(const string& s) {
-    int n = s.size();
-    vector<int> z(n, 0);
-    z[0] = n;
-    int l = 0, r = 0;
-
-    for (int i = 1; i < n; i++) {
-        if (i < r) {
-            z[i] = min(r - i, z[i - l]);
-        }
-
-        while (i + z[i] < n && s[z[i]] == s[i + z[i]]) {
-            z[i]++;
-        }
-
-        if (i + z[i] > r) {
-            l = i;
-            r = i + z[i];
-        }
-    }
-
-    return z;
-}
-
-int zCount(const string& text, const string& pattern) {
-    int m = pattern.size();
-    if (m == 0) return 0;
-
-    string combined = pattern + "$" + text;
-    vector<int> z = zAlgorithm(combined);
-
-    int count = 0;
-    for (int i = m + 1; i < (int)combined.size(); i++) {
-        if (z[i] == m) {
-            count++;
-        }
-    }
-
-    return count;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string text, pattern;
-    cin >> text >> pattern;
-
-    cout << zCount(text, pattern) << "\n";
-
-    return 0;
-}
 ```
 
 ### Complexity
@@ -616,11 +481,13 @@ while s[z[i]] == s[i + z[i]]:  # May go out of bounds!
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Palindrome](https://leetcode.com/problems/longest-palindrome/) | Basic string manipulation |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Finding Borders](https://cses.fi/problemset/task/1732) | Uses LPS array directly |
@@ -628,6 +495,7 @@ while s[z[i]] == s[i + z[i]]:  # May go out of bounds!
 | [Implement strStr()](https://leetcode.com/problems/find-the-index-of-the-first-substring-in-a-string/) | Find first occurrence only |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimal Rotation](https://cses.fi/problemset/task/1110) | String rotation with comparison |

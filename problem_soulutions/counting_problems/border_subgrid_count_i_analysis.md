@@ -121,25 +121,6 @@ def count_subgrids_brute(n, grid):
     return count
 ```
 
-```cpp
-long long countSubgridsBrute(int n, vector<string>& grid) {
-    long long count = 0;
-    for (int r1 = 0; r1 < n; r1++) {
-        for (int r2 = r1 + 1; r2 < n; r2++) {
-            for (int c1 = 0; c1 < n; c1++) {
-                for (int c2 = c1 + 1; c2 < n; c2++) {
-                    if (grid[r1][c1] == '*' && grid[r1][c2] == '*' &&
-                        grid[r2][c1] == '*' && grid[r2][c2] == '*') {
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-    return count;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -268,43 +249,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    long long count = 0;
-
-    for (int r1 = 0; r1 < n; r1++) {
-        for (int r2 = r1 + 1; r2 < n; r2++) {
-            // Count columns where both rows have '*'
-            long long k = 0;
-            for (int c = 0; c < n; c++) {
-                if (grid[r1][c] == '*' && grid[r2][c] == '*') {
-                    k++;
-                }
-            }
-            // C(k, 2) = k * (k-1) / 2
-            count += k * (k - 1) / 2;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -322,44 +266,6 @@ int main() {
 
 ### Code
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<bitset<3000>> grid(n);
-
-    for (int i = 0; i < n; i++) {
-        string row;
-        cin >> row;
-        for (int j = 0; j < n; j++) {
-            if (row[j] == '*') {
-                grid[i][j] = 1;
-            }
-        }
-    }
-
-    long long count = 0;
-
-    for (int r1 = 0; r1 < n; r1++) {
-        for (int r2 = r1 + 1; r2 < n; r2++) {
-            // Bitwise AND gives columns where both have '*'
-            long long k = (grid[r1] & grid[r2]).count();
-            count += k * (k - 1) / 2;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -373,31 +279,10 @@ int main() {
 
 ### Mistake 1: Integer Overflow
 
-```cpp
-// WRONG - may overflow with int
-int k = ...;
-count += k * (k - 1) / 2;  // k*(k-1) can overflow int!
-
-// CORRECT - use long long
-long long k = ...;
-count += k * (k - 1) / 2;
-```
-
 **Problem:** With n=3000, k can be up to 3000, and count can be ~10^10.
 **Fix:** Use `long long` for both k and count.
 
 ### Mistake 2: Wrong Pair Formula
-
-```cpp
-// WRONG - counts ordered pairs
-count += k * k;
-
-// WRONG - off by one
-count += k * (k + 1) / 2;
-
-// CORRECT - unordered pairs, excluding self-pairs
-count += k * (k - 1) / 2;
-```
 
 **Problem:** We want combinations, not permutations.
 **Fix:** Use C(k,2) = k*(k-1)/2.
@@ -452,18 +337,21 @@ for r1 in range(n):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sums |
 | [Forest Queries](https://cses.fi/problemset/task/1652) | 2D prefix sums |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Forest Queries](https://cses.fi/problemset/task/1652) | 2D prefix sum queries |
 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | Counting subarrays with target sum |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Rectangle Cutting](https://cses.fi/problemset/task/1744) | DP on rectangles |

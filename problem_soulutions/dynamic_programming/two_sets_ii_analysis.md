@@ -163,63 +163,6 @@ if __name__ == "__main__":
     print(two_sets_ii(n))
 ```
 
-### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp & 1) result = result * base % mod;
-        base = base * base % mod;
-        exp >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    // Calculate total sum
-    long long total = (long long)n * (n + 1) / 2;
-
-    // If odd, impossible to partition equally
-    if (total % 2 == 1) {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    int target = total / 2;
-
-    // dp[s] = number of ways to achieve sum s
-    vector<long long> dp(target + 1, 0);
-    dp[0] = 1;  // One way to form sum 0
-
-    // Process each number from 1 to n
-    for (int i = 1; i <= n; i++) {
-        // Iterate in reverse to avoid using same number twice
-        for (int s = target; s >= i; s--) {
-            dp[s] = (dp[s] + dp[s - i]) % MOD;
-        }
-    }
-
-    // Divide by 2 using modular inverse
-    long long inv2 = power(2, MOD - 2, MOD);
-    cout << (dp[target] * inv2) % MOD << endl;
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 | Mistake | Why It's Wrong | Fix |

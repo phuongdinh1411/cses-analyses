@@ -223,64 +223,6 @@ def solve():
 solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 100005;
-vector<int> adj[MAXN];
-int disc[MAXN];
-bool visited[MAXN];
-int timer = 0;
-
-void dfs(int u) {
-    visited[u] = true;
-    disc[u] = timer++;
-    for (int v : adj[u]) {
-        if (!visited[v]) {
-            dfs(v);
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<pair<int,int>> edges(m);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-        edges[i] = {a, b};
-    }
-
-    // Run DFS on all components
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-        }
-    }
-
-    // Orient edges based on discovery time
-    for (auto& [a, b] : edges) {
-        if (disc[a] < disc[b]) {
-            cout << a << " " << b << "\n";
-        } else {
-            cout << b << " " << a << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -391,18 +333,21 @@ sys.setrecursionlimit(300000)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Link | Why It Helps |
 |---------|------|--------------|
 | Course Schedule (detect cycle) | [CSES 1679](https://cses.fi/problemset/task/1679) | Basic cycle detection |
 | Building Roads | [CSES 1666](https://cses.fi/problemset/task/1666) | Connected components |
 
 ### Similar Difficulty
+
 | Problem | Link | Key Difference |
 |---------|------|----------------|
 | Round Trip | [CSES 1669](https://cses.fi/problemset/task/1669) | Find a cycle instead of avoiding |
 | Course Schedule II | [CSES 1757](https://cses.fi/problemset/task/1757) | Topological sort on directed graph |
 
 ### Harder (Do These After)
+
 | Problem | Link | New Concept |
 |---------|------|-------------|
 | Game Routes | [CSES 1681](https://cses.fi/problemset/task/1681) | DP on DAG |

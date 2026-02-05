@@ -376,113 +376,6 @@ if __name__ == "__main__":
         print(f"n={i}:", s[i][:i+1])
 ```
 
-### C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long MOD = 1e9 + 7;
-
-class StirlingNumbers {
-public:
-    // Compute S(n, k) - Stirling second kind
-    static long long secondKind(int n, int k) {
-        if (k > n || k < 0) return 0;
-        if (k == 0) return (n == 0) ? 1 : 0;
-
-        vector<long long> dp(k + 1, 0);
-        dp[0] = 1;
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = min(i, k); j >= 1; j--) {
-                dp[j] = (1LL * j * dp[j] % MOD + dp[j-1]) % MOD;
-            }
-            dp[0] = 0;
-        }
-
-        return dp[k];
-    }
-
-    // Compute |s(n, k)| - Unsigned Stirling first kind
-    static long long firstKindUnsigned(int n, int k) {
-        if (k > n || k < 0) return 0;
-        if (k == 0) return (n == 0) ? 1 : 0;
-
-        vector<long long> dp(k + 1, 0);
-        dp[0] = 1;
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = min(i, k); j >= 1; j--) {
-                dp[j] = (1LL * (i - 1) * dp[j] % MOD + dp[j-1]) % MOD;
-            }
-            dp[0] = 0;
-        }
-
-        return dp[k];
-    }
-
-    // Build full table for S(n, k)
-    static vector<vector<long long>> secondKindTable(int n) {
-        vector<vector<long long>> S(n + 1, vector<long long>(n + 1, 0));
-        S[0][0] = 1;
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= i; j++) {
-                S[i][j] = (1LL * j * S[i-1][j] % MOD + S[i-1][j-1]) % MOD;
-            }
-        }
-
-        return S;
-    }
-
-    // Build full table for |s(n, k)|
-    static vector<vector<long long>> firstKindTable(int n) {
-        vector<vector<long long>> s(n + 1, vector<long long>(n + 1, 0));
-        s[0][0] = 1;
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= i; j++) {
-                s[i][j] = (1LL * (i - 1) * s[i-1][j] % MOD + s[i-1][j-1]) % MOD;
-            }
-        }
-
-        return s;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cout << "S(4, 2) = " << StirlingNumbers::secondKind(4, 2) << "\n";  // 7
-    cout << "|s(4, 2)| = " << StirlingNumbers::firstKindUnsigned(4, 2) << "\n";  // 11
-
-    // Print tables
-    cout << "\nStirling Second Kind Table:\n";
-    auto S = StirlingNumbers::secondKindTable(5);
-    for (int i = 0; i <= 5; i++) {
-        cout << "n=" << i << ": ";
-        for (int j = 0; j <= i; j++) {
-            cout << S[i][j] << " ";
-        }
-        cout << "\n";
-    }
-
-    cout << "\nStirling First Kind Table (unsigned):\n";
-    auto s = StirlingNumbers::firstKindTable(5);
-    for (int i = 0; i <= 5; i++) {
-        cout << "n=" << i << ": ";
-        for (int j = 0; j <= i; j++) {
-            cout << s[i][j] << " ";
-        }
-        cout << "\n";
-    }
-
-    return 0;
-}
-```
-
 ---
 
 ## Applications and Identities
@@ -532,18 +425,21 @@ Number of surjections from n to k = k! * S(n, k)
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Counting Combinations (CSES)](https://cses.fi/problemset/task/1079) | Basic combinatorics |
 | [Distributing Apples (CSES)](https://cses.fi/problemset/task/1716) | Stars and bars method |
 
 ### Direct Applications
+
 | Problem | Connection |
 |---------|------------|
 | [Creating Strings II (CSES)](https://cses.fi/problemset/task/1715) | Multinomial coefficients |
 | [Codeforces - Mashmokh and ACM](https://codeforces.com/contest/414/problem/B) | S(n,k) with divisibility |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - Count Good Substrings](https://codeforces.com/contest/451/problem/D) | Combinatorics with constraints |

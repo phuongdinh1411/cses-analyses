@@ -312,61 +312,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, q;
-vector<long long> arr, bit;
-
-void update(int i, long long delta) {
-    for (; i <= n; i += i & (-i))
-        bit[i] += delta;
-}
-
-long long query(int i) {
-    long long sum = 0;
-    for (; i > 0; i -= i & (-i))
-        sum += bit[i];
-    return sum;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> q;
-
-    arr.resize(n + 1);
-    bit.resize(n + 2, 0);
-
-    for (int i = 1; i <= n; i++) {
-        cin >> arr[i];
-    }
-
-    while (q--) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-            int a, b;
-            long long u;
-            cin >> a >> b >> u;
-            update(a, u);
-            update(b + 1, -u);
-        } else {
-            int k;
-            cin >> k;
-            cout << arr[k] + query(k) << '\n';
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -395,14 +340,6 @@ def range_update(a, b, u):
 **Problem:** Without cancellation, the update extends to the end of the array.
 
 ### Mistake 2: Using Wrong Data Type
-
-```cpp
-// WRONG - may overflow with 10^9 values and 2*10^5 updates
-int bit[200005];
-
-// CORRECT
-long long bit[200005];
-```
 
 **Problem:** Sum of updates can reach 2*10^14, which overflows 32-bit integers.
 
@@ -466,18 +403,21 @@ bit = [0] * (n + 2)  # Extra element for safety
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Understand prefix sums |
 | [Dynamic Range Sum Queries](https://cses.fi/problemset/task/1648) | Basic BIT for point update + range query |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Xor Queries](https://cses.fi/problemset/task/1650) | XOR instead of sum, uses prefix XOR |
 | [Forest Queries](https://cses.fi/problemset/task/1652) | 2D prefix sums |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Range Update Range Queries](https://cses.fi/problemset/task/1651) | Need two BITs or lazy segment tree |

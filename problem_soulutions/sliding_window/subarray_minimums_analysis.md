@@ -117,18 +117,6 @@ def sliding_minimum_brute(arr, k):
     return result
 ```
 
-```cpp
-vector<int> slidingMinimumBrute(vector<int>& arr, int k) {
-    int n = arr.size();
-    vector<int> result;
-    for (int i = 0; i <= n - k; i++) {
-        int minVal = *min_element(arr.begin() + i, arr.begin() + i + k);
-        result.push_back(minVal);
-    }
-    return result;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -287,59 +275,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> slidingMinimum(vector<int>& arr, int k) {
-    int n = arr.size();
-    deque<int> dq;  // stores indices
-    vector<int> result;
-
-    for (int i = 0; i < n; i++) {
-        // Remove indices of larger elements from back
-        while (!dq.empty() && arr[dq.back()] >= arr[i]) {
-            dq.pop_back();
-        }
-
-        // Add current index
-        dq.push_back(i);
-
-        // Remove index if outside window
-        if (dq.front() <= i - k) {
-            dq.pop_front();
-        }
-
-        // Record minimum once window is complete
-        if (i >= k - 1) {
-            result.push_back(arr[dq.front()]);
-        }
-    }
-
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    vector<int> result = slidingMinimum(arr, k);
-    for (int i = 0; i < result.size(); i++) {
-        cout << result[i] << (i < result.size() - 1 ? " " : "\n");
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -450,6 +385,7 @@ if i >= k - 1:
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Link | Relevance |
 |---------|------|-----------|
 | Sliding Median | [cses.fi/problemset/task/1076](https://cses.fi/problemset/task/1076) | Sliding window statistics |
@@ -457,6 +393,7 @@ if i >= k - 1:
 | Range Minimum Queries | [cses.fi/problemset/task/1647](https://cses.fi/problemset/task/1647) | Static RMQ (different technique) |
 
 ### LeetCode Problems
+
 | Problem | Link | Connection |
 |---------|------|------------|
 | Sliding Window Maximum | [leetcode.com/problems/sliding-window-maximum](https://leetcode.com/problems/sliding-window-maximum/) | Same pattern, track max instead |

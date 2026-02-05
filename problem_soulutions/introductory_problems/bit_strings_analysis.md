@@ -105,26 +105,6 @@ def solve_naive(n):
     return result
 ```
 
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    int n;
-    cin >> n;
-
-    long long result = 1;
-    const long long MOD = 1e9 + 7;
-
-    for (int i = 0; i < n; i++) {
-        result = (result * 2) % MOD;
-    }
-
-    cout << result << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -270,48 +250,7 @@ n = int(input())
 print(solve_optimal(n))
 ```
 
-### C++ Solution
-
-```cpp
-#include <iostream>
-using namespace std;
-
-const long long MOD = 1e9 + 7;
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base = base % mod;
-
-    while (exp > 0) {
-        // If exp is odd, multiply result with base
-        if (exp % 2 == 1) {
-            result = (result * base) % mod;
-        }
-
-        // Square the base
-        base = (base * base) % mod;
-
-        // Halve the exponent
-        exp /= 2;
-    }
-
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    cout << power(2, n, MOD) << endl;
-
-    return 0;
-}
-```
-
-### Using Built-in Functions
+#### Using Built-in Functions
 
 Python has a built-in three-argument `pow()` that does modular exponentiation efficiently:
 
@@ -331,27 +270,8 @@ print(pow(2, n, 10**9 + 7))
 
 ## Common Mistakes
 
-### Mistake 1: Integer Overflow (C++)
-
-```cpp
-// WRONG - overflow for large intermediate results
-long long result = 1;
-for (int i = 0; i < n; i++) {
-    result *= 2;  // Overflows before taking mod!
-}
-result %= MOD;
-```
-
 **Problem:** The result overflows before we apply modulo.
 **Fix:** Apply modulo after each multiplication.
-
-```cpp
-// CORRECT
-long long result = 1;
-for (int i = 0; i < n; i++) {
-    result = (result * 2) % MOD;
-}
-```
 
 ### Mistake 2: Forgetting Modulo in Exponentiation
 
@@ -370,24 +290,8 @@ def power(base, exp):
 **Problem:** Even though Python handles big integers, this is slow and wrong for other languages.
 **Fix:** Apply modulo at every multiplication step.
 
-### Mistake 3: Using Wrong Data Type (C++)
-
-```cpp
-// WRONG - int overflow during multiplication
-int result = 1;
-int base = 2;
-result = (result * base) % MOD;  // May overflow before mod
-```
-
 **Problem:** `int * int` can overflow before modulo is applied.
 **Fix:** Use `long long` for all arithmetic involving modulo.
-
-```cpp
-// CORRECT
-long long result = 1;
-long long base = 2;
-result = (result * base) % MOD;
-```
 
 ---
 
@@ -425,11 +329,13 @@ result = (result * base) % MOD;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic loop and arithmetic |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Exponentiation](https://cses.fi/problemset/task/1095) | General a^b mod m |
@@ -437,6 +343,7 @@ result = (result * base) % MOD;
 | [LeetCode: Pow(x, n)](https://leetcode.com/problems/powx-n/) | Handle negative exponents |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Fibonacci](https://cses.fi/problemset/task/1722) | Matrix exponentiation |

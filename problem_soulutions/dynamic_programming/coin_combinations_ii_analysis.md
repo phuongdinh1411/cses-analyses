@@ -228,41 +228,6 @@ coins = list(map(int, input().split()))
 print(solve(n, x, coins))
 ```
 
-### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    const int MOD = 1e9 + 7;
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<int> coins(n);
-    for (int i = 0; i < n; i++) {
-        cin >> coins[i];
-    }
-
-    vector<long long> dp(x + 1, 0);
-    dp[0] = 1;
-
-    // Coin outer, sum inner = COMBINATIONS
-    for (int coin : coins) {
-        for (int i = coin; i <= x; i++) {
-            dp[i] = (dp[i] + dp[i - coin]) % MOD;
-        }
-    }
-
-    cout << dp[x] << "\n";
-    return 0;
-}
-```
-
 ### Complexity Analysis
 
 | Metric | Value | Explanation |
@@ -362,18 +327,21 @@ Think of it this way:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Coin Combinations I (CSES)](https://cses.fi/problemset/task/1635) | Understand permutation counting first |
 | [Dice Combinations (CSES)](https://cses.fi/problemset/task/1633) | Simpler version of permutation counting |
 
 ### Similar Problems
+
 | Problem | Key Similarity |
 |---------|----------------|
 | [Coin Change 2 (LeetCode)](https://leetcode.com/problems/coin-change-ii/) | Identical problem |
 | [Combination Sum IV (LeetCode)](https://leetcode.com/problems/combination-sum-iv/) | Permutation version (like Coin Combinations I) |
 
 ### Harder Problems (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimizing Coins (CSES)](https://cses.fi/problemset/task/1634) | Minimize count instead of counting ways |

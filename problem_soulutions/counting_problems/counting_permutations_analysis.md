@@ -108,18 +108,6 @@ def factorial_naive(n):
     return result
 ```
 
-**C++:**
-```cpp
-// WARNING: Overflows for n > 20 with 64-bit integers
-long long factorial_naive(int n) {
-    long long result = 1;
-    for (int i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -221,44 +209,6 @@ if __name__ == "__main__":
     print(count_permutations(n))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-#include <vector>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-long long count_permutations(int n) {
-    long long result = 1;
-    for (int i = 1; i <= n; i++) {
-        result = (result * i) % MOD;
-    }
-    return result;
-}
-
-// For multiple queries: precompute factorials
-vector<long long> precompute_factorials(int max_n) {
-    vector<long long> fact(max_n + 1);
-    fact[0] = 1;
-    for (int i = 1; i <= max_n; i++) {
-        fact[i] = (fact[i - 1] * i) % MOD;
-    }
-    return fact;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    cout << count_permutations(n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -321,34 +271,6 @@ def nPr_precomputed(n, r, fact, inv_fact, mod=10**9 + 7):
     if r > n:
         return 0
     return (fact[n] * inv_fact[n - r]) % mod
-```
-
-**C++:**
-```cpp
-long long mod_pow(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp & 1) result = (result * base) % mod;
-        exp >>= 1;
-        base = (base * base) % mod;
-    }
-    return result;
-}
-
-long long mod_inverse(long long a, long long mod) {
-    return mod_pow(a, mod - 2, mod);
-}
-
-long long nPr(int n, int r, long long mod = 1e9 + 7) {
-    if (r > n) return 0;
-
-    long long result = 1;
-    for (int i = n - r + 1; i <= n; i++) {
-        result = (result * i) % mod;
-    }
-    return result;
-}
 ```
 
 ---
@@ -431,17 +353,20 @@ def factorial_wrong(n, mod):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Creating Strings I](https://cses.fi/problemset/task/1622) | Generate actual permutations |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Binomial Coefficients](https://cses.fi/problemset/task/1079) | C(n,r) uses factorials and inverse |
 | [Distributing Apples](https://cses.fi/problemset/task/1716) | Stars and bars with factorials |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers using factorials |

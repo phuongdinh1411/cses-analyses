@@ -116,23 +116,6 @@ def solve_brute_force(points):
     return min_dist
 ```
 
-```cpp
-// C++ Brute Force
-long long brute_force(vector<pair<long long, long long>>& points) {
-    int n = points.size();
-    long long min_dist = LLONG_MAX;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            long long dx = points[i].first - points[j].first;
-            long long dy = points[i].second - points[j].second;
-            min_dist = min(min_dist, dx*dx + dy*dy);
-        }
-    }
-    return min_dist;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -299,81 +282,6 @@ def solve():
 solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> Point;
-
-ll dist_sq(const Point& a, const Point& b) {
-    ll dx = a.first - b.first;
-    ll dy = a.second - b.second;
-    return dx * dx + dy * dy;
-}
-
-ll closest_in_strip(vector<Point>& strip, ll d) {
-    ll min_d = d;
-    sort(strip.begin(), strip.end(), [](const Point& a, const Point& b) {
-        return a.second < b.second;
-    });
-
-    for (int i = 0; i < strip.size(); i++) {
-        for (int j = i + 1; j < strip.size() &&
-             (strip[j].second - strip[i].second) * (strip[j].second - strip[i].second) < min_d; j++) {
-            min_d = min(min_d, dist_sq(strip[i], strip[j]));
-        }
-    }
-    return min_d;
-}
-
-ll closest_pair(vector<Point>& pts, int left, int right) {
-    if (right - left <= 3) {
-        ll min_d = LLONG_MAX;
-        for (int i = left; i < right; i++) {
-            for (int j = i + 1; j < right; j++) {
-                min_d = min(min_d, dist_sq(pts[i], pts[j]));
-            }
-        }
-        return min_d;
-    }
-
-    int mid = (left + right) / 2;
-    ll mid_x = pts[mid].first;
-
-    ll left_min = closest_pair(pts, left, mid);
-    ll right_min = closest_pair(pts, mid, right);
-    ll d = min(left_min, right_min);
-
-    vector<Point> strip;
-    for (int i = left; i < right; i++) {
-        if ((pts[i].first - mid_x) * (pts[i].first - mid_x) < d) {
-            strip.push_back(pts[i]);
-        }
-    }
-
-    return closest_in_strip(strip, d);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-    vector<Point> points(n);
-
-    for (int i = 0; i < n; i++) {
-        cin >> points[i].first >> points[i].second;
-    }
-
-    sort(points.begin(), points.end());
-    cout << closest_pair(points, 0, n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -411,13 +319,6 @@ for i in range(len(strip)):
 **Fix:** Sort strip by y and only check while y-difference squared is less than current minimum.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG in C++ with int
-int dx = points[i].first - points[j].first;
-int dy = points[i].second - points[j].second;
-int dist = dx*dx + dy*dy;  // Overflow!
-```
 
 **Problem:** With coordinates up to 10^9, dx^2 can reach 10^18, exceeding int range.
 **Fix:** Use `long long` for all distance calculations.
@@ -468,6 +369,7 @@ strip = [p for p in pts if abs(p[0] - mid_x) < d]
 ## Related Problems
 
 ### CSES Geometry Problems
+
 | Problem | Link | Relationship |
 |---------|------|--------------|
 | Point Location Test | [CSES 2189](https://cses.fi/problemset/task/2189) | Basic geometry |
@@ -475,6 +377,7 @@ strip = [p for p in pts if abs(p[0] - mid_x) < d]
 | Convex Hull | [CSES 2195](https://cses.fi/problemset/task/2195) | D&C in geometry |
 
 ### Similar Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | K Closest Points to Origin (LC 973) | Distance from fixed point, not between pairs |

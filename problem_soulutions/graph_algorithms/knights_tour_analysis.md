@@ -218,92 +218,7 @@ if __name__ == "__main__":
     print_tour(tour)
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int N = 8;
-
-// The 8 possible knight moves
-const int dr[] = {-2, -2, -1, -1, +1, +1, +2, +2};
-const int dc[] = {-1, +1, -2, +2, -2, +2, -1, +1};
-
-int board[N][N];
-pair<int,int> path[N * N];
-
-bool isValid(int r, int c) {
-    return r >= 0 && r < N && c >= 0 && c < N && board[r][c] == -1;
-}
-
-int countDegree(int r, int c) {
-    int count = 0;
-    for (int i = 0; i < 8; i++) {
-        if (isValid(r + dr[i], c + dc[i])) {
-            count++;
-        }
-    }
-    return count;
-}
-
-vector<tuple<int,int,int>> getSortedMoves(int r, int c) {
-    vector<tuple<int,int,int>> moves;
-    for (int i = 0; i < 8; i++) {
-        int nr = r + dr[i];
-        int nc = c + dc[i];
-        if (isValid(nr, nc)) {
-            int degree = countDegree(nr, nc);
-            moves.push_back({degree, nr, nc});
-        }
-    }
-    sort(moves.begin(), moves.end());
-    return moves;
-}
-
-bool backtrack(int r, int c, int moveNum) {
-    board[r][c] = moveNum;
-    path[moveNum] = {r, c};
-
-    // Base case: all squares visited
-    if (moveNum == N * N - 1) {
-        return true;
-    }
-
-    // Try moves in Warnsdorff order
-    for (auto& [degree, nr, nc] : getSortedMoves(r, c)) {
-        if (backtrack(nr, nc, moveNum + 1)) {
-            return true;
-        }
-    }
-
-    // Backtrack
-    board[r][c] = -1;
-    return false;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int y, x;
-    cin >> y >> x;
-
-    // Initialize board
-    memset(board, -1, sizeof(board));
-
-    // Convert to 0-indexed
-    if (backtrack(y - 1, x - 1, 0)) {
-        for (int i = 0; i < N * N; i++) {
-            cout << path[i].first + 1 << " " << path[i].second + 1 << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Approach | Time Complexity | Space Complexity | Practical Performance |
 |----------|----------------|------------------|----------------------|
@@ -358,20 +273,28 @@ Move 3: (3,1)     Continue applying Warnsdorff...
 
 Final board (move numbers):
 +----+----+----+----+----+----+----+----+
+
 |  1 | 38 | 55 | 34 |  3 | 36 | 19 | 22 |
 +----+----+----+----+----+----+----+----+
+
 | 54 | 47 |  2 | 37 | 20 | 23 |  4 | 17 |
 +----+----+----+----+----+----+----+----+
+
 | 39 | 56 | 33 | 46 | 35 | 18 | 21 |  8 |
 +----+----+----+----+----+----+----+----+
+
 | 48 | 53 | 40 | 57 | 24 |  7 | 16 |  5 |
 +----+----+----+----+----+----+----+----+
+
 | 59 | 32 | 45 | 52 | 41 | 26 |  9 | 14 |
 +----+----+----+----+----+----+----+----+
+
 | 44 | 49 | 58 | 25 | 62 | 15 |  6 | 27 |
 +----+----+----+----+----+----+----+----+
+
 | 31 | 60 | 51 | 42 | 29 | 10 | 63 | 12 |
 +----+----+----+----+----+----+----+----+
+
 | 50 | 43 | 30 | 61 | 64 | 13 | 28 | 11 |
 +----+----+----+----+----+----+----+----+
 ```

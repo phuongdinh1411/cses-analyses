@@ -338,108 +338,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-bool removed[MAXN];
-int subtree_size[MAXN];
-int n, k;
-long long result = 0;
-
-void get_subtree_size(int u, int parent) {
-    subtree_size[u] = 1;
-    for (int v : adj[u]) {
-        if (v != parent && !removed[v]) {
-            get_subtree_size(v, u);
-            subtree_size[u] += subtree_size[v];
-        }
-    }
-}
-
-int get_centroid(int u, int parent, int tree_size) {
-    for (int v : adj[u]) {
-        if (v != parent && !removed[v]) {
-            if (subtree_size[v] > tree_size / 2) {
-                return get_centroid(v, u, tree_size);
-            }
-        }
-    }
-    return u;
-}
-
-void get_depths(int u, int parent, int depth, vector<int>& depths) {
-    if (depth > k) return;
-    depths.push_back(depth);
-    for (int v : adj[u]) {
-        if (v != parent && !removed[v]) {
-            get_depths(v, u, depth + 1, depths);
-        }
-    }
-}
-
-void count_paths(int centroid) {
-    vector<int> cnt(k + 2, 0);
-    cnt[0] = 1;  // centroid at depth 0
-
-    for (int neighbor : adj[centroid]) {
-        if (removed[neighbor]) continue;
-
-        vector<int> depths;
-        get_depths(neighbor, centroid, 1, depths);
-
-        // Count paths combining this subtree with previous
-        for (int d : depths) {
-            if (k - d >= 0 && k - d <= k) {
-                result += cnt[k - d];
-            }
-        }
-
-        // Add this subtree's depths to cnt
-        for (int d : depths) {
-            if (d <= k) {
-                cnt[d]++;
-            }
-        }
-    }
-}
-
-void decompose(int u) {
-    get_subtree_size(u, -1);
-    int centroid = get_centroid(u, -1, subtree_size[u]);
-    removed[centroid] = true;
-
-    count_paths(centroid);
-
-    for (int v : adj[centroid]) {
-        if (!removed[v]) {
-            decompose(v);
-        }
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> k;
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    decompose(1);
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -453,48 +351,15 @@ int main() {
 
 ### Mistake 1: Not Handling Removed Nodes
 
-```cpp
-// WRONG: Visiting already removed nodes
-void get_subtree_size(int u, int parent) {
-    subtree_size[u] = 1;
-    for (int v : adj[u]) {
-        if (v != parent) {  // Missing: && !removed[v]
-            get_subtree_size(v, u);
-            subtree_size[u] += subtree_size[v];
-        }
-    }
-}
-```
-
 **Problem:** After removing a centroid, we must skip it in future traversals.
 **Fix:** Always check `!removed[v]` when traversing neighbors.
 
 ### Mistake 2: Counting Paths Within Same Subtree
 
-```cpp
-// WRONG: Adding to cnt before checking
-for (int d : depths) {
-    cnt[d]++;  // Added first
-}
-for (int d : depths) {
-    result += cnt[k - d];  // Now counts paths within same subtree!
-}
-```
-
 **Problem:** This counts paths where both endpoints are in the same subtree (not passing through centroid).
 **Fix:** Count matches first, then add to the frequency array.
 
 ### Mistake 3: Off-by-One in Depth Limit
-
-```cpp
-// WRONG: Missing depth limit check
-void get_depths(int u, int parent, int depth, vector<int>& depths) {
-    depths.push_back(depth);  // Should check if depth > k first
-    for (int v : adj[u]) {
-        // ...
-    }
-}
-```
 
 **Problem:** Collecting depths greater than k wastes time and memory.
 **Fix:** Return early if `depth > k`.

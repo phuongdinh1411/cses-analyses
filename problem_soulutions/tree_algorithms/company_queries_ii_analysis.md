@@ -238,67 +238,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int LOG = 18;
-int up[200005][LOG];
-int depth[200005];
-vector<int> children[200005];
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    for (int i = 2; i <= n; i++) {
-        cin >> up[i][0];
-        children[up[i][0]].push_back(i);
-    }
-    up[1][0] = 0;
-
-    // BFS to compute depths
-    queue<int> bfs;
-    bfs.push(1);
-    depth[1] = 0;
-    while (!bfs.empty()) {
-        int node = bfs.front(); bfs.pop();
-        for (int child : children[node]) {
-            depth[child] = depth[node] + 1;
-            bfs.push(child);
-        }
-    }
-
-    // Build binary lifting table
-    for (int k = 1; k < LOG; k++)
-        for (int i = 1; i <= n; i++)
-            up[i][k] = up[up[i][k-1]][k-1];
-
-    auto lca = [&](int a, int b) -> int {
-        if (depth[a] < depth[b]) swap(a, b);
-        int diff = depth[a] - depth[b];
-        for (int k = 0; k < LOG; k++)
-            if (diff & (1 << k)) a = up[a][k];
-        if (a == b) return a;
-        for (int k = LOG - 1; k >= 0; k--)
-            if (up[a][k] != up[b][k]) { a = up[a][k]; b = up[b][k]; }
-        return up[a][0];
-    };
-
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << lca(a, b) << "\n";
-    }
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -378,18 +317,21 @@ LOG = 10  # WRONG - only handles n up to 1024
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Company Queries I](https://cses.fi/problemset/task/1687) | Learn binary lifting for k-th ancestor first |
 | [Subordinates](https://cses.fi/problemset/task/1674) | Basic tree DFS and subtree concepts |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Distance Queries](https://cses.fi/problemset/task/1135) | Uses LCA to compute tree distances |
 | [Counting Paths](https://cses.fi/problemset/task/1136) | LCA + difference arrays on paths |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Path Queries II](https://cses.fi/problemset/task/2134) | LCA + Heavy-Light Decomposition |

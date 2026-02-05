@@ -337,73 +337,7 @@ if __name__ == "__main__":
     solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    // Store (start, end, original_index)
-    vector<tuple<long long, long long, int>> ranges(n);
-    for (int i = 0; i < n; i++) {
-        long long a, b;
-        cin >> a >> b;
-        ranges[i] = {a, b, i};
-    }
-
-    // Sort by start ASC, then end DESC
-    sort(ranges.begin(), ranges.end(), [](const auto& x, const auto& y) {
-        if (get<0>(x) != get<0>(y)) return get<0>(x) < get<0>(y);
-        return get<1>(x) > get<1>(y);  // Descending end
-    });
-
-    vector<int> contains(n, 0);
-    vector<int> contained(n, 0);
-
-    // Suffix minimum of end values for "contains" check
-    vector<long long> min_end_suffix(n + 1, LLONG_MAX);
-    for (int i = n - 1; i >= 0; i--) {
-        min_end_suffix[i] = min(get<1>(ranges[i]), min_end_suffix[i + 1]);
-    }
-
-    // Check "contains another"
-    for (int i = 0; i < n; i++) {
-        auto [a, b, orig_idx] = ranges[i];
-        if (i + 1 < n && b >= min_end_suffix[i + 1]) {
-            contains[orig_idx] = 1;
-        }
-    }
-
-    // Check "contained by another" using prefix maximum
-    long long max_end = LLONG_MIN;
-    for (int i = 0; i < n; i++) {
-        auto [a, b, orig_idx] = ranges[i];
-        if (b <= max_end) {
-            contained[orig_idx] = 1;
-        }
-        max_end = max(max_end, b);
-    }
-
-    // Output
-    for (int i = 0; i < n; i++) {
-        cout << contains[i] << (i < n - 1 ? " " : "\n");
-    }
-    for (int i = 0; i < n; i++) {
-        cout << contained[i] << (i < n - 1 ? " " : "\n");
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -512,12 +446,14 @@ if b >= min_end_suffix[i + 1]:  # If my end >= smallest end after me
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Merge Intervals](https://leetcode.com/problems/merge-intervals/) | Basic interval sorting |
 | [Meeting Rooms](https://leetcode.com/problems/meeting-rooms/) | Interval overlap detection |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Nested Ranges Count](https://cses.fi/problemset/task/2169) | Count instead of check |
@@ -525,6 +461,7 @@ if b >= min_end_suffix[i + 1]:  # If my end >= smallest end after me
 | [Insert Interval](https://leetcode.com/problems/insert-interval/) | Modify sorted intervals |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Rectangle Area II](https://leetcode.com/problems/rectangle-area-ii/) | 2D coordinate compression |

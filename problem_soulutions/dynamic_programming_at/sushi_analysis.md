@@ -236,54 +236,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-double memo[301][301][301];
-bool visited[301][301][301];
-
-double dp(int i, int j, int k) {
-    if (i == 0 && j == 0 && k == 0) return 0.0;
-    if (visited[i][j][k]) return memo[i][j][k];
-
-    visited[i][j][k] = true;
-    int total = i + j + k;
-    double result = n;
-
-    if (i > 0) result += i * dp(i - 1, j, k);
-    if (j > 0) result += j * dp(i + 1, j - 1, k);
-    if (k > 0) result += k * dp(i, j + 1, k - 1);
-
-    result /= total;
-    return memo[i][j][k] = result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-    int c1 = 0, c2 = 0, c3 = 0;
-
-    for (int i = 0; i < n; i++) {
-        int a;
-        cin >> a;
-        if (a == 1) c1++;
-        else if (a == 2) c2++;
-        else if (a == 3) c3++;
-    }
-
-    memset(visited, false, sizeof(visited));
-    cout << fixed << setprecision(15) << dp(c1, c2, c3) << endl;
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -333,14 +285,6 @@ if j > 0:
 
 ### Mistake 4: Integer Division
 
-```cpp
-// WRONG - Integer division in C++
-double result = n / total;  // If n and total are int, this is integer division
-
-// CORRECT
-double result = (double)n / total;
-```
-
 ---
 
 ## Edge Cases
@@ -379,18 +323,21 @@ double result = (double)n / total;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Coins (AtCoder DP I)](https://atcoder.jp/contests/dp/tasks/dp_i) | Basic probability DP |
 | [Dice Probability](https://cses.fi/problemset/task/1725) | Expected value basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Candies (AtCoder DP M)](https://atcoder.jp/contests/dp/tasks/dp_m) | Distribution counting |
 | [Grouping (AtCoder DP U)](https://atcoder.jp/contests/dp/tasks/dp_u) | Bitmask DP |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Stones (AtCoder DP K)](https://atcoder.jp/contests/dp/tasks/dp_k) | Game theory + DP |

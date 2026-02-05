@@ -371,91 +371,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<vector<int>> adj(n + 1);
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    if (n == 1) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    vector<long long> subtree_size(n + 1, 0);
-    vector<long long> subtree_dist(n + 1, 0);
-    vector<long long> answer(n + 1, 0);
-    vector<int> parent(n + 1, 0);
-    vector<int> order;
-    vector<bool> visited(n + 1, false);
-
-    // Pass 1: BFS to get processing order
-    stack<int> stk;
-    stk.push(1);
-
-    while (!stk.empty()) {
-        int node = stk.top();
-        stk.pop();
-        if (visited[node]) continue;
-        visited[node] = true;
-        order.push_back(node);
-
-        for (int neighbor : adj[node]) {
-            if (!visited[neighbor]) {
-                parent[neighbor] = node;
-                stk.push(neighbor);
-            }
-        }
-    }
-
-    // Process in reverse order (post-order)
-    for (int i = n - 1; i >= 0; i--) {
-        int node = order[i];
-        subtree_size[node] = 1;
-        subtree_dist[node] = 0;
-
-        for (int neighbor : adj[node]) {
-            if (neighbor != parent[node]) {
-                subtree_size[node] += subtree_size[neighbor];
-                subtree_dist[node] += subtree_dist[neighbor] + subtree_size[neighbor];
-            }
-        }
-    }
-
-    // Pass 2: Rerooting
-    answer[1] = subtree_dist[1];
-    for (int node : order) {
-        for (int neighbor : adj[node]) {
-            if (neighbor != parent[node]) {
-                answer[neighbor] = answer[node] + n - 2 * subtree_size[neighbor];
-            }
-        }
-    }
-
-    // Output
-    for (int i = 1; i <= n; i++) {
-        cout << answer[i] << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -481,14 +396,6 @@ answer[child] = answer[parent] + n - 2 * subtree_size[child]
 **Fix:** Remember both effects: closer nodes (-subtree_size) AND farther nodes (+n-subtree_size).
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - using int for large sums
-int answer[N];
-
-// CORRECT - use long long
-long long answer[N];
-```
 
 **Problem:** With n = 2x10^5 nodes, distances can sum to ~10^10.
 **Fix:** Use `long long` in C++ or Python's native integers.

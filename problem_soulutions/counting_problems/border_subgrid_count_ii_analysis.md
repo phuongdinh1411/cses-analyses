@@ -81,12 +81,16 @@ The challenge is that a naive check of every cell in every subgrid is O(n^2 * m^
 ```
 Subgrid structure (4x5):
 +---+---+---+---+---+
+
 | B | B | B | B | B |  <- Top border
 +---+---+---+---+---+
+
 | B | I | I | I | B |  <- Interior with side borders
 +---+---+---+---+---+
+
 | B | I | I | I | B |  <- Interior with side borders
 +---+---+---+---+---+
+
 | B | B | B | B | B |  <- Bottom border
 +---+---+---+---+---+
 
@@ -142,43 +146,6 @@ def is_valid_subgrid(grid, r, c, h, w, border_val, interior_val):
                 if grid[i][j] != interior_val:
                     return False
     return True
-```
-
-```cpp
-#include <vector>
-using namespace std;
-
-bool isValidSubgrid(vector<vector<int>>& grid, int r, int c, int h, int w,
-                    int borderVal, int interiorVal) {
-    for (int i = r; i < r + h; i++) {
-        for (int j = c; j < c + w; j++) {
-            bool isBorder = (i == r || i == r + h - 1 || j == c || j == c + w - 1);
-            if (isBorder) {
-                if (grid[i][j] != borderVal) return false;
-            } else {
-                if (grid[i][j] != interiorVal) return false;
-            }
-        }
-    }
-    return true;
-}
-
-int countBorderSubgridsBrute(int n, int m, vector<vector<int>>& grid,
-                              int borderVal = 1, int interiorVal = 0) {
-    int count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            for (int h = 1; h <= n - i; h++) {
-                for (int w = 1; w <= m - j; w++) {
-                    if (isValidSubgrid(grid, i, j, h, w, borderVal, interiorVal)) {
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-    return count;
-}
 ```
 
 ### Complexity
@@ -299,67 +266,6 @@ def is_valid_with_prefix(border_ps, interior_ps, r, c, h, w):
            interior_count == expected_interior
 ```
 
-```cpp
-#include <vector>
-using namespace std;
-
-class BorderSubgridCounter {
-private:
-    vector<vector<int>> borderPS, interiorPS;
-    int n, m;
-
-    void buildPrefixSum(vector<vector<int>>& grid, int target,
-                        vector<vector<int>>& ps) {
-        ps.assign(n + 1, vector<int>(m + 1, 0));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                ps[i+1][j+1] = ps[i][j+1] + ps[i+1][j] - ps[i][j]
-                             + (grid[i][j] == target ? 1 : 0);
-            }
-        }
-    }
-
-    int querySum(vector<vector<int>>& ps, int r1, int c1, int r2, int c2) {
-        return ps[r2+1][c2+1] - ps[r1][c2+1] - ps[r2+1][c1] + ps[r1][c1];
-    }
-
-    bool isValid(int r, int c, int h, int w) {
-        int totalBorder = querySum(borderPS, r, c, r + h - 1, c + w - 1);
-
-        if (h < 3 || w < 3) {
-            return totalBorder == h * w;
-        }
-
-        int expectedBorder = 2 * (h + w) - 4;
-        int interiorCount = querySum(interiorPS, r + 1, c + 1, r + h - 2, c + w - 2);
-        int expectedInterior = (h - 2) * (w - 2);
-
-        return totalBorder == expectedBorder + interiorCount &&
-               interiorCount == expectedInterior;
-    }
-
-public:
-    int count(int rows, int cols, vector<vector<int>>& grid,
-              int borderVal = 1, int interiorVal = 0) {
-        n = rows; m = cols;
-        buildPrefixSum(grid, borderVal, borderPS);
-        buildPrefixSum(grid, interiorVal, interiorPS);
-
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                for (int h = 1; h <= n - i; h++) {
-                    for (int w = 1; w <= m - j; w++) {
-                        if (isValid(i, j, h, w)) result++;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-};
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -443,12 +349,14 @@ border_count = 2 * (h + w) - 4  # Subtract 4 corners counted twice
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Technique |
 |---------|-----------|
 | [Forest Queries](https://cses.fi/problemset/task/1652) | Basic 2D prefix sum |
 | [Subarray Sums I](https://cses.fi/problemset/task/1660) | 1D prefix sum + hash map |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [LeetCode: Maximal Square](https://leetcode.com/problems/maximal-square/) | DP instead of counting |

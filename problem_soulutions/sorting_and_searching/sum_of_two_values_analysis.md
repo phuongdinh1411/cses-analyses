@@ -103,37 +103,6 @@ def solve():
 solve()
 ```
 
-### C++ Implementation
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<int> arr(n);
-    unordered_map<int, int> seen;  // value -> index
-
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-        int complement = x - arr[i];
-
-        if (seen.count(complement)) {
-            cout << seen[complement] + 1 << " " << i + 1 << "\n";
-            return 0;
-        }
-        seen[arr[i]] = i;
-    }
-
-    cout << "IMPOSSIBLE\n";
-    return 0;
-}
-```
-
 ---
 
 ## Approach 2: Two Pointers (Optimal for Space in Some Cases)
@@ -213,49 +182,6 @@ def solve():
     print("IMPOSSIBLE")
 
 solve()
-```
-
-### C++ Implementation
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<pair<int, int>> indexed(n);  // (value, original_index)
-
-    for (int i = 0; i < n; i++) {
-        cin >> indexed[i].first;
-        indexed[i].second = i;
-    }
-
-    sort(indexed.begin(), indexed.end());
-
-    int left = 0, right = n - 1;
-
-    while (left < right) {
-        int sum = indexed[left].first + indexed[right].first;
-
-        if (sum == x) {
-            int i1 = indexed[left].second;
-            int i2 = indexed[right].second;
-            cout << min(i1, i2) + 1 << " " << max(i1, i2) + 1 << "\n";
-            return 0;
-        } else if (sum < x) {
-            left++;
-        } else {
-            right--;
-        }
-    }
-
-    cout << "IMPOSSIBLE\n";
-    return 0;
-}
 ```
 
 ---
@@ -345,15 +271,6 @@ if complement in seen:  # Could find itself!
 if complement in seen:
     ...
 seen[num] = i
-```
-
-### 5. Integer Overflow (C++)
-```cpp
-// WRONG: possible overflow for large values
-int sum = indexed[left].first + indexed[right].first;
-
-// CORRECT: use long long for safety
-long long sum = (long long)indexed[left].first + indexed[right].first;
 ```
 
 ---

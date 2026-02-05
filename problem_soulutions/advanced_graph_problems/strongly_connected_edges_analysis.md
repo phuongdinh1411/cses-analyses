@@ -252,84 +252,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 100005;
-vector<pair<int,int>> adj[MAXN];  // {neighbor, edge_index}
-pair<int,int> edges[200005];      // original edges
-int disc[MAXN], low[MAXN];
-bool visited[MAXN];
-bool direction[200005];  // true = keep original direction
-int timer_val = 1;
-bool has_bridge = false;
-int n, m;
-
-void dfs(int u, int parent_edge) {
-    visited[u] = true;
-    disc[u] = low[u] = timer_val++;
-
-    for (auto& [v, edge_idx] : adj[u]) {
-        if (edge_idx == parent_edge) continue;
-
-        if (visited[v]) {
-            // Back edge
-            low[u] = min(low[u], disc[v]);
-            if (disc[v] < disc[u]) {
-                // v is ancestor, orient u -> v
-                direction[edge_idx] = (edges[edge_idx].first == u);
-            }
-        } else {
-            // Tree edge: orient u -> v
-            direction[edge_idx] = (edges[edge_idx].first == u);
-
-            dfs(v, edge_idx);
-            low[u] = min(low[u], low[v]);
-
-            if (low[v] > disc[u]) {
-                has_bridge = true;
-            }
-        }
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back({b, i});
-        adj[b].push_back({a, i});
-        edges[i] = {a, b};
-        direction[i] = true;
-    }
-
-    dfs(1, -1);
-
-    if (has_bridge) {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-
-    for (int i = 0; i < m; i++) {
-        if (direction[i]) {
-            cout << edges[i].first << " " << edges[i].second << "\n";
-        } else {
-            cout << edges[i].second << " " << edges[i].first << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity Analysis
 
 | Metric | Value | Explanation |
@@ -343,57 +265,15 @@ int main() {
 
 ### Mistake 1: Not Handling Multi-edges Correctly
 
-```cpp
-// WRONG: Using parent node instead of parent edge
-void dfs(int u, int parent) {
-    for (auto [v, idx] : adj[u]) {
-        if (v == parent) continue;  // WRONG for multi-edges!
-        // ...
-    }
-}
-
-// CORRECT: Track parent edge index
-void dfs(int u, int parent_edge_idx) {
-    for (auto [v, idx] : adj[u]) {
-        if (idx == parent_edge_idx) continue;  // Correct!
-        // ...
-    }
-}
-```
-
 **Problem:** If there are multiple edges between same nodes, skipping by parent node skips all of them.
 **Fix:** Track and skip by edge index, not by node.
 
 ### Mistake 2: Wrong Bridge Condition
 
-```cpp
-// WRONG
-if (low[v] >= disc[u])  // This detects articulation points!
-
-// CORRECT (for bridges)
-if (low[v] > disc[u])   // Strictly greater for bridges
-```
-
 **Problem:** `>=` detects articulation points, not bridges.
 **Fix:** Use strict inequality `>` for bridge detection.
 
 ### Mistake 3: Forgetting Back Edge Orientation
-
-```cpp
-// WRONG: Only orienting tree edges
-if (!visited[v]) {
-    direction[edge_idx] = (edges[edge_idx].first == u);
-    dfs(v, edge_idx);
-}
-// Missing back edge orientation!
-
-// CORRECT: Also orient back edges
-if (visited[v]) {
-    if (disc[v] < disc[u]) {
-        direction[edge_idx] = (edges[edge_idx].first == u);
-    }
-}
-```
 
 ---
 
@@ -431,18 +311,21 @@ if (visited[v]) {
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Building Roads](https://cses.fi/problemset/task/1666) | Basic connectivity |
 | [Finding Bridges](https://cp-algorithms.com/graph/bridge-searching.html) | Bridge detection practice |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Critical Connections](https://leetcode.com/problems/critical-connections-in-a-network/) | Only find bridges, no orientation |
 | [Flight Routes Check](https://cses.fi/problemset/task/1682) | Check if directed graph is strongly connected |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Planets and Kingdoms](https://cses.fi/problemset/task/1683) | SCC decomposition |

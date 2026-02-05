@@ -192,44 +192,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-
-    if (s.empty()) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    int max_length = 1;
-    int current_length = 1;
-
-    for (int i = 1; i < (int)s.size(); i++) {
-        if (s[i] == s[i - 1]) {
-            current_length++;
-        } else {
-            max_length = max(max_length, current_length);
-            current_length = 1;
-        }
-    }
-
-    // Final comparison for run ending at last character
-    max_length = max(max_length, current_length);
-
-    cout << max_length << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -324,17 +286,20 @@ print(max_length)  # But max_length was never set if len(s) <= 1
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic simulation practice |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Missing Number](https://cses.fi/problemset/task/1083) | Single pass with different tracking |
 | [Increasing Array](https://cses.fi/problemset/task/1094) | Track running sum instead of run length |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Max Consecutive Ones III (LeetCode)](https://leetcode.com/problems/max-consecutive-ones-iii/) | Sliding window with allowed flips |

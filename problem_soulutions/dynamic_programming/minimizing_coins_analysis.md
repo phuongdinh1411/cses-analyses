@@ -208,45 +208,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<int> coins(n);
-    for (int i = 0; i < n; i++) {
-        cin >> coins[i];
-    }
-
-    // Use 1e9 as infinity (larger than max possible answer)
-    const int INF = 1e9;
-    vector<int> dp(x + 1, INF);
-    dp[0] = 0;  // Base case
-
-    for (int i = 1; i <= x; i++) {
-        for (int coin : coins) {
-            if (coin <= i && dp[i - coin] != INF) {
-                dp[i] = min(dp[i], dp[i - coin] + 1);
-            }
-        }
-    }
-
-    // Output -1 if impossible
-    cout << (dp[x] == INF ? -1 : dp[x]) << "\n";
-
-    return 0;
-}
-```
-
-## Common Mistakes
+### Common Mistakes
 
 | Mistake | Problem | Fix |
 |---------|---------|-----|

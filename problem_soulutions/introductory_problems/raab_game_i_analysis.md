@@ -272,54 +272,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <string>
-using namespace std;
-
-string solve(int n, int k, vector<int>& moves) {
-    // dp[i] = true if position i is winning
-    vector<bool> dp(n + 1, false);
-
-    // Base case: dp[0] = false (no moves = lose)
-
-    for (int i = 1; i <= n; i++) {
-        for (int move : moves) {
-            if (move <= i && !dp[i - move]) {
-                dp[i] = true;
-                break;  // Found winning move
-            }
-        }
-    }
-
-    // Build result string
-    string result;
-    for (int i = 1; i <= n; i++) {
-        result += (dp[i] ? 'W' : 'L');
-    }
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> moves(k);
-    for (int i = 0; i < k; i++) {
-        cin >> moves[i];
-    }
-
-    cout << solve(n, k, moves) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -409,17 +361,20 @@ if move <= i and not dp[i - move]:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Nim Game (LeetCode)](https://leetcode.com/problems/nim-game/) | Simplest game theory problem |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Stick Game (CSES)](https://cses.fi/problemset/task/1729) | Same problem, different name |
 | [Can I Win (LeetCode)](https://leetcode.com/problems/can-i-win/) | Bitmask DP for state |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Nim Game II (CSES)](https://cses.fi/problemset/task/1730) | Multiple piles, XOR |

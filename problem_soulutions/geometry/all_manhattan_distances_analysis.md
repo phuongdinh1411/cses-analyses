@@ -248,48 +248,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long computePairwiseSum(vector<long long>& coords) {
-    sort(coords.begin(), coords.end());
-    int n = coords.size();
-    long long total = 0;
-    long long prefixSum = 0;
-
-    for (int i = 0; i < n; i++) {
-        // Element at index i contributes: coords[i] * i - prefixSum
-        total += coords[i] * i - prefixSum;
-        prefixSum += coords[i];
-    }
-
-    return total;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<long long> xCoords(n), yCoords(n);
-
-    for (int i = 0; i < n; i++) {
-        cin >> xCoords[i] >> yCoords[i];
-    }
-
-    long long result = computePairwiseSum(xCoords) + computePairwiseSum(yCoords);
-    cout << result << "\n";
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -301,16 +260,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - int overflow with large coordinates
-int total = 0;
-total += coords[i] * i;  // coords[i] can be 10^9, i can be 2*10^5
-
-// CORRECT - use long long
-long long total = 0;
-total += (long long)coords[i] * i;
-```
 
 **Problem:** With coordinates up to 10^9 and n up to 2*10^5, products can exceed 32-bit integers.
 **Fix:** Use 64-bit integers (long long in C++, Python handles this automatically).

@@ -208,63 +208,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n + 1);
-    vector<int> in_degree(n + 1, 0);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[b].push_back(a);  // b must come before a
-        in_degree[a]++;
-    }
-
-    // Kahn's algorithm
-    queue<int> q;
-    for (int i = 1; i <= n; i++) {
-        if (in_degree[i] == 0) {
-            q.push(i);
-        }
-    }
-
-    vector<int> result;
-    while (!q.empty()) {
-        int node = q.front();
-        q.pop();
-        result.push_back(node);
-
-        for (int neighbor : adj[node]) {
-            in_degree[neighbor]--;
-            if (in_degree[neighbor] == 0) {
-                q.push(neighbor);
-            }
-        }
-    }
-
-    if ((int)result.size() == n) {
-        for (int i = 0; i < n; i++) {
-            cout << result[i] << " \n"[i == n - 1];
-        }
-    } else {
-        cout << "IMPOSSIBLE\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -361,71 +304,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<vector<int>> adj;
-vector<int> state;  // 0: unvisited, 1: visiting, 2: visited
-vector<int> result;
-bool has_cycle = false;
-
-void dfs(int node) {
-    if (has_cycle) return;
-
-    state[node] = 1;  // visiting
-
-    for (int neighbor : adj[node]) {
-        if (state[neighbor] == 1) {
-            has_cycle = true;
-            return;
-        }
-        if (state[neighbor] == 0) {
-            dfs(neighbor);
-        }
-    }
-
-    state[node] = 2;  // visited
-    result.push_back(node);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    adj.resize(n + 1);
-    state.resize(n + 1, 0);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[b].push_back(a);
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (state[i] == 0) {
-            dfs(i);
-        }
-    }
-
-    if (has_cycle) {
-        cout << "IMPOSSIBLE\n";
-    } else {
-        reverse(result.begin(), result.end());
-        for (int i = 0; i < n; i++) {
-            cout << result[i] << " \n"[i == n - 1];
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -517,17 +395,20 @@ state = [0] * n  # 0: unvisited, 1: visiting, 2: visited
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Building Roads](https://cses.fi/problemset/task/1666) | Basic graph connectivity |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Game Routes](https://cses.fi/problemset/task/1681) | Count paths in DAG |
 | [Longest Flight Route](https://cses.fi/problemset/task/1680) | Longest path in DAG |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Strongly Connected Components](https://cses.fi/problemset/task/1682) | Kosaraju's/Tarjan's algorithm |

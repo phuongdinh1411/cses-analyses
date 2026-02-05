@@ -277,57 +277,6 @@ def solve():
 solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    int n = s.size();
-
-    if (n == 1) {
-        return 0;  // No proper borders
-    }
-
-    // Build failure function
-    vector<int> fail(n, 0);
-    int j = 0;
-
-    for (int i = 1; i < n; i++) {
-        while (j > 0 && s[i] != s[j]) {
-            j = fail[j - 1];
-        }
-        if (s[i] == s[j]) {
-            j++;
-        }
-        fail[i] = j;
-    }
-
-    // Extract all borders
-    vector<int> borders;
-    int len = fail[n - 1];
-
-    while (len > 0) {
-        borders.push_back(len);
-        len = fail[len - 1];
-    }
-
-    // Print in increasing order
-    reverse(borders.begin(), borders.end());
-    for (int i = 0; i < borders.size(); i++) {
-        cout << borders[i];
-        if (i < borders.size() - 1) cout << ' ';
-    }
-    if (!borders.empty()) cout << '\n';
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -413,11 +362,13 @@ while length > 0:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Happy Prefix (LC 1392)](https://leetcode.com/problems/longest-happy-prefix/) | Just return fail[n-1], the longest border |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Finding Periods (CSES 1733)](https://cses.fi/problemset/task/1733) | Uses failure function to find periods |
@@ -425,6 +376,7 @@ while length > 0:
 | [Shortest Palindrome (LC 214)](https://leetcode.com/problems/shortest-palindrome/) | Uses KMP on s + "#" + reverse(s) |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimal Rotations (CSES 1110)](https://cses.fi/problemset/task/1110) | Combines borders with rotation |

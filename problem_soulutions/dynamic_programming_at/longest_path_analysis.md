@@ -224,71 +224,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class Solution {
-private:
-    vector<vector<int>> graph;
-    vector<int> dp;
-
-    int dfs(int v) {
-        if (dp[v] != -1) return dp[v];
-
-        // Base case: sink vertex
-        if (graph[v].empty()) {
-            return dp[v] = 0;
-        }
-
-        // Recurrence: try all neighbors
-        int maxPath = 0;
-        for (int u : graph[v]) {
-            maxPath = max(maxPath, 1 + dfs(u));
-        }
-        return dp[v] = maxPath;
-    }
-
-public:
-    int solve(int n, vector<pair<int, int>>& edges) {
-        graph.assign(n + 1, vector<int>());
-        dp.assign(n + 1, -1);
-
-        // Build adjacency list
-        for (auto& [u, v] : edges) {
-            graph[u].push_back(v);
-        }
-
-        // Compute for all vertices
-        int ans = 0;
-        for (int v = 1; v <= n; v++) {
-            ans = max(ans, dfs(v));
-        }
-        return ans;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<pair<int, int>> edges(m);
-    for (int i = 0; i < m; i++) {
-        cin >> edges[i].first >> edges[i].second;
-    }
-
-    Solution sol;
-    cout << sol.solve(n, edges) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -349,49 +284,6 @@ def solve_topological(n: int, edges: List[Tuple[int, int]]) -> int:
             dp[v] = max(dp[v], 1 + dp[u])
 
     return max(dp)
-```
-
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int solveTopological(int n, vector<pair<int, int>>& edges) {
-    vector<vector<int>> graph(n + 1);
-    vector<int> inDegree(n + 1, 0);
-
-    for (auto& [u, v] : edges) {
-        graph[u].push_back(v);
-        inDegree[v]++;
-    }
-
-    // Kahn's algorithm
-    queue<int> q;
-    for (int v = 1; v <= n; v++) {
-        if (inDegree[v] == 0) q.push(v);
-    }
-
-    vector<int> topoOrder;
-    while (!q.empty()) {
-        int v = q.front(); q.pop();
-        topoOrder.push_back(v);
-        for (int u : graph[v]) {
-            if (--inDegree[u] == 0) q.push(u);
-        }
-    }
-
-    // DP in reverse order
-    vector<int> dp(n + 1, 0);
-    for (int i = topoOrder.size() - 1; i >= 0; i--) {
-        int v = topoOrder[i];
-        for (int u : graph[v]) {
-            dp[v] = max(dp[v], 1 + dp[u]);
-        }
-    }
-
-    return *max_element(dp.begin(), dp.end());
-}
 ```
 
 ### Complexity
@@ -492,12 +384,14 @@ sys.setrecursionlimit(200005)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [AtCoder DP - A: Frog 1](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic 1D DP warm-up |
 | [AtCoder DP - B: Frog 2](https://atcoder.jp/contests/dp/tasks/dp_b) | Variable transitions in DP |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Longest Flight Route](https://cses.fi/problemset/task/1680) | Same concept, requires path reconstruction |
@@ -505,6 +399,7 @@ sys.setrecursionlimit(200005)
 | [AtCoder DP - H: Grid 1](https://atcoder.jp/contests/dp/tasks/dp_h) | DP on implicit DAG (grid) |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode - Longest Increasing Path in Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) | Implicit DAG on 2D grid |

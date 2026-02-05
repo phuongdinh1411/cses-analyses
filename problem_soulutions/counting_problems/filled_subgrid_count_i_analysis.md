@@ -135,49 +135,6 @@ def is_filled(grid, r, c, k):
 solve()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, m, k;
-vector<vector<int>> grid;
-
-bool isFilled(int r, int c) {
-    int val = grid[r][c];
-    for (int i = r; i < r + k; i++) {
-        for (int j = c; j < c + k; j++) {
-            if (grid[i][j] != val) return false;
-        }
-    }
-    return true;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m >> k;
-    grid.assign(n, vector<int>(m));
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            cin >> grid[i][j];
-        }
-    }
-
-    int count = 0;
-    for (int i = 0; i <= n - k; i++) {
-        for (int j = 0; j <= m - k; j++) {
-            if (isFilled(i, j)) count++;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -314,68 +271,6 @@ def is_truly_filled(grid, r, c, k):
 solve()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, k;
-    cin >> n >> m >> k;
-
-    vector<vector<long long>> grid(n, vector<long long>(m));
-    vector<vector<long long>> prefix(n + 1, vector<long long>(m + 1, 0));
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            cin >> grid[i][j];
-        }
-    }
-
-    // Build prefix sum
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            prefix[i+1][j+1] = grid[i][j] + prefix[i][j+1]
-                              + prefix[i+1][j] - prefix[i][j];
-        }
-    }
-
-    auto subgridSum = [&](int r1, int c1, int r2, int c2) -> long long {
-        return prefix[r2+1][c2+1] - prefix[r1][c2+1]
-               - prefix[r2+1][c1] + prefix[r1][c1];
-    };
-
-    auto isFilled = [&](int r, int c) -> bool {
-        long long val = grid[r][c];
-        for (int i = r; i < r + k; i++) {
-            for (int j = c; j < c + k; j++) {
-                if (grid[i][j] != val) return false;
-            }
-        }
-        return true;
-    };
-
-    int count = 0;
-    long long targetCells = (long long)k * k;
-
-    for (int i = 0; i <= n - k; i++) {
-        for (int j = 0; j <= m - k; j++) {
-            long long val = grid[i][j];
-            long long actualSum = subgridSum(i, j, i + k - 1, j + k - 1);
-            if (actualSum == targetCells * val) {
-                if (isFilled(i, j)) count++;
-            }
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -400,14 +295,6 @@ for i in range(n - k):  # Should be n - k + 1
 **Fix:** Use `range(n - k + 1)` to include all valid positions.
 
 ### Mistake 2: Integer Overflow in Sum Calculation
-
-```cpp
-// WRONG - may overflow with large values
-int sum = k * k * grid[i][j];  // grid values up to 10^9!
-
-// CORRECT
-long long sum = (long long)k * k * grid[i][j];
-```
 
 **Problem:** With k=100 and value=10^9, product exceeds 32-bit range.
 **Fix:** Use `long long` for sum calculations.
@@ -459,18 +346,21 @@ if subgrid_sum == k * k * grid[r][c]:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | 1D prefix sums foundation |
 | [Forest Queries](https://cses.fi/problemset/task/1652) | 2D prefix sums basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Maximal Square (LeetCode)](https://leetcode.com/problems/maximal-square/) | Find largest uniform square |
 | [Count Square Submatrices (LeetCode)](https://leetcode.com/problems/count-square-submatrices-with-all-ones/) | Count all sizes, DP approach |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Filled Subgrid Count II](https://cses.fi/problemset/task/2102) | Larger constraints, optimization needed |

@@ -287,66 +287,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<long long> arr(n);
-    long long max_elem = 0, total_sum = 0;
-
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-        max_elem = max(max_elem, arr[i]);
-        total_sum += arr[i];
-    }
-
-    // Check if we can divide into at most k subarrays with max_sum limit
-    auto can_divide = [&](long long max_sum) -> bool {
-        int subarrays = 1;
-        long long current_sum = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (current_sum + arr[i] <= max_sum) {
-                current_sum += arr[i];
-            } else {
-                subarrays++;
-                current_sum = arr[i];
-                if (subarrays > k) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
-
-    // Binary search for minimum feasible max_sum
-    long long left = max_elem;
-    long long right = total_sum;
-
-    while (left < right) {
-        long long mid = (left + right) / 2;
-        if (can_divide(mid)) {
-            right = mid;
-        } else {
-            left = mid + 1;
-        }
-    }
-
-    cout << left << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -385,16 +325,6 @@ if current_sum + num > max_sum:
 
 **Problem:** When starting a new subarray, the current element should be its first element.
 **Fix:** Set current_sum = num when starting a new subarray.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow with 10^9 elements
-int total_sum = 0;
-
-// CORRECT - use long long
-long long total_sum = 0;
-```
 
 **Problem:** With n = 2 x 10^5 elements each up to 10^9, sum can reach 2 x 10^14.
 **Fix:** Use `long long` for sums and binary search bounds.
@@ -453,12 +383,14 @@ for num in arr:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Binary Search](https://cses.fi/problemset/task/1083) | Basic binary search mechanics |
 | [Factory Machines](https://cses.fi/problemset/task/1620) | Binary search on answer, simpler check |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Split Array Largest Sum (LeetCode 410)](https://leetcode.com/problems/split-array-largest-sum/) | Identical problem |
@@ -466,6 +398,7 @@ for num in arr:
 | [Koko Eating Bananas (LeetCode 875)](https://leetcode.com/problems/koko-eating-bananas/) | Similar binary search pattern |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimize Max Distance to Gas Station (LeetCode 774)](https://leetcode.com/problems/minimize-max-distance-to-gas-station/) | Continuous search space |

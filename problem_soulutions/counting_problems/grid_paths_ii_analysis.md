@@ -258,63 +258,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    // Edge case: start or end blocked
-    if (grid[0][0] == '*' || grid[n-1][n-1] == '*') {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-    dp[0][0] = 1;
-
-    // Fill first row
-    for (int j = 1; j < n; j++) {
-        if (grid[0][j] == '.') {
-            dp[0][j] = dp[0][j-1];
-        }
-    }
-
-    // Fill first column
-    for (int i = 1; i < n; i++) {
-        if (grid[i][0] == '.') {
-            dp[i][0] = dp[i-1][0];
-        }
-    }
-
-    // Fill rest
-    for (int i = 1; i < n; i++) {
-        for (int j = 1; j < n; j++) {
-            if (grid[i][j] == '.') {
-                dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD;
-            }
-        }
-    }
-
-    cout << dp[n-1][n-1] << "\n";
-    return 0;
-}
-```
-
 ### Space-Optimized Solution (O(n) space)
 
 Since each row only depends on the previous row, we can use a single array:
@@ -386,17 +329,6 @@ if grid[i][j] == '*':
 
 **Problem:** Different problems use different characters for obstacles.
 **Fix:** Read the problem statement carefully for the exact format.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow before mod
-dp[i][j] = dp[i-1][j] + dp[i][j-1];
-dp[i][j] %= MOD;
-
-// CORRECT - use long long and mod during addition
-dp[i][j] = (dp[i-1][j] + dp[i][j-1]) % MOD;
-```
 
 ### Mistake 4: Not Handling First Row/Column Correctly
 

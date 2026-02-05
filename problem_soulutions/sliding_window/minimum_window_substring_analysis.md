@@ -260,64 +260,6 @@ def min_window(s: str, t: str) -> str:
     return s[result[0]:result[1]] if min_len != float('inf') else ""
 ```
 
-**C++:**
-```cpp
-#include <string>
-#include <unordered_map>
-using namespace std;
-
-string minWindow(string s, string t) {
-    if (s.empty() || t.empty() || s.length() < t.length()) {
-        return "";
-    }
-
-    // Character frequency required
-    unordered_map<char, int> t_count;
-    for (char c : t) t_count[c]++;
-    int required = t_count.size();
-
-    // Window state
-    unordered_map<char, int> window_count;
-    int formed = 0;
-    int left = 0;
-
-    // Result tracking
-    int min_len = INT_MAX;
-    int result_left = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        // Expand: add s[right] to window
-        char c = s[right];
-        window_count[c]++;
-
-        // Check if character count matches requirement
-        if (t_count.count(c) && window_count[c] == t_count[c]) {
-            formed++;
-        }
-
-        // Shrink: contract window while valid
-        while (formed == required && left <= right) {
-            // Update result if current window is smaller
-            if (right - left + 1 < min_len) {
-                min_len = right - left + 1;
-                result_left = left;
-            }
-
-            // Remove s[left] from window
-            char left_char = s[left];
-            window_count[left_char]--;
-            if (t_count.count(left_char) &&
-                window_count[left_char] < t_count[left_char]) {
-                formed--;
-            }
-            left++;
-        }
-    }
-
-    return min_len == INT_MAX ? "" : s.substr(result_left, min_len);
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -413,17 +355,20 @@ return s[result[0]:result[1]] if min_len != float('inf') else ""
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Substring Without Repeating](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Basic variable window |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Playlist (CSES 2429)](https://cses.fi/problemset/task/2429) | Maximum window with unique elements |
 | [Permutation in String](https://leetcode.com/problems/permutation-in-string/) | Fixed window size, anagram matching |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Substring with Concatenation](https://leetcode.com/problems/substring-with-concatenation-of-all-words/) | Word-level windows |

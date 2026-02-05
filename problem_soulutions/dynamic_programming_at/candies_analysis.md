@@ -299,54 +299,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> limits(n);
-    for (int i = 0; i < n; i++) {
-        cin >> limits[i];
-    }
-
-    // dp[j] = ways to distribute j candies
-    vector<long long> dp(k + 1, 0);
-    dp[0] = 1;
-
-    for (int i = 0; i < n; i++) {
-        int limit = limits[i];
-
-        // Build prefix sum
-        vector<long long> prefix(k + 2, 0);
-        for (int j = 0; j <= k; j++) {
-            prefix[j + 1] = (prefix[j] + dp[j]) % MOD;
-        }
-
-        // Update dp using prefix sums
-        vector<long long> new_dp(k + 1, 0);
-        for (int j = 0; j <= k; j++) {
-            int left = max(0, j - limit);
-            new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD;
-        }
-
-        dp = new_dp;
-    }
-
-    cout << dp[k] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -434,12 +386,14 @@ dp[0] = 1  # One way to distribute 0 candies
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Prefix Sum Basics](https://leetcode.com/problems/range-sum-query-immutable/) | Core prefix sum technique |
 | [Coin Combinations I](https://cses.fi/problemset/task/1635) | Basic counting DP |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Knapsack 2](https://atcoder.jp/contests/dp/tasks/dp_e) | Value-based DP with limits |
@@ -447,6 +401,7 @@ dp[0] = 1  # One way to distribute 0 candies
 | [Slimes](https://atcoder.jp/contests/dp/tasks/dp_n) | Interval DP with range optimization |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Walk](https://atcoder.jp/contests/dp/tasks/dp_r) | Matrix exponentiation for counting |

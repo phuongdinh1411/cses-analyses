@@ -303,71 +303,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> adj[200005];
-int dist_a[200005], dist_b[200005];
-int n;
-
-pair<int, int> bfs(int start, int* dist) {
-    fill(dist, dist + n + 1, -1);
-    queue<int> q;
-    q.push(start);
-    dist[start] = 0;
-    int farthest = start;
-
-    while (!q.empty()) {
-        int node = q.front();
-        q.pop();
-        for (int neighbor : adj[node]) {
-            if (dist[neighbor] == -1) {
-                dist[neighbor] = dist[node] + 1;
-                q.push(neighbor);
-                if (dist[neighbor] > dist[farthest]) {
-                    farthest = neighbor;
-                }
-            }
-        }
-    }
-    return {dist[farthest], farthest};
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n;
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    // Step 1: Find first diameter endpoint
-    auto [_, endpoint_a] = bfs(1, dist_a);
-
-    // Step 2: Find second endpoint and distances from A
-    auto [__, endpoint_b] = bfs(endpoint_a, dist_a);
-
-    // Step 3: Get distances from B
-    bfs(endpoint_b, dist_b);
-
-    // Step 4: Output max distances
-    for (int i = 1; i <= n; i++) {
-        cout << max(dist_a[i], dist_b[i]);
-        if (i < n) cout << " ";
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -408,15 +343,6 @@ def dfs(node, parent, dist):
 
 ### Mistake 3: Not Resetting Distance Array
 
-```cpp
-// WRONG - using stale distances
-int dist[200005];  // Not initialized!
-
-void bfs(int start) {
-    // dist may contain garbage values
-}
-```
-
 **Problem:** Distance array contains garbage or values from previous BFS.
 **Fix:** Always initialize distances to -1 before each BFS.
 
@@ -455,17 +381,20 @@ void bfs(int start) {
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Tree Diameter](https://cses.fi/problemset/task/1131) | Simpler version - just find diameter length |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances instead of max (uses rerooting DP) |
 | [Diameter of Binary Tree (LeetCode 543)](https://leetcode.com/problems/diameter-of-binary-tree/) | Binary tree version |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Sum of Distances in Tree (LeetCode 834)](https://leetcode.com/problems/sum-of-distances-in-tree/) | Rerooting technique for sum queries |

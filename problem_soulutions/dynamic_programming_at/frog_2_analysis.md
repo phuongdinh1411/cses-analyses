@@ -213,38 +213,6 @@ h = list(map(int, input().split()))
 print(solve_optimal(n, k, h))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> h(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i];
-    }
-
-    vector<long long> dp(n, LLONG_MAX);
-    dp[0] = 0;
-
-    for (int i = 1; i < n; i++) {
-        for (int j = 1; j <= min(k, i); j++) {
-            dp[i] = min(dp[i], dp[i - j] + abs(h[i] - h[i - j]));
-        }
-    }
-
-    cout << dp[n - 1] << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -329,18 +297,21 @@ dp[0] = 0  # 0-indexed throughout
 ## Related Problems
 
 ### Easier (Do First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Frog 1 (AtCoder DP-A)](https://atcoder.jp/contests/dp/tasks/dp_a) | Same problem with K=2 |
 | [Min Cost Climbing Stairs (LC 746)](https://leetcode.com/problems/min-cost-climbing-stairs/) | Similar 1D DP structure |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [House Robber (LC 198)](https://leetcode.com/problems/house-robber/) | Can't take adjacent, maximize |
 | [Jump Game II (LC 45)](https://leetcode.com/problems/jump-game-ii/) | Minimize jumps, not cost |
 
 ### Harder (Do After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Frog 3 (AtCoder DP-Z)](https://atcoder.jp/contests/dp/tasks/dp_z) | Convex hull trick optimization |

@@ -122,22 +122,6 @@ def count_subarrays_brute(n, x, arr):
     return count
 ```
 
-```cpp
-// C++ Brute Force
-long long countSubarraysBrute(int n, long long x, vector<long long>& arr) {
-    long long count = 0;
-    for (int i = 0; i < n; i++) {
-        long long sum = 0;
-        for (int j = i; j < n; j++) {
-            sum += arr[j];
-            if (sum == x) count++;
-            else if (sum > x) break;
-        }
-    }
-    return count;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -272,47 +256,6 @@ if __name__ == "__main__":
     print(count_subarrays(n, x, arr))
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    long long count = 0;
-    long long current_sum = 0;
-    int left = 0;
-
-    for (int right = 0; right < n; right++) {
-        current_sum += arr[right];
-
-        // Shrink window while sum exceeds target
-        while (current_sum > x && left <= right) {
-            current_sum -= arr[left];
-            left++;
-        }
-
-        // Check if current window matches target
-        if (current_sum == x) {
-            count++;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -336,14 +279,6 @@ int main() {
 **Fix:** Verify constraint says "positive integers" before using two pointers.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG
-int current_sum = 0;  // Can overflow!
-
-// CORRECT
-long long current_sum = 0;  // Safe for sum up to 2*10^5 * 10^9
-```
 
 **Problem:** Sum can reach 2*10^14, exceeding `int` range.
 **Fix:** Use `long long` for sum and count in C++.

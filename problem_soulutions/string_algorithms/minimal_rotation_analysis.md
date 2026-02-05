@@ -121,27 +121,6 @@ def solve_brute_force(s: str) -> str:
     return min_rotation
 ```
 
-```cpp
-// C++ Brute Force
-#include <string>
-#include <algorithm>
-using namespace std;
-
-string solveBruteForce(const string& s) {
-    int n = s.length();
-    string minRotation = s;
-
-    for (int i = 0; i < n; i++) {
-        string rotation = s.substr(i) + s.substr(0, i);
-        if (rotation < minRotation) {
-            minRotation = rotation;
-        }
-    }
-
-    return minRotation;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -291,63 +270,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-```cpp
-#include <iostream>
-#include <string>
-using namespace std;
-
-/**
- * Booth's Algorithm for minimal rotation.
- *
- * Time: O(n)
- * Space: O(n) for doubled string
- */
-string solveOptimal(const string& s) {
-    int n = s.length();
-    if (n == 0) return s;
-
-    string t = s + s;  // Doubled string
-
-    int i = 0;  // First candidate position
-    int j = 1;  // Second candidate position
-    int k = 0;  // Number of matching characters
-
-    while (i < n && j < n && k < n) {
-        char a = t[i + k];
-        char b = t[j + k];
-
-        if (a == b) {
-            k++;
-        } else if (a < b) {
-            // Rotation at i is better
-            j = j + k + 1;
-            if (j == i) j++;
-            k = 0;
-        } else {
-            // Rotation at j is better
-            i = i + k + 1;
-            if (i == j) i++;
-            k = 0;
-        }
-    }
-
-    // The smaller index is the answer
-    int start = min(i, j);
-    return s.substr(start) + s.substr(0, start);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    cout << solveOptimal(s) << "\n";
-
-    return 0;
-}
 ```
 
 ### Complexity

@@ -314,73 +314,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class SegmentTree {
-private:
-    int n;
-    vector<long long> tree;
-
-public:
-    SegmentTree(int size) {
-        n = 1;
-        while (n < size) n *= 2;
-        tree.assign(2 * n, 0);
-    }
-
-    void update(int pos, long long value) {
-        pos += n;
-        tree[pos] = max(tree[pos], value);
-        while (pos > 1) {
-            pos /= 2;
-            tree[pos] = max(tree[2 * pos], tree[2 * pos + 1]);
-        }
-    }
-
-    long long query(int left, int right) {
-        long long result = 0;
-        left += n;
-        right += n;
-        while (left < right) {
-            if (left & 1) result = max(result, tree[left++]);
-            if (right & 1) result = max(result, tree[--right]);
-            left /= 2;
-            right /= 2;
-        }
-        return result;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> h(n), a(n);
-    for (int i = 0; i < n; i++) cin >> h[i];
-    for (int i = 0; i < n; i++) cin >> a[i];
-
-    SegmentTree seg(n + 1);
-    long long answer = 0;
-
-    for (int i = 0; i < n; i++) {
-        long long best_prev = seg.query(0, h[i]);
-        long long current = a[i] + best_prev;
-        seg.update(h[i], current);
-        answer = max(answer, current);
-    }
-
-    cout << answer << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -406,14 +339,6 @@ best_prev = seg_tree.query(0, h[i])  # range [0, h[i]) excludes h[i]
 **Fix:** Query range [0, h[i]) to get strictly smaller heights.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - may overflow with int
-int current = a[i] + best_prev;
-
-// CORRECT - use long long for sums
-long long current = a[i] + best_prev;
-```
 
 **Problem:** Beauty values up to 10^9 and N up to 2x10^5 means sum can reach 2x10^14.
 **Fix:** Use 64-bit integers (long long in C++).
@@ -469,18 +394,21 @@ answer = max(answer, current)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Increasing Subsequence](https://atcoder.jp/contests/dp/tasks/dp_q) | Standard LIS, foundational concept |
 | [Range Maximum Query](https://cses.fi/problemset/task/1647) | Practice segment tree basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Increasing Subsequence](https://cses.fi/problemset/task/1145) | Count LIS instead of weighted sum |
 | [Tower of Hanoi](https://atcoder.jp/contests/dp/tasks/dp_x) | Similar DP optimization technique |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LIS with Multiple Constraints](https://codeforces.com/problemset/problem/1682/D) | 2D constraints |

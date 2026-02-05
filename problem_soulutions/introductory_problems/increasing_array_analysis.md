@@ -235,40 +235,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    long long moves = 0;
-    long long max_so_far = arr[0];
-
-    for (int i = 1; i < n; i++) {
-        if (arr[i] < max_so_far) {
-            moves += max_so_far - arr[i];
-        } else {
-            max_so_far = arr[i];
-        }
-    }
-
-    cout << moves << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -281,14 +247,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - int overflow when summing large differences
-int moves = 0;  // May overflow!
-
-// CORRECT - use long long
-long long moves = 0;
-```
 
 **Problem:** With n up to 2x10^5 and values up to 10^9, the total moves can exceed 2^31-1.
 **Fix:** Use `long long` in C++ or Python's arbitrary precision integers.
@@ -366,18 +324,21 @@ max_so_far = max(max_so_far, arr[i])
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic iteration and simulation |
 | [Missing Number](https://cses.fi/problemset/task/1083) | Simple array processing |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Permutations](https://cses.fi/problemset/task/1070) | Greedy construction |
 | [Non-decreasing Array (LeetCode 665)](https://leetcode.com/problems/non-decreasing-array/) | At most one modification allowed |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimum Moves to Equal Array Elements (LC 453)](https://leetcode.com/problems/minimum-moves-to-equal-array-elements/) | Different operation model |

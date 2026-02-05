@@ -176,49 +176,6 @@ def solve():
 solve()
 ```
 
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, k;
-    cin >> n >> m >> k;
-
-    vector<int> applicants(n), apartments(m);
-    for (int& x : applicants) cin >> x;
-    for (int& x : apartments) cin >> x;
-
-    sort(applicants.begin(), applicants.end());
-    sort(apartments.begin(), apartments.end());
-
-    int count = 0;
-    int i = 0, j = 0;
-
-    while (i < n && j < m) {
-        if (apartments[j] < applicants[i] - k) {
-            // Apartment too small
-            j++;
-        } else if (apartments[j] > applicants[i] + k) {
-            // Apartment too big
-            i++;
-        } else {
-            // Match found
-            count++;
-            i++;
-            j++;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 | Mistake | Why It Fails | Fix |

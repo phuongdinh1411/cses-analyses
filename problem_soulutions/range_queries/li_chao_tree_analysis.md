@@ -286,133 +286,16 @@ if __name__ == "__main__":
 
 ---
 
-## Solution: C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class LiChaoTree {
-private:
-    struct Line {
-        long long m, b;  // y = mx + b
-        long long eval(long long x) const { return m * x + b; }
-    };
-
-    static const long long INF = 1e18;
-    int lo, hi;
-    vector<Line> tree;
-    vector<bool> has_line;
-
-    void insert(int node, int l, int r, Line new_line) {
-        if (l > r) return;
-
-        int mid = l + (r - l) / 2;
-
-        if (!has_line[node]) {
-            tree[node] = new_line;
-            has_line[node] = true;
-            return;
-        }
-
-        bool new_better_mid = new_line.eval(mid) < tree[node].eval(mid);
-        bool new_better_lo = new_line.eval(l) < tree[node].eval(l);
-
-        if (new_better_mid) swap(tree[node], new_line);
-
-        if (l == r) return;
-
-        // After swap, new_line is the loser at mid
-        // Push loser to the side where it might win
-        if (new_better_lo != new_better_mid) {
-            insert(2 * node, l, mid, new_line);
-        } else {
-            insert(2 * node + 1, mid + 1, r, new_line);
-        }
-    }
-
-    long long query(int node, int l, int r, long long x) {
-        if (l > r || !has_line[node]) return INF;
-
-        int mid = l + (r - l) / 2;
-        long long cur = tree[node].eval(x);
-
-        if (l == r) return cur;
-
-        if (x <= mid) {
-            return min(cur, query(2 * node, l, mid, x));
-        } else {
-            return min(cur, query(2 * node + 1, mid + 1, r, x));
-        }
-    }
-
-public:
-    LiChaoTree(int lo, int hi) : lo(lo), hi(hi) {
-        int size = 4 * (hi - lo + 2);
-        tree.resize(size);
-        has_line.resize(size, false);
-    }
-
-    void insert(long long m, long long b) {
-        insert(1, lo, hi, {m, b});
-    }
-
-    long long query(long long x) {
-        return query(1, lo, hi, x);
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    LiChaoTree tree(0, 1000000);
-
-    tree.insert(2, 1);     // y = 2x + 1
-    tree.insert(-1, 10);   // y = -x + 10
-    tree.insert(0, 5);     // y = 5
-
-    cout << tree.query(0) << "\n";   // Query at x=0
-    cout << tree.query(5) << "\n";   // Query at x=5
-    cout << tree.query(10) << "\n";  // Query at x=10
-
-    return 0;
-}
-```
-
 ---
 
 ## Common Mistakes
 
 ### Mistake 1: Using Wrong Infinity Value
 
-```cpp
-// WRONG: Integer overflow when evaluating
-const int INF = 1e9;
-long long eval = m * x + b;  // Can overflow if m, x are large
-
-// CORRECT: Use appropriate infinity
-const long long INF = 1e18;
-```
-
 **Problem:** When m and x are both up to 10^6, their product exceeds int range.
 **Fix:** Use `long long` for all line evaluations and a sufficiently large INF.
 
 ### Mistake 2: Wrong Recursion Direction
-
-```cpp
-// WRONG: Always going left when loser is better at lo
-if (new_better_at_lo) {
-    insert(left, new_line);  // Wrong logic
-}
-
-// CORRECT: Consider relationship between mid and lo comparisons
-if (new_better_at_lo != new_better_at_mid) {
-    insert(left, new_line);
-} else {
-    insert(right, new_line);
-}
-```
 
 **Problem:** The loser should go to the child where it has a chance to win.
 **Fix:** Use XOR logic: if results differ at lo and mid, go left; else go right.
@@ -485,18 +368,21 @@ if cur_line is None:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Dynamic Range Sum (CSES)](https://cses.fi/problemset/task/1648) | Segment tree basics |
 | [Salary Queries (CSES)](https://cses.fi/problemset/task/1144) | Dynamic queries on ranges |
 
 ### Direct Applications
+
 | Problem | Key Insight |
 |---------|-------------|
 | [Codeforces - Kalila and Dimna](https://codeforces.com/contest/319/problem/C) | Classic DP + CHT |
 | [AtCoder - Walk (DP Contest)](https://atcoder.jp/contests/dp/tasks/dp_r) | Linear function optimization |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - The Bakery](https://codeforces.com/contest/834/problem/D) | Divide and conquer DP optimization |

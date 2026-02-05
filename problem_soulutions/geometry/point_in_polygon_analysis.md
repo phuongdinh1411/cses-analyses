@@ -227,81 +227,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> Point;
-
-ll cross_product(Point o, Point a, Point b) {
-    return (a.first - o.first) * (b.second - o.second)
-         - (a.second - o.second) * (b.first - o.first);
-}
-
-bool on_segment(Point p, Point a, Point b) {
-    if (cross_product(a, b, p) != 0) return false;
-    return min(a.first, b.first) <= p.first && p.first <= max(a.first, b.first)
-        && min(a.second, b.second) <= p.second && p.second <= max(a.second, b.second);
-}
-
-string point_in_polygon(vector<Point>& polygon, Point p) {
-    int n = polygon.size();
-    ll px = p.first, py = p.second;
-
-    // Check if on boundary
-    for (int i = 0; i < n; i++) {
-        if (on_segment(p, polygon[i], polygon[(i + 1) % n])) {
-            return "BOUNDARY";
-        }
-    }
-
-    // Ray casting
-    int crossings = 0;
-    for (int i = 0; i < n; i++) {
-        ll x1 = polygon[i].first, y1 = polygon[i].second;
-        ll x2 = polygon[(i + 1) % n].first, y2 = polygon[(i + 1) % n].second;
-
-        if (y1 > y2) {
-            swap(x1, x2);
-            swap(y1, y2);
-        }
-
-        if (y1 <= py && py < y2) {
-            // Check if intersection is to the right
-            if ((x2 - x1) * (py - y1) > (px - x1) * (y2 - y1)) {
-                crossings++;
-            }
-        }
-    }
-
-    return (crossings % 2 == 1) ? "INSIDE" : "OUTSIDE";
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<Point> polygon(n);
-    for (int i = 0; i < n; i++) {
-        cin >> polygon[i].first >> polygon[i].second;
-    }
-
-    for (int i = 0; i < m; i++) {
-        Point p;
-        cin >> p.first >> p.second;
-        cout << point_in_polygon(polygon, p) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -396,18 +321,21 @@ return "INSIDE" if crossings % 2 == 1 else "OUTSIDE"
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Understand segment intersection basics |
 | [Point Location Test](https://cses.fi/problemset/task/2189) | Learn cross product for left/right test |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Polygon Area](https://cses.fi/problemset/task/2191) | Uses cross products, similar polygon traversal |
 | [Convex Hull](https://cses.fi/problemset/task/2195) | Related geometry concepts |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem, boundary counting |

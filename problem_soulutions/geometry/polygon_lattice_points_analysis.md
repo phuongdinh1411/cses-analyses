@@ -217,55 +217,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long gcd(long long a, long long b) {
-    return b == 0 ? a : gcd(b, a % b);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<pair<long long, long long>> v(n);
-    for (int i = 0; i < n; i++) {
-        cin >> v[i].first >> v[i].second;
-    }
-
-    // Calculate 2*Area using Shoelace formula
-    long long area2 = 0;
-    for (int i = 0; i < n; i++) {
-        int j = (i + 1) % n;
-        area2 += v[i].first * v[j].second;
-        area2 -= v[j].first * v[i].second;
-    }
-    area2 = abs(area2);
-
-    // Count boundary lattice points
-    long long boundary = 0;
-    for (int i = 0; i < n; i++) {
-        int j = (i + 1) % n;
-        long long dx = abs(v[j].first - v[i].first);
-        long long dy = abs(v[j].second - v[i].second);
-        boundary += gcd(dx, dy);
-    }
-
-    // Pick's theorem: 2I = 2A - B + 2
-    long long interior = (area2 - boundary + 2) / 2;
-
-    cout << interior << " " << boundary << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -311,19 +262,8 @@ boundary += gcd(dx, dy)  # Automatically handles vertex sharing
 
 ### Mistake 3: Integer Overflow
 
-```cpp
-// WRONG - may overflow with 32-bit integers
-int area2 = 0;
-area2 += v[i].first * v[j].second;  // Can exceed int range!
-```
-
 **Problem:** With coordinates up to 10^9, products can reach 10^18.
 **Fix:** Use `long long` for all calculations.
-
-```cpp
-// CORRECT
-long long area2 = 0;
-```
 
 ### Mistake 4: Forgetting Absolute Value
 
@@ -373,6 +313,7 @@ interior = (area2 - boundary + 2) // 2  # Wrong result!
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Link | Relationship |
 |---------|------|--------------|
 | Polygon Area | [https://cses.fi/problemset/task/2191](https://cses.fi/problemset/task/2191) | Uses Shoelace formula |

@@ -220,52 +220,6 @@ Step 3: Add position 2
   Output: 3
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int x, n;
-    cin >> x >> n;
-
-    set<int> positions;          // Traffic light positions
-    multiset<int> segments;      // Segment lengths (allows duplicates)
-
-    // Initialize with endpoints
-    positions.insert(0);
-    positions.insert(x);
-    segments.insert(x);
-
-    while (n--) {
-        int p;
-        cin >> p;
-
-        // Find neighbors using set iterators
-        auto it = positions.upper_bound(p);  // First element > p
-        int right = *it;
-        int left = *prev(it);                // Element just before
-
-        // Remove old segment, add two new segments
-        segments.erase(segments.find(right - left));  // Remove ONE instance
-        segments.insert(p - left);
-        segments.insert(right - p);
-
-        // Add new position
-        positions.insert(p);
-
-        // Maximum is the last element
-        cout << *segments.rbegin() << " \n"[n == 0];
-    }
-
-    return 0;
-}
-```
-
 ### Code (Python)
 
 Python does not have a built-in multiset. We use `sortedcontainers.SortedList` for an efficient implementation:
@@ -353,41 +307,15 @@ if __name__ == "__main__":
 
 ### Mistake 1: Using set instead of multiset for segments
 
-```cpp
-// WRONG - set does not allow duplicates
-set<int> segments;
-segments.insert(3);
-segments.insert(3);  // Second 3 is ignored!
-segments.erase(3);   // Now segments is empty, but should have one 3 left
-```
-
 **Problem:** Multiple segments can have the same length. Set ignores duplicates.
 **Fix:** Use `multiset<int>` which allows duplicate values.
 
 ### Mistake 2: Using erase(value) instead of erase(find(value))
 
-```cpp
-// WRONG - erases ALL instances of the value
-segments.erase(right - left);  // If there are multiple segments of this length, all are removed!
-
-// CORRECT - erases only ONE instance
-segments.erase(segments.find(right - left));
-```
-
 **Problem:** `multiset::erase(value)` removes all elements equal to value.
 **Fix:** Use `multiset::erase(multiset::find(value))` to remove exactly one instance.
 
 ### Mistake 3: Wrong neighbor finding logic
-
-```cpp
-// WRONG - lower_bound gives element >= p, but p already exists check needed
-auto it = positions.lower_bound(p);
-
-// CORRECT - upper_bound gives element > p (guaranteed different)
-auto it = positions.upper_bound(p);
-int right = *it;
-int left = *prev(it);
-```
 
 **Problem:** If p already exists, lower_bound returns p itself.
 **Fix:** Use `upper_bound` which always returns the first element strictly greater than p.

@@ -235,64 +235,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-const int MAX_N = 1e6 + 1;
-
-long long fact[MAX_N], inv_fact[MAX_N];
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp & 1) result = result * base % mod;
-        base = base * base % mod;
-        exp >>= 1;
-    }
-    return result;
-}
-
-void precompute() {
-    fact[0] = 1;
-    for (int i = 1; i < MAX_N; i++) {
-        fact[i] = fact[i-1] * i % MOD;
-    }
-
-    inv_fact[MAX_N - 1] = power(fact[MAX_N - 1], MOD - 2, MOD);
-    for (int i = MAX_N - 2; i >= 0; i--) {
-        inv_fact[i] = inv_fact[i + 1] * (i + 1) % MOD;
-    }
-}
-
-long long nCr(int n, int k) {
-    if (k > n || k < 0) return 0;
-    return fact[n] * inv_fact[k] % MOD * inv_fact[n - k] % MOD;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    precompute();
-
-    int q;
-    cin >> q;
-
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << nCr(a, b) << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -305,14 +247,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflow before mod
-long long result = fact[n] * inv_fact[k] * inv_fact[n-k] % MOD;
-
-// CORRECT - mod after each multiplication
-long long result = fact[n] * inv_fact[k] % MOD * inv_fact[n-k] % MOD;
-```
 
 **Problem:** Multiplying three large numbers overflows even `long long`.
 **Fix:** Apply modulo after each multiplication.
@@ -396,12 +330,14 @@ for i in range(MAX_N-2, -1, -1):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Exponentiation](https://cses.fi/problemset/task/1095) | Learn fast power (needed for inverse) |
 | [Exponentiation II](https://cses.fi/problemset/task/1712) | Modular exponentiation practice |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Creating Strings II](https://cses.fi/problemset/task/1715) | Multinomial coefficients |
@@ -409,6 +345,7 @@ for i in range(MAX_N-2, -1, -1):
 | [Bracket Sequences I](https://cses.fi/problemset/task/2064) | Catalan numbers using combinations |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Bracket Sequences II](https://cses.fi/problemset/task/2187) | Constrained Catalan |

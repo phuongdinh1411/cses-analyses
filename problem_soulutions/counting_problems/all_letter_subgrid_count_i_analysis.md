@@ -131,50 +131,6 @@ def count_all_letter_subgrids(n, m, grid):
     return result
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int countAllLetterSubgrids(int n, int m, vector<string>& grid) {
-    // Find all unique letters
-    set<char> allLetters;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            allLetters.insert(grid[i][j]);
-        }
-    }
-    int targetCount = allLetters.size();
-
-    int result = 0;
-
-    // Enumerate all subgrids
-    for (int top = 0; top < n; top++) {
-        for (int left = 0; left < m; left++) {
-            for (int bottom = top; bottom < n; bottom++) {
-                for (int right = left; right < m; right++) {
-                    // Collect letters in subgrid
-                    set<char> letters;
-                    for (int i = top; i <= bottom; i++) {
-                        for (int j = left; j <= right; j++) {
-                            letters.insert(grid[i][j]);
-                        }
-                    }
-
-                    if (letters.size() == targetCount) {
-                        result = (result + 1) % MOD;
-                    }
-                }
-            }
-        }
-    }
-
-    return result;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -296,65 +252,6 @@ def count_all_letter_subgrids_optimized(n, m, grid):
     return result
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int countAllLetterSubgridsOptimized(int n, int m, vector<string>& grid) {
-    // Find all unique letters
-    set<char> allLetters;
-    for (int i = 0; i < n; i++) {
-        for (char c : grid[i]) {
-            allLetters.insert(c);
-        }
-    }
-    int targetCount = allLetters.size();
-
-    int result = 0;
-
-    // Fix top and bottom rows
-    for (int top = 0; top < n; top++) {
-        for (int bottom = top; bottom < n; bottom++) {
-            // Slide window across columns
-            for (int left = 0; left < m; left++) {
-                set<char> letters;
-                for (int right = left; right < m; right++) {
-                    // Add only the new column
-                    for (int i = top; i <= bottom; i++) {
-                        letters.insert(grid[i][right]);
-                    }
-
-                    if ((int)letters.size() == targetCount) {
-                        result = (result + 1) % MOD;
-                    }
-                }
-            }
-        }
-    }
-
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    cout << countAllLetterSubgridsOptimized(n, m, grid) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -440,17 +337,20 @@ if len(letters) == target_count:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subarray Distinct Values](https://cses.fi/problemset/task/2428) | 1D version of distinct counting |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Grid DP with bitmask |
 | [Counting Grids](https://cses.fi/problemset/task/2210) | Different grid counting variant |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | 2D Range Distinct Query | Persistent data structures |

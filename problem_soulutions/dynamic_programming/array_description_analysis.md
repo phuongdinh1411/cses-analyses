@@ -110,6 +110,7 @@ answer = sum(dp[n-1][v]) for v from 1 to m
 **Input:** n=4, m=3, array=[1, 0, 2, 0]
 
 ### Initialization (i=0, array[0]=1)
+
 | v | dp[0][v] |
 |---|----------|
 | 1 | 1 |
@@ -183,68 +184,6 @@ def array_description(n: int, m: int, array: list) -> int:
 if __name__ == "__main__":
     print(array_description(3, 2, [0, 1, 0]))  # Output: 4
     print(array_description(4, 3, [1, 0, 2, 0]))  # Output: 6
-```
-
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // dp[v] = ways to reach current position with value v
-    // Use m+2 for boundary handling (indices 0 and m+1 stay 0)
-    vector<long long> dp(m + 2, 0);
-
-    // Base case
-    if (arr[0] == 0) {
-        for (int v = 1; v <= m; v++) {
-            dp[v] = 1;
-        }
-    } else {
-        dp[arr[0]] = 1;
-    }
-
-    // Fill remaining positions
-    for (int i = 1; i < n; i++) {
-        vector<long long> new_dp(m + 2, 0);
-
-        if (arr[i] == 0) {
-            // Unknown: try all values
-            for (int v = 1; v <= m; v++) {
-                new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD;
-            }
-        } else {
-            // Known: only one value allowed
-            int v = arr[i];
-            new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD;
-        }
-
-        dp = move(new_dp);
-    }
-
-    // Sum all ways
-    long long ans = 0;
-    for (int v = 1; v <= m; v++) {
-        ans = (ans + dp[v]) % MOD;
-    }
-
-    cout << ans << "\n";
-    return 0;
-}
 ```
 
 ## Space Optimization

@@ -135,6 +135,7 @@ Satisfiability Check:
 
 SCC Analysis:
 +-------------------+     +-------------------+
+
 |    SCC 1          |     |    SCC 2          |
 |  x1, x3, NOT_x2   |     | NOT_x1, NOT_x3, x2|
 +-------------------+     +-------------------+
@@ -377,113 +378,6 @@ def solve():
     print(' '.join(result))
 
 solve()
-```
-
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> graph[MAXN], reverse_graph[MAXN];
-int scc_id[MAXN];
-bool visited[MAXN];
-vector<int> order;
-int n, m;
-
-// Get positive literal node index
-int pos(int i) { return i; }
-
-// Get negative literal node index
-int neg(int i) { return n + i; }
-
-// Get negation of a node
-int get_neg(int node) {
-    return (node <= n) ? node + n : node - n;
-}
-
-void dfs1(int node) {
-    visited[node] = true;
-    for (int neighbor : graph[node]) {
-        if (!visited[neighbor]) {
-            dfs1(neighbor);
-        }
-    }
-    order.push_back(node);
-}
-
-void dfs2(int node, int scc) {
-    visited[node] = true;
-    scc_id[node] = scc;
-    for (int neighbor : reverse_graph[node]) {
-        if (!visited[neighbor]) {
-            dfs2(neighbor, scc);
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < m; i++) {
-        char sign1, sign2;
-        int var1, var2;
-        cin >> sign1 >> var1 >> sign2 >> var2;
-
-        // Get node indices for literals
-        int a = (sign1 == '+') ? pos(var1) : neg(var1);
-        int b = (sign2 == '+') ? pos(var2) : neg(var2);
-        int not_a = get_neg(a);
-        int not_b = get_neg(b);
-
-        // Add implication edges
-        graph[not_a].push_back(b);
-        graph[not_b].push_back(a);
-        reverse_graph[b].push_back(not_a);
-        reverse_graph[a].push_back(not_b);
-    }
-
-    // First DFS pass
-    memset(visited, false, sizeof(visited));
-    for (int i = 1; i <= 2 * n; i++) {
-        if (!visited[i]) {
-            dfs1(i);
-        }
-    }
-
-    // Second DFS pass (reverse order, transpose graph)
-    memset(visited, false, sizeof(visited));
-    int current_scc = 0;
-    for (int i = order.size() - 1; i >= 0; i--) {
-        if (!visited[order[i]]) {
-            dfs2(order[i], current_scc);
-            current_scc++;
-        }
-    }
-
-    // Check satisfiability and output
-    for (int i = 1; i <= n; i++) {
-        if (scc_id[pos(i)] == scc_id[neg(i)]) {
-            cout << "IMPOSSIBLE\n";
-            return 0;
-        }
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (scc_id[pos(i)] > scc_id[neg(i)]) {
-            cout << "+ ";
-        } else {
-            cout << "- ";
-        }
-    }
-    cout << "\n";
-
-    return 0;
-}
 ```
 
 ## Common Mistakes

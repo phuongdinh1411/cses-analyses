@@ -143,6 +143,7 @@ Problem: 4 rooms, 5 tunnels
 
     +3      -1
 1 -----> 2 -----> 4
+
 |                 ^
 | -2              | +7
 v                 |
@@ -335,72 +336,7 @@ if __name__ == "__main__":
     print(high_score(n, m, edges))
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-const ll NEG_INF = LLONG_MIN / 2;  // Avoid overflow
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<tuple<int, int, ll>> edges(m);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        ll x;
-        cin >> a >> b >> x;
-        edges[i] = {a, b, x};
-    }
-
-    // Initialize distances
-    vector<ll> dist(n + 1, NEG_INF);
-    dist[1] = 0;
-
-    // Bellman-Ford for longest path (n-1 iterations)
-    for (int i = 0; i < n - 1; i++) {
-        for (auto& [a, b, x] : edges) {
-            if (dist[a] != NEG_INF && dist[a] + x > dist[b]) {
-                dist[b] = dist[a] + x;
-            }
-        }
-    }
-
-    // Detect positive cycles (n more iterations)
-    // Mark nodes that can be infinitely improved
-    vector<bool> can_improve(n + 1, false);
-
-    for (int i = 0; i < n; i++) {
-        for (auto& [a, b, x] : edges) {
-            if (dist[a] != NEG_INF && dist[a] + x > dist[b]) {
-                dist[b] = dist[a] + x;
-                can_improve[b] = true;
-            }
-            // Propagate infinite status
-            if (can_improve[a]) {
-                can_improve[b] = true;
-            }
-        }
-    }
-
-    // Check if node n can be infinitely improved
-    if (can_improve[n]) {
-        cout << -1 << "\n";
-    } else {
-        cout << dist[n] << "\n";
-    }
-
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Operation | Time | Space |
 |-----------|------|-------|

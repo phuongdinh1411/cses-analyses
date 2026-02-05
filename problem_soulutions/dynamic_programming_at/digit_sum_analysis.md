@@ -236,57 +236,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-string K;
-int D, n;
-map<tuple<int, int, int>, long long> memo;
-
-long long dp(int pos, int tight, int sum_mod) {
-    // Base case: all digits processed
-    if (pos == n) {
-        return (sum_mod == 0) ? 1 : 0;
-    }
-
-    auto state = make_tuple(pos, tight, sum_mod);
-    if (memo.count(state)) {
-        return memo[state];
-    }
-
-    // Determine digit range
-    int limit = tight ? (K[pos] - '0') : 9;
-
-    long long result = 0;
-    for (int d = 0; d <= limit; d++) {
-        int new_tight = tight && (d == limit);
-        int new_sum = (sum_mod + d) % D;
-        result = (result + dp(pos + 1, new_tight, new_sum)) % MOD;
-    }
-
-    memo[state] = result;
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> K >> D;
-    n = K.size();
-
-    // dp(0, 1, 0) counts 0 to K; subtract 1 to exclude 0
-    long long ans = (dp(0, 1, 0) - 1 + MOD) % MOD;
-    cout << ans << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -374,11 +323,13 @@ ans = (dp(0, True, 0) - 1 + MOD) % MOD  # Always positive
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [AtCoder DP Contest - Problem A (Frog)](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic DP introduction |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [LeetCode 233 - Number of Digit One](https://leetcode.com/problems/number-of-digit-one/) | Count specific digit occurrences |
@@ -386,6 +337,7 @@ ans = (dp(0, True, 0) - 1 + MOD) % MOD  # Always positive
 | [CSES - Counting Numbers](https://cses.fi/problemset/task/2220) | Count in range [a, b] with digit constraint |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 902 - Numbers At Most N Given Digit Set](https://leetcode.com/problems/numbers-at-most-n-given-digit-set/) | Restricted digit choices |

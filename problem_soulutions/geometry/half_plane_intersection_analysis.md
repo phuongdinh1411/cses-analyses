@@ -195,73 +195,6 @@ def half_plane_intersection(half_planes):
 
 ---
 
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const double EPS = 1e-9;
-
-struct Point {
-    double x, y;
-    Point(double x = 0, double y = 0) : x(x), y(y) {}
-    Point operator-(const Point& p) const { return {x - p.x, y - p.y}; }
-    Point operator+(const Point& p) const { return {x + p.x, y + p.y}; }
-    Point operator*(double t) const { return {x * t, y * t}; }
-    double cross(const Point& p) const { return x * p.y - y * p.x; }
-};
-
-struct HalfPlane {
-    Point p, d;
-    double angle;
-    HalfPlane() {}
-    HalfPlane(Point a, Point b) : p(a), d(b - a) { angle = atan2(d.y, d.x); }
-    bool inside(const Point& pt) const { return d.cross(pt - p) > -EPS; }
-    bool operator<(const HalfPlane& h) const { return angle < h.angle; }
-};
-
-Point intersection(const HalfPlane& h1, const HalfPlane& h2) {
-    double t = (h2.p - h1.p).cross(h2.d) / h1.d.cross(h2.d);
-    return h1.p + h1.d * t;
-}
-
-vector<Point> halfPlaneIntersection(vector<HalfPlane>& hp) {
-    sort(hp.begin(), hp.end());
-
-    vector<HalfPlane> unique;
-    for (auto& h : hp) {
-        if (unique.empty() || abs(h.angle - unique.back().angle) > EPS)
-            unique.push_back(h);
-        else if (h.d.cross(unique.back().p - h.p) < 0)
-            unique.back() = h;
-    }
-    hp = unique;
-    if (hp.size() < 3) return {};
-
-    deque<HalfPlane> dq;
-    for (auto& h : hp) {
-        while (dq.size() >= 2 && !h.inside(intersection(dq[dq.size()-1], dq[dq.size()-2])))
-            dq.pop_back();
-        while (dq.size() >= 2 && !h.inside(intersection(dq[0], dq[1])))
-            dq.pop_front();
-        dq.push_back(h);
-    }
-
-    while (dq.size() >= 3 && !dq[0].inside(intersection(dq[dq.size()-1], dq[dq.size()-2])))
-        dq.pop_back();
-    while (dq.size() >= 3 && !dq[dq.size()-1].inside(intersection(dq[0], dq[1])))
-        dq.pop_front();
-
-    if (dq.size() < 3) return {};
-
-    vector<Point> result;
-    for (size_t i = 0; i < dq.size(); i++)
-        result.push_back(intersection(dq[i], dq[(i + 1) % dq.size()]));
-    return result;
-}
-```
-
 ---
 
 ## Common Mistakes
@@ -335,18 +268,21 @@ This provides an alternative O(n log n) solution using any convex hull algorithm
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Point Location Test (CSES)](https://cses.fi/problemset/task/2189) | Which side of line |
 | [Convex Hull (CSES)](https://cses.fi/problemset/task/2195) | Dual problem concept |
 
 ### Direct Applications
+
 | Problem | Connection |
 |---------|------------|
 | [Polygon Area (CSES)](https://cses.fi/problemset/task/2191) | Polygon computations |
 | [Codeforces - Convex Polygon](https://codeforces.com/contest/166/problem/B) | Half-plane from polygon |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - Circles](https://codeforces.com/contest/2/problem/C) | Feasibility region |

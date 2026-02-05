@@ -348,44 +348,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    multiset<int> tower_tops;
-
-    for (int i = 0; i < n; i++) {
-        int cube;
-        cin >> cube;
-
-        // Find smallest top > cube
-        auto it = tower_tops.upper_bound(cube);
-
-        if (it != tower_tops.end()) {
-            // Place cube on this tower
-            tower_tops.erase(it);
-            tower_tops.insert(cube);
-        } else {
-            // Create new tower
-            tower_tops.insert(cube);
-        }
-    }
-
-    cout << tower_tops.size() << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -398,14 +360,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Using lower_bound instead of upper_bound
-
-```cpp
-// WRONG
-auto it = tower_tops.lower_bound(cube);
-
-// CORRECT
-auto it = tower_tops.upper_bound(cube);
-```
 
 **Problem:** `lower_bound` finds first element >= cube, but we need **strictly greater** (top > cube for valid placement).
 **Fix:** Use `upper_bound` which finds first element > cube.
@@ -424,15 +378,6 @@ pos = bisect.bisect_right(tower_tops, cube)
 **Fix:** Use `bisect_right` to skip past equal elements.
 
 ### Mistake 3: Not erasing before inserting in multiset
-
-```cpp
-// WRONG
-tower_tops.insert(cube);  // Forgot to erase old top!
-
-// CORRECT
-tower_tops.erase(it);
-tower_tops.insert(cube);
-```
 
 **Problem:** Inserting without erasing adds a new tower instead of updating existing one.
 **Fix:** Always erase the old top before inserting new top.
@@ -488,18 +433,21 @@ tower_tops.insert(cube);
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Increasing Subsequence (CSES)](https://cses.fi/problemset/task/1145) | Classic LIS with binary search |
 | [LIS (LeetCode 300)](https://leetcode.com/problems/longest-increasing-subsequence/) | Same technique, different framing |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Russian Doll Envelopes (LC 354)](https://leetcode.com/problems/russian-doll-envelopes/) | 2D version of LIS |
 | [Book Shop (CSES)](https://cses.fi/problemset/task/1158) | Knapsack but similar greedy thinking |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Increasing Subsequence (CSES)](https://cses.fi/problemset/task/1145) | Need to reconstruct the actual LIS |

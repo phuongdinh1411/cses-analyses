@@ -299,51 +299,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Hash map to count prefix sum frequencies
-    map<long long, long long> count_map;
-    count_map[0] = 1;  // Empty prefix (crucial!)
-
-    long long prefix_sum = 0;
-    long long count = 0;
-
-    for (int i = 0; i < n; i++) {
-        prefix_sum += arr[i];
-
-        // How many times have we seen (prefix_sum - x)?
-        long long complement = prefix_sum - x;
-        if (count_map.count(complement)) {
-            count += count_map[complement];
-        }
-
-        // Add current prefix sum to map
-        count_map[prefix_sum]++;
-    }
-
-    cout << count << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -470,18 +425,21 @@ def solve_sliding_window(n, x, arr):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sum concept |
 | [Two Sum](https://leetcode.com/problems/two-sum/) | Hash map for complement lookup |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarray Sums II (CSES 1661)](https://cses.fi/problemset/task/1661) | Allows negative numbers |
 | [Subarray Sum Equals K (LeetCode 560)](https://leetcode.com/problems/subarray-sum-equals-k/) | Same technique, different platform |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Divisibility (CSES 1662)](https://cses.fi/problemset/task/1662) | Counting based on modular arithmetic |

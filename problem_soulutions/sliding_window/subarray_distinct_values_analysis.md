@@ -258,50 +258,6 @@ def solve():
 solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    map<int, int> freq;
-    int left = 0;
-    long long count = 0;
-
-    for (int right = 0; right < n; right++) {
-        // Add arr[right] to window
-        freq[arr[right]]++;
-
-        // Shrink window while too many distinct values
-        while ((int)freq.size() > k) {
-            freq[arr[left]]--;
-            if (freq[arr[left]] == 0) {
-                freq.erase(arr[left]);
-            }
-            left++;
-        }
-
-        // Count valid subarrays ending at right
-        count += right - left + 1;
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -331,16 +287,6 @@ while distinct > k:
 **Fix:** Track `distinct` count explicitly when frequencies become 0.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - int may overflow
-int count = 0;
-count += right - left + 1;
-
-// CORRECT - Use long long
-long long count = 0;
-count += right - left + 1;
-```
 
 **Problem:** With n = 2*10^5, maximum count is n*(n+1)/2 which exceeds int range.
 **Fix:** Use `long long` in C++ or Python handles this automatically.

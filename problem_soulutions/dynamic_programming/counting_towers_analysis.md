@@ -67,6 +67,7 @@ Two configurations:
 
 Config 1: Split      Config 2: Merged
 +---+---+            +-------+
+
 | A | B |            |   A   |
 +---+---+            +-------+
 (two 1x1 blocks)     (one 1x2 block)
@@ -85,6 +86,7 @@ The crucial insight is recognizing that at any row, only TWO states matter:
 SPLIT STATE:                    MERGED STATE:
 Two independent towers          One unified tower
 +---+---+                       +-------+
+
 | A | B |  <- separate         |   A   |  <- connected
 +---+---+                       +-------+
 ```
@@ -277,6 +279,7 @@ dp[1][1] = 1    (one way: one horizontal 1x2 block)
 ```
 SPLIT (dp[1][0] = 1):        MERGED (dp[1][1] = 1):
 +---+---+                    +-------+
+
 | A | B |                    |   A   |
 +---+---+                    +-------+
 ```
@@ -313,8 +316,10 @@ MERGED configurations (3 total):
 
 6. From split     7. Extend       8. New horiz
 +-------+         +-------+       +-------+
+
 |       |         |   |   |       |       |
 +---+---+         +-------+       +-------+
+
 |   |   |         |       |       |       |
 +---+---+         +-------+       +-------+
 ```
@@ -349,44 +354,6 @@ def solve():
 
 if __name__ == "__main__":
     solve()
-```
-
-### C++ Solution (Optimized)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-const int MAXN = 1e6 + 1;
-
-long long dp[MAXN][2];
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    // Base case
-    dp[1][0] = 1;  // split
-    dp[1][1] = 1;  // merged
-
-    // Precompute
-    for (int i = 2; i < MAXN; i++) {
-        dp[i][0] = (4 * dp[i-1][0] + dp[i-1][1]) % MOD;
-        dp[i][1] = (dp[i-1][0] + 2 * dp[i-1][1]) % MOD;
-    }
-
-    int t;
-    cin >> t;
-
-    while (t--) {
-        int n;
-        cin >> n;
-        cout << (dp[n][0] + dp[n][1]) % MOD << "\n";
-    }
-
-    return 0;
-}
 ```
 
 ### Space-Optimized Version (O(1) Space per Query)

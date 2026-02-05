@@ -256,67 +256,6 @@ def solve():
 solve()
 ```
 
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    if (n == 1) {
-        cout << "01\n";
-        return 0;
-    }
-
-    int num_nodes = 1 << (n - 1);
-    int mask = num_nodes - 1;
-
-    // edge_used[node][bit] = whether edge (node -> node*2+bit) is used
-    vector<array<bool, 2>> edge_used(num_nodes, {false, false});
-
-    // Hierholzer's algorithm
-    vector<int> stack_vec, path;
-    stack_vec.push_back(0);
-
-    while (!stack_vec.empty()) {
-        int node = stack_vec.back();
-        if (!edge_used[node][0]) {
-            edge_used[node][0] = true;
-            stack_vec.push_back((node << 1) & mask);
-        } else if (!edge_used[node][1]) {
-            edge_used[node][1] = true;
-            stack_vec.push_back(((node << 1) | 1) & mask);
-        } else {
-            path.push_back(node);
-            stack_vec.pop_back();
-        }
-    }
-
-    reverse(path.begin(), path.end());
-
-    // Build result
-    string result;
-    // First node as (n-1)-bit string
-    for (int i = n - 2; i >= 0; i--) {
-        result += ((path[0] >> i) & 1) ? '1' : '0';
-    }
-
-    // Append edge bits
-    for (int i = 1; i < (int)path.size(); i++) {
-        result += (path[i] & 1) ? '1' : '0';
-    }
-
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ## Why This Works
 
 **Correctness Proof:**

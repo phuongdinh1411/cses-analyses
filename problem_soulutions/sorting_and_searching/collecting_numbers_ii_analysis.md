@@ -226,82 +226,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n, m;
-vector<int> arr;
-vector<int> pos;
-
-// Check if there's a break between value x and x+1
-int isBreak(int x) {
-    if (x < 1 || x >= n) return 0;
-    return pos[x] > pos[x + 1] ? 1 : 0;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> m;
-
-    arr.resize(n);
-    pos.resize(n + 2);  // Extra space for boundary safety
-
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-        pos[arr[i]] = i;
-    }
-
-    // Calculate initial rounds
-    int rounds = 1;
-    for (int x = 1; x < n; x++) {
-        rounds += isBreak(x);
-    }
-
-    while (m--) {
-        int a, b;
-        cin >> a >> b;
-        a--; b--;  // Convert to 0-indexed
-
-        if (a > b) swap(a, b);
-
-        int valA = arr[a];
-        int valB = arr[b];
-
-        // Collect affected break points (values x where we check pos[x] vs pos[x+1])
-        set<int> affected;
-        for (int v : {valA - 1, valA, valB - 1, valB}) {
-            if (v >= 1 && v < n) {
-                affected.insert(v);
-            }
-        }
-
-        // Remove old breaks
-        for (int v : affected) {
-            rounds -= isBreak(v);
-        }
-
-        // Perform swap
-        swap(arr[a], arr[b]);
-        pos[valA] = b;
-        pos[valB] = a;
-
-        // Add new breaks
-        for (int v : affected) {
-            rounds += isBreak(v);
-        }
-
-        cout << rounds << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -388,23 +312,27 @@ Pattern indicators:
 ## Related Problems
 
 ### Prerequisite
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Collecting Numbers](https://cses.fi/problemset/task/2216) | Base problem - understand round counting |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [List Removals](https://cses.fi/problemset/task/1749) | Dynamic array with queries |
 | [Distinct Values Queries](https://cses.fi/problemset/task/1734) | Different query type on arrays |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Sum Queries](https://cses.fi/problemset/task/1190) | Segment tree for range queries |
 | [Polynomial Queries](https://cses.fi/problemset/task/1736) | More complex delta tracking |
 
 ### LeetCode Related
+
 | Problem | Connection |
 |---------|------------|
 | [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) | Position-based analysis |

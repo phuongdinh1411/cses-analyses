@@ -111,6 +111,7 @@ Target MEX = 2, Grid 3x3
 
 Required (0 to m-1):     Fill remaining (> m):
 +---+---+---+            +---+---+---+
+
 | 0 | 1 | ? |    -->     | 0 | 1 | 3 |
 | 0 | 1 | ? |            | 0 | 1 | 4 |
 | 0 | 1 | ? |            | 0 | 1 | 5 |
@@ -142,38 +143,6 @@ def mex_grid_construction(n: int, m: int) -> None:
 if __name__ == "__main__":
     n, m = map(int, input().split())
     mex_grid_construction(n, m)
-```
-
-#### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    if (m > n) {
-        cout << "IMPOSSIBLE" << endl;
-        return 0;
-    }
-
-    int filler = m + 1;
-    for (int row = 0; row < n; row++) {
-        for (int col = 0; col < n; col++) {
-            if (col > 0) cout << " ";
-            if (col < m) cout << col;
-            else cout << filler++;
-        }
-        cout << "\n";
-    }
-
-    return 0;
-}
 ```
 
 ### Complexity
@@ -257,18 +226,21 @@ filler = m + 1
 ## Related Problems
 
 ### Easier (Do First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Missing Number](https://cses.fi/problemset/task/1083) | Finding missing values |
 | [Permutations](https://cses.fi/problemset/task/1070) | Basic construction |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Grid with conflict constraints |
 | [Grid Paths](https://cses.fi/problemset/task/1638) | Grid traversal |
 
 ### Harder (Do After)
+
 | Problem | New Concept |
 |---------|-------------|
 | MEX Grid Construction II | Dual row/column constraints |

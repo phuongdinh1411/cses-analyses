@@ -220,47 +220,20 @@ Check: source outgoing = 2+1=3, but paths found use 2.
 
 ### Mistake 1: Using Dijkstra with Negative Costs
 
-```cpp
-// WRONG - Dijkstra fails with negative edges
-priority_queue<pair<int,int>> pq;
-// This will give incorrect results when cost < 0
-```
-
 **Problem:** Dijkstra assumes no negative edges. Residual edges have -cost.
 **Fix:** Use SPFA or Bellman-Ford instead.
 
 ### Mistake 2: Forgetting Reverse Edge Costs
-
-```cpp
-// WRONG - Reverse edge should have negative cost
-void add_edge(int u, int v, int cap, int cost) {
-    adj[u].push_back({v, cap, cost});
-    adj[v].push_back({u, 0, cost});  // Should be -cost!
-}
-```
 
 **Problem:** Canceling flow should refund the cost.
 **Fix:** Reverse edge cost = -original_cost.
 
 ### Mistake 3: Not Detecting Negative Cycles
 
-```cpp
-// WRONG - Infinite loop possible
-while (spfa(source, sink)) {
-    augment();  // May loop forever with negative cycle
-}
-```
-
 **Problem:** Negative cost cycles can be exploited infinitely.
 **Fix:** Check for negative cycles or use potential function (Johnson's technique).
 
 ### Mistake 4: Integer Overflow in Cost Calculation
-
-```cpp
-// WRONG - May overflow
-int total_cost = 0;
-total_cost += flow * path_cost;  // Can exceed INT_MAX
-```
 
 **Fix:** Use `long long` for cost accumulation.
 
@@ -411,111 +384,6 @@ if __name__ == "__main__":
 
 ---
 
-## Solution: C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long INF = 1e18;
-
-struct Edge {
-    int to, rev;
-    long long cap, cost;
-};
-
-class MCMF {
-public:
-    int n;
-    vector<vector<Edge>> graph;
-    vector<long long> dist;
-    vector<int> parent, parent_edge;
-    vector<bool> in_queue;
-
-    MCMF(int n) : n(n), graph(n), dist(n), parent(n),
-                  parent_edge(n), in_queue(n) {}
-
-    void add_edge(int u, int v, long long cap, long long cost) {
-        graph[u].push_back({v, (int)graph[v].size(), cap, cost});
-        graph[v].push_back({u, (int)graph[u].size() - 1, 0, -cost});
-    }
-
-    bool spfa(int source, int sink) {
-        fill(dist.begin(), dist.end(), INF);
-        fill(in_queue.begin(), in_queue.end(), false);
-
-        dist[source] = 0;
-        deque<int> q;
-        q.push_back(source);
-        in_queue[source] = true;
-
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop_front();
-            in_queue[u] = false;
-
-            for (int i = 0; i < graph[u].size(); i++) {
-                Edge& e = graph[u][i];
-                if (e.cap > 0 && dist[u] + e.cost < dist[e.to]) {
-                    dist[e.to] = dist[u] + e.cost;
-                    parent[e.to] = u;
-                    parent_edge[e.to] = i;
-                    if (!in_queue[e.to]) {
-                        q.push_back(e.to);
-                        in_queue[e.to] = true;
-                    }
-                }
-            }
-        }
-        return dist[sink] != INF;
-    }
-
-    pair<long long, long long> min_cost_max_flow(int source, int sink) {
-        long long max_flow = 0, min_cost = 0;
-
-        while (spfa(source, sink)) {
-            // Find bottleneck
-            long long flow = INF;
-            for (int v = sink; v != source; v = parent[v]) {
-                flow = min(flow, graph[parent[v]][parent_edge[v]].cap);
-            }
-
-            // Augment flow
-            for (int v = sink; v != source; v = parent[v]) {
-                Edge& e = graph[parent[v]][parent_edge[v]];
-                e.cap -= flow;
-                graph[v][e.rev].cap += flow;
-            }
-
-            max_flow += flow;
-            min_cost += flow * dist[sink];
-        }
-        return {max_flow, min_cost};
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    MCMF mcmf(n);
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        long long cap, cost;
-        cin >> u >> v >> cap >> cost;
-        mcmf.add_edge(u - 1, v - 1, cap, cost);
-    }
-
-    auto [flow, cost] = mcmf.min_cost_max_flow(0, n - 1);
-    cout << flow << " " << cost << "\n";
-
-    return 0;
-}
-```
-
 ---
 
 ## Complexity Analysis
@@ -532,12 +400,14 @@ int main() {
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Download Speed (CSES)](https://cses.fi/problemset/task/1694) | Foundation for understanding flow |
 | [Shortest Routes I (CSES)](https://cses.fi/problemset/task/1671) | Shortest path algorithms |
 
 ### CSES Applications
+
 | Problem | Connection to MCMF |
 |---------|-------------------|
 | [Police Chase (CSES)](https://cses.fi/problemset/task/1695) | Min cut application |
@@ -545,6 +415,7 @@ int main() {
 | [Distinct Routes (CSES)](https://cses.fi/problemset/task/1711) | Edge-disjoint paths |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - Minimum Cost](https://codeforces.com/contest/237/problem/E) | MCMF application |

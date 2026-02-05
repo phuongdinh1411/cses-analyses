@@ -123,23 +123,6 @@ def solve_brute_force(arr, queries):
     return results
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> solveBruteForce(vector<int>& arr, vector<pair<int,int>>& queries) {
-    vector<int> results;
-    for (auto& [l, r] : queries) {
-        int minVal = arr[l - 1];  // Convert to 0-indexed
-        for (int i = l - 1; i < r; i++) {
-            minVal = min(minVal, arr[i]);
-        }
-        results.push_back(minVal);
-    }
-    return results;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -313,67 +296,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-const int MAXLOG = 18;
-
-int st[MAXN][MAXLOG];
-int log2_floor[MAXN];
-int arr[MAXN];
-
-void buildSparseTable(int n) {
-    // Base case: length 1
-    for (int i = 0; i < n; i++) {
-        st[i][0] = arr[i];
-    }
-
-    // Fill for lengths 2^j
-    for (int j = 1; j < MAXLOG; j++) {
-        for (int i = 0; i + (1 << j) <= n; i++) {
-            st[i][j] = min(st[i][j - 1], st[i + (1 << (j - 1))][j - 1]);
-        }
-    }
-
-    // Precompute log2 values
-    log2_floor[1] = 0;
-    for (int i = 2; i <= n; i++) {
-        log2_floor[i] = log2_floor[i / 2] + 1;
-    }
-}
-
-int query(int l, int r) {
-    int len = r - l + 1;
-    int k = log2_floor[len];
-    return min(st[l][k], st[r - (1 << k) + 1][k]);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, q;
-    cin >> n >> q;
-
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    buildSparseTable(n);
-
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        // Convert to 0-indexed
-        cout << query(a - 1, b - 1) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -386,18 +308,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Off-by-One in Sparse Table Construction
-
-```cpp
-// WRONG: Missing +1 causes out-of-bounds access
-for (int i = 0; i + (1 << j) < n; i++) {  // Bug!
-    st[i][j] = min(st[i][j-1], st[i + (1 << (j-1))][j-1]);
-}
-
-// CORRECT
-for (int i = 0; i + (1 << j) <= n; i++) {
-    st[i][j] = min(st[i][j-1], st[i + (1 << (j-1))][j-1]);
-}
-```
 
 **Problem:** The range [i, i + 2^j - 1] needs i + 2^j - 1 < n, which means i + 2^j <= n.
 **Fix:** Use `<=` instead of `<` in the loop condition.
@@ -466,17 +376,20 @@ results.append(min(st[l][k], st[r - (1 << k) + 1][k]))
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Simpler range query with prefix sums |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Minimum Query (SPOJ)](https://www.spoj.com/problems/RMQSQ/) | Same problem, different judge |
 | [Range Maximum Query](https://cses.fi/problemset/task/1647) | Same technique, different operation |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Dynamic Range Minimum Queries](https://cses.fi/problemset/task/1649) | Adds point updates, needs Segment Tree |

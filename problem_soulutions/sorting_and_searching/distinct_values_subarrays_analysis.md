@@ -263,53 +263,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long countDistinctSubarrays(vector<int>& arr) {
-    int n = arr.size();
-    long long count = 0;
-    int left = 0;
-    unordered_set<int> seen;
-
-    for (int right = 0; right < n; right++) {
-        // Shrink window until arr[right] is not a duplicate
-        while (seen.count(arr[right])) {
-            seen.erase(arr[left]);
-            left++;
-        }
-
-        // Add current element to window
-        seen.insert(arr[right]);
-
-        // Count all valid subarrays ending at right
-        count += right - left + 1;
-    }
-
-    return count;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << countDistinctSubarrays(arr) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -353,12 +306,6 @@ while arr[right] in seen:  # O(n) lookup!
 **Fix:** Use a hash set for O(1) average lookup and removal.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG in C++ - int overflow for large n
-int count = 0;  // Can overflow!
-count += right - left + 1;
-```
 
 **Problem:** For n = 2*10^5 with all distinct elements, answer is n*(n+1)/2 which exceeds int range.
 

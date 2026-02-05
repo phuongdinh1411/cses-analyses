@@ -184,60 +184,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    string s;
-    cin >> s;
-
-    // Step 1: Count frequencies
-    int freq[26] = {0};
-    for (char c : s) {
-        freq[c - 'A']++;
-    }
-
-    // Step 2: Check validity - count odd frequencies
-    int oddCount = 0;
-    char oddChar = '\0';
-
-    for (int i = 0; i < 26; i++) {
-        if (freq[i] % 2 == 1) {
-            oddCount++;
-            oddChar = 'A' + i;
-        }
-    }
-
-    // More than one odd frequency -> impossible
-    if (oddCount > 1) {
-        cout << "NO SOLUTION" << endl;
-        return 0;
-    }
-
-    // Step 3: Build palindrome
-    string left = "";
-
-    for (int i = 0; i < 26; i++) {
-        // Add half of each character to left side
-        left += string(freq[i] / 2, 'A' + i);
-    }
-
-    string middle = (oddChar != '\0') ? string(1, oddChar) : "";
-    string right = left;
-    reverse(right.begin(), right.end());
-
-    cout << left << middle << right << endl;
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

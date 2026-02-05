@@ -224,51 +224,6 @@ if __name__ == "__main__":
     print(solve(n, blocks))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    vector<tuple<int, int, long long>> blocks(n);
-    long long total_value = 0;
-
-    for (int i = 0; i < n; i++) {
-        int w, s; long long v;
-        cin >> w >> s >> v;
-        blocks[i] = {w, s, v};
-        total_value += v;
-    }
-
-    sort(blocks.begin(), blocks.end(), [](const auto& a, const auto& b) {
-        return get<0>(a) + get<1>(a) < get<0>(b) + get<1>(b);
-    });
-
-    const long long INF = 1e18;
-    vector<long long> dp(total_value + 1, INF);
-    dp[0] = 0;
-
-    for (const auto& [w, s, v] : blocks) {
-        for (long long j = total_value; j >= v; j--) {
-            if (dp[j - v] <= s) dp[j] = min(dp[j], dp[j - v] + w);
-        }
-    }
-
-    long long ans = 0;
-    for (long long j = 0; j <= total_value; j++) {
-        if (dp[j] < INF) ans = j;
-    }
-    cout << ans << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -320,14 +275,6 @@ if w <= s:  # This doesn't check accumulated weight!
 **Fix:** Check `dp[j - v] <= s` where dp[j-v] is the minimum weight of tower with value j-v.
 
 ### Mistake 4: Integer Overflow
-
-```cpp
-// WRONG - int may overflow
-int dp[MAX_VAL];
-
-// CORRECT - use long long for weights and values
-long long dp[MAX_VAL];
-```
 
 ---
 

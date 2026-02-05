@@ -212,46 +212,6 @@ def solve():
 solve()
 ```
 
-### C++ Code
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<pair<int, int>> moves;
-
-void hanoi(int disks, int source, int target, int auxiliary) {
-    // Base case: no disks to move
-    if (disks == 0) return;
-
-    // Step 1: Move n-1 disks from source to auxiliary
-    hanoi(disks - 1, source, auxiliary, target);
-
-    // Step 2: Move largest disk from source to target
-    moves.push_back({source, target});
-
-    // Step 3: Move n-1 disks from auxiliary to target
-    hanoi(disks - 1, auxiliary, target, source);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    hanoi(n, 1, 3, 2);
-
-    cout << moves.size() << "\n";
-    for (auto& [a, b] : moves) {
-        cout << a << " " << b << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -350,17 +310,20 @@ def hanoi(disks, source, target, auxiliary):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic recursion practice |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Apple Division](https://cses.fi/problemset/task/1623) | Recursive subset generation |
 | [Gray Code](https://cses.fi/problemset/task/2205) | Another classic bit/recursive pattern |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Grid Paths](https://cses.fi/problemset/task/1625) | Backtracking with pruning |

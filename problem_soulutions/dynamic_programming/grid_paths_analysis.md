@@ -180,56 +180,6 @@ def solve():
 solve()
 ```
 
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    // Edge case: start or end is a trap
-    if (grid[0][0] == '*' || grid[n-1][n-1] == '*') {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    // Initialize DP table
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-    dp[0][0] = 1;
-
-    // Fill DP table
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (grid[i][j] == '*') {
-                dp[i][j] = 0;
-            } else if (i == 0 && j == 0) {
-                continue;  // Already initialized
-            } else {
-                long long from_top = (i > 0) ? dp[i-1][j] : 0;
-                long long from_left = (j > 0) ? dp[i][j-1] : 0;
-                dp[i][j] = (from_top + from_left) % MOD;
-            }
-        }
-    }
-
-    cout << dp[n-1][n-1] << endl;
-    return 0;
-}
-```
-
 ## Space Optimization
 
 The 2D solution uses O(n^2) space. Since we only need the previous row to compute the current row, we can optimize to O(n) space using a 1D array:
@@ -281,13 +231,6 @@ def solve_optimized():
 4. **Integer overflow in C++**: Use `long long` for the DP table, not `int`.
 
 5. **Incorrect boundary handling**: First row can only receive paths from the left; first column only from above.
-
-```cpp
-// Wrong: forgetting to check if trap blocks the entire row/column
-dp[0][j] = dp[0][j-1];  // Should be 0 if any previous cell was a trap
-
-// Correct approach: let the main loop handle it naturally
-```
 
 ## Related Problems
 

@@ -241,75 +241,6 @@ if __name__ == "__main__":
     print(count_distinct_substrings(s))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    int n = s.size();
-
-    // Build suffix array
-    vector<int> sa(n), rank(n), tmp(n);
-    for (int i = 0; i < n; i++) {
-        sa[i] = i;
-        rank[i] = s[i];
-    }
-
-    for (int k = 1; k < n; k *= 2) {
-        auto cmp = [&](int a, int b) {
-            if (rank[a] != rank[b]) return rank[a] < rank[b];
-            int ra = (a + k < n) ? rank[a + k] : -1;
-            int rb = (b + k < n) ? rank[b + k] : -1;
-            return ra < rb;
-        };
-        sort(sa.begin(), sa.end(), cmp);
-
-        tmp[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
-        }
-        rank = tmp;
-    }
-
-    // Build LCP array using Kasai's algorithm
-    vector<int> lcp(n, 0);
-    for (int i = 0; i < n; i++) {
-        rank[sa[i]] = i;
-    }
-
-    int k = 0;
-    for (int i = 0; i < n; i++) {
-        if (rank[i] == 0) {
-            k = 0;
-            continue;
-        }
-        int j = sa[rank[i] - 1];
-        while (i + k < n && j + k < n && s[i + k] == s[j + k]) {
-            k++;
-        }
-        lcp[rank[i]] = k;
-        if (k > 0) k--;
-    }
-
-    // Calculate distinct substrings
-    long long total = (long long)n * (n + 1) / 2;
-    long long dup = 0;
-    for (int i = 0; i < n; i++) {
-        dup += lcp[i];
-    }
-
-    cout << total - dup << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -322,14 +253,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG
-int total = n * (n + 1) / 2;  // Overflow for n = 10^5
-
-// CORRECT
-long long total = (long long)n * (n + 1) / 2;
-```
 
 **Problem:** n*(n+1) can exceed 2^31 for n = 10^5.
 **Fix:** Cast to long long before multiplication.
@@ -406,18 +329,21 @@ for i in range(n):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | Basic string matching with KMP/Z-algorithm |
 | [Finding Borders (CSES 1732)](https://cses.fi/problemset/task/1732) | Understanding string prefixes/suffixes |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Repeating Substring (CSES 2106)](https://cses.fi/problemset/task/2106) | Find longest substring that appears >= k times |
 | [Longest Repeating Substring (LC 1062)](https://leetcode.com/problems/longest-repeating-substring/) | Find max LCP in array |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Substring Distribution (CSES 2110)](https://cses.fi/problemset/task/2110) | Count substrings of each length |

@@ -152,44 +152,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<pair<int, int>> events;
-
-    for (int i = 0; i < n; i++) {
-        int a, b;
-        cin >> a >> b;
-        events.push_back({a, 1});   // arrival: +1
-        events.push_back({b, -1});  // departure: -1
-    }
-
-    // Sort by time, then by type (-1 before +1 at same time)
-    sort(events.begin(), events.end());
-
-    int current = 0, max_count = 0;
-
-    for (auto& [time, delta] : events) {
-        current += delta;
-        max_count = max(max_count, current);
-    }
-
-    cout << max_count << "\n";
-
-    return 0;
-}
-```
-
 ## Why Tie-Breaking Matters
 
 Consider a case where one customer leaves at time 5 and another arrives at time 5:

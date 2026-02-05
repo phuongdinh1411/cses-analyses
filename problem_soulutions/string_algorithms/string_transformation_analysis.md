@@ -136,47 +136,6 @@ def solve_brute_force(s: str, t: str, rules: list) -> int:
     return result if result != float('inf') else -1
 ```
 
-```cpp
-#include <string>
-#include <vector>
-#include <set>
-#include <climits>
-using namespace std;
-
-class BruteForce {
-public:
-    int solve(string s, string t, vector<pair<string, string>>& rules) {
-        set<string> visited;
-        int result = dfs(s, t, rules, 0, visited);
-        return result == INT_MAX ? -1 : result;
-    }
-
-private:
-    int dfs(string& current, string& target,
-            vector<pair<string, string>>& rules,
-            int depth, set<string>& visited) {
-        if (current == target) return depth;
-        if (depth > current.size() * 2) return INT_MAX;
-        if (visited.count(current)) return INT_MAX;
-
-        visited.insert(current);
-        int minSteps = INT_MAX;
-
-        for (auto& [pattern, replacement] : rules) {
-            size_t pos = 0;
-            while ((pos = current.find(pattern, pos)) != string::npos) {
-                string newStr = current.substr(0, pos) + replacement +
-                               current.substr(pos + pattern.size());
-                set<string> newVisited = visited;
-                minSteps = min(minSteps, dfs(newStr, target, rules, depth + 1, newVisited));
-                pos++;
-            }
-        }
-        return minSteps;
-    }
-};
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -313,60 +272,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int solveBFS(string s, string t, vector<pair<string, string>>& rules) {
-    if (s == t) return 0;
-
-    queue<pair<string, int>> q;
-    unordered_set<string> visited;
-
-    q.push({s, 0});
-    visited.insert(s);
-
-    while (!q.empty()) {
-        auto [current, dist] = q.front();
-        q.pop();
-
-        for (auto& [pattern, replacement] : rules) {
-            size_t pos = 0;
-            while ((pos = current.find(pattern, pos)) != string::npos) {
-                string newStr = current.substr(0, pos) + replacement +
-                               current.substr(pos + pattern.size());
-
-                if (newStr == t) return dist + 1;
-
-                if (visited.find(newStr) == visited.end()) {
-                    visited.insert(newStr);
-                    q.push({newStr, dist + 1});
-                }
-                pos++;
-            }
-        }
-    }
-    return -1;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s, t;
-    int n;
-    cin >> s >> t >> n;
-
-    vector<pair<string, string>> rules(n);
-    for (int i = 0; i < n; i++) {
-        cin >> rules[i].first >> rules[i].second;
-    }
-
-    cout << solveBFS(s, t, rules) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -451,11 +356,13 @@ if new_str not in visited:  # Too late!
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Word Search](https://leetcode.com/problems/word-search/) | Basic string grid traversal |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Word Ladder (LeetCode)](https://leetcode.com/problems/word-ladder/) | Single character changes |
@@ -463,6 +370,7 @@ if new_str not in visited:  # Too late!
 | [Finding Borders (CSES)](https://cses.fi/problemset/task/1732) | String structure analysis |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Word Ladder II (LeetCode)](https://leetcode.com/problems/word-ladder-ii/) | Find ALL shortest paths |

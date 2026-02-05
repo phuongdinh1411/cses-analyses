@@ -238,41 +238,6 @@ n = int(input())
 print(count_functional_graphs(n))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-using namespace std;
-
-const long long MOD = 1e9 + 7;
-
-long long mod_pow(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-
-    while (exp > 0) {
-        if (exp & 1) {
-            result = (result * base) % mod;
-        }
-        exp >>= 1;
-        base = (base * base) % mod;
-    }
-
-    return result;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    long long n;
-    cin >> n;
-
-    cout << mod_pow(n, n, MOD) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -285,14 +250,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflows for large n
-long long result = 1;
-for (int i = 0; i < n; i++) {
-    result *= n;  // No modulo!
-}
-```
 
 **Problem:** Result overflows long long very quickly.
 **Fix:** Apply modulo at each multiplication step, or use fast exponentiation.

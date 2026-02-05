@@ -227,36 +227,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    long long total = 0;
-    long long max_time = 0;
-
-    for (int i = 0; i < n; i++) {
-        long long t;
-        cin >> t;
-        total += t;
-        max_time = max(max_time, t);
-    }
-
-    // Key formula: max(2 * max_time, total)
-    cout << max(2 * max_time, total) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -297,18 +267,6 @@ def wrong_formula(books):
 
 **Problem:** The longest book blocks BOTH people - each must read it separately.
 **Fix:** Use `max(2 * max(books), sum(books))`.
-
-### Mistake 3: Integer Overflow in C++
-
-```cpp
-// WRONG: Using int when values can be up to 10^9 * 2 * 10^5 = 2 * 10^14
-int total = 0;
-for (int i = 0; i < n; i++) {
-    int t;
-    cin >> t;
-    total += t;  // Overflow!
-}
-```
 
 **Problem:** Sum can exceed INT_MAX (2^31 - 1).
 **Fix:** Use `long long` for total and max_time.
@@ -363,12 +321,14 @@ The formula naturally handles n = 1 correctly.
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Factory Machines](https://cses.fi/problemset/task/1620) | Binary search on answer, machines have different rates |
 | [CSES - Tasks and Deadlines](https://cses.fi/problemset/task/1630) | Maximize score, not minimize time |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [CSES - Movie Festival II](https://cses.fi/problemset/task/1632) | Multiple members, interval scheduling |
@@ -376,6 +336,7 @@ The formula naturally handles n = 1 correctly.
 | [LeetCode - Meeting Rooms II](https://leetcode.com/problems/meeting-rooms-ii/) | Minimum rooms needed (interval partitioning) |
 
 ### LeetCode Related
+
 | Problem | Similarity |
 |---------|------------|
 | [LeetCode 621 - Task Scheduler](https://leetcode.com/problems/task-scheduler/) | Blocking/cooldown concept |

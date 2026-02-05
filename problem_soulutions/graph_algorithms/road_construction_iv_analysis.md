@@ -114,59 +114,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int parent[200001], rnk[200001];
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-void unite(int a, int b) {
-    int ra = find(a), rb = find(b);
-    if (ra == rb) return;
-
-    if (rnk[ra] < rnk[rb]) swap(ra, rb);
-    parent[rb] = ra;
-    if (rnk[ra] == rnk[rb]) rnk[ra]++;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m, q;
-    cin >> n >> m >> q;
-
-    for (int i = 1; i <= n; i++) {
-        parent[i] = i;
-        rnk[i] = 0;
-    }
-
-    // Build phase
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        unite(a, b);
-    }
-
-    // Query phase
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << (find(a) == find(b) ? "YES" : "NO") << "\n";
-    }
-
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Phase | Time | Space |
 |-------|------|-------|

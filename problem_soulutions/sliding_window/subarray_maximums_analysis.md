@@ -249,50 +249,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    deque<int> dq;  // stores indices
-
-    for (int i = 0; i < n; i++) {
-        // Remove indices outside window
-        while (!dq.empty() && dq.front() <= i - k) {
-            dq.pop_front();
-        }
-
-        // Remove smaller elements (they cannot be max)
-        while (!dq.empty() && arr[dq.back()] <= arr[i]) {
-            dq.pop_back();
-        }
-
-        dq.push_back(i);
-
-        // Output when window is complete
-        if (i >= k - 1) {
-            cout << arr[dq.front()];
-            if (i < n - 1) cout << ' ';
-        }
-    }
-    cout << '\n';
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -402,12 +358,14 @@ The front will hold the minimum instead of the maximum.
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Technique |
 |---------|-----------|
 | [Sliding Window Median](https://cses.fi/problemset/task/1076) | Two multisets or segment tree |
 | [Sliding Window Cost](https://cses.fi/problemset/task/1077) | Extension with cost calculation |
 
 ### LeetCode Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Same problem |

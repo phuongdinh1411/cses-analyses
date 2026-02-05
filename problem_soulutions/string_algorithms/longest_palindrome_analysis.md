@@ -127,50 +127,6 @@ s = input().strip()
 print(longest_palindrome_expand(s))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int expand(const string& s, int left, int right) {
-    while (left >= 0 && right < s.size() && s[left] == s[right]) {
-        left--;
-        right++;
-    }
-    return right - left - 1;
-}
-
-string longestPalindromeExpand(const string& s) {
-    if (s.empty()) return "";
-
-    int start = 0, maxLen = 1;
-
-    for (int i = 0; i < s.size(); i++) {
-        int len1 = expand(s, i, i);
-        int len2 = expand(s, i, i + 1);
-        int currLen = max(len1, len2);
-
-        if (currLen > maxLen) {
-            maxLen = currLen;
-            start = i - (currLen - 1) / 2;
-        }
-    }
-
-    return s.substr(start, maxLen);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    cout << longestPalindromeExpand(s) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -292,69 +248,6 @@ s = input().strip()
 print(longest_palindrome_manacher(s))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-string longestPalindromeManacher(const string& s) {
-    if (s.empty()) return "";
-
-    // Transform: "abc" -> "#a#b#c#"
-    string t = "#";
-    for (char c : s) {
-        t += c;
-        t += '#';
-    }
-
-    int n = t.size();
-    vector<int> p(n, 0);  // p[i] = radius of palindrome centered at i
-    int center = 0, right = 0;
-    int maxLen = 0, maxCenter = 0;
-
-    for (int i = 0; i < n; i++) {
-        // Use mirror property if within current right boundary
-        if (i < right) {
-            int mirror = 2 * center - i;
-            p[i] = min(right - i, p[mirror]);
-        }
-
-        // Expand around center i
-        while (i + p[i] + 1 < n && i - p[i] - 1 >= 0 &&
-               t[i + p[i] + 1] == t[i - p[i] - 1]) {
-            p[i]++;
-        }
-
-        // Update center and right boundary
-        if (i + p[i] > right) {
-            center = i;
-            right = i + p[i];
-        }
-
-        // Track maximum
-        if (p[i] > maxLen) {
-            maxLen = p[i];
-            maxCenter = i;
-        }
-    }
-
-    // Convert back to original string indices
-    int start = (maxCenter - maxLen) / 2;
-    return s.substr(start, maxLen);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    cout << longestPalindromeManacher(s) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -434,17 +327,20 @@ while t[i + p[i] + 1] == t[i - p[i] - 1] and i + p[i] + 1 < n:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Valid Palindrome (LeetCode 125)](https://leetcode.com/problems/valid-palindrome/) | Basic palindrome check |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Palindromic Substrings (LeetCode 647)](https://leetcode.com/problems/palindromic-substrings/) | Count all palindromes instead of finding longest |
 | [Palindrome Queries (CSES 2420)](https://cses.fi/problemset/task/2420) | Query-based palindrome checking |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Longest Palindromic Subsequence (LeetCode 516)](https://leetcode.com/problems/longest-palindromic-subsequence/) | DP for non-contiguous palindrome |

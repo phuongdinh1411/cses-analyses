@@ -225,47 +225,6 @@ def robot_path(commands: str) -> int:
     return len(commands)  # No cycle
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <iostream>
-#include <string>
-#include <set>
-using namespace std;
-
-int robotPath(const string& commands) {
-    int x = 0, y = 0;
-    set<pair<int, int>> visited;
-    visited.insert({0, 0});
-
-    for (int i = 0; i < commands.size(); i++) {
-        char cmd = commands[i];
-        if (cmd == 'U') y++;
-        else if (cmd == 'D') y--;
-        else if (cmd == 'L') x--;
-        else if (cmd == 'R') x++;
-
-        if (visited.count({x, y})) {
-            return i + 1;  // Cycle found
-        }
-        visited.insert({x, y});
-    }
-
-    return commands.size();  // No cycle
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string commands;
-    cin >> commands;
-    cout << robotPath(commands) << endl;
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -352,17 +311,20 @@ if (x, y) in visited:  # Linear search!
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Walking on a Grid](https://cses.fi/problemset/task/1638) | Basic grid traversal concepts |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Robot Bounded In Circle](https://leetcode.com/problems/robot-bounded-in-circle/) | Cycle detection after repeating commands |
 | [Point Location Test](https://cses.fi/problemset/task/2189) | Point and line geometry basics |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polygon Area](https://cses.fi/problemset/task/2191) | Using coordinates for area calculation |

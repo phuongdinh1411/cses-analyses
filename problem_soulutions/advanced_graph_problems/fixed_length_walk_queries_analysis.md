@@ -292,81 +292,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef vector<vector<int>> Matrix;
-
-int n;
-
-Matrix multiply(const Matrix& A, const Matrix& B) {
-    Matrix C(n, vector<int>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                if (A[i][k] && B[k][j]) {
-                    C[i][j] = 1;  // Only care about existence
-                }
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matpow(Matrix M, long long k) {
-    Matrix result(n, vector<int>(n, 0));
-    // Identity matrix
-    for (int i = 0; i < n; i++) result[i][i] = 1;
-
-    while (k > 0) {
-        if (k & 1) result = multiply(result, M);
-        M = multiply(M, M);
-        k >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> n >> q;
-
-    Matrix adj(n, vector<int>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> adj[i][j];
-        }
-    }
-
-    // Group queries by k
-    map<long long, vector<tuple<int, int, int>>> queries;
-    vector<int> answers(q);
-
-    for (int i = 0; i < q; i++) {
-        int a, b;
-        long long k;
-        cin >> a >> b >> k;
-        queries[k].push_back({i, a - 1, b - 1});
-    }
-
-    for (auto& [k, qlist] : queries) {
-        Matrix Ak = matpow(adj, k);
-        for (auto& [idx, a, b] : qlist) {
-            answers[idx] = Ak[a][b] > 0 ? 1 : 0;
-        }
-    }
-
-    for (int ans : answers) {
-        cout << ans << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -459,12 +384,14 @@ answers[idx] = Ak[a-1][b-1]  # Convert to 0-indexed
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Binary Exponentiation](https://cses.fi/problemset/task/1095) | Core technique for fast power |
 | [BFS Shortest Path](https://cses.fi/problemset/task/1667) | Basic graph traversal |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Graph Paths I](https://cses.fi/problemset/task/1723) | Count paths (mod 10^9+7) |
@@ -472,6 +399,7 @@ answers[idx] = Ak[a-1][b-1]  # Convert to 0-indexed
 | [Dice Combinations](https://cses.fi/problemset/task/1633) | Linear recurrence via matrix exp |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Fibonacci Numbers](https://cses.fi/problemset/task/1722) | Matrix exp for recurrences |

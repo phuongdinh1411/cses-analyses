@@ -294,54 +294,7 @@ if __name__ == "__main__":
     print(edit_distance(s1, s2))
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int editDistance(const string& s1, const string& s2) {
-    int m = s1.length();
-    int n = s2.length();
-
-    // Create DP table
-    vector<vector<int>> dp(m + 1, vector<int>(n + 1));
-
-    // Base cases
-    for (int i = 0; i <= m; i++) dp[i][0] = i;
-    for (int j = 0; j <= n; j++) dp[0][j] = j;
-
-    // Fill DP table
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (s1[i-1] == s2[j-1]) {
-                dp[i][j] = dp[i-1][j-1];  // Match
-            } else {
-                dp[i][j] = 1 + min({
-                    dp[i-1][j-1],  // Replace
-                    dp[i-1][j],    // Delete
-                    dp[i][j-1]     // Insert
-                });
-            }
-        }
-    }
-
-    return dp[m][n];
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s1, s2;
-    cin >> s1 >> s2;
-    cout << editDistance(s1, s2) << "\n";
-
-    return 0;
-}
-```
-
-## Space Optimization
+### Space Optimization
 
 We can reduce space from O(m * n) to O(min(m, n)) by using two rows instead of the full table.
 
@@ -378,37 +331,6 @@ def edit_distance_optimized(s1: str, s2: str) -> int:
         prev, curr = curr, prev
 
     return prev[n]
-```
-
-### Optimized C++ Solution
-
-```cpp
-int editDistanceOptimized(const string& s1, const string& s2) {
-    // Ensure s2 is shorter
-    const string& a = s1.length() >= s2.length() ? s1 : s2;
-    const string& b = s1.length() >= s2.length() ? s2 : s1;
-
-    int m = a.length(), n = b.length();
-
-    vector<int> prev(n + 1), curr(n + 1);
-    iota(prev.begin(), prev.end(), 0);  // prev = {0, 1, 2, ..., n}
-
-    for (int i = 1; i <= m; i++) {
-        curr[0] = i;
-
-        for (int j = 1; j <= n; j++) {
-            if (a[i-1] == b[j-1]) {
-                curr[j] = prev[j-1];
-            } else {
-                curr[j] = 1 + min({prev[j-1], prev[j], curr[j-1]});
-            }
-        }
-
-        swap(prev, curr);
-    }
-
-    return prev[n];
-}
 ```
 
 ## Common Mistakes

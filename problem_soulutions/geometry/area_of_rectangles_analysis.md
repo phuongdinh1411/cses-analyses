@@ -300,85 +300,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-
-vector<ll> ys;
-vector<ll> cnt, total_len;
-int m;
-
-void update(int node, int start, int end, int l, int r, int val) {
-    if (r <= start || end <= l) return;
-    if (l <= start && end <= r) {
-        cnt[node] += val;
-    } else {
-        int mid = (start + end) / 2;
-        update(2*node, start, mid, l, r, val);
-        update(2*node+1, mid, end, l, r, val);
-    }
-
-    if (cnt[node] > 0) {
-        total_len[node] = ys[end] - ys[start];
-    } else if (end - start == 1) {
-        total_len[node] = 0;
-    } else {
-        total_len[node] = total_len[2*node] + total_len[2*node+1];
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<array<ll, 4>> rects(n);
-    set<ll> y_set;
-
-    for (int i = 0; i < n; i++) {
-        cin >> rects[i][0] >> rects[i][1] >> rects[i][2] >> rects[i][3];
-        y_set.insert(rects[i][1]);
-        y_set.insert(rects[i][3]);
-    }
-
-    ys = vector<ll>(y_set.begin(), y_set.end());
-    map<ll, int> y_to_idx;
-    for (int i = 0; i < (int)ys.size(); i++) {
-        y_to_idx[ys[i]] = i;
-    }
-
-    m = ys.size() - 1;
-    cnt.assign(4 * m + 4, 0);
-    total_len.assign(4 * m + 4, 0);
-
-    // Events: (x, type, y1_idx, y2_idx), type: 0=add, 1=remove
-    vector<tuple<ll, int, int, int>> events;
-    for (auto& r : rects) {
-        int y1 = y_to_idx[r[1]], y2 = y_to_idx[r[3]];
-        events.push_back({r[0], 0, y1, y2});
-        events.push_back({r[2], 1, y1, y2});
-    }
-    sort(events.begin(), events.end());
-
-    ll area = 0;
-    ll prev_x = get<0>(events[0]);
-
-    for (auto& [x, typ, y1, y2] : events) {
-        area += total_len[1] * (x - prev_x);
-        update(1, 0, m, y1, y2, typ == 0 ? 1 : -1);
-        prev_x = x;
-    }
-
-    cout << area << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -391,14 +312,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG
-int area = width * height;  // May overflow for 10^9 coordinates
-
-// CORRECT
-long long area = (long long)width * height;
-```
 
 **Problem:** Coordinates up to 10^9, area can exceed 10^18.
 **Fix:** Use `long long` throughout.

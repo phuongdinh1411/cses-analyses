@@ -306,56 +306,6 @@ if __name__ == "__main__":
     print(solve(n, sizes))
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-
-    // Prefix sums for O(1) range queries
-    vector<long long> prefix(n + 1, 0);
-    for (int i = 0; i < n; i++) {
-        prefix[i + 1] = prefix[i] + a[i];
-    }
-
-    // dp[i][j] = minimum cost to merge slimes [i, j]
-    const long long INF = 1e18;
-    vector<vector<long long>> dp(n, vector<long long>(n, INF));
-
-    // Base case: single slimes
-    for (int i = 0; i < n; i++) {
-        dp[i][i] = 0;
-    }
-
-    // Fill DP by increasing interval length
-    for (int len = 2; len <= n; len++) {
-        for (int i = 0; i <= n - len; i++) {
-            int j = i + len - 1;
-            long long range_sum = prefix[j + 1] - prefix[i];
-
-            for (int k = i; k < j; k++) {
-                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j] + range_sum);
-            }
-        }
-    }
-
-    cout << dp[0][n - 1] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -389,18 +339,9 @@ for length in range(2, n + 1):
 
 ### Mistake 2: Integer Overflow
 
-```cpp
-// WRONG: Using int when values can exceed 2^31
-int dp[n][n];  // May overflow!
-```
-
 **Problem:** With a[i] up to 10^9 and N up to 400, the total cost can exceed 10^11.
 
 **Fix:** Use `long long` in C++ or Python's native integers:
-```cpp
-vector<vector<long long>> dp(n, vector<long long>(n, INF));
-```
-
 ### Mistake 3: Forgetting to Add Merge Cost
 
 ```python
@@ -460,12 +401,14 @@ dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + range_sum(i, j))
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Fibonacci](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic DP warmup |
 | [Longest Common Subsequence](https://atcoder.jp/contests/dp/tasks/dp_f) | 2D DP practice |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Matrix Chain Multiplication](https://www.geeksforgeeks.org/matrix-chain-multiplication-dp-8/) | Same structure, different cost function |
@@ -473,6 +416,7 @@ dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + range_sum(i, j))
 | [Burst Balloons (LeetCode 312)](https://leetcode.com/problems/burst-balloons/) | Similar interval DP, different recurrence |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Optimal BST](https://www.geeksforgeeks.org/optimal-binary-search-tree-dp-24/) | Weighted interval DP |

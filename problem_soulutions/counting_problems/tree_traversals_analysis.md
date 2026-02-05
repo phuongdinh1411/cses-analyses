@@ -245,47 +245,6 @@ def solve():
     print(count_traversals(n, parents))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    // Precompute factorials
-    vector<long long> fact(n + 1);
-    fact[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        fact[i] = fact[i-1] * i % MOD;
-    }
-
-    // Count children for each node
-    vector<int> children_count(n + 1, 0);
-    for (int i = 2; i <= n; i++) {
-        int p;
-        cin >> p;
-        children_count[p]++;
-    }
-
-    // Compute product of factorials
-    long long result = 1;
-    for (int v = 1; v <= n; v++) {
-        result = result * fact[children_count[v]] % MOD;
-    }
-
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

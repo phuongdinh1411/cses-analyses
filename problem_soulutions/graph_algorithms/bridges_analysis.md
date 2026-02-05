@@ -291,87 +291,6 @@ if __name__ == "__main__":
 
 ---
 
-## Solution: C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class BridgeFinder {
-private:
-    int n, timer;
-    vector<vector<int>> adj;
-    vector<int> disc, low;
-    vector<pair<int,int>> bridges;
-
-    void dfs(int v, int parent) {
-        disc[v] = low[v] = timer++;
-
-        for (int u : adj[v]) {
-            if (u == parent) continue;  // Skip parent edge
-
-            if (disc[u] == -1) {        // Tree edge
-                dfs(u, v);
-                low[v] = min(low[v], low[u]);
-
-                if (low[u] > disc[v]) {
-                    bridges.push_back({v, u});
-                }
-            } else {                     // Back edge
-                low[v] = min(low[v], disc[u]);
-            }
-        }
-    }
-
-public:
-    BridgeFinder(int n) : n(n), timer(0), adj(n + 1),
-                          disc(n + 1, -1), low(n + 1, -1) {}
-
-    void addEdge(int u, int v) {
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    vector<pair<int,int>> findBridges() {
-        bridges.clear();
-        fill(disc.begin(), disc.end(), -1);
-        fill(low.begin(), low.end(), -1);
-        timer = 0;
-
-        for (int v = 1; v <= n; v++) {
-            if (disc[v] == -1) {
-                dfs(v, -1);
-            }
-        }
-        return bridges;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    BridgeFinder finder(n);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        finder.addEdge(a, b);
-    }
-
-    auto bridges = finder.findBridges();
-
-    for (auto& [u, v] : bridges) {
-        cout << u << " " << v << "\n";
-    }
-
-    return 0;
-}
-```
-
 ---
 
 ## Common Mistakes
@@ -492,18 +411,21 @@ if parent == -1 and children > 1:
 ## Related CSES Problems
 
 ### Direct Applications
+
 | Problem | Description |
 |---------|-------------|
 | [Road Reparation](https://cses.fi/problemset/task/1675) | MST, but understanding bridges helps |
 | [Flight Routes Check](https://cses.fi/problemset/task/1682) | Connectivity, SCC related |
 
 ### Prerequisite Problems
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Building Roads](https://cses.fi/problemset/task/1666) | Basic connectivity concepts |
 | [Counting Rooms](https://cses.fi/problemset/task/1192) | DFS traversal practice |
 
 ### Advanced Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | [Planets and Kingdoms](https://cses.fi/problemset/task/1683) | SCC (directed analog) |

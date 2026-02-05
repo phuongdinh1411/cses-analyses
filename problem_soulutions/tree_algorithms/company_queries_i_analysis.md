@@ -368,58 +368,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Implementation:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int LOG = 18;
-int up[200001][LOG];
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, q;
-    cin >> n >> q;
-
-    // Read parent for nodes 2 to n
-    up[1][0] = 0;  // root has no parent
-    for (int i = 2; i <= n; i++) {
-        cin >> up[i][0];
-    }
-
-    // Build binary lifting table
-    for (int j = 1; j < LOG; j++) {
-        for (int i = 1; i <= n; i++) {
-            if (up[i][j-1] != 0) {
-                up[i][j] = up[up[i][j-1]][j-1];
-            } else {
-                up[i][j] = 0;
-            }
-        }
-    }
-
-    // Answer queries
-    while (q--) {
-        int x, k;
-        cin >> x >> k;
-
-        int current = x;
-        for (int j = 0; j < LOG && current != 0; j++) {
-            if (k & (1 << j)) {
-                current = up[current][j];
-            }
-        }
-
-        cout << (current == 0 ? -1 : current) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |

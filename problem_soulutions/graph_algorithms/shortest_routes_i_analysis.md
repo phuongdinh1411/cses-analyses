@@ -109,8 +109,10 @@ Example Graph:
 
 Step 0: Initialize
 +-------+-------+-------+
+
 | Node  |   1   |   2   |   3   |
 +-------+-------+-------+-------+
+
 | dist  |   0   |  INF  |  INF  |
 +-------+-------+-------+-------+
 Priority Queue: [(0, 1)]
@@ -119,6 +121,7 @@ Step 1: Process node 1 (dist=0)
 - Relax edge 1->2: dist[2] = min(INF, 0+6) = 6
 - Relax edge 1->3: dist[3] = min(INF, 0+2) = 2
 +-------+-------+-------+-------+
+
 | dist  |   0   |   6   |   2   |
 +-------+-------+-------+-------+
 Priority Queue: [(2, 3), (6, 2)]
@@ -126,6 +129,7 @@ Priority Queue: [(2, 3), (6, 2)]
 Step 2: Process node 3 (dist=2) <- smallest!
 - Relax edge 3->2: dist[2] = min(6, 2+3) = 5  <- improved!
 +-------+-------+-------+-------+
+
 | dist  |   0   |   5   |   2   |
 +-------+-------+-------+-------+
 Priority Queue: [(5, 2), (6, 2)]
@@ -133,6 +137,7 @@ Priority Queue: [(5, 2), (6, 2)]
 Step 3: Process node 2 (dist=5)
 - No outgoing edges
 +-------+-------+-------+-------+
+
 | dist  |   0   |   5   |   2   |  <- FINAL
 +-------+-------+-------+-------+
 
@@ -264,73 +269,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, int> pli;  // (distance, node)
-
-const ll INF = 1e18;
-
-vector<ll> dijkstra(int n, vector<vector<pair<int, ll>>>& graph) {
-    vector<ll> dist(n + 1, INF);
-    vector<bool> processed(n + 1, false);
-
-    // Min-heap: (distance, node)
-    priority_queue<pli, vector<pli>, greater<pli>> pq;
-
-    dist[1] = 0;
-    pq.push({0, 1});
-
-    while (!pq.empty()) {
-        auto [d, u] = pq.top();
-        pq.pop();
-
-        // Skip if already processed
-        if (processed[u]) continue;
-        processed[u] = true;
-
-        // Relax all neighbors
-        for (auto [v, w] : graph[u]) {
-            if (dist[u] + w < dist[v]) {
-                dist[v] = dist[u] + w;
-                pq.push({dist[v], v});
-            }
-        }
-    }
-
-    return dist;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<pair<int, ll>>> graph(n + 1);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        ll c;
-        cin >> a >> b >> c;
-        graph[a].push_back({b, c});
-    }
-
-    vector<ll> dist = dijkstra(n, graph);
-
-    for (int i = 1; i <= n; i++) {
-        cout << dist[i] << (i < n ? " " : "\n");
-    }
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 ### 1. Not Skipping Processed Nodes
@@ -353,28 +291,12 @@ while pq:
 
 ### 2. Using Max-Heap Instead of Min-Heap
 
-```cpp
-// WRONG - C++ priority_queue is MAX-heap by default!
-priority_queue<pli> pq;  // Processes largest distance first
-
-// CORRECT - Use greater<> for min-heap
-priority_queue<pli, vector<pli>, greater<pli>> pq;
-```
-
 ```python
 # Python's heapq is already a min-heap - no issue here
 # But be careful with custom comparisons!
 ```
 
 ### 3. Integer Overflow
-
-```cpp
-// WRONG - int overflow when distances are large
-int dist[N];  // Distances can exceed 10^9 * 10^5 = 10^14
-
-// CORRECT - use long long
-long long dist[N];
-```
 
 ### 4. Forgetting to Handle Unreachable Nodes
 

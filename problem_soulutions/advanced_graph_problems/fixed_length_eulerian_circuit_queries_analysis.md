@@ -326,105 +326,7 @@ for _ in range(m):
 find_eulerian_circuit(n, edges)
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<pair<int, int>>> adj(n + 1);
-    vector<int> degree(n + 1, 0);
-    vector<bool> used(m, false);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back({b, i});
-        adj[b].push_back({a, i});
-        degree[a]++;
-        degree[b]++;
-    }
-
-    // Check even degree condition
-    for (int i = 1; i <= n; i++) {
-        if (degree[i] % 2 != 0) {
-            cout << "IMPOSSIBLE\n";
-            return 0;
-        }
-    }
-
-    // Check if node 1 has edges
-    if (degree[1] == 0) {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-
-    // Connectivity check using DFS
-    vector<bool> visited(n + 1, false);
-    stack<int> dfs_stack;
-    dfs_stack.push(1);
-    while (!dfs_stack.empty()) {
-        int node = dfs_stack.top();
-        dfs_stack.pop();
-        if (visited[node]) continue;
-        visited[node] = true;
-        for (auto& [neighbor, _] : adj[node]) {
-            if (!visited[neighbor]) {
-                dfs_stack.push(neighbor);
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (degree[i] > 0 && !visited[i]) {
-            cout << "IMPOSSIBLE\n";
-            return 0;
-        }
-    }
-
-    // Hierholzer's algorithm
-    vector<int> ptr(n + 1, 0);
-    vector<int> circuit;
-    stack<int> st;
-    st.push(1);
-
-    while (!st.empty()) {
-        int v = st.top();
-        while (ptr[v] < adj[v].size() && used[adj[v][ptr[v]].second]) {
-            ptr[v]++;
-        }
-        if (ptr[v] < adj[v].size()) {
-            auto [u, idx] = adj[v][ptr[v]];
-            used[idx] = true;
-            ptr[v]++;
-            st.push(u);
-        } else {
-            circuit.push_back(v);
-            st.pop();
-        }
-    }
-
-    if (circuit.size() != m + 1) {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-
-    for (int i = 0; i < circuit.size(); i++) {
-        cout << circuit[i] << " \n"[i == circuit.size() - 1];
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -507,18 +409,21 @@ start = next(node for node in range(1, n+1) if degree[node] > 0)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Round Trip](https://cses.fi/problemset/task/1669) | Basic cycle detection |
 | [Building Roads](https://cses.fi/problemset/task/1666) | Graph connectivity |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Teleporters Path](https://cses.fi/problemset/task/1693) | Directed graph, Eulerian path |
 | [De Bruijn Sequence](https://cses.fi/problemset/task/1692) | Construct Eulerian path on implicit graph |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Hamiltonian Flights](https://cses.fi/problemset/task/1690) | Visit each node once (NP-hard, use DP) |

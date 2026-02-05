@@ -275,47 +275,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long solve(long long y, long long x) {
-    long long k = max(y, x);  // Layer number
-
-    if (k % 2 == 1) {  // Odd layer
-        if (y >= x) {
-            return (k - 1) * (k - 1) + y;
-        } else {
-            return k * k - y + 1;
-        }
-    } else {  // Even layer
-        if (y >= x) {
-            return k * k - x + 1;
-        } else {
-            return (k - 1) * (k - 1) + x;
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t;
-    cin >> t;
-
-    while (t--) {
-        long long y, x;
-        cin >> y >> x;
-        cout << solve(y, x) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -360,14 +319,6 @@ def solve_wrong(y, x):
 **Fix:** Use the coordinates as given; they are already 1-indexed.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - Using int instead of long long
-int solve_wrong(int y, int x) {
-    int k = max(y, x);
-    return k * k - x + 1;  // Overflow when k = 10^9!
-}
-```
 
 **Problem:** When y, x can be up to 10^9, k^2 can be up to 10^18, exceeding 32-bit int range.
 
@@ -425,6 +376,7 @@ if y > x:  # Should be y >= x
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Two Knights](https://cses.fi/problemset/task/1072) | Counting problem with formula derivation |
@@ -432,6 +384,7 @@ if y > x:  # Should be y >= x
 | [LeetCode 54 - Spiral Matrix](https://leetcode.com/problems/spiral-matrix/) | Traverse spiral order |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 885 - Spiral Matrix III](https://leetcode.com/problems/spiral-matrix-iii/) | Bounded spiral with coordinates |

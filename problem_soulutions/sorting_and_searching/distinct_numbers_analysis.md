@@ -69,31 +69,6 @@ arr = list(map(int, input().split()))
 print(len(set(arr)))
 ```
 
-### C++
-```cpp
-#include <iostream>
-#include <unordered_set>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    unordered_set<int> seen;
-    for (int i = 0; i < n; i++) {
-        int x;
-        cin >> x;
-        seen.insert(x);
-    }
-
-    cout << seen.size() << "\n";
-    return 0;
-}
-```
-
 ## Approach 2: Sorting
 
 **Idea:** Sort the array. After sorting, duplicates are adjacent. Count positions where `arr[i] != arr[i-1]`.
@@ -122,38 +97,6 @@ for i in range(1, n):
     if arr[i] != arr[i-1]:
         count += 1
 print(count)
-```
-
-### C++
-```cpp
-#include <iostream>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    int arr[200001];
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    sort(arr, arr + n);
-
-    int count = 1;  // First element is always distinct
-    for (int i = 1; i < n; i++) {
-        if (arr[i] != arr[i-1]) {
-            count++;
-        }
-    }
-
-    cout << count << "\n";
-    return 0;
-}
 ```
 
 ## Comparison: When to Use Which?

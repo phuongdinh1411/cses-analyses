@@ -239,41 +239,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (long long k = 1; k <= n; k++) {
-        // Total squares on k x k board
-        long long total_squares = k * k;
-
-        // Total ways to place 2 knights: C(k^2, 2)
-        long long total_placements = total_squares * (total_squares - 1) / 2;
-
-        // Attacking pairs from 2x3 and 3x2 rectangles
-        // Each rectangle has 2 attacking diagonal pairs
-        long long attacking_pairs = 4 * (k - 1) * (k - 2);
-
-        // Answer = Total - Attacking
-        long long answer = total_placements - attacking_pairs;
-
-        cout << answer << "\n";
-    }
-
-    return 0;
-}
-```
-
-### Complexity Analysis
+#### Complexity Analysis
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -285,14 +251,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - overflow for large k
-int total = k * k * (k * k - 1) / 2;
-
-// CORRECT - use long long
-long long total = (long long)k * k * (k * k - 1) / 2;
-```
 
 **Problem:** For k = 10000, k^4 exceeds int range (10^16 > 2^31).
 **Fix:** Use `long long` and cast before multiplication.
@@ -374,18 +332,21 @@ for k in range(1, n + 1):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Basic chess piece placement |
 | [Apple Division](https://cses.fi/problemset/task/1623) | Combinatorial counting basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Grid Paths](https://cses.fi/problemset/task/1625) | Counting paths on a grid |
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | More complex combinatorics |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Two Bishops](https://codeforces.com/problemset/problem/1466/E) | Different piece, different pattern |

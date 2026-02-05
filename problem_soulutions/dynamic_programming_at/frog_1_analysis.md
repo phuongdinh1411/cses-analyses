@@ -271,39 +271,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<int> h(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i];
-    }
-
-    vector<int> dp(n);
-    dp[0] = 0;
-    if (n > 1) dp[1] = abs(h[1] - h[0]);
-
-    for (int i = 2; i < n; i++) {
-        int from_prev = dp[i - 1] + abs(h[i] - h[i - 1]);
-        int from_prev2 = dp[i - 2] + abs(h[i] - h[i - 2]);
-        dp[i] = min(from_prev, from_prev2);
-    }
-
-    cout << dp[n - 1] << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -355,46 +322,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-**C++:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<int> h(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i];
-    }
-
-    if (n == 1) {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    int prev2 = 0;
-    int prev1 = abs(h[1] - h[0]);
-
-    for (int i = 2; i < n; i++) {
-        int curr = min(
-            prev1 + abs(h[i] - h[i - 1]),
-            prev2 + abs(h[i] - h[i - 2])
-        );
-        prev2 = prev1;
-        prev1 = curr;
-    }
-
-    cout << prev1 << endl;
-    return 0;
-}
 ```
 
 ### Complexity

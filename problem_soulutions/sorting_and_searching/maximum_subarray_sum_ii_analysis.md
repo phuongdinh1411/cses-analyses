@@ -280,53 +280,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++ with multiset)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, a, b;
-    cin >> n >> a >> b;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Build prefix sums
-    vector<long long> prefix(n + 1);
-    prefix[0] = 0;
-    for (int i = 0; i < n; i++) {
-        prefix[i + 1] = prefix[i] + arr[i];
-    }
-
-    // Multiset to track minimum prefix in valid window
-    multiset<long long> window;
-    long long max_sum = LLONG_MIN;
-
-    for (int j = a; j <= n; j++) {
-        // Add prefix[j-a] to window
-        window.insert(prefix[j - a]);
-
-        // Remove prefix[j-b-1] if out of range
-        if (j > b) {
-            window.erase(window.find(prefix[j - b - 1]));
-        }
-
-        // Current best: prefix[j] - minimum in window
-        max_sum = max(max_sum, prefix[j] - *window.begin());
-    }
-
-    cout << max_sum << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -344,56 +297,6 @@ For this specific problem, we can use a **monotonic deque** to achieve O(n) time
 
 > **The Trick:** Maintain a deque of indices where prefix values are strictly increasing. The front always has the minimum.
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, a, b;
-    cin >> n >> a >> b;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Build prefix sums
-    vector<long long> prefix(n + 1);
-    for (int i = 0; i < n; i++) {
-        prefix[i + 1] = prefix[i] + arr[i];
-    }
-
-    // Monotonic deque storing indices with increasing prefix values
-    deque<int> dq;
-    long long max_sum = LLONG_MIN;
-
-    for (int j = a; j <= n; j++) {
-        // Add index (j-a) to deque, maintaining monotonic property
-        int new_idx = j - a;
-        while (!dq.empty() && prefix[dq.back()] >= prefix[new_idx]) {
-            dq.pop_back();
-        }
-        dq.push_back(new_idx);
-
-        // Remove indices that are out of valid range [j-b, j-a]
-        while (!dq.empty() && dq.front() < j - b) {
-            dq.pop_front();
-        }
-
-        // Front of deque has minimum prefix in valid window
-        max_sum = max(max_sum, prefix[j] - prefix[dq.front()]);
-    }
-
-    cout << max_sum << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -407,57 +310,20 @@ int main() {
 
 ### Mistake 1: Integer Overflow
 
-```cpp
-// WRONG - may overflow with int
-int prefix[n + 1];
-prefix[i + 1] = prefix[i] + arr[i];  // overflow!
-
-// CORRECT - use long long
-long long prefix[n + 1];
-```
-
 **Problem:** With n = 2*10^5 elements each up to 10^9, prefix sums can reach 2*10^14.
 **Fix:** Always use `long long` for prefix sums.
 
 ### Mistake 2: Wrong Window Bounds
-
-```cpp
-// WRONG - off-by-one error
-if (j >= b) {
-    window.erase(window.find(prefix[j - b]));  // Wrong index!
-}
-
-// CORRECT
-if (j > b) {
-    window.erase(window.find(prefix[j - b - 1]));
-}
-```
 
 **Problem:** The valid range is [j-b, j-a], so we remove j-b-1 when j > b.
 **Fix:** Carefully derive the window boundaries on paper first.
 
 ### Mistake 3: Using erase() Instead of find() in Multiset
 
-```cpp
-// WRONG - erases ALL elements with this value
-window.erase(prefix[j - b - 1]);
-
-// CORRECT - erase only one occurrence
-window.erase(window.find(prefix[j - b - 1]));
-```
-
 **Problem:** `multiset::erase(value)` removes all matching elements.
 **Fix:** Use `erase(find(value))` to remove exactly one occurrence.
 
 ### Mistake 4: Initializing max_sum to 0
-
-```cpp
-// WRONG - fails when all elements are negative
-long long max_sum = 0;
-
-// CORRECT
-long long max_sum = LLONG_MIN;
-```
 
 **Problem:** If all array elements are negative, the answer will be negative.
 **Fix:** Initialize to the smallest possible value.
@@ -500,12 +366,14 @@ long long max_sum = LLONG_MIN;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Maximum Subarray Sum (CSES)](https://cses.fi/problemset/task/1643) | Basic Kadane's algorithm without length constraint |
 | [Sliding Window Maximum (LeetCode 239)](https://leetcode.com/problems/sliding-window-maximum/) | Practice monotonic deque technique |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarray Sums I (CSES)](https://cses.fi/problemset/task/1660) | Count subarrays with target sum |
@@ -513,6 +381,7 @@ long long max_sum = LLONG_MIN;
 | [Shortest Subarray with Sum at Least K (LeetCode 862)](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/) | Minimum length with sum constraint |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Maximum Sum Circular Subarray (LeetCode 918)](https://leetcode.com/problems/maximum-sum-circular-subarray/) | Handle circular array |

@@ -297,34 +297,6 @@ def sos_dp(n: int, A: list[int]) -> list[int]:
     return dp
 ```
 
-### Code (C++)
-
-```cpp
-#include <vector>
-using namespace std;
-
-vector<long long> sos_dp(int n, vector<long long>& A) {
-    /*
-     * SOS DP: Sum over Subsets in O(n * 2^n).
-     *
-     * Time: O(n * 2^n)
-     * Space: O(2^n)
-     */
-    int size = 1 << n;
-    vector<long long> dp(A);  // Copy input array
-
-    for (int i = 0; i < n; i++) {          // Process each bit
-        for (int mask = 0; mask < size; mask++) {
-            if (mask & (1 << i)) {          // If bit i is set
-                dp[mask] += dp[mask ^ (1 << i)];
-            }
-        }
-    }
-
-    return dp;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -390,16 +362,6 @@ dp = A.copy()  # Also Python
 vector<ll> dp(A);  // C++
 ```
 
-### Mistake 4: Integer Overflow (C++)
-
-```cpp
-// WRONG: Using int for large sums
-vector<int> dp(A);
-
-// CORRECT: Use long long
-vector<long long> dp(A.begin(), A.end());
-```
-
 ---
 
 ## Edge Cases
@@ -462,18 +424,21 @@ def superset_dp(n: int, A: list[int]) -> list[int]:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Hamiltonian Flights (CSES)](https://cses.fi/problemset/task/1690) | Bitmask DP fundamentals |
 | [Two Sets II (CSES)](https://cses.fi/problemset/task/1093) | Subset sum DP basics |
 
 ### Direct Applications
+
 | Problem | Key Concept |
 |---------|-------------|
 | [Codeforces - Compatible Numbers](https://codeforces.com/contest/165/problem/E) | Find subset with AND = 0 |
 | [Codeforces - AND, OR and Square Sum](https://codeforces.com/contest/1368/problem/D) | AND convolution application |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Codeforces - Inverse the Problem](https://codeforces.com/contest/727/problem/E) | SOS with tree reconstruction |

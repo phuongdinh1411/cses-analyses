@@ -310,68 +310,7 @@ if __name__ == "__main__":
     solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> findPeriods(const string& s) {
-    int n = s.length();
-
-    // Step 1: Build KMP failure function
-    vector<int> lps(n, 0);
-    int len = 0;
-    int i = 1;
-
-    while (i < n) {
-        if (s[i] == s[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len != 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    // Step 2: Find all periods by following border chain
-    vector<int> periods;
-    int border = lps[n - 1];
-
-    while (border > 0) {
-        periods.push_back(n - border);
-        border = lps[border - 1];
-    }
-    periods.push_back(n);
-
-    return periods;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-
-    vector<int> periods = findPeriods(s);
-
-    for (int i = 0; i < periods.size(); i++) {
-        if (i > 0) cout << ' ';
-        cout << periods[i];
-    }
-    cout << '\n';
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|

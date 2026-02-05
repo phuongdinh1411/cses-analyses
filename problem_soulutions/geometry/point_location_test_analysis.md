@@ -152,10 +152,13 @@ Step 4: Determine position
 ```
 y
 ^
+
 |       P3(2,3)
 |      /
+
 |     /  v2=(1,2)     P2(5,3)
 |    /              /
+
 |   P1(1,1)-------/
 |         v1=(4,2)
 |
@@ -197,44 +200,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int t;
-    cin >> t;
-
-    while (t--) {
-        long long x1, y1, x2, y2, x3, y3;
-        cin >> x1 >> y1 >> x2 >> y2 >> x3 >> y3;
-
-        // Vector from P1 to P2
-        long long v1x = x2 - x1, v1y = y2 - y1;
-        // Vector from P1 to P3
-        long long v2x = x3 - x1, v2y = y3 - y1;
-
-        // Cross product: v1 x v2
-        long long cross = v1x * v2y - v1y * v2x;
-
-        if (cross > 0) {
-            cout << "LEFT\n";
-        } else if (cross < 0) {
-            cout << "RIGHT\n";
-        } else {
-            cout << "TOUCH\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -247,14 +212,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow with int
-int cross = (x2-x1) * (y3-y1) - (y2-y1) * (x3-x1);
-
-// CORRECT - use long long
-long long cross = (long long)(x2-x1) * (y3-y1) - (long long)(y2-y1) * (x3-x1);
-```
 
 **Problem:** With coordinates up to 10^9, the cross product can exceed 2^31.
 **Fix:** Use `long long` in C++ or Python's arbitrary precision integers.
@@ -335,6 +292,7 @@ def cross_product(o, a, b):
 ## Related Problems
 
 ### CSES Geometry Problems
+
 | Problem | Key Concept |
 |---------|-------------|
 | [Line Segment Intersection](https://cses.fi/problemset/task/2190) | Cross product for segment tests |
@@ -343,6 +301,7 @@ def cross_product(o, a, b):
 | [Convex Hull](https://cses.fi/problemset/task/2195) | Cross product for turn direction |
 
 ### Similar Difficulty
+
 | Problem | Technique |
 |---------|-----------|
 | [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem with area |

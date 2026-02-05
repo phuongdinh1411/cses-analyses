@@ -221,34 +221,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    long long n;
-    cin >> n;
-
-    cout << n;
-    while (n != 1) {
-        if (n % 2 == 0) {
-            n = n / 2;
-        } else {
-            n = n * 3 + 1;
-        }
-        cout << " " << n;
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -261,18 +233,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG (in C++ with int)
-int n;
-cin >> n;
-n = n * 3 + 1;  // May overflow for large n!
-
-// CORRECT
-long long n;
-cin >> n;
-n = n * 3 + 1;  // Safe with 64-bit integer
-```
 
 **Problem:** When n is large and odd, multiplying by 3 and adding 1 can exceed the 32-bit integer limit.
 **Fix:** Use `long long` in C++ or Python's built-in arbitrary precision integers.
@@ -353,17 +313,20 @@ while n != 1:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Missing Number](https://cses.fi/problemset/task/1083) | Basic input/output handling |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Increasing Array](https://cses.fi/problemset/task/1094) | Simple simulation with counting |
 | [Repetitions](https://cses.fi/problemset/task/1069) | Sequence traversal |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Number Spiral](https://cses.fi/problemset/task/1071) | Mathematical pattern finding |

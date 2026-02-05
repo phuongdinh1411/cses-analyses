@@ -265,57 +265,6 @@ def longest_with_k_distinct(arr, k):
     return max_len
 ```
 
-**C++:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long atMost(vector<int>& arr, int k) {
-    if (k < 0) return 0;
-
-    unordered_map<int, int> count;
-    int left = 0;
-    long long result = 0;
-
-    for (int right = 0; right < arr.size(); right++) {
-        count[arr[right]]++;
-
-        while (count.size() > k) {
-            count[arr[left]]--;
-            if (count[arr[left]] == 0) {
-                count.erase(arr[left]);
-            }
-            left++;
-        }
-
-        result += right - left + 1;
-    }
-
-    return result;
-}
-
-long long subarraysWithKDistinct(vector<int>& arr, int k) {
-    return atMost(arr, k) - atMost(arr, k - 1);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    cout << subarraysWithKDistinct(arr, k) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -410,12 +359,14 @@ left += 1
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [LeetCode 3: Longest Substring Without Repeating](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Basic sliding window for distinct elements |
 | [LeetCode 219: Contains Duplicate II](https://leetcode.com/problems/contains-duplicate-ii/) | Sliding window with hash map |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [LeetCode 992: Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) | Same problem |
@@ -423,6 +374,7 @@ left += 1
 | [LeetCode 904: Fruit Into Baskets](https://leetcode.com/problems/fruit-into-baskets/) | At most 2 distinct (k=2) |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 1248: Count Nice Subarrays](https://leetcode.com/problems/count-number-of-nice-subarrays/) | Exactly k odd numbers |

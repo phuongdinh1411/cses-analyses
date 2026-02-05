@@ -339,89 +339,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-
-class SegmentTree {
-private:
-    int n;
-    vector<ll> tree;
-
-    void update(int node, int start, int end, int idx, ll val) {
-        if (start == end) {
-            tree[node] = max(tree[node], val);
-            return;
-        }
-        int mid = (start + end) / 2;
-        if (idx <= mid)
-            update(2 * node, start, mid, idx, val);
-        else
-            update(2 * node + 1, mid + 1, end, idx, val);
-        tree[node] = max(tree[2 * node], tree[2 * node + 1]);
-    }
-
-    ll query(int node, int start, int end, int l, int r) {
-        if (r < start || end < l) return 0;
-        if (l <= start && end <= r) return tree[node];
-        int mid = (start + end) / 2;
-        return max(query(2 * node, start, mid, l, r),
-                   query(2 * node + 1, mid + 1, end, l, r));
-    }
-
-public:
-    SegmentTree(int n) : n(n), tree(4 * n, 0) {}
-
-    void update(int idx, ll val) {
-        update(1, 0, n - 1, idx, val);
-    }
-
-    ll query(int l, int r) {
-        return query(1, 0, n - 1, l, r);
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    // Group intervals by right endpoint
-    vector<vector<pair<int, ll>>> by_right(n + 1);
-
-    for (int i = 0; i < m; i++) {
-        int l, r;
-        ll a;
-        cin >> l >> r >> a;
-        by_right[r].push_back({l, a});
-    }
-
-    SegmentTree seg(n + 2);
-
-    for (int r = 1; r <= n; r++) {
-        // Process intervals ending at r
-        for (auto& [l, score] : by_right[r]) {
-            ll best_before = seg.query(0, l - 1);
-            ll candidate = best_before + score;
-            seg.update(r, candidate);
-        }
-
-        // Propagate: dp[r] >= dp[r-1]
-        ll prev_max = seg.query(0, r - 1);
-        seg.update(r, prev_max);
-    }
-
-    cout << seg.query(0, n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -461,16 +378,6 @@ best_before = seg.query(0, l - 1)
 **Fix:** Query range [0, l-1] to ensure no overlap with interval [l, r].
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - Using int for scores
-int best = seg.query(0, l - 1);
-int candidate = best + score;  // Overflow!
-
-// CORRECT - Use long long
-ll best = seg.query(0, l - 1);
-ll candidate = best + score;
-```
 
 **Problem:** Scores can be up to 10^9, sum of M scores can exceed int range.
 **Fix:** Use `long long` in C++ or Python's native big integers.

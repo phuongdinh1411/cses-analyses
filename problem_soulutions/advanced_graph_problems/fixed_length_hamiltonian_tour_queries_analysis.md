@@ -288,54 +288,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a - 1].push_back(b - 1);  // 0-indexed
-    }
-
-    // dp[mask][i] = count of paths with visited set 'mask' ending at i
-    vector<vector<long long>> dp(1 << n, vector<long long>(n, 0));
-
-    // Base case: start at vertex 0
-    dp[1][0] = 1;
-
-    for (int mask = 1; mask < (1 << n); mask++) {
-        for (int i = 0; i < n; i++) {
-            if (dp[mask][i] == 0) continue;
-            if (!(mask & (1 << i))) continue;
-
-            for (int j : adj[i]) {
-                if (!(mask & (1 << j))) {  // j not visited
-                    int new_mask = mask | (1 << j);
-                    dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD;
-                }
-            }
-        }
-    }
-
-    int full_mask = (1 << n) - 1;
-    cout << dp[full_mask][n - 1] << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -388,14 +340,6 @@ for i in range(n):
 ```
 
 ### Mistake 4: Modular Arithmetic Overflow
-
-```cpp
-// WRONG - may overflow before modulo
-dp[new_mask][j] = dp[new_mask][j] + dp[mask][i];
-
-// CORRECT - apply modulo after each addition
-dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD;
-```
 
 ---
 

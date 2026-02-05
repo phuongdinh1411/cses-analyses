@@ -285,70 +285,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-int n;
-
-typedef vector<vector<long long>> Matrix;
-
-Matrix multiply(const Matrix& A, const Matrix& B) {
-    Matrix C(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matpow(Matrix M, long long p) {
-    // Identity matrix
-    Matrix result(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) result[i][i] = 1;
-
-    while (p > 0) {
-        if (p & 1) result = multiply(result, M);
-        M = multiply(M, M);
-        p >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> n >> q;
-
-    Matrix adj(n, vector<long long>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> adj[i][j];
-        }
-    }
-
-    while (q--) {
-        int a;
-        long long k;
-        cin >> a >> k;
-        a--;  // Convert to 0-indexed
-
-        Matrix powered = matpow(adj, k);
-        cout << powered[a][a] << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -450,12 +386,14 @@ base = [row[:] for row in M]
 ## Related Problems
 
 ### Prerequisite Problems
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) | Core technique for fast powers |
 | Matrix Multiplication basics | Foundation for this problem |
 
 ### Similar CSES Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Graph Paths I](https://cses.fi/problemset/task/1723) | Count paths from 1 to n of length k |
@@ -463,6 +401,7 @@ base = [row[:] for row in M]
 | [Dice Probability](https://cses.fi/problemset/task/1725) | Matrix exp for probability |
 
 ### Harder Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | Shortest path of exactly k edges | Min-plus matrix multiplication |

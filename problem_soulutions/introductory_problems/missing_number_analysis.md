@@ -98,32 +98,6 @@ arr = list(map(int, input().split()))
 print(find_missing_sum(n, arr))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    long long n;
-    cin >> n;
-
-    long long expected_sum = n * (n + 1) / 2;
-    long long actual_sum = 0;
-
-    for (int i = 0; i < n - 1; i++) {
-        long long x;
-        cin >> x;
-        actual_sum += x;
-    }
-
-    cout << expected_sum - actual_sum << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -194,35 +168,6 @@ arr = list(map(int, input().split()))
 print(find_missing_xor(n, arr))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    int result = 0;
-
-    for (int i = 1; i <= n; i++) {
-        result ^= i;
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int x;
-        cin >> x;
-        result ^= x;
-    }
-
-    cout << result << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -235,14 +180,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow with Sum Formula
-
-```cpp
-// WRONG - overflow for large n
-int expected = n * (n + 1) / 2;  // int may overflow
-
-// CORRECT - use long long
-long long expected = (long long)n * (n + 1) / 2;
-```
 
 **Problem:** For n = 2*10^5, the sum is approximately 2*10^10, exceeding int range.
 
@@ -259,14 +196,6 @@ for i in range(1, n + 1):  # 1 to n
 ```
 
 ### Mistake 3: Reading Wrong Number of Inputs
-
-```cpp
-// WRONG - reading n numbers
-for (int i = 0; i < n; i++) { cin >> x; }
-
-// CORRECT - we have n-1 numbers
-for (int i = 0; i < n - 1; i++) { cin >> x; }
-```
 
 ---
 
@@ -301,6 +230,7 @@ for (int i = 0; i < n - 1; i++) { cin >> x; }
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Repetitions](https://cses.fi/problemset/task/1069) | Pattern recognition in strings |
@@ -308,6 +238,7 @@ for (int i = 0; i < n - 1; i++) { cin >> x; }
 | [LeetCode 268: Missing Number](https://leetcode.com/problems/missing-number/) | Same problem, 0-indexed |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [LeetCode 287: Find Duplicate](https://leetcode.com/problems/find-the-duplicate-number/) | Floyd's cycle detection |

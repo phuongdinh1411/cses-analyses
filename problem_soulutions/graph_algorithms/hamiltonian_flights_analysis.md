@@ -245,63 +245,6 @@ if __name__ == "__main__":
     print(count_hamiltonian_paths(n, edges))  # Output: 2
 ```
 
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    // Build adjacency list (0-indexed)
-    vector<vector<int>> adj(n);
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a - 1].push_back(b - 1);
-    }
-
-    // dp[mask][v] = number of paths ending at v with visited set = mask
-    vector<vector<long long>> dp(1 << n, vector<long long>(n, 0));
-
-    // Base case: at city 0, only city 0 visited
-    dp[1][0] = 1;
-
-    // Iterate over all masks
-    for (int mask = 1; mask < (1 << n); mask++) {
-        for (int v = 0; v < n; v++) {
-            // Skip if city v is not in current mask
-            if (!(mask & (1 << v))) continue;
-
-            // Skip if no paths reach this state
-            if (dp[mask][v] == 0) continue;
-
-            // Try extending to unvisited neighbors
-            for (int u : adj[v]) {
-                // Check if city u is not visited
-                if (!(mask & (1 << u))) {
-                    int new_mask = mask | (1 << u);
-                    dp[new_mask][u] = (dp[new_mask][u] + dp[mask][v]) % MOD;
-                }
-            }
-        }
-    }
-
-    // Answer: all cities visited, at city n-1
-    int full_mask = (1 << n) - 1;
-    cout << dp[full_mask][n - 1] << "\n";
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 | Mistake | Problem | Fix |

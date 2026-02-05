@@ -120,58 +120,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int parent[100001], sz[100001];
-int components, maxSize;
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-void unite(int a, int b) {
-    int ra = find(a), rb = find(b);
-    if (ra == rb) return;
-
-    if (sz[ra] < sz[rb]) swap(ra, rb);
-    parent[rb] = ra;
-    sz[ra] += sz[rb];
-
-    components--;
-    maxSize = max(maxSize, sz[ra]);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    components = n;
-    maxSize = 1;
-    for (int i = 1; i <= n; i++) {
-        parent[i] = i;
-        sz[i] = 1;
-    }
-
-    while (m--) {
-        int a, b;
-        cin >> a >> b;
-        unite(a, b);
-        cout << components << " " << maxSize << "\n";
-    }
-
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Operation | Time | Space |
 |-----------|------|-------|

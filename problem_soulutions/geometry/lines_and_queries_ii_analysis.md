@@ -255,63 +255,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-typedef pair<ll, ll> Line;
-const ll INF = 1e18, MIN_X = -1e9, MAX_X = 1e9;
-
-struct LiChaoTree {
-    struct Node {
-        Line line; bool has = false;
-        int left = -1, right = -1;
-    };
-    vector<Node> nodes;
-    ll lo, hi;
-
-    LiChaoTree(ll lo, ll hi) : lo(lo), hi(hi) { nodes.emplace_back(); }
-
-    ll eval(Line& l, ll x) { return l.first * x + l.second; }
-
-    void insert(Line nl, int v, ll l, ll r) {
-        if (!nodes[v].has) { nodes[v].line = nl; nodes[v].has = true; return; }
-        ll mid = (l + r) / 2;
-        bool wins_mid = eval(nl, mid) < eval(nodes[v].line, mid);
-        bool wins_left = eval(nl, l) < eval(nodes[v].line, l);
-        if (wins_mid) swap(nodes[v].line, nl);
-        if (l == r) return;
-        int& child = (wins_left != wins_mid) ? nodes[v].left : nodes[v].right;
-        ll nl_l = (wins_left != wins_mid) ? l : mid + 1;
-        ll nl_r = (wins_left != wins_mid) ? mid : r;
-        if (child == -1) { child = nodes.size(); nodes.emplace_back(); }
-        insert(nl, child, nl_l, nl_r);
-    }
-
-    ll query(ll x, int v, ll l, ll r) {
-        if (v == -1) return INF;
-        ll res = nodes[v].has ? eval(nodes[v].line, x) : INF;
-        if (l == r) return res;
-        ll mid = (l + r) / 2;
-        return min(res, x <= mid ? query(x, nodes[v].left, l, mid)
-                                 : query(x, nodes[v].right, mid+1, r));
-    }
-
-    void insert(ll m, ll b) { insert({m,b}, 0, lo, hi); }
-    ll query(ll x) { return query(x, 0, lo, hi); }
-};
-
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    int n, q; cin >> n >> q;
-    LiChaoTree tree(MIN_X, MAX_X);
-    for (int i = 0; i < n; i++) { ll m, b; cin >> m >> b; tree.insert(m, b); }
-    for (int i = 0; i < q; i++) { ll x; cin >> x; cout << tree.query(x) << "\n"; }
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -326,18 +269,6 @@ Where C = MAX_X - MIN_X (coordinate range).
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow
-int eval(int m, int b, int x) {
-    return m * x + b;  // m and x can be 10^9 each!
-}
-
-// CORRECT - use long long
-long long eval(long long m, long long b, long long x) {
-    return m * x + b;
-}
-```
 
 **Problem:** m * x can exceed 10^18, causing overflow.
 **Fix:** Use `long long` for all calculations.
@@ -410,17 +341,20 @@ def query(self, x):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Line Segment Intersection Queries I](https://cses.fi/problemset/task/2189) | Simpler CHT with sorted queries |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Frog 3 (AtCoder DP)](https://atcoder.jp/contests/dp/tasks/dp_z) | CHT application in DP |
 | [Polynomial Queries](https://cses.fi/problemset/task/1736) | Different segment tree application |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Covered Points Count](https://cses.fi/problemset/task/2168) | Coordinate compression with sweepline |

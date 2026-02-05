@@ -136,46 +136,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> children[200005];
-int subtree_size[200005];
-
-void dfs(int node) {
-    subtree_size[node] = 1;
-    for (int child : children[node]) {
-        dfs(child);
-        subtree_size[node] += subtree_size[child];
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (int i = 2; i <= n; i++) {
-        int parent;
-        cin >> parent;
-        children[parent].push_back(i);
-    }
-
-    dfs(1);
-
-    for (int i = 1; i <= n; i++) {
-        cout << subtree_size[i] << " \n"[i == n];
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -234,55 +194,6 @@ def solve_iterative():
     print(' '.join(map(str, subtree_size[1:])))
 
 solve_iterative()
-```
-
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<vector<int>> children(n + 1);
-    for (int i = 2; i <= n; i++) {
-        int parent;
-        cin >> parent;
-        children[parent].push_back(i);
-    }
-
-    vector<int> subtree_size(n + 1, 0);
-    stack<pair<int, bool>> stk;
-    stk.push({1, false});
-
-    while (!stk.empty()) {
-        auto [node, processed] = stk.top();
-        stk.pop();
-
-        if (processed) {
-            subtree_size[node] = 1;
-            for (int child : children[node]) {
-                subtree_size[node] += subtree_size[child];
-            }
-        } else {
-            stk.push({node, true});
-            for (int child : children[node]) {
-                stk.push({child, false});
-            }
-        }
-    }
-
-    for (int i = 1; i <= n; i++) {
-        cout << subtree_size[i] << " \n"[i == n];
-    }
-
-    return 0;
-}
 ```
 
 ### Complexity
@@ -404,12 +315,14 @@ if n == 1:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates](https://cses.fi/problemset/task/1674) | This exact problem |
 | [Tree Matching](https://cses.fi/problemset/task/1130) | Basic tree DP |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Diameter](https://cses.fi/problemset/task/1131) | Find longest path |
@@ -417,6 +330,7 @@ if n == 1:
 | [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances from each node |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Company Queries I](https://cses.fi/problemset/task/1687) | Binary lifting for LCA |

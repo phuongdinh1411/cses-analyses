@@ -187,44 +187,7 @@ n = int(input())
 print(removing_digits(n))
 ```
 
-### C++ Solution
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    // dp[i] = minimum steps to reduce i to 0
-    vector<int> dp(n + 1, 0);
-
-    for (int i = 1; i <= n; i++) {
-        dp[i] = 1e9;  // Initialize to large value
-
-        // Extract and try each digit
-        int temp = i;
-        while (temp > 0) {
-            int digit = temp % 10;
-            if (digit > 0) {  // Skip zero digits
-                dp[i] = min(dp[i], dp[i - digit] + 1);
-            }
-            temp /= 10;
-        }
-    }
-
-    cout << dp[n] << endl;
-    return 0;
-}
-```
-
-### Python (Alternative with String Conversion)
+#### Python (Alternative with String Conversion)
 
 ```python
 def removing_digits_alt(n):

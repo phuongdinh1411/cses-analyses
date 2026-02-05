@@ -192,47 +192,6 @@ n = int(input())
 print(solve(n))
 ```
 
-**C++:**
-```cpp
-#include <iostream>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    if (n == 1) {
-        cout << 1 << endl;
-        return 0;
-    }
-
-    if (n <= 3) {
-        cout << "NO SOLUTION" << endl;
-        return 0;
-    }
-
-    // Print even numbers first
-    for (int i = 2; i <= n; i += 2) {
-        cout << i;
-        if (i + 2 <= n) cout << " ";
-    }
-
-    cout << " ";
-
-    // Print odd numbers
-    for (int i = 1; i <= n; i += 2) {
-        cout << i;
-        if (i + 2 <= n) cout << " ";
-    }
-
-    cout << endl;
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -354,6 +313,7 @@ for i in range(1, n + 1, 2): print(i, end=' ')
 ## Related Problems
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Two Sets (CSES)](https://cses.fi/problemset/task/1092) | Partition into equal sums |
@@ -361,6 +321,7 @@ for i in range(1, n + 1, 2): print(i, end=' ')
 | [Repetitions (CSES)](https://cses.fi/problemset/task/1069) | Pattern in sequences |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Creating Strings (CSES)](https://cses.fi/problemset/task/1622) | Generate all permutations |

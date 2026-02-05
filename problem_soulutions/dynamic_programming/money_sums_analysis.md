@@ -169,58 +169,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<int> coins(n);
-    int maxSum = 0;
-    for (int i = 0; i < n; i++) {
-        cin >> coins[i];
-        maxSum += coins[i];
-    }
-
-    vector<bool> dp(maxSum + 1, false);
-    dp[0] = true;
-
-    for (int coin : coins) {
-        // Iterate in REVERSE to use each coin only once
-        for (int s = maxSum; s >= coin; s--) {
-            if (dp[s - coin]) {
-                dp[s] = true;
-            }
-        }
-    }
-
-    // Collect all achievable sums
-    vector<int> result;
-    for (int s = 1; s <= maxSum; s++) {
-        if (dp[s]) {
-            result.push_back(s);
-        }
-    }
-
-    cout << result.size() << "\n";
-    for (int i = 0; i < result.size(); i++) {
-        if (i > 0) cout << " ";
-        cout << result[i];
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Aspect | Complexity | Explanation |
 |--------|------------|-------------|

@@ -250,41 +250,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    // pos[value] = index in array
-    vector<int> pos(n + 1);
-
-    for (int i = 0; i < n; i++) {
-        int x;
-        cin >> x;
-        pos[x] = i;
-    }
-
-    // Count inversions: when pos[i+1] < pos[i]
-    int rounds = 1;
-    for (int i = 1; i < n; i++) {
-        if (pos[i + 1] < pos[i]) {
-            rounds++;
-        }
-    }
-
-    cout << rounds << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -382,18 +347,21 @@ for i in range(1, n + 1):  # i+1 will be n+1, out of bounds
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Distinct Numbers](https://cses.fi/problemset/task/1621) | Basic sorting and counting |
 | [Missing Number](https://cses.fi/problemset/task/1083) | Position/value relationship |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Collecting Numbers II](https://cses.fi/problemset/task/2217) | Dynamic updates after swaps |
 | [Ferris Wheel](https://cses.fi/problemset/task/1090) | Greedy pairing with position |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Josephus Problem I](https://cses.fi/problemset/task/2162) | Circular collection order |

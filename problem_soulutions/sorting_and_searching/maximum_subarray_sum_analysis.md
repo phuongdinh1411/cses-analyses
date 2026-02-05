@@ -195,42 +195,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-## C++ Implementation
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <algorithm>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    // Kadane's algorithm
-    long long current_sum = arr[0];
-    long long max_sum = arr[0];
-
-    for (int i = 1; i < n; i++) {
-        // Either extend previous subarray or start fresh
-        current_sum = max(arr[i], current_sum + arr[i]);
-        max_sum = max(max_sum, current_sum);
-    }
-
-    cout << max_sum << "\n";
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 ### Mistake 1: Initializing max_sum to 0
@@ -261,14 +225,6 @@ current_sum = max_sum = arr[0]  # IndexError!
 ### Mistake 3: Using int instead of long long (C++)
 
 With constraints up to 2x10^5 elements and values up to 10^9, the sum can exceed 32-bit integer range.
-
-```cpp
-// WRONG
-int current_sum = arr[0];  // May overflow!
-
-// CORRECT
-long long current_sum = arr[0];
-```
 
 ## Complexity Analysis
 

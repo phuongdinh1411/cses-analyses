@@ -234,77 +234,6 @@ def solve():
 if __name__ == "__main__": solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-const long long MOD = 1e9 + 7, BASE = 31;
-int n, m; string s;
-vector<long long> pw, fwd_tree, rev_tree;
-
-long long char_val(char c) { return c - 'a' + 1; }
-
-void build(int node, int lo, int hi) {
-    if (lo == hi) { fwd_tree[node] = rev_tree[node] = char_val(s[lo]); return; }
-    int mid = (lo + hi) / 2;
-    build(2*node, lo, mid); build(2*node+1, mid+1, hi);
-    int rlen = hi - mid, llen = mid - lo + 1;
-    fwd_tree[node] = (fwd_tree[2*node] * pw[rlen] + fwd_tree[2*node+1]) % MOD;
-    rev_tree[node] = (rev_tree[2*node+1] * pw[llen] + rev_tree[2*node]) % MOD;
-}
-
-void update(int node, int lo, int hi, int pos, long long val) {
-    if (lo == hi) { fwd_tree[node] = rev_tree[node] = val; return; }
-    int mid = (lo + hi) / 2;
-    if (pos <= mid) update(2*node, lo, mid, pos, val);
-    else update(2*node+1, mid+1, hi, pos, val);
-    int rlen = hi - mid, llen = mid - lo + 1;
-    fwd_tree[node] = (fwd_tree[2*node] * pw[rlen] + fwd_tree[2*node+1]) % MOD;
-    rev_tree[node] = (rev_tree[2*node+1] * pw[llen] + rev_tree[2*node]) % MOD;
-}
-
-pair<long long, int> query_fwd(int node, int lo, int hi, int l, int r) {
-    if (r < lo || hi < l) return {0, 0};
-    if (l <= lo && hi <= r) return {fwd_tree[node], hi - lo + 1};
-    int mid = (lo + hi) / 2;
-    auto [lh, ll] = query_fwd(2*node, lo, mid, l, r);
-    auto [rh, rl] = query_fwd(2*node+1, mid+1, hi, l, r);
-    if (ll == 0) return {rh, rl}; if (rl == 0) return {lh, ll};
-    return {(lh * pw[rl] + rh) % MOD, ll + rl};
-}
-
-pair<long long, int> query_rev(int node, int lo, int hi, int l, int r) {
-    if (r < lo || hi < l) return {0, 0};
-    if (l <= lo && hi <= r) return {rev_tree[node], hi - lo + 1};
-    int mid = (lo + hi) / 2;
-    auto [lh, ll] = query_rev(2*node, lo, mid, l, r);
-    auto [rh, rl] = query_rev(2*node+1, mid+1, hi, l, r);
-    if (ll == 0) return {rh, rl}; if (rl == 0) return {lh, ll};
-    return {(rh * pw[ll] + lh) % MOD, ll + rl};
-}
-
-int main() {
-    ios::sync_with_stdio(false); cin.tie(nullptr);
-    cin >> n >> m >> s;
-    pw.resize(n + 1); pw[0] = 1;
-    for (int i = 1; i <= n; i++) pw[i] = pw[i-1] * BASE % MOD;
-    fwd_tree.resize(4 * n); rev_tree.resize(4 * n);
-    build(1, 0, n-1);
-    while (m--) {
-        int type; cin >> type;
-        if (type == 1) {
-            int k; char x; cin >> k >> x; k--;
-            s[k] = x; update(1, 0, n-1, k, char_val(x));
-        } else {
-            int a, b; cin >> a >> b; a--; b--;
-            cout << (query_fwd(1,0,n-1,a,b).first == query_rev(1,0,n-1,a,b).first ? "YES" : "NO") << "\n";
-        }
-    }
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -318,42 +247,20 @@ int main() {
 
 ### Mistake 1: Wrong Hash Combination Order
 
-```cpp
-// WRONG: Same combination for forward and reverse
-fwd[node] = (fwd[2*node] * pw[right_len] + fwd[2*node+1]) % MOD;
-rev[node] = (rev[2*node] * pw[right_len] + rev[2*node+1]) % MOD;  // WRONG!
-```
-
 **Problem:** Reverse tree must combine children in opposite order.
 **Fix:** For reverse: `rev[node] = (rev[2*node+1] * pw[left_len] + rev[2*node]) % MOD`
 
 ### Mistake 2: Forgetting to Handle Query Segment Merging
-
-```cpp
-// WRONG: Simply adding hashes
-return {lhash + rhash, llen + rlen};
-```
 
 **Problem:** Polynomial hash requires proper power multiplication.
 **Fix:** `return {(lhash * pw[rlen] + rhash) % MOD, llen + rlen}`
 
 ### Mistake 3: Off-by-One in Indexing
 
-```cpp
-// WRONG: Not converting 1-indexed input to 0-indexed
-int k = query_k;  // Should be query_k - 1
-update(1, 0, n-1, k, val);
-```
-
 **Problem:** CSES uses 1-indexed input, but segment tree often uses 0-indexed.
 **Fix:** Always convert: `k = input_k - 1`
 
 ### Mistake 4: Integer Overflow
-
-```cpp
-// WRONG: No modulo during multiplication
-fwd[node] = fwd[2*node] * pw[right_len] + fwd[2*node+1];
-```
 
 **Problem:** Values can overflow even with `long long`.
 **Fix:** Apply MOD after each multiplication.
@@ -396,18 +303,21 @@ fwd[node] = fwd[2*node] * pw[right_len] + fwd[2*node+1];
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [String Hashing (CSES 1753)](https://cses.fi/problemset/task/1753) | Learn polynomial hashing basics |
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic segment tree without updates |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Distinct Values Queries (CSES 1734)](https://cses.fi/problemset/task/1734) | Different segment tree application |
 | [Range Update Queries (CSES 1651)](https://cses.fi/problemset/task/1651) | Point query with range updates |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Substring Order I (CSES 2108)](https://cses.fi/problemset/task/2108) | Suffix arrays |

@@ -255,41 +255,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<pair<int, int>> tasks(n);
-    for (int i = 0; i < n; i++) {
-        cin >> tasks[i].first >> tasks[i].second;  // duration, deadline
-    }
-
-    // Sort by duration (shortest first)
-    sort(tasks.begin(), tasks.end());
-
-    long long current_time = 0;
-    long long total_reward = 0;
-
-    for (auto& [duration, deadline] : tasks) {
-        current_time += duration;
-        total_reward += deadline - current_time;
-    }
-
-    cout << total_reward << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -314,18 +279,6 @@ tasks.sort(key=lambda x: x[0])  # Sort by duration
 **Problem:** Sorting by deadline seems intuitive (do urgent tasks first) but does not minimize the sum of finish times.
 
 **Fix:** Remember the mathematical proof - only duration affects the sum of finish times.
-
-### Mistake 2: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow
-int current_time = 0;
-int total_reward = 0;
-
-// CORRECT - use long long
-long long current_time = 0;
-long long total_reward = 0;
-```
 
 **Problem:** With n = 2x10^5 tasks and durations up to 10^6, total time can reach 2x10^11, exceeding int range. The reward can also be very negative.
 
@@ -386,18 +339,21 @@ for duration, deadline in tasks:
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Movie Festival (CSES 1629)](https://cses.fi/problemset/task/1629) | Basic interval scheduling, sort by end time |
 | [Stick Lengths (CSES 1074)](https://cses.fi/problemset/task/1074) | Greedy with sorting, find optimal target |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Reading Books (CSES 1631)](https://cses.fi/problemset/task/1631) | Two readers, similar scheduling |
 | [Movie Festival II (CSES 1632)](https://cses.fi/problemset/task/1632) | Multiple people attending movies |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Task Scheduler (LC 621)](https://leetcode.com/problems/task-scheduler/) | Cooldown constraints |

@@ -250,94 +250,6 @@ def solve():
 solve()
 ```
 
-### C++ Solution (Kosaraju's Algorithm)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 100005;
-vector<int> adj[MAXN], radj[MAXN];
-bool visited[MAXN];
-int comp[MAXN];
-vector<int> order;
-int n, m;
-
-void dfs1(int u) {
-    visited[u] = true;
-    for (int v : adj[u]) {
-        if (!visited[v]) dfs1(v);
-    }
-    order.push_back(u);
-}
-
-void dfs2(int u, int scc_id) {
-    visited[u] = true;
-    comp[u] = scc_id;
-    for (int v : radj[u]) {
-        if (!visited[v]) dfs2(v, scc_id);
-    }
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> m;
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        radj[b].push_back(a);
-    }
-
-    // First DFS: get finish order
-    memset(visited, false, sizeof(visited));
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) dfs1(i);
-    }
-
-    // Second DFS: find SCCs on reverse graph
-    memset(visited, false, sizeof(visited));
-    int num_scc = 0;
-    for (int i = n - 1; i >= 0; i--) {
-        int u = order[i];
-        if (!visited[u]) {
-            dfs2(u, num_scc);
-            num_scc++;
-        }
-    }
-
-    // Special case: already strongly connected
-    if (num_scc == 1) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    // Count sources and sinks in condensation DAG
-    vector<bool> has_in(num_scc, false), has_out(num_scc, false);
-
-    for (int u = 1; u <= n; u++) {
-        for (int v : adj[u]) {
-            if (comp[u] != comp[v]) {
-                has_out[comp[u]] = true;
-                has_in[comp[v]] = true;
-            }
-        }
-    }
-
-    int sources = 0, sinks = 0;
-    for (int i = 0; i < num_scc; i++) {
-        if (!has_in[i]) sources++;
-        if (!has_out[i]) sinks++;
-    }
-
-    cout << max(sources, sinks) << "\n";
-    return 0;
-}
-```
-
 ### Complexity Analysis
 
 | Metric | Value | Explanation |
@@ -351,60 +263,11 @@ int main() {
 
 ### Mistake 1: Forgetting the Single SCC Case
 
-```cpp
-// WRONG: Missing special case
-int sources = count(...);
-int sinks = count(...);
-cout << max(sources, sinks);  // Wrong when num_scc == 1!
-
-// CORRECT: Handle single SCC
-if (num_scc == 1) {
-    cout << 0 << "\n";
-    return 0;
-}
-cout << max(sources, sinks) << "\n";
-```
-
 **Problem:** When the graph is already strongly connected (1 SCC), the formula gives max(0, 0) = 0, but forgetting to check can cause issues with edge cases.
 
 ### Mistake 2: Counting Duplicate Edges in Condensation
 
-```cpp
-// WRONG: Counting edges instead of just existence
-for (int u = 1; u <= n; u++) {
-    for (int v : adj[u]) {
-        if (comp[u] != comp[v]) {
-            in_degree[comp[v]]++;  // May count same edge multiple times!
-        }
-    }
-}
-
-// CORRECT: Use boolean flags
-for (int u = 1; u <= n; u++) {
-    for (int v : adj[u]) {
-        if (comp[u] != comp[v]) {
-            has_in[comp[v]] = true;
-            has_out[comp[u]] = true;
-        }
-    }
-}
-```
-
 ### Mistake 3: Wrong Order in Kosaraju's Second DFS
-
-```cpp
-// WRONG: Processing in forward order
-for (int i = 0; i < n; i++) {
-    int u = order[i];  // Should be reversed!
-    if (!visited[u]) dfs2(u, num_scc++);
-}
-
-// CORRECT: Process in reverse finish order
-for (int i = n - 1; i >= 0; i--) {
-    int u = order[i];
-    if (!visited[u]) dfs2(u, num_scc++);
-}
-```
 
 ---
 
@@ -445,18 +308,21 @@ This works because:
 ## Related Problems
 
 ### Prerequisite Problems (Do These First)
+
 | Problem | Link | Why It Helps |
 |---------|------|--------------|
 | Planets and Kingdoms | [CSES 1683](https://cses.fi/problemset/task/1683) | Basic SCC detection |
 | Kosaraju's Algorithm | Practice | Master the two-DFS approach |
 
 ### Similar Difficulty
+
 | Problem | Link | Key Difference |
 |---------|------|----------------|
 | Coin Collector | [CSES 1686](https://cses.fi/problemset/task/1686) | DP on condensation DAG |
 | Giant Pizza | [CSES 1684](https://cses.fi/problemset/task/1684) | 2-SAT using SCC |
 
 ### Harder Extensions
+
 | Problem | Link | New Concept |
 |---------|------|-------------|
 | School Dance | [CSES 1696](https://cses.fi/problemset/task/1696) | Bipartite matching |

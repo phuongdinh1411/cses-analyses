@@ -315,67 +315,7 @@ if __name__ == "__main__":
     print(solve(s))
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    int n = s.size();
-
-    if (n % 2 == 1) {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    // Precompute binomial coefficients
-    int maxN = n / 2 + 1;
-    vector<vector<long long>> C(maxN, vector<long long>(maxN, 0));
-    for (int i = 0; i < maxN; i++) {
-        C[i][0] = 1;
-        for (int j = 1; j <= i; j++) {
-            C[i][j] = (C[i-1][j-1] + C[i-1][j]) % MOD;
-        }
-    }
-
-    // dp[i][j] = ways to empty s[i..j]
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-
-    // Fill by interval length
-    for (int len = 2; len <= n; len += 2) {
-        for (int i = 0; i + len - 1 < n; i++) {
-            int j = i + len - 1;
-
-            // Try matching s[i] with s[k]
-            for (int k = i + 1; k <= j; k += 2) {
-                if (s[i] == s[k]) {
-                    long long inner = (i + 1 <= k - 1) ? dp[i+1][k-1] : 1;
-                    long long outer = (k + 1 <= j) ? dp[k+1][j] : 1;
-
-                    int innerPairs = (k - i - 1) / 2;
-                    int outerPairs = (j - k) / 2;
-                    long long ways = C[innerPairs + outerPairs][innerPairs];
-
-                    dp[i][j] = (dp[i][j] + inner * outer % MOD * ways) % MOD;
-                }
-            }
-        }
-    }
-
-    cout << dp[0][n-1] << endl;
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -461,12 +401,14 @@ inner = dp[i+1][k-1] if i+1 <= k-1 else 1
 ## Related Problems
 
 ### Similar Difficulty (CSES)
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Counting Towers](https://cses.fi/problemset/task/2413) | Different DP state definition |
 | [Removal Game](https://cses.fi/problemset/task/1097) | Interval DP for game theory |
 
 ### Harder (Practice After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Bitmask DP on grid |

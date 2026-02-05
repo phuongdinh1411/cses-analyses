@@ -393,115 +393,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef long long ll;
-typedef pair<ll, ll> Line;  // (slope, intercept)
-
-class LiChaoTree {
-private:
-    vector<ll> xs;
-    vector<Line> tree;
-    int n, size;
-    const ll INF = 1e18;
-
-    ll eval(const Line& line, ll x) {
-        if (line.first == INF) return INF;
-        return line.first * x + line.second;
-    }
-
-    void update(Line line, int node, int left, int right) {
-        if (right <= left) return;
-        if (right - left == 1) {
-            if (eval(line, xs[left]) < eval(tree[node], xs[left])) {
-                tree[node] = line;
-            }
-            return;
-        }
-
-        int mid = (left + right) / 2;
-        ll mid_x = xs[mid];
-
-        if (eval(line, mid_x) < eval(tree[node], mid_x)) {
-            swap(line, tree[node]);
-        }
-
-        if (left < mid && eval(line, xs[left]) < eval(tree[node], xs[left])) {
-            update(line, 2 * node, left, mid);
-        } else if (mid < right) {
-            update(line, 2 * node + 1, mid, right);
-        }
-    }
-
-    ll query(ll x, int node, int left, int right) {
-        if (right <= left || node >= 2 * size) return INF;
-
-        ll result = eval(tree[node], x);
-
-        if (right - left == 1) return result;
-
-        int mid = (left + right) / 2;
-        if (x < xs[min(mid, n - 1)]) {
-            return min(result, query(x, 2 * node, left, mid));
-        } else {
-            return min(result, query(x, 2 * node + 1, mid, right));
-        }
-    }
-
-public:
-    LiChaoTree(vector<ll>& coords) {
-        set<ll> unique_coords(coords.begin(), coords.end());
-        xs = vector<ll>(unique_coords.begin(), unique_coords.end());
-        n = xs.size();
-        size = 1;
-        while (size < n) size *= 2;
-        tree.assign(2 * size, {INF, INF});
-    }
-
-    void addLine(ll m, ll b) {
-        update({m, b}, 1, 0, n);
-    }
-
-    ll queryMin(ll x) {
-        return query(x, 1, 0, n);
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    ll c;
-    cin >> n >> c;
-
-    vector<ll> h(n);
-    for (int i = 0; i < n; i++) {
-        cin >> h[i];
-    }
-
-    LiChaoTree tree(h);
-    vector<ll> dp(n);
-    dp[0] = 0;
-
-    // Add line for stone 0
-    tree.addLine(-2 * h[0], h[0] * h[0]);
-
-    for (int i = 1; i < n; i++) {
-        ll min_val = tree.queryMin(h[i]);
-        dp[i] = h[i] * h[i] + c + min_val;
-        tree.addLine(-2 * h[i], dp[i] + h[i] * h[i]);
-    }
-
-    cout << dp[n - 1] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -514,15 +405,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow with int
-int dp[N];
-dp[i] = h[i] * h[i] + c + min_val;  // h[i]^2 can be 10^12
-
-// CORRECT - use long long
-long long dp[N];
-```
 
 **Problem:** h_i up to 10^6 means h_i^2 up to 10^12, and C up to 10^12. Total can exceed int range.
 **Fix:** Use 64-bit integers (long long in C++, int in Python handles this automatically).
@@ -595,18 +477,21 @@ for i in range(1, n):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Frog 1](https://atcoder.jp/contests/dp/tasks/dp_a) | Basic frog jumping DP |
 | [Frog 2](https://atcoder.jp/contests/dp/tasks/dp_b) | Frog jumping with k-step limit |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Minimizing Coins](https://cses.fi/problemset/task/1634) | Standard DP optimization |
 | [CF - Covered Points Count](https://codeforces.com/problemset/problem/1000/C) | Sweep line technique |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [AtCoder DP - Z Frog 3](https://atcoder.jp/contests/dp/tasks/dp_z) | This problem |

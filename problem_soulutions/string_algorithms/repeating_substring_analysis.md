@@ -247,77 +247,6 @@ s = input().strip()
 print(solve(s))
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const long long BASE = 31;
-const long long MOD = 1e18 + 9;
-
-int n;
-string s;
-vector<long long> pw, h;
-
-long long getHash(int l, int r) {
-    return ((h[r] - h[l] * pw[r - l] % MOD) % MOD + MOD) % MOD;
-}
-
-bool hasRepeat(int len) {
-    unordered_map<long long, int> seen;
-    for (int i = 0; i + len <= n; i++) {
-        long long hval = getHash(i, i + len);
-        if (seen.count(hval)) {
-            // Verify match
-            if (s.substr(seen[hval], len) == s.substr(i, len))
-                return true;
-        } else {
-            seen[hval] = i;
-        }
-    }
-    return false;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> s;
-    n = s.size();
-
-    if (n == 1) {
-        cout << -1 << "\n";
-        return 0;
-    }
-
-    // Precompute powers and prefix hashes
-    pw.resize(n + 1);
-    h.resize(n + 1);
-    pw[0] = 1;
-    for (int i = 1; i <= n; i++)
-        pw[i] = pw[i-1] * BASE % MOD;
-
-    h[0] = 0;
-    for (int i = 0; i < n; i++)
-        h[i + 1] = (h[i] * BASE + s[i] - 'a' + 1) % MOD;
-
-    // Binary search
-    int lo = 1, hi = n - 1, ans = -1;
-    while (lo <= hi) {
-        int mid = (lo + hi) / 2;
-        if (hasRepeat(mid)) {
-            ans = mid;
-            lo = mid + 1;
-        } else {
-            hi = mid - 1;
-        }
-    }
-
-    cout << ans << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -395,71 +324,6 @@ s = input().strip()
 print(solve_suffix_array(s))
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    int n = s.size();
-
-    if (n == 1) {
-        cout << -1 << "\n";
-        return 0;
-    }
-
-    // Build suffix array
-    vector<int> sa(n), rank(n), tmp(n);
-    for (int i = 0; i < n; i++) {
-        sa[i] = i;
-        rank[i] = s[i];
-    }
-
-    for (int k = 1; k < n; k *= 2) {
-        auto cmp = [&](int a, int b) {
-            if (rank[a] != rank[b]) return rank[a] < rank[b];
-            int ra = a + k < n ? rank[a + k] : -1;
-            int rb = b + k < n ? rank[b + k] : -1;
-            return ra < rb;
-        };
-        sort(sa.begin(), sa.end(), cmp);
-
-        tmp[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
-        }
-        rank = tmp;
-    }
-
-    // Build LCP array (Kasai's algorithm)
-    vector<int> lcp(n), rank_inv(n);
-    for (int i = 0; i < n; i++)
-        rank_inv[sa[i]] = i;
-
-    int k = 0;
-    for (int i = 0; i < n; i++) {
-        if (rank_inv[i] == 0) {
-            k = 0;
-            continue;
-        }
-        int j = sa[rank_inv[i] - 1];
-        while (i + k < n && j + k < n && s[i + k] == s[j + k])
-            k++;
-        lcp[rank_inv[i]] = k;
-        if (k > 0) k--;
-    }
-
-    int ans = *max_element(lcp.begin(), lcp.end());
-    cout << (ans > 0 ? ans : -1) << "\n";
-    return 0;
-}
-```
-
 ---
 
 ## Common Mistakes
@@ -485,13 +349,6 @@ def get_hash(l, r):
 
 **Problem:** Must scale by power of base when subtracting prefix hashes.
 **Fix:** Use `(h[r] - h[l] * pw[r-l]) % MOD`
-
-### Mistake 3: Integer Overflow in C++
-
-```cpp
-// WRONG - overflow before mod
-long long hval = h[r] - h[l] * pw[r - l] % MOD;
-```
 
 **Problem:** `h[l] * pw[r-l]` can overflow before taking mod.
 **Fix:** Use `((h[r] - h[l] * pw[r-l] % MOD) % MOD + MOD) % MOD`
@@ -542,18 +399,21 @@ hi = n  # Should be n-1, substring of length n can't repeat
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [String Matching](https://cses.fi/problemset/task/1753) | Basic hashing for pattern matching |
 | [Finding Borders](https://cses.fi/problemset/task/1732) | Prefix function, related to repeating patterns |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Finding Periods](https://cses.fi/problemset/task/1733) | Find all periods, not just longest repeat |
 | [Minimal Rotation](https://cses.fi/problemset/task/1110) | Uses similar suffix array techniques |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Distinct Substrings](https://cses.fi/problemset/task/2105) | Count unique substrings using suffix array |

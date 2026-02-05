@@ -122,24 +122,6 @@ def solve_brute_force(n, arr, queries):
     return results
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<long long> solve_brute_force(int n, vector<long long>& arr,
-                                     vector<pair<int,int>>& queries) {
-    vector<long long> results;
-    for (auto& [l, r] : queries) {
-        long long or_result = 0;
-        for (int i = l - 1; i < r; i++) {  // Convert to 0-indexed
-            or_result |= arr[i];
-        }
-        results.push_back(or_result);
-    }
-    return results;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -271,81 +253,6 @@ def solve_segment_tree(n, arr, queries):
     return results
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class SegmentTreeOR {
-private:
-    vector<long long> tree;
-    int size;
-
-public:
-    SegmentTreeOR(vector<long long>& arr) {
-        int n = arr.size();
-        size = 1;
-        while (size < n) size *= 2;
-
-        tree.assign(2 * size, 0);
-
-        // Fill leaves
-        for (int i = 0; i < n; i++) {
-            tree[size + i] = arr[i];
-        }
-
-        // Build tree bottom-up
-        for (int i = size - 1; i > 0; i--) {
-            tree[i] = tree[2 * i] | tree[2 * i + 1];
-        }
-    }
-
-    long long query(int l, int r) {
-        // Query OR in range [l, r] (0-indexed)
-        long long result = 0;
-        l += size;
-        r += size;
-
-        while (l <= r) {
-            if (l % 2 == 1) {
-                result |= tree[l];
-                l++;
-            }
-            if (r % 2 == 0) {
-                result |= tree[r];
-                r--;
-            }
-            l /= 2;
-            r /= 2;
-        }
-
-        return result;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    SegmentTreeOR st(arr);
-
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        cout << st.query(l - 1, r - 1) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -464,73 +371,6 @@ def solve_sparse_table(n, arr, queries):
     return results
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class SparseTableOR {
-private:
-    vector<vector<long long>> sparse;
-    vector<int> log_table;
-    int n, LOG;
-
-public:
-    SparseTableOR(vector<long long>& arr) {
-        n = arr.size();
-        LOG = 32 - __builtin_clz(n);  // ceil(log2(n)) + 1
-
-        sparse.assign(n, vector<long long>(LOG, 0));
-
-        // Base case: blocks of size 1
-        for (int i = 0; i < n; i++) {
-            sparse[i][0] = arr[i];
-        }
-
-        // Build sparse table
-        for (int j = 1; j < LOG; j++) {
-            for (int i = 0; i + (1 << j) <= n; i++) {
-                sparse[i][j] = sparse[i][j-1] | sparse[i + (1 << (j-1))][j-1];
-            }
-        }
-
-        // Precompute log values
-        log_table.assign(n + 1, 0);
-        for (int i = 2; i <= n; i++) {
-            log_table[i] = log_table[i / 2] + 1;
-        }
-    }
-
-    long long query(int l, int r) {
-        int length = r - l + 1;
-        int k = log_table[length];
-        return sparse[l][k] | sparse[r - (1 << k) + 1][k];
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<long long> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    SparseTableOR st(arr);
-
-    while (q--) {
-        int l, r;
-        cin >> l >> r;
-        cout << st.query(l - 1, r - 1) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -555,16 +395,6 @@ result = st.query(l - 1, r - 1)  # Convert to 0-indexed
 
 **Problem:** CSES uses 1-indexed input, but arrays are 0-indexed.
 **Fix:** Always subtract 1 from both l and r.
-
-### Mistake 2: Integer Overflow in C++
-
-```cpp
-// WRONG
-int sparse[N][LOG];  // Values up to 10^9
-
-// CORRECT
-long long sparse[N][LOG];  // Use long long for safety
-```
 
 **Problem:** OR of large values can exceed int range in intermediate operations.
 **Fix:** Use `long long` for all OR computations.
@@ -621,18 +451,21 @@ LOG = n.bit_length()  # Correctly handles all sizes
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic prefix sum, simpler than segment tree |
 | [Static Range Minimum Queries](https://cses.fi/problemset/task/1647) | Sparse table with min operation |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Range Xor Queries](https://cses.fi/problemset/task/1650) | XOR is associative but NOT idempotent, use prefix XOR |
 | [Bitwise ORs of Subarrays (LeetCode 898)](https://leetcode.com/problems/bitwise-ors-of-subarrays/) | Count distinct OR values across all subarrays |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Range Update Queries](https://cses.fi/problemset/task/1651) | Lazy propagation in segment tree |

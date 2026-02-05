@@ -191,55 +191,7 @@ def solve():
 solve()
 ```
 
-#### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<long long> weights(n);
-    long long total = 0;
-
-    for (int i = 0; i < n; i++) {
-        cin >> weights[i];
-        total += weights[i];
-    }
-
-    long long min_diff = total;
-
-    // Enumerate all 2^n subsets
-    for (int mask = 0; mask < (1 << n); mask++) {
-        long long group1_sum = 0;
-
-        // Calculate sum for Group 1 (bits that are set)
-        for (int i = 0; i < n; i++) {
-            if (mask & (1 << i)) {
-                group1_sum += weights[i];
-            }
-        }
-
-        // Group 2 sum is total - group1_sum
-        long long group2_sum = total - group1_sum;
-
-        // Update minimum difference
-        long long diff = abs(group1_sum - group2_sum);
-        min_diff = min(min_diff, diff);
-    }
-
-    cout << min_diff << "\n";
-
-    return 0;
-}
-```
-
-### Complexity
+##### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -254,54 +206,20 @@ int main() {
 
 ### Mistake 1: Integer Overflow
 
-```cpp
-// WRONG - may overflow with int
-int group1_sum = 0;
-int total = 0;
-
-// CORRECT - use long long
-long long group1_sum = 0;
-long long total = 0;
-```
-
 **Problem:** Each weight can be up to 10^9, and sum of 20 weights can be 2 * 10^10, exceeding int range.
 **Fix:** Use `long long` in C++ or Python handles big integers automatically.
 
 ### Mistake 2: Forgetting Absolute Value
-
-```cpp
-// WRONG
-diff = group1_sum - group2_sum;
-
-// CORRECT
-diff = abs(group1_sum - group2_sum);
-```
 
 **Problem:** Difference can be negative if group2 > group1.
 **Fix:** Always take absolute value when computing difference.
 
 ### Mistake 3: Not Enumerating All Subsets
 
-```cpp
-// WRONG - starts from 1, misses empty subset
-for (int mask = 1; mask < (1 << n); mask++)
-
-// CORRECT - includes mask = 0
-for (int mask = 0; mask < (1 << n); mask++)
-```
-
 **Problem:** Missing mask = 0 (all apples in Group 2) could miss valid partitions.
 **Fix:** Start enumeration from 0.
 
 ### Mistake 4: Wrong Bit Check
-
-```cpp
-// WRONG - checks if mask equals power of 2
-if (mask == (1 << i))
-
-// CORRECT - checks if bit i is set in mask
-if (mask & (1 << i))
-```
 
 **Problem:** Using `==` instead of `&` gives wrong subset membership.
 **Fix:** Use bitwise AND to check if bit is set.
@@ -340,6 +258,7 @@ if (mask & (1 << i))
 - [ ] Minimize/maximize some property over all subsets? -> **Enumerate all 2^n subsets**
 
 ### Time Limit Guidelines:
+
 | n | 2^n | Feasibility |
 |---|-----|-------------|
 | 15 | 32,768 | Very fast |
@@ -352,12 +271,14 @@ if (mask & (1 << i))
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Weird Algorithm](https://cses.fi/problemset/task/1068) | Basic implementation practice |
 | [Bit Strings](https://cses.fi/problemset/task/1617) | Understanding powers of 2 |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Two Sets](https://cses.fi/problemset/task/1092) | Partition into equal sums, uses math |
@@ -365,6 +286,7 @@ if (mask & (1 << i))
 | [Grid Paths](https://cses.fi/problemset/task/1625) | Exhaustive enumeration with pruning |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Meet in the Middle](https://cses.fi/problemset/task/1628) | Split enumeration for n up to 40 |

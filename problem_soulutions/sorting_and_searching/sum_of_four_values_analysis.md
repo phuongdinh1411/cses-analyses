@@ -252,68 +252,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    // Store (value, original_index)
-    vector<pair<long long, int>> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i].first;
-        arr[i].second = i;
-    }
-
-    // Sort by value
-    sort(arr.begin(), arr.end());
-
-    // Fix first two elements
-    for (int i = 0; i < n - 3; i++) {
-        for (int j = i + 1; j < n - 2; j++) {
-            long long remaining = x - arr[i].first - arr[j].first;
-
-            // Two pointers
-            int left = j + 1;
-            int right = n - 1;
-
-            while (left < right) {
-                long long current = arr[left].first + arr[right].first;
-
-                if (current == remaining) {
-                    // Collect and sort indices (convert to 1-indexed)
-                    vector<int> indices = {
-                        arr[i].second + 1,
-                        arr[j].second + 1,
-                        arr[left].second + 1,
-                        arr[right].second + 1
-                    };
-                    sort(indices.begin(), indices.end());
-                    cout << indices[0] << " " << indices[1] << " "
-                         << indices[2] << " " << indices[3] << "\n";
-                    return 0;
-                } else if (current < remaining) {
-                    left++;
-                } else {
-                    right--;
-                }
-            }
-        }
-    }
-
-    cout << "IMPOSSIBLE\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -375,16 +313,6 @@ left = j + 1
 right = n - 1
 ```
 
-### Mistake 4: Integer Overflow (C++)
-
-```cpp
-// WRONG - May overflow with large values
-int sum = arr[i] + arr[j] + arr[k] + arr[l];  // Sum can exceed int
-
-// CORRECT
-long long sum = arr[i].first + arr[j].first + arr[left].first + arr[right].first;
-```
-
 ---
 
 ## Edge Cases
@@ -422,6 +350,7 @@ long long sum = arr[i].first + arr[j].first + arr[left].first + arr[right].first
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Two Sum (LeetCode)](https://leetcode.com/problems/two-sum/) | Basic complement search with hash map |
@@ -429,12 +358,14 @@ long long sum = arr[i].first + arr[j].first + arr[left].first + arr[right].first
 | [Sum of Three Values (CSES)](https://cses.fi/problemset/task/1641) | Direct prerequisite - 3Sum pattern |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [3Sum (LeetCode)](https://leetcode.com/problems/3sum/) | Return values, handle duplicates |
 | [3Sum Closest (LeetCode)](https://leetcode.com/problems/3sum-closest/) | Find closest sum, not exact |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [4Sum (LeetCode)](https://leetcode.com/problems/4sum/) | Return all unique quadruplets |

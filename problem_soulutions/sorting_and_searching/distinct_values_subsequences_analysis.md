@@ -129,29 +129,6 @@ def count_subarrays_brute(arr, k):
     return count
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-long long countSubarraysBrute(vector<int>& arr, int k) {
-    int n = arr.size();
-    long long count = 0;
-
-    for (int i = 0; i < n; i++) {
-        unordered_set<int> distinct;
-        for (int j = i; j < n; j++) {
-            distinct.insert(arr[j]);
-            if ((int)distinct.size() <= k) {
-                count++;
-            } else {
-                break;
-            }
-        }
-    }
-    return count;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -319,48 +296,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, k;
-    cin >> n >> k;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    unordered_map<int, int> freq;
-    long long count = 0;
-    int left = 0;
-
-    for (int right = 0; right < n; right++) {
-        // Add arr[right] to window
-        freq[arr[right]]++;
-
-        // Shrink window while we have more than k distinct values
-        while ((int)freq.size() > k) {
-            freq[arr[left]]--;
-            if (freq[arr[left]] == 0) {
-                freq.erase(arr[left]);
-            }
-            left++;
-        }
-
-        // All subarrays ending at right with start in [left, right] are valid
-        count += right - left + 1;
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -373,16 +308,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow for large n
-int count = 0;
-count += right - left + 1;
-
-// CORRECT - use long long
-long long count = 0;
-count += right - left + 1;
-```
 
 **Problem:** With n up to 2*10^5, the count can reach n*(n+1)/2 which exceeds int range.
 **Fix:** Use `long long` for the count variable.
@@ -463,12 +388,14 @@ def exactly_k_distinct(arr, k):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | Basic sliding window with distinct constraint |
 | [Distinct Numbers (CSES)](https://cses.fi/problemset/task/1621) | Simple distinct counting |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/) | Exactly K distinct (uses subtraction trick) |
@@ -476,6 +403,7 @@ def exactly_k_distinct(arr, k):
 | [Longest Substring with At Most K Distinct](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) | Find length instead of count |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Distinct Values Queries (CSES)](https://cses.fi/problemset/task/1734) | Offline queries + Mo's algorithm |

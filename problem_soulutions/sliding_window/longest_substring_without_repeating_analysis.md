@@ -249,39 +249,6 @@ def longest_substring_optimal(s: str) -> int:
     return max_len
 ```
 
-### Code (C++)
-
-```cpp
-#include <string>
-#include <unordered_set>
-#include <algorithm>
-using namespace std;
-
-int longestSubstringOptimal(const string& s) {
-    /*
-     * Sliding window with hash set.
-     * Time: O(n), Space: O(min(n, alphabet_size))
-     */
-    unordered_set<char> seen;
-    int left = 0;
-    int maxLen = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        // Shrink window while duplicate exists
-        while (seen.count(s[right])) {
-            seen.erase(s[left]);
-            left++;
-        }
-
-        // Add current character and update max
-        seen.insert(s[right]);
-        maxLen = max(maxLen, right - left + 1);
-    }
-
-    return maxLen;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -315,37 +282,6 @@ def longest_substring_jump(s: str) -> int:
         max_len = max(max_len, right - left + 1)
 
     return max_len
-```
-
-### Code (C++)
-
-```cpp
-#include <string>
-#include <unordered_map>
-#include <algorithm>
-using namespace std;
-
-int longestSubstringJump(const string& s) {
-    /*
-     * Optimized: jump left pointer directly using last index map.
-     * Time: O(n), Space: O(min(n, alphabet_size))
-     */
-    unordered_map<char, int> lastIndex;
-    int left = 0;
-    int maxLen = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        char c = s[right];
-        if (lastIndex.count(c) && lastIndex[c] >= left) {
-            left = lastIndex[c] + 1;  // Jump past the duplicate
-        }
-
-        lastIndex[c] = right;
-        maxLen = max(maxLen, right - left + 1);
-    }
-
-    return maxLen;
-}
 ```
 
 ---
@@ -519,24 +455,3 @@ def lengthOfLongestSubstring(s: str) -> int:
     return max_len
 ```
 
-```cpp
-// C++ - Copy-paste ready
-#include <string>
-#include <unordered_set>
-using namespace std;
-
-int lengthOfLongestSubstring(string s) {
-    unordered_set<char> seen;
-    int left = 0, maxLen = 0;
-
-    for (int right = 0; right < s.length(); right++) {
-        while (seen.count(s[right])) {
-            seen.erase(s[left++]);
-        }
-        seen.insert(s[right]);
-        maxLen = max(maxLen, right - left + 1);
-    }
-
-    return maxLen;
-}
-```

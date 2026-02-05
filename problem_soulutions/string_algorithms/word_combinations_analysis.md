@@ -301,67 +301,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-struct TrieNode {
-    map<char, TrieNode*> children;
-    bool is_end = false;
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    int k;
-    cin >> s >> k;
-
-    // Build Trie
-    TrieNode* root = new TrieNode();
-    for (int i = 0; i < k; i++) {
-        string word;
-        cin >> word;
-        TrieNode* node = root;
-        for (char c : word) {
-            if (node->children.find(c) == node->children.end()) {
-                node->children[c] = new TrieNode();
-            }
-            node = node->children[c];
-        }
-        node->is_end = true;
-    }
-
-    // DP
-    int n = s.length();
-    vector<long long> dp(n + 1, 0);
-    dp[n] = 1;
-
-    for (int i = n - 1; i >= 0; i--) {
-        TrieNode* node = root;
-        for (int j = i; j < n; j++) {
-            char c = s[j];
-            if (node->children.find(c) == node->children.end()) {
-                break;
-            }
-            node = node->children[c];
-            if (node->is_end) {
-                dp[i] = (dp[i] + dp[j + 1]) % MOD;
-            }
-        }
-    }
-
-    cout << dp[0] << "\n";
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|

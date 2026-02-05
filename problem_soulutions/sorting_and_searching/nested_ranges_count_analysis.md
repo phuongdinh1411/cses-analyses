@@ -411,97 +411,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-class FenwickTree {
-    vector<int> tree;
-    int n;
-public:
-    FenwickTree(int n) : n(n), tree(n + 1, 0) {}
-
-    void update(int i, int delta = 1) {
-        for (; i <= n; i += i & (-i))
-            tree[i] += delta;
-    }
-
-    int query(int i) {
-        int sum = 0;
-        for (; i > 0; i -= i & (-i))
-            sum += tree[i];
-        return sum;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<pair<int, int>> ranges(n);
-    vector<int> ends;
-
-    for (int i = 0; i < n; i++) {
-        cin >> ranges[i].first >> ranges[i].second;
-        ends.push_back(ranges[i].second);
-    }
-
-    // Coordinate compression
-    sort(ends.begin(), ends.end());
-    ends.erase(unique(ends.begin(), ends.end()), ends.end());
-    map<int, int> compress;
-    for (int i = 0; i < (int)ends.size(); i++) {
-        compress[ends[i]] = i + 1;  // 1-indexed
-    }
-    int m = ends.size();
-
-    vector<int> contains(n), contained_by(n);
-
-    // For contained_by: sort by (start ASC, end DESC)
-    vector<tuple<int, int, int>> indexed(n);
-    for (int i = 0; i < n; i++) {
-        indexed[i] = {ranges[i].first, -ranges[i].second, i};
-    }
-    sort(indexed.begin(), indexed.end());
-
-    FenwickTree bit1(m);
-    for (auto& [start, neg_end, idx] : indexed) {
-        int end = -neg_end;
-        int comp_end = compress[end];
-        contained_by[idx] = bit1.query(m) - bit1.query(comp_end - 1);
-        bit1.update(comp_end);
-    }
-
-    // For contains: sort by (start DESC, end ASC)
-    for (int i = 0; i < n; i++) {
-        indexed[i] = {-ranges[i].first, ranges[i].second, i};
-    }
-    sort(indexed.begin(), indexed.end());
-
-    FenwickTree bit2(m);
-    for (auto& [neg_start, end, idx] : indexed) {
-        int comp_end = compress[end];
-        contains[idx] = bit2.query(comp_end);
-        bit2.update(comp_end);
-    }
-
-    for (int i = 0; i < n; i++) {
-        cout << contains[i] << " \n"[i == n - 1];
-    }
-    for (int i = 0; i < n; i++) {
-        cout << contained_by[i] << " \n"[i == n - 1];
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -607,24 +517,28 @@ count = bit.query(m) - bit.query(comp_end - 1)  # Ends >= current
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Nested Ranges Check (CSES)](https://cses.fi/problemset/task/2168) | Same problem but boolean output |
 | [Dynamic Range Sum Queries (CSES)](https://cses.fi/problemset/task/1648) | Learn BIT basics |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Restaurant Customers (CSES)](https://cses.fi/problemset/task/1619) | Sweep line on ranges |
 | [Josephus Problem II (CSES)](https://cses.fi/problemset/task/2163) | BIT for order statistics |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Distinct Values Queries (CSES)](https://cses.fi/problemset/task/1734) | Offline queries + BIT |
 | [Inversion Count](https://www.spoj.com/problems/INVCNT/) | Classic BIT application |
 
 ### LeetCode Related
+
 | Problem | Connection |
 |---------|------------|
 | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | BIT for counting |

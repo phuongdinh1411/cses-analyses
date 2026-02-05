@@ -255,63 +255,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> adj[200005];
-int n;
-
-pair<int, int> bfs(int start) {
-    vector<int> dist(n + 1, -1);
-    queue<int> q;
-    q.push(start);
-    dist[start] = 0;
-    int farthest = start, maxDist = 0;
-
-    while (!q.empty()) {
-        int node = q.front();
-        q.pop();
-        for (int neighbor : adj[node]) {
-            if (dist[neighbor] == -1) {
-                dist[neighbor] = dist[node] + 1;
-                q.push(neighbor);
-                if (dist[neighbor] > maxDist) {
-                    maxDist = dist[neighbor];
-                    farthest = neighbor;
-                }
-            }
-        }
-    }
-    return {farthest, maxDist};
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-    if (n == 1) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    auto [endpoint, _] = bfs(1);
-    auto [__, diameter] = bfs(endpoint);
-    cout << diameter << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -387,59 +330,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> adj[200005];
-int diameter = 0;
-
-int dfs(int node, int parent) {
-    int max1 = 0, max2 = 0;
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            int childDepth = dfs(child, node) + 1;
-            if (childDepth > max1) {
-                max2 = max1;
-                max1 = childDepth;
-            } else if (childDepth > max2) {
-                max2 = childDepth;
-            }
-        }
-    }
-
-    diameter = max(diameter, max1 + max2);
-    return max1;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    if (n == 1) {
-        cout << 0 << "\n";
-        return 0;
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    dfs(1, -1);
-    cout << diameter << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -474,11 +364,6 @@ for _ in range(n - 1):
 **Fix:** Handle `n == 1` as a special case returning 0.
 
 ### Mistake 3: Using Wrong Graph Indexing
-
-```cpp
-// WRONG - if nodes are 1-indexed but array is 0-indexed
-vector<int> adj[n];  // Should be adj[n+1]
-```
 
 **Problem:** Off-by-one errors when nodes are numbered 1 to n.
 **Fix:** Use `adj[n + 1]` or convert to 0-indexed.
@@ -519,12 +404,14 @@ vector<int> adj[n];  // Should be adj[n+1]
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates (CSES 1674)](https://cses.fi/problemset/task/1674) | Basic tree DFS |
 | [Tree Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) | BFS on trees |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Tree Distances I (CSES 1132)](https://cses.fi/problemset/task/1132) | Max distance from each node |
@@ -532,6 +419,7 @@ vector<int> adj[n];  // Should be adj[n+1]
 | [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) | Weighted nodes instead of edges |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Centroid Decomposition](https://cses.fi/problemset/task/2079) | Tree decomposition |

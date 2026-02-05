@@ -131,42 +131,6 @@ weights = list(map(int, input().split()))
 print(min_gondolas(n, x, weights))
 ```
 
-### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<int> weights(n);
-    for (int i = 0; i < n; i++) {
-        cin >> weights[i];
-    }
-
-    sort(weights.begin(), weights.end());
-
-    int left = 0, right = n - 1;
-    int gondolas = 0;
-
-    while (left <= right) {
-        if (weights[left] + weights[right] <= x) {
-            left++;  // Lightest paired
-        }
-        right--;     // Heaviest always assigned
-        gondolas++;
-    }
-
-    cout << gondolas << "\n";
-    return 0;
-}
-```
-
 ## Why Greedy Works
 
 **Claim**: Pairing the heaviest with the lightest (when possible) yields the minimum gondolas.

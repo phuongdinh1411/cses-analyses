@@ -89,13 +89,21 @@ For an 8x8 board, there are:
 Main Diagonal (row - col + 7):     Anti-Diagonal (row + col):
   0  1  2  3  4  5  6  7            0  1  2  3  4  5  6  7
 +--+--+--+--+--+--+--+--+         +--+--+--+--+--+--+--+--+
+
 | 7| 8| 9|10|11|12|13|14|  0     | 0| 1| 2| 3| 4| 5| 6| 7|  0
+
 | 6| 7| 8| 9|10|11|12|13|  1     | 1| 2| 3| 4| 5| 6| 7| 8|  1
+
 | 5| 6| 7| 8| 9|10|11|12|  2     | 2| 3| 4| 5| 6| 7| 8| 9|  2
+
 | 4| 5| 6| 7| 8| 9|10|11|  3     | 3| 4| 5| 6| 7| 8| 9|10|  3
+
 | 3| 4| 5| 6| 7| 8| 9|10|  4     | 4| 5| 6| 7| 8| 9|10|11|  4
+
 | 2| 3| 4| 5| 6| 7| 8| 9|  5     | 5| 6| 7| 8| 9|10|11|12|  5
+
 | 1| 2| 3| 4| 5| 6| 7| 8|  6     | 6| 7| 8| 9|10|11|12|13|  6
+
 | 0| 1| 2| 3| 4| 5| 6| 7|  7     | 7| 8| 9|10|11|12|13|14|  7
 +--+--+--+--+--+--+--+--+         +--+--+--+--+--+--+--+--+
 ```
@@ -246,78 +254,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-/*
- * CSES Chessboard and Queens - Backtracking Solution
- *
- * Time: O(8!) worst case, much less with pruning
- * Space: O(8) for recursion stack and tracking arrays
- */
-
-string board[8];
-bool col_used[8];     // Column tracking
-bool diag1[15];       // Main diagonal (row - col + 7)
-bool diag2[15];       // Anti diagonal (row + col)
-int count_solutions = 0;
-
-void backtrack(int row) {
-    // Base case: all 8 queens placed
-    if (row == 8) {
-        count_solutions++;
-        return;
-    }
-
-    // Try each column in current row
-    for (int col = 0; col < 8; col++) {
-        // Skip reserved squares
-        if (board[row][col] == '*') continue;
-
-        // Calculate diagonal indices
-        int d1 = row - col + 7;  // Main diagonal
-        int d2 = row + col;      // Anti diagonal
-
-        // Skip if column or diagonal is used
-        if (col_used[col] || diag1[d1] || diag2[d2]) continue;
-
-        // Place queen
-        col_used[col] = diag1[d1] = diag2[d2] = true;
-
-        // Recurse
-        backtrack(row + 1);
-
-        // Backtrack
-        col_used[col] = diag1[d1] = diag2[d2] = false;
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    // Read board
-    for (int i = 0; i < 8; i++) {
-        cin >> board[i];
-    }
-
-    // Initialize tracking arrays
-    memset(col_used, false, sizeof(col_used));
-    memset(diag1, false, sizeof(diag1));
-    memset(diag2, false, sizeof(diag2));
-
-    // Solve
-    backtrack(0);
-
-    cout << count_solutions << endl;
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -430,18 +366,21 @@ col_used[col] = False  # Backtrack!
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Permutations](https://cses.fi/problemset/task/1070) | Basic backtracking pattern |
 | [Creating Strings](https://cses.fi/problemset/task/1622) | Generating all permutations |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [N-Queens (LeetCode 51)](https://leetcode.com/problems/n-queens/) | Return actual configurations, not just count |
 | [N-Queens II (LeetCode 52)](https://leetcode.com/problems/n-queens-ii/) | Same as this problem but without reserved squares |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Sudoku Solver (LeetCode 37)](https://leetcode.com/problems/sudoku-solver/) | More complex constraints, 2D placement |

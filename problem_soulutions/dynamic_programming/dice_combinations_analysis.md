@@ -267,36 +267,6 @@ n = int(input())
 print(solve_dp(n))
 ```
 
-### C++ Version
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    const int MOD = 1e9 + 7;
-    int n;
-    cin >> n;
-
-    vector<long long> dp(n + 1, 0);
-    dp[0] = 1;
-
-    for (int i = 1; i <= n; i++) {
-        for (int dice = 1; dice <= 6; dice++) {
-            if (i >= dice) {
-                dp[i] = (dp[i] + dp[i - dice]) % MOD;
-            }
-        }
-    }
-
-    cout << dp[n] << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -403,17 +373,20 @@ for dice in range(1, 7):        # For each dice value
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Climbing Stairs (LeetCode)](https://leetcode.com/problems/climbing-stairs/) | Same pattern with 2 choices instead of 6 |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Coin Combinations I (CSES)](https://cses.fi/problemset/task/1635) | Variable coin values instead of 1-6 |
 | [Coin Combinations II (CSES)](https://cses.fi/problemset/task/1636) | Counts combinations, not permutations |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimizing Coins (CSES)](https://cses.fi/problemset/task/1634) | Minimize instead of count |

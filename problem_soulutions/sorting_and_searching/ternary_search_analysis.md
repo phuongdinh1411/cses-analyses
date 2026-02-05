@@ -229,65 +229,6 @@ def ternary_search_min_int(lo: int, hi: int, f) -> int:
     return best_x
 ```
 
-### Code (C++)
-
-```cpp
-#include <functional>
-using namespace std;
-
-// Find x in [lo, hi] that maximizes f(x)
-long long ternary_search_max_int(long long lo, long long hi,
-                                  function<long long(long long)> f) {
-    while (hi - lo > 2) {
-        long long m1 = lo + (hi - lo) / 3;
-        long long m2 = hi - (hi - lo) / 3;
-
-        if (f(m1) < f(m2)) {
-            lo = m1;
-        } else {
-            hi = m2;
-        }
-    }
-
-    long long best_x = lo;
-    long long best_val = f(lo);
-    for (long long x = lo + 1; x <= hi; x++) {
-        long long val = f(x);
-        if (val > best_val) {
-            best_val = val;
-            best_x = x;
-        }
-    }
-    return best_x;
-}
-
-// Find x in [lo, hi] that minimizes f(x)
-long long ternary_search_min_int(long long lo, long long hi,
-                                  function<long long(long long)> f) {
-    while (hi - lo > 2) {
-        long long m1 = lo + (hi - lo) / 3;
-        long long m2 = hi - (hi - lo) / 3;
-
-        if (f(m1) > f(m2)) {
-            lo = m1;
-        } else {
-            hi = m2;
-        }
-    }
-
-    long long best_x = lo;
-    long long best_val = f(lo);
-    for (long long x = lo + 1; x <= hi; x++) {
-        long long val = f(x);
-        if (val < best_val) {
-            best_val = val;
-            best_x = x;
-        }
-    }
-    return best_x;
-}
-```
-
 ---
 
 ## Solution: Floating-Point Domain
@@ -355,47 +296,6 @@ def ternary_search_max_iterations(lo: float, hi: float, f,
     return (lo + hi) / 2
 ```
 
-### Code (C++)
-
-```cpp
-#include <functional>
-#include <cmath>
-using namespace std;
-
-double ternary_search_max_float(double lo, double hi,
-                                 function<double(double)> f,
-                                 double eps = 1e-9) {
-    while (hi - lo > eps) {
-        double m1 = lo + (hi - lo) / 3;
-        double m2 = hi - (hi - lo) / 3;
-
-        if (f(m1) < f(m2)) {
-            lo = m1;
-        } else {
-            hi = m2;
-        }
-    }
-    return (lo + hi) / 2;
-}
-
-// Fixed iterations version
-double ternary_search_max_iter(double lo, double hi,
-                                function<double(double)> f,
-                                int iterations = 200) {
-    for (int i = 0; i < iterations; i++) {
-        double m1 = lo + (hi - lo) / 3;
-        double m2 = hi - (hi - lo) / 3;
-
-        if (f(m1) < f(m2)) {
-            lo = m1;
-        } else {
-            hi = m2;
-        }
-    }
-    return (lo + hi) / 2;
-}
-```
-
 ---
 
 ## Common Mistakes
@@ -419,14 +319,6 @@ while hi - lo > 2:
 **Fix:** Use `hi - lo > 2` and enumerate remaining candidates.
 
 ### Mistake 2: Integer Overflow in Midpoint Calculation
-
-```cpp
-// WRONG - Can overflow
-long long m1 = (lo + hi) / 3;
-
-// CORRECT - Overflow-safe
-long long m1 = lo + (hi - lo) / 3;
-```
 
 ### Mistake 3: Floating-Point Precision Issues
 

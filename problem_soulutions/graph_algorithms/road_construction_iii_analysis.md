@@ -119,62 +119,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int parent[100001], rnk[100001];
-int components;
-
-int find(int x) {
-    if (parent[x] != x)
-        parent[x] = find(parent[x]);
-    return parent[x];
-}
-
-bool unite(int a, int b) {
-    int ra = find(a), rb = find(b);
-    if (ra == rb) return false;
-
-    if (rnk[ra] < rnk[rb]) swap(ra, rb);
-    parent[rb] = ra;
-    if (rnk[ra] == rnk[rb]) rnk[ra]++;
-
-    components--;
-    return true;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    components = n;
-    for (int i = 1; i <= n; i++) {
-        parent[i] = i;
-        rnk[i] = 0;
-    }
-
-    for (int i = 1; i <= m; i++) {
-        int a, b;
-        cin >> a >> b;
-        unite(a, b);
-
-        if (components == 1) {
-            cout << i << "\n";
-            return 0;
-        }
-    }
-
-    cout << "IMPOSSIBLE\n";
-    return 0;
-}
-```
-
-## Complexity Analysis
+### Complexity Analysis
 
 | Operation | Time | Space |
 |-----------|------|-------|

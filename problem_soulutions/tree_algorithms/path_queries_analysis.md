@@ -351,113 +351,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-long long values[MAXN];
-int entry_time[MAXN], exit_time[MAXN];
-long long euler_arr[2 * MAXN];
-long long tree[8 * MAXN];
-int timer = 0;
-int n, q;
-
-void dfs(int node, int parent) {
-    entry_time[node] = timer;
-    euler_arr[timer++] = values[node];
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs(child, node);
-        }
-    }
-
-    exit_time[node] = timer;
-    euler_arr[timer++] = -values[node];
-}
-
-void build(int node, int start, int end) {
-    if (start == end) {
-        tree[node] = euler_arr[start];
-    } else {
-        int mid = (start + end) / 2;
-        build(2 * node, start, mid);
-        build(2 * node + 1, mid + 1, end);
-        tree[node] = tree[2 * node] + tree[2 * node + 1];
-    }
-}
-
-void update(int node, int start, int end, int idx, long long delta) {
-    if (start == end) {
-        tree[node] += delta;
-    } else {
-        int mid = (start + end) / 2;
-        if (idx <= mid) {
-            update(2 * node, start, mid, idx, delta);
-        } else {
-            update(2 * node + 1, mid + 1, end, idx, delta);
-        }
-        tree[node] = tree[2 * node] + tree[2 * node + 1];
-    }
-}
-
-long long query(int node, int start, int end, int l, int r) {
-    if (r < start || end < l) return 0;
-    if (l <= start && end <= r) return tree[node];
-    int mid = (start + end) / 2;
-    return query(2 * node, start, mid, l, r) +
-           query(2 * node + 1, mid + 1, end, l, r);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> q;
-
-    for (int i = 1; i <= n; i++) {
-        cin >> values[i];
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    dfs(1, 0);
-
-    int size = 2 * n;
-    build(1, 0, size - 1);
-
-    while (q--) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-            int s;
-            long long x;
-            cin >> s >> x;
-            long long delta = x - values[s];
-            values[s] = x;
-            update(1, 0, size - 1, entry_time[s], delta);
-            update(1, 0, size - 1, exit_time[s], -delta);
-        } else {
-            int s;
-            cin >> s;
-            cout << query(1, 0, size - 1, 0, entry_time[s]) << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -471,53 +364,20 @@ int main() {
 
 ### Mistake 1: Forgetting to Update Both Entry and Exit
 
-```cpp
-// WRONG - only updating entry
-update(entry[s], delta);
-
-// CORRECT - must update both positions
-update(entry[s], delta);      // +delta at entry
-update(exit_time[s], -delta); // -delta at exit
-```
-
 **Problem:** The cancellation property breaks; non-ancestors will affect queries.
 **Fix:** Always update both entry (+delta) and exit (-delta) positions.
 
 ### Mistake 2: Integer Overflow
-
-```cpp
-// WRONG - using int for sums
-int tree[8 * MAXN];
-
-// CORRECT - use long long
-long long tree[8 * MAXN];
-```
 
 **Problem:** Values up to 10^9, path up to 2x10^5 nodes -> sum can reach 2x10^14.
 **Fix:** Use `long long` for all sum-related variables.
 
 ### Mistake 3: Off-by-One in Euler Array Size
 
-```cpp
-// WRONG
-long long euler_arr[MAXN];
-
-// CORRECT - need 2n entries (entry + exit for each node)
-long long euler_arr[2 * MAXN];
-```
-
 **Problem:** Each node contributes two events (entry and exit).
 **Fix:** Euler array must have size 2n.
 
 ### Mistake 4: Wrong Query Range
-
-```cpp
-// WRONG - querying up to exit time
-query(0, exit_time[s]);
-
-// CORRECT - query up to entry time only
-query(0, entry_time[s]);
-```
 
 **Problem:** Including exit events of the target node and descendants.
 **Fix:** Path sum = prefix sum ending at entry time.

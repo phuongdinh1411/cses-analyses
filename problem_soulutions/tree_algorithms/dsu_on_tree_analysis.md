@@ -304,119 +304,7 @@ def solve():
 solve()
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-int color[MAXN], subtree_size[MAXN], heavy[MAXN];
-int answer[MAXN];
-map<int, int> cnt;  // color -> count
-int distinct_count = 0;
-
-void calc_size(int u, int p) {
-    subtree_size[u] = 1;
-    int max_child_size = 0;
-    for (int v : adj[u]) {
-        if (v != p) {
-            calc_size(v, u);
-            subtree_size[u] += subtree_size[v];
-            if (subtree_size[v] > max_child_size) {
-                max_child_size = subtree_size[v];
-                heavy[u] = v;
-            }
-        }
-    }
-}
-
-void add(int c) {
-    if (cnt[c] == 0) distinct_count++;
-    cnt[c]++;
-}
-
-void remove(int c) {
-    cnt[c]--;
-    if (cnt[c] == 0) distinct_count--;
-}
-
-void add_subtree(int u, int p) {
-    add(color[u]);
-    for (int v : adj[u]) {
-        if (v != p) add_subtree(v, u);
-    }
-}
-
-void remove_subtree(int u, int p) {
-    remove(color[u]);
-    for (int v : adj[u]) {
-        if (v != p) remove_subtree(v, u);
-    }
-}
-
-void dfs(int u, int p, bool keep) {
-    // Process light children first
-    for (int v : adj[u]) {
-        if (v != p && v != heavy[u]) {
-            dfs(v, u, false);
-        }
-    }
-
-    // Process heavy child (keep data)
-    if (heavy[u]) {
-        dfs(heavy[u], u, true);
-    }
-
-    // Add current node
-    add(color[u]);
-
-    // Re-add light children
-    for (int v : adj[u]) {
-        if (v != p && v != heavy[u]) {
-            add_subtree(v, u);
-        }
-    }
-
-    answer[u] = distinct_count;
-
-    // Clear if not keeping
-    if (!keep) {
-        remove_subtree(u, p);
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    for (int i = 1; i <= n; i++) {
-        cin >> color[i];
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    calc_size(1, 0);
-    dfs(1, 0, false);
-
-    for (int i = 1; i <= n; i++) {
-        cout << answer[i] << " \n"[i == n];
-    }
-
-    return 0;
-}
-```
-
-### Complexity Analysis
+#### Complexity Analysis
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -429,50 +317,14 @@ int main() {
 
 ### Mistake 1: Clearing Heavy Child Data
 
-```cpp
-// WRONG: Clearing all children after processing
-for (int v : children[u]) {
-    dfs(v, u, false);  // Clears ALL children!
-}
-```
-
 **Problem:** Defeats the purpose - we need to KEEP heavy child data.
 **Fix:** Only pass `keep=false` to light children.
 
 ### Mistake 2: Wrong Heavy Child Selection
 
-```cpp
-// WRONG: Selecting heavy child BEFORE calculating subtree sizes
-heavy[u] = adj[u][0];  // Arbitrary, not based on size
-
-// CORRECT: Select after size calculation
-for (int v : adj[u]) {
-    if (subtree_size[v] > subtree_size[heavy[u]]) {
-        heavy[u] = v;
-    }
-}
-```
-
 ### Mistake 3: Forgetting to Add Current Node
 
-```cpp
-// WRONG: Missing add(color[u])
-void dfs(int u, int p, bool keep) {
-    // Process children...
-    answer[u] = distinct_count;  // Current node not counted!
-}
-```
-
 ### Mistake 4: Adding Heavy Child Twice
-
-```cpp
-// WRONG: Re-adding heavy child in the loop
-for (int v : adj[u]) {
-    if (v != p) {  // Should also exclude heavy[u]!
-        add_subtree(v, u);
-    }
-}
-```
 
 ---
 
@@ -544,11 +396,13 @@ Subtree query problem?
 ## Related CSES Problems
 
 ### Direct Applications
+
 | Problem | Technique Used |
 |---------|----------------|
 | [Distinct Colors](https://cses.fi/problemset/task/1139) | DSU on Trees (this analysis) |
 
 ### Related Tree Problems
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subtree Queries](https://cses.fi/problemset/task/1137) | Euler tour + BIT (with updates) |

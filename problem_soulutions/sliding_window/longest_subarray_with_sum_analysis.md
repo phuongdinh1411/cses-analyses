@@ -182,36 +182,6 @@ def longest_subarray_positive(arr, target):
     return max_length
 ```
 
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int longestSubarrayPositive(vector<int>& arr, long long target) {
-    int n = arr.size();
-    int left = 0;
-    long long currentSum = 0;
-    int maxLength = 0;
-
-    for (int right = 0; right < n; right++) {
-        currentSum += arr[right];
-
-        // Shrink window while sum exceeds target
-        while (currentSum > target && left <= right) {
-            currentSum -= arr[left];
-            left++;
-        }
-
-        // Check if we found target sum
-        if (currentSum == target) {
-            maxLength = max(maxLength, right - left + 1);
-        }
-    }
-
-    return maxLength;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -297,37 +267,6 @@ def longest_subarray_general(arr, target):
             prefix_map[prefix_sum] = i
 
     return max_length
-```
-
-**C++:**
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int longestSubarrayGeneral(vector<int>& arr, long long target) {
-    unordered_map<long long, int> prefixMap;
-    prefixMap[0] = -1;  // Handle subarrays starting at index 0
-
-    long long prefixSum = 0;
-    int maxLength = 0;
-
-    for (int i = 0; i < arr.size(); i++) {
-        prefixSum += arr[i];
-
-        // Check if (prefixSum - target) exists
-        if (prefixMap.count(prefixSum - target)) {
-            int length = i - prefixMap[prefixSum - target];
-            maxLength = max(maxLength, length);
-        }
-
-        // Store first occurrence only
-        if (!prefixMap.count(prefixSum)) {
-            prefixMap[prefixSum] = i;
-        }
-    }
-
-    return maxLength;
-}
 ```
 
 ### Complexity
@@ -424,6 +363,7 @@ prefix_map = {0: -1}  # Handles arr[0:j] subarrays
 ## Related Problems
 
 ### CSES Problems
+
 | Problem | Link | Relationship |
 |---------|------|--------------|
 | Subarray Sums I | [CSES 1660](https://cses.fi/problemset/task/1660) | Count subarrays (positive only) |
@@ -432,6 +372,7 @@ prefix_map = {0: -1}  # Handles arr[0:j] subarrays
 | Maximum Subarray Sum | [CSES 1643](https://cses.fi/problemset/task/1643) | Kadane's algorithm |
 
 ### LeetCode Problems
+
 | Problem | Difficulty | Key Difference |
 |---------|------------|----------------|
 | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | Medium | Count instead of max length |

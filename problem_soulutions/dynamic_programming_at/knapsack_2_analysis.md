@@ -47,6 +47,7 @@ After solving this problem, you will be able to:
 - 1 <= v_i <= 10^3 (small!)
 
 **Critical Observation:**
+
 | Constraint | Knapsack 1 | Knapsack 2 |
 |------------|------------|------------|
 | W (capacity) | <= 10^5 (small) | <= 10^9 (huge) |
@@ -243,56 +244,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int N;
-    long long W;
-    cin >> N >> W;
-
-    vector<long long> weight(N), value(N);
-    long long max_value = 0;
-
-    for (int i = 0; i < N; i++) {
-        cin >> weight[i] >> value[i];
-        max_value += value[i];
-    }
-
-    // dp[v] = minimum weight to achieve value v
-    const long long INF = 1e18;
-    vector<long long> dp(max_value + 1, INF);
-    dp[0] = 0;
-
-    // Process each item
-    for (int i = 0; i < N; i++) {
-        // Iterate backwards
-        for (long long v = max_value; v >= value[i]; v--) {
-            if (dp[v - value[i]] + weight[i] < dp[v]) {
-                dp[v] = dp[v - value[i]] + weight[i];
-            }
-        }
-    }
-
-    // Find maximum achievable value
-    for (long long v = max_value; v >= 0; v--) {
-        if (dp[v] <= W) {
-            cout << v << "\n";
-            return 0;
-        }
-    }
-
-    cout << 0 << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -326,14 +277,6 @@ for v in range(value, max_value + 1):  # Forward iteration
 **Fix:** Iterate backwards from max_value down to value.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - int may overflow with large weights
-int dp[MAX_VALUE];  // Weights can be up to 10^9
-
-// CORRECT
-long long dp[MAX_VALUE];  // Use long long for weights
-```
 
 **Problem:** Sum of weights can exceed 32-bit integer range.
 **Fix:** Use `long long` for weight calculations.
@@ -398,17 +341,20 @@ If both are huge:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Knapsack 1 (AtCoder E)](https://atcoder.jp/contests/dp/tasks/dp_d) | Standard capacity-based knapsack |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES Book Shop](https://cses.fi/problemset/task/1158) | Standard knapsack with moderate W |
 | [LeetCode 416 - Partition Equal Subset Sum](https://leetcode.com/problems/partition-equal-subset-sum/) | Boolean DP, can we achieve target sum? |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [AtCoder DP F - LCS](https://atcoder.jp/contests/dp/tasks/dp_f) | Different DP state design |

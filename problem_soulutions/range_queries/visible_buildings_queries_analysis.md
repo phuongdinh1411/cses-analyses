@@ -118,19 +118,6 @@ def solve_brute_force(n, heights, queries):
     return results
 ```
 
-```cpp
-vector<int> solveBruteForce(int n, vector<int>& heights, vector<int>& queries) {
-    vector<int> results;
-    for (int pos : queries) {
-        int i = pos - 1, count = 0, maxHeight = 0;
-        for (int j = i + 1; j < n; j++)
-            if (heights[j] > maxHeight) { count++; maxHeight = heights[j]; }
-        results.push_back(count);
-    }
-    return results;
-}
-```
-
 ### Complexity
 
 **Time:** O(q * n) - each query scans up to n elements
@@ -214,24 +201,6 @@ def solve_optimal(n, heights, queries):
     return [visible[pos - 1] for pos in queries]
 ```
 
-```cpp
-#include <vector>
-using namespace std;
-
-vector<int> solveOptimal(int n, vector<int>& heights, vector<int>& queries) {
-    vector<int> visible(n, 0);
-    for (int i = 0; i < n; i++) {
-        int count = 0, maxHeight = 0;
-        for (int j = i + 1; j < n; j++)
-            if (heights[j] > maxHeight) { count++; maxHeight = heights[j]; }
-        visible[i] = count;
-    }
-    vector<int> results;
-    for (int pos : queries) results.push_back(visible[pos - 1]);
-    return results;
-}
-```
-
 ### Complexity
 
 | Time | Space |
@@ -276,31 +245,6 @@ def solve_with_next_greater(n, heights, queries):
             visible[i] = 1 + visible[next_greater[i]]
 
     return [visible[pos - 1] for pos in queries]
-```
-
-```cpp
-#include <vector>
-#include <stack>
-using namespace std;
-
-vector<int> solveWithNextGreater(int n, vector<int>& heights, vector<int>& queries) {
-    vector<int> nextGreater(n, -1);
-    stack<int> st;
-    for (int i = n - 1; i >= 0; i--) {
-        while (!st.empty() && heights[st.top()] <= heights[i]) st.pop();
-        if (!st.empty()) nextGreater[i] = st.top();
-        st.push(i);
-    }
-
-    vector<int> visible(n, 0);
-    for (int i = n - 1; i >= 0; i--)
-        if (nextGreater[i] != -1)
-            visible[i] = 1 + visible[nextGreater[i]];
-
-    vector<int> results;
-    for (int pos : queries) results.push_back(visible[pos - 1]);
-    return results;
-}
 ```
 
 ### Complexity

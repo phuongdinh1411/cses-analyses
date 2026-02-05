@@ -236,54 +236,6 @@ if __name__ == "__main__":
     main()
 ```
 
-## C++ Implementation
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> arr(n);
-    long long total_sum = 0;
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-        total_sum += arr[i];
-    }
-
-    // dp[i][j] = max(current player's score - opponent's score) for arr[i..j]
-    vector<vector<long long>> dp(n, vector<long long>(n, 0));
-
-    // Base case: single elements
-    for (int i = 0; i < n; i++) {
-        dp[i][i] = arr[i];
-    }
-
-    // Fill by increasing length
-    for (int len = 2; len <= n; len++) {
-        for (int i = 0; i <= n - len; i++) {
-            int j = i + len - 1;
-            long long take_left = arr[i] - dp[i + 1][j];
-            long long take_right = arr[j] - dp[i][j - 1];
-            dp[i][j] = max(take_left, take_right);
-        }
-    }
-
-    // Calculate first player's actual score
-    long long diff = dp[0][n - 1];
-    long long answer = (total_sum + diff) / 2;
-
-    cout << answer << "\n";
-
-    return 0;
-}
-```
-
 ## Common Mistakes
 
 ### 1. Not Understanding the Difference Formulation

@@ -367,133 +367,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-
-int n, q;
-int arr[MAXN];
-int prev_occ[MAXN];
-int tree[4 * MAXN];
-map<int, set<int>> pos;  // pos[v] = positions where value v appears
-
-void build(int node, int start, int end) {
-    if (start == end) {
-        tree[node] = prev_occ[start];
-        return;
-    }
-    int mid = (start + end) / 2;
-    build(2 * node, start, mid);
-    build(2 * node + 1, mid + 1, end);
-    tree[node] = max(tree[2 * node], tree[2 * node + 1]);
-}
-
-void update(int node, int start, int end, int idx, int val) {
-    if (start == end) {
-        tree[node] = val;
-        return;
-    }
-    int mid = (start + end) / 2;
-    if (idx <= mid)
-        update(2 * node, start, mid, idx, val);
-    else
-        update(2 * node + 1, mid + 1, end, idx, val);
-    tree[node] = max(tree[2 * node], tree[2 * node + 1]);
-}
-
-int query(int node, int start, int end, int l, int r) {
-    if (r < start || end < l)
-        return 0;
-    if (l <= start && end <= r)
-        return tree[node];
-    int mid = (start + end) / 2;
-    return max(query(2 * node, start, mid, l, r),
-               query(2 * node + 1, mid + 1, end, l, r));
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n >> q;
-
-    for (int i = 1; i <= n; i++) {
-        cin >> arr[i];
-        int v = arr[i];
-
-        // Find predecessor
-        auto it = pos[v].lower_bound(i);
-        if (it != pos[v].begin()) {
-            --it;
-            prev_occ[i] = *it;
-        } else {
-            prev_occ[i] = 0;
-        }
-        pos[v].insert(i);
-    }
-
-    build(1, 1, n);
-
-    while (q--) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-            int k, u;
-            cin >> k >> u;
-
-            int old_val = arr[k];
-            if (old_val == u) continue;
-
-            // Remove k from pos[old_val]
-            pos[old_val].erase(k);
-            auto it = pos[old_val].lower_bound(k);
-            if (it != pos[old_val].end()) {
-                int succ = *it;
-                if (it != pos[old_val].begin()) {
-                    --it;
-                    prev_occ[succ] = *it;
-                } else {
-                    prev_occ[succ] = 0;
-                }
-                update(1, 1, n, succ, prev_occ[succ]);
-            }
-
-            // Update arr[k] and prev_occ[k]
-            arr[k] = u;
-            auto it2 = pos[u].lower_bound(k);
-            if (it2 != pos[u].begin()) {
-                --it2;
-                prev_occ[k] = *it2;
-            } else {
-                prev_occ[k] = 0;
-            }
-            update(1, 1, n, k, prev_occ[k]);
-
-            // Add k to pos[u]
-            pos[u].insert(k);
-            it2 = pos[u].upper_bound(k);
-            if (it2 != pos[u].end()) {
-                int succ = *it2;
-                prev_occ[succ] = k;
-                update(1, 1, n, succ, prev_occ[succ]);
-            }
-        } else {
-            int a, b;
-            cin >> a >> b;
-            int max_prev = query(1, 1, n, a, b);
-            cout << (max_prev < a ? "YES" : "NO") << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -576,18 +449,21 @@ arr = list(map(int, input().split()))  # 0-indexed
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Static Range Minimum Queries](https://cses.fi/problemset/task/1647) | Basic segment tree range queries |
 | [Dynamic Range Minimum Queries](https://cses.fi/problemset/task/1649) | Segment tree with point updates |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Distinct Values Queries](https://cses.fi/problemset/task/1734) | Count distinct (no updates), use Mo's algorithm |
 | [Range Update Queries](https://cses.fi/problemset/task/1651) | Segment tree with lazy propagation |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Polynomial Queries](https://cses.fi/problemset/task/1736) | Complex segment tree operations |

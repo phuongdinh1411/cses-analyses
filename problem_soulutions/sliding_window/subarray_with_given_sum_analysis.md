@@ -252,46 +252,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    long long x;
-    cin >> n >> x;
-
-    map<long long, int> freq;
-    freq[0] = 1;  // Empty prefix has sum 0
-
-    long long prefix_sum = 0;
-    long long count = 0;
-
-    for (int i = 0; i < n; i++) {
-        long long num;
-        cin >> num;
-        prefix_sum += num;
-
-        // How many previous prefixes give us target sum?
-        long long complement = prefix_sum - x;
-        if (freq.count(complement)) {
-            count += freq[complement];
-        }
-
-        // Store current prefix sum
-        freq[prefix_sum]++;
-    }
-
-    cout << count << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -317,14 +277,6 @@ for num in arr:
 **Problem:** Without {0: 1}, we cannot find subarrays that start from index 0.
 
 **Fix:** Always initialize with `freq = {0: 1}` to represent the empty prefix.
-
-### Mistake 2: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow with large values
-int prefix_sum = 0;  // Should be long long
-int count = 0;       // Should be long long
-```
 
 **Problem:** With values up to 10^9 and n up to 2*10^5, prefix sum can reach 2*10^14.
 

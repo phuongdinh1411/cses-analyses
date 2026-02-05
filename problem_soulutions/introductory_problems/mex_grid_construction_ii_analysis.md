@@ -152,69 +152,6 @@ if __name__ == "__main__":
     mex_grid_construction_ii(n, r, c)
 ```
 
-#### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, r, c;
-    cin >> n >> r >> c;
-
-    // Impossibility checks
-    if (r > n || c > n) {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-    if (r != c && (r == n || c == n)) {
-        cout << "IMPOSSIBLE\n";
-        return 0;
-    }
-
-    vector<vector<int>> grid(n, vector<int>(n));
-
-    if (r == c) {
-        // Symmetric case
-        int filler = r + 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (j < r) {
-                    grid[i][j] = (i + j) % r;
-                } else {
-                    grid[i][j] = filler++;
-                }
-            }
-        }
-    } else {
-        // Asymmetric case
-        int large = max(r, c);
-        int filler = large + 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                int val = (i + j) % (large + 1);
-                if (val == r || val == c) {
-                    val = filler++;
-                }
-                grid[i][j] = val;
-            }
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (j > 0) cout << " ";
-            cout << grid[i][j];
-        }
-        cout << "\n";
-    }
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -290,18 +227,21 @@ Values placed for row MEX also count toward column MEX. Consider both constraint
 ## Related Problems
 
 ### Easier (Do First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Missing Number](https://cses.fi/problemset/task/1083) | Basic MEX concept |
 | [MEX Grid Construction](mex_grid_construction_analysis) | Single constraint version |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Grid constraints with conflicts |
 | [Grid Paths](https://cses.fi/problemset/task/1638) | Grid traversal constraints |
 
 ### Harder (Do After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Sudoku Solver](https://leetcode.com/problems/sudoku-solver/) | Multiple constraint types |

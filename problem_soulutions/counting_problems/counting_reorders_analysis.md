@@ -221,61 +221,6 @@ print(count_reorders("aaaa"))   # Output: 1
 print(count_reorders("abcd"))   # Output: 24
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-long long power(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-    while (exp > 0) {
-        if (exp & 1) result = result * base % mod;
-        base = base * base % mod;
-        exp >>= 1;
-    }
-    return result;
-}
-
-long long modInverse(long long a, long long mod) {
-    return power(a, mod - 2, mod);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    cin >> s;
-    int n = s.length();
-
-    // Precompute factorials
-    vector<long long> fact(n + 1);
-    fact[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        fact[i] = fact[i-1] * i % MOD;
-    }
-
-    // Count character frequencies
-    map<char, int> freq;
-    for (char c : s) {
-        freq[c]++;
-    }
-
-    // Compute n! / (c1! * c2! * ... * ck!)
-    long long result = fact[n];
-    for (auto& [ch, cnt] : freq) {
-        result = result * modInverse(fact[cnt], MOD) % MOD;
-    }
-
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -302,16 +247,6 @@ result %= MOD
 **Fix:** Use modular inverse: multiply by b^(MOD-2) instead of dividing by b.
 
 ### Mistake 2: Overflow in Factorial Computation
-
-```cpp
-// WRONG - Overflow before taking mod
-long long fact[n+1];
-fact[0] = 1;
-for (int i = 1; i <= n; i++) {
-    fact[i] = fact[i-1] * i;  // Overflows for i > 20!
-}
-fact[n] %= MOD;
-```
 
 **Problem:** Factorial grows extremely fast and overflows even 64-bit integers.
 

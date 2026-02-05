@@ -252,48 +252,6 @@ if __name__ == "__main__":
     main()
 ```
 
-#### C++
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    int left = 0;
-    int max_length = 0;
-    unordered_set<int> seen;
-
-    for (int right = 0; right < n; right++) {
-        // Shrink window until arr[right] is not a duplicate
-        while (seen.count(arr[right])) {
-            seen.erase(arr[left]);
-            left++;
-        }
-
-        // Add current element to window
-        seen.insert(arr[right]);
-
-        // Update maximum length
-        max_length = max(max_length, right - left + 1);
-    }
-
-    cout << max_length << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -393,17 +351,20 @@ seen.add(arr[right])
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Contains Duplicate](https://leetcode.com/problems/contains-duplicate/) | Basic hash set usage |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | String version of same problem |
 | [Distinct Values Queries](https://cses.fi/problemset/task/1734) | Count distinct values in ranges |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Longest Substring with At Most K Distinct Characters](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) | Allows up to K repeats |

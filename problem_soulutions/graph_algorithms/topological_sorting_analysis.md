@@ -180,63 +180,6 @@ else:
     print("IMPOSSIBLE")
 ```
 
-### C++ Implementation (Kahn's BFS)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> adj(n + 1);
-    vector<int> in_degree(n + 1, 0);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        in_degree[b]++;
-    }
-
-    queue<int> q;
-    for (int i = 1; i <= n; i++) {
-        if (in_degree[i] == 0) {
-            q.push(i);
-        }
-    }
-
-    vector<int> result;
-
-    while (!q.empty()) {
-        int node = q.front();
-        q.pop();
-        result.push_back(node);
-
-        for (int neighbor : adj[node]) {
-            in_degree[neighbor]--;
-            if (in_degree[neighbor] == 0) {
-                q.push(neighbor);
-            }
-        }
-    }
-
-    if (result.size() != n) {
-        cout << "IMPOSSIBLE" << endl;
-    } else {
-        for (int i = 0; i < n; i++) {
-            cout << result[i] << (i < n - 1 ? " " : "\n");
-        }
-    }
-
-    return 0;
-}
-```
-
 ## Approach 2: DFS-based Topological Sort
 
 ### Algorithm Steps
@@ -331,72 +274,6 @@ else:
     print("IMPOSSIBLE")
 ```
 
-### C++ Implementation (DFS)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int WHITE = 0, GRAY = 1, BLACK = 2;
-vector<vector<int>> adj;
-vector<int> color, result;
-bool has_cycle = false;
-
-void dfs(int node) {
-    if (has_cycle) return;
-
-    color[node] = GRAY;
-
-    for (int neighbor : adj[node]) {
-        if (color[neighbor] == GRAY) {
-            has_cycle = true;
-            return;
-        }
-        if (color[neighbor] == WHITE) {
-            dfs(neighbor);
-        }
-    }
-
-    color[node] = BLACK;
-    result.push_back(node);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n, m;
-    cin >> n >> m;
-
-    adj.resize(n + 1);
-    color.assign(n + 1, WHITE);
-
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-    }
-
-    for (int i = 1; i <= n; i++) {
-        if (color[i] == WHITE) {
-            dfs(i);
-            if (has_cycle) break;
-        }
-    }
-
-    if (has_cycle) {
-        cout << "IMPOSSIBLE" << endl;
-    } else {
-        reverse(result.begin(), result.end());
-        for (int i = 0; i < n; i++) {
-            cout << result[i] << (i < n - 1 ? " " : "\n");
-        }
-    }
-
-    return 0;
-}
-```
-
 ## Dry Run Example
 
 **Input:**
@@ -411,6 +288,7 @@ int main() {
 **Graph Visualization:**
 ```
 1 ---> 2
+
 |      |
 v      v
 +----> 3      4 ---> 5

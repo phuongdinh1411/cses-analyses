@@ -293,86 +293,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-int n;
-
-typedef vector<vector<long long>> Matrix;
-
-Matrix multiply(const Matrix& A, const Matrix& B) {
-    Matrix C(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < n; k++) {
-            if (A[i][k] == 0) continue;
-            for (int j = 0; j < n; j++) {
-                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matrix_power(Matrix base, long long power) {
-    Matrix result(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) result[i][i] = 1;  // Identity
-
-    while (power > 0) {
-        if (power & 1) {
-            result = multiply(result, base);
-        }
-        base = multiply(base, base);
-        power >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int m, q;
-    cin >> n >> m >> q;
-
-    Matrix adj(n, vector<long long>(n, 0));
-    for (int i = 0; i < m; i++) {
-        int a, b;
-        cin >> a >> b;
-        a--; b--;
-        adj[a][b]++;
-    }
-
-    // Read queries and collect unique k values
-    vector<tuple<int, int, long long>> queries(q);
-    map<long long, Matrix> powers;
-
-    for (int i = 0; i < q; i++) {
-        int a, b;
-        long long k;
-        cin >> a >> b >> k;
-        a--; b--;
-        queries[i] = {a, b, k};
-        powers[k];  // Insert k with empty matrix
-    }
-
-    // Precompute matrix powers
-    for (auto& [k, mat] : powers) {
-        mat = matrix_power(adj, k);
-    }
-
-    // Answer queries
-    for (auto& [a, b, k] : queries) {
-        cout << powers[k][a][b] << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -385,14 +305,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Forgetting to Handle Multiple Edges
-
-```cpp
-// WRONG - overwrites instead of accumulating
-adj[a][b] = 1;
-
-// CORRECT - multiple edges between same nodes
-adj[a][b]++;
-```
 
 **Problem:** Multiple edges between same pair of nodes should each count as a separate path option.
 
@@ -408,24 +320,7 @@ adj[a-1][b-1] = 1
 
 ### Mistake 3: Integer Overflow in Matrix Multiplication
 
-```cpp
-// WRONG - may overflow before modulo
-C[i][j] += A[i][k] * B[k][j];
-C[i][j] %= MOD;
-
-// CORRECT - apply modulo during multiplication
-C[i][j] = (C[i][j] + (A[i][k] * B[k][j]) % MOD) % MOD;
-```
-
 ### Mistake 4: Not Using Long Long for k
-
-```cpp
-// WRONG - k can be up to 10^9
-int k;
-
-// CORRECT
-long long k;
-```
 
 ---
 

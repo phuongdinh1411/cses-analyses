@@ -128,33 +128,6 @@ def solve_brute_force(n, adj, queries):
     return results
 ```
 
-```cpp
-#include <vector>
-using namespace std;
-
-class BruteForceSolution {
-    int n;
-    vector<vector<int>>& adj;
-
-    bool dfs(int node, int start, int remaining) {
-        if (remaining == 0) return node == start;
-        for (int next = 0; next < n; next++) {
-            if (adj[node][next] && dfs(next, start, remaining - 1)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-public:
-    BruteForceSolution(int n, vector<vector<int>>& adj) : n(n), adj(adj) {}
-
-    bool hasTour(int start, int k) {
-        return dfs(start, start, k);
-    }
-};
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -295,70 +268,6 @@ if __name__ == "__main__":
     adj = [[int(data[ptr + i*n + j]) for j in range(n)] for i in range(n)]; ptr += n*n
     queries = [(int(data[ptr+2*i]), int(data[ptr+2*i+1])) for i in range(q)]
     for r in solve_optimal(n, adj, queries): print(r)
-```
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-typedef vector<vector<long long>> Matrix;
-
-class MatrixExponentiation {
-    int n;
-
-    Matrix multiply(const Matrix& A, const Matrix& B) {
-        Matrix C(n, vector<long long>(n, 0));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    C[i][j] += A[i][k] * B[k][j];
-                }
-                // Keep as boolean to prevent overflow
-                C[i][j] = min(C[i][j], 1LL);
-            }
-        }
-        return C;
-    }
-
-public:
-    MatrixExponentiation(int n) : n(n) {}
-
-    Matrix power(Matrix& M, long long p) {
-        // Identity matrix
-        Matrix result(n, vector<long long>(n, 0));
-        for (int i = 0; i < n; i++) result[i][i] = 1;
-
-        Matrix base = M;
-        while (p > 0) {
-            if (p & 1) result = multiply(result, base);
-            base = multiply(base, base);
-            p >>= 1;
-        }
-        return result;
-    }
-};
-
-int main() {
-    ios_base::sync_with_stdio(false); cin.tie(nullptr);
-    int n, q; cin >> n >> q;
-    Matrix adj(n, vector<long long>(n));
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++) cin >> adj[i][j];
-
-    MatrixExponentiation solver(n);
-    map<long long, vector<pair<int, int>>> queries_by_k;
-    for (int i = 0; i < q; i++) {
-        int a; long long k; cin >> a >> k;
-        queries_by_k[k].push_back({i, a});
-    }
-    vector<int> results(q);
-    for (auto& [k, qlist] : queries_by_k) {
-        Matrix Ak = solver.power(adj, k);
-        for (auto& [idx, a] : qlist)
-            results[idx] = Ak[a-1][a-1] > 0 ? 1 : 0;
-    }
-    for (int r : results) cout << r << "\n";
-}
 ```
 
 ### Complexity

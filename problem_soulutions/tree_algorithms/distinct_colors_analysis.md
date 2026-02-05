@@ -331,77 +331,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int n;
-vector<int> colors;
-vector<vector<int>> adj;
-vector<int> result;
-
-// Each node owns a set, we track which set belongs to which node
-vector<set<int>> color_sets;
-
-void dfs(int node, int parent) {
-    color_sets[node].insert(colors[node]);
-
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs(child, node);
-
-            // Small-to-large merging
-            if (color_sets[node].size() < color_sets[child].size()) {
-                swap(color_sets[node], color_sets[child]);
-            }
-
-            // Merge smaller into larger
-            for (int color : color_sets[child]) {
-                color_sets[node].insert(color);
-            }
-            color_sets[child].clear();  // Free memory
-        }
-    }
-
-    result[node] = color_sets[node].size();
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    cin >> n;
-
-    colors.resize(n + 1);
-    adj.resize(n + 1);
-    result.resize(n + 1);
-    color_sets.resize(n + 1);
-
-    for (int i = 1; i <= n; i++) {
-        cin >> colors[i];
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int u, v;
-        cin >> u >> v;
-        adj[u].push_back(v);
-        adj[v].push_back(u);
-    }
-
-    dfs(1, 0);
-
-    for (int i = 1; i <= n; i++) {
-        cout << result[i];
-        if (i < n) cout << " ";
-    }
-    cout << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -447,22 +376,6 @@ def dfs(node, parent):
 # CORRECT - increase limit for large inputs
 import sys
 sys.setrecursionlimit(300000)
-```
-
-### Mistake 4: Not Clearing Child Sets (C++)
-
-```cpp
-// WRONG - memory builds up
-for (int color : color_sets[child]) {
-    color_sets[node].insert(color);
-}
-// Child set still holds data
-
-// CORRECT - free memory after merge
-for (int color : color_sets[child]) {
-    color_sets[node].insert(color);
-}
-color_sets[child].clear();  // Release memory
 ```
 
 ---

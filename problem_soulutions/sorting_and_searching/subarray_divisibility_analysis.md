@@ -122,23 +122,6 @@ def solve_brute_force(n, arr):
     return count
 ```
 
-```cpp
-// C++ Brute Force
-long long solveBruteForce(int n, vector<int>& arr) {
-    long long count = 0;
-    for (int i = 0; i < n; i++) {
-        long long currentSum = 0;
-        for (int j = i; j < n; j++) {
-            currentSum += arr[j];
-            if (currentSum % n == 0) {
-                count++;
-            }
-        }
-    }
-    return count;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -271,41 +254,6 @@ if __name__ == "__main__":
     main()
 ```
 
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int n;
-    cin >> n;
-
-    vector<long long> remainderCount(n, 0);
-    remainderCount[0] = 1;  // Empty prefix has sum 0
-
-    long long prefix = 0;
-    long long result = 0;
-
-    for (int i = 0; i < n; i++) {
-        int x;
-        cin >> x;
-        prefix += x;
-
-        // Handle negative modulo in C++
-        int remainder = ((prefix % n) + n) % n;
-
-        // Add count of previous prefix sums with same remainder
-        result += remainderCount[remainder];
-        remainderCount[remainder]++;
-    }
-
-    cout << result << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -349,14 +297,6 @@ remainder_count = {0: 1}  # Empty prefix counts!
 **Fix:** Initialize with `{0: 1}` to account for the empty prefix (prefix[0] = 0).
 
 ### Mistake 3: Using Array Instead of Long Long for Large Sums
-
-```cpp
-// WRONG
-int prefix = 0;
-
-// CORRECT
-long long prefix = 0;
-```
 
 **Problem:** With elements up to 10^9 and n up to 2 x 10^5, prefix sum can overflow int.
 **Fix:** Use `long long` for prefix sums.
@@ -411,18 +351,21 @@ result += remainder_count.get(remainder, 0)
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subarray Sums I (CSES)](https://cses.fi/problemset/task/1660) | Basic prefix sum + hash map |
 | [Subarray Sums II (CSES)](https://cses.fi/problemset/task/1661) | Handles negative numbers |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Subarray Sum Equals K (LeetCode)](https://leetcode.com/problems/subarray-sum-equals-k/) | Target sum instead of divisibility |
 | [Continuous Subarray Sum (LeetCode)](https://leetcode.com/problems/continuous-subarray-sum/) | Divisible by k with length >= 2 |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Subarray Sums Divisible by K (LeetCode)](https://leetcode.com/problems/subarray-sums-divisible-by-k/) | Generalized to any k |

@@ -346,67 +346,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-int tree[4 * MAXN];
-int arr[MAXN];
-int n;
-
-void build(int v, int tl, int tr) {
-    if (tl == tr) {
-        tree[v] = 1;  // Each element is initially active
-    } else {
-        int tm = (tl + tr) / 2;
-        build(2 * v, tl, tm);
-        build(2 * v + 1, tm + 1, tr);
-        tree[v] = tree[2 * v] + tree[2 * v + 1];
-    }
-}
-
-int findKthAndRemove(int v, int tl, int tr, int k) {
-    tree[v]--;  // One element will be removed from this subtree
-
-    if (tl == tr) {
-        return tl;  // Found the k-th element
-    }
-
-    int tm = (tl + tr) / 2;
-    int leftCount = tree[2 * v];
-
-    if (k <= leftCount) {
-        return findKthAndRemove(2 * v, tl, tm, k);
-    } else {
-        return findKthAndRemove(2 * v + 1, tm + 1, tr, k - leftCount);
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-
-    build(1, 0, n - 1);
-
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        int idx = findKthAndRemove(1, 0, n - 1, p);
-        cout << arr[idx] << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -419,64 +358,6 @@ int main() {
 ## Alternative: Binary Indexed Tree (Fenwick Tree)
 
 A BIT can also solve this problem with binary search:
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-int bit[MAXN];  // BIT stores count of active elements
-int arr[MAXN];
-int n;
-
-void update(int i, int delta) {
-    for (; i <= n; i += i & (-i))
-        bit[i] += delta;
-}
-
-int query(int i) {
-    int sum = 0;
-    for (; i > 0; i -= i & (-i))
-        sum += bit[i];
-    return sum;
-}
-
-int findKth(int k) {
-    // Binary search for the k-th active element
-    int lo = 1, hi = n, ans = 1;
-    while (lo <= hi) {
-        int mid = (lo + hi) / 2;
-        if (query(mid) >= k) {
-            ans = mid;
-            hi = mid - 1;
-        } else {
-            lo = mid + 1;
-        }
-    }
-    return ans;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> arr[i];
-        update(i, 1);  // Mark all elements as active
-    }
-
-    for (int i = 0; i < n; i++) {
-        int p;
-        cin >> p;
-        int idx = findKth(p);
-        cout << arr[idx] << "\n";
-        update(idx, -1);  // Mark as deleted
-    }
-
-    return 0;
-}
-```
 
 **Note:** The BIT approach uses external binary search, giving O(n log^2 n). The segment tree approach with built-in descent is faster at O(n log n), but both pass within time limits.
 
@@ -511,14 +392,6 @@ def find_kth(v, tl, tr, k):
 **Fix:** Decrement `tree[v]` at the start of the function before recursing.
 
 ### Mistake 3: Wrong tree size
-
-```cpp
-// WRONG: Tree too small
-int tree[2 * MAXN];  // May cause overflow
-
-// CORRECT: Use 4*n for safety
-int tree[4 * MAXN];
-```
 
 **Problem:** Segment tree can have up to 4n nodes in worst case.
 **Fix:** Always allocate 4*n space for segment tree arrays.

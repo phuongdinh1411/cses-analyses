@@ -179,68 +179,7 @@ if __name__ == "__main__":
     print(lcs_length(s1, s2))
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int lcsLength(const string& s1, const string& s2) {
-    int m = s1.length(), n = s2.length();
-    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
-
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (s1[i-1] == s2[j-1])
-                dp[i][j] = dp[i-1][j-1] + 1;
-            else
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
-        }
-    }
-    return dp[m][n];
-}
-
-string lcsString(const string& s1, const string& s2) {
-    int m = s1.length(), n = s2.length();
-    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
-
-    for (int i = 1; i <= m; i++) {
-        for (int j = 1; j <= n; j++) {
-            if (s1[i-1] == s2[j-1])
-                dp[i][j] = dp[i-1][j-1] + 1;
-            else
-                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
-        }
-    }
-
-    // Backtrack
-    string lcs;
-    int i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (s1[i-1] == s2[j-1]) {
-            lcs += s1[i-1];
-            i--; j--;
-        } else if (dp[i-1][j] > dp[i][j-1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-    reverse(lcs.begin(), lcs.end());
-    return lcs;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    string s1, s2;
-    cin >> s1 >> s2;
-    cout << lcsLength(s1, s2) << "\n";
-    return 0;
-}
-```
-
-### Space-Optimized Solution (Python)
+#### Space-Optimized Solution (Python)
 
 ```python
 def lcs_length_optimized(s1: str, s2: str) -> int:

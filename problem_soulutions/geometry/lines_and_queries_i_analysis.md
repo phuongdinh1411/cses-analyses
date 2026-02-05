@@ -198,14 +198,19 @@ Step 3: Answer queries using binary search
 ```
 y
 ^
+
 |  \
 | 4 \  L1: y = -x + 4
+
 |    \
 | 3   \   /
+
 |      \ / L2: y = x + 3
 |       X
+
 |      / \
 | 1   /   \
+
 |    /  L3: y = 2x + 1
 |   /
 +--+--+--+--+---> x
@@ -284,79 +289,7 @@ def solve_cht(lines, queries):
     return results
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-typedef pair<ll, ll> pll;
-
-class ConvexHullTrick {
-    vector<pll> lines;  // (slope, intercept)
-
-    // Check if l2 is useless given l1 and l3
-    bool bad(pll l1, pll l2, pll l3) {
-        // Using __int128 or careful multiplication to avoid overflow
-        return (__int128)(l3.second - l1.second) * (l1.first - l2.first) <=
-               (__int128)(l2.second - l1.second) * (l1.first - l3.first);
-    }
-
-public:
-    void add_line(ll m, ll b) {
-        pll line = {m, b};
-        while (lines.size() >= 2 && bad(lines[lines.size()-2], lines[lines.size()-1], line)) {
-            lines.pop_back();
-        }
-        lines.push_back(line);
-    }
-
-    ll query(ll x) {
-        if (lines.empty()) return LLONG_MAX;
-
-        int lo = 0, hi = lines.size() - 1;
-        while (lo < hi) {
-            int mid = (lo + hi) / 2;
-            ll y1 = lines[mid].first * x + lines[mid].second;
-            ll y2 = lines[mid+1].first * x + lines[mid+1].second;
-            if (y1 > y2) lo = mid + 1;
-            else hi = mid;
-        }
-        return lines[lo].first * x + lines[lo].second;
-    }
-};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    vector<pll> lines(n);
-    for (int i = 0; i < n; i++) {
-        cin >> lines[i].first >> lines[i].second;
-    }
-
-    // Sort by slope
-    sort(lines.begin(), lines.end());
-
-    ConvexHullTrick cht;
-    for (auto& [m, b] : lines) {
-        cht.add_line(m, b);
-    }
-
-    while (q--) {
-        ll x;
-        cin >> x;
-        cout << cht.query(x) << "\n";
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -368,20 +301,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow in Intersection Check
-
-```cpp
-// WRONG - overflow for large values
-bool bad(pll l1, pll l2, pll l3) {
-    return (l3.second - l1.second) * (l1.first - l2.first) <=
-           (l2.second - l1.second) * (l1.first - l3.first);
-}
-
-// CORRECT - use __int128 or long double
-bool bad(pll l1, pll l2, pll l3) {
-    return (__int128)(l3.second - l1.second) * (l1.first - l2.first) <=
-           (__int128)(l2.second - l1.second) * (l1.first - l3.first);
-}
-```
 
 **Problem:** With values up to 10^9, multiplication can overflow 64-bit integers.
 **Fix:** Use __int128 in C++ or careful division in Python.

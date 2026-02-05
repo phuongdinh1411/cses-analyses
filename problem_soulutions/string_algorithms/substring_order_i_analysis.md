@@ -185,8 +185,10 @@ String: "aba" (n=3)
 
 Suffix Array (sorted suffixes):
 +-------+--------+------+-------+------------------+
+
 | Index | SA[i]  | LCP  | Suffix| New Substrings   |
 +-------+--------+------+-------+------------------+
+
 |   0   |   2    |  0   | "a"   | 1: "a"           |
 |   1   |   0    |  1   | "aba" | 2: "ab", "aba"   |
 |   2   |   1    |  0   | "ba"  | 2: "b", "ba"     |
@@ -284,88 +286,6 @@ k = int(input())
 print(solve(s, k))
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<int> buildSuffixArray(const string& s) {
-    int n = s.size();
-    vector<int> sa(n), rank(n), tmp(n);
-
-    for (int i = 0; i < n; i++) {
-        sa[i] = i;
-        rank[i] = s[i];
-    }
-
-    for (int k = 1; k < n; k *= 2) {
-        auto cmp = [&](int a, int b) {
-            if (rank[a] != rank[b]) return rank[a] < rank[b];
-            int ra = (a + k < n) ? rank[a + k] : -1;
-            int rb = (b + k < n) ? rank[b + k] : -1;
-            return ra < rb;
-        };
-        sort(sa.begin(), sa.end(), cmp);
-
-        tmp[sa[0]] = 0;
-        for (int i = 1; i < n; i++) {
-            tmp[sa[i]] = tmp[sa[i-1]] + (cmp(sa[i-1], sa[i]) ? 1 : 0);
-        }
-        rank = tmp;
-    }
-    return sa;
-}
-
-vector<int> buildLCP(const string& s, const vector<int>& sa) {
-    int n = s.size();
-    vector<int> rank(n), lcp(n);
-
-    for (int i = 0; i < n; i++) rank[sa[i]] = i;
-
-    int h = 0;
-    for (int i = 0; i < n; i++) {
-        if (rank[i] > 0) {
-            int j = sa[rank[i] - 1];
-            while (i + h < n && j + h < n && s[i + h] == s[j + h]) h++;
-            lcp[rank[i]] = h;
-            if (h > 0) h--;
-        }
-    }
-    return lcp;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    string s;
-    long long k;
-    cin >> s >> k;
-
-    int n = s.size();
-    vector<int> sa = buildSuffixArray(s);
-    vector<int> lcp = buildLCP(s, sa);
-
-    // Cumulative count of distinct substrings
-    vector<long long> cum(n);
-    cum[0] = n - sa[0];  // LCP[0] = 0
-    for (int i = 1; i < n; i++) {
-        cum[i] = cum[i-1] + (n - sa[i]) - lcp[i];
-    }
-
-    // Binary search for suffix containing k-th substring
-    int idx = lower_bound(cum.begin(), cum.end(), k) - cum.begin();
-
-    // Calculate length
-    long long prev = (idx > 0) ? cum[idx - 1] : 0;
-    int len = lcp[idx] + (k - prev);
-
-    cout << s.substr(sa[idx], len) << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -378,16 +298,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - may overflow for large n
-int total = (n - sa[i]) - lcp[i];
-cum[i] = cum[i-1] + total;
-
-// CORRECT - use long long
-long long total = (n - sa[i]) - lcp[i];
-cum[i] = cum[i-1] + total;
-```
 
 **Problem:** With n = 10^5, total distinct substrings can reach ~5 * 10^9.
 **Fix:** Use `long long` for cumulative counts.
@@ -406,16 +316,6 @@ length = lcp[lo] + offset
 **Fix:** Add offset directly to LCP without subtracting 1.
 
 ### Mistake 3: Forgetting LCP[0] = 0
-
-```cpp
-// WRONG - not initializing LCP[0]
-for (int i = 1; i < n; i++) {
-    lcp[rank[i]] = h;
-}
-
-// CORRECT - LCP[0] is always 0 (no previous suffix)
-lcp[0] = 0;  // Explicitly or by default initialization
-```
 
 ---
 
@@ -453,6 +353,7 @@ lcp[0] = 0;  // Explicitly or by default initialization
 ## Related Problems
 
 ### Similar Difficulty (CSES)
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Substring Order II](https://cses.fi/problemset/task/2109) | Counts duplicates (non-distinct) |
@@ -460,12 +361,14 @@ lcp[0] = 0;  // Explicitly or by default initialization
 | [Repeating Substring](https://cses.fi/problemset/task/2106) | Find longest repeating via LCP |
 
 ### Prerequisite Problems (CSES)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [String Matching](https://cses.fi/problemset/task/1753) | Basic string algorithm foundation |
 | [Finding Borders](https://cses.fi/problemset/task/1732) | Understanding string structure |
 
 ### Harder Extensions
+
 | Problem | New Concept |
 |---------|-------------|
 | [Substring Distribution](https://cses.fi/problemset/task/2110) | Count substrings by length |

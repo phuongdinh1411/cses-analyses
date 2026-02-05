@@ -387,110 +387,6 @@ if __name__ == "__main__":
     main()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-
-vector<int> adj[MAXN];
-bool removed[MAXN];
-int subtree_size[MAXN];
-int n, k;
-long long answer = 0;
-
-void get_subtree_size(int node, int parent) {
-    subtree_size[node] = 1;
-    for (int neighbor : adj[node]) {
-        if (neighbor != parent && !removed[neighbor]) {
-            get_subtree_size(neighbor, node);
-            subtree_size[node] += subtree_size[neighbor];
-        }
-    }
-}
-
-int find_centroid(int node, int parent, int tree_size) {
-    for (int neighbor : adj[node]) {
-        if (neighbor != parent && !removed[neighbor]) {
-            if (subtree_size[neighbor] > tree_size / 2) {
-                return find_centroid(neighbor, node, tree_size);
-            }
-        }
-    }
-    return node;
-}
-
-void count_paths(int node, int parent, int dist, vector<long long>& cnt, vector<int>& distances) {
-    if (dist > k) return;
-
-    distances.push_back(dist);
-
-    // Count paths: current node pairs with nodes at distance (k - dist)
-    if (k - dist >= 0 && k - dist < (int)cnt.size()) {
-        answer += cnt[k - dist];
-    }
-
-    for (int neighbor : adj[node]) {
-        if (neighbor != parent && !removed[neighbor]) {
-            count_paths(neighbor, node, dist + 1, cnt, distances);
-        }
-    }
-}
-
-void solve_centroid(int node) {
-    get_subtree_size(node, -1);
-    int centroid = find_centroid(node, -1, subtree_size[node]);
-    removed[centroid] = true;
-
-    // cnt[d] = number of nodes at distance d from centroid
-    vector<long long> cnt(k + 2, 0);
-    cnt[0] = 1;  // centroid itself
-
-    for (int neighbor : adj[centroid]) {
-        if (!removed[neighbor]) {
-            vector<int> distances;
-            count_paths(neighbor, centroid, 1, cnt, distances);
-
-            // Add distances to cnt for future subtrees
-            for (int d : distances) {
-                if (d <= k) {
-                    cnt[d]++;
-                }
-            }
-        }
-    }
-
-    // Recurse on subtrees
-    for (int neighbor : adj[centroid]) {
-        if (!removed[neighbor]) {
-            solve_centroid(neighbor);
-        }
-    }
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> k;
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    solve_centroid(1);
-
-    cout << answer << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -545,16 +441,6 @@ def count_paths(node, parent, dist, cnt):
 
 **Fix:** Check `if dist > k: return` at the start, or check bounds before array access.
 
-### Mistake 4: Integer Overflow in C++
-
-```cpp
-// WRONG: Using int for answer
-int answer = 0;  // Can overflow for large n
-
-// CORRECT: Use long long
-long long answer = 0;
-```
-
 ---
 
 ## Edge Cases
@@ -592,18 +478,21 @@ long long answer = 0;
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Tree Diameter](https://cses.fi/problemset/task/1131) | Basic tree path concepts |
 | [Tree Distances I](https://cses.fi/problemset/task/1132) | DFS for distances in trees |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Fixed Length Paths II](https://cses.fi/problemset/task/2081) | Count paths with length in range [k1, k2] |
 | [Tree Distances II](https://cses.fi/problemset/task/1133) | Sum of distances (rerooting technique) |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Centroid Path Decomposition](https://codeforces.com/problemset/problem/321/C) | Building centroid tree |

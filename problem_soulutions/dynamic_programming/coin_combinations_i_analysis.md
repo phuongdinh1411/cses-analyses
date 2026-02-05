@@ -233,42 +233,6 @@ coins = list(map(int, input().split()))
 print(solve(n, x, coins))
 ```
 
-### C++ Version
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    const int MOD = 1e9 + 7;
-
-    int n, x;
-    cin >> n >> x;
-
-    vector<int> coins(n);
-    for (int i = 0; i < n; i++) {
-        cin >> coins[i];
-    }
-
-    vector<long long> dp(x + 1, 0);
-    dp[0] = 1;
-
-    for (int i = 1; i <= x; i++) {
-        for (int coin : coins) {
-            if (i >= coin) {
-                dp[i] = (dp[i] + dp[i - coin]) % MOD;
-            }
-        }
-    }
-
-    cout << dp[x] << "\n";
-    return 0;
-}
-```
-
 ### Complexity Analysis
 
 | Metric | Value | Explanation |
@@ -381,18 +345,21 @@ for coin in coins:
 ## Related Problems
 
 ### Prerequisites (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Dice Combinations (CSES)](https://cses.fi/problemset/task/1633) | Same pattern with fixed coins 1-6 |
 | [Climbing Stairs (LeetCode)](https://leetcode.com/problems/climbing-stairs/) | Simplest version with 2 coins |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Coin Combinations II (CSES)](https://cses.fi/problemset/task/1636) | Counts combinations (order doesn't matter) |
 | [Combination Sum IV (LeetCode)](https://leetcode.com/problems/combination-sum-iv/) | Same as this problem |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimizing Coins (CSES)](https://cses.fi/problemset/task/1634) | Minimize number of coins |

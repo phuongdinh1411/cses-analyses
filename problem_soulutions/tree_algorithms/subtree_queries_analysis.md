@@ -377,101 +377,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MAXN = 200005;
-vector<int> adj[MAXN];
-int in_time[MAXN], out_time[MAXN];
-long long euler_val[MAXN];
-long long bit[MAXN];
-int timer_cnt = 0;
-int n, q;
-
-void dfs(int node, int parent) {
-    in_time[node] = timer_cnt++;
-    for (int child : adj[node]) {
-        if (child != parent) {
-            dfs(child, node);
-        }
-    }
-    out_time[node] = timer_cnt - 1;
-}
-
-void bit_update(int i, long long delta) {
-    for (++i; i <= n; i += i & (-i)) {
-        bit[i] += delta;
-    }
-}
-
-long long bit_query(int i) {
-    long long sum = 0;
-    for (++i; i > 0; i -= i & (-i)) {
-        sum += bit[i];
-    }
-    return sum;
-}
-
-long long range_sum(int l, int r) {
-    if (l == 0) return bit_query(r);
-    return bit_query(r) - bit_query(l - 1);
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    cin >> n >> q;
-
-    vector<long long> values(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> values[i];
-    }
-
-    for (int i = 0; i < n - 1; i++) {
-        int a, b;
-        cin >> a >> b;
-        adj[a].push_back(b);
-        adj[b].push_back(a);
-    }
-
-    // Euler tour
-    dfs(1, -1);
-
-    // Initialize BIT
-    for (int i = 1; i <= n; i++) {
-        int pos = in_time[i];
-        euler_val[pos] = values[i];
-        bit_update(pos, values[i]);
-    }
-
-    // Process queries
-    while (q--) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
-            int s;
-            long long x;
-            cin >> s >> x;
-            int pos = in_time[s];
-            long long delta = x - euler_val[pos];
-            euler_val[pos] = x;
-            bit_update(pos, delta);
-        } else {
-            int s;
-            cin >> s;
-            cout << range_sum(in_time[s], out_time[s]) << "\n";
-        }
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -512,16 +417,6 @@ def bit_update(i, delta):
 **Fix:** Add 1 to index before BIT operations, or consistently use 1-indexed arrays.
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - int overflow when summing large values
-int bit[MAXN];  // Should be long long
-
-long long query(int i) {
-    int sum = 0;  // Should be long long
-    // ...
-}
-```
 
 **Problem:** Values up to 10^9, n up to 2*10^5, total sum can exceed 2*10^14.
 **Fix:** Use `long long` for BIT and sum variables.
@@ -581,12 +476,14 @@ def dfs(node, parent):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Subordinates (CSES)](https://cses.fi/problemset/task/1674) | Basic subtree counting with DFS |
 | [Tree Matching (CSES)](https://cses.fi/problemset/task/1130) | Tree DP fundamentals |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Path Queries (CSES)](https://cses.fi/problemset/task/1138) | Path sum instead of subtree sum |
@@ -594,6 +491,7 @@ def dfs(node, parent):
 | [Distinct Colors (CSES)](https://cses.fi/problemset/task/1139) | Subtree distinct count using small-to-large |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Path Queries II (CSES)](https://cses.fi/problemset/task/2134) | Heavy-Light Decomposition |

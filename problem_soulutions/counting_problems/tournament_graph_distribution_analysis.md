@@ -243,48 +243,6 @@ if __name__ == "__main__":
     solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-long long mod_pow(long long base, long long exp, long long mod) {
-    long long result = 1;
-    base %= mod;
-
-    while (exp > 0) {
-        if (exp & 1) {
-            result = result * base % mod;
-        }
-        base = base * base % mod;
-        exp >>= 1;
-    }
-
-    return result;
-}
-
-long long count_tournaments(int n) {
-    if (n <= 1) return 1;
-
-    long long exponent = (long long)n * (n - 1) / 2;
-    return mod_pow(2, exponent, MOD);
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    cout << count_tournaments(n) << "\n";
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -297,14 +255,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow in Exponent Calculation
-
-```cpp
-// WRONG - overflow for large n
-int exponent = n * (n - 1) / 2;
-
-// CORRECT - use long long
-long long exponent = (long long)n * (n - 1) / 2;
-```
 
 **Problem:** For n = 10^6, n * (n-1) exceeds int range.
 **Fix:** Cast to long long before multiplication.

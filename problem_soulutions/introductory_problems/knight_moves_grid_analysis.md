@@ -130,51 +130,6 @@ def brute_force_knight(n, start, target):
     return result if result != float('inf') else -1
 ```
 
-### Code (C++)
-
-```cpp
-#include <set>
-#include <climits>
-using namespace std;
-
-class BruteForceSolution {
-public:
-    int n;
-    pair<int,int> target;
-    int dx[8] = {2, 2, -2, -2, 1, 1, -1, -1};
-    int dy[8] = {1, -1, 1, -1, 2, -2, 2, -2};
-
-    int dfs(int row, int col, int moves, set<pair<int,int>>& visited) {
-        if (row == target.first && col == target.second)
-            return moves;
-        if (moves > n * n)
-            return INT_MAX;
-
-        int minMoves = INT_MAX;
-        for (int i = 0; i < 8; i++) {
-            int nr = row + dx[i], nc = col + dy[i];
-            if (nr >= 0 && nr < n && nc >= 0 && nc < n
-                && visited.find({nr, nc}) == visited.end()) {
-                visited.insert({nr, nc});
-                int result = dfs(nr, nc, moves + 1, visited);
-                minMoves = min(minMoves, result);
-                visited.erase({nr, nc});
-            }
-        }
-        return minMoves;
-    }
-
-    int solve(int size, pair<int,int> start, pair<int,int> tgt) {
-        n = size;
-        target = tgt;
-        set<pair<int,int>> visited;
-        visited.insert(start);
-        int result = dfs(start.first, start.second, 0, visited);
-        return result == INT_MAX ? -1 : result;
-    }
-};
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -254,22 +209,29 @@ Knight at (0,0), Target at (2,2) on 5x5 board:
 
   0   1   2   3   4
 +---+---+---+---+---+
+
 | K |   |   |   |   | 0   K = Start (Knight)
 +---+---+---+---+---+
+
 |   |   | * |   |   | 1   * = Reachable in 1 move
 +---+---+---+---+---+
+
 |   | * | T |   |   | 2   T = Target
 +---+---+---+---+---+
+
 |   |   |   |   |   | 3
 +---+---+---+---+---+
+
 |   |   |   |   |   | 4
 
 Knight moves in L-shape:
     +---+   +---+
     | 1 |   | 2 |
 +---+---+---+---+---+
+
 | 8 |   | K |   | 3 |
 +---+---+---+---+---+
+
 | 7 |   |   |   | 4 |
 +---+---+---+---+---+
     | 6 |   | 5 |
@@ -331,63 +293,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int knightMovesBFS(int n, pair<int,int> start, pair<int,int> target) {
-    if (start == target) return 0;
-
-    // Knight move offsets
-    int dx[] = {2, 2, -2, -2, 1, 1, -1, -1};
-    int dy[] = {1, -1, 1, -1, 2, -2, 2, -2};
-
-    // BFS setup
-    queue<tuple<int,int,int>> q;  // row, col, distance
-    vector<vector<bool>> visited(n, vector<bool>(n, false));
-
-    q.push({start.first, start.second, 0});
-    visited[start.first][start.second] = true;
-
-    while (!q.empty()) {
-        auto [row, col, dist] = q.front();
-        q.pop();
-
-        for (int i = 0; i < 8; i++) {
-            int nr = row + dx[i];
-            int nc = col + dy[i];
-
-            // Check bounds
-            if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
-                // Check if target reached
-                if (nr == target.first && nc == target.second) {
-                    return dist + 1;
-                }
-
-                visited[nr][nc] = true;
-                q.push({nr, nc, dist + 1});
-            }
-        }
-    }
-
-    return -1;  // Target unreachable
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, sr, sc, tr, tc;
-    cin >> n >> sr >> sc >> tr >> tc;
-
-    cout << knightMovesBFS(n, {sr, sc}, {tr, tc}) << "\n";
-
-    return 0;
-}
 ```
 
 ### Complexity

@@ -263,54 +263,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int solve(long long k) {
-    // Step 1: Find the digit length containing position k
-    int digit_len = 1;
-    long long count = 9;  // 9 one-digit numbers
-    long long start = 1;  // first number with current digit length
-
-    while (k > digit_len * count) {
-        k -= digit_len * count;
-        digit_len++;
-        count *= 10;
-        start *= 10;
-    }
-
-    // Step 2: Find which number contains position k
-    // k is now 1-indexed position within the current digit-length range
-    long long number_index = (k - 1) / digit_len;
-    long long num = start + number_index;
-
-    // Step 3: Find which digit within the number
-    int digit_index = (k - 1) % digit_len;
-
-    string num_str = to_string(num);
-    return num_str[digit_index] - '0';
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int q;
-    cin >> q;
-
-    while (q--) {
-        long long k;
-        cin >> k;
-        cout << solve(k) << "\n";
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -355,14 +307,6 @@ while k > digit_len * count:
 **Fix:** Total digits in a range = (count of numbers) x (digits per number).
 
 ### Mistake 3: Integer Overflow
-
-```cpp
-// WRONG - int can overflow for large k
-int k, count = 9, start = 1;
-
-// CORRECT - use long long
-long long k, count = 9, start = 1;
-```
 
 **Problem:** With k up to 10^18, intermediate calculations can overflow 32-bit integers.
 **Fix:** Use `long long` in C++ or Python's arbitrary precision integers.

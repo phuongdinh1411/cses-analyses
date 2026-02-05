@@ -268,43 +268,6 @@ if __name__ == "__main__":
     main()
 ```
 
-**C++ Solution:**
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-
-    vector<long long> coins(n);
-    for (int i = 0; i < n; i++) {
-        cin >> coins[i];
-    }
-
-    sort(coins.begin(), coins.end());
-
-    long long current_sum = 0;
-
-    for (int i = 0; i < n; i++) {
-        // If coin is too large, we found a gap
-        if (coins[i] > current_sum + 1) {
-            cout << current_sum + 1 << "\n";
-            return 0;
-        }
-        current_sum += coins[i];
-    }
-
-    // All coins processed
-    cout << current_sum + 1 << "\n";
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -350,16 +313,6 @@ if coin > current_sum + 1:
 
 **Problem:** The condition checks if we can reach the NEXT sum (current_sum + 1), not the current one.
 **Fix:** Use `current_sum + 1` in both the comparison and return value.
-
-### Mistake 3: Integer Overflow (C++)
-
-```cpp
-// WRONG - may overflow with int
-int current_sum = 0;
-
-// CORRECT - use long long
-long long current_sum = 0;
-```
 
 **Problem:** With n = 2*10^5 coins each up to 10^9, the sum can reach 2*10^14.
 **Fix:** Use `long long` in C++.
@@ -426,12 +379,14 @@ def solve(coins):
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Two Sum](https://leetcode.com/problems/two-sum/) | Basic sum-finding with hash maps |
 | [Coin Combinations I](https://cses.fi/problemset/task/1635) | DP approach to coin sums |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Patching Array (LeetCode 330)](https://leetcode.com/problems/patching-array/) | Same invariant, but ADD coins to fill gaps |
@@ -439,6 +394,7 @@ def solve(coins):
 | [Maximum Number of Consecutive Values (LC 1798)](https://leetcode.com/problems/maximum-number-of-consecutive-values-you-can-make/) | Identical problem, different framing |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Minimum Cost to Make Array Equal](https://leetcode.com/problems/minimum-cost-to-make-array-equal/) | Weighted median selection |

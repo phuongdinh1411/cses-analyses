@@ -273,68 +273,7 @@ def matrix_exponentiation(n, adj, queries):
     return results
 ```
 
-### C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-const int MOD = 1e9 + 7;
-
-typedef vector<vector<long long>> Matrix;
-
-Matrix multiply(const Matrix& A, const Matrix& B, int n) {
-    Matrix C(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) {
-        for (int k = 0; k < n; k++) {
-            if (A[i][k] == 0) continue;
-            for (int j = 0; j < n; j++) {
-                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
-            }
-        }
-    }
-    return C;
-}
-
-Matrix matpow(Matrix M, long long p, int n) {
-    Matrix result(n, vector<long long>(n, 0));
-    for (int i = 0; i < n; i++) result[i][i] = 1;  // Identity
-
-    while (p > 0) {
-        if (p & 1) result = multiply(result, M, n);
-        M = multiply(M, M, n);
-        p >>= 1;
-    }
-    return result;
-}
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    Matrix adj(n, vector<long long>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> adj[i][j];
-        }
-    }
-
-    while (q--) {
-        int a;
-        long long k;
-        cin >> a >> k;
-        Matrix powered = matpow(adj, k, n);
-        cout << powered[a - 1][a - 1] << "\n";
-    }
-
-    return 0;
-}
-```
-
-### Complexity
+#### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
@@ -433,12 +372,14 @@ return powered[a - 1][a - 1]  # Convert to 0-indexed
 ## Related Problems
 
 ### Easier (Do These First)
+
 | Problem | Why It Helps |
 |---------|--------------|
 | [Binary Exponentiation](https://cp-algorithms.com/algebra/binary-exp.html) | Core technique for matrix power |
 | [Fibonacci Number](https://leetcode.com/problems/fibonacci-number/) | Simple matrix exponentiation application |
 
 ### Similar Difficulty
+
 | Problem | Key Difference |
 |---------|----------------|
 | [Graph Paths I](https://cses.fi/problemset/task/1723) | Count paths between different nodes (not circuits) |
@@ -446,6 +387,7 @@ return powered[a - 1][a - 1]  # Convert to 0-indexed
 | [Counting Paths](https://cses.fi/problemset/task/1136) | Different approach (LCA-based) |
 
 ### Harder (Do These After)
+
 | Problem | New Concept |
 |---------|-------------|
 | [Knight's Tour](https://cses.fi/problemset/task/1635) | Matrix exponentiation on grid |

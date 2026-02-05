@@ -88,12 +88,16 @@ If player reaches any boundary cell satisfying this condition, escape is possibl
 ```
 Initial Grid:              Monster Times (Phase 1):      Player BFS (Phase 2):
 +---+---+---+---+---+      +---+---+---+---+---+         +---+---+---+---+---+
+
 | # | # | # | # | # |      | # | # | # | # | # |         | # | # | # | # | # |
 +---+---+---+---+---+      +---+---+---+---+---+         +---+---+---+---+---+
+
 | # | A | . | . | # |      | # | 4 | 3 | 2 | # |         | # | 0 | 1 | X | # |
 +---+---+---+---+---+      +---+---+---+---+---+         +---+---+---+---+---+
+
 | # | . | # | M | # |      | # | 3 | # | 0 | # |         | # | 1 | # | X | # |
 +---+---+---+---+---+      +---+---+---+---+---+         +---+---+---+---+---+
+
 | # | . | . | . | . |      | # | 2 | 1 | 1 | 2 |         | # | 2 | 3 |ESC| X |
 +---+---+---+---+---+      +---+---+---+---+---+         +---+---+---+---+---+
 
@@ -230,130 +234,6 @@ def solve():
     print("NO")
 
 solve()
-```
-
-## C++ Solution
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, m;
-    cin >> n >> m;
-
-    vector<string> grid(n);
-    for (int i = 0; i < n; i++) {
-        cin >> grid[i];
-    }
-
-    // Directions: U, D, L, R
-    int dr[] = {-1, 1, 0, 0};
-    int dc[] = {0, 0, -1, 1};
-    char dir[] = {'U', 'D', 'L', 'R'};
-
-    // Find player and monsters
-    pair<int, int> player;
-    vector<pair<int, int>> monsters;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            if (grid[i][j] == 'A') {
-                player = {i, j};
-            } else if (grid[i][j] == 'M') {
-                monsters.push_back({i, j});
-            }
-        }
-    }
-
-    const int INF = 1e9;
-
-    // Phase 1: Multi-source BFS from all monsters
-    vector<vector<int>> monsterTime(n, vector<int>(m, INF));
-    queue<pair<int, int>> q;
-
-    for (auto& [r, c] : monsters) {
-        monsterTime[r][c] = 0;
-        q.push({r, c});
-    }
-
-    while (!q.empty()) {
-        auto [r, c] = q.front();
-        q.pop();
-
-        for (int d = 0; d < 4; d++) {
-            int nr = r + dr[d];
-            int nc = c + dc[d];
-
-            if (nr >= 0 && nr < n && nc >= 0 && nc < m &&
-                grid[nr][nc] != '#' && monsterTime[nr][nc] == INF) {
-                monsterTime[nr][nc] = monsterTime[r][c] + 1;
-                q.push({nr, nc});
-            }
-        }
-    }
-
-    // Phase 2: Player BFS
-    vector<vector<int>> playerTime(n, vector<int>(m, INF));
-    vector<vector<tuple<int, int, int>>> parent(n, vector<tuple<int, int, int>>(m, {-1, -1, -1}));
-
-    auto isBoundary = [&](int r, int c) {
-        return r == 0 || r == n - 1 || c == 0 || c == m - 1;
-    };
-
-    int pr = player.first, pc = player.second;
-    playerTime[pr][pc] = 0;
-    q.push({pr, pc});
-
-    // Check if player starts on boundary
-    if (isBoundary(pr, pc)) {
-        cout << "YES\n0\n";
-        return 0;
-    }
-
-    while (!q.empty()) {
-        auto [r, c] = q.front();
-        q.pop();
-
-        for (int d = 0; d < 4; d++) {
-            int nr = r + dr[d];
-            int nc = c + dc[d];
-
-            if (nr >= 0 && nr < n && nc >= 0 && nc < m && grid[nr][nc] != '#') {
-                int newTime = playerTime[r][c] + 1;
-
-                // Key: player arrives BEFORE monster
-                if (playerTime[nr][nc] == INF && newTime < monsterTime[nr][nc]) {
-                    playerTime[nr][nc] = newTime;
-                    parent[nr][nc] = {r, c, d};
-
-                    if (isBoundary(nr, nc)) {
-                        // Reconstruct path
-                        string path;
-                        int cr = nr, cc = nc;
-                        while (get<0>(parent[cr][cc]) != -1) {
-                            auto [prevR, prevC, prevD] = parent[cr][cc];
-                            path += dir[prevD];
-                            cr = prevR;
-                            cc = prevC;
-                        }
-                        reverse(path.begin(), path.end());
-                        cout << "YES\n" << path.size() << "\n" << path << "\n";
-                        return 0;
-                    }
-
-                    q.push({nr, nc});
-                }
-            }
-        }
-    }
-
-    cout << "NO\n";
-    return 0;
-}
 ```
 
 ## Complexity Analysis

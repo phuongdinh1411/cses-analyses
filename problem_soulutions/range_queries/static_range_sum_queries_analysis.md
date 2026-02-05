@@ -218,38 +218,6 @@ def solve():
 solve()
 ```
 
-### Code (C++)
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n, q;
-    cin >> n >> q;
-
-    // Use long long to handle large sums
-    vector<long long> prefix(n + 1, 0);
-
-    for (int i = 1; i <= n; i++) {
-        long long x;
-        cin >> x;
-        prefix[i] = prefix[i - 1] + x;
-    }
-
-    while (q--) {
-        int a, b;
-        cin >> a >> b;
-        cout << prefix[b] - prefix[a - 1] << '\n';
-    }
-
-    return 0;
-}
-```
-
 ### Complexity
 
 | Metric | Value | Explanation |
@@ -262,14 +230,6 @@ int main() {
 ## Common Mistakes
 
 ### Mistake 1: Integer Overflow
-
-```cpp
-// WRONG - int overflow when summing large values
-int prefix[200001];
-
-// CORRECT - use long long
-long long prefix[200001];
-```
 
 **Problem:** Each element can be up to 10^9, and n up to 2 x 10^5. Max sum = 2 x 10^14, exceeding int range.
 
