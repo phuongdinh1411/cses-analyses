@@ -45,7 +45,7 @@ Reverse the first `k` characters of `s` and return the resulting string.
 - `s` consists of lowercase English letters.
 - `1 <= k <= s.length`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Simple string slicing and reversal.
@@ -100,7 +100,7 @@ The subarray `[2, 3]` has distinct elements `{2, 3}` whose sum is `2 + 3 = 5`, w
 - `1 <= nums[i] <= 10^5`
 - `1 <= k <= 10^9`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Use sliding window with a set/counter to track distinct elements in the current window.
@@ -178,7 +178,7 @@ Return the **largest** value in the optimal sequence.
 - `1 <= restrictions.length <= n - 1`
 - `1 <= diff[i] <= 10`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Compute bounds from restrictions, then find maximum achievable value at each position.
@@ -249,7 +249,7 @@ Return the number of routes modulo `10^9 + 7`.
 - `1 <= n, m <= 750`
 - `1 <= d <= 750`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** DP with state (row, col, just_stayed). Need to track if last move was a horizontal stay.

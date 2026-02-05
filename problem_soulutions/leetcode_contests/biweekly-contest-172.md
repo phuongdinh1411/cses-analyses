@@ -52,7 +52,7 @@ In the first operation, we remove the first three elements. The remaining elemen
 - `1 <= nums.length <= 10^5`
 - `1 <= nums[i] <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Simulate the process. After removing 3k elements, check if remaining elements are distinct.
@@ -124,7 +124,7 @@ The valid triplets whose sum is divisible by 3 are: `(4, 2, 3)` with sum 9, `(2,
 - `3 <= nums.length <= 10^5`
 - `1 <= nums[i] <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Group numbers by their remainder mod 3. To get sum divisible by 3, we need remainders that sum to 0 (mod 3).
@@ -213,7 +213,7 @@ Return the **maximum possible score**.
 - `1 <= n <= 10^5`
 - `1 <= nums[i] <= 10^9`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** The swap operation can only move '1's to the left (never right). Each '1' can move as far left as possible until blocked by another '1'.
@@ -344,7 +344,7 @@ Return the last remaining integer.
 
 - `1 <= n <= 10^15`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** This is the Josephus problem variant. Track the leftmost element, step size, and direction.

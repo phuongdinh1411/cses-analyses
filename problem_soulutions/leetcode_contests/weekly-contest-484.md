@@ -52,7 +52,7 @@ Return the count of **residue** prefixes in `s`.
 - `1 <= s.length <= 100`
 - `s` contains only lowercase English letters.
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** For each prefix, track distinct characters and compare with length % 3.
@@ -121,7 +121,7 @@ Return the number of **centered subarrays** of `nums`.
 - `1 <= nums.length <= 500`
 - `-10^5 <= nums[i] <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Every single-element subarray is centered (sum = element). For longer subarrays, check if sum exists in the subarray.
@@ -199,7 +199,7 @@ Count the number of pairs of indices `(i, j)` such that:
 - `1 <= m == words[i].length <= 10^5`
 - `1 <= n * m <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Two strings are similar if one is a cyclic shift of the other (in terms of character values).
@@ -269,7 +269,7 @@ Return an integer denoting the **maximum** possible **bitwise AND** of any **sub
 - `1 <= k <= 10^9`
 - `1 <= m <= n`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Binary search on the answer. For a target AND value X, check if we can choose m elements and increment them to all have X as a prefix in their binary representation.

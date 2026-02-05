@@ -83,7 +83,7 @@ Return `true` if `num` is a Complete Prime Number, otherwise return `false`.
 
 	- `1 <= num <= 10^9`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** A number is a Complete Prime Number if and only if every prefix and every suffix of its digits forms a prime number.
@@ -274,7 +274,7 @@ Thus, `ans = [1, 0, 3]`.
 	- `1 <= nums.length <= 5000`
 	- `^​​​​​​​1 <= nums[i] <=^ 5000`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Since nums[i] <= 5000, we can precompute all binary palindromes up to a reasonable range and use binary search to find the nearest one.
@@ -390,7 +390,7 @@ Choosing all tasks using technique 2 yields the maximum points: `4 + 5 + 6 = 15`
 	- `1 <= technique1[i], technique2​​​​​​​[i] <= 10^​​​​​​​5`
 	- `0 <= k <= n`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** For each task, compute the "gain" of using technique2 over technique1 (t2[i] - t1[i]). We must use technique1 for at least k tasks, so we should pick the k tasks with the smallest gain (or largest loss) for technique1.
@@ -505,7 +505,7 @@ The minimum inversion count is therefore 0.
 	- `1 <= nums[i] <= 10^9`
 	- `1 <= k <= n`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Use a sliding window and maintain the inversion count efficiently. When sliding the window, we need to track how many elements are affected by adding/removing one element.

@@ -67,7 +67,7 @@ The binary representation of 10 is `"1010"`. Its reverse is `"0101"`. All four b
 
 	- `1 <= n <= 10^9`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** We need to make the binary string equal to its reverse. Compare s[i] with s[n-1-i] and count mismatches.
@@ -175,7 +175,7 @@ Number `4848`: the second digit 8 is a peak, and the third digit 4 is a valley, 
 
 	- `1 <= num1 <= num2 <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** With small constraints (up to 10^5), we can iterate through each number and compute its waviness directly.
@@ -285,7 +285,7 @@ There are no arrays that sum to 10000000000 and whose absolute values form a per
 	- `1 <= n <= 10^5`
 	- `-10^10 <= target <= 10^10`
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** The sum of 1+2+...+n = n(n+1)/2. If we negate some numbers, the sum changes by -2*x for each negated number x. So we need to find which numbers to negate.
@@ -413,7 +413,7 @@ Number `4848`: the second digit 8 is a peak, and the third digit 4 is a valley, 
 
 	- `1 <= num1 <= num2 <= 10^15`​​​​​​​
 
-<details>
+<details markdown="1">
 <summary><strong>Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** With range up to 10^15, we cannot iterate through each number. Use digit DP to count waviness efficiently.

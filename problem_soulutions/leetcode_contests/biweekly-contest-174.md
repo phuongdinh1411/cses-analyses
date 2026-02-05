@@ -43,7 +43,7 @@ Return the coordinates of the tower with the **maximum** quality factor among re
 - `0 <= x_i, y_i, q_i, cx, cy <= 10^5`
 - `0 <= radius <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Filter reachable towers, then find the one with max quality (with lexicographic tiebreaker).
@@ -107,7 +107,7 @@ Return the **minimum** number of operations required to make `nums` equal to `ta
 - `1 <= n == nums.length == target.length <= 10^5`
 - `1 <= nums[i], target[i] <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Each distinct value in nums that needs to change requires exactly one operation.
@@ -163,7 +163,7 @@ Return the number of valid partitions of `nums`, modulo `10^9 + 7`.
 - `0 <= nums[i], target1, target2 <= 10^5`
 - `target1 != target2`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** DP where state tracks whether we need target1 or target2 for the next block.
@@ -275,7 +275,7 @@ Return an array of edge indices (in increasing order) whose operations transform
 - `2 <= n <= 10^5`
 - `edges.length == n - 1`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Each node needs to flip diff[i] = start[i] XOR target[i] times (mod 2). Each edge toggle flips exactly 2 nodes.

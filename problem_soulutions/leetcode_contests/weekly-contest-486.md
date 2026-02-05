@@ -70,7 +70,7 @@ The array `nums = [1, 2, 3, 4]` is already strictly increasing so removing an em
 - `1 <= nums.length <= 10^5`
 - `-10^9 <= nums[i] <= 10^9`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** We need to find the longest strictly increasing suffix.
@@ -139,7 +139,7 @@ Return the resulting array.
 - `-10^5 <= nums[i] <= 10^5`
 - `0 <= k <= 10^5`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Extract non-negative elements, rotate them, and place them back.
@@ -218,7 +218,7 @@ Return an integer denoting the number of special nodes in the tree.
 - `edges.length == n - 1`
 - `x`, `y`, and `z` are pairwise **distinct**.
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** BFS from each target node to compute distances, then check Pythagorean condition for each node.
@@ -310,7 +310,7 @@ The 4 smallest positive integers that have exactly `k = 2` ones in their binary 
 - `1 <= n <= 2^50`
 - `1 <= k <= 50`
 
-<details>
+<details markdown="1">
 <summary><strong>💡 Hints & Approach</strong> (Click to expand)</summary>
 
 **Key Insight:** Use combinatorics to count how many numbers with k bits exist up to a certain length, then construct the answer bit by bit.
