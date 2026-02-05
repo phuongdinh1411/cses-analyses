@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 02 - Algorithmic Complexity"
+title: "Algorithmic Complexity"
 permalink: /problem_soulutions/Blue/Session 02 - Algorithmic Complexity/
 ---
 
-# Session 02 - Algorithmic Complexity
+# Algorithmic Complexity
 
 This session covers algorithmic complexity analysis, including time and space complexity, Big O notation, and optimization techniques.
 

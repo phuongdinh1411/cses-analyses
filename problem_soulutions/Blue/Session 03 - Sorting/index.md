@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 03 - Sorting"
+title: "Sorting"
 permalink: /problem_soulutions/Blue/Session 03 - Sorting/
 ---
 
-# Session 03 - Sorting
+# Sorting
 
 This session covers sorting algorithms and techniques, including comparison-based sorting, custom comparators, and sorting-related problem solving.
 

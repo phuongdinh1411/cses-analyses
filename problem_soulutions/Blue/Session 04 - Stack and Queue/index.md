@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 04 - Stack and Queue"
+title: "Stack and Queue"
 permalink: /problem_soulutions/Blue/Session 04 - Stack and Queue/
 ---
 
-# Session 04 - Stack and Queue
+# Stack and Queue
 
 This session covers stack and queue data structures, including LIFO/FIFO operations, expression parsing, and simulation problems.
 

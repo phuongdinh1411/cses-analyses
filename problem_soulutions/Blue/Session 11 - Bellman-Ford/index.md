@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 11 - Bellman-Ford"
+title: "Bellman-Ford"
 permalink: /problem_soulutions/Blue/Session 11 - Bellman-Ford/
 ---
 
-# Session 11 - Bellman-Ford
+# Bellman-Ford
 
 This session covers the Bellman-Ford algorithm for finding shortest paths in graphs with negative edge weights and detecting negative cycles.
 

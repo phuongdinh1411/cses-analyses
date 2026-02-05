@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 14 - Binary Search Tree"
+title: "Binary Search Tree"
 permalink: /problem_soulutions/Blue/Session 14 - Binary Search Tree/
 ---
 
-# Session 14 - Binary Search Tree
+# Binary Search Tree
 
 This session covers Binary Search Tree (BST) data structure, including insertion, deletion, search operations, and balanced trees.
 

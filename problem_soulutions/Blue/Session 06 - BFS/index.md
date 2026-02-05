@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 06 - BFS"
+title: "BFS"
 permalink: /problem_soulutions/Blue/Session 06 - BFS/
 ---
 
-# Session 06 - BFS
+# BFS
 
 Breadth-First Search problems involving shortest paths in unweighted graphs, level-order traversal, and grid-based exploration.
 

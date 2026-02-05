@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 16 - Prim"
+title: "Prim"
 permalink: /problem_soulutions/Blue/Session 16 - Prim/
 ---
 
-# Session 16 - Prim
+# Prim
 
 This session covers Prim's algorithm for finding Minimum Spanning Trees (MST) in weighted undirected graphs.
 

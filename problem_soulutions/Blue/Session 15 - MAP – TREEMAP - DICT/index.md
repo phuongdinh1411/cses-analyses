@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 15 - MAP - TREEMAP - DICT"
+title: "MAP - TREEMAP - DICT"
 permalink: /problem_soulutions/Blue/Session 15 - MAP – TREEMAP - DICT/
 ---
 
-# Session 15 - MAP - TREEMAP - DICT
+# MAP - TREEMAP - DICT
 
 This session covers map-based data structures including hash maps, tree maps, and dictionary operations for efficient key-value storage and retrieval.
 

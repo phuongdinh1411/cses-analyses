@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 12 - Floyd-Warshall"
+title: "Floyd-Warshall"
 permalink: /problem_soulutions/Blue/Session 12 - Floyd-Warshall/
 ---
 
-# Session 12 - Floyd-Warshall
+# Floyd-Warshall
 
 This session covers the Floyd-Warshall algorithm for finding all-pairs shortest paths in weighted graphs.
 

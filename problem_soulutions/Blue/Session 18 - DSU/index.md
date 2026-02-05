@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 18 - DSU"
+title: "DSU"
 permalink: /problem_soulutions/Blue/Session 18 - DSU/
 ---
 
-# Session 18 - DSU
+# DSU
 
 This session covers Disjoint Set Union (DSU) data structure, also known as Union-Find, for efficiently managing connected components.
 

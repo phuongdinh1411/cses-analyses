@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 05 - String"
+title: "String"
 permalink: /problem_soulutions/Blue/Session 05 - String/
 ---
 
-# Session 05 - String
+# String
 
 This session covers string manipulation, pattern matching, and text processing algorithms.
 

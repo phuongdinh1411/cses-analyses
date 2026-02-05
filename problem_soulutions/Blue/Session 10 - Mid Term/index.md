@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 10 - Mid Term"
+title: "Mid Term"
 permalink: /problem_soulutions/Blue/Session 10 - Mid Term/
 ---
 
-# Session 10 - Mid Term
+# Mid Term
 
 Mid-term examination problems covering topics from Sessions 01-09 including graph algorithms, data structures, and string processing.
 

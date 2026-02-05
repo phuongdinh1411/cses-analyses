@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 09 - Dijkstra"
+title: "Dijkstra"
 permalink: /problem_soulutions/Blue/Session 09 - Dijkstra/
 ---
 
-# Session 09 - Dijkstra
+# Dijkstra
 
 Dijkstra's shortest path algorithm problems for weighted graphs with non-negative edge weights.
 

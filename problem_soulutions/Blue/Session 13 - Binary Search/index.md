@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 13 - Binary Search"
+title: "Binary Search"
 permalink: /problem_soulutions/Blue/Session 13 - Binary Search/
 ---
 
-# Session 13 - Binary Search
+# Binary Search
 
 This session covers binary search algorithm and its applications, including search on sorted arrays and binary search on answer.
 

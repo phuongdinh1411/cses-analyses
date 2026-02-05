@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 19 - Kruskal"
+title: "Kruskal"
 permalink: /problem_soulutions/Blue/Session 19 - Kruskal/
 ---
 
-# Session 19 - Kruskal
+# Kruskal
 
 This session covers Kruskal's algorithm for finding Minimum Spanning Trees (MST) using edge sorting and Union-Find data structure.
 

@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 17 - Trie"
+title: "Trie"
 permalink: /problem_soulutions/Blue/Session 17 - Trie/
 ---
 
-# Session 17 - Trie
+# Trie
 
 This session covers Trie (prefix tree) data structure for efficient string storage, prefix matching, and autocomplete operations.
 

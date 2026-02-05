@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 01 - Dynamic Array"
+title: "Dynamic Array"
 permalink: /problem_soulutions/Blue/Session 01 - Dynamic Array/
 ---
 
-# Session 01 - Dynamic Array
+# Dynamic Array
 
 This session covers dynamic array fundamentals, including array manipulation, indexing, and basic operations on arrays.
 

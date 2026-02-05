@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 08 - Heap"
+title: "Heap"
 permalink: /problem_soulutions/Blue/Session 08 - Heap/
 ---
 
-# Session 08 - Heap
+# Heap
 
 Heap data structure and priority queue problems involving min-heap, max-heap, and heap-based algorithms for efficient element retrieval.
 

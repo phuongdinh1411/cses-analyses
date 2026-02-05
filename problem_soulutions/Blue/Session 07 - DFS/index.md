@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Session 07 - DFS"
+title: "DFS"
 permalink: /problem_soulutions/Blue/Session 07 - DFS/
 ---
 
-# Session 07 - DFS
+# DFS
 
 Depth-First Search problems involving graph traversal, connected components, cycle detection, and backtracking.
 
