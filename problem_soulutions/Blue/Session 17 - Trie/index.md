@@ -30,6 +30,19 @@ A bank's password system is vulnerable if any password is a prefix of another. G
 - "vulnerable" if any password is a prefix of another
 - "non vulnerable" otherwise
 
+#### Example
+```
+Input:
+3
+abc
+abcd
+xyz
+
+Output:
+vulnerable
+```
+Password "abc" is a prefix of "abcd", making the system vulnerable.
+
 #### Solution
 
 ##### Approach
@@ -120,6 +133,22 @@ Construct n binary strings of given lengths such that no string is a prefix of a
 
 #### Output Format
 - "YES" followed by n binary strings, or "NO" if impossible
+
+#### Example
+```
+Input:
+3
+1
+2
+2
+
+Output:
+YES
+0
+10
+11
+```
+Three binary strings of lengths 1, 2, 2 with no prefix conflicts: "0", "10", "11".
 
 #### Solution
 
@@ -239,6 +268,26 @@ Build a search engine that stores strings with associated weights. For each quer
 #### Output Format
 For each query: maximum weight of strings with that prefix, or -1 if none.
 
+#### Example
+```
+Input:
+5 3
+apple 10
+application 15
+app 5
+banana 20
+band 12
+app
+ban
+cat
+
+Output:
+15
+20
+-1
+```
+"app" matches "apple"(10), "application"(15), "app"(5) - max is 15. "ban" matches "banana"(20), "band"(12) - max is 20. "cat" has no matches.
+
 #### Solution
 
 ##### Approach
@@ -313,6 +362,21 @@ Given a set of strings, determine if it forms a "GOOD SET" where no string is a 
 #### Output Format
 - "GOOD SET" if no string is a prefix of another
 - "BAD SET" followed by the first string causing the conflict
+
+#### Example
+```
+Input:
+4
+aab
+aac
+aacghgh
+aabghgh
+
+Output:
+BAD SET
+aacghgh
+```
+"aac" is a prefix of "aacghgh", so "aacghgh" causes the conflict.
 
 #### Solution
 
@@ -412,6 +476,21 @@ Implement a contact list with two operations:
 #### Output Format
 For each "find" operation: number of contacts with matching prefix.
 
+#### Example
+```
+Input:
+4
+add hack
+add hackerrank
+find hac
+find hak
+
+Output:
+2
+0
+```
+After adding "hack" and "hackerrank", "hac" matches both (count 2). "hak" matches none (count 0).
+
 #### Solution
 
 ##### Approach
@@ -507,6 +586,25 @@ A phone directory is consistent if no phone number is a prefix of another. Given
 #### Output Format
 For each test case: "Case X: YES" if consistent, "Case X: NO" otherwise.
 
+#### Example
+```
+Input:
+2
+3
+911
+97625999
+91125426
+3
+113
+12340
+123
+
+Output:
+Case 1: NO
+Case 2: YES
+```
+Case 1: "911" is a prefix of "91125426". Case 2: No number is a prefix of another.
+
 #### Solution
 
 ##### Approach
@@ -582,6 +680,21 @@ Given a set of DNA strings, find the maximum "prefix score". The prefix score of
 
 #### Output Format
 For each test case: "Case X: max_score"
+
+#### Example
+```
+Input:
+1
+4
+ACGT
+ACGTG
+ACGA
+ACG
+
+Output:
+Case 1: 12
+```
+Prefix "ACG" is shared by all 4 strings. Score = length(3) * count(4) = 12. This is the maximum achievable.
 
 #### Solution
 
@@ -664,6 +777,18 @@ Given a product repository and a customer search query, suggest up to 3 products
 
 #### Output Format
 List of lists: for each prefix of query (length 2 onwards), up to 3 lexicographically smallest matching products.
+
+#### Example
+```
+Input:
+numProducts = 5
+repository = ['code', 'codePhone', 'coddle', 'coddles', 'codes']
+customerQuery = 'coddle'
+
+Output:
+[['code', 'codePhone', 'coddle'], ['code', 'codePhone', 'coddle'], ['coddle', 'coddles'], ['coddle', 'coddles'], ['coddle', 'coddles']]
+```
+For prefix "co": all 5 match, return first 3 alphabetically. For "codd": only coddle/coddles match.
 
 #### Solution
 
@@ -771,6 +896,21 @@ Create a "Portunol" dictionary by combining Portuguese and Spanish words. A Port
 
 #### Output Format
 For each test case: number of distinct Portunol words.
+
+#### Example
+```
+Input:
+2 2
+abc
+de
+fg
+hi
+0 0
+
+Output:
+8
+```
+Portuguese prefixes: "a", "ab", "abc", "d", "de". Spanish suffixes for each. Combinations: a+fg, a+g, a+hi, a+i, ab+fg, ab+g, etc. Total unique = 8.
 
 #### Solution
 

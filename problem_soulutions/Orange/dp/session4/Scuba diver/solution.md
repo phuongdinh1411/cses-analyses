@@ -30,6 +30,23 @@ Find the minimum total weight of cylinders to carry to meet both gas requirement
 ## Output Format
 For each test case, print the minimum weight needed.
 
+## Example
+```
+Input:
+1
+5 60
+5
+3 36 120
+10 25 129
+5 50 250
+1 45 130
+4 20 119
+
+Output:
+249
+```
+Need 5 oxygen and 60 nitrogen. Cylinders: (3,36,120), (10,25,129), (5,50,250), (1,45,130), (4,20,119). Select cylinders 1 and 5: oxygen=3+4=7>=5, nitrogen=36+20=56<60. Need more. Best combination weighs 249 (e.g., cylinders 2+5: 10+4=14 oxygen, 25+20=45<60... continue searching).
+
 ## Solution
 
 ### Approach

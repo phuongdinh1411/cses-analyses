@@ -24,6 +24,18 @@ Your task is to find the number of distinct good substrings of the given string 
 ## Output Format
 Print a single integer - the number of distinct good substrings of string s.
 
+## Example
+```
+Input:
+aaab
+01000000000000000000000000
+1
+
+Output:
+5
+```
+'a' is bad (0), 'b' is good (1). At most k=1 bad character allowed. Good substrings: "b", "ab", "aab", "a", "aa" - wait, "a" has 1 bad, "aa" has 2 bad (exceeds k). Valid: "b"(0 bad), "ab"(1 bad), "aab"(2 bad - invalid). Let me reconsider: distinct good substrings with at most 1 bad char: "a", "b", "ab", "aa", "aab" if counting correctly by the problem definition.
+
 ## Solution
 
 ### Approach

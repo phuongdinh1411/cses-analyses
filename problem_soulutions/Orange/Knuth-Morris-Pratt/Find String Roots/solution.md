@@ -23,6 +23,20 @@ Find the maximum N such that the Nth root of S exists.
 ## Output Format
 For each test case, print the greatest N such that the Nth root exists.
 
+## Example
+```
+Input:
+abcabcabcabc
+abcd
+*
+
+Output:
+4
+1
+```
+"abcabcabcabc" = "abc" repeated 4 times, so N=4.
+"abcd" has no repeating pattern, so only the 1st root (itself) exists, N=1.
+
 ## Solution
 
 ### Approach

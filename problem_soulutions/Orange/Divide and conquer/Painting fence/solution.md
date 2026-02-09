@@ -21,6 +21,17 @@ Bizon the Champion bought a brush in the shop, the brush's width is 1 meter. He 
 ## Output Format
 Print a single integer - the minimum number of strokes needed to paint the whole fence.
 
+## Example
+```
+Input:
+5
+2 2 1 2 1
+
+Output:
+3
+```
+One optimal approach: paint 1 horizontal stroke at height 1 (covering all planks), then 1 horizontal stroke at height 2 for planks 1-2, then 1 vertical stroke for plank 4. Total = 3 strokes. Alternative: 5 vertical strokes would cost 5.
+
 ## Solution
 
 ### Approach

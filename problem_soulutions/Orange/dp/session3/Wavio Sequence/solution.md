@@ -27,6 +27,17 @@ Example: In "1 2 3 2 1 2 3 4 3 2 1 5 4 1 2 3 2 2 1", the longest Wavio is "1 2 3
 ## Output Format
 For each test case, print the length of longest Wavio sequence.
 
+## Example
+```
+Input:
+10
+1 2 3 4 5 4 3 2 1 10
+
+Output:
+9
+```
+The array [1,2,3,4,5,4,3,2,1,10] contains the Wavio subsequence [1,2,3,4,5,4,3,2,1] of length 9. This has 5 increasing elements to peak (5) and 5 decreasing from peak.
+
 ## Solution
 
 ### Approach

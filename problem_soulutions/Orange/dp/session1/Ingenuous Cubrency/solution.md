@@ -24,6 +24,19 @@ For example, there are 3 ways to pay 21 cubes:
 ## Output Format
 For each of the given amounts, output one line containing the number of ways to pay the given amount using the coins available in Cubeland.
 
+## Example
+```
+Input:
+10
+21
+
+Output:
+2
+3
+```
+For amount 10: Two ways - ten 1-cube coins, or one 8-cube coin and two 1-cube coins.
+For amount 21: Three ways - as described in the problem statement.
+
 ## Solution
 
 ### Approach

@@ -22,6 +22,19 @@ Find the longest common subsequence of their paths - the maximum number of squar
 ## Output Format
 For each test case: "Case X: L" where L is the LCS length.
 
+## Example
+```
+Input:
+1
+4 4 3
+1 7 5 4 8
+1 7 5 8
+
+Output:
+Case 1: 3
+```
+Prince visits squares [1, 7, 5, 4, 8], Princess visits [1, 7, 5, 8]. The LCS is [1, 7, 5] or [1, 7, 8] with length 3.
+
 ## Solution
 
 ### Approach

@@ -36,6 +36,24 @@ In a simplified Digger version, consisting only of emeralds and empty spaces, yo
 #### Output Format
 For each test case print the number of octaves on a single line.
 
+#### Example
+```
+Input:
+2
+3
+XXX
+X.X
+XXX
+2
+XX
+XX
+
+Output:
+8
+0
+```
+In the first case, the 3x3 grid has 8 emeralds connected in a ring pattern. There are 8 different sets of 8 consecutive emeralds (octaves) that can be collected. In the second case, there are only 4 emeralds, so no octave (8 consecutive emeralds) is possible.
+
 #### Solution
 
 ##### Approach
@@ -115,6 +133,17 @@ But the Wi-Fi condition is so poor that Dreamoon's smartphone reports some of th
 
 You are given an original list of commands sent by Drazil and list received by Dreamoon. What is the probability that Dreamoon ends in the position originally supposed to be final by Drazil's commands?
 
+#### Example
+```
+Input:
+++-+-
++-+??
+
+Output:
+0.500000000000
+```
+The original commands "++-+-" result in position 0+1+1-1+1-1 = 1. The received commands "+-+??" give a fixed position of +1-1+1 = 1, with 2 unknown commands. To reach target position 1, Dreamoon needs the two '?' to sum to 0 (one '+' and one '-'). There are 4 possible outcomes for two coin tosses (++, +-, -+, --), and 2 of them (+-  and -+) give the desired result. Thus probability = 2/4 = 0.5.
+
 #### Solution
 
 ##### Approach
@@ -173,6 +202,23 @@ In the German Lotto you have to select 6 numbers from the set {1, 2, ..., 49}. A
 
 Your job is to write a program that reads in the number k and the set S and then prints all possible games choosing numbers only from S.
 
+#### Example
+```
+Input:
+7 1 2 3 4 5 6 7
+0
+
+Output:
+1 2 3 4 5 6
+1 2 3 4 5 7
+1 2 3 4 6 7
+1 2 3 5 6 7
+1 2 4 5 6 7
+1 3 4 5 6 7
+2 3 4 5 6 7
+```
+With k=7 numbers {1,2,3,4,5,6,7}, we generate all C(7,6)=7 combinations of 6 numbers in lexicographical order. Each line represents one possible Lotto game selection.
+
 #### Solution
 
 ##### Approach
@@ -224,6 +270,16 @@ if __name__ == "__main__":
 
 You are given an array x that contains exactly five positive integers. You want to put four of them instead of the question marks into the following expression: `|(? / ?) - (? / ?)|`. Your goal is to make the value of the expression as small as possible.
 
+#### Example
+```
+Input:
+1 2 3 4 5
+
+Output:
+3 1 4 2
+```
+With array [1, 2, 3, 4, 5] (indices 0-4), choosing indices 3,1,4,2 gives |(4/2) - (5/3)| = |2 - 1.667| = 0.333, which is the minimum possible absolute difference. The output represents the indices of the four chosen numbers in the expression (a/b) - (c/d).
+
 #### Solution
 
 ##### Approach
@@ -273,6 +329,19 @@ if __name__ == "__main__":
 We define the operation of splitting a binary number n into two numbers a(n), b(n) as follows:
 - The indices of the bits of a(n) that are 1 are i1, i3, i5, ... (odd-positioned 1s)
 - The indices of the bits of b(n) that are 1 are i2, i4, i6, ... (even-positioned 1s)
+
+#### Example
+```
+Input:
+13
+47
+0
+
+Output:
+9 4
+37 10
+```
+For n=13 (binary 1101), the 1-bits are at positions 0, 2, 3 (counting from right, 0-indexed). The 1st and 3rd 1-bits (positions 0 and 3) go to a, giving 1001 = 9. The 2nd 1-bit (position 2) goes to b, giving 0100 = 4. For n=47 (binary 101111), the 1-bits at odd positions (1st, 3rd, 5th) form a=37, and even positions (2nd, 4th) form b=10.
 
 #### Solution
 
@@ -326,6 +395,28 @@ In the PigEwu language, each word has exactly 4 letters and contains exactly 2 v
 In Boggle, you have a 4x4 grid of letters. A word is a sequence of 4 distinct adjacent squares (sharing edge or corner) forming a legal PigEwu word.
 
 Given two Boggle boards, find all PigEwu words common to both boards.
+
+#### Example
+```
+Input:
+AAAA
+BBBB
+CCCC
+DDDD
+
+AAAB
+BBBC
+CCCD
+DDDE
+
+Output:
+AAAB
+AABB
+ABAB
+ABBA
+ABBB
+```
+Each board is 4x4. Valid PigEwu words must: (1) be exactly 4 letters, (2) contain exactly 2 vowels, (3) use distinct adjacent squares. The output lists all such words that can be formed on both boards, sorted lexicographically. Words like "AAAB" contain 2 vowels (A, A) and can be traced on both boards using adjacent cells.
 
 #### Solution
 
@@ -388,6 +479,24 @@ if __name__ == "__main__":
 #### Problem Statement
 
 Given N (length of bit strings) and H (Hamming distance), print all bit strings of length N that are Hamming distance H from the bit string containing all 0's. That is, all bit strings of length N with exactly H 1's, in ascending lexicographical order.
+
+#### Example
+```
+Input:
+1
+
+4 2
+
+Output:
+0011
+0101
+0110
+1001
+1010
+1100
+
+```
+With N=4 and H=2, we need all 4-bit strings with exactly 2 ones (Hamming distance 2 from "0000"). There are C(4,2)=6 such strings, listed in lexicographical order. Each string has exactly 2 bits set to 1.
 
 #### Solution
 

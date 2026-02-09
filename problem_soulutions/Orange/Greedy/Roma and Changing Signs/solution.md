@@ -23,6 +23,17 @@ Help Roma perform the changes so as to make the total income of the company (the
 ## Output Format
 In the single line print the answer to the problem - the maximum total income that we can obtain after exactly k changes.
 
+## Example
+```
+Input:
+3 2
+-1 -1 1
+
+Output:
+3
+```
+Array: [-1, -1, 1], k=2. Flip both negatives: [1, 1, 1]. Sum = 3. If k=3, flip the smallest element back: sum would be 1+1-1=1.
+
 ## Solution
 
 ### Approach

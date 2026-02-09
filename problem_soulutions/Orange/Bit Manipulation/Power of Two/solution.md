@@ -24,6 +24,21 @@ Given an array A, determine if there exists any subset where the AND of all elem
 ## Output Format
 For each test case, print "YES" if such a subset exists, otherwise "NO".
 
+## Example
+```
+Input:
+2
+3
+3 6 7
+2
+12 8
+
+Output:
+YES
+NO
+```
+First case: {6, 7} gives AND = 6 & 7 = 6, not power of 2. But numbers with bit 1 set: {3, 6, 7}, AND = 3 & 6 & 7 = 2, which is 2^1. YES. Second case: 12 = 1100, 8 = 1000. AND = 8 (power of 2), so YES... Actually let's verify: for bit 3, numbers with it set: {12, 8}, AND = 8. That's 2^3. So the answer should be YES.
+
 ## Solution
 
 ### Approach

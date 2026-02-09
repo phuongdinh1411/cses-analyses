@@ -19,6 +19,19 @@ Help "MODON" find the answer.
 ## Output Format
 For each case, print the case number and the answer.
 
+## Example
+```
+Input:
+2
+abcab
+aaaa
+
+Output:
+Case 1: 1
+Case 2: 3
+```
+"abcab": suffix "ab" = prefix "ab" (length 2). Only 1 proper suffix equals prefix. "aaaa": suffixes "a", "aa", "aaa" all equal corresponding prefixes. 3 matches.
+
 ## Solution
 
 ### Approach

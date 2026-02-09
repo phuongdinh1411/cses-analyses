@@ -31,6 +31,23 @@ Build an efficient network connecting N nodes using M weighted edges. Additional
 #### Output Format
 Minimum total cost to connect all nodes.
 
+#### Example
+```
+Input:
+4 5
+1 2 10
+2 3 5
+3 4 8
+1 4 12
+2 4 6
+2
+3 4
+
+Output:
+18
+```
+MST edges: 2-3 (5), 2-4 (6), 1-2 (10) = 21. Free connections [3,4] sorted. Replace edge 10 with 3, replace edge 6 with 4. New total = 5 + 4 + 3 + 6 = 18.
+
 #### Solution
 
 ##### Approach
@@ -135,6 +152,22 @@ Given an undirected weighted graph, find the weight of the Minimum Spanning Tree
 #### Output Format
 Single integer: total weight of the MST.
 
+#### Example
+```
+Input:
+5 6
+1 2 3
+1 3 4
+2 3 2
+2 4 6
+3 4 1
+4 5 5
+
+Output:
+11
+```
+MST edges: 3-4 (1), 2-3 (2), 1-2 (3), 4-5 (5). Total weight = 1 + 2 + 3 + 5 = 11.
+
 #### Solution
 
 ##### Approach
@@ -224,6 +257,26 @@ Given pairs of cities with road construction costs, find the minimum cost to con
 
 #### Output Format
 For each test case: "Case X: cost" or "Case X: Impossible"
+
+#### Example
+```
+Input:
+2
+
+3
+Dhaka Sylhet 100
+Sylhet Chittagong 150
+Chittagong Dhaka 200
+
+2
+Tokyo Osaka 50
+
+Output:
+Case 1: 250
+Case 2: 50
+```
+Case 1: MST connects all 3 cities with edges Dhaka-Sylhet (100) and Sylhet-Chittagong (150) = 250.
+Case 2: Only 2 cities with one road, MST = 50.
 
 #### Solution
 
@@ -329,6 +382,24 @@ A town needs to pave roads between junctions. The cost per meter is p, and you'r
 #### Output Format
 For each test case: minimum total cost (MST weight * p)
 
+#### Example
+```
+Input:
+1
+2
+4
+5
+1 2 3
+1 3 4
+2 3 5
+2 4 6
+3 4 2
+
+Output:
+18
+```
+Cost per meter = 2. MST edges: 3-4 (2), 1-2 (3), 1-3 (4). Total length = 9. Cost = 9 * 2 = 18.
+
 #### Solution
 
 ##### Approach
@@ -419,6 +490,21 @@ Given an undirected weighted graph, find the total weight of its Minimum Spannin
 #### Output Format
 Single integer: total weight of the MST.
 
+#### Example
+```
+Input:
+4 5
+1 2 1
+1 3 2
+2 3 3
+2 4 4
+3 4 5
+
+Output:
+7
+```
+MST edges: 1-2 (1), 1-3 (2), 2-4 (4). Total = 1 + 2 + 4 = 7.
+
 #### Solution
 
 ##### Approach
@@ -508,6 +594,26 @@ In a city with crossings connected by streets, each street has a noise level. Fo
 #### Output Format
 For each query: minimum possible maximum noise level, or "no path"
 
+#### Example
+```
+Input:
+4 4 2
+1 2 50
+2 3 30
+3 4 40
+1 4 100
+1 4
+2 4
+0 0 0
+
+Output:
+Case #1
+50
+40
+```
+Query 1-4: Path 1-2-3-4 has max noise 50, path 1-4 has noise 100. Minimax = 50.
+Query 2-4: Path 2-3-4 has max noise 40, which is the minimax path.
+
 #### Solution
 
 ##### Approach
@@ -577,6 +683,22 @@ A university campus has n buildings at (x, y) coordinates. Some buildings are al
 
 #### Output Format
 Minimum cable length needed (2 decimal places).
+
+#### Example
+```
+Input:
+4
+0 0
+0 10
+10 0
+10 10
+1
+1 2
+
+Output:
+20.00
+```
+Building 1 and 2 are already connected (cost 0). Need cables: 1-3 (distance 10) and 3-4 (distance 10). Total new cable = 20.00.
 
 #### Solution
 
@@ -706,6 +828,22 @@ Find both the Minimum Spanning Tree (MST) and the Second-Best MST for a given gr
 
 #### Output Format
 For each test case: two integers - MST weight and second-best MST weight.
+
+#### Example
+```
+Input:
+1
+4 5
+1 2 1
+1 3 2
+2 3 3
+2 4 4
+3 4 5
+
+Output:
+7 8
+```
+MST: 1-2 (1), 1-3 (2), 2-4 (4) = 7. Second-best MST: Remove edge 1-3, use 2-3 instead. Or remove 2-4, use 3-4. Best second MST = 8.
 
 #### Solution
 

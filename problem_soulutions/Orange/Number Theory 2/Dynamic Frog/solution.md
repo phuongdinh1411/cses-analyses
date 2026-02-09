@@ -23,6 +23,18 @@ The frog must go from left bank to right bank and return. Minimize the maximum s
 ## Output Format
 For each case: "Case X: Y" where Y is the minimized maximum jump.
 
+## Example
+```
+Input:
+1
+3 10
+B-3 S-5 B-7
+
+Output:
+Case 1: 5
+```
+River width is 10. Rocks at positions 3 (big), 5 (small), 7 (big). Going: jumps are 3, 2, 2, 3 (max=3). Returning: small rock at 5 is gone, jumps are 3, 4, 3 (max=4). Actually, the maximum jump is 5 when considering the return trip without the small rock.
+
 ## Solution
 
 ### Approach

@@ -20,6 +20,20 @@ If there are multiple solutions, print the one whose first number is smallest, i
 - Print "Sandro fails." if there's a cycle (impossible to complete all duties)
 - Otherwise, print the correct ordering with jobs separated by whitespace
 
+## Example
+```
+Input:
+5 4
+1 2
+2 3
+1 3
+1 5
+
+Output:
+1 2 4 3 5
+```
+Jobs 1 must be done before 2, 3, and 5. Job 2 must be done before 3. Job 4 has no dependencies. The lexicographically smallest valid ordering is 1, 2, 4, 3, 5.
+
 ## Solution
 
 ### Approach

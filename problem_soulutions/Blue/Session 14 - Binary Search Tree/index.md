@@ -29,6 +29,20 @@ Han Solo is at position (x0, y0) and needs to shoot n stormtroopers. A single la
 #### Output Format
 - Minimum number of shots (distinct rays) needed
 
+#### Example
+```
+Input:
+4 0 0
+1 1
+2 2
+2 0
+-1 -1
+
+Output:
+2
+```
+Han is at (0,0). Stormtroopers at (1,1) and (2,2) are on the same ray (same slope). Stormtrooper at (2,0) is on a different ray. Stormtrooper at (-1,-1) is on the same ray as (1,1) and (2,2). So 2 shots needed: one for the diagonal, one for horizontal.
+
 #### Solution
 
 ##### Approach
@@ -83,6 +97,25 @@ After each operation, output the current number of unread notifications.
 
 #### Output Format
 - q lines: number of unread notifications after each operation
+
+#### Example
+```
+Input:
+3 5
+1 1
+1 2
+1 3
+2 2
+3 2
+
+Output:
+1
+2
+3
+2
+0
+```
+After op 1 (app 1 notifies): 1 unread. After op 2 (app 2 notifies): 2 unread. After op 3 (app 3 notifies): 3 unread. After op 4 (read all from app 2): 2 unread. After op 5 (read first 2 in order): 0 unread (notifications 1,2,3 existed, reading first 2 removes them all since app 2's was already read).
 
 #### Solution
 
@@ -164,6 +197,24 @@ Given an array of N integers and a target X, determine if the number of distinct
 - "Bad" if distinct count is less than X
 - "Average" if distinct count is greater than X
 
+#### Example
+```
+Input:
+3
+5 3
+1 2 3 2 1
+4 4
+1 2 3 4
+3 5
+1 1 1
+
+Output:
+Good
+Good
+Bad
+```
+Test 1: Array [1,2,3,2,1] has 3 distinct elements, equals X=3 -> Good. Test 2: Array [1,2,3,4] has 4 distinct elements, equals X=4 -> Good. Test 3: Array [1,1,1] has 1 distinct element, less than X=5 -> Bad.
+
 #### Solution
 
 ##### Approach
@@ -216,6 +267,17 @@ Lauren wants to buy a house and sell it later. She has predicted house prices fo
 
 #### Output Format
 - Minimum loss (buy_price - sell_price where buy_price > sell_price)
+
+#### Example
+```
+Input:
+5
+20 7 8 2 5
+
+Output:
+2
+```
+Prices over 5 years: [20, 7, 8, 2, 5]. Lauren must buy before selling and incur a loss. Options: buy at 20, sell at 7 (loss=13); buy at 20, sell at 8 (loss=12); buy at 8, sell at 2 (loss=6); buy at 8, sell at 5 (loss=3); buy at 7, sell at 5 (loss=2). Minimum loss is 2.
 
 #### Solution
 
@@ -326,6 +388,19 @@ Monk is waiting for his friends in a classroom. N friends are already inside. M 
 #### Output Format
 - For each arriving friend: "YES" if duplicate exists, "NO" otherwise
 
+#### Example
+```
+Input:
+1
+3 2
+1 2 3 1 4
+
+Output:
+YES
+NO
+```
+Friends with IDs [1,2,3] are already inside. First arriving friend has ID 1 (duplicate exists) -> YES. After checking, ID 1 is added again (now two with ID 1). Second arriving friend has ID 4 (no duplicate) -> NO.
+
 #### Solution
 
 ##### Approach
@@ -383,6 +458,24 @@ A student memorized n historical years for an exam. The exam has m questions ask
 
 #### Output Format
 - Number of correct answers (exam years that match memorized years)
+
+#### Example
+```
+Input:
+4
+1917
+1939
+1945
+1941
+3
+1945
+1942
+1917
+
+Output:
+2
+```
+Student memorized years: [1917, 1939, 1945, 1941]. Exam questions ask about: 1945 (memorized - correct), 1942 (not memorized - wrong), 1917 (memorized - correct). Total: 2 correct answers.
 
 #### Solution
 
@@ -459,6 +552,26 @@ Andy is making a dictionary from a text. Extract all distinct words from the inp
 
 #### Output Format
 - All distinct words in lowercase, sorted alphabetically (one per line)
+
+#### Example
+```
+Input:
+Adventures in Disneyland
+Two dogs and a cat.
+END.
+
+Output:
+a
+adventures
+and
+cat
+disneyland
+dogs
+end
+in
+two
+```
+All unique words extracted, converted to lowercase, and sorted alphabetically.
 
 #### Solution
 
@@ -547,6 +660,26 @@ Similar to Andy's First Dictionary, but now words can contain hyphens. A word sp
 
 #### Output Format
 - All distinct words in lowercase, sorted alphabetically (one per line)
+
+#### Example
+```
+Input:
+Well-known scientists from
+around the globe gath-
+ered to discuss.
+
+Output:
+around
+discuss
+from
+gathered
+globe
+scientists
+the
+to
+well-known
+```
+"gath-" at end of line 2 continues with "ered" on line 3 to form "gathered". "well-known" is kept as a hyphenated word since the hyphen is not at line end.
 
 #### Solution
 

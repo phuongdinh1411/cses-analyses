@@ -20,6 +20,19 @@ You have one gold coin. What is the maximum amount of American dollars you can g
 ## Output Format
 For each test case output a single line, containing the maximum amount of American dollars you can make.
 
+## Example
+```
+Input:
+12
+2
+
+Output:
+13
+2
+```
+For n=12: Exchange to get 6+4+3=13, which is more than keeping 12. The 6 can be exchanged for 3+2+1=6, so we keep it.
+For n=2: 2/2 + 2/3 + 2/4 = 1+0+0 = 1 < 2, so keep the coin worth 2 dollars.
+
 ## Solution
 
 ### Approach

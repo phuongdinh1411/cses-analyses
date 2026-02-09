@@ -25,6 +25,24 @@ Rank 1 is the "boss" (not bullied by anybody). Employees with the same rank shou
 ## Output Format
 For each test case, print "Scenario #i:" followed by N lines with rank and employee index, sorted by rank then by employee index.
 
+## Example
+```
+Input:
+1
+4 3
+0 1
+2 1
+0 3
+
+Output:
+Scenario #1:
+1 1
+2 0
+2 2
+3 3
+```
+Employee 1 is the boss (rank 1) since no one is above them. Employees 0 and 2 are directly below employee 1 (rank 2). Employee 3 is below employee 0 (rank 3).
+
 ## Solution
 
 ### Approach

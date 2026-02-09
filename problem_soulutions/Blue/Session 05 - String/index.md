@@ -26,6 +26,20 @@ Given the results of a football match where each goal is marked with the team na
 #### Output Format
 The name of the winning team.
 
+#### Example
+```
+Input:
+4
+TeamA
+TeamA
+TeamB
+TeamA
+
+Output:
+TeamA
+```
+TeamA scored 3 goals, TeamB scored 1. TeamA wins.
+
 #### Solution
 
 ##### Approach
@@ -70,6 +84,27 @@ Transform word s into word t using suffix automaton (removes one character) and 
 
 #### Output Format
 One of: "automaton", "array", "both", or "need tree".
+
+#### Example
+```
+Input:
+abacaba
+aaba
+
+Output:
+automaton
+```
+"aaba" is a subsequence of "abacaba" - can be obtained by removing characters only.
+
+```
+Input:
+abc
+bca
+
+Output:
+array
+```
+Same length, same characters, need only swaps.
 
 #### Solution
 
@@ -149,6 +184,20 @@ You know two languages with one-to-one word correspondence. During a lecture, wr
 #### Output Format
 The lecture with each word in its shortest form.
 
+#### Example
+```
+Input:
+4 3
+codeforces codesexy
+contest round
+letter message
+codeforces contest letter contest
+
+Output:
+codeforces round letter round
+```
+"codeforces" (10) vs "codesexy" (8) → keep "codeforces" (equal, prefer first). "contest" (7) vs "round" (5) → use "round".
+
 #### Solution
 
 ##### Approach
@@ -202,6 +251,27 @@ Given two strings s and t of equal length where s < t lexicographically, find a 
 
 #### Output Format
 A string between s and t, or "No such string".
+
+#### Example
+```
+Input:
+abc
+abe
+
+Output:
+abd
+```
+"abc" < "abd" < "abe"
+
+```
+Input:
+a
+b
+
+Output:
+No such string
+```
+No string exists between "a" and "b".
 
 #### Solution
 
@@ -259,6 +329,17 @@ Tanya wants to create a message of length n from letters cut from a newspaper. C
 
 #### Output Format
 Two integers: number of YAY! and WHOOPS matches.
+
+#### Example
+```
+Input:
+AbC
+abc
+
+Output:
+1 2
+```
+'b' matches exactly (YAY!). 'A' uses 'a' (wrong case, WHOOPS). 'C' uses 'c' (wrong case, WHOOPS).
 
 #### Solution
 
@@ -351,6 +432,22 @@ Given three strings, students concatenate them in any order. Check if a student'
 #### Output Format
 "ACC" if correct, "WA" if wrong for each student.
 
+#### Example
+```
+Input:
+a
+b
+c
+2
+abc
+xyz
+
+Output:
+ACC
+WA
+```
+"abc" matches "a"+"b"+"c". "xyz" doesn't match any permutation.
+
 #### Solution
 
 ##### Approach
@@ -397,6 +494,22 @@ Vanya tries passwords in order of increasing length, with same-length passwords 
 
 #### Output Format
 Two integers: best case and worst case time in seconds.
+
+#### Example
+```
+Input:
+5 2
+a
+bb
+ccc
+d
+ee
+ccc
+
+Output:
+4 6
+```
+Sorted by length: [a, d, bb, ee, ccc]. Best case: try 3 passwords (a, d, bb or similar until ccc) = 3+5÷2 penalty. Worst case: try more same-length ones first.
 
 #### Solution
 
@@ -463,6 +576,16 @@ A single string (the exhibit name).
 #### Output Format
 Minimum number of rotations.
 
+#### Example
+```
+Input:
+zeus
+
+Output:
+18
+```
+a→z: min(25, 1)=1. z→e: min(21, 5)=5. e→u: min(16, 10)=10. u→s: min(24, 2)=2. Total: 1+5+10+2=18.
+
 #### Solution
 
 ##### Approach
@@ -500,6 +623,30 @@ In a rectangular grid, cross out all letters that appear more than once in their
 
 #### Output Format
 The encrypted word.
+
+#### Example
+```
+Input:
+3 3
+qwe
+asd
+zxc
+
+Output:
+qweasdzxc
+```
+All letters are unique in their row and column, so nothing is crossed out.
+
+```
+Input:
+2 2
+aa
+aa
+
+Output:
+
+```
+All 'a's appear multiple times in rows and columns, all crossed out, empty result.
 
 #### Solution
 

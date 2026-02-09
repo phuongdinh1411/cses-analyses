@@ -30,6 +30,20 @@ Find the maximum number of soldiers that can receive vests, and output the pairs
 - Line 1: Number of soldiers who get vests
 - Next lines: Pairs of (soldier index, vest index) - 1-based
 
+#### Example
+```
+Input:
+5 3 0 0
+1 2 3 3 4
+1 3 5
+
+Output:
+2
+1 1
+3 2
+```
+Soldier 1 (size 1) gets vest 1 (size 1). Soldier 3 (size 3) gets vest 2 (size 3).
+
 #### Solution
 
 ##### Approach
@@ -99,6 +113,27 @@ Given an array of n integers and a number k, find the shortest contiguous segmen
 #### Output Format
 Two integers - start and end positions (1-based), or "-1 -1" if no such segment exists.
 
+#### Example
+```
+Input:
+5 3
+1 2 1 3 2
+
+Output:
+2 4
+```
+Segment [2,4] contains values {2, 1, 3} - exactly 3 distinct values.
+
+```
+Input:
+5 5
+1 2 1 3 2
+
+Output:
+-1 -1
+```
+Array only has 3 distinct values, impossible to find segment with 5 distinct.
+
 #### Solution
 
 ##### Approach
@@ -158,6 +193,27 @@ Valera has n books on a shelf. Each book i takes a[i] minutes to read. He has t 
 
 #### Output Format
 Maximum number of consecutive books that can be read.
+
+#### Example
+```
+Input:
+4 5
+3 1 2 1
+
+Output:
+3
+```
+Books 2, 3, 4 take 1+2+1=4 minutes, which is within 5 minutes. That's 3 consecutive books.
+
+```
+Input:
+3 3
+2 2 2
+
+Output:
+1
+```
+Each book takes 2 minutes, can only read 1 book completely in 3 minutes.
 
 #### Solution
 
@@ -224,6 +280,26 @@ Calculate the final scores of both players.
 #### Output Format
 Two integers - Sereja's score and Dima's score.
 
+#### Example
+```
+Input:
+4
+4 1 2 10
+
+Output:
+12 5
+```
+Turn 1 (Sereja): picks 10 (right). Turn 2 (Dima): picks 4 (left). Turn 3 (Sereja): picks 2 (right). Turn 4 (Dima): picks 1.
+
+```
+Input:
+5
+5 2 4 8 3
+
+Output:
+15 7
+```
+
 #### Solution
 
 ##### Approach
@@ -286,6 +362,29 @@ A prepared problem with difficulty b[j] can be used for a required problem with 
 #### Output Format
 Minimum number of new problems to create.
 
+#### Example
+```
+Input:
+3 5
+1 2 3
+1 1 1 1 1
+
+Output:
+2
+```
+Need difficulties [1,2,3]. Only prepared problem with difficulty 1 can cover requirement 1. Need to create 2 new problems.
+
+```
+Input:
+3 3
+1 2 3
+3 3 3
+
+Output:
+2
+```
+Prepared difficulty 3 can cover requirement 3, but need 2 more problems for requirements 1 and 2.
+
 #### Solution
 
 ##### Approach
@@ -342,6 +441,27 @@ Given an array of n integers, find the length of the longest contiguous subarray
 
 #### Output Format
 Length of the longest "almost constant" subarray.
+
+#### Example
+```
+Input:
+5
+1 2 3 3 2
+
+Output:
+4
+```
+Subarray [2,3,3,2] has max=3, min=2, difference=1 which satisfies <= 1.
+
+```
+Input:
+6
+6 5 5 4 5 6
+
+Output:
+4
+```
+Subarray [5,5,4,5] has max=5, min=4, difference=1.
 
 #### Solution
 
@@ -420,6 +540,17 @@ Determine how many chocolates each person eats.
 #### Output Format
 Two integers - chocolates eaten by Alice and Bob.
 
+#### Example
+```
+Input:
+5
+2 9 8 2 7
+
+Output:
+2 3
+```
+Alice eats chocolates 1,2 (times 2,9), Bob eats 3,4,5 (times 8,2,7). They meet after Alice finishes chocolate 2.
+
 #### Solution
 
 ##### Approach
@@ -475,6 +606,27 @@ Count how many people survive after everyone swings.
 
 #### Output Format
 Number of survivors.
+
+#### Example
+```
+Input:
+4
+0 1 0 10
+
+Output:
+1
+```
+Person 4 kills 3 people to their left (persons 1,2,3). Only person 4 survives.
+
+```
+Input:
+2
+0 0
+
+Output:
+2
+```
+No one has killing range, both survive.
 
 #### Solution
 

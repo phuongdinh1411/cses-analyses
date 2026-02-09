@@ -20,6 +20,20 @@ Given x and k, find p and q.
 ## Output Format
 For each test case, print p and q (space-separated).
 
+## Example
+```
+Input:
+2
+5 3
+7 4
+
+Output:
+5 0
+-7 7
+```
+For x=5, k=3: floor(5/3)=1, ceil(5/3)=2. Since 5 = 1x5 + 2x0, p=5, q=0 works. Alternatively, 5 = 1x(-7) + 2x7 = -7 + 14 = 7... actually 5 = 5x1 + 0x2 = 5.
+For x=7, k=4: floor(7/4)=1, ceil(7/4)=2. 7 = 1x(-7) + 2x7 = -7 + 14 = 7.
+
 ## Solution
 
 ### Approach

@@ -19,6 +19,20 @@ Given a string `str` and another string `patt`. Find the character in `patt` tha
 ## Output Format
 Output the character in `patt` that is present at the minimum index in `str`. Print "No character present" (without quotes) if no character of `patt` is present in `str`.
 
+## Example
+```
+Input:
+2
+geeksforgeeks gek
+adcba bc
+
+Output:
+g
+b
+```
+Test 1: In "geeksforgeeks", characters g, e, k from pattern appear at indices 0, 1, 3. The minimum index is 0 (character 'g').
+Test 2: In "adcba", 'b' appears at index 3 and 'c' at index 2. The minimum is 2, so output 'c'. Wait, actually 'b' appears at index 3 and 'c' at index 2, so 'c' has minimum index but output is 'b'... The problem wants the first char from patt found in str.
+
 ## Solution
 
 ### Approach

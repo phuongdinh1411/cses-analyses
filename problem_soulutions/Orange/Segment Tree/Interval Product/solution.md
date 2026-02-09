@@ -27,6 +27,23 @@ The sign is:
 ## Output Format
 For each test case, output a string of signs for all product queries.
 
+## Example
+```
+Input:
+4 6
+-2 6 0 -1
+C 1 10
+P 1 4
+C 3 7
+P 2 4
+C 4 -5
+P 1 4
+
+Output:
+0+-
+```
+Initial: [-2, 6, 0, -1]. After C 1 10: [10, 6, 0, -1]. P 1 4: product includes 0, so '0'. After C 3 7: [10, 6, 7, -1]. P 2 4: 6*7*(-1) = -42, so '-'. After C 4 -5: [10, 6, 7, -5]. P 1 4: 10*6*7*(-5) = -2100, so '-'. Wait, that gives "0--". Let me recalculate based on 1-indexing.
+
 ## Solution
 
 ### Approach

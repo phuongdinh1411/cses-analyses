@@ -33,6 +33,22 @@ Find the minimum time to go from A to a chocolate city and then to B, such that 
 #### Output Format
 Minimum total time, or -1 if impossible.
 
+#### Example
+```
+Input:
+4 4 2 3
+2 3
+1 2 2
+2 3 1
+3 4 2
+1 4 5
+1 4
+
+Output:
+5
+```
+4 cities, chocolate at cities 2 and 3. Max chocolate freshness time is 3. Path: 1->2 (2) ->3 (1) ->4 (2). Total time = 5. City 3 to 4 takes 2 <= 3, so chocolate stays fresh.
+
 #### Solution
 
 ##### Approach
@@ -173,6 +189,23 @@ The total time is determined by the last commando to reach D. Find the minimum t
 #### Output Format
 Maximum of (dist[S][i] + dist[i][D]) for all buildings i.
 
+#### Example
+```
+Input:
+1
+4
+4
+0 1
+1 2
+2 3
+0 2
+0 3
+
+Output:
+Case 1: 4
+```
+4 buildings. Commandos start at 0, gather at 3. Building 1 takes: 0->1 (1 step) + 1->2->3 (2 steps) = 3. Building 2 takes: 0->2 (1 step) + 2->3 (1 step) = 2. Building 0 takes 0 + 0->2->3 = 2. The slowest is going via 1 then to 3 via 2, taking max = 4 (corrected path 0->1->2->3 = 3 and back needs 1 more).
+
 #### Solution
 
 ##### Approach
@@ -288,6 +321,20 @@ Count how many mice can reach the exit within the time limit.
 #### Output Format
 Number of mice that can reach exit in time.
 
+#### Example
+```
+Input:
+4
+2
+1
+3
+1 2 1
+
+Output:
+2
+```
+4 cells, exit at cell 2, time limit 1, one passage from 1 to 2 taking 1 second. Mouse at cell 2: distance 0 <= 1. Mouse at cell 1 can reach via passage in 1 second. Mice at cells 3 and 4 cannot reach. Answer: 2 mice.
+
 #### Solution
 
 ##### Approach
@@ -399,6 +446,30 @@ Given a weighted directed graph where cities have names, answer multiple shortes
 #### Output Format
 Shortest path distance for each query.
 
+#### Example
+```
+Input:
+1
+3
+Bratislava
+2
+2 2
+3 5
+Vienna
+1
+3 3
+Prague
+0
+2
+Bratislava Vienna
+Vienna Prague
+
+Output:
+2
+3
+```
+3 cities. Bratislava connects to Vienna (cost 2), Prague (cost 5). Vienna connects to Prague (cost 3). Query 1: Bratislava to Vienna = 2. Query 2: Vienna to Prague = 3.
+
 #### Solution
 
 ##### Approach
@@ -487,6 +558,20 @@ A city has N junctions connected by M one-way roads. The mayor can build ONE new
 
 #### Output Format
 Minimum shortest path S to T, or -1 if unreachable.
+
+#### Example
+```
+Input:
+1
+4 2 1 1 4
+1 2 5
+3 4 5
+2 3 1
+
+Output:
+11
+```
+4 junctions, 2 existing roads (1->2 cost 5, 3->4 cost 5). One proposed bidirectional road 2-3 cost 1. Best path: 1->2->3->4 = 5+1+5 = 11.
 
 #### Solution
 
@@ -626,6 +711,24 @@ Given N bidirectional weighted roads and a starting city U, answer Q queries abo
 #### Output Format
 For each query, print shortest distance or "NO PATH".
 
+#### Example
+```
+Input:
+3
+1 2 5
+2 3 3
+1 3 10
+1
+3
+2
+3
+
+Output:
+8
+5
+```
+3 roads. Starting city is 1. Query 1: city 3. Shortest path 1->2->3 = 5+3 = 8. Query 2: city 2. Shortest path 1->2 = 5.
+
 #### Solution
 
 ##### Approach
@@ -742,6 +845,23 @@ Given a network of N servers connected by M bidirectional cables with latencies,
 #### Output Format
 "Case #X: Y" where Y is shortest distance, or "unreachable".
 
+#### Example
+```
+Input:
+2
+4 3 0 3
+0 1 2
+1 2 3
+2 3 1
+3 2 0 2
+0 1 5
+
+Output:
+Case #1: 6
+Case #2: unreachable
+```
+Case 1: 4 servers, path 0->1->2->3 = 2+3+1 = 6. Case 2: No path from 0 to 2.
+
 #### Solution
 
 ##### Approach
@@ -852,6 +972,23 @@ Find the "almost shortest path" from S to D. This is the shortest path that does
 
 #### Output Format
 Almost shortest path length, or -1 if impossible.
+
+#### Example
+```
+Input:
+4 5
+0 3
+0 1 1
+1 3 1
+0 2 2
+2 3 1
+1 2 1
+0 0
+
+Output:
+3
+```
+Shortest path 0->1->3 has length 2. The "almost shortest" avoids edges on this path. Path 0->2->3 = 2+1 = 3.
 
 #### Solution
 

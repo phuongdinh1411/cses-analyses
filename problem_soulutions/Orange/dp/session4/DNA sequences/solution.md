@@ -23,6 +23,19 @@ For example, with K=3 and strings "lovxxelyxxxxx" and "xxxxxxxlovely":
 ## Output Format
 For each test case, print the length of the longest valid subsequence, or 0 if none exists.
 
+## Example
+```
+Input:
+3
+aaaaabbb
+aabaaabb
+0
+
+Output:
+5
+```
+With K=3, strings "aaaaabbb" and "aabaaabb". We need segments of length >= 3. Matching segment "aaa" appears in both (positions differ). Combined valid LCS with segments >= 3 has length 5.
+
 ## Solution
 
 ### Approach

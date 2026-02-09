@@ -17,6 +17,17 @@ Given a binary string s (0s and 1s) and a text t (lowercase letters), find the n
 ## Output Format
 Print the number of valid (r0, r1) pairs.
 
+## Example
+```
+Input:
+01
+aaaaaa
+
+Output:
+2
+```
+Pattern "01" with text "aaaaaa" (length 6). We need c0*L0 + c1*L1 = 6 where c0=1, c1=1. So L0 + L1 = 6. Valid pairs: (L0=1, L1=5) gives r0="a", r1="aaaaa" - works since both are different. (L0=5, L1=1) gives r0="aaaaa", r1="a" - also works. So 2 valid pairs.
+
 ## Solution
 
 ### Approach

@@ -21,6 +21,20 @@ Find an ordering of topics (respecting dependencies) that minimizes the longest 
 ## Output Format
 Output the minimum possible length of the longest meeting.
 
+## Example
+```
+Input:
+4
+3 0
+5 1 1
+1 1 2
+2 2 1 3
+
+Output:
+6
+```
+4 topics. Topic 1: duration 3, no dependencies. Topic 2: duration 5, depends on topic 1. Topic 3: duration 1, depends on topic 2. Topic 4: duration 2, depends on topics 1 and 3. Optimal order: 1,2,3,4. Meeting times: 3+0=3, 5+1=6, 1+2=3, 2+3=5. Maximum is 6.
+
 ## Solution
 
 ### Approach

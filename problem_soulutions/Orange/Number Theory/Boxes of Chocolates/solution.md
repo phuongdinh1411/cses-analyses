@@ -26,6 +26,19 @@ Each box can contain smaller boxes inside. Only the smallest boxes contain actua
 ## Output Format
 For each test case, print the remainder (chocolates for Kittu).
 
+## Example
+```
+Input:
+1
+5 2
+3 2 3 4
+2 4 5
+
+Output:
+4
+```
+With N=5 friends and B=2 boxes: First box has structure 2 x 3 x 4 = 24 chocolates. Second box has 4 x 5 = 20 chocolates. Total = 44. Remainder when divided by 5 is 44 % 5 = 4.
+
 ## Solution
 
 ### Approach

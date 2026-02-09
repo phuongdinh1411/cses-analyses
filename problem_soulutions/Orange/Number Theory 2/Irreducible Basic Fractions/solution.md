@@ -14,6 +14,20 @@ Given n, count the irreducible basic fractions with denominator n.
 
 For example, n=12 has 4 irreducible basic fractions: 1/12, 5/12, 7/12, 11/12.
 
+## Example
+```
+Input:
+12
+6
+0
+
+Output:
+4
+2
+```
+For n=12: Numbers from 1 to 11 coprime with 12 are {1, 5, 7, 11}, so there are 4 irreducible fractions.
+For n=6: Numbers from 1 to 5 coprime with 6 are {1, 5}, so there are 2 irreducible fractions (1/6 and 5/6).
+
 ## Input Format
 - Multiple test cases until n = 0
 - Each line: positive integer n (< 10^9)

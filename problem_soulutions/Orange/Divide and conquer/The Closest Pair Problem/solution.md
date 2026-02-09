@@ -20,6 +20,22 @@ Given a set of points in a two dimensional space, you will have to find the dist
 ## Output Format
 For each test produce a single line of output containing a floating point number (with four digits after the decimal point) denoting the distance between the closest two points. If there is no such two points whose distance is less than 10000, print the line "INFINITY".
 
+## Example
+```
+Input:
+5
+0 0
+1 0
+2 0
+3 0
+4 0
+0
+
+Output:
+1.0000
+```
+Five points on a line. Closest pair is any adjacent points (e.g., (0,0) and (1,0)) with distance 1.0000.
+
 ## Solution
 
 ### Approach

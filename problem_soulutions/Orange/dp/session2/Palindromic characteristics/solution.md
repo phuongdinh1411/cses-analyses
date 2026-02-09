@@ -23,6 +23,16 @@ Count the number of k-palindrome substrings for each k from 1 to |s|.
 ## Output Format
 Print |s| integers - the palindromic characteristics.
 
+## Example
+```
+Input:
+abba
+
+Output:
+6 1 0 0
+```
+String "abba" has length 4. Count of 1-palindromes: "a"(2), "b"(2), "bb", "abba" = 6 substrings. Count of 2-palindromes: "abba" (since "ab" = "ba" reversed and "a","a" are 1-palindromes) = 1. No 3-palindromes or 4-palindromes.
+
 ## Solution
 
 ### Approach

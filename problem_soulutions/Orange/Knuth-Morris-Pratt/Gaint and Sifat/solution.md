@@ -23,6 +23,22 @@ Sifat needs to find how many times word s occurs as a substring in sentence S (a
 ## Output Format
 For each case, print case number and count of occurrences of s in S (spaces removed).
 
+## Example
+```
+Input:
+2
+i love programming
+gram
+this is the test
+is
+
+Output:
+Case 1: 1
+Case 2: 2
+```
+Case 1: "i love programming" becomes "iloveprogramming". "gram" appears once (in "programming").
+Case 2: "this is the test" becomes "thisisthetest". "is" appears twice (in "this" and "is").
+
 ## Solution
 
 ### Approach

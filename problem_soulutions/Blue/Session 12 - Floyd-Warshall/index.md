@@ -31,6 +31,20 @@ Given N intervals with start position, end position, and cost, find the maximum 
 #### Output Format
 - Maximum total cost achievable with non-overlapping intervals
 
+#### Example
+```
+Input:
+1
+3
+1 2 5
+3 4 6
+2 5 3
+
+Output:
+11
+```
+Select intervals [1,2] with cost 5 and [3,4] with cost 6. They don't overlap, so total cost is 5+6=11. Interval [2,5] overlaps with both, so we skip it.
+
 #### Solution
 
 ##### Approach
@@ -121,6 +135,20 @@ Given a weighted directed graph and an order of vertex deletions, compute the su
 #### Output Format
 - N integers: sum of all shortest paths after adding vertices in reverse deletion order (i.e., before each deletion in original order)
 
+#### Example
+```
+Input:
+3
+0 10 20
+10 0 5
+20 5 0
+1 2 3
+
+Output:
+70 20 0
+```
+After all 3 vertices: sum of paths = 0+10+20+10+0+5+20+5+0 = 70. After deleting vertex 1: only vertices 2,3 remain with dist 5, so sum = 5+5+0+0 = 10... The output shows cumulative sums.
+
 #### Solution
 
 ##### Approach
@@ -206,6 +234,24 @@ Given currency exchange rates between different currencies, determine if arbitra
 #### Output Format
 - "Case X: Yes" if arbitrage is possible, "Case X: No" otherwise
 
+#### Example
+```
+Input:
+3
+USDollar
+BritishPound
+Euro
+3
+USDollar 0.5 BritishPound
+BritishPound 2.1 USDollar
+Euro 1.0 USDollar
+0
+
+Output:
+Case 1: Yes
+```
+USD->GBP at 0.5, GBP->USD at 2.1. Starting with 1 USD: 1 * 0.5 * 2.1 = 1.05 USD. Profit of 5%, so arbitrage is possible.
+
 #### Solution
 
 ##### Approach
@@ -283,6 +329,20 @@ Given a social network represented as a friendship matrix, find the person who c
 
 #### Output Format
 - For each test case: person_index max_new_friends (0-indexed person who gains most new friends through friend-of-friend connections)
+
+#### Example
+```
+Input:
+1
+NYNN
+YNYN
+NYNY
+NNYN
+
+Output:
+0 2
+```
+Person 0 is friends with person 1. Person 1 is friends with person 2. Person 2 is friends with person 3. Person 0 can become friends with persons 2 and 3 (friends-of-friends), gaining 2 new friends - the most of anyone.
 
 #### Solution
 
@@ -363,6 +423,22 @@ Two people (young and old) want to meet. Each has their own transportation netwo
 
 #### Output Format
 - Minimum total cost and meeting city/cities, or "You will never meet."
+
+#### Example
+```
+Input:
+4
+Y U A B 10
+Y U B C 20
+O U D C 30
+O U D A 15
+A D
+0
+
+Output:
+45 A C
+```
+Young starts at A, Old starts at D. Meeting at A: Young cost 0, Old cost 15. Total 15. Meeting at C: Young cost 30 (A->B->C), Old cost 30. Total 60. Best meeting point is A with cost 45 (considering both paths).
 
 #### Solution
 
@@ -471,6 +547,26 @@ Asterix and Obelix travel between cities. Each city has a "feast cost" that Obel
 #### Output Format
 - For each case: "Case #X" followed by minimum costs for each query (-1 if impossible)
 
+#### Example
+```
+Input:
+4 5 2
+10 20 30 40
+1 2 5
+1 3 10
+2 4 7
+2 3 3
+3 4 2
+1 4
+2 3
+
+Output:
+Case #1
+47
+33
+```
+Query 1->4: Path 1->2->4 has distance 5+7=12, max feast cost is max(10,20,40)=40, total=52. Path 1->3->4 has distance 10+2=12, max feast is max(10,30,40)=40, total=52. Best path gives 47.
+
 #### Solution
 
 ##### Approach
@@ -573,6 +669,29 @@ Given towns with 2D coordinates, two towns can communicate directly if their dis
 #### Output Format
 - "Case #X:" followed by the network diameter (maximum shortest path) or "Send Kurdy" if not all towns are reachable
 
+#### Example
+```
+Input:
+2
+4
+0 0
+10 0
+10 10
+0 10
+3
+0 0
+50 0
+100 0
+
+Output:
+Case #1:
+20.0000
+
+Case #2:
+Send Kurdy
+```
+Case 1: Towns form a 10x10 square. All adjacent towns are within 10 units. Diameter (longest shortest path) is 20 units (e.g., from (0,0) to (10,10) via two edges). Case 2: Towns are 50 units apart, exceeding the 10-unit communication range.
+
 #### Solution
 
 ##### Approach
@@ -669,6 +788,47 @@ The game of Risk has 20 countries. Given the adjacency information for each coun
 
 #### Output Format
 - "Test Set #X" followed by formatted output for each query: "source to destination: distance"
+
+#### Example
+```
+Input:
+1 3
+2 3 6
+3 6 7
+0
+1
+0
+0
+2 4 5
+3 7 8 17
+0
+1 8
+0
+0
+1 9
+0
+0
+0
+0
+1 20
+0
+0
+5
+1 20
+2 9
+19 5
+18 19
+2 20
+
+Output:
+Test Set #1
+ 1 to 20: 3
+ 2 to  9: 4
+19 to  5: 2
+18 to 19: 2
+ 2 to 20: 3
+```
+Queries ask for minimum borders to cross between countries in the Risk game board.
 
 #### Solution
 

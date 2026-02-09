@@ -22,6 +22,20 @@ Count segments where Horace can "see an elephant".
 ## Output Format
 Print the number of segments where Horace can "see an elephant".
 
+## Example
+```
+Input:
+6 3
+1 4 2 5 3 6
+2 5 3
+
+Output:
+2
+```
+Bears' wall: [1, 4, 2, 5, 3, 6], differences: [3, -2, 3, -2, 3]
+Elephant's wall: [2, 5, 3], differences: [3, -2]
+The pattern [3, -2] appears at positions 0-1 and 2-3 in the difference array, corresponding to segments [1,4,2] and [2,5,3] (after uniform height shift).
+
 ## Solution
 
 ### Approach

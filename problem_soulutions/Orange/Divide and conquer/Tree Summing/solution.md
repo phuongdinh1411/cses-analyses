@@ -29,6 +29,18 @@ Note that with this formulation all leaves of a tree are of the form `(integer (
 ## Output Format
 For each pair I, T (I represents the integer, T represents the tree), output "yes" if there is a root-to-leaf path in T whose sum is I and "no" if there is no such path.
 
+## Example
+```
+Input:
+22 (5(4(11(7()())(2()()))())(8(13()())(4()(1()()))))
+20 (5(4(11(7()())(2()()))())(8(13()())(4()(1()()))))
+
+Output:
+yes
+no
+```
+First case: Path 5-4-11-2 sums to 22. Second case: No root-to-leaf path sums to 20.
+
 ## Solution
 
 ### Approach

@@ -21,6 +21,20 @@ Find the minimum number of e-coins needed to achieve a target e-modulus S.
 ## Output Format
 For each case, print minimum coins needed, or "not possible" if impossible.
 
+## Example
+```
+Input:
+1
+3 5
+0 2
+2 0
+3 4
+
+Output:
+2
+```
+Target e-modulus is 5, meaning we need x^2 + y^2 = 25. Coin types: (0,2), (2,0), (3,4). Using one (3,4) coin gives x=3, y=4, and 3^2 + 4^2 = 25. So minimum coins = 1. Actually with the given coins, using (3,4) alone reaches modulus 5 in 1 coin.
+
 ## Solution
 
 ### Approach

@@ -23,6 +23,23 @@ Given all trips (departure/arrival times), find the minimum trains needed at eac
 ## Output Format
 For each test case: "Case #x: a b" where a = trains starting at A, b = trains starting at B.
 
+## Example
+```
+Input:
+1
+5
+3 2
+09:00 12:00
+10:00 13:00
+11:00 12:30
+12:02 15:00
+09:00 10:30
+
+Output:
+Case #1: 2 2
+```
+With turnaround time 5 minutes: 3 trains go from A to B, 2 from B to A. Station A needs 2 trains initially, and station B needs 2 trains initially to cover all departures.
+
 ## Solution
 
 ### Approach

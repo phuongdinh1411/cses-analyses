@@ -26,6 +26,19 @@ Given stock prices for N days and at most K transactions allowed, find the maxim
 ## Output Format
 Print maximum profit (0 if no profit possible).
 
+## Example
+```
+Input:
+1
+2
+6
+10 22 5 75 65 80
+
+Output:
+87
+```
+With at most 2 transactions over 6 days with prices [10, 22, 5, 75, 65, 80]: Buy at 10, sell at 22 (profit 12). Buy at 5, sell at 80 (profit 75). Total profit = 12 + 75 = 87.
+
 ## Solution
 
 ### Approach

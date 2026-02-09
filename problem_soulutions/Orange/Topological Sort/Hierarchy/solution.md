@@ -21,6 +21,22 @@ Create a hierarchy satisfying all successful students' wishes.
 ## Output Format
 Output N integers. The A-th integer is 0 if student A is the main boss, otherwise it's the boss of student A.
 
+## Example
+```
+Input:
+5 2
+2 3 4
+1 5
+
+Output:
+0
+1
+2
+2
+1
+```
+Student 1 wants to be superior to students 3, 4. Student 2 wants to be superior to student 5. A valid hierarchy: Student 1 is the main boss (0), Student 2's boss is Student 1, Students 3 and 4 report to Student 2, and Student 5 reports to Student 1.
+
 ## Solution
 
 ### Approach

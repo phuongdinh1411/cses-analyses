@@ -31,6 +31,25 @@ A park has N fields connected by trails. Trails are added one by one. After each
 #### Output Format
 After each trail addition: MST weight or -1 if not connected.
 
+#### Example
+```
+Input:
+1
+3 4
+1 2 5
+2 3 3
+1 3 4
+1 2 2
+
+Output:
+Case 1:
+-1
+-1
+7
+5
+```
+First two edges insufficient for 3 nodes. After 3 edges: MST = 3+4 = 7. After edge 1-2 with weight 2: MST = 2+3 = 5.
+
 #### Solution
 
 ##### Approach
@@ -150,6 +169,22 @@ A city wants to save electricity by turning off some street lights. They need to
 #### Output Format
 Total power saved = (sum of all edges) - (MST weight)
 
+#### Example
+```
+Input:
+4 5
+0 1 10
+0 2 20
+1 2 5
+1 3 15
+2 3 8
+0 0
+
+Output:
+30
+```
+Total edges = 10+20+5+15+8 = 58. MST = 5+8+10 = 23 (using edges 1-2, 2-3, 0-1). Saved = 58 - 23 = 35.
+
 #### Solution
 
 ##### Approach
@@ -268,6 +303,26 @@ Calculate the minimum cost to build a subway system connecting all stations. Sta
 
 #### Output Format
 MST weight or "Impossible" if graph is disconnected.
+
+#### Example
+```
+Input:
+4 4
+Central
+North
+South
+East
+Central North 10
+Central South 15
+North East 20
+South East 25
+Terminal
+0 0
+
+Output:
+45
+```
+MST connects all 4 stations: Central-North (10), Central-South (15), North-East (20). Total = 45.
 
 #### Solution
 
@@ -393,6 +448,20 @@ Connect N cities using either airports or roads. Each city needs either an airpo
 #### Output Format
 "Case #X: cost airports" (total cost and number of airports built)
 
+#### Example
+```
+Input:
+1
+4 3 100
+1 2 50
+2 3 60
+3 4 70
+
+Output:
+Case #1: 210 1
+```
+Road costs: 50+60+70=180 < 4 airports (400). But only 3 roads connect 4 cities. MST uses all 3 roads (110) + 1 airport = 210 with 1 airport.
+
 #### Solution
 
 ##### Approach
@@ -512,6 +581,22 @@ Find the minimum driving range needed for an electric car to travel between any 
 #### Output Format
 - Minimum driving range (maximum edge weight in MST)
 - "IMPOSSIBLE" if cities are not all connected
+
+#### Example
+```
+Input:
+4 5
+0 1 100
+1 2 150
+2 3 200
+0 3 300
+1 3 120
+0 0
+
+Output:
+150
+```
+MST edges: 0-1 (100), 1-3 (120), 1-2 (150). Maximum edge = 150, which is the minimum driving range needed.
 
 #### Solution
 
@@ -634,6 +719,22 @@ Given a weighted adjacency matrix of cities, find and print all edges in the Min
 #### Output Format
 "Case X:" followed by MST edges in format "A-B W"
 
+#### Example
+```
+Input:
+1
+3
+0, 10, 20
+10, 0, 15
+20, 15, 0
+
+Output:
+Case 1:
+A-B 10
+B-C 15
+```
+3 cities A, B, C. Edges: A-B (10), A-C (20), B-C (15). MST = A-B (10) + B-C (15) = 25.
+
 #### Solution
 
 ##### Approach
@@ -752,6 +853,17 @@ A safe has N locks, each with a 4-digit combination. Starting from "0000", find 
 
 #### Output Format
 Minimum total rotations to unlock all locks.
+
+#### Example
+```
+Input:
+1
+3 1234 5678 9012
+
+Output:
+26
+```
+From 0000: to reach 1234 costs min(1,9)+min(2,8)+min(3,7)+min(4,6) = 1+2+3+4 = 10. Then connect locks via MST for minimum total rotations.
 
 #### Solution
 

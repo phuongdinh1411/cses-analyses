@@ -31,6 +31,23 @@ For each test case:
 - Line 2: Number of treasures recovered
 - Following lines: depth and gold of each recovered treasure (in input order)
 
+## Example
+```
+Input:
+210 4
+3
+10 5
+10 1
+7 2
+
+Output:
+7
+2
+10 5
+7 2
+```
+Time limit 210 seconds, w=4. Treasure 1: depth 10, gold 5, time=3*4*10=120. Treasure 2: depth 10, gold 1, time=120. Treasure 3: depth 7, gold 2, time=84. Best: take treasures 1 and 3 (120+84=204 <= 210), gold = 5+2=7.
+
 ## Solution
 
 ### Approach

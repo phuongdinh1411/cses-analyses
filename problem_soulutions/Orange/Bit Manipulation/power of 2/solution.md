@@ -24,6 +24,21 @@ Given an array A, determine if there exists any subset where the AND of all elem
 ## Output Format
 For each test case, print "YES" if such a subset exists, otherwise "NO".
 
+## Example
+```
+Input:
+2
+3
+3 5 7
+3
+1 2 4
+
+Output:
+YES
+YES
+```
+First case: AND of {5, 7} = 5 (101 & 111 = 101 = 5), not power of 2. But {3, 7} = 3 & 7 = 3, not power of 2. However, checking bit 0: all numbers with bit 0 set are {3,5,7}, AND = 1 which is 2^0. So YES. Second case: Element 1, 2, or 4 alone is a power of 2. YES.
+
 ## Solution
 
 ### Approach

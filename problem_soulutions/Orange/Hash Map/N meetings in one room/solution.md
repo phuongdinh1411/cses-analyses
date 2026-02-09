@@ -22,6 +22,19 @@ Find the maximum number of meetings that can be accommodated in the meeting room
 ## Output Format
 Print the order in which meetings should take place (1-indexed), separated by spaces.
 
+## Example
+```
+Input:
+1
+6
+1 3 0 5 8 5
+2 4 6 7 9 9
+
+Output:
+1 2 4 5
+```
+6 meetings with starts [1,3,0,5,8,5] and ends [2,4,6,7,9,9]. Sort by end time: meeting 1(1-2), meeting 2(3-4), meeting 3(0-6), meeting 4(5-7), meeting 5(8-9), meeting 6(5-9). Select: 1 (ends 2), 2 (starts 3 > 2, ends 4), 4 (starts 5 > 4, ends 7), 5 (starts 8 > 7, ends 9). Output: 1 2 4 5.
+
 ## Solution
 
 ### Approach

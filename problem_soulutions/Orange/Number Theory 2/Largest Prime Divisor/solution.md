@@ -18,6 +18,23 @@ Given a number N, find its largest prime divisor. If N is divisible by more than
 ## Output Format
 For each N, print its largest prime divisor, or -1 if N is a prime power.
 
+## Example
+```
+Input:
+10
+16
+17
+0
+
+Output:
+5
+-1
+-1
+```
+For N=10: 10 = 2 x 5, two prime factors, largest is 5.
+For N=16: 16 = 2^4, only one prime factor (2), so output -1.
+For N=17: 17 is prime itself, only one prime factor, so output -1.
+
 ## Solution
 
 ### Approach

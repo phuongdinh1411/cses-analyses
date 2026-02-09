@@ -23,6 +23,21 @@ For example, if arr = [3, 4, 5]:
 
 Now we take the resultant values and XOR them together: 3 ⊕ 4 ⊕ 5 ⊕ 7 ⊕ 1 ⊕ 2 = 6
 
+## Example
+```
+Input:
+2
+3
+3 4 5
+4
+4 5 7 5
+
+Output:
+6
+0
+```
+First case: As shown above, XOR of all subarray XORs = 6. Second case: Array has even length, so result is 0.
+
 ## Input Format
 - The first line contains an integer T, the number of the test cases.
 - Each of the next T pairs of lines:

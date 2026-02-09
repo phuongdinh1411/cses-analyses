@@ -30,6 +30,20 @@ The city of Berland wants to become a megacity (population >= 1,000,000). There 
 - Minimum radius r (to 7 decimal places) to reach population 1,000,000
 - Print -1 if impossible
 
+#### Example
+```
+Input:
+4 999998
+1 1 1
+2 2 1
+3 3 1
+4 4 1
+
+Output:
+2.8284271
+```
+The city needs 2 more people to reach 1,000,000. The closest locations are at (1,1) and (2,2) with distances ~1.41 and ~2.83. After including both, the minimum radius is sqrt(8) = 2.8284271.
+
 #### Solution
 
 ##### Approach
@@ -101,6 +115,17 @@ Given an array of n integers, count the number of pairs (i, j) where i < j such 
 #### Output Format
 - Single integer: number of pairs whose sum is a power of 2
 
+#### Example
+```
+Input:
+4
+7 1 5 3
+
+Output:
+3
+```
+Valid pairs: (7,1)=8=2^3, (1,7) already counted, (5,3)=8=2^3, (1,3)=4=2^2. The pairs (0,1), (0,3), (2,3) give sums 8, 4, 8 respectively, totaling 3 pairs.
+
 #### Solution
 
 ##### Approach
@@ -158,6 +183,21 @@ A group of penguins have names. Find the most frequently occurring name among al
 #### Output Format
 - The most common penguin name
 
+#### Example
+```
+Input:
+5
+Tux
+Happy
+Tux
+Happy
+Tux
+
+Output:
+Tux
+```
+"Tux" appears 3 times, "Happy" appears 2 times. The most frequent name is "Tux".
+
 #### Solution
 
 ##### Approach
@@ -211,6 +251,25 @@ In competitive programming, "Isenbaev's Number" represents the shortest chain of
 
 #### Output Format
 - For each unique name (in alphabetical order), print: "name number" or "name undefined" if not connected to Isenbaev
+
+#### Example
+```
+Input:
+3
+Isenbaev Petrov Sidorov
+Sidorov Ivanov Kozlov
+Kozlov Fedorov Romanov
+
+Output:
+Fedorov 3
+Isenbaev 0
+Ivanov 2
+Kozlov 2
+Petrov 1
+Romanov 3
+Sidorov 1
+```
+Isenbaev has number 0. Petrov and Sidorov are teammates with Isenbaev, so they have number 1. Ivanov and Kozlov teamed with Sidorov, getting number 2. And so on.
 
 #### Solution
 
@@ -283,6 +342,26 @@ Each operation outputs success/fail with appropriate message.
   - register: "success: new user added" or "fail: user already exists"
   - login: "success: user logged in" or appropriate fail message
   - logout: "success: user logged out" or appropriate fail message
+
+#### Example
+```
+Input:
+6
+register alice password123
+login alice password123
+login alice password123
+logout alice
+logout alice
+login bob wrongpass
+
+Output:
+success: new user added
+success: user logged in
+fail: already logged in
+success: user logged out
+fail: already logged out
+fail: no such user
+```
 
 #### Solution
 
@@ -357,6 +436,23 @@ A census of trees in a forest has been conducted. Given a list of tree species, 
 - For each test case: each tree species followed by its percentage (4 decimal places)
 - Species listed in alphabetical order
 
+#### Example
+```
+Input:
+1
+
+Red Alder
+Ash
+Ash
+Red Alder
+Red Alder
+
+Output:
+Ash 40.0
+Red Alder 60.0
+```
+Total trees = 5. Ash appears 2 times (40%), Red Alder appears 3 times (60%).
+
 #### Solution
 
 ##### Approach
@@ -422,6 +518,32 @@ A baker has recipe binders with ingredients and recipes. Given a budget, find wh
 
 #### Output Format
 - For each binder: binder name (uppercase), then affordable recipes sorted by cost then name, or "Too expensive!" if none affordable
+
+#### Example
+```
+Input:
+1
+Desserts
+3 2 10
+flour 2
+sugar 3
+butter 5
+Cake
+2
+flour 2
+sugar 1
+Cookies
+2
+butter 1
+sugar 2
+
+Output:
+DESSERTS
+Cake
+Cookies
+
+```
+Cake costs 2*2 + 1*3 = 7, Cookies costs 1*5 + 2*3 = 11. With budget 10, only Cake is affordable initially, but let's recalculate: Cookies = 5 + 6 = 11 > 10, so only Cake at cost 7 is shown.
 
 #### Solution
 

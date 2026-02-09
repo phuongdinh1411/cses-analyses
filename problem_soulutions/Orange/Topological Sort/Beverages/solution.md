@@ -23,6 +23,22 @@ You should help Dilbert by indicating an order in which he can drink the beverag
 ## Output Format
 For each test case print: "Case #C: Dilbert should drink beverages in this order: B1 B2 ... BN." followed by a blank line.
 
+## Example
+```
+Input:
+3
+beer
+wine
+vodka
+2
+beer wine
+wine vodka
+
+Output:
+Case #1: Dilbert should drink beverages in this order: beer wine vodka.
+```
+Beer must be drunk before wine, and wine before vodka. Since beer appears first in input, it comes first when there's a tie.
+
 ## Solution
 
 ### Approach

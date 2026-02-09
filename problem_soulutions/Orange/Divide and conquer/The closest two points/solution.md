@@ -17,6 +17,20 @@ Given n points in a 2D plane, find the pair of points with the smallest Euclidea
 ## Output Format
 Output the minimum distance between any two points.
 
+## Example
+```
+Input:
+4
+0 0
+3 4
+1 1
+6 8
+
+Output:
+1.414214
+```
+Points: (0,0), (3,4), (1,1), (6,8). Distance (0,0)-(1,1) = sqrt(2) = 1.414214. Distance (0,0)-(3,4) = 5. Distance (3,4)-(6,8) = 5. The minimum is sqrt(2).
+
 ## Solution
 
 ### Approach

@@ -20,6 +20,22 @@ Manao knows m settlements that are affected. Determine how many settlements coul
 ## Output Format
 Print the number of settlements that may contain the Book of Evil. Print 0 if no valid settlement exists.
 
+## Example
+```
+Input:
+6 2 3
+1 2
+1 5
+2 3
+3 4
+4 5
+5 6
+
+Output:
+3
+```
+The tree has 6 settlements. Settlements 1 and 2 are affected, and the damage range is 3. Settlements 1, 2, and 3 can contain the Book, as they are within distance 3 from both affected settlements.
+
 ## Solution
 
 ### Approach

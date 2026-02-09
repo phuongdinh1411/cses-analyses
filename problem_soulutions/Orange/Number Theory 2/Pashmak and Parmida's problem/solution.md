@@ -19,6 +19,19 @@ Count pairs (i, j) where 1 ≤ i < j ≤ n and f(1, i, a[i]) > f(j, n, a[j]).
 ## Output Format
 Print the count of valid pairs.
 
+## Example
+```
+Input:
+6
+1 2 1 1 2 2
+
+Output:
+8
+```
+L[i] = count of a[i] in prefix [1..i]: L = [1, 1, 2, 3, 2, 3]
+R[j] = count of a[j] in suffix [j..n]: R = [3, 3, 2, 1, 2, 1]
+Count pairs (i,j) where i < j and L[i] > R[j]. Valid pairs: (1,4), (1,6), (2,4), (2,6), (3,4), (3,6), (5,4), (5,6) = 8 pairs.
+
 ## Solution
 
 ### Approach

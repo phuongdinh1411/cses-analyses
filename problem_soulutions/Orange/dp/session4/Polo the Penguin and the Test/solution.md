@@ -30,6 +30,20 @@ Polo has W minutes total. Maximize the total points he can get.
 ## Output Format
 For each test case, print maximum points achievable.
 
+## Example
+```
+Input:
+1
+3 7
+1 2 3
+2 3 5
+1 4 2
+
+Output:
+10
+```
+3 questions, 7 minutes available. Question 1: appears in 1 test, 2 points each, takes 3 min -> value 2. Question 2: 2 tests * 3 points = 6, takes 5 min. Question 3: 1 test * 4 points = 4, takes 2 min. Best: Q2 (5 min, 6 pts) + Q3 (2 min, 4 pts) = 7 min, 10 points.
+
 ## Solution
 
 ### Approach

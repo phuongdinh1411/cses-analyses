@@ -23,6 +23,20 @@ Given N, count how many Answer values Jimmy needs to precompute.
 ## Output Format
 For each N, print the count of required precomputed values.
 
+## Example
+```
+Input:
+4
+2
+0
+
+Output:
+11
+3
+```
+For N=4: Count of coprime pairs (x,y) where 1 <= x,y <= 4. These are: (1,1), (1,2), (2,1), (1,3), (3,1), (1,4), (4,1), (2,3), (3,2), (3,4), (4,3) = 11 pairs.
+For N=2: Coprime pairs are (1,1), (1,2), (2,1) = 3 pairs.
+
 ## Solution
 
 ### Approach

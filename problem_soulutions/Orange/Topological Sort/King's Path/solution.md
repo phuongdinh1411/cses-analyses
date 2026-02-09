@@ -21,6 +21,19 @@ Find the minimum number of moves for the king to get from (x₀, y₀) to (x₁,
 ## Output Format
 Print minimum moves, or -1 if no path exists.
 
+## Example
+```
+Input:
+1 1 3 3
+2
+1 1 3
+2 1 3
+
+Output:
+4
+```
+The king starts at (1,1) and needs to reach (3,3). Allowed cells are row 1 columns 1-3 and row 2 columns 1-3. The minimum path takes 4 moves: (1,1) -> (1,2) -> (2,2) -> (2,3) -> (3,3).
+
 ## Solution
 
 ### Approach

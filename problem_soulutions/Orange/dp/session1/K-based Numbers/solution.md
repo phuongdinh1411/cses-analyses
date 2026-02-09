@@ -22,6 +22,17 @@ The numbers N and K in decimal notation separated by the line break.
 ## Output Format
 The result in decimal notation.
 
+## Example
+```
+Input:
+2
+10
+
+Output:
+90
+```
+For N=2 digits in base K=10: Valid 2-digit numbers are 10-99 (90 total). All are valid since no 2-digit number in this range contains "00".
+
 ## Solution
 
 ### Approach

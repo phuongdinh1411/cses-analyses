@@ -21,6 +21,20 @@ A prime number is a counting number that is evenly divisible only by 1 and itsel
 ## Output Format
 For each test case: "N C: p1 p2 ... pk" followed by a blank line, where p1...pk are the center primes.
 
+## Example
+```
+Input:
+7 3
+21 2
+
+Output:
+7 3: 1 2 3 5 7
+
+21 2: 3 5 7
+```
+For N=7, C=3: Primes up to 7 (including 1) are [1, 2, 3, 5, 7] (5 primes, odd count). Center 2*3-1=5 elements = all of them.
+For N=21, C=2: Primes up to 21 are [1, 2, 3, 5, 7, 11, 13, 17, 19] (9 primes, odd). Center 2*2-1=3 elements starting from index 3: [3, 5, 7].
+
 ## Solution
 
 ### Approach

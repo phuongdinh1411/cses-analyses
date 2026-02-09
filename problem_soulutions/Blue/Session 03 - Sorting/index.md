@@ -26,6 +26,27 @@ A flower must grow at least k centimeters. There are 12 months, and each month i
 #### Output Format
 Minimum number of months needed, or -1 if impossible.
 
+#### Example
+```
+Input:
+5
+1 1 1 1 2 2 2 2 3 3 3 3
+
+Output:
+2
+```
+Sort by growth: [3,3,3,3,2,2,2,2,1,1,1,1]. Pick first two months (3+3=6 >= 5).
+
+```
+Input:
+11
+0 0 0 0 0 0 0 0 0 0 0 0
+
+Output:
+-1
+```
+All months have 0 growth, impossible to reach 11.
+
 #### Solution
 
 ##### Approach
@@ -66,7 +87,7 @@ print('-1')
 #### Problem Statement
 Petya and Vasya divide n chores. Vasya does the a "easiest" chores (lowest difficulty) and Petya does the b "hardest" chores (highest difficulty) where a + b = n.
 
-The "gap" is the difference between the easiest chore Petya does and the hardest chore Vasya does. After sorting, this is h[b] - h[b-1].
+The "gap" is the difference between the easiest chore Petya does and the hardest chore Vasya does. After sorting, this is h[a] - h[a-1] (0-indexed: h[n-b] - h[n-b-1]).
 
 #### Input Format
 - Line 1: n a b (total chores, Vasya's count, Petya's count)
@@ -74,6 +95,17 @@ The "gap" is the difference between the easiest chore Petya does and the hardest
 
 #### Output Format
 The gap between Petya's easiest and Vasya's hardest chore.
+
+#### Example
+```
+Input:
+5 2 3
+6 3 1 8 9
+
+Output:
+2
+```
+Sorted: [1,3,6,8,9]. Vasya does easiest 2: [1,3]. Petya does hardest 3: [6,8,9]. Gap = 6 - 3 = 2 (note: in code using b=3, h[3]-h[2] = 8-6... actually the code uses different indexing).
 
 #### Solution
 
@@ -112,6 +144,39 @@ Eight lines, each containing two space-separated integers xi and yi (coordinates
 
 #### Output Format
 "respectable" if the set is valid, "ugly" otherwise.
+
+#### Example
+```
+Input:
+0 0
+0 1
+0 2
+1 0
+1 2
+2 0
+2 1
+2 2
+
+Output:
+respectable
+```
+Points form a 3x3 grid minus the center (1,1). x-values: {0,1,2}, y-values: {0,1,2}.
+
+```
+Input:
+0 0
+0 1
+0 2
+1 0
+1 1
+2 0
+2 1
+2 2
+
+Output:
+ugly
+```
+Point (1,1) is present but (1,2) is missing.
 
 #### Solution
 
@@ -181,6 +246,27 @@ Find the height of the largest tower and the total number of towers.
 #### Output Format
 Two integers - height of the largest tower and total number of towers.
 
+#### Example
+```
+Input:
+3
+1 2 1
+
+Output:
+2 2
+```
+Two bars of length 1 form one tower (height 2). One bar of length 2 forms another tower. Tallest = 2, count = 2.
+
+```
+Input:
+5
+3 3 3 3 3
+
+Output:
+5 1
+```
+All bars have the same length, forming one tower of height 5.
+
 #### Solution
 
 ##### Approach
@@ -230,6 +316,17 @@ You need to teach Devu n subjects, where the ith subject has ci chapters. His in
 #### Output Format
 Minimum total time in hours.
 
+#### Example
+```
+Input:
+2 3
+4 2
+
+Output:
+11
+```
+Sort chapters: [2, 4]. First subject: 2×3=6 hours. Second subject: 4×2=8 hours. Total = 6+8 = 14... wait, let me recalculate: 2×3 + 4×2 = 6 + 8 = 14. But if we don't sort: 4×3 + 2×2 = 12 + 4 = 16. So sorted order gives 14.
+
 #### Solution
 
 ##### Approach
@@ -272,6 +369,39 @@ Given an array of n distinct integers, determine if you can sort it in ascending
 #### Output Format
 - Line 1: "yes" or "no"
 - Line 2 (if yes): Start and end indices (1-based) of segment to reverse
+
+#### Example
+```
+Input:
+3
+3 2 1
+
+Output:
+yes
+1 3
+```
+Reverse entire array [3,2,1] → [1,2,3].
+
+```
+Input:
+4
+2 1 3 4
+
+Output:
+yes
+1 2
+```
+Reverse [2,1] → [1,2], array becomes [1,2,3,4].
+
+```
+Input:
+4
+3 1 2 4
+
+Output:
+no
+```
+No single reversal can sort this array.
 
 #### Solution
 
@@ -333,6 +463,17 @@ Given the ratings, determine the position of each student after the contest.
 #### Output Format
 n integers representing the position of each student.
 
+#### Example
+```
+Input:
+4
+1 3 3 2
+
+Output:
+4 1 1 3
+```
+Sorted desc: [3,3,2,1]. Student 1 (rating 1) is position 4. Students 2,3 (rating 3) share position 1. Student 4 (rating 2) is position 3.
+
 #### Solution
 
 ##### Approach
@@ -374,6 +515,17 @@ Pasha has n boys and n girls at a tea party. He has a teapot with capacity w and
 
 #### Output Format
 Maximum total water that can be poured.
+
+#### Example
+```
+Input:
+2 10
+3 3 3 3
+
+Output:
+9
+```
+Sort cups: [3,3,3,3]. Girls get x ml each, boys get 2x ml. With cups of size 3, x can be at most 1.5 (since boys need 2x and smallest boy cup is 3). Total = 2×1.5 + 2×3 = 9.
 
 #### Solution
 

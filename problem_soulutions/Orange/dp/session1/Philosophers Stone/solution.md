@@ -24,6 +24,20 @@ Find the maximum stones Harry can collect.
 ## Output Format
 For each test case, print the maximum stones collectible.
 
+## Example
+```
+Input:
+1
+3 4
+1 2 3 4
+5 6 7 8
+9 10 11 12
+
+Output:
+24
+```
+Harry starts at row 1, column 3 (value 3), moves to row 2 column 3 (value 7), then to row 3 column 4 (value 12). But the optimal path is: start at column 4 (value 4), move diagonally to column 4 (value 8), then to column 4 (value 12) = 24. Or: 3 -> 7 -> 12 = 22. Actually optimal is 4 -> 8 -> 12 = 24.
+
 ## Solution
 
 ### Approach

@@ -23,6 +23,23 @@ Strings contain only letters 'a', 'b', 'c'.
 ## Output Format
 For each query, print "YES" if such string exists, "NO" otherwise.
 
+## Example
+```
+Input:
+2 3
+abc
+aac
+abc
+acc
+bbc
+
+Output:
+YES
+YES
+NO
+```
+Memory: {"abc", "aac"}. Query "abc": differs by 1 from "aac" (position 1: b vs a). YES. Query "acc": differs by 1 from "aac" (position 2: c vs a). YES. Query "bbc": differs by 2 from "abc", differs by 2 from "aac". NO.
+
 ## Solution
 
 ### Approach

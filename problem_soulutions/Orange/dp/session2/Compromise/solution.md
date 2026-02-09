@@ -19,6 +19,19 @@ Two politicians submit proposals as sequences of words. Find and print the longe
 ## Output Format
 For each test case, print the longest common subsequence of words.
 
+## Example
+```
+Input:
+die eier von bransen
+#
+die eansen von eansen
+#
+
+Output:
+die von
+```
+Text1: [die, eier, von, bransen], Text2: [die, eansen, von, eansen]. The LCS of words is [die, von] with length 2.
+
 ## Solution
 
 ### Approach

@@ -30,6 +30,20 @@ Find the maximum number of times Tom can meet Agnes.
 ## Output Format
 For each data set, output the maximum number of times Tom can meet Agnes.
 
+## Example
+```
+Input:
+1
+1 2 3 4 5 0
+2 4 3 5 1 0
+1 2 5 3 0
+0
+
+Output:
+3
+```
+Agnes visits checkpoints [1, 2, 3, 4, 5]. Tom has two route options: [2, 4, 3, 5, 1] and [1, 2, 5, 3]. The second route gives LCS of [1, 2, 3] or [1, 2, 5] with Agnes, both length 3.
+
 ## Solution
 
 ### Approach

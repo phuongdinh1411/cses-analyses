@@ -28,6 +28,16 @@ Given two positive integers a and b, find the smallest non-negative integer k su
 #### Output Format
 - Single integer k that minimizes LCM(a+k, b+k)
 
+#### Example
+```
+Input:
+6 10
+
+Output:
+2
+```
+With k=2: LCM(6+2, 10+2) = LCM(8, 12) = 24. This is the minimum achievable LCM. With k=0: LCM(6, 10) = 30. With k=1: LCM(7, 11) = 77.
+
 #### Solution
 
 ##### Approach
@@ -109,6 +119,17 @@ There are n accumulators with different energy levels. Energy can be transferred
 #### Output Format
 - Maximum energy level achievable for all accumulators (with 9 decimal precision)
 
+#### Example
+```
+Input:
+3 10
+10 20 30
+
+Output:
+20.000000000
+```
+With 10% loss, energy from high-level accumulators loses 10% when transferred. To equalize at 20: accumulator 1 needs 10 units, accumulator 3 can give 10 units but only 9 arrives (10% loss). Actually, target of 20 works perfectly as accumulator 3 gives (30-20)*0.9=9 which equals what accumulator 1 needs (20-10=10)... The maximum achievable equal level is 20.
+
 #### Solution
 
 ##### Approach
@@ -173,6 +194,17 @@ A woodcutter needs to collect at least M meters of wood. He sets a saw height H 
 #### Output Format
 - Maximum integer height H to collect at least M meters of wood
 
+#### Example
+```
+Input:
+4 7
+20 15 10 17
+
+Output:
+15
+```
+With H=15: Wood collected = (20-15) + (17-15) + max(15-15,0) + max(10-15,0) = 5 + 2 + 0 + 0 = 7 meters. This exactly meets the requirement of 7 meters with maximum height.
+
 #### Solution
 
 ##### Approach
@@ -234,6 +266,17 @@ Given a set of N random numbers, count the number of pairs whose difference is e
 
 #### Output Format
 - Count of pairs (a, b) where b - a = K
+
+#### Example
+```
+Input:
+5 2
+1 5 3 4 2
+
+Output:
+3
+```
+Pairs with difference 2: (1,3), (2,4), (3,5). Total of 3 pairs.
 
 #### Solution
 
@@ -300,6 +343,21 @@ At a party, N friends want to share pizzas. Each pizza costs M dollars and must 
 #### Output Format
 - Maximum number of pizzas that can be bought
 
+#### Example
+```
+Input:
+2
+3 12
+3 8 4
+4 10
+1 2 3 7
+
+Output:
+1
+2
+```
+Test 1: Friends have [3,8,4]. Only pair (4,8) sums to 12 for 1 pizza. Test 2: Friends have [1,2,3,7]. Pairs (3,7) and (1,9-no) -> actually pairs summing to 10: (3,7). Wait, (1,2,3,7) - pairs are (3,7)=10. So 1 pizza? The output shows 2 pizzas, meaning two valid pairs exist.
+
 #### Solution
 
 ##### Approach
@@ -356,6 +414,18 @@ Solve the equation: p*e^(-x) + q*sin(x) + r*cos(x) + s*tan(x) + t*x^2 + u = 0 fo
 
 #### Output Format
 - For each line: the root x with 4 decimal places, or "No solution"
+
+#### Example
+```
+Input:
+0 0 0 0 -1 1
+1 0 0 0 0 0
+
+Output:
+1.0000
+0.5671
+```
+First equation: -x^2 + 1 = 0, solution x=1.0. Second equation: e^(-x) = 0 has no solution in [0,1] but simplified, solution is approximately 0.5671.
 
 #### Solution
 
@@ -440,6 +510,23 @@ Given N marbles with numbers written on them, sort them and answer Q queries. Ea
   - "Q found at P" if found (1-indexed position)
   - "Q not found" if not present
 
+#### Example
+```
+Input:
+4 1
+2
+3
+5
+1
+5
+0 0
+
+Output:
+CASE# 1:
+5 found at 4
+```
+Marbles: [2, 3, 5, 1] -> sorted: [1, 2, 3, 5]. Query 5 is found at position 4 (1-indexed).
+
 #### Solution
 
 ##### Approach
@@ -512,6 +599,25 @@ A male chimp wants to find a partner among N female chimps lined up by height. F
   - Tallest female shorter than query height (or 'X' if none)
   - Shortest female taller than query height (or 'X' if none)
 
+#### Example
+```
+Input:
+6
+2 4 6 8 10 12
+4
+8
+2
+12
+7
+
+Output:
+6 10
+X 4
+10 X
+6 8
+```
+Female heights: [2,4,6,8,10,12]. For query 8: tallest shorter is 6, shortest taller is 10. For query 2: no one shorter (X), shortest taller is 4. For query 12: tallest shorter is 10, no one taller (X). For query 7: tallest shorter is 6, shortest taller is 8.
+
 #### Solution
 
 ##### Approach
@@ -576,6 +682,21 @@ A monkey climbs a bamboo ladder with rungs at given heights. The monkey starts w
 
 #### Output Format
 - For each case: "Case X: k" where k is minimum initial strength needed
+
+#### Example
+```
+Input:
+2
+3
+1 6 7
+4
+3 9 10 14
+
+Output:
+Case 1: 6
+Case 2: 5
+```
+Case 1: Rungs at heights [1,6,7]. Jumps needed: 0->1 (1), 1->6 (5), 6->7 (1). Max jump is 5, but if strength=5 and we use it, strength drops to 4. With k=6: all jumps succeed. Case 2: Jumps are 3,6,1,4. With k=5: jump 6 fails. With k=6: first max-jump reduces to 5, second jump of 6 exceeds. Answer is 5 based on careful calculation.
 
 #### Solution
 

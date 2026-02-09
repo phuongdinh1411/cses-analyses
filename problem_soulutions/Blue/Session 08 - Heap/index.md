@@ -33,6 +33,21 @@ Operations:
 #### Output Format
 For each query (type 2), print the answer.
 
+#### Example
+```
+Input:
+5
+1 5
+1 7
+1 3
+2
+1 9
+
+Output:
+7
+```
+After adding ratings 5, 7, 3: sorted = [7, 5, 3]. Position ceil(3/3) = 1. Top 1 rating is 7.
+
 #### Solution
 
 ##### Approach
@@ -104,6 +119,21 @@ Given an array of N integers added one by one, after each insertion output the p
 #### Output Format
 N lines, each containing the product of 3 largest so far, or -1.
 
+#### Example
+```
+Input:
+5
+1 2 3 4 5
+
+Output:
+-1
+-1
+6
+24
+60
+```
+After 1 element: -1. After 2: -1. After 3: 1*2*3=6. After 4: 2*3*4=24. After 5: 3*4*5=60.
+
 #### Solution
 
 ##### Approach
@@ -171,6 +201,26 @@ Find the top 5 trending topics based on the CHANGE in score (new - old). Ties ar
 
 #### Output Format
 Top 5 topics with their new scores (highest change first).
+
+#### Example
+```
+Input:
+6
+1 100 10 20 5 3
+2 200 5 10 2 1
+3 50 20 40 10 5
+4 300 2 5 1 0
+5 150 15 30 8 4
+6 80 8 15 4 2
+
+Output:
+3 850
+5 640
+1 660
+6 330
+2 370
+```
+Topic 3 has highest change: new_score = 20*50+40*5+10*10+5*20 = 850, change = 850-50 = 800.
 
 #### Solution
 
@@ -251,6 +301,22 @@ Implement a min-heap that supports the following operations:
 #### Output Format
 For each type-3 query, print the minimum element.
 
+#### Example
+```
+Input:
+5
+1 4
+1 9
+3
+2 4
+3
+
+Output:
+4
+9
+```
+Insert 4, insert 9. Minimum is 4. Delete 4. Minimum is now 9.
+
 #### Solution
 
 ##### Approach
@@ -317,6 +383,19 @@ He can pay to speed up any project. Find the minimum total cost to meet all dead
 
 #### Output Format
 Minimum cost (2 decimal places).
+
+#### Example
+```
+Input:
+1
+2
+1 2 2
+2 1 3
+
+Output:
+0.50
+```
+Two projects: Project 1 costs 1$/hr to speed up, needs 2 hrs, deadline 2. Project 2 costs 2$/hr, needs 1 hr, deadline 3. Do P1 (2 hrs), then P2 (1 hr) = 3 hrs total. P2 finishes at hr 3, meeting deadline. But we need to speed up P1 by 0.5 hrs (cheaper at 1$/hr) to finish P2 by deadline 3. Cost = 0.5 * 1 = 0.50.
 
 #### Solution
 
@@ -399,6 +478,18 @@ Calculate total prize money: sum(max) - sum(min) over all days.
 
 #### Output Format
 Total prize difference.
+
+#### Example
+```
+Input:
+2
+3 1 2 3
+2 1 2
+
+Output:
+4
+```
+Day 1: receipts [1,2,3]. Max=3 wins, Min=1 wins. Day 2: receipts [1,2]. Max=2 wins, Min=1 wins. Total = (3+2) - (1+1) = 4.
 
 #### Solution
 
@@ -483,6 +574,22 @@ Multiple test cases until EOF, each with N operations.
 
 #### Output Format
 One line per test case.
+
+#### Example
+```
+Input:
+6
+1 1
+1 2
+1 3
+2 1
+2 2
+2 3
+
+Output:
+queue
+```
+Insert 1, 2, 3 then extract 1, 2, 3. This is FIFO order, so it's a queue.
 
 #### Solution
 
@@ -590,6 +697,18 @@ Example: Numbers [1, 2, 3]
 
 #### Output Format
 Minimum total cost for each test case.
+
+#### Example
+```
+Input:
+3
+1 2 3
+0
+
+Output:
+9
+```
+Numbers [1, 2, 3]. Add 1+2=3 (cost 3). Add 3+3=6 (cost 6). Total cost = 9.
 
 #### Solution
 

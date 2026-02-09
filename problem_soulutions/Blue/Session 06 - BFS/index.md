@@ -39,6 +39,35 @@ You can reach the destination if:
 #### Output Format
 "YES" if you can reach and fall through at destination, "NO" otherwise.
 
+#### Example
+```
+Input:
+4 6
+......
+X.X.X.
+....X.
+......
+2 2
+2 5
+
+Output:
+YES
+```
+Start at (2,2), destination (2,5). Can navigate around obstacles and reach destination to fall through.
+
+```
+Input:
+2 2
+..
+..
+1 1
+2 2
+
+Output:
+NO
+```
+Destination (2,2) is intact ice '.'. Need to crack it first, but no way to approach it twice.
+
 #### Solution
 
 ##### Approach
@@ -129,6 +158,20 @@ Count the number of restaurants (leaf nodes) Kefa can reach from the root withou
 #### Output Format
 Number of restaurants (leaves) Kefa can visit.
 
+#### Example
+```
+Input:
+4 1
+1 1 0 0
+1 2
+1 3
+1 4
+
+Output:
+2
+```
+Tree rooted at 1 (has cat). Children 2 (cat), 3 (no cat), 4 (no cat). From 1→2: 2 consecutive cats (exceeds m=1). 1→3 and 1→4: only 1 cat. Can reach restaurants at 3 and 4.
+
 #### Solution
 
 ##### Approach
@@ -203,6 +246,29 @@ Find the minimum number of operations to transform key value K into lock value L
 
 #### Output Format
 Minimum operations to reach lock value, or -1 if impossible.
+
+#### Example
+```
+Input:
+3 30
+3
+2 5 7
+
+Output:
+2
+```
+3 × 2 = 6, 6 × 5 = 30. Two operations.
+
+```
+Input:
+1 1
+1
+2
+
+Output:
+0
+```
+Already at target, 0 operations needed.
 
 #### Solution
 
@@ -283,6 +349,20 @@ Given an undirected graph with n nodes and m edges, find the shortest distance f
 
 #### Output Format
 For each query, print n-1 space-separated integers representing shortest distances from s to nodes 1, 2, ..., n (excluding s itself).
+
+#### Example
+```
+Input:
+1
+4 2
+1 2
+1 3
+1
+
+Output:
+6 6 -1
+```
+From node 1: distance to 2 is 6 (1 hop), to 3 is 6 (1 hop), to 4 is -1 (unreachable).
 
 #### Solution
 
@@ -386,6 +466,21 @@ The prince can move in 4 directions (up, down, left, right). Count the total num
 #### Output Format
 For each test case, print "Case X: Y" where Y is the count of reachable cells (including the starting cell).
 
+#### Example
+```
+Input:
+1
+4 4
+...#
+.@.#
+....
+####
+
+Output:
+Case 1: 8
+```
+Prince at (1,1). Can reach all cells except walls (#). Reachable: 8 cells.
+
 #### Solution
 
 ##### Approach
@@ -470,6 +565,21 @@ Count how many sheep and wolves survive.
 
 #### Output Format
 Two integers - surviving sheep and wolves.
+
+#### Example
+```
+Input:
+5 5
+#####
+#k.v#
+#...#
+#####
+.....
+
+Output:
+1 0
+```
+Top fenced area has 1 sheep, 1 wolf. Sheep > wolves, so sheep survives. Outside area (bottom) is empty.
 
 #### Solution
 
@@ -581,6 +691,25 @@ A maze is "valid" if:
 
 #### Output Format
 For each test case, print "valid" or "invalid".
+
+#### Example
+```
+Input:
+2
+3 3
+###
+#.#
+###
+3 4
+####
+#..#
+#.##
+
+Output:
+invalid
+valid
+```
+First maze: no boundary openings (all '#' on edges) → invalid. Second maze: two openings on boundary, connected → valid.
 
 #### Solution
 
@@ -705,6 +834,21 @@ An oil slick is a connected component of oil cells (4-directional adjacency). Co
 For each test case:
 - Line 1: Total number of slicks
 - Following lines: "size count" pairs in increasing order of size
+
+#### Example
+```
+Input:
+3 3
+1 0 0
+1 0 1
+0 0 1
+0 0
+
+Output:
+2
+2 2
+```
+Two slicks: one of size 2 (top-left corner), one of size 2 (bottom-right). Total: 2 slicks, both of size 2.
 
 #### Solution
 

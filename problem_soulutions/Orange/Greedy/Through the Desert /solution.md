@@ -28,6 +28,19 @@ Find the minimum tank size (in litres) to complete the journey.
 ## Output Format
 For each test case, print minimum tank volume with 3 decimal places.
 
+## Example
+```
+Input:
+0 Fuel consumption 10
+100 Gas station
+200 Goal
+0 Fuel consumption 0
+
+Output:
+10.000
+```
+Travel 200km with consumption 10L/100km, refuel at 100km. First 100km needs 10L, second 100km needs 10L. Since we refuel at 100km, tank capacity of 10L is sufficient.
+
 ## Solution
 
 ### Approach

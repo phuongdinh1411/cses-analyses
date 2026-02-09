@@ -22,6 +22,21 @@ Bishops attack along diagonals. A cell is attacked if it's on any diagonal of a 
 - Line 1: Maximum total value
 - Line 2: x1, y1, x2, y2 (positions of two bishops, 1-indexed)
 
+## Example
+```
+Input:
+4
+1 1 1 1
+2 1 1 0
+1 1 1 0
+1 0 0 1
+
+Output:
+12
+2 2 3 2
+```
+A 4x4 board with given values. Placing bishops at (2,2) and (3,2) maximizes the total attacked cell values to 12. The bishops are on different diagonal parities so they don't share any attacked cells.
+
 ## Solution
 
 ### Approach

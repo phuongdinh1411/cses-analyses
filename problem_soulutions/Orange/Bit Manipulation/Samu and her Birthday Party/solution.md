@@ -26,6 +26,20 @@ Find the minimum number of dishes to include in the menu so that every friend ha
 ## Output Format
 Minimum number of dishes needed so all friends are happy.
 
+## Example
+```
+Input:
+1
+3 4
+1010
+0101
+1100
+
+Output:
+2
+```
+3 friends, 4 dishes. Friend 1 likes dishes 1,3. Friend 2 likes dishes 2,4. Friend 3 likes dishes 1,2. Choosing dishes 1 and 2 satisfies all friends (friend 1 gets dish 1, friend 2 gets dish 2, friend 3 gets both).
+
 ## Solution
 
 ### Approach

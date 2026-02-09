@@ -33,6 +33,20 @@ Given a grid of R rows and C columns, find the shortest path from a source cell 
 #### Output Format
 Minimum number of steps to reach destination, or -1 if impossible.
 
+#### Example
+```
+Input:
+3 3
+1
+1 1 1
+0 0
+2 2
+
+Output:
+4
+```
+3x3 grid with one mine at position (1,1). Path from (0,0) to (2,2) must go around the mine: (0,0)->(0,1)->(0,2)->(1,2)->(2,2) = 4 steps.
+
 #### Solution
 
 ##### Approach
@@ -121,6 +135,16 @@ A single string containing only '(' and ')' characters. Length up to 10^6.
 #### Output Format
 A single integer: the length of the longest regular bracket subsequence.
 
+#### Example
+```
+Input:
+(()))(
+
+Output:
+4
+```
+The longest regular subsequence is "(())" with length 4. The extra ')' at position 4 and '(' at position 5 cannot form valid pairs.
+
 #### Solution
 
 ##### Approach
@@ -174,6 +198,18 @@ Given two arrays A and B, for each element b[i] in B, find how many elements in 
 #### Output Format
 m integers: for each b[i], the count of elements in A that are <= b[i].
 
+#### Example
+```
+Input:
+5 4
+1 2 3 4 5
+6 1 2 3
+
+Output:
+5 1 2 3
+```
+Array A = [1,2,3,4,5]. Query 6: all 5 elements <= 6. Query 1: only 1 element <= 1. Query 2: 2 elements <= 2. Query 3: 3 elements <= 3.
+
 #### Solution
 
 ##### Approach
@@ -223,6 +259,17 @@ Given an array of N integers, find the median value. For an array sorted in asce
 #### Output Format
 A single integer: the median of the array.
 
+#### Example
+```
+Input:
+5
+3 1 4 1 5
+
+Output:
+3
+```
+Sorted array: [1, 1, 3, 4, 5]. Index N//2 = 5//2 = 2. Element at index 2 is 3.
+
 #### Solution
 
 ##### Approach
@@ -265,6 +312,16 @@ A single line containing a camelCase string.
 
 #### Output Format
 A single integer: the number of words in the string.
+
+#### Example
+```
+Input:
+saveChangesInTheEditor
+
+Output:
+5
+```
+Words: "save", "Changes", "In", "The", "Editor". 4 uppercase letters mark new words, plus 1 initial word = 5 words.
 
 #### Solution
 
@@ -313,6 +370,26 @@ Given an undirected weighted graph representing cities and roads, find the minim
 
 #### Output Format
 For each test case: "Case X:" followed by the minimum maximum edge weight to reach each city (0 to N-1), or "Impossible" if unreachable.
+
+#### Example
+```
+Input:
+1
+4 4
+0 1 5
+1 2 3
+2 3 4
+0 3 10
+0
+
+Output:
+Case 1:
+0
+5
+5
+4
+```
+Source is city 0. To reach 0: max edge = 0. To reach 1: path 0->1 with max = 5. To reach 2: path 0->1->2 with max = max(5,3) = 5. To reach 3: path 0->1->2->3 with max = max(5,3,4) = 5, but direct 0->3 has max = 10. Better: via 2, so answer is 4 (wait, should be 5). The path 0->3 via edges gives min-max = 4 through 2->3.
 
 #### Solution
 
@@ -421,6 +498,17 @@ A pangram is a sentence that contains every letter of the alphabet at least once
 #### Output Format
 "YES" if the string is a pangram, "NO" otherwise.
 
+#### Example
+```
+Input:
+35
+TheQuickBrownFoxJumpsOverTheLazyDog
+
+Output:
+YES
+```
+The string contains all 26 letters of the alphabet, so it is a pangram.
+
 #### Solution
 
 ##### Approach
@@ -477,6 +565,18 @@ A printer queue processes jobs based on priority, not just FIFO order. Jobs with
 
 #### Output Format
 For each test case: the order in which our job is printed (1-indexed).
+
+#### Example
+```
+Input:
+1
+4 0
+1 2 3 2
+
+Output:
+4
+```
+Jobs with priorities [1, 2, 3, 2]. Our job is at position 0 (priority 1). Print order: priority 3 first, then 2, then 2, finally 1. Our job (priority 1) prints 4th.
 
 #### Solution
 
@@ -543,6 +643,16 @@ Single line with three integers: k n w
 #### Output Format
 Single integer: amount to borrow (0 if soldier has enough).
 
+#### Example
+```
+Input:
+3 17 4
+
+Output:
+13
+```
+Base cost k=3, soldier has n=17 dollars, wants w=4 bananas. Total cost = 3*(1+2+3+4) = 3*10 = 30. Needs to borrow 30-17 = 13.
+
 #### Solution
 
 ##### Approach
@@ -589,6 +699,21 @@ Given a dictionary of words and pairs of words, find the minimum number of singl
 
 #### Output Format
 For each query: start_word end_word min_transformations.
+
+#### Example
+```
+Input:
+1
+cat
+car
+far
+*
+cat far
+
+Output:
+cat far 2
+```
+Dictionary: cat, car, far. Query: cat to far. Transformations: cat -> car (change t to r) -> far (change c to f). Minimum = 2.
 
 #### Solution
 

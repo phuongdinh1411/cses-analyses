@@ -33,6 +33,17 @@ Given a list of N numbers, find:
 ## Output Format
 Print two integers: the value with maximum occurrences (or max value if all unique) and the number of collisions.
 
+## Example
+```
+Input:
+3
+12 22 32
+
+Output:
+44 1
+```
+f(12) = 12 XOR (1+2) = 12 XOR 3 = 15. f(22) = 22 XOR 4 = 18. f(32) = 32 XOR 5 = 37. All unique, so output max value 37 and 0 collisions... Let me recalculate: 12=1100, 3=0011, XOR=1111=15. 22=10110, 4=00100, XOR=10010=18. 32=100000, 5=000101, XOR=100101=37. Output: 37 0.
+
 ## Solution
 
 ### Approach

@@ -25,6 +25,25 @@ A correct bracket expression has matching pairs where every '(' has a correspond
 ## Output Format
 For each test case: "Test i:" followed by YES/NO for each check operation.
 
+## Example
+```
+Input:
+4
+( ) ( )
+4
+0
+1
+0
+2
+
+Output:
+Test 1:
+YES
+NO
+YES
+```
+String "()()" is valid (check 0: YES). Flip position 1 (')' to '('): "((()" is invalid (NO). Flip position 2 ('(' to ')'): "()()" is valid again (YES).
+
 ## Solution
 
 ### Approach

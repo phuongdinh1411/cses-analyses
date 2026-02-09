@@ -17,6 +17,20 @@ Given a tree with n vertices and a positive number k, find the number of distinc
 ## Output Format
 Print the number of distinct pairs with distance exactly k.
 
+## Example
+```
+Input:
+5 2
+1 2
+2 3
+3 4
+4 5
+
+Output:
+3
+```
+Tree is a path: 1-2-3-4-5. Pairs at distance exactly 2: (1,3), (2,4), (3,5). Total = 3.
+
 ## Solution
 
 ### Approach

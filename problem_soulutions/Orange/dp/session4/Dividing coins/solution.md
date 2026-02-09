@@ -19,6 +19,22 @@ Divide a bag of coins between two people as fairly as possible. Minimize the abs
 ## Output Format
 For each test case, print the minimum possible difference.
 
+## Example
+```
+Input:
+2
+3
+2 3 5
+4
+1 2 3 4
+
+Output:
+0
+0
+```
+Test 1: Coins [2, 3, 5] sum to 10. Split as {5} vs {2,3}: 5 vs 5, difference = 0.
+Test 2: Coins [1, 2, 3, 4] sum to 10. Split as {1,4} vs {2,3}: 5 vs 5, difference = 0.
+
 ## Solution
 
 ### Approach

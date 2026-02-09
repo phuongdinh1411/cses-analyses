@@ -26,6 +26,18 @@ In this problem you are asked to reconstruct the trading during one day in Gergo
 ## Output Format
 For each test case print the minimum amount of work units needed so that every inhabitant has his demand fulfilled.
 
+## Example
+```
+Input:
+5
+5 -4 1 -3 1
+0
+
+Output:
+9
+```
+House demands: [5, -4, 1, -3, 1]. Cumulative sums: 5, 1, 2, -1, 0. Total work = |5| + |1| + |2| + |-1| = 9.
+
 ## Solution
 
 ### Approach

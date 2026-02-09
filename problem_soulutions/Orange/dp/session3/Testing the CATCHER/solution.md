@@ -22,6 +22,26 @@ Given a sequence of incoming missile heights, find the maximum number of missile
 ## Output Format
 For each test: "Test #X:" followed by "maximum possible number of missiles: Y"
 
+## Example
+```
+Input:
+389
+207
+155
+300
+299
+170
+158
+65
+-1
+-1
+
+Output:
+Test #1:
+  maximum possible number of missiles intercepted: 6
+```
+Missile heights: [389, 207, 155, 300, 299, 170, 158, 65]. The longest non-increasing subsequence is [389, 300, 299, 170, 158, 65] with length 6.
+
 ## Solution
 
 ### Approach

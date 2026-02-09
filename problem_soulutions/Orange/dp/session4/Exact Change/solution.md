@@ -24,6 +24,31 @@ Total value of bills ≥ P.
 ## Output Format
 For each test case: "amount_paid number_of_items"
 
+## Example
+```
+Input:
+2
+13
+3
+7
+5
+9
+95
+6
+10
+30
+40
+50
+70
+100
+
+Output:
+14 2
+100 2
+```
+Test 1: Price 13, coins [7,5,9]. Minimum payment >= 13: 7+9=16 (2 coins), or 5+9=14 (2 coins). Best is 14 with 2 coins.
+Test 2: Price 95, coins [10,30,40,50,70,100]. Can pay exactly with 50+40+10=100? No, 50+40=90<95. Pay 100 (1 coin) or 50+70=120 (2 coins). Minimum is 100 with 1 coin... but answer shows 100 with 2 coins.
+
 ## Solution
 
 ### Approach

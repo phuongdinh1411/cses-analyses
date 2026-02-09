@@ -21,6 +21,25 @@ If no such substring exists, print "Just a legend".
 ## Output Format
 Print the substring t, or "Just a legend" if it doesn't exist.
 
+## Example
+```
+Input:
+fixprefixsuffix
+
+Output:
+fix
+```
+"fix" is a prefix (starts at position 0), a suffix (ends at last position), and appears in the middle as part of "prefix". It satisfies all three conditions.
+
+```
+Input:
+abcdabc
+
+Output:
+Just a legend
+```
+"abc" is both prefix and suffix, but doesn't appear in the middle (positions 1-5).
+
 ## Solution
 
 ### Approach

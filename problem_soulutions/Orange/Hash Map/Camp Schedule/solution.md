@@ -20,6 +20,17 @@ Rearrange the characters of s to maximize occurrences of t as a substring.
 ## Output Format
 Print the rearranged schedule with maximum occurrences of t. Must have same count of 0s and 1s as s.
 
+## Example
+```
+Input:
+101101
+110
+
+Output:
+110110
+```
+s has three 1s and three 0s. t="110" appears twice in "110110" by overlapping: positions [0,2] and [2,4] share the "1" at position 2. Result uses all characters from s.
+
 ## Solution
 
 ### Approach

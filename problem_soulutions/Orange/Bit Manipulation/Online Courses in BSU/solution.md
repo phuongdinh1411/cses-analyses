@@ -23,6 +23,22 @@ Polycarp needs to pass k main online courses to get a diploma. There are n cours
 - Print -1 if impossible (cycle exists)
 - Otherwise, print m (minimum courses) and the order to pass them
 
+## Example
+```
+Input:
+5 2
+1 5
+1 2
+1 3
+2 2 3
+0
+
+Output:
+4
+3 2 1 5
+```
+Main courses are 1 and 5. Course 1 requires course 2, course 2 requires courses 2 and 3, course 3 has no prerequisites, course 5 requires course 1. Valid order: take 3 first, then 2, then 1, finally 5. Total 4 courses needed.
+
 ## Solution
 
 ### Approach

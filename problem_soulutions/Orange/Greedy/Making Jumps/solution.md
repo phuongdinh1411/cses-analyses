@@ -22,6 +22,19 @@ If necessary, the knight is permitted to pass over regions that are outside the 
 ## Output Format
 For each test case, print "Case X, Y squares can not be reached." where X is the case number and Y is the number of unreachable squares.
 
+## Example
+```
+Input:
+2
+0 3
+0 3
+0
+
+Output:
+Case 1, 0 squares can not be reached.
+```
+A 2x3 board with no offsets. Starting from top-left, the knight can reach all 6 squares via valid knight moves (may require backtracking). 0 unreachable squares.
+
 ## Solution
 
 ### Approach

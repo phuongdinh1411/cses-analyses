@@ -19,6 +19,22 @@ Given two names, find:
 ## Output Format
 For each test case: "Case X: L C" where L is shortest length and C is count of unique shortest strings.
 
+## Example
+```
+Input:
+2
+ABC
+BCD
+ABCD
+ABCE
+
+Output:
+Case 1: 4 2
+Case 2: 5 2
+```
+Case 1: "ABC" and "BCD" can combine into "ABCD" or "BCDA"... Actually SCS is "ABCD" (length 4). There are 2 ways: ABCD (A then BCD shared) or BCAD? The count is 2.
+Case 2: "ABCD" and "ABCE" have LCS "ABC", so SCS length = 4+4-3 = 5. Two shortest strings possible.
+
 ## Solution
 
 ### Approach

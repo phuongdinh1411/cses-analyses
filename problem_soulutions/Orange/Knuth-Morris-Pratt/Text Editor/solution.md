@@ -18,6 +18,29 @@ Given text A, pattern B, and minimum count n, find the longest prefix of B that 
 ## Output Format
 Print the longest prefix of B that appears at least n times in A, or "IMPOSSIBLE".
 
+## Example
+```
+Input:
+abacaba
+aba
+2
+
+Output:
+aba
+```
+Text A = "abacaba", pattern B = "aba", minimum count n = 2. The prefix "aba" appears at positions 0 and 4 in A (2 times), so output "aba".
+
+```
+Input:
+xyz
+abc
+1
+
+Output:
+IMPOSSIBLE
+```
+No prefix of "abc" appears in "xyz".
+
 ## Solution
 
 ### Approach

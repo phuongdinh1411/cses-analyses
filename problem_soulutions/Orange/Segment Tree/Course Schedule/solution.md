@@ -19,6 +19,20 @@ Given the total number of courses and a list of prerequisite pairs, determine if
 ## Output Format
 Print "yes" if you can finish all courses, otherwise print "no".
 
+## Example
+```
+Input:
+4 4
+1 0
+2 0
+3 1
+3 2
+
+Output:
+yes
+```
+4 courses, 4 prerequisites. Course 1 requires 0, course 2 requires 0, course 3 requires 1 and 2. Order: 0 -> 1 -> 2 -> 3 is valid. No cycle exists, so "yes".
+
 ## Solution
 
 ### Approach

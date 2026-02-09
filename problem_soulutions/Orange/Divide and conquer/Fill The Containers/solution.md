@@ -25,6 +25,17 @@ Given the number of containers 'm', you have to fill the containers with milk fr
 ## Output Format
 For each test case, print the minimal possible capacity of the container with maximal capacity.
 
+## Example
+```
+Input:
+5 3
+1 2 3 4 5
+
+Output:
+6
+```
+5 vessels with capacities [1,2,3,4,5] need to be distributed into 3 containers. Optimal distribution: container 1 gets {1,2,3} = 6, container 2 gets {4} = 4, container 3 gets {5} = 5. The maximum container capacity is 6, which is minimal.
+
 ## Solution
 
 ### Approach

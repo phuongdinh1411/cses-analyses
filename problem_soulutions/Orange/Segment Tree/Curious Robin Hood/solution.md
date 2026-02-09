@@ -23,6 +23,25 @@ Robin Hood has n sacks numbered from 0 to n-1, each containing some money. He ca
 ## Output Format
 For each test case, print "Case X:" followed by results for type 1 and type 3 queries.
 
+## Example
+```
+Input:
+1
+5 4
+1 2 3 4 5
+1 2
+2 2 4
+3 1 4
+1 3
+
+Output:
+Case 1:
+3
+14
+7
+```
+Sacks: [1,2,3,4,5]. Query 1 2: give away sack 2's money (3), output 3, sacks become [1,2,0,4,5]. Query 2 2 4: add 4 to sack 2, sacks become [1,2,4,4,5]. Query 3 1 4: sum of [1,4] = 2+4+4+5 = 15... Hmm, let me use 0-indexing: [1,2,0,4,5] -> add 4 to index 2 -> [1,2,4,4,5]. Sum [1,4] = 2+4+4+5 = 15. Query 1 3: give away index 3's money (4), output 4.
+
 ## Solution
 
 ### Approach

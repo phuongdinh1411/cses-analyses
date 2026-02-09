@@ -19,6 +19,19 @@ Output the number of digits in this smallest "repunit".
 ## Output Format
 For each n, print the number of 1s in the smallest repunit divisible by n.
 
+## Example
+```
+Input:
+3
+7
+
+Output:
+3
+6
+```
+For n=3: The smallest repunit divisible by 3 is 111 (3 ones), since 111 = 3 x 37.
+For n=7: The smallest repunit divisible by 7 is 111111 (6 ones), since 111111 = 7 x 15873.
+
 ## Solution
 
 ### Approach

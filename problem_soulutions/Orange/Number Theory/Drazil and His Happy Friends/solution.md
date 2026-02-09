@@ -23,6 +23,18 @@ Drazil wants to know whether he can use this plan to make all his friends become
 ## Output Format
 If Drazil can make all his friends become happy by this plan, print "Yes". Otherwise, print "No".
 
+## Example
+```
+Input:
+2 3
+0
+1 0
+
+Output:
+Yes
+```
+There are 2 boys and 3 girls. Boy 0 is initially happy, and girl 0 is initially happy. On day 0: boy 0 meets girl 0 (both happy). Day 1: boy 1 meets girl 1 (boy 1 becomes happy). Day 2: boy 0 meets girl 2 (girl 2 becomes happy). All friends become happy.
+
 ## Solution
 
 ### Approach

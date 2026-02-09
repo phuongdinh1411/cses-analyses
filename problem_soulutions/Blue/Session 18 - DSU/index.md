@@ -30,6 +30,22 @@ Determine if a given graph represents "Cthulhu" - a connected graph with exactly
 - "FHTAGN!" if the graph is a Cthulhu
 - "NO" otherwise
 
+#### Example
+```
+Input:
+6 6
+1 2
+2 3
+3 1
+4 5
+5 6
+6 4
+
+Output:
+NO
+```
+There are 6 vertices and 6 edges, but the graph has 2 connected components (triangle 1-2-3 and triangle 4-5-6). Cthulhu requires a single connected component.
+
 #### Solution
 
 ##### Approach
@@ -116,6 +132,20 @@ Bajtek wants to visit all snow drifts in a field. He can move from one drift to 
 
 #### Output Format
 Minimum number of extra paths needed (= number of connected components - 1).
+
+#### Example
+```
+Input:
+4
+0 0
+1 0
+0 1
+2 2
+
+Output:
+1
+```
+Drifts at (0,0), (1,0), (0,1) share x=0 or y=0, forming one component. Drift (2,2) is isolated. Answer = 2 components - 1 = 1.
 
 #### Solution
 
@@ -211,6 +241,21 @@ Determine if such a partition is possible.
 
 #### Output Format
 - "YES" followed by n lines (0 for set B, 1 for set A), or "NO"
+
+#### Example
+```
+Input:
+4 5 9
+2 3 4 5
+
+Output:
+YES
+1
+1
+0
+0
+```
+a=5, b=9. Set A: {2,3} because 2+3=5. Set B: {4,5} because 4+5=9.
 
 #### Solution
 
@@ -317,6 +362,24 @@ Process operations: setFriends, setEnemies, areFriends, areEnemies. Return -1 if
 - For operations 1-2: print -1 if contradiction
 - For operations 3-4: print 1 (yes) or 0 (no/unknown)
 
+#### Example
+```
+Input:
+5
+1 0 1
+2 1 2
+3 0 2
+4 0 2
+1 1 2
+0 0 0
+
+Output:
+1
+1
+-1
+```
+setFriends(0,1), setEnemies(1,2). areFriends(0,2)? 0 and 1 are friends, 1 and 2 are enemies, so 0 and 2 are enemies (answer: 1). areEnemies(0,2)? Yes (answer: 1). setFriends(1,2)? Contradicts existing enemy relation (answer: -1).
+
 #### Solution
 
 ##### Approach
@@ -416,6 +479,23 @@ In a meeting with P people and T topics, each person raises their hand for topic
 
 #### Output Format
 For each test case: number of distinct opinion groups.
+
+#### Example
+```
+Input:
+1
+
+3 4
+1 1
+1 2
+2 2
+3 1
+3 2
+
+Output:
+2
+```
+Person 1 supports topics {1,2}, Person 2 supports {2}, Person 3 supports {1,2}. Persons 1 and 3 have identical opinions, so 2 groups.
 
 #### Solution
 
@@ -534,6 +614,21 @@ In a town with N citizens and M friendship relations, find the size of the large
 #### Output Format
 For each test case: size of the largest friend group.
 
+#### Example
+```
+Input:
+1
+5 4
+1 2
+3 4
+2 3
+4 5
+
+Output:
+5
+```
+Friendships connect: 1-2, 3-4, 2-3, 4-5. All 5 people are connected through the chain. Largest group = 5.
+
 #### Solution
 
 ##### Approach
@@ -627,6 +722,22 @@ A social network tracks friendships. When two people become friends, their frien
 
 #### Output Format
 After each friendship: size of the resulting friend network.
+
+#### Example
+```
+Input:
+1
+3
+Fred Barney
+Barney Betty
+Betty Wilma
+
+Output:
+2
+3
+4
+```
+Fred-Barney: network size 2. Barney-Betty: Betty joins Fred-Barney network, size 3. Betty-Wilma: Wilma joins, size 4.
 
 #### Solution
 
@@ -728,6 +839,20 @@ Given a graph where nodes are labeled with uppercase letters and edges connect p
 
 #### Output Format
 For each test case: number of connected components.
+
+#### Example
+```
+Input:
+1
+
+D
+AB
+BC
+
+Output:
+2
+```
+Nodes A, B, C, D exist. Edges: A-B, B-C form one component {A,B,C}. Node D is isolated. Total = 2 components.
 
 #### Solution
 

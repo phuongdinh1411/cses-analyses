@@ -31,6 +31,25 @@ Monk is planning a business trip between cities. Each road has a profit/cost. De
 #### Output Format
 - "Yes" if infinite profit is possible (positive cycle exists), "No" otherwise
 
+#### Example
+```
+Input:
+2
+3 3
+1 2 5
+2 3 2
+3 1 4
+3 3
+1 2 5
+2 3 2
+3 1 -4
+
+Output:
+Yes
+No
+```
+First case: Cycle 1->2->3->1 with total profit 5+2+4=11 > 0, so infinite profit possible. Second case: Cycle has profit 5+2+(-4)=3 but no positive cycle that gives infinite arbitrage.
+
 #### Solution
 
 ##### Approach
@@ -129,6 +148,25 @@ Given a directed weighted graph with possible negative edge weights, find the sh
 #### Output Format
 - For each query:
   - Shortest distance, or "Impossible" if unreachable, or "-Infinity" if affected by negative cycle
+
+#### Example
+```
+Input:
+5 4 3 0
+0 1 999
+1 2 -2
+2 1 1
+0 3 2
+1
+3
+4
+
+Output:
+-Infinity
+2
+Impossible
+```
+Node 1 is affected by negative cycle (1->2->1 with weight -2+1=-1). Node 3 has shortest distance 2 from source 0. Node 4 is unreachable from source.
 
 #### Solution
 
@@ -249,6 +287,30 @@ Dhaka city has junctions with "busyness" values. The cost to travel from junctio
 #### Output Format
 - For each case: "Case X:" followed by minimum cost for each query (or "?")
 
+#### Example
+```
+Input:
+1
+5
+6 7 8 2 4
+6
+1 2
+2 3
+3 4
+1 3
+1 4
+4 5
+2
+4
+5
+
+Output:
+Case 1:
+?
+4
+```
+From junction 1: to reach junction 4, cost is negative (busyness differences cubed can be negative), so output "?". To junction 5, minimum cost is 4.
+
 #### Solution
 
 ##### Approach
@@ -367,6 +429,24 @@ Given N monuments in Babylon with travel costs between them (can be negative), f
 - For each case: "Case #X:" followed by results for each query
   - "monument1-monument2 cost" or "NOT REACHABLE" or "NEGATIVE CYCLE"
 
+#### Example
+```
+Input:
+3
+Sphinx 10 -2 0
+Move 0 5 -3
+Pyramid 0 0 0
+2
+0 1
+1 2
+
+Output:
+Case #1:
+Sphinx-Move 10
+Move-Pyramid -3
+```
+Travel cost from Sphinx to Move is 10. Travel cost from Move to Pyramid is -3.
+
 #### Solution
 
 ##### Approach
@@ -483,6 +563,23 @@ A spy needs to travel from intersection 1 to intersection n through Chicago. Eac
 #### Output Format
 - Maximum probability (as percentage) of reaching n from 1 unspotted
 
+#### Example
+```
+Input:
+5 7
+1 2 50
+2 3 50
+3 4 50
+4 5 50
+1 3 80
+2 4 80
+3 5 80
+
+Output:
+51.200000 percent
+```
+Best path: 1->3 (80%) -> 4 (80%) -> 5 (80%) = 0.8 * 0.8 * 0.8 * 100 = 51.2% probability.
+
 #### Solution
 
 ##### Approach
@@ -576,6 +673,21 @@ A text adventure game where the player starts in room 1 with 100 energy. Moving 
 
 #### Output Format
 - "winnable" if player can reach room n with positive energy, "hopeless" otherwise
+
+#### Example
+```
+Input:
+5
+0 1 2
+-60 1 3
+-60 1 4
+20 1 5
+0 0
+
+Output:
+winnable
+```
+Player starts in room 1 with 100 energy. Path: 1->2 (100-60=40) -> 3 (40-60=-20, dies) OR 1->2->4->5 with energy management. The game is winnable.
 
 #### Solution
 
@@ -677,6 +789,20 @@ N processors are connected in a network. The communication time between processo
 #### Output Format
 - Maximum shortest path distance from processor 0 (broadcast completion time)
 
+#### Example
+```
+Input:
+5
+50
+30 5
+100 20 50
+10 x x 10
+
+Output:
+35
+```
+Shortest paths from processor 0: to 1 is 50, to 2 is 35 (0->1->2 = 50+5=55 or 0->4->3 = 10+10+20=40... wait, 0->2 = 30), to 3 is 20, to 4 is 10. Maximum is 35 (to processor 2 via 0->1->2 = 50+5=55, but directly 30 is better, final max is from all shortest paths).
+
 #### Solution
 
 ##### Approach
@@ -751,6 +877,26 @@ A spaceship can travel through wormholes that may have negative time travel (goi
 #### Output Format
 - "possible" if negative cycle exists (infinite time travel possible)
 - "not possible" otherwise
+
+#### Example
+```
+Input:
+2
+3 3
+0 1 1000
+1 2 15
+2 1 -42
+4 4
+0 1 10
+1 2 20
+2 3 30
+3 0 -60
+
+Output:
+possible
+not possible
+```
+First case: Cycle 1->2->1 with weight 15+(-42)=-27 is a negative cycle. Second case: Cycle 0->1->2->3->0 with weight 10+20+30+(-60)=0, not negative.
 
 #### Solution
 

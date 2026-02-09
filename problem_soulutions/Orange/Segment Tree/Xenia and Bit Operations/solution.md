@@ -23,6 +23,24 @@ Given m queries, each setting a[p] = b, output v after each query.
 ## Output Format
 For each query, print the resulting value v.
 
+## Example
+```
+Input:
+2 4
+1 6 3 5
+1 4
+3 4
+1 2
+2 1
+
+Output:
+1
+3
+3
+3
+```
+n=2 means 2^2=4 elements: [1,6,3,5]. First OR pairs: [1|6, 3|5] = [7, 7]. Then XOR: 7^7 = 0. Wait, let me recalculate. After query p=1, b=4: array [4,6,3,5]. OR: [4|6, 3|5]=[6,7]. XOR: 6^7=1. Output 1.
+
 ## Solution
 
 ### Approach

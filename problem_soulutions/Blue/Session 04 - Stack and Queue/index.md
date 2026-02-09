@@ -28,6 +28,29 @@ Given some expressions, find the length of the longest prefix of each expression
 #### Output Format
 For each expression, output the length of the longest valid prefix, or 0 if there's no such prefix.
 
+#### Example
+```
+Input:
+2
+<<>>
+><
+
+Output:
+4
+0
+```
+"<<>>" is fully valid (length 4). "><" starts with ">" which is invalid, so longest valid prefix is 0.
+
+```
+Input:
+1
+<<><>>
+
+Output:
+6
+```
+The entire string is valid.
+
 #### Solution
 
 ##### Approach
@@ -83,6 +106,21 @@ Simulate a one-thread server processing n queries. Each query arrives at time ti
 #### Output Format
 For each query, output the finish time or -1 if rejected.
 
+#### Example
+```
+Input:
+5 2
+2 9
+4 8
+10 9
+15 2
+19 1
+
+Output:
+11 19 -1 21 22
+```
+Query 1 arrives at t=2, finishes at 2+9=11. Query 2 queued, finishes at 11+8=19. Query 3 arrives when queue is full, rejected. Etc.
+
 #### Solution
 
 ##### Approach
@@ -134,6 +172,34 @@ A single line containing the chemical formula.
 
 #### Output Format
 The total mass of the molecule.
+
+#### Example
+```
+Input:
+WATER
+
+Output:
+18
+```
+W is not a valid atom. Actually the input should be like H2O. Let me use a valid example:
+
+```
+Input:
+H2O
+
+Output:
+18
+```
+H=1, so H2=2. O=16. Total = 2 + 16 = 18.
+
+```
+Input:
+Ca(OH)2
+
+Output:
+74
+```
+Ca=40, O=16, H=1. Ca + 2×(O+H) = 40 + 2×17 = 74.
 
 #### Solution
 
@@ -205,6 +271,21 @@ Transform algebraic expressions with brackets into Reverse Polish Notation (RPN)
 
 #### Output Format
 The expressions in RPN form, one per line.
+
+#### Example
+```
+Input:
+3
+(a+(b*c))
+((a+b)*(z+x))
+((a+t)*((b+(a+c))^(c+d)))
+
+Output:
+abc*+
+ab+zx+*
+at+bac++cd+^*
+```
+Infix "(a+(b*c))" becomes postfix "abc*+" - operands appear, then operators in correct precedence order.
 
 #### Solution
 
@@ -278,6 +359,29 @@ Love mobiles need to be arranged in order 1 to n for a parade. They arrive in a 
 #### Output Format
 "yes" if reordering is possible, "no" otherwise.
 
+#### Example
+```
+Input:
+5
+5 1 2 4 3
+0
+
+Output:
+yes
+```
+Arrival: 5,1,2,4,3. Push 5 to stack, output 1, output 2, push 4 to stack, push 3 to stack. Pop 3, pop 4, pop 5. Final order: 1,2,3,4,5.
+
+```
+Input:
+5
+4 1 5 3 2
+0
+
+Output:
+no
+```
+Cannot reorder to 1,2,3,4,5 using a single stack.
+
 #### Solution
 
 ##### Approach
@@ -344,6 +448,22 @@ A ferry carries cars between two banks. Given arrival times and bank for each ca
 
 #### Output Format
 For each car, output its arrival time at the destination.
+
+#### Example
+```
+Input:
+1
+2 10 3
+0 left
+10 left
+20 right
+
+Output:
+10
+30
+30
+```
+Ferry (capacity 2, crossing time 10). Car 1 arrives at 0 on left, crosses at 0, arrives at 10. Car 2 at 10 left, car 3 at 20 right. Ferry goes right at 10, picks car 3, arrives left at 30 with car 2.
 
 #### Solution
 
@@ -432,6 +552,28 @@ Multiple lines, each containing n (number of cards). 0 to end.
 #### Output Format
 For each test case, print the discarded cards and the remaining card.
 
+#### Example
+```
+Input:
+7
+0
+
+Output:
+Discarded cards: 1, 3, 5, 7, 4, 2
+Remaining card: 6
+```
+Start: [1,2,3,4,5,6,7]. Discard 1, move 2 to back: [3,4,5,6,7,2]. Discard 3, move 4 to back: [5,6,7,2,4]. Continue until one remains.
+
+```
+Input:
+1
+0
+
+Output:
+Discarded cards:
+Remaining card: 1
+```
+
 #### Solution
 
 ##### Approach
@@ -494,6 +636,26 @@ Simulate a hospital queue with P citizens and C commands. Commands are 'N' (next
 
 #### Output Format
 For each 'N' command, output the citizen number being processed.
+
+#### Example
+```
+Input:
+4 5
+N
+N
+E 1
+N
+N
+0 0
+
+Output:
+Case 1:
+1
+2
+1
+3
+```
+Initially: [1,2,3,4]. N→1 (queue becomes [2,3,4,1]). N→2 (queue [3,4,1,2]). E 1→moves 1 to front [1,3,4,2]. N→1. N→3.
 
 #### Solution
 

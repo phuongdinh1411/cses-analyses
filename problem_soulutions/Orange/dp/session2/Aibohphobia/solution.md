@@ -21,6 +21,22 @@ For example:
 ## Output Format
 For each test case, print the minimum insertions needed.
 
+## Example
+```
+Input:
+fft
+ab
+abc
+
+Output:
+1
+1
+2
+```
+"fft" -> "tfft" (insert 't'), 1 insertion.
+"ab" -> "aba" or "bab" (insert 'a' or 'b'), 1 insertion.
+"abc" -> "abcba" (insert "ba") or "cbabc", 2 insertions.
+
 ## Solution
 
 ### Approach

@@ -26,6 +26,21 @@ Given an array (containing only 0 and 1) of N length. For each query with L and 
 ## Output Format
 For each query, print the XOR value and number of unset bits in that range.
 
+## Example
+```
+Input:
+5
+1 0 1 0 1
+2
+1 3
+2 5
+
+Output:
+0 1
+1 2
+```
+For query [1,3]: XOR of {1,0,1} = 0, zeros count = 1. For query [2,5]: XOR of {0,1,0,1} = 0 XOR 1 XOR 0 XOR 1 = 0... wait, let me recalculate: 0^1=1, 1^0=1, 1^1=0. So XOR=0 and zeros=2.
+
 ## Solution
 
 ### Approach

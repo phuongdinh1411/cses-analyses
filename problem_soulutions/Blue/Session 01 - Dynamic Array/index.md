@@ -31,6 +31,25 @@ A jacket has n buttons arranged in a row. Each button is either fastened (1) or 
 #### Output Format
 "YES" if properly fastened, "NO" otherwise
 
+#### Example
+```
+Input:
+3
+1 0 1
+
+Output:
+YES
+```
+
+```
+Input:
+1
+0
+
+Output:
+NO
+```
+
 #### Solution
 
 ##### Approach
@@ -79,6 +98,17 @@ Vanya and his n friends want to pass under a fence of height h. Each friend has 
 #### Output Format
 Total road width needed
 
+#### Example
+```
+Input:
+3 7
+4 5 14
+
+Output:
+4
+```
+Friends with heights 4 and 5 walk normally (width 1 each), friend with height 14 must bend (width 2). Total: 1+1+2 = 4.
+
 #### Solution
 
 ##### Approach
@@ -122,6 +152,31 @@ Given n segments [l[i], r[i]], find if there exists a segment that completely co
 
 #### Output Format
 Index of the covering segment (1-based), or -1 if none exists
+
+#### Example
+```
+Input:
+3
+1 5
+2 3
+1 10
+
+Output:
+3
+```
+Segment 3 [1, 10] covers all others since min_left=1 and max_right=10.
+
+```
+Input:
+3
+1 5
+2 6
+3 4
+
+Output:
+-1
+```
+No single segment has both the minimum left (1) and maximum right (6).
 
 #### Solution
 
@@ -179,6 +234,31 @@ Given two sorted arrays a (size na) and b (size nb) in non-decreasing order, che
 #### Output Format
 "YES" if condition is satisfied, "NO" otherwise
 
+#### Example
+```
+Input:
+3 3
+2 1
+1 2 3
+3 4 5
+
+Output:
+YES
+```
+First 2 elements of a: [1, 2], max is 2. Last 1 element of b: [5], min is 5. Since 2 < 5, output YES.
+
+```
+Input:
+3 3
+3 3
+1 2 3
+3 4 5
+
+Output:
+NO
+```
+First 3 elements of a: [1, 2, 3], max is 3. Last 3 elements of b: [3, 4, 5], min is 3. Since 3 is not < 3, output NO.
+
 #### Solution
 
 ##### Approach
@@ -223,6 +303,27 @@ A bear watches a 90-minute football game on TV. There are n interesting moments 
 
 #### Output Format
 The minute when the bear stops watching
+
+#### Example
+```
+Input:
+3
+7 20 88
+
+Output:
+35
+```
+Gap from 20 to 88 is 68 minutes (> 15), so bear stops at 20 + 15 = 35.
+
+```
+Input:
+9
+16 20 30 40 50 60 70 80 90
+
+Output:
+90
+```
+All gaps are <= 15 minutes, bear watches until the end.
 
 #### Solution
 
@@ -278,6 +379,21 @@ Two semifinals of a race, each with n participants. The top n participants overa
 
 #### Output Format
 Two lines of n characters each (0 or 1), representing qualification chances for each position in semifinal A and B respectively
+
+#### Example
+```
+Input:
+4
+9903 9658
+9904 9632
+9905 9623
+9906 9624
+
+Output:
+1100
+1100
+```
+Top 2 from each semifinal (positions 1-2) are guaranteed to qualify. Positions 3-4 have no chance.
 
 #### Solution
 
@@ -351,6 +467,17 @@ Given a permutation of integers 1 to n, you can perform at most one swap of any 
 #### Output Format
 Maximum achievable distance between positions of 1 and n
 
+#### Example
+```
+Input:
+4
+4 2 1 3
+
+Output:
+3
+```
+Element 1 is at index 2, element 4 is at index 0. Swap 1 with element at index 3, now distance = |3 - 0| = 3.
+
 #### Solution
 
 ##### Approach
@@ -397,6 +524,17 @@ There are n books of m different genres. Tanya wants to choose 2 books of DIFFER
 
 #### Output Format
 Number of ways to choose 2 books of different genres
+
+#### Example
+```
+Input:
+4 3
+2 1 1 2
+
+Output:
+4
+```
+Genre 1 has 2 books (positions 2, 3), Genre 2 has 2 books (positions 1, 4). Ways = 2 × 2 = 4.
 
 #### Solution
 
@@ -449,6 +587,27 @@ A row of n colored balls is arranged in a line. You have one ball of color x tha
 
 #### Output Format
 Maximum number of balls that can be destroyed
+
+#### Example
+```
+Input:
+6 3 2
+2 2 1 1 2 2
+
+Output:
+6
+```
+Insert color 2 ball between positions 4 and 5 (where colors are 2,2). Now we have 2,2,1,1,2,2,2 which triggers chain destruction.
+
+```
+Input:
+5 3 1
+1 2 2 2 1
+
+Output:
+0
+```
+No adjacent pair of color 1 balls to insert between.
 
 #### Solution
 

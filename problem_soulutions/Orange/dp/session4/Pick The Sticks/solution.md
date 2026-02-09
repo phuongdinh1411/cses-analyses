@@ -28,6 +28,25 @@ Key insight: At most 2 sticks can hang over edges (one on each side), and they c
 ## Output Format
 For each test case: "Case #x: y" where y is maximum value.
 
+## Example
+```
+Input:
+2
+3 5
+8 100
+4 10
+5 200
+2 4
+8 200
+4 100
+
+Output:
+Case #1: 200
+Case #2: 300
+```
+Case 1: Container length 5, sticks: (8,100), (4,10), (5,200). Stick of length 8 hanging uses 4 units, leaving 1. Can't fit anything else. Or stick length 5 hanging uses 2.5 units. Max value is 200.
+Case 2: Container length 4. Two sticks (8,200) and (4,100). Hang both? Each uses half: 4+2=6 > 4. Hang 8 (uses 4) = 200, or hang both partially. Max is 300.
+
 ## Solution
 
 ### Approach

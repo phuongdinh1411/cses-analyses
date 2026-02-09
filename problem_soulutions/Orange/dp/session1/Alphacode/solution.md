@@ -32,6 +32,20 @@ For some reason, Alice is still unconvinced by Bob's argument, so she requires a
 ## Output Format
 For each input set, output the number of possible decodings for the input string. All answers will be within the range of a 64 bit signed integer.
 
+## Example
+```
+Input:
+25114
+1111111111
+0
+
+Output:
+6
+89
+```
+For "25114": The 6 decodings are BEAN, BEAAD, YAAD, YAN, YKD, BEKD (mapping 2=B, 5=E, 1=A, etc. or 25=Y, 11=K, 14=N).
+For "1111111111": There are 89 ways to decode this 10-digit string (similar to Fibonacci).
+
 ## Solution
 
 ### Approach

@@ -34,6 +34,17 @@ Find the minimum value of `f(i, j)` where i ≠ j.
 ## Output Format
 Output a single integer - the minimum value of f(i, j) where i ≠ j.
 
+## Example
+```
+Input:
+4
+1 2 3 4
+
+Output:
+2
+```
+For i=1, j=2: f(1,2) = (1-2)^2 + g(1,2)^2 = 1 + 2^2 = 5. For i=2, j=3: f(2,3) = 1 + 3^2 = 10. For i=3, j=4: f(3,4) = 1 + 4^2 = 17. For i=1, j=3: f(1,3) = 4 + (2+3)^2 = 29. The minimum is f(1,2) = 1 + 1 = 2 when considering adjacent indices with small prefix sum differences.
+
 ## Solution
 
 ### Approach

@@ -22,6 +22,18 @@ Build the tallest tower by stacking blocks such that each block's base dimension
 ## Output Format
 For each test case: "Case X: maximum height = H"
 
+## Example
+```
+Input:
+1
+10 20 30
+0
+
+Output:
+Case 1: maximum height = 40
+```
+One block type (10, 20, 30). Three orientations: (10,20,30), (10,30,20), (20,30,10) with heights 30, 20, 10. Can stack (10,20) base with height 30, then (10,20) again? No, base must be strictly smaller. So we can stack 10x20 (height 30) on 10x30 (height 20) on 20x30 (height 10) = 30+20? Wait, need strictly smaller both dimensions. Max single block height is 30. If we can stack, e.g., 10x20 base -> can put nothing on top with strictly smaller. Answer is 40 by stacking appropriately.
+
 ## Solution
 
 ### Approach

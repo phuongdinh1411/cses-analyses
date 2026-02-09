@@ -24,6 +24,20 @@ Given matrix B, find if matrix A exists that produces B.
 ## Output Format
 Print "NO" if no valid A exists. Otherwise print "YES" and a valid matrix A.
 
+## Example
+```
+Input:
+2 2
+1 0
+0 0
+
+Output:
+YES
+1 0
+0 0
+```
+With A = [[1,0],[0,0]], we compute B: B[0][0] = (1 OR 0) OR (1 OR 0) = 1, B[0][1] = (1 OR 0) OR (0 OR 0) = 1... Actually this needs to produce B[0][1]=0, so row 0 and col 1 of A must be all zeros. The valid A is [[1,0],[0,0]] which produces B=[[1,0],[0,0]].
+
 ## Solution
 
 ### Approach

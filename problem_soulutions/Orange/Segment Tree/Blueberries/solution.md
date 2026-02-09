@@ -23,6 +23,18 @@ Teresa wants to pick blueberries from N bushes. If she picks from bush i, she ca
 ## Output Format
 For each case: "Scenario #i: X" where X is maximum blueberries.
 
+## Example
+```
+Input:
+1
+5 100
+50 10 20 30 40
+
+Output:
+Scenario #1: 110
+```
+5 bushes with [50, 10, 20, 30, 40], K=100. Pick bushes 1, 3, 5 (non-adjacent): min(50,100) + min(20,100) + min(40,100) = 50 + 20 + 40 = 110.
+
 ## Solution
 
 ### Approach

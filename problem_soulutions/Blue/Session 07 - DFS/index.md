@@ -36,6 +36,22 @@ The government wants to keep exactly k lakes. They will fill the smallest lakes 
 - Line 1: Number of cells filled
 - Next n lines: The resulting grid after filling
 
+#### Example
+```
+Input:
+3 3 0
+***
+*.*
+***
+
+Output:
+1
+***
+***
+***
+```
+One lake (center cell). k=0 means fill all lakes. Fill 1 cell.
+
 #### Solution
 
 ##### Approach
@@ -131,6 +147,23 @@ Bishu lives at node 1 of a tree with N nodes. There are Q girls living at variou
 #### Output Format
 The node number of the closest girl (ties broken by smallest node).
 
+#### Example
+```
+Input:
+5
+1 2
+1 3
+2 4
+2 5
+2
+4
+5
+
+Output:
+4
+```
+Tree: 1-2-4, 1-2-5, 1-3. Girls at nodes 4 and 5 (both distance 2 from node 1). Node 4 < 5, so output 4.
+
 #### Solution
 
 ##### Approach
@@ -217,6 +250,27 @@ Given N people (numbered 0 to N-1) and E friendship pairs, find the number of fr
 #### Output Format
 For each test case, print the number of friend groups.
 
+#### Example
+```
+Input:
+2
+5
+3
+0 1
+1 2
+3 4
+4
+2
+0 1
+2 3
+
+Output:
+2
+2
+```
+First test case: 5 people, 3 friendships. People 0-1-2 form one group, people 3-4 form another. Two groups.
+Second test case: 4 people, 2 friendships. People 0-1 form one group, people 2-3 form another. Two groups.
+
 #### Solution
 
 ##### Approach
@@ -299,6 +353,25 @@ Given a directed graph with N nodes and M edges, determine if there is a cycle i
 
 #### Output Format
 For each test case, print "SIM" if cycle exists, "NAO" otherwise.
+
+#### Example
+```
+Input:
+2
+3 3
+1 2
+2 3
+3 1
+3 2
+1 2
+2 3
+
+Output:
+SIM
+NAO
+```
+First test case: 3 nodes with edges 1->2, 2->3, 3->1 forming a cycle. Output "SIM".
+Second test case: 3 nodes with edges 1->2, 2->3. No cycle exists. Output "NAO".
 
 #### Solution
 

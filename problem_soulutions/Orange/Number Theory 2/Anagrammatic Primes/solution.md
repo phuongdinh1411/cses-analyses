@@ -23,6 +23,23 @@ Output 0 if no such prime exists in that range.
 ## Output Format
 For each n, print the smallest anagrammatic prime in range (n, next_power_of_10), or 0 if none exists.
 
+## Example
+```
+Input:
+1
+25
+100
+0
+
+Output:
+2
+0
+0
+```
+For n=1: Range is (1, 10). Smallest anagrammatic prime > 1 is 2.
+For n=25: Range is (25, 100). No anagrammatic prime exists in this range (11 is below 25, next would be too large).
+For n=100: Range is (100, 1000). No anagrammatic primes exist in this range.
+
 ## Solution
 
 ### Approach

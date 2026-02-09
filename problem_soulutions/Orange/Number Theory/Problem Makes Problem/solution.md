@@ -19,6 +19,20 @@ For example, n=4 with k=3 has 15 solutions (like 0+0+4, 0+1+3, 1+1+2, etc.).
 ## Output Format
 For each test case, print the number of ways modulo 10^9+7.
 
+## Example
+```
+Input:
+2
+4 3
+2 2
+
+Output:
+Case 1: 15
+Case 2: 3
+```
+For n=4, k=3: Ways to write 4 as sum of 3 non-negative integers: (0,0,4), (0,1,3), (0,2,2), (0,3,1), (0,4,0), (1,0,3), (1,1,2), (1,2,1), (1,3,0), (2,0,2), (2,1,1), (2,2,0), (3,0,1), (3,1,0), (4,0,0) = 15 ways.
+For n=2, k=2: (0,2), (1,1), (2,0) = 3 ways.
+
 ## Solution
 
 ### Approach

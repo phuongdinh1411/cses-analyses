@@ -21,6 +21,17 @@ Initially at minute 0, Petya was in a room (no note for t₀). Find the minimum 
 ## Output Format
 Print the minimum possible number of rooms in Paris catacombs.
 
+## Example
+```
+Input:
+5
+0 1 0 3 2
+
+Output:
+3
+```
+Notes: [0, 1, 0, 3, 2]. Minute 1: note 0 (could be revisiting start or new room - use new room). Minute 2: note 1 (revisit room from minute 1). Minute 3: note 0 (revisit start room). Minute 4: note 3 (new room). Minute 5: note 2 (revisit room from minute 2). Minimum rooms = 3.
+
 ## Solution
 
 ### Approach

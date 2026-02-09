@@ -17,6 +17,20 @@ Create a shortest name for a new fruit that contains both original fruit names a
 ## Output Format
 For each test case, output the shortest combined name.
 
+## Example
+```
+Input:
+apple peach
+ananas banana
+pear peach
+
+Output:
+appleach
+bananas
+pearch
+```
+"apple" + "peach": LCS is "p" or "ea"? LCS is "pea" -> SCS = 5+5-3 = 7? Actually "appleach" has length 8. The LCS approach gives the shortest supersequence containing both as subsequences.
+
 ## Solution
 
 ### Approach

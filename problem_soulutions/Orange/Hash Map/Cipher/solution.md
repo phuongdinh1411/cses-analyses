@@ -33,6 +33,17 @@ Example: b = 1001011, k = 4
 ## Output Format
 Decoded message of length n.
 
+## Example
+```
+Input:
+7 4
+1110100110
+
+Output:
+1001011
+```
+Original message b="1001011" with k=4. Encoding creates string of length n+k-1=10. Decoding "1110100110" with k=4 recovers the original "1001011".
+
 ## Solution
 
 ### Approach

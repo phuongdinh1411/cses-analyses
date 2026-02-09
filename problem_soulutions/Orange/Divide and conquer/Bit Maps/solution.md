@@ -27,6 +27,22 @@ When dividing:
 ## Output Format
 Convert each bitmap to the other format, with dimensions right-justified (width 4 for rows, 3 for columns).
 
+## Example
+```
+Input:
+B 3 4
+001
+011
+011
+1
+#
+
+Output:
+D   3   4
+D0D1D011
+```
+A 3x4 bitmap "001011011001" is converted to D format. The region is mixed, so output 'D', then recursively encode 4 quarters. The format uses right-justified dimensions.
+
 ## Solution
 
 ### Approach

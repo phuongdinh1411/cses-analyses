@@ -20,6 +20,20 @@ For a party, select maximum members such that no two hate each other. Two member
 - First line: maximum members that can be invited
 - Second line: their indices (1-indexed)
 
+## Example
+```
+Input:
+3
+1 1
+1 2
+2 1
+
+Output:
+2
+1 2
+```
+Members: (1,1), (1,2), (2,1). Member 1 and 2 don't hate each other (1<=1, 1<=2). Member 1 and 3 don't hate each other (1<=2, 1>=1 - but S1<S3 and B1>B3? No: 1<2 and 1>1 is false). We can invite members 1 and 2, or 1 and 3. Maximum is 2.
+
 ## Solution
 
 ### Approach

@@ -23,6 +23,22 @@ Given three strings X, Y, and Z, find the length of their longest common subsequ
 ## Output Format
 For each test case, print the LCS length.
 
+## Example
+```
+Input:
+2
+3 3 3
+abc bcd cde
+4 4 4
+abcd bcde cdef
+
+Output:
+1
+2
+```
+Test 1: X="abc", Y="bcd", Z="cde". LCS is "c" (length 1).
+Test 2: X="abcd", Y="bcde", Z="cdef". LCS is "cd" (length 2).
+
 ## Solution
 
 ### Approach
