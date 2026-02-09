@@ -137,44 +137,40 @@ Array only has 3 distinct values, impossible to find segment with 5 distinct.
 #### Solution
 
 ##### Approach
-Use sliding window technique - expand right until k distinct values are found, then shrink left while maintaining k distinct values.
+Use sliding window with two pointers. Expand right to add elements until we have k distinct values, then shrink left to find the shortest valid segment.
 
 ##### Python Solution
 ```python
+from collections import defaultdict
+
 n, k = map(int, input().split())
 a = list(map(int, input().split()))
 
-current_number = -1
-total_distinct = 0
+freq = defaultdict(int)
+left = 0
+result = (-1, -1)
+min_len = float('inf')
 
-start_position = 0
-end_position = -1
+for right in range(n):
+    freq[a[right]] += 1
 
-distinct_list = [0] * 100001
+    # Shrink window while we have exactly k distinct values
+    while len(freq) == k:
+        if right - left + 1 < min_len:
+            min_len = right - left + 1
+            result = (left + 1, right + 1)
 
-for i in range(n):
-  if distinct_list[a[i]] == 0:
-    total_distinct += 1
-  distinct_list[a[i]] += 1
-  if total_distinct == k:
-    end_position = i
-    break
+        freq[a[left]] -= 1
+        if freq[a[left]] == 0:
+            del freq[a[left]]
+        left += 1
 
-if end_position == -1:
-  print('-1 -1')
-else:
-  while True:
-    if distinct_list[a[start_position]] > 1:
-      distinct_list[a[start_position]] -= 1
-      start_position += 1
-    else:
-      break
-  print(start_position + 1, end_position + 1, sep=' ')
+print(result[0], result[1])
 ```
 
 ##### Complexity Analysis
-- **Time Complexity:** O(n) - single pass through the array
-- **Space Complexity:** O(max_value) - frequency array for distinct count
+- **Time Complexity:** O(n) - each element is added and removed at most once
+- **Space Complexity:** O(k) - frequency dictionary stores at most k distinct values
 
 ---
 
