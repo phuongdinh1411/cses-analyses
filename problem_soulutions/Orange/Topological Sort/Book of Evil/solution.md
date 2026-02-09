@@ -62,7 +62,7 @@ def solve():
     adj[b].append(a)
 
   def bfs(start):
-    """Returns distances from start to all nodes"""
+    """Returns distances from start to all nodes using deque"""
     dist = [-1] * (n + 1)
     dist[start] = 0
     queue = deque([start])
@@ -89,11 +89,11 @@ def solve():
   # Get distances from both endpoints
   dist_from_v = bfs(v)
 
-  # Count settlements where max distance to affected is <= d
-  result = 0
-  for i in range(1, n + 1):
-    if max(dist_from_u[i], dist_from_v[i]) <= d:
-      result += 1
+  # Count settlements using sum with generator expression
+  result = sum(
+    1 for i in range(1, n + 1)
+    if max(dist_from_u[i], dist_from_v[i]) <= d
+  )
 
   print(result)
 

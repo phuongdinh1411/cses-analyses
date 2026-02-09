@@ -81,22 +81,15 @@ if __name__ == "__main__":
 ### Alternative Iterative Solution (Bottom-up)
 
 ```python
+from functools import lru_cache
+
 def solve_iterative(n):
-  if n < 12:
-    return n
-
-  # Use dictionary for sparse memoization
-  dp = {}
-
+  @lru_cache(maxsize=None)
   def get_value(x):
     if x < 12:
       return x
-    if x in dp:
-      return dp[x]
-
-    result = max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
-    dp[x] = result
-    return result
+    # Exchange value vs keeping the coin
+    return max(x, get_value(x // 2) + get_value(x // 3) + get_value(x // 4))
 
   return get_value(n)
 

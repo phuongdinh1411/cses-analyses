@@ -62,10 +62,11 @@ def solve():
   for _ in range(t):
     n, w = map(int, input().split())
 
-    questions = []
-    for _ in range(n):
-      c, p, ti = map(int, input().split())
-      questions.append((ti, c * p))  # (time_cost, value)
+    # Read questions using list comprehension with tuple unpacking
+    questions = [
+      (ti, c * p)
+      for c, p, ti in (map(int, input().split()) for _ in range(n))
+    ]
 
     # 0/1 Knapsack
     dp = [0] * (w + 1)

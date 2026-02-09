@@ -61,120 +61,105 @@ Therefore, this problem reduces to the **Closest Pair of Points** problem, which
 
 ```python
 import sys
+from itertools import accumulate
+
 sys.setrecursionlimit(200000)
 
 def solve():
-  n = int(input())
-  a = list(map(int, input().split()))
+    n = int(input())
+    a = list(map(int, input().split()))
 
-  # Create points (index, prefix_sum)
-  prefix = [0] * (n + 1)
-  for i in range(n):
-    prefix[i + 1] = prefix[i] + a[i]
+    # Create points (index, prefix_sum) using accumulate
+    prefix = [0] + list(accumulate(a))
 
-  # Points are (i, prefix[i]) for i = 1 to n
-  points = [(i, prefix[i]) for i in range(1, n + 1)]
+    # Points are (i, prefix[i]) for i = 1 to n using list comprehension
+    points = [(i, prefix[i]) for i in range(1, n + 1)]
 
-  def dist_sq(p1, p2):
-    return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+    def dist_sq(p1, p2):
+        dx, dy = p1[0] - p2[0], p1[1] - p2[1]
+        return dx * dx + dy * dy
 
-  def brute_force(pts):
-    min_d = float('inf')
-    for i in range(len(pts)):
-      for j in range(i + 1, len(pts)):
-        min_d = min(min_d, dist_sq(pts[i], pts[j]))
-    return min_d
+    def brute_force(pts):
+        return min(
+            (dist_sq(pts[i], pts[j]) for i in range(len(pts)) for j in range(i + 1, len(pts))),
+            default=float('inf')
+        )
 
-  def closest_pair(pts):
-    if len(pts) <= 3:
-      return brute_force(pts)
+    def closest_pair(pts):
+        if len(pts) <= 3:
+            return brute_force(pts)
 
-    mid = len(pts) // 2
-    mid_x = pts[mid][0]
+        mid = len(pts) // 2
+        mid_x = pts[mid][0]
 
-    left = pts[:mid]
-    right = pts[mid:]
+        d = min(closest_pair(pts[:mid]), closest_pair(pts[mid:]))
 
-    d_left = closest_pair(left)
-    d_right = closest_pair(right)
-    d = min(d_left, d_right)
+        # Build strip using list comprehension
+        strip = sorted([p for p in pts if (p[0] - mid_x) ** 2 < d], key=lambda p: p[1])
 
-    # Build strip
-    strip = [p for p in pts if (p[0] - mid_x) ** 2 < d]
-    strip.sort(key=lambda p: p[1])  # Sort by y (prefix sum)
+        # Check strip
+        for i, p1 in enumerate(strip):
+            j = i + 1
+            while j < len(strip) and (strip[j][1] - p1[1]) ** 2 < d:
+                d = min(d, dist_sq(p1, strip[j]))
+                j += 1
 
-    # Check strip
-    for i in range(len(strip)):
-      j = i + 1
-      while j < len(strip) and (strip[j][1] - strip[i][1]) ** 2 < d:
-        d = min(d, dist_sq(strip[i], strip[j]))
-        j += 1
+        return d
 
-    return d
+    # Sort by x coordinate
+    points.sort()
 
-  # Sort by x coordinate
-  points.sort()
-
-  print(closest_pair(points))
+    print(closest_pair(points))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Optimized Solution with Better Merge
 
 ```python
+from itertools import accumulate
+
 def solve():
-  n = int(input())
-  a = list(map(int, input().split()))
+    n = int(input())
+    a = list(map(int, input().split()))
 
-  # Build prefix sums
-  prefix = [0]
-  for x in a:
-    prefix.append(prefix[-1] + x)
+    # Build prefix sums using accumulate
+    prefix = [0] + list(accumulate(a))
 
-  # Points: (x=index, y=prefix_sum)
-  points = list(range(n + 1))  # indices 0 to n
+    def dist(i, j):
+        dx, dy = i - j, prefix[i] - prefix[j]
+        return dx * dx + dy * dy
 
-  def dist(i, j):
-    dx = i - j
-    dy = prefix[i] - prefix[j]
-    return dx * dx + dy * dy
+    def closest(indices):
+        if len(indices) <= 3:
+            return min(
+                (dist(indices[i], indices[j]) for i in range(len(indices)) for j in range(i + 1, len(indices))),
+                default=float('inf')
+            )
 
-  def closest(indices):
-    if len(indices) <= 3:
-      min_d = float('inf')
-      for i in range(len(indices)):
-        for j in range(i + 1, len(indices)):
-          min_d = min(min_d, dist(indices[i], indices[j]))
-      return min_d
+        mid = len(indices) // 2
+        mid_x = indices[mid]
 
-    mid = len(indices) // 2
-    mid_x = indices[mid]
+        d = min(closest(indices[:mid]), closest(indices[mid:]))
 
-    d = min(closest(indices[:mid]), closest(indices[mid:]))
+        # Merge step using list comprehension
+        strip = sorted([i for i in indices if (i - mid_x) ** 2 < d], key=lambda i: prefix[i])
 
-    # Merge step
-    strip = [i for i in indices if (i - mid_x) ** 2 < d]
-    strip.sort(key=lambda i: prefix[i])
+        for i, idx_i in enumerate(strip):
+            for j in range(i + 1, len(strip)):
+                if (prefix[strip[j]] - prefix[idx_i]) ** 2 >= d:
+                    break
+                d = min(d, dist(idx_i, strip[j]))
 
-    for i in range(len(strip)):
-      for j in range(i + 1, len(strip)):
-        if (prefix[strip[j]] - prefix[strip[i]]) ** 2 >= d:
-          break
-        d = min(d, dist(strip[i], strip[j]))
+        return d
 
-    return d
-
-  # Sort indices by x coordinate (which is just the index itself)
-  points.sort()
-
-  # We need i != j, and since points start from 0, we use indices 1 to n
-  points = list(range(1, n + 1))
-  print(closest(points))
+    # Use indices 1 to n
+    points = list(range(1, n + 1))
+    print(closest(points))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

@@ -75,14 +75,17 @@ def solve():
   for _ in range(t):
     str_input, patt = input().split()
 
-    # Map each character to its first occurrence index in str
-    char_index = {char: i for i, char in enumerate(str_input) if char not in str_input[:i]}
+    # Map each character to its first occurrence index in str using enumerate
+    char_index = {}
+    for i, char in enumerate(str_input):
+      if char not in char_index:
+        char_index[char] = i
 
-    # Find character in patt with minimum index in str
-    valid_chars = [(char_index[c], c) for c in patt if c in char_index]
+    # Find character in patt with minimum index in str using min with key
+    valid_chars = [c for c in patt if c in char_index]
 
     if valid_chars:
-      print(min(valid_chars)[1])
+      print(min(valid_chars, key=lambda c: char_index[c]))
     else:
       print("No character present")
 

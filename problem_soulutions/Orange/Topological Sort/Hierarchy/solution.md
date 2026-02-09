@@ -57,10 +57,9 @@ def solve():
 
   for u in range(k):
     line = list(map(int, input().split()))
-    w = line[0]
-    for i in range(1, w + 1):
-      v = line[i] - 1  # 0-indexed
-      adj[u].append(v)
+    w, *subordinates = line  # Tuple unpacking for cleaner parsing
+    for v in subordinates:
+      adj[u].append(v - 1)  # 0-indexed
 
   # DFS-based topological sort
   WHITE, GRAY, BLACK = 0, 1, 2
@@ -81,15 +80,13 @@ def solve():
 
   topo_order.reverse()
 
-  # Assign bosses
+  # Assign bosses using enumerate
   boss = [0] * n
-  boss[topo_order[0]] = 0  # Main boss
+  for i, node in enumerate(topo_order):
+    boss[node] = 0 if i == 0 else topo_order[i - 1] + 1
 
-  for i in range(1, n):
-    boss[topo_order[i]] = topo_order[i - 1] + 1  # 1-indexed output
-
-  for i in range(n):
-    print(boss[i])
+  # Print all bosses
+  print('\n'.join(map(str, boss)))
 
 if __name__ == "__main__":
   solve()

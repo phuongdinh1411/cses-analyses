@@ -48,14 +48,15 @@ Use hashing. For each string, compute hash values for all possible single-charac
 ### Python Solution
 
 ```python
+from collections import defaultdict
+
 def solve():
   import sys
   input = sys.stdin.readline
 
   n, m = map(int, input().split())
 
-  # Store hashes of all strings in memory, grouped by length
-  from collections import defaultdict
+  # Use defaultdict for grouping by length
   memory = defaultdict(set)
 
   BASE = 31
@@ -67,7 +68,7 @@ def solve():
       h = (h * BASE + ord(c) - ord('a') + 1) % MOD
     return h
 
-  # Precompute powers of BASE
+  # Precompute powers of BASE using list comprehension alternative
   max_len = 600001
   pw = [1] * max_len
   for i in range(1, max_len):
@@ -75,23 +76,21 @@ def solve():
 
   for _ in range(n):
     s = input().strip()
-    h = compute_hash(s)
-    memory[len(s)].add(h)
+    memory[len(s)].add(compute_hash(s))
 
   results = []
 
   for _ in range(m):
     s = input().strip()
     length = len(s)
-    h = compute_hash(s)
+    current_hash = compute_hash(s)
 
     found = False
-    current_hash = h
 
-    # Try changing each position
-    for i in range(length):
+    # Try changing each position using enumerate
+    for i, char in enumerate(s):
       pos = length - 1 - i  # Position from right
-      old_val = ord(s[i]) - ord('a') + 1
+      old_val = ord(char) - ord('a') + 1
 
       for c in 'abc':
         new_val = ord(c) - ord('a') + 1

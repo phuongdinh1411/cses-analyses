@@ -52,101 +52,102 @@ A 3x4 bitmap "001011011001" is converted to D format. The region is mixed, so ou
 ### Python Solution
 
 ```python
+import sys
+
 def solve():
-  import sys
-  data = sys.stdin.read().split()
-  idx = 0
+    data = sys.stdin.read().split()
+    idx = 0
 
-  while idx < len(data):
-    fmt = data[idx]
-    if fmt == '#':
-      break
+    while idx < len(data):
+        fmt = data[idx]
+        if fmt == '#':
+            break
 
-    h = int(data[idx + 1])
-    w = int(data[idx + 2])
-    idx += 3
+        h, w = int(data[idx + 1]), int(data[idx + 2])
+        idx += 3
 
-    if fmt == 'B':
-      # Read bitmap
-      chars_needed = h * w
-      bitmap_str = ""
-      while len(bitmap_str) < chars_needed:
-        bitmap_str += data[idx]
-        idx += 1
+        if fmt == 'B':
+            # Read bitmap
+            chars_needed = h * w
+            bitmap_str = ""
+            while len(bitmap_str) < chars_needed:
+                bitmap_str += data[idx]
+                idx += 1
 
-      bitmap = [[0] * w for _ in range(h)]
-      for i in range(h):
-        for j in range(w):
-          bitmap[i][j] = int(bitmap_str[i * w + j])
+            # Build bitmap using nested list comprehension
+            bitmap = [[int(bitmap_str[i * w + j]) for j in range(w)] for i in range(h)]
 
-      # Convert B to D
-      def b2d(r, c, height, width):
-        if height == 0 or width == 0:
-          return ""
+            # Convert B to D
+            def b2d(r, c, height, width):
+                if height == 0 or width == 0:
+                    return ""
 
-        total = sum(bitmap[r + i][c + j]
-            for i in range(height) for j in range(width))
+                # Use generator expression for sum
+                total = sum(bitmap[r + i][c + j] for i in range(height) for j in range(width))
 
-        if total == 0:
-          return "0"
-        if total == height * width:
-          return "1"
+                if total == 0:
+                    return "0"
+                if total == height * width:
+                    return "1"
 
-        # Divide into quarters
-        h1, h2 = (height + 1) // 2, height // 2
-        w1, w2 = (width + 1) // 2, width // 2
+                # Divide into quarters using tuple unpacking
+                h1, h2 = (height + 1) // 2, height // 2
+                w1, w2 = (width + 1) // 2, width // 2
 
-        return ("D" +
-            b2d(r, c, h1, w1) +          # top-left
-            b2d(r, c + w1, h1, w2) +     # top-right
-            b2d(r + h1, c, h2, w1) +     # bottom-left
-            b2d(r + h1, c + w1, h2, w2)) # bottom-right
+                return "".join([
+                    "D",
+                    b2d(r, c, h1, w1),          # top-left
+                    b2d(r, c + w1, h1, w2),     # top-right
+                    b2d(r + h1, c, h2, w1),     # bottom-left
+                    b2d(r + h1, c + w1, h2, w2) # bottom-right
+                ])
 
-      result = b2d(0, 0, h, w)
-      print(f"D{h:4d}{w:4d}")
-      for i in range(0, len(result), 50):
-        print(result[i:i+50])
+            result = b2d(0, 0, h, w)
+            print(f"D{h:4d}{w:4d}")
+            # Print in chunks using range with step
+            for i in range(0, len(result), 50):
+                print(result[i:i+50])
 
-    else:  # fmt == 'D'
-      # Read D format
-      d_str = ""
-      # Estimate characters needed (at most h*w for fully expanded)
-      while idx < len(data) and data[idx] not in ['B', 'D', '#']:
-        d_str += data[idx]
-        idx += 1
+        else:  # fmt == 'D'
+            # Read D format
+            d_str = ""
+            while idx < len(data) and data[idx] not in ['B', 'D', '#']:
+                d_str += data[idx]
+                idx += 1
 
-      bitmap = [['0'] * w for _ in range(h)]
-      d_idx = [0]
+            bitmap = [['0'] * w for _ in range(h)]
+            d_idx = [0]
 
-      def d2b(r, c, height, width):
-        if height == 0 or width == 0:
-          return
+            def d2b(r, c, height, width):
+                if height == 0 or width == 0:
+                    return
 
-        ch = d_str[d_idx[0]]
-        d_idx[0] += 1
+                ch = d_str[d_idx[0]]
+                d_idx[0] += 1
 
-        if ch == '0' or ch == '1':
-          for i in range(height):
-            for j in range(width):
-              bitmap[r + i][c + j] = ch
-        else:  # 'D'
-          h1, h2 = (height + 1) // 2, height // 2
-          w1, w2 = (width + 1) // 2, width // 2
+                if ch in ('0', '1'):
+                    for i in range(height):
+                        for j in range(width):
+                            bitmap[r + i][c + j] = ch
+                else:  # 'D'
+                    h1, h2 = (height + 1) // 2, height // 2
+                    w1, w2 = (width + 1) // 2, width // 2
 
-          d2b(r, c, h1, w1)
-          d2b(r, c + w1, h1, w2)
-          d2b(r + h1, c, h2, w1)
-          d2b(r + h1, c + w1, h2, w2)
+                    d2b(r, c, h1, w1)
+                    d2b(r, c + w1, h1, w2)
+                    d2b(r + h1, c, h2, w1)
+                    d2b(r + h1, c + w1, h2, w2)
 
-      d2b(0, 0, h, w)
-      result = ''.join(''.join(row) for row in bitmap)
+            d2b(0, 0, h, w)
+            # Join rows using generator expression
+            result = ''.join(''.join(row) for row in bitmap)
 
-      print(f"B{h:4d}{w:4d}")
-      for i in range(0, len(result), 50):
-        print(result[i:i+50])
+            print(f"B{h:4d}{w:4d}")
+            for i in range(0, len(result), 50):
+                print(result[i:i+50])
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

@@ -66,16 +66,14 @@ def solve():
   c = int(input())
 
   for _ in range(c):
-    line = input().split()
-    t_req, a_req = int(line[0]), int(line[1])
-
+    t_req, a_req = map(int, input().split())
     n = int(input())
 
-    cylinders = []
-    for _ in range(n):
-      parts = input().split()
-      ti, ai, wi = int(parts[0]), int(parts[1]), int(parts[2])
-      cylinders.append((ti, ai, wi))
+    # Read cylinders using list comprehension with tuple unpacking
+    cylinders = [
+      tuple(map(int, input().split()))
+      for _ in range(n)
+    ]
 
     INF = float('inf')
 
@@ -83,15 +81,14 @@ def solve():
     dp = [[INF] * (a_req + 1) for _ in range(t_req + 1)]
     dp[0][0] = 0
 
-    for ti, ai, wi in cylinders:
+    for oxy, nit, weight in cylinders:
       # Process in reverse (0/1 knapsack)
       for o in range(t_req, -1, -1):
         for ni in range(a_req, -1, -1):
           if dp[o][ni] < INF:
             # New oxygen and nitrogen (cap at requirements)
-            new_o = min(o + ti, t_req)
-            new_n = min(ni + ai, a_req)
-            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + wi)
+            new_o, new_n = min(o + oxy, t_req), min(ni + nit, a_req)
+            dp[new_o][new_n] = min(dp[new_o][new_n], dp[o][ni] + weight)
 
     print(dp[t_req][a_req])
 

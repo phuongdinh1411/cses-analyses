@@ -56,11 +56,9 @@ def solve():
     adj[x].append(y)
     in_degree[y] += 1
 
-  # Min-heap for lexicographically smallest order
-  heap = []
-  for i in range(1, n + 1):
-    if in_degree[i] == 0:
-      heapq.heappush(heap, i)
+  # Use list comprehension to initialize heap with zero in-degree nodes
+  heap = [i for i in range(1, n + 1) if in_degree[i] == 0]
+  heapq.heapify(heap)
 
   result = []
 
@@ -73,10 +71,8 @@ def solve():
       if in_degree[v] == 0:
         heapq.heappush(heap, v)
 
-  if len(result) < n:
-    print("Sandro fails.")
-  else:
-    print(' '.join(map(str, result)))
+  # Simplified conditional output
+  print("Sandro fails." if len(result) < n else ' '.join(map(str, result)))
 
 if __name__ == "__main__":
   solve()

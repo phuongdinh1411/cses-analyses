@@ -161,19 +161,20 @@ def solve():
     n = len(s)
     rev = s[::-1]
 
-    # LCS of s and rev = LPS of s
-    # dp[i][j] = LCS of s[:i] and rev[:j]
-    dp = [[0] * (n + 1) for _ in range(2)]
+    # LCS of s and rev = LPS of s using space-optimized rolling array
+    prev, curr = [0] * (n + 1), [0] * (n + 1)
 
     for i in range(1, n + 1):
       for j in range(1, n + 1):
         if s[i-1] == rev[j-1]:
-          dp[i % 2][j] = dp[(i-1) % 2][j-1] + 1
+          curr[j] = prev[j-1] + 1
         else:
-          dp[i % 2][j] = max(dp[(i-1) % 2][j], dp[i % 2][j-1])
+          curr[j] = max(prev[j], curr[j-1])
+      # Swap using tuple unpacking
+      prev, curr = curr, [0] * (n + 1)
 
-    lps = dp[n % 2][n]
-    print(n - lps)
+    # Minimum insertions = length - longest palindromic subsequence
+    print(n - prev[n])
 
 if __name__ == "__main__":
   solve()

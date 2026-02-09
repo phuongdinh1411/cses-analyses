@@ -56,9 +56,10 @@ def count_occurrences(text, pattern):
   if not pattern:
     return len(text) + 1
 
-  # Build failure function for pattern
   m = len(pattern)
   fail = [0] * m
+
+  # Build failure function
   for i in range(1, m):
     j = fail[i - 1]
     while j > 0 and pattern[i] != pattern[j]:
@@ -67,7 +68,7 @@ def count_occurrences(text, pattern):
       j += 1
     fail[i] = j
 
-  # Search
+  # KMP search with cleaner iteration
   count = 0
   j = 0
   for char in text:
@@ -86,22 +87,14 @@ def solve():
   B = input().strip()
   n = int(input())
 
-  # Binary search on prefix length
-  # Or linear search from longest to shortest
-
-  result = ""
-
   # Try each prefix length from longest to shortest
   for length in range(len(B), 0, -1):
     prefix = B[:length]
     if count_occurrences(A, prefix) >= n:
-      result = prefix
-      break
+      print(prefix)
+      return
 
-  if result:
-    print(result)
-  else:
-    print("IMPOSSIBLE")
+  print("IMPOSSIBLE")
 
 if __name__ == "__main__":
   solve()

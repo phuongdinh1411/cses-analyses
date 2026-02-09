@@ -140,16 +140,16 @@ def solve():
     dp = [1] * n
 
     for i in range(1, n):
-      for j in range(i):
-        if missiles[j] >= missiles[i]:
-          dp[i] = max(dp[i], dp[j] + 1)
-
-    result = max(dp)
+      # Use max with generator for cleaner code
+      dp[i] = 1 + max(
+        (dp[j] for j in range(i) if missiles[j] >= missiles[i]),
+        default=0
+      )
 
     if case > 1:
       print()
     print(f"Test #{case}:")
-    print(f"  maximum possible number of missiles intercepted: {result}")
+    print(f"  maximum possible number of missiles intercepted: {max(dp)}")
 
 if __name__ == "__main__":
   solve()

@@ -45,26 +45,26 @@ Use a set to track available "last visit" times. Initially, time 0 is available 
 
 ```python
 def solve():
-  n = int(input())
-  times = list(map(int, input().split()))
+    n = int(input())
+    times = list(map(int, input().split()))
 
-  available = {0}  # Times when rooms were last visited
-  rooms = 1  # Start with 1 room (the initial room)
+    available = {0}  # Times when rooms were last visited
+    rooms = 1  # Start with 1 room (the initial room)
 
-  for i, t in enumerate(times, 1):
-    if t in available:
-      # Revisiting a room - remove old time, add current time
-      available.remove(t)
-      available.add(i)
-    else:
-      # New room
-      rooms += 1
-      available.add(i)
+    for i, t in enumerate(times, 1):
+        if t in available:
+            # Revisiting a room - remove old time, add current time
+            available.discard(t)
+            available.add(i)
+        else:
+            # New room
+            rooms += 1
+            available.add(i)
 
-  print(rooms)
+    print(rooms)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution

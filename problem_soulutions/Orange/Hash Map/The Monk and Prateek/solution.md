@@ -55,42 +55,32 @@ f(12) = 12 XOR (1+2) = 12 XOR 3 = 15. f(22) = 22 XOR 4 = 18. f(32) = 32 XOR 5 = 
 ### Python Solution
 
 ```python
-def digit_sum(n):
-  total = 0
-  while n:
-    total += n % 10
-    n //= 10
-  return total
-
-def r3gz3n(n):
-  return n ^ digit_sum(n)
+from collections import Counter
 
 def solve():
   n = int(input())
   numbers = list(map(int, input().split()))
 
-  hash_count = {}
-  collisions = 0
-  max_hash = float('-inf')
+  # Pythonic digit sum using string conversion
+  def hash_func(x):
+    return x ^ sum(int(d) for d in str(x))
 
-  for num in numbers:
-    h = r3gz3n(num)
-    max_hash = max(max_hash, h)
+  # Use list comprehension to compute all hashes
+  hashes = [hash_func(num) for num in numbers]
 
-    if h in hash_count:
-      collisions += 1
-      hash_count[h] += 1
-    else:
-      hash_count[h] = 1
+  # Use Counter for frequency counting
+  hash_count = Counter(hashes)
 
-  # Find most frequent hash value
+  # Collisions = total - unique values
+  collisions = len(hashes) - len(hash_count)
+
   if collisions == 0:
     # All unique - return max hash value
-    print(max_hash, 0)
+    print(max(hashes), 0)
   else:
     # Find value with maximum count (smallest if tie)
     max_count = max(hash_count.values())
-    most_frequent = min(h for h, c in hash_count.items() if c == max_count)
+    most_frequent = min(h for h, cnt in hash_count.items() if cnt == max_count)
     print(most_frequent, collisions)
 
 if __name__ == "__main__":

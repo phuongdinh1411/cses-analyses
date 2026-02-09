@@ -47,53 +47,51 @@ This is a classic binary search on answer problem. We binary search on the maxim
 ### Python Solution
 
 ```python
+import sys
+
 def can_fill(vessels, max_capacity, m):
-  """Check if we can fill all vessels into m containers with given max capacity"""
-  containers_used = 1
-  current_sum = 0
+    """Check if we can fill all vessels into m containers with given max capacity"""
+    containers_used = 1
+    current_sum = 0
 
-  for vessel in vessels:
-    if vessel > max_capacity:
-      return False
+    for vessel in vessels:
+        if vessel > max_capacity:
+            return False
 
-    if current_sum + vessel > max_capacity:
-      containers_used += 1
-      current_sum = vessel
-      if containers_used > m:
-        return False
-    else:
-      current_sum += vessel
+        if current_sum + vessel > max_capacity:
+            containers_used += 1
+            current_sum = vessel
+            if containers_used > m:
+                return False
+        else:
+            current_sum += vessel
 
-  return True
+    return True
 
 def solve():
-  import sys
+    for line in sys.stdin:
+        parts = line.split()
+        n, m = int(parts[0]), int(parts[1])
 
-  for line in sys.stdin:
-    parts = line.split()
-    n, m = int(parts[0]), int(parts[1])
+        vessels = list(map(int, input().split()))
 
-    vessels = list(map(int, input().split()))
+        # Binary search on maximum container capacity
+        low, high = max(vessels), sum(vessels)
+        result = high
 
-    # Binary search on maximum container capacity
-    low = max(vessels)  # At minimum, need to fit largest vessel
-    high = sum(vessels)  # At maximum, one container fits all
+        while low <= high:
+            mid = (low + high) // 2
 
-    result = high
+            if can_fill(vessels, mid, m):
+                result = mid
+                high = mid - 1
+            else:
+                low = mid + 1
 
-    while low <= high:
-      mid = (low + high) // 2
-
-      if can_fill(vessels, mid, m):
-        result = mid
-        high = mid - 1
-      else:
-        low = mid + 1
-
-    print(result)
+        print(result)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution

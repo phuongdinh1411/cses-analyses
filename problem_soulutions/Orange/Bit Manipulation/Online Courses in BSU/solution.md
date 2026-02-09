@@ -51,109 +51,111 @@ import sys
 sys.setrecursionlimit(200000)
 
 def solve():
-  n, k = map(int, input().split())
-  main_courses = list(map(int, input().split()))
+    n, k = map(int, input().split())
+    main_courses = list(map(int, input().split()))
 
-  # Build dependency graph (course -> its prerequisites)
-  deps = [[] for _ in range(n + 1)]
-  for i in range(1, n + 1):
-    line = list(map(int, input().split()))
-    t = line[0]
-    deps[i] = line[1:t+1]
+    # Build dependency graph (course -> its prerequisites)
+    deps = [[] for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        line = list(map(int, input().split()))
+        t, *prereqs = line[0], *line[1:line[0]+1]
+        deps[i] = prereqs
 
-  # DFS with cycle detection
-  WHITE, GRAY, BLACK = 0, 1, 2
-  color = [WHITE] * (n + 1)
-  result = []
-  has_cycle = False
+    # DFS with cycle detection using color states
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = [WHITE] * (n + 1)
+    result = []
+    has_cycle = False
 
-  def dfs(u):
-    nonlocal has_cycle
+    def dfs(u):
+        nonlocal has_cycle
+        if has_cycle:
+            return
+
+        color[u] = GRAY
+
+        for v in deps[u]:
+            if color[v] == GRAY:
+                has_cycle = True
+                return
+            if color[v] == WHITE:
+                dfs(v)
+
+        color[u] = BLACK
+        result.append(u)
+
+    # Start DFS from each main course
+    for course in main_courses:
+        if color[course] == WHITE:
+            dfs(course)
+
     if has_cycle:
-      return
-
-    color[u] = GRAY
-
-    for v in deps[u]:
-      if color[v] == GRAY:
-        has_cycle = True
-        return
-      if color[v] == WHITE:
-        dfs(v)
-
-    color[u] = BLACK
-    result.append(u)
-
-  # Start DFS from each main course
-  for course in main_courses:
-    if color[course] == WHITE:
-      dfs(course)
-
-  if has_cycle:
-    print(-1)
-  else:
-    print(len(result))
-    print(' '.join(map(str, result)))
+        print(-1)
+    else:
+        print(len(result))
+        print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Iterative DFS Solution
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  main_courses = list(map(int, input().split()))
+    n, k = map(int, input().split())
+    main_courses = list(map(int, input().split()))
 
-  deps = [[] for _ in range(n + 1)]
-  for i in range(1, n + 1):
-    line = list(map(int, input().split()))
-    t = line[0]
-    deps[i] = line[1:t+1]
+    deps = [[] for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        line = list(map(int, input().split()))
+        t = line[0]
+        deps[i] = line[1:t+1]
 
-  WHITE, GRAY, BLACK = 0, 1, 2
-  color = [WHITE] * (n + 1)
-  result = []
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = [WHITE] * (n + 1)
+    result = []
 
-  def dfs_iterative(start):
-    stack = [(start, False)]
+    def dfs_iterative(start):
+        stack = [(start, False)]
 
-    while stack:
-      node, processed = stack.pop()
+        while stack:
+            node, processed = stack.pop()
 
-      if processed:
-        color[node] = BLACK
-        result.append(node)
-        continue
+            if processed:
+                color[node] = BLACK
+                result.append(node)
+                continue
 
-      if color[node] == BLACK:
-        continue
-      if color[node] == GRAY:
-        return False  # Cycle detected
+            if color[node] == BLACK:
+                continue
+            if color[node] == GRAY:
+                return False  # Cycle detected
 
-      color[node] = GRAY
-      stack.append((node, True))
+            color[node] = GRAY
+            stack.append((node, True))
 
-      for dep in deps[node]:
-        if color[dep] == GRAY:
-          return False  # Cycle
-        if color[dep] == WHITE:
-          stack.append((dep, False))
+            # Add dependencies to stack
+            for dep in deps[node]:
+                if color[dep] == GRAY:
+                    return False  # Cycle
+                if color[dep] == WHITE:
+                    stack.append((dep, False))
 
-    return True
+        return True
 
-  for course in main_courses:
-    if color[course] == WHITE:
-      if not dfs_iterative(course):
-        print(-1)
-        return
+    # Process main courses
+    for course in main_courses:
+        if color[course] == WHITE:
+            if not dfs_iterative(course):
+                print(-1)
+                return
 
-  print(len(result))
-  print(' '.join(map(str, result)))
+    print(len(result))
+    print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

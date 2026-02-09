@@ -55,15 +55,17 @@ def solve():
     starts = list(map(int, input().split()))
     ends = list(map(int, input().split()))
 
+    # Use enumerate and zip for cleaner iteration
     # Create list of (end_time, start_time, original_index)
-    meetings = [(ends[i], starts[i], i + 1) for i in range(n)]
-
-    # Sort by end time
-    meetings.sort()
+    meetings = sorted(
+      (end, start, i + 1)
+      for i, (start, end) in enumerate(zip(starts, ends))
+    )
 
     result = []
     last_end = -1
 
+    # Use tuple unpacking
     for end, start, idx in meetings:
       if start > last_end:
         result.append(idx)
@@ -86,10 +88,11 @@ def solve():
     starts = list(map(int, input().split()))
     ends = list(map(int, input().split()))
 
-    # Create meetings with 1-based index
-    meetings = []
-    for i in range(n):
-      meetings.append((ends[i], starts[i], i + 1))
+    # Use enumerate and zip with list comprehension
+    meetings = [
+      (end, start, i + 1)
+      for i, (start, end) in enumerate(zip(starts, ends))
+    ]
 
     # Sort by end time, then by start time
     meetings.sort(key=lambda x: (x[0], x[1]))
@@ -97,6 +100,7 @@ def solve():
     selected = []
     prev_end = 0
 
+    # Tuple unpacking in loop
     for end, start, idx in meetings:
       if start >= prev_end:
         selected.append(idx)

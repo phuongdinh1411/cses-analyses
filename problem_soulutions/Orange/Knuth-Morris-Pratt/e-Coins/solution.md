@@ -57,29 +57,30 @@ def solve():
   idx += 1
 
   for _ in range(n):
-    parts = input_data[idx].split()
-    m, S = int(parts[0]), int(parts[1])
+    m, S = map(int, input_data[idx].split())
     idx += 1
 
+    # Use list comprehension to read coins
     coins = []
     for _ in range(m):
-      parts = input_data[idx].split()
-      coins.append((int(parts[0]), int(parts[1])))
+      cx, cy = map(int, input_data[idx].split())
+      coins.append((cx, cy))
       idx += 1
 
     target_sq = S * S
 
-    # BFS to find minimum coins
-    # dist[x][y] = minimum coins to reach sum (x, y)
+    # BFS with deque
     INF = float('inf')
     dist = [[INF] * (S + 1) for _ in range(S + 1)]
     dist[0][0] = 0
 
     queue = deque([(0, 0)])
+    result = INF
 
     while queue:
       x, y = queue.popleft()
 
+      # Tuple unpacking for coin values
       for cx, cy in coins:
         nx, ny = x + cx, y + cy
 
@@ -87,26 +88,19 @@ def solve():
           dist[nx][ny] = dist[x][y] + 1
 
           if nx * nx + ny * ny == target_sq:
-            print(dist[nx][ny])
-            break
+            result = min(result, dist[nx][ny])
+          else:
+            queue.append((nx, ny))
 
-          queue.append((nx, ny))
-      else:
-        continue
-      break
-    else:
-      # Check all valid endpoints
-      found = False
-      for x in range(S + 1):
-        for y in range(S + 1):
-          if x * x + y * y == target_sq and dist[x][y] != INF:
-            print(dist[x][y])
-            found = True
-            break
-        if found:
-          break
-      if not found:
-        print("not possible")
+    # Check all valid endpoints using generator expression
+    if result == INF:
+      result = min(
+        (dist[x][y] for x in range(S + 1) for y in range(S + 1)
+         if x * x + y * y == target_sq and dist[x][y] != INF),
+        default=INF
+      )
+
+    print(result if result != INF else "not possible")
 
 if __name__ == "__main__":
   solve()

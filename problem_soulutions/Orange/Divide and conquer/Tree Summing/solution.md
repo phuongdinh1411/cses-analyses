@@ -52,95 +52,85 @@ Parse the LISP S-expression and use recursion/stack to track the current path su
 import sys
 
 def solve():
-  data = sys.stdin.read()
-  idx = 0
-  n = len(data)
+    data = sys.stdin.read()
+    idx = 0
+    n = len(data)
 
-  def skip_whitespace():
-    nonlocal idx
-    while idx < n and data[idx] in ' \t\n\r':
-      idx += 1
+    def skip_whitespace():
+        nonlocal idx
+        while idx < n and data[idx] in ' \t\n\r':
+            idx += 1
 
-  def parse_int():
-    nonlocal idx
-    skip_whitespace()
-    negative = False
-    if idx < n and data[idx] == '-':
-      negative = True
-      idx += 1
-    num = 0
-    while idx < n and data[idx].isdigit():
-      num = num * 10 + int(data[idx])
-      idx += 1
-    return -num if negative else num
+    def parse_int():
+        nonlocal idx
+        skip_whitespace()
+        negative = data[idx] == '-' if idx < n else False
+        if negative:
+            idx += 1
+        num = 0
+        while idx < n and data[idx].isdigit():
+            num = num * 10 + int(data[idx])
+            idx += 1
+        return -num if negative else num
 
-  def parse_tree(target, current_sum):
-    """Returns True if there's a root-to-leaf path with sum = target"""
-    nonlocal idx
-    skip_whitespace()
+    def parse_tree(target, current_sum):
+        """Returns True if there's a root-to-leaf path with sum = target"""
+        nonlocal idx
+        skip_whitespace()
 
-    if idx >= n or data[idx] != '(':
-      return False
+        if idx >= n or data[idx] != '(':
+            return False
 
-    idx += 1  # Skip '('
-    skip_whitespace()
+        idx += 1  # Skip '('
+        skip_whitespace()
 
-    # Check for empty tree
-    if data[idx] == ')':
-      idx += 1
-      return None  # Empty tree marker
+        # Check for empty tree
+        if data[idx] == ')':
+            idx += 1
+            return None  # Empty tree marker
 
-    # Parse integer
-    value = parse_int()
-    current_sum += value
+        # Parse integer and update sum
+        current_sum += parse_int()
 
-    # Parse left subtree
-    left_result = parse_tree(target, current_sum)
+        # Parse left and right subtrees
+        left_result = parse_tree(target, current_sum)
+        right_result = parse_tree(target, current_sum)
 
-    # Parse right subtree
-    right_result = parse_tree(target, current_sum)
+        skip_whitespace()
+        idx += 1  # Skip ')'
 
-    skip_whitespace()
-    idx += 1  # Skip ')'
+        # If both children are empty (leaf node)
+        if left_result is None and right_result is None:
+            return current_sum == target
 
-    # If both children are empty (leaf node)
-    if left_result is None and right_result is None:
-      return current_sum == target
+        # Use or to check either child (None is falsy but we handle it explicitly)
+        if left_result is None:
+            return right_result
+        if right_result is None:
+            return left_result
 
-    # If one child is empty, check the other
-    if left_result is None:
-      return right_result
-    if right_result is None:
-      return left_result
+        return left_result or right_result
 
-    # Both children exist
-    return left_result or right_result
+    while idx < n:
+        skip_whitespace()
+        if idx >= n:
+            break
 
-  while idx < n:
-    skip_whitespace()
-    if idx >= n:
-      break
+        # Check if we have an integer (target)
+        if data[idx].isdigit() or data[idx] == '-':
+            target = parse_int()
+            skip_whitespace()
 
-    # Check if we have an integer (target)
-    if data[idx].isdigit() or data[idx] == '-':
-      target = parse_int()
-      skip_whitespace()
+            if idx >= n or data[idx] != '(':
+                break
 
-      if idx >= n or data[idx] != '(':
-        break
-
-      # Check for empty tree
-      result = parse_tree(target, 0)
-
-      if result is None:
-        print("no")  # Empty tree
-      else:
-        print("yes" if result else "no")
-    else:
-      idx += 1
+            result = parse_tree(target, 0)
+            print("yes" if result else "no")
+        else:
+            idx += 1
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution with Stack

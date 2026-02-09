@@ -69,27 +69,21 @@ def solve():
       j += 1
     fail[i] = j
 
-  # Find all valid prefix-suffix lengths
+  # Find all valid prefix-suffix lengths using set
   prefix_suffix_lens = set()
   length = fail[n - 1]
   while length > 0:
     prefix_suffix_lens.add(length)
     length = fail[length - 1]
 
-  # Find lengths that appear in the middle (positions 1 to n-2)
-  middle_lens = set()
-  for i in range(n - 2):  # Exclude last position
-    if fail[i] > 0:
-      middle_lens.add(fail[i])
+  # Find lengths that appear in the middle using set comprehension
+  middle_lens = {fail[i] for i in range(n - 2) if fail[i] > 0}
 
   # Find longest length that is both prefix-suffix AND appears in middle
   valid_lens = prefix_suffix_lens & middle_lens
 
-  if not valid_lens:
-    print("Just a legend")
-  else:
-    max_len = max(valid_lens)
-    print(s[:max_len])
+  # Simplified conditional output
+  print(s[:max(valid_lens)] if valid_lens else "Just a legend")
 
 if __name__ == "__main__":
   solve()

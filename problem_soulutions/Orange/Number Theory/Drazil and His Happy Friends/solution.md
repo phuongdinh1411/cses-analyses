@@ -50,31 +50,27 @@ The key insight is based on number theory:
 def solve():
   n, m = map(int, input().split())
 
-  # Read happy boys
+  # Read happy boys using tuple unpacking
   line = list(map(int, input().split()))
-  b = line[0]
-  happy_boys = set(line[1:b+1]) if b > 0 else set()
+  b, *boys = line
+  happy_boys = set(boys)
 
-  # Read happy girls
+  # Read happy girls using tuple unpacking
   line = list(map(int, input().split()))
-  g = line[0]
-  happy_girls = set(line[1:g+1]) if g > 0 else set()
+  g, *girls = line
+  happy_girls = set(girls)
 
   # Simulate for n * m days (covers full cycle)
   for day in range(n * m):
-    boy = day % n
-    girl = day % m
+    boy, girl = day % n, day % m
 
     # If either is happy, both become happy
     if boy in happy_boys or girl in happy_girls:
       happy_boys.add(boy)
       happy_girls.add(girl)
 
-  # Check if everyone is happy
-  if len(happy_boys) == n and len(happy_girls) == m:
-    print("Yes")
-  else:
-    print("No")
+  # Simplified conditional output
+  print("Yes" if len(happy_boys) == n and len(happy_girls) == m else "No")
 
 if __name__ == "__main__":
   solve()

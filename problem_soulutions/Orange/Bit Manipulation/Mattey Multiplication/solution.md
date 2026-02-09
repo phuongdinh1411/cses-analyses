@@ -37,55 +37,41 @@ Find all bit positions where M has a 1, then output in decreasing order.
 
 ```python
 def solve():
-  t = int(input())
+    t = int(input())
 
-  for _ in range(t):
-    n, m = map(int, input().split())
+    for _ in range(t):
+        n, m = map(int, input().split())
 
-    # Find positions of 1-bits in M
-    positions = []
-    bit_pos = 0
+        # Find positions of 1-bits in M using list comprehension
+        positions = [bit_pos for bit_pos in range(m.bit_length()) if m & (1 << bit_pos)]
 
-    while m > 0:
-      if m & 1:
-        positions.append(bit_pos)
-      m >>= 1
-      bit_pos += 1
-
-    # Output in decreasing order
-    terms = []
-    for pos in reversed(positions):
-      terms.append(f"({n}<<{pos})")
-
-    print(" + ".join(terms))
+        # Output in decreasing order using generator expression
+        terms = (f"({n}<<{pos})" for pos in reversed(positions))
+        print(" + ".join(terms))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution
 
 ```python
 def solve():
-  t = int(input())
+    t = int(input())
 
-  for _ in range(t):
-    n, m = map(int, input().split())
+    for _ in range(t):
+        n, m = map(int, input().split())
 
-    # Get binary representation and find 1-bit positions
-    binary = bin(m)[2:]  # Remove '0b' prefix
-    length = len(binary)
+        # Get binary representation and find 1-bit positions using enumerate
+        binary = bin(m)[2:]  # Remove '0b' prefix
+        length = len(binary)
 
-    terms = []
-    for i, bit in enumerate(binary):
-      if bit == '1':
-        shift = length - 1 - i
-        terms.append(f"({n}<<{shift})")
-
-    print(" + ".join(terms))
+        # Use list comprehension with enumerate for cleaner iteration
+        terms = [f"({n}<<{length - 1 - i})" for i, bit in enumerate(binary) if bit == '1']
+        print(" + ".join(terms))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### One-liner Style

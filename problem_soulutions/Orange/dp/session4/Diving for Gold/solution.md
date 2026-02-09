@@ -158,25 +158,24 @@ def solve():
     n = int(input_data[idx])
     idx += 1
 
-    treasures = []
-    for _ in range(n):
-      d, v = map(int, input_data[idx].split())
-      treasures.append((d, v))
-      idx += 1
+    # Read treasures using list comprehension
+    treasures = [
+      tuple(map(int, input_data[idx + i].split()))
+      for i in range(n)
+    ]
+    idx += n
 
-    # Time costs
-    costs = [3 * w * d for d, v in treasures]
-    values = [v for d, v in treasures]
+    # Calculate costs and values using list comprehensions
+    costs = [3 * w * depth for depth, _ in treasures]
+    values = [gold for _, gold in treasures]
 
-    # DP with item tracking
-    # dp[c] = (max_value, set of item indices)
-    INF = float('inf')
+    # DP with item tracking: dp[c] = (max_value, item indices)
     dp = [(0, []) for _ in range(t + 1)]
 
-    for i in range(n):
-      for c in range(t, costs[i] - 1, -1):
-        prev_val, prev_items = dp[c - costs[i]]
-        new_val = prev_val + values[i]
+    for i, (cost, value) in enumerate(zip(costs, values)):
+      for c in range(t, cost - 1, -1):
+        prev_val, prev_items = dp[c - cost]
+        new_val = prev_val + value
 
         if new_val > dp[c][0]:
           dp[c] = (new_val, prev_items + [i])
@@ -190,7 +189,8 @@ def solve():
     print(max_gold)
     print(len(selected))
     for i in selected:
-      print(treasures[i][0], treasures[i][1])
+      depth, gold = treasures[i]
+      print(depth, gold)
 
 if __name__ == "__main__":
   solve()

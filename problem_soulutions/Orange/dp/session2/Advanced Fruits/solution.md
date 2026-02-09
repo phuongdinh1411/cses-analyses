@@ -112,7 +112,7 @@ def solve():
     # dp[i][j] = shortest supersequence of a[:i] and b[:j]
     dp = [[""] * (n + 1) for _ in range(m + 1)]
 
-    # Base cases
+    # Base cases using list comprehension style
     for i in range(1, m + 1):
       dp[i][0] = a[:i]
     for j in range(1, n + 1):
@@ -123,10 +123,13 @@ def solve():
         if a[i-1] == b[j-1]:
           dp[i][j] = dp[i-1][j-1] + a[i-1]
         else:
-          if len(dp[i-1][j]) < len(dp[i][j-1]):
-            dp[i][j] = dp[i-1][j] + a[i-1]
-          else:
-            dp[i][j] = dp[i][j-1] + b[j-1]
+          # Use min with key for cleaner comparison
+          shorter, char = min(
+            (dp[i-1][j], a[i-1]),
+            (dp[i][j-1], b[j-1]),
+            key=lambda x: len(x[0])
+          )
+          dp[i][j] = shorter + char
 
     print(dp[m][n])
 

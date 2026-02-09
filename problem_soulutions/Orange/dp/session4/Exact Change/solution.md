@@ -117,9 +117,7 @@ def solve():
     n = int(input())
     coins = [int(input()) for _ in range(n)]
 
-    total = sum(coins)
-    max_sum = total  # Could be smarter but safe
-
+    max_sum = sum(coins)
     INF = float('inf')
 
     # dp[s] = minimum number of coins to make sum s
@@ -131,15 +129,10 @@ def solve():
         if dp[s - coin] < INF:
           dp[s] = min(dp[s], dp[s - coin] + 1)
 
-    # Find smallest achievable sum >= price
-    result_sum = -1
-    result_coins = -1
-
-    for s in range(price, max_sum + 1):
-      if dp[s] < INF:
-        result_sum = s
-        result_coins = dp[s]
-        break
+    # Find smallest achievable sum >= price using next()
+    result_sum, result_coins = next(
+      (s, dp[s]) for s in range(price, max_sum + 1) if dp[s] < INF
+    )
 
     print(result_sum, result_coins)
 

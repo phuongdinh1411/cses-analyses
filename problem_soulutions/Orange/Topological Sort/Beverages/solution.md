@@ -58,23 +58,17 @@ def solve():
       n = int(input())
       case_num += 1
 
-      # Read beverage names and create mapping
-      beverages = []
-      name_to_id = {}
+      # Read beverage names and create mapping using enumerate
+      beverages = [input().strip() for _ in range(n)]
+      name_to_id = {name: i for i, name in enumerate(beverages)}
 
-      for i in range(n):
-        name = input().strip()
-        beverages.append(name)
-        name_to_id[name] = i
-
-      # Build graph
+      # Build graph using defaultdict
       graph = defaultdict(list)
       in_degree = [0] * n
 
       m = int(input())
       for _ in range(m):
-        line = input().split()
-        b1, b2 = line[0], line[1]
+        b1, b2 = input().split()
         u, v = name_to_id[b1], name_to_id[b2]
         graph[u].append(v)
         in_degree[v] += 1
@@ -85,11 +79,9 @@ def solve():
       except:
         pass
 
-      # Topological sort using min-heap (to get lexicographically smallest by input order)
-      heap = []
-      for i in range(n):
-        if in_degree[i] == 0:
-          heapq.heappush(heap, i)
+      # Initialize heap with list comprehension
+      heap = [i for i in range(n) if in_degree[i] == 0]
+      heapq.heapify(heap)
 
       result = []
       while heap:

@@ -118,22 +118,22 @@ def solve():
     prince = list(map(int, input().split()))
     princess = list(map(int, input().split()))
 
-    # Create position map for prince
-    prince_pos = {v: i for i, v in enumerate(prince)}
+    # Create position map for prince using enumerate
+    prince_pos = {val: idx for idx, val in enumerate(prince)}
 
-    # Convert princess to positions in prince's sequence
-    seq = [prince_pos[v] for v in princess if v in prince_pos]
+    # Convert princess to positions using list comprehension
+    seq = [prince_pos[val] for val in princess if val in prince_pos]
 
-    # LIS
-    dp = []
+    # LIS using binary search
+    tails = []
     for x in seq:
-      pos = bisect.bisect_left(dp, x)
-      if pos == len(dp):
-        dp.append(x)
+      pos = bisect.bisect_left(tails, x)
+      if pos == len(tails):
+        tails.append(x)
       else:
-        dp[pos] = x
+        tails[pos] = x
 
-    print(f"Case {case}: {len(dp)}")
+    print(f"Case {case}: {len(tails)}")
 
 if __name__ == "__main__":
   solve()

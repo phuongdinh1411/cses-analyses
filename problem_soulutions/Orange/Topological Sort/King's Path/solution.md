@@ -48,18 +48,15 @@ def solve():
   x0, y0, x1, y1 = map(int, input().split())
   n = int(input())
 
-  allowed = set()
-  allowed.add((x0, y0))
-  allowed.add((x1, y1))
+  allowed = {(x0, y0), (x1, y1)}  # Set literal
 
   for _ in range(n):
     r, a, b = map(int, input().split())
-    for c in range(a, b + 1):
-      allowed.add((r, c))
+    # Use set update with generator expression
+    allowed.update((r, c) for c in range(a, b + 1))
 
-  # BFS
-  dx = [0, 0, 1, -1, 1, -1, 1, -1]
-  dy = [1, -1, 0, 0, 1, -1, -1, 1]
+  # King moves: 8 directions using tuple list
+  directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]
 
   dist = {(x0, y0): 0}
   queue = deque([(x0, y0)])
@@ -71,8 +68,9 @@ def solve():
       print(dist[(x, y)])
       return
 
-    for i in range(8):
-      nx, ny = x + dx[i], y + dy[i]
+    # Use tuple unpacking for directions
+    for dx, dy in directions:
+      nx, ny = x + dx, y + dy
 
       if (nx, ny) in allowed and (nx, ny) not in dist:
         dist[(nx, ny)] = dist[(x, y)] + 1

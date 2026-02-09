@@ -61,36 +61,20 @@ def solve():
     rocks = []
     for i in range(n):
       rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
-      rock_type = rock[0]
-      dist = int(rock[2:])
+      rock_type, dist = rock[0], int(rock[2:])
       rocks.append((dist, rock_type))
 
     rocks.sort()
 
-    # Add banks
-    positions = [0]  # left bank
-    big_positions = [0]
+    # Build position lists using list comprehension
+    all_positions = [0] + [dist for dist, _ in rocks] + [d]
+    big_positions = [0] + [dist for dist, rtype in rocks if rtype == 'B'] + [d]
 
-    for dist, rock_type in rocks:
-      positions.append(dist)
-      if rock_type == 'B':
-        big_positions.append(dist)
+    # Calculate max jumps using zip for consecutive pairs
+    max_jump_go = max(b - a for a, b in zip(all_positions, all_positions[1:]))
+    max_jump_return = max(b - a for a, b in zip(big_positions, big_positions[1:]))
 
-    positions.append(d)  # right bank
-    big_positions.append(d)
-
-    # Max jump going (using all rocks)
-    max_jump_go = 0
-    for i in range(1, len(positions)):
-      max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
-
-    # Max jump returning (only big rocks)
-    max_jump_return = 0
-    for i in range(1, len(big_positions)):
-      max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
-
-    result = max(max_jump_go, max_jump_return)
-    print(f"Case {case}: {result}")
+    print(f"Case {case}: {max(max_jump_go, max_jump_return)}")
 
 if __name__ == "__main__":
   solve()

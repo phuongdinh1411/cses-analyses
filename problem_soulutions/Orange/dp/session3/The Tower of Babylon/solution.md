@@ -56,40 +56,34 @@ def solve():
 
     case += 1
 
-    # Generate all rotations
+    # Generate all rotations using list comprehension
     blocks = []  # (base1, base2, height)
 
     for _ in range(n):
-      dims = list(map(int, input().split()))
-      x, y, z = dims
+      x, y, z = map(int, input().split())
 
       # All 3 rotations (choosing each dimension as height)
       # Store as (min_base, max_base, height) for consistent comparison
-      rotations = [
+      blocks.extend([
         (min(y, z), max(y, z), x),
         (min(x, z), max(x, z), y),
         (min(x, y), max(x, y), z)
-      ]
-
-      for rot in rotations:
-        blocks.append(rot)
+      ])
 
     # Sort by base area (or by first dimension)
     blocks.sort()
 
-    m = len(blocks)
-
     # dp[i] = max height of tower with blocks[i] on top
-    dp = [b[2] for b in blocks]  # Initialize with just the block's height
+    # Initialize with just the block's height using list comprehension
+    dp = [block[2] for block in blocks]
 
-    for i in range(1, m):
-      for j in range(i):
+    for i, (base1_i, base2_i, height_i) in enumerate(blocks):
+      for j, (base1_j, base2_j, _) in enumerate(blocks[:i]):
         # blocks[j] can be below blocks[i] if strictly smaller base
-        if blocks[j][0] < blocks[i][0] and blocks[j][1] < blocks[i][1]:
-          dp[i] = max(dp[i], dp[j] + blocks[i][2])
+        if base1_j < base1_i and base2_j < base2_i:
+          dp[i] = max(dp[i], dp[j] + height_i)
 
-    max_height = max(dp)
-    print(f"Case {case}: maximum height = {max_height}")
+    print(f"Case {case}: maximum height = {max(dp)}")
 
 if __name__ == "__main__":
   solve()

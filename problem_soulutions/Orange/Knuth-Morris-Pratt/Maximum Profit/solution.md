@@ -64,28 +64,27 @@ def solve():
       print(0)
       continue
 
-    # If k >= n/2, we can do unlimited transactions
+    # If k >= n/2, we can do unlimited transactions using zip
     if k >= n // 2:
-      profit = sum(max(0, prices[i+1] - prices[i]) for i in range(n-1))
+      profit = sum(max(0, b - a) for a, b in zip(prices, prices[1:]))
       print(profit)
       continue
 
     # DP approach
-    # dp[t][d] = max profit with at most t transactions ending on or before day d
     dp = [[0] * n for _ in range(k + 1)]
 
-    for t in range(1, k + 1):
-      max_diff = -prices[0]  # max of (dp[t-1][j] - prices[j])
+    for trans in range(1, k + 1):
+      max_diff = -prices[0]
 
       for d in range(1, n):
         # Don't sell on day d
-        dp[t][d] = dp[t][d-1]
+        dp[trans][d] = dp[trans][d-1]
 
-        # Sell on day d (bought on some earlier day j)
-        dp[t][d] = max(dp[t][d], prices[d] + max_diff)
+        # Sell on day d (bought on some earlier day)
+        dp[trans][d] = max(dp[trans][d], prices[d] + max_diff)
 
         # Update max_diff for future days
-        max_diff = max(max_diff, dp[t-1][d] - prices[d])
+        max_diff = max(max_diff, dp[trans-1][d] - prices[d])
 
     print(dp[k][n-1])
 

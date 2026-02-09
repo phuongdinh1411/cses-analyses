@@ -97,19 +97,17 @@ def solve():
   result = []
   window_xor = 0
 
-  for i in range(n):
+  for i, char in enumerate(s[:n]):  # Use enumerate for cleaner iteration
     # Decode b[i]
-    # s[i] contains XOR of b[i-k+1..i], but we only have b[0..i-1]
     # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
-
-    b_i = int(s[i]) ^ window_xor
+    b_i = int(char) ^ window_xor
     result.append(b_i)
 
     # Add b[i] to window
     window_xor ^= b_i
 
     # Remove b[i-k+1] from window if window exceeds k
-    if i - k + 1 >= 0:
+    if i >= k - 1:
       window_xor ^= result[i - k + 1]
 
   print(''.join(map(str, result)))

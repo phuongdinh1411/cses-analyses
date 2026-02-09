@@ -100,22 +100,22 @@ def solve():
   # For B[i][j] = 0: row i and col j in A must be all 0s
   # For B[i][j] = 1: at least one of row i or col j in A must have a 1
 
-  zero_rows = set()
-  zero_cols = set()
-
-  zero_rows = {i for i in range(m) for j in range(n) if B[i][j] == 0}
-  zero_cols = {j for i in range(m) for j in range(n) if B[i][j] == 0}
+  # Use set comprehensions to find zero rows and columns
+  zero_rows = {i for i, row in enumerate(B) if 0 in row}
+  zero_cols = {j for j in range(n) if any(B[i][j] == 0 for i in range(m))}
 
   # Build A: 1 unless in zero_row or zero_col
-  A = [[0 if i in zero_rows or j in zero_cols else 1
-    for j in range(n)] for i in range(m)]
+  A = [
+    [0 if i in zero_rows or j in zero_cols else 1 for j in range(n)]
+    for i in range(m)
+  ]
 
-  # Verify
+  # Verify using any() for row/col OR
   row_or = [any(row) for row in A]
   col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
 
   valid = all(
-    (1 if (row_or[i] or col_or[j]) else 0) == B[i][j]
+    (row_or[i] or col_or[j]) == B[i][j]
     for i in range(m)
     for j in range(n)
   )

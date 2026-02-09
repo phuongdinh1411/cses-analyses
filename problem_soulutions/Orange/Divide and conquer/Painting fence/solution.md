@@ -48,36 +48,33 @@ import sys
 sys.setrecursionlimit(10000)
 
 def min_strokes(arr, left, right, painted_height):
-  if left > right:
-    return 0
+    if left > right:
+        return 0
 
-  # Find the plank with minimum height in range
-  min_idx = left
-  for i in range(left, right + 1):
-    if arr[i] < arr[min_idx]:
-      min_idx = i
+    # Find the plank with minimum height in range using min with key
+    min_idx = min(range(left, right + 1), key=lambda i: arr[i])
 
-  # Option 1: Paint all planks vertically
-  vertical_strokes = right - left + 1
+    # Option 1: Paint all planks vertically
+    vertical_strokes = right - left + 1
 
-  # Option 2: Paint horizontally up to minimum height, then divide
-  min_height = arr[min_idx]
-  horizontal_strokes = (min_height - painted_height)  # Paint up to min height
+    # Option 2: Paint horizontally up to minimum height, then divide
+    min_height = arr[min_idx]
+    horizontal_strokes = (min_height - painted_height)  # Paint up to min height
 
-  # Recursively solve for left and right parts
-  horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
-  horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
+    # Recursively solve for left and right parts
+    horizontal_strokes += min_strokes(arr, left, min_idx - 1, min_height)
+    horizontal_strokes += min_strokes(arr, min_idx + 1, right, min_height)
 
-  return min(vertical_strokes, horizontal_strokes)
+    return min(vertical_strokes, horizontal_strokes)
 
 def solve():
-  n = int(input())
-  arr = list(map(int, input().split()))
+    n = int(input())
+    arr = list(map(int, input().split()))
 
-  print(min_strokes(arr, 0, n - 1, 0))
+    print(min_strokes(arr, 0, n - 1, 0))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Optimized Solution with Segment Tree (for finding minimum)

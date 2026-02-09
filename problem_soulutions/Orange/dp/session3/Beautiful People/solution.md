@@ -52,52 +52,46 @@ import bisect
 
 def solve():
   n = int(input())
-  members = []
 
-  for i in range(n):
-    s, b = map(int, input().split())
-    members.append((s, b, i + 1))  # (strength, beauty, original_index)
+  # Use list comprehension with enumerate for index tracking
+  members = [
+    (s, b, i + 1)
+    for i in range(n)
+    for s, b in [map(int, input().split())]
+  ]
 
   # Sort by strength ascending, then beauty descending (for same strength)
   members.sort(key=lambda x: (x[0], -x[1]))
 
   # LIS on beauty with index tracking
-  # dp[i] = smallest ending beauty for LIS of length i+1
-  # parent tracking for reconstruction
-
-  dp = []  # (beauty, index in members)
-  dp_idx = []  # index in members array for each dp entry
+  tails = []  # smallest ending beauty for each LIS length
+  tail_indices = []  # index in members array for each tail entry
   parent = [-1] * n
-  pos = [-1] * n  # position in LIS for each member
 
-  for i, (s, b, orig_idx) in enumerate(members):
+  for i, (strength, beauty, orig_idx) in enumerate(members):
     # Binary search for position
-    idx = bisect.bisect_left(dp, b)
+    pos = bisect.bisect_left(tails, beauty)
 
-    if idx == len(dp):
-      dp.append(b)
-      dp_idx.append(i)
+    if pos == len(tails):
+      tails.append(beauty)
+      tail_indices.append(i)
     else:
-      dp[idx] = b
-      dp_idx[idx] = i
+      tails[pos] = beauty
+      tail_indices[pos] = i
 
-    pos[i] = idx
-    if idx > 0:
-      parent[i] = dp_idx[idx - 1]
+    if pos > 0:
+      parent[i] = tail_indices[pos - 1]
 
   # Reconstruct LIS
-  lis_length = len(dp)
   result = []
-
-  # Find the last element in LIS
-  curr = dp_idx[lis_length - 1]
+  curr = tail_indices[-1]
   while curr != -1:
     result.append(members[curr][2])  # original index
     curr = parent[curr]
 
   result.reverse()
 
-  print(lis_length)
+  print(len(tails))
   print(' '.join(map(str, result)))
 
 if __name__ == "__main__":
@@ -111,51 +105,44 @@ import bisect
 
 def solve():
   n = int(input())
-  members = []
 
-  for i in range(n):
-    s, b = map(int, input().split())
-    members.append((s, b, i + 1))
+  # Read members with original index using enumerate-style
+  members = [
+    (*map(int, input().split()), i + 1)
+    for i in range(n)
+  ]
 
   # Sort: strength ascending, beauty descending for same strength
   members.sort(key=lambda x: (x[0], -x[1]))
 
-  # Extract beauties for LIS
-  beauties = [m[1] for m in members]
-
-  # LIS with reconstruction
-  tails = []  # tails[i] = smallest ending value for LIS of length i+1
+  # LIS with reconstruction using enumerate
+  tails = []
   tail_indices = []
   predecessor = [-1] * n
-  lis_pos = [0] * n
 
-  for i in range(n):
-    b = beauties[i]
-    pos = bisect.bisect_left(tails, b)
+  for i, (_, beauty, _) in enumerate(members):
+    pos = bisect.bisect_left(tails, beauty)
 
     if pos == len(tails):
-      tails.append(b)
+      tails.append(beauty)
       tail_indices.append(i)
     else:
-      tails[pos] = b
+      tails[pos] = beauty
       tail_indices[pos] = i
 
-    lis_pos[i] = pos
     if pos > 0:
       predecessor[i] = tail_indices[pos - 1]
 
-  # Reconstruct
-  lis_len = len(tails)
+  # Reconstruct path
   path = []
   idx = tail_indices[-1]
-
   while idx != -1:
-    path.append(members[idx][2])
+    path.append(members[idx][2])  # original index
     idx = predecessor[idx]
 
   path.reverse()
 
-  print(lis_len)
+  print(len(tails))
   print(' '.join(map(str, path)))
 
 if __name__ == "__main__":

@@ -49,77 +49,69 @@ Strategy: For each bit position (0 to 30), AND together all numbers that have th
 ### Python Solution
 
 ```python
+from functools import reduce
+import operator
+
 def is_power_of_two(x):
-  return x > 0 and (x & (x - 1)) == 0
+    return x > 0 and (x & (x - 1)) == 0
 
 def solve():
-  t = int(input())
+    t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    arr = list(map(int, input().split()))
+    for _ in range(t):
+        n = int(input())
+        arr = list(map(int, input().split()))
 
-    found = False
+        # Check if any single element is power of 2 using any()
+        found = any(is_power_of_two(num) for num in arr)
 
-    # Check if any single element is power of 2
-    for num in arr:
-      if is_power_of_two(num):
-        found = True
-        break
+        if not found:
+            # For each bit position, check if AND of numbers with that bit is power of 2
+            for bit in range(31):
+                target = 1 << bit
+                # Filter numbers with this bit set using list comprehension
+                nums_with_bit = [num for num in arr if num & target]
 
-    if not found:
-      # For each bit position
-      for bit in range(31):
-        target = 1 << bit
-        and_result = (1 << 31) - 1  # All bits set
+                if nums_with_bit:
+                    # Use reduce to AND all filtered numbers
+                    and_result = reduce(operator.and_, nums_with_bit)
+                    if is_power_of_two(and_result):
+                        found = True
+                        break
 
-        # AND all numbers that have this bit set
-        has_bit = False
-        for num in arr:
-          if num & target:
-            and_result &= num
-            has_bit = True
-
-        # Check if result is a power of 2
-        if has_bit and is_power_of_two(and_result):
-          found = True
-          break
-
-    print("YES" if found else "NO")
+        print("YES" if found else "NO")
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution
 
 ```python
+from functools import reduce
+import operator
+
 def solve():
-  t = int(input())
+    t = int(input())
 
-  for _ in range(t):
-    n = int(input())
-    arr = list(map(int, input().split()))
+    for _ in range(t):
+        n = int(input())
+        arr = list(map(int, input().split()))
 
-    result = "NO"
+        def check_bit(bit):
+            mask = 1 << bit
+            nums_with_bit = [num for num in arr if num & mask]
+            if not nums_with_bit:
+                return False
+            and_val = reduce(operator.and_, nums_with_bit)
+            return and_val > 0 and (and_val & (and_val - 1)) == 0
 
-    for bit in range(31):
-      mask = 1 << bit
-      and_val = -1  # All bits set (in two's complement)
-
-      for num in arr:
-        if num & mask:
-          and_val &= num
-
-      # and_val is power of 2 if exactly one bit is set
-      if and_val > 0 and (and_val & (and_val - 1)) == 0:
-        result = "YES"
-        break
-
-    print(result)
+        # Use any() with generator for cleaner check
+        result = "YES" if any(check_bit(bit) for bit in range(31)) else "NO"
+        print(result)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

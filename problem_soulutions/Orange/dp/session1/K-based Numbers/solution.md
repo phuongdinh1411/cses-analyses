@@ -84,16 +84,12 @@ def solve():
   n = int(input())
   k = int(input())
 
-  # Only need previous state
-  end_zero = 0      # Numbers ending with 0
-  end_nonzero = k - 1  # Numbers ending with non-zero (first digit: 1 to k-1)
+  # Only need previous state - use tuple unpacking for cleaner swaps
+  end_zero, end_nonzero = 0, k - 1
 
-  for i in range(2, n + 1):
-    new_end_zero = end_nonzero
-    new_end_nonzero = (end_zero + end_nonzero) * (k - 1)
-
-    end_zero = new_end_zero
-    end_nonzero = new_end_nonzero
+  for _ in range(2, n + 1):
+    # Tuple unpacking for simultaneous update
+    end_zero, end_nonzero = end_nonzero, (end_zero + end_nonzero) * (k - 1)
 
   print(end_zero + end_nonzero)
 

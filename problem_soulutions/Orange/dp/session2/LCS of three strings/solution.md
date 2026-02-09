@@ -55,8 +55,8 @@ def solve():
 
   for _ in range(t):
     n, m, k = map(int, input().split())
-    parts = input().split()
-    X, Y, Z = parts[0], parts[1], parts[2]
+    # Tuple unpacking for cleaner assignment
+    X, Y, Z = input().split()
 
     # 3D DP
     dp = [[[0] * (k + 1) for _ in range(m + 1)] for _ in range(n + 1)]
@@ -67,9 +67,7 @@ def solve():
           if X[i-1] == Y[j-1] == Z[l-1]:
             dp[i][j][l] = dp[i-1][j-1][l-1] + 1
           else:
-            dp[i][j][l] = max(dp[i-1][j][l],
-                    dp[i][j-1][l],
-                    dp[i][j][l-1])
+            dp[i][j][l] = max(dp[i-1][j][l], dp[i][j-1][l], dp[i][j][l-1])
 
     print(dp[n][m][k])
 

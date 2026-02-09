@@ -64,14 +64,10 @@ def solve():
     for coin in coins:
       # Process in reverse to avoid using same coin twice
       for s in range(target, coin - 1, -1):
-        if dp[s - coin]:
-          dp[s] = True
+        dp[s] = dp[s] or dp[s - coin]
 
-    # Find largest achievable sum <= target
-    for s in range(target, -1, -1):
-      if dp[s]:
-        best = s
-        break
+    # Find largest achievable sum <= target using next with reversed range
+    best = next(s for s in range(target, -1, -1) if dp[s])
 
     # Minimum difference
     print(total - 2 * best)

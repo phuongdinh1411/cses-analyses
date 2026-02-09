@@ -125,10 +125,8 @@ def solve():
   for case in range(1, t + 1):
     n, L = map(int, input().split())
 
-    sticks = []
-    for _ in range(n):
-      a, v = map(int, input().split())
-      sticks.append((a, v))
+    # Read sticks using list comprehension
+    sticks = [tuple(map(int, input().split())) for _ in range(n)]
 
     # Use 2*L to handle half-lengths as integers
     capacity = 2 * L
@@ -139,8 +137,7 @@ def solve():
     dp[0][0] = 0
 
     for length, value in sticks:
-      full_cost = 2 * length  # fully inside
-      half_cost = length       # hanging (uses only half)
+      full_cost, half_cost = 2 * length, length
 
       # Process backwards
       for c in range(capacity, -1, -1):
@@ -149,22 +146,15 @@ def solve():
             continue
 
           # Option A: place fully inside
-          nc = c + full_cost
-          if nc <= capacity:
-            dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
+          if c + full_cost <= capacity:
+            dp[c + full_cost][e] = max(dp[c + full_cost][e], dp[c][e] + value)
 
           # Option B: place hanging
-          if e < 2:
-            nc = c + half_cost
-            if nc <= capacity:
-              dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
+          if e < 2 and c + half_cost <= capacity:
+            dp[c + half_cost][e + 1] = max(dp[c + half_cost][e + 1], dp[c][e] + value)
 
-    # Get max value
-    ans = 0
-    for c in range(capacity + 1):
-      for e in range(3):
-        if dp[c][e] != NEG_INF:
-          ans = max(ans, dp[c][e])
+    # Get max value using nested max comprehension
+    ans = max(dp[c][e] for c in range(capacity + 1) for e in range(3) if dp[c][e] != NEG_INF)
 
     print(f"Case #{case}: {ans}")
 

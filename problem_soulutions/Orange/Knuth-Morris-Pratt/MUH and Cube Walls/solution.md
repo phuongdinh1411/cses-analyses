@@ -54,13 +54,11 @@ def solve():
     print(n)
     return
 
-  # Convert to difference arrays
-  diff_a = [a[i+1] - a[i] for i in range(n-1)]
-  diff_b = [b[i+1] - b[i] for i in range(w-1)]
+  # Convert to difference arrays using zip for consecutive pairs
+  diff_a = [y - x for x, y in zip(a, a[1:])]
+  diff_b = [y - x for x, y in zip(b, b[1:])]
 
-  # KMP to count occurrences of diff_b in diff_a
-  pattern = diff_b
-  text = diff_a
+  pattern, text = diff_b, diff_a
   m = len(pattern)
 
   if m == 0:
@@ -77,13 +75,13 @@ def solve():
       j += 1
     fail[i] = j
 
-  # Search
+  # KMP search
   count = 0
   j = 0
-  for i in range(len(text)):
-    while j > 0 and text[i] != pattern[j]:
+  for char in text:  # Cleaner iteration
+    while j > 0 and char != pattern[j]:
       j = fail[j-1]
-    if text[i] == pattern[j]:
+    if char == pattern[j]:
       j += 1
     if j == m:
       count += 1

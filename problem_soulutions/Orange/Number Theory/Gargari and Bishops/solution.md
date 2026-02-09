@@ -53,31 +53,23 @@ Precompute sum of each diagonal, then for each cell compute total attack value. 
 ### Python Solution
 
 ```python
+from collections import defaultdict
+
 def solve():
   n = int(input())
-  board = []
-  for _ in range(n):
-    row = list(map(int, input().split()))
-    board.append(row)
+  # Use list comprehension to read board
+  board = [list(map(int, input().split())) for _ in range(n)]
 
-  # Diagonal sums
-  # Main diagonal: indexed by i - j (range: -(n-1) to n-1)
-  # Anti diagonal: indexed by i + j (range: 0 to 2n-2)
-
-  main_diag = {}  # i - j -> sum
-  anti_diag = {}  # i + j -> sum
+  # Use defaultdict for diagonal sums
+  main_diag = defaultdict(int)  # i - j -> sum
+  anti_diag = defaultdict(int)  # i + j -> sum
 
   for i in range(n):
     for j in range(n):
-      d1 = i - j
-      d2 = i + j
+      main_diag[i - j] += board[i][j]
+      anti_diag[i + j] += board[i][j]
 
-      main_diag[d1] = main_diag.get(d1, 0) + board[i][j]
-      anti_diag[d2] = anti_diag.get(d2, 0) + board[i][j]
-
-  # For each cell, compute bishop value (don't double count the cell itself)
-  # bishop_value[i][j] = main_diag[i-j] + anti_diag[i+j] - board[i][j]
-
+  # Track best positions for each parity
   best_even = (-1, -1, -1)  # (value, i, j)
   best_odd = (-1, -1, -1)
 
@@ -86,20 +78,19 @@ def solve():
       val = main_diag[i - j] + anti_diag[i + j] - board[i][j]
       parity = (i + j) % 2
 
-      if parity == 0:
-        if val > best_even[0]:
-          best_even = (val, i, j)
-      else:
-        if val > best_odd[0]:
-          best_odd = (val, i, j)
+      # Simplified conditional assignment
+      if parity == 0 and val > best_even[0]:
+        best_even = (val, i, j)
+      elif parity == 1 and val > best_odd[0]:
+        best_odd = (val, i, j)
 
   total = best_even[0] + best_odd[0]
-  # Convert to 1-indexed
-  x1, y1 = best_even[1] + 1, best_even[2] + 1
-  x2, y2 = best_odd[1] + 1, best_odd[2] + 1
+  # Tuple unpacking and 1-indexed conversion
+  _, i1, j1 = best_even
+  _, i2, j2 = best_odd
 
   print(total)
-  print(x1, y1, x2, y2)
+  print(i1 + 1, j1 + 1, i2 + 1, j2 + 1)
 
 if __name__ == "__main__":
   solve()

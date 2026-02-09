@@ -46,42 +46,35 @@ This is a cycle detection problem in a directed graph. If the prerequisite graph
 from collections import deque, defaultdict
 
 def solve():
-  n, m = map(int, input().split())
+    n, m = map(int, input().split())
 
-  # Build adjacency list and in-degree count
-  graph = defaultdict(list)
-  in_degree = [0] * n
+    # Build adjacency list and in-degree count
+    graph = defaultdict(list)
+    in_degree = [0] * n
 
-  for _ in range(m):
-    u, v = map(int, input().split())
-    # u depends on v: v -> u
-    graph[v].append(u)
-    in_degree[u] += 1
+    for _ in range(m):
+        u, v = map(int, input().split())
+        graph[v].append(u)
+        in_degree[u] += 1
 
-  # Kahn's algorithm
-  queue = deque()
-  for i in range(n):
-    if in_degree[i] == 0:
-      queue.append(i)
+    # Kahn's algorithm with deque
+    queue = deque(i for i in range(n) if in_degree[i] == 0)
 
-  processed = 0
-  while queue:
-    node = queue.popleft()
-    processed += 1
+    processed = 0
+    while queue:
+        node = queue.popleft()
+        processed += 1
 
-    for neighbor in graph[node]:
-      in_degree[neighbor] -= 1
-      if in_degree[neighbor] == 0:
-        queue.append(neighbor)
+        for neighbor in graph[node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
 
-  # If all nodes processed, no cycle
-  if processed == n:
-    print("yes")
-  else:
-    print("no")
+    # Simplified output
+    print("yes" if processed == n else "no")
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Alternative Solution - DFS Cycle Detection
@@ -90,39 +83,35 @@ if __name__ == "__main__":
 from collections import defaultdict
 
 def solve():
-  n, m = map(int, input().split())
+    n, m = map(int, input().split())
 
-  graph = defaultdict(list)
-  for _ in range(m):
-    u, v = map(int, input().split())
-    graph[v].append(u)
+    graph = defaultdict(list)
+    for _ in range(m):
+        u, v = map(int, input().split())
+        graph[v].append(u)
 
-  # 0 = unvisited, 1 = visiting, 2 = visited
-  color = [0] * n
+    # Color states: 0 = unvisited, 1 = visiting, 2 = visited
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = [WHITE] * n
 
-  def has_cycle(node):
-    color[node] = 1  # visiting
+    def has_cycle(node):
+        color[node] = GRAY
 
-    for neighbor in graph[node]:
-      if color[neighbor] == 1:  # back edge
-        return True
-      if color[neighbor] == 0 and has_cycle(neighbor):
-        return True
+        for neighbor in graph[node]:
+            if color[neighbor] == GRAY:
+                return True
+            if color[neighbor] == WHITE and has_cycle(neighbor):
+                return True
 
-    color[node] = 2  # visited
-    return False
+        color[node] = BLACK
+        return False
 
-  # Check all components
-  for i in range(n):
-    if color[i] == 0:
-      if has_cycle(i):
-        print("no")
-        return
-
-  print("yes")
+    # Check all components using any()
+    has_any_cycle = any(color[i] == WHITE and has_cycle(i) for i in range(n))
+    print("no" if has_any_cycle else "yes")
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

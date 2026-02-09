@@ -54,24 +54,24 @@ def solve():
   good_bad = input().strip()
   k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+  # Use set comprehension for bad character lookup
+  bad_chars = {chr(ord('a') + i) for i, c in enumerate(good_bad) if c == '0'}
 
   n = len(s)
   good_substrings = set()
 
   for i in range(n):
     bad_count = 0
-    substring = ""
     for j in range(i, n):
-      substring += s[j]
-      if is_bad(s[j]):
+      # Simplified membership test
+      if s[j] in bad_chars:
         bad_count += 1
 
       if bad_count > k:
         break
 
-      good_substrings.add(substring)
+      # Use string slicing instead of concatenation
+      good_substrings.add(s[i:j+1])
 
   print(len(good_substrings))
 
@@ -82,21 +82,22 @@ if __name__ == "__main__":
 ### Python Solution using Trie (More Efficient)
 
 ```python
-class TrieNode:
-  def __init__(self):
-    self.children = {}
-    self.is_end = False
+from collections import defaultdict
 
 def solve():
   s = input().strip()
   good_bad = input().strip()
   k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+  # Use set comprehension for bad character lookup
+  bad_chars = {chr(ord('a') + i) for i, c in enumerate(good_bad) if c == '0'}
 
   n = len(s)
-  root = TrieNode()
+  # Use defaultdict for cleaner Trie implementation
+  def make_trie():
+    return defaultdict(make_trie)
+
+  root = make_trie()
   count = 0
 
   for i in range(n):
@@ -105,17 +106,16 @@ def solve():
 
     for j in range(i, n):
       c = s[j]
-      if is_bad(c):
+      if c in bad_chars:
         bad_count += 1
 
       if bad_count > k:
         break
 
-      if c not in node.children:
-        node.children[c] = TrieNode()
+      if c not in node:
         count += 1  # New unique substring found
 
-      node = node.children[c]
+      node = node[c]
 
   print(count)
 
@@ -131,8 +131,8 @@ def solve():
   good_bad = input().strip()
   k = int(input())
 
-  def is_bad(c):
-    return good_bad[ord(c) - ord('a')] == '0'
+  # Use set comprehension for bad character lookup
+  bad_chars = {chr(ord('a') + i) for i, c in enumerate(good_bad) if c == '0'}
 
   n = len(s)
   MOD = 10**18 + 9
@@ -143,10 +143,9 @@ def solve():
   for i in range(n):
     bad_count = 0
     hash_val = 0
-    power = 1
 
     for j in range(i, n):
-      if is_bad(s[j]):
+      if s[j] in bad_chars:
         bad_count += 1
 
       if bad_count > k:

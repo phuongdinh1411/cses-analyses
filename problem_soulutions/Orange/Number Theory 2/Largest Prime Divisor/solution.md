@@ -54,26 +54,24 @@ def largest_prime_divisor(n):
   if n <= 1:
     return -1
 
-  primes = []
+  primes = set()  # Use set for unique prime factors
   temp = n
 
-  # Trial division
+  # Trial division starting with 2
   d = 2
   while d * d <= temp:
     if temp % d == 0:
-      primes.append(d)
+      primes.add(d)
       while temp % d == 0:
         temp //= d
     d += 1
 
   # If temp > 1, it's a prime factor
   if temp > 1:
-    primes.append(temp)
+    primes.add(temp)
 
-  if len(primes) <= 1:
-    return -1
-
-  return max(primes)
+  # Simplified conditional return
+  return -1 if len(primes) <= 1 else max(primes)
 
 def solve():
   import sys
@@ -82,7 +80,6 @@ def solve():
     n = int(line.strip())
     if n == 0:
       break
-
     print(largest_prime_divisor(n))
 
 if __name__ == "__main__":

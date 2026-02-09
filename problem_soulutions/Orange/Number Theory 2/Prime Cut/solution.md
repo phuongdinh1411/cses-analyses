@@ -49,14 +49,14 @@ def sieve(n):
   """Sieve of Eratosthenes - returns primes up to n, including 1"""
   is_prime = [True] * (n + 1)
   is_prime[0] = False
-  if n >= 1:
-    is_prime[1] = True  # Treat 1 as prime for this problem
+  # Treat 1 as prime for this problem
 
   for i in range(2, int(n**0.5) + 1):
     if is_prime[i]:
       for j in range(i*i, n + 1, i):
         is_prime[j] = False
 
+  # Use list comprehension to collect primes
   return [i for i in range(n + 1) if is_prime[i]]
 
 def solve():
@@ -71,23 +71,17 @@ def solve():
 
     n, c = int(parts[0]), int(parts[1])
 
-    # Get primes <= n
+    # Get primes <= n using list comprehension
     primes = [p for p in all_primes if p <= n]
     length = len(primes)
 
-    # Determine how many to print
-    if length % 2 == 0:
-      count = 2 * c
-    else:
-      count = 2 * c - 1
+    # Simplified conditional expression
+    count = 2 * c if length % 2 == 0 else 2 * c - 1
+    count = min(count, length)  # Cap at list length
 
-    # If count exceeds list, print all
-    if count >= length:
-      result = primes
-    else:
-      # Find center elements
-      start = (length - count) // 2
-      result = primes[start:start + count]
+    # Calculate center slice
+    start = (length - count) // 2
+    result = primes[start:start + count]
 
     print(f"{n} {c}:", ' '.join(map(str, result)))
     print()

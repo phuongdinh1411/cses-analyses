@@ -46,26 +46,26 @@ Array: [-1, -1, 1], k=2. Flip both negatives: [1, 1, 1]. Sum = 3. If k=3, flip t
 
 ```python
 def solve():
-  n, k = map(int, input().split())
-  a = list(map(int, input().split()))
+    n, k = map(int, input().split())
+    a = list(map(int, input().split()))
 
-  # Flip negative numbers starting from smallest (most negative)
-  for i in range(n):
-    if a[i] < 0 and k > 0:
-      a[i] = -a[i]
-      k -= 1
+    # Flip negative numbers to positive while k > 0
+    for i, val in enumerate(a):
+        if val < 0 and k > 0:
+            a[i] = -val
+            k -= 1
 
-  # Sort again to find the minimum element
-  a.sort()
+    # Sort to find minimum element
+    a.sort()
 
-  # If k is odd, flip the smallest element
-  if k % 2 == 1:
-    a[0] = -a[0]
+    # If k is odd, flip the smallest element
+    if k % 2 == 1:
+        a[0] = -a[0]
 
-  print(sum(a))
+    print(sum(a))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

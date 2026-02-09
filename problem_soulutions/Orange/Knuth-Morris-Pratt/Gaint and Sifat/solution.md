@@ -53,10 +53,10 @@ def kmp_count(text, pattern):
   if not pattern:
     return 0
 
-  # Build failure function
   m = len(pattern)
   fail = [0] * m
 
+  # Build failure function
   for i in range(1, m):
     j = fail[i - 1]
     while j > 0 and pattern[i] != pattern[j]:
@@ -65,13 +65,13 @@ def kmp_count(text, pattern):
       j += 1
     fail[i] = j
 
-  # Search
+  # KMP search with cleaner iteration
   count = 0
   j = 0
-  for i in range(len(text)):
-    while j > 0 and text[i] != pattern[j]:
+  for char in text:  # Iterate over characters directly
+    while j > 0 and char != pattern[j]:
       j = fail[j - 1]
-    if text[i] == pattern[j]:
+    if char == pattern[j]:
       j += 1
     if j == m:
       count += 1
@@ -83,11 +83,11 @@ def solve():
   t = int(input())
 
   for case in range(1, t + 1):
-    S = input().replace(' ', '')  # Remove all spaces
-    s = input().strip()
+    # Use str.replace to remove spaces (Pythonic)
+    text = input().replace(' ', '')
+    pattern = input().strip()
 
-    count = kmp_count(S, s)
-    print(f"Case {case}: {count}")
+    print(f"Case {case}: {kmp_count(text, pattern)}")
 
 if __name__ == "__main__":
   solve()

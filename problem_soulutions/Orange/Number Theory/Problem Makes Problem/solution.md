@@ -50,29 +50,27 @@ def solve():
   MOD = 10**9 + 7
   MAX = 2 * 10**6 + 10
 
-  # Precompute factorials and inverse factorials
+  # Precompute factorials using list comprehension pattern
   fact = [1] * MAX
   for i in range(1, MAX):
     fact[i] = fact[i-1] * i % MOD
 
-  # Modular inverse using Fermat's little theorem
+  # Modular inverse using Fermat's little theorem with built-in pow
   inv_fact = [1] * MAX
   inv_fact[MAX-1] = pow(fact[MAX-1], MOD-2, MOD)
   for i in range(MAX-2, -1, -1):
     inv_fact[i] = inv_fact[i+1] * (i+1) % MOD
 
   def nCr(n, r):
-    if r < 0 or r > n:
-      return 0
-    return fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
+    # Simplified conditional with early return
+    return 0 if r < 0 or r > n else fact[n] * inv_fact[r] % MOD * inv_fact[n-r] % MOD
 
   t = int(input())
   for case in range(1, t+1):
     n, k = map(int, input().split())
 
     # Stars and Bars: C(n + k - 1, k - 1)
-    result = nCr(n + k - 1, k - 1)
-    print(f"Case {case}: {result}")
+    print(f"Case {case}: {nCr(n + k - 1, k - 1)}")
 
 if __name__ == "__main__":
   solve()

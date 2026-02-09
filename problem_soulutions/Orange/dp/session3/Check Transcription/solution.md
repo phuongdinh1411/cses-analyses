@@ -44,68 +44,29 @@ def solve():
   s = input().strip()
   t = input().strip()
 
-  c0 = s.count('0')
-  c1 = s.count('1')
-  n = len(s)
+  c0, c1 = s.count('0'), s.count('1')
   m = len(t)
-
-  # Special case: all same characters in s
-  first_char = s[0]
 
   count = 0
 
-  # Try all possible lengths for r_first_char
+  # Try all possible lengths for L0
   # c0 * L0 + c1 * L1 = m
-  # L0 >= 1, L1 >= 1
+  for L0 in range(1, m + 1):
+    # Handle case where pattern has no 1s
+    if c1 == 0:
+      if c0 * L0 == m:
+        r0 = t[:L0]
+        # Verify all positions map to r0
+        if all(t[i*L0:(i+1)*L0] == r0 for i in range(c0)):
+          count += 1
+      continue
 
-  for L_first in range(1, m + 1):
-    # Remaining length after assigning L_first to first_char
-    if first_char == '0':
-      L0 = L_first
-      if c1 == 0:
-        if c0 * L0 == m:
-          # Check consistency
-          r0 = t[:L0]
-          # Verify all 0s map to r0
-          valid = True
-          pos = 0
-          for ch in s:
-            if t[pos:pos + L0] != r0:
-              valid = False
-              break
-            pos += L0
-          if valid:
-            count += 1
-        continue
-
-      remaining = m - c0 * L0
-      if remaining <= 0 or remaining % c1 != 0:
-        continue
-      L1 = remaining // c1
-      if L1 <= 0:
-        continue
-    else:
-      L1 = L_first
-      if c0 == 0:
-        if c1 * L1 == m:
-          r1 = t[:L1]
-          valid = True
-          pos = 0
-          for ch in s:
-            if t[pos:pos + L1] != r1:
-              valid = False
-              break
-            pos += L1
-          if valid:
-            count += 1
-        continue
-
-      remaining = m - c1 * L1
-      if remaining <= 0 or remaining % c0 != 0:
-        continue
-      L0 = remaining // c0
-      if L0 <= 0:
-        continue
+    remaining = m - c0 * L0
+    if remaining <= 0 or remaining % c1 != 0:
+      continue
+    L1 = remaining // c1
+    if L1 <= 0:
+      continue
 
     # Verify consistency
     r0, r1 = None, None
@@ -113,22 +74,22 @@ def solve():
     pos = 0
 
     for ch in s:
+      length = L0 if ch == '0' else L1
+      substr = t[pos:pos + length]
+
       if ch == '0':
-        substr = t[pos:pos + L0]
         if r0 is None:
           r0 = substr
         elif r0 != substr:
           valid = False
           break
-        pos += L0
       else:
-        substr = t[pos:pos + L1]
         if r1 is None:
           r1 = substr
         elif r1 != substr:
           valid = False
           break
-        pos += L1
+      pos += length
 
     if valid and r0 != r1:
       count += 1

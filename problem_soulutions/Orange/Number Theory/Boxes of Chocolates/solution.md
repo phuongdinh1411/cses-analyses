@@ -50,6 +50,8 @@ Total = a1 × a2 × ... × aK (where aK is chocolates in smallest box)
 ### Python Solution
 
 ```python
+from functools import reduce
+
 def solve():
   t = int(input())
 
@@ -60,14 +62,10 @@ def solve():
 
     for _ in range(b):
       line = list(map(int, input().split()))
-      k = line[0]
-      values = line[1:k+1]
+      k, *values = line  # Tuple unpacking for count and values
 
-      # Calculate chocolates from this box structure
-      # Product of all values
-      product = 1
-      for v in values:
-        product = (product * v) % n
+      # Calculate product using reduce with modular arithmetic
+      product = reduce(lambda acc, v: (acc * v) % n, values, 1)
 
       total = (total + product) % n
 

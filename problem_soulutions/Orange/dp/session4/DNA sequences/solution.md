@@ -119,11 +119,13 @@ def solve():
         if s1[i-1] == s2[j-1]:
           match[i][j] = match[i-1][j-1] + 1
 
-          # Check all valid segment lengths >= k
-          for seg_len in range(k, match[i][j] + 1):
-            prev_i = i - seg_len
-            prev_j = j - seg_len
-            dp[i][j] = max(dp[i][j], dp[prev_i][prev_j] + seg_len)
+          # Check all valid segment lengths >= k using max with generator
+          if match[i][j] >= k:
+            dp[i][j] = max(
+              dp[i][j],
+              max(dp[i - seg_len][j - seg_len] + seg_len
+                  for seg_len in range(k, match[i][j] + 1))
+            )
 
     print(dp[n][m])
 

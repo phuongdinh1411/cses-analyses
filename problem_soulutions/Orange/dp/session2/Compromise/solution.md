@@ -114,14 +114,13 @@ def lcs_words(words1, words2):
       else:
         dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-  # Reconstruct
+  # Reconstruct using tuple unpacking in while loop
   result = []
   i, j = m, n
   while i > 0 and j > 0:
     if words1[i-1] == words2[j-1]:
       result.append(words1[i-1])
-      i -= 1
-      j -= 1
+      i, j = i - 1, j - 1
     elif dp[i-1][j] >= dp[i][j-1]:
       i -= 1
     else:
@@ -136,16 +135,13 @@ def solve():
   # Split by '#' to get test cases
   parts = content.strip().split('#')
 
-  i = 0
-  while i + 1 < len(parts):
-    text1 = parts[i].split()
-    text2 = parts[i + 1].split()
+  # Process pairs using range with step 2
+  for idx in range(0, len(parts) - 1, 2):
+    text1, text2 = parts[idx].split(), parts[idx + 1].split()
 
     if text1 and text2:
       result = lcs_words(text1, text2)
       print(' '.join(result))
-
-    i += 2
 
 if __name__ == "__main__":
   solve()

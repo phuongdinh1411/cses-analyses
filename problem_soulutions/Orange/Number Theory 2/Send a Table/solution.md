@@ -62,13 +62,10 @@ def solve():
       for j in range(i, MAX, i):
         phi[j] -= phi[j] // i
 
-  # Precompute prefix sums
+  # Precompute prefix sums using iterative accumulation
   prefix = [0] * MAX
   for i in range(1, MAX):
     prefix[i] = prefix[i-1] + phi[i]
-
-  # Answer for N is 2 * prefix[N] - 1
-  # Because pairs (x,y) with gcd=1 counted twice except (1,1)
 
   import sys
   for line in sys.stdin:
@@ -76,10 +73,8 @@ def solve():
     if n == 0:
       break
 
-    # Count coprime pairs (x, y) with 1 <= x, y <= n
-    # = 2 * sum(phi[1..n]) - 1
-    result = 2 * prefix[n] - 1
-    print(result)
+    # Count coprime pairs: 2 * sum(phi[1..n]) - 1
+    print(2 * prefix[n] - 1)
 
 if __name__ == "__main__":
   solve()

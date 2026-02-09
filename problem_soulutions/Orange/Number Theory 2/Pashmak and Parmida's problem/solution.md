@@ -44,21 +44,21 @@ This is an inversion count problem! Use merge sort or BIT/Fenwick tree.
 ### Python Solution
 
 ```python
+from collections import defaultdict
+
 def solve():
   import sys
-  from collections import defaultdict
-
   input = sys.stdin.readline
 
   n = int(input())
   a = list(map(int, input().split()))
 
-  # Compute L[i] = f(1, i, a[i])
+  # Compute L[i] = f(1, i, a[i]) using defaultdict
   L = [0] * n
   count_left = defaultdict(int)
-  for i in range(n):
-    count_left[a[i]] += 1
-    L[i] = count_left[a[i]]
+  for i, val in enumerate(a):  # Use enumerate
+    count_left[val] += 1
+    L[i] = count_left[val]
 
   # Compute R[j] = f(j, n, a[j])
   R = [0] * n
@@ -67,27 +67,13 @@ def solve():
     count_right[a[j]] += 1
     R[j] = count_right[a[j]]
 
-  # Count pairs (i, j) where i < j and L[i] > R[j]
-  # This is inversion count: count pairs where L[i] > R[j] for i < j
-
-  # Use merge sort or BIT
-  # BIT approach: process from right to left
-  # For each j, count how many i < j have L[i] > R[j]
-
-  # Compress R values (they're at most n)
-  # BIT[x] = count of positions j seen so far with R[j] = x
-
-  # Process from left to right:
-  # For position i, we want to count j > i with R[j] < L[i]
-  # Process from right to left:
-  # At position i, count positions j > i (already processed) with R[j] < L[i]
-
+  # BIT for inversion counting
   max_val = n + 1
   BIT = [0] * (max_val + 1)
 
-  def update(idx, delta=1):
+  def update(idx):
     while idx <= max_val:
-      BIT[idx] += delta
+      BIT[idx] += 1
       idx += idx & (-idx)
 
   def query(idx):
@@ -104,8 +90,6 @@ def solve():
     # Count j > i (already in BIT) with R[j] < L[i]
     if L[i] > 1:
       result += query(L[i] - 1)
-
-    # Add R[i] to BIT
     update(R[i])
 
   print(result)

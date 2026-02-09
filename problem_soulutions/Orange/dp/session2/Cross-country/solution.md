@@ -70,9 +70,8 @@ def solve():
   d = int(input())
 
   for _ in range(d):
-    # Read Agnes' route
-    line = input().split()
-    agnes = [int(x) for x in line if int(x) != 0]
+    # Read Agnes' route - filter zeros using list comprehension
+    agnes = [int(x) for x in input().split() if int(x) != 0]
 
     max_meetings = 0
 
@@ -86,7 +85,7 @@ def solve():
 
       tom = [int(x) for x in line if int(x) != 0]
 
-      # Compute LCS
+      # Compute LCS and update max
       max_meetings = max(max_meetings, lcs(agnes, tom))
 
     print(max_meetings)

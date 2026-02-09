@@ -63,7 +63,6 @@ def solve():
     n, r = map(int, input().split())
 
     # adj[v] contains subordinates of v
-    # in_degree tracks how many superiors each employee has
     adj = defaultdict(list)
     in_degree = [0] * n
 
@@ -73,15 +72,13 @@ def solve():
       adj[r2].append(r1)
       in_degree[r1] += 1
 
-    # Compute ranks using modified topological sort
+    # Compute ranks using modified topological sort with deque
     rank = [0] * n
-    queue = deque()
 
-    # Start with bosses (no one above them)
-    for i in range(n):
-      if in_degree[i] == 0:
-        rank[i] = 1
-        queue.append(i)
+    # Initialize queue with bosses (no one above them) using list comprehension
+    queue = deque(i for i in range(n) if in_degree[i] == 0)
+    for i in queue:
+      rank[i] = 1
 
     while queue:
       u = queue.popleft()
@@ -91,9 +88,8 @@ def solve():
         if in_degree[v] == 0:
           queue.append(v)
 
-    # Create result list and sort
-    employees = [(rank[i], i) for i in range(n)]
-    employees.sort()
+    # Create sorted result using enumerate
+    employees = sorted((rank[i], i) for i in range(n))
 
     print(f"Scenario #{case}:")
     for r, idx in employees:

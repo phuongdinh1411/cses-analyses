@@ -46,26 +46,23 @@ The key insight is to think about the flow of wine between adjacent houses. At e
 ### Python Solution
 
 ```python
+from itertools import accumulate
+
 def solve():
-  while True:
-    n = int(input())
-    if n == 0:
-      break
+    while True:
+        n = int(input())
+        if n == 0:
+            break
 
-    a = list(map(int, input().split()))
+        a = list(map(int, input().split()))
 
-    # Calculate total work using prefix sum approach
-    total_work = 0
-    carry = 0  # Wine that needs to be transported to the right
+        # Calculate total work using accumulate for prefix sums
+        total_work = sum(abs(carry) for carry in accumulate(a))
 
-    for i in range(n):
-      carry += a[i]
-      total_work += abs(carry)
-
-    print(total_work)
+        print(total_work)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ### Complexity Analysis

@@ -97,10 +97,9 @@ def solve():
     n = int(data[idx])
     idx += 1
 
-    arr = []
-    for _ in range(n):
-      arr.append(int(data[idx]))
-      idx += 1
+    # Use list comprehension for cleaner array construction
+    arr = [int(data[idx + i]) for i in range(n)]
+    idx += n
 
     # Compute LIS ending at each position
     lis = compute_lis_ending(arr)
@@ -108,13 +107,8 @@ def solve():
     # Compute LDS starting at each position
     lds = compute_lds_starting(arr)
 
-    # Find max Wavio length
-    max_wavio = 0
-    for i in range(n):
-      # Wavio with peak at i
-      k = min(lis[i], lds[i])
-      wavio_len = 2 * k - 1
-      max_wavio = max(max_wavio, wavio_len)
+    # Find max Wavio length using max with generator expression
+    max_wavio = max(2 * min(lis[i], lds[i]) - 1 for i in range(n))
 
     print(max_wavio)
 

@@ -96,14 +96,11 @@ def solve():
     prev = stones[0][:]
 
     for i in range(1, h):
-      curr = []
-      for j in range(w):
-        candidates = [prev[j]]
-        if j > 0:
-          candidates.append(prev[j-1])
-        if j < w - 1:
-          candidates.append(prev[j+1])
-        curr.append(stones[i][j] + max(candidates))
+      # Use list comprehension with conditional slicing for candidates
+      curr = [
+        stones[i][j] + max(prev[max(0, j-1):min(w, j+2)])
+        for j in range(w)
+      ]
       prev = curr
 
     print(max(prev))

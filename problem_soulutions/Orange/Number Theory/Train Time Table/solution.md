@@ -53,6 +53,8 @@ Use greedy simulation with events:
 ### Python Solution
 
 ```python
+from collections import defaultdict
+
 def solve():
   n = int(input())
 
@@ -61,32 +63,30 @@ def solve():
     na, nb = map(int, input().split())
 
     def parse_time(s):
-      h, m = map(int, s.split(':'))
-      return h * 60 + m
+      h, m = s.split(':')
+      return int(h) * 60 + int(m)
 
     events = []  # (time, type, station)
     # type: 0 = departure, 1 = arrival (ready after turnaround)
 
     for _ in range(na):
       dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t  # ready after turnaround
-      events.append((dep_time, 0, 'A'))  # depart from A
-      events.append((arr_time, 1, 'B'))  # arrive at B (available)
+      events.append((parse_time(dep), 0, 'A'))  # depart from A
+      events.append((parse_time(arr) + t, 1, 'B'))  # arrive at B (available)
 
     for _ in range(nb):
       dep, arr = input().split()
-      dep_time = parse_time(dep)
-      arr_time = parse_time(arr) + t
-      events.append((dep_time, 0, 'B'))  # depart from B
-      events.append((arr_time, 1, 'A'))  # arrive at A (available)
+      events.append((parse_time(dep), 0, 'B'))  # depart from B
+      events.append((parse_time(arr) + t, 1, 'A'))  # arrive at A (available)
 
     # Sort: by time, then arrivals before departures (type 1 before 0)
     events.sort(key=lambda x: (x[0], -x[1]))
 
-    available = {'A': 0, 'B': 0}
-    needed = {'A': 0, 'B': 0}
+    # Use defaultdict for cleaner initialization
+    available = defaultdict(int)
+    needed = defaultdict(int)
 
+    # Tuple unpacking in loop
     for time, event_type, station in events:
       if event_type == 0:  # departure
         if available[station] > 0:
