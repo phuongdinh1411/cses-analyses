@@ -61,61 +61,51 @@ Use DFS to find all lakes (water components not touching boundary), sort by size
 
 ```python
 def fill_the_lakes(n, m, k, matrix):
-  lakes = []
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    visited = [[False] * m for _ in range(n)]
+    lakes = []
 
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+    for i in range(n):
+        for j in range(m):
+            if matrix[i][j] == '.' and not visited[i][j]:
+                is_lake = i not in (0, n - 1) and j not in (0, m - 1)
+                lake = [(i, j)]
+                stack = [(i, j)]
+                visited[i][j] = True
 
-  visited = [[False for i in range(m)] for i in range(n)]
-  for i in range(n):
-    for j in range(m):
-      is_lake = False
-      lake = []
+                while stack:
+                    x, y = stack.pop()
+                    for dx, dy in directions:
+                        nx, ny = x + dx, y + dy
+                        if (0 <= nx < n and 0 <= ny < m and
+                            matrix[nx][ny] == '.' and not visited[nx][ny]):
+                            stack.append((nx, ny))
+                            lake.append((nx, ny))
+                            visited[nx][ny] = True
+                            if nx in (0, n - 1) or ny in (0, m - 1):
+                                is_lake = False
 
-      if matrix[i][j] == '.' and not visited[i][j]:
-        if i == 0 or i == n - 1 or j == 0 or j == m - 1:
-          is_lake = False
-        else:
-          is_lake = True
-        lake.append([i, j])
-        s = [[i, j]]
-        visited[i][j] = True
-        while len(s) > 0:
-          checking_node = s[-1]
-          s.pop()
-          for ll in range(4):
-            neighbor_x = checking_node[0] + dx[ll]
-            neighbor_y = checking_node[1] + dy[ll]
-            if 0 <= neighbor_x < n and 0 <= neighbor_y < m and matrix[neighbor_x][neighbor_y] == '.' and not visited[neighbor_x][neighbor_y]:
-              s.append([neighbor_x, neighbor_y])
-              lake.append([neighbor_x, neighbor_y])
-              visited[neighbor_x][neighbor_y] = True
-              if neighbor_x == 0 or neighbor_x == n - 1 or neighbor_y == 0 or neighbor_y == m - 1:
-                is_lake = False
-      if is_lake and len(lake) > 0:
-        lakes.append(lake)
-  lakes = sorted(lakes, key=lambda _lake:len(_lake))
+                if is_lake and lake:
+                    lakes.append(lake)
 
-  to_be_filled = len(lakes) - k
+    # Sort lakes by size and fill smallest ones
+    lakes.sort(key=len)
+    to_fill = len(lakes) - k
+    filled_cells = 0
 
-  filled_cells = 0
-  for i in range(to_be_filled):
-    lake_len = len(lakes[i])
-    for j in range(lake_len):
-      matrix[lakes[i][j][0]][lakes[i][j][1]] = '*'
-      filled_cells += 1
+    for lake in lakes[:to_fill]:
+        for x, y in lake:
+            matrix[x][y] = '*'
+            filled_cells += 1
 
-  print(filled_cells)
-  for i in range(n):
-    print(''.join(matrix[i]))
+    print(filled_cells)
+    for row in matrix:
+        print(''.join(row))
 
 def solution():
-  n, m, k = map(int, input().split())
-  matrix = []
-  for i in range(n):
-    matrix.append(list(input().strip()))
-
-  fill_the_lakes(n, m, k, matrix)
+    n, m, k = map(int, input().split())
+    matrix = [list(input().strip()) for _ in range(n)]
+    fill_the_lakes(n, m, k, matrix)
 
 solution()
 ```
@@ -172,52 +162,48 @@ DFS from node 1, track distances, find minimum distance girl with smallest node 
 ##### Python Solution
 
 ```python
-def find_girl(N, graph, girls):
-  s = []
-  visited = [False for i in range(N + 1)]
+def find_girl(n, graph, girls):
+    visited = [False] * (n + 1)
+    dist = [0] * (n + 1)
+    visited[1] = True
+    stack = [1]
 
-  roads = [0 for i in range(N + 1)]
+    best_girl = n
+    best_dist = n
 
-  visited[1] = True
-  s.append(1)
+    while stack:
+        u = stack.pop()
 
-  selected_girl = N
-  selected_road = N
+        for v in graph[u]:
+            if not visited[v]:
+                dist[v] = dist[u] + 1
+                visited[v] = True
 
-  while len(s) > 0:
-    u = s[-1]
-    s.pop()
+                if dist[v] <= best_dist:
+                    if girls[v]:
+                        if dist[v] < best_dist or v < best_girl:
+                            best_girl = v
+                            best_dist = dist[v]
+                    else:
+                        stack.append(v)
 
-    for v in graph[u]:
-      if not visited[v]:
-        roads[v] = roads[u] + 1
-        if roads[v] <= selected_road:
-          if girls[v]:
-            if roads[v] < selected_road or (roads[v] == selected_road and selected_girl > v):
-              selected_girl = v
-              selected_road = roads[v]
-              visited[v] = True
-          else:
-            visited[v] = True
-            s.append(v)
-
-  return selected_girl
+    return best_girl
 
 def solution():
-  N = int(input())
-  roads = []
-  graph = [[] for i in range(N + 1)]
-  for i in range(N-1):
-    u, v = map(int, input().split())
-    graph[u].append(v)
-    graph[v].append(u)
+    n = int(input())
+    graph = [[] for _ in range(n + 1)]
 
-  Q = int(input())
-  girls = [0 for i in range(N + 1)]
-  for i in range(Q):
-    girls[int(input())] = 1
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        graph[u].append(v)
+        graph[v].append(u)
 
-  print(find_girl(N, graph, girls))
+    q = int(input())
+    girls = [False] * (n + 1)
+    for _ in range(q):
+        girls[int(input())] = True
+
+    print(find_girl(n, graph, girls))
 
 solution()
 ```
@@ -279,50 +265,55 @@ DFS to count connected components in an undirected graph. Start DFS from each un
 ##### Python Solution
 
 ```python
-def calc_disjoint_sets(Ni, graph):
-  result = 0
-  visited = [False for i in range(Ni)]
+def count_components(n, graph):
+    visited = [False] * n
+    components = 0
 
-  for i in range(Ni):
-    if visited[i]:
-      continue
-    stack = [i]
-    visited[i] = True
+    for start in range(n):
+        if visited[start]:
+            continue
 
-    while len(stack) > 0:
-      u = stack[-1]
-      stack.pop()
-      for v in graph[u]:
-        if not visited[v]:
-          visited[v] = True
-          stack.append(v)
-    result += 1
+        stack = [start]
+        visited[start] = True
 
-  return result
+        while stack:
+            u = stack.pop()
+            for v in graph[u]:
+                if not visited[v]:
+                    visited[v] = True
+                    stack.append(v)
+
+        components += 1
+
+    return components
 
 def solution():
-  results = []
-  while True:
-    new_line = input().strip()
-    if new_line:
-      t = int(new_line)
-      break
-  for i in range(t):
+    results = []
+
     while True:
-      new_line = input().strip()
-      if new_line:
-        Ni = int(new_line)
-        break
-    ei = int(input())
-    graph = [[] for jj in range(Ni)]
-    for j in range(ei):
-      start, end = map(int, input().split())
-      graph[start].append(end)
-      graph[end].append(start)
+        line = input().strip()
+        if line:
+            t = int(line)
+            break
 
-    results.append(calc_disjoint_sets(Ni, graph))
+    for _ in range(t):
+        while True:
+            line = input().strip()
+            if line:
+                n = int(line)
+                break
 
-  print(*results, sep='\n')
+        e = int(input())
+        graph = [[] for _ in range(n)]
+
+        for _ in range(e):
+            u, v = map(int, input().split())
+            graph[u].append(v)
+            graph[v].append(u)
+
+        results.append(count_components(n, graph))
+
+    print('\n'.join(map(str, results)))
 
 solution()
 ```
@@ -381,52 +372,65 @@ DFS with cycle detection. Track visited nodes in the current DFS path. If we rev
 ##### Python Solution
 
 ```python
-def sim_nao(N, graph):
-  global_visited = [False for i in range(N+1)]
+def has_cycle(n, graph):
+    # States: 0 = unvisited, 1 = in current path, 2 = fully processed
+    state = [0] * (n + 1)
 
-  for i in range(1, N + 1):
-    if not global_visited[i]:
-      visited = [False for l in range(N + 1)]
-      s = [i]
-      global_visited[i] = True
-      visited[i] = True
-      path = [0] * (N+1)
-      while len(s) > 0:
-        u = s[-1]
-        s.pop()
-        for v in graph[u]:
-          if not visited[v]:
-            visited[v] = True
-            if not global_visited[v]:
-              s.append(v)
-              global_visited[u] = True
-          else:
-            return 'SIM'
+    for start in range(1, n + 1):
+        if state[start] != 0:
+            continue
 
-  return 'NAO'
+        stack = [(start, False)]  # (node, processed)
+
+        while stack:
+            node, processed = stack.pop()
+
+            if processed:
+                state[node] = 2
+                continue
+
+            if state[node] == 1:
+                return 'SIM'
+
+            if state[node] == 2:
+                continue
+
+            state[node] = 1
+            stack.append((node, True))
+
+            for neighbor in graph[node]:
+                if state[neighbor] == 1:
+                    return 'SIM'
+                if state[neighbor] == 0:
+                    stack.append((neighbor, False))
+
+    return 'NAO'
 
 def solution():
-  results = []
-  T = int(input())
-  for i in range(T):
-    while True:
-      new_line = input().strip()
-      if new_line:
-        N, M = map(int, new_line.split())
-        break
+    results = []
+    t = int(input())
 
-    graph = [[] for i in range(N + 1)]
-    for j in range(M):
-      while True:
-        new_line = input().strip()
-        if new_line:
-          A, B = map(int, new_line.split())
-          if not B in graph[A]:
-            graph[A].append(B)
-          break
-    results.append(sim_nao(N, graph))
+    for _ in range(t):
+        while True:
+            line = input().strip()
+            if line:
+                n, m = map(int, line.split())
+                break
 
-  print(*results, sep='\n')
+        graph = [[] for _ in range(n + 1)]
+
+        for _ in range(m):
+            while True:
+                line = input().strip()
+                if line:
+                    a, b = map(int, line.split())
+                    if b not in graph[a]:
+                        graph[a].append(b)
+                    break
+
+        results.append(has_cycle(n, graph))
+
+    print('\n'.join(results))
 
 solution()
 ```

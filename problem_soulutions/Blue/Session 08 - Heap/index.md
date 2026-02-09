@@ -56,40 +56,35 @@ Use two heaps - one for top 1/3 ratings (min-heap to get minimum of top elements
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop, heapreplace
 
 def solution():
-  top_reviews = []
-  candidate_reviews = []
-  N = int(input())
-  results = []
-  num_of_reviews = 0
-  for i in range(N):
-    command = input().strip()
-    if command.startswith('1'):
-      num_of_reviews += 1
-      new_review = int(command.split()[1])
-      if len(top_reviews) < num_of_reviews // 3:
-        if len(candidate_reviews) < 0 or new_review > -candidate_reviews[0]:
-          heapq.heappush(top_reviews, new_review)
-        else:
-          heapq.heappush(top_reviews, -candidate_reviews[0])
-          heapq.heappop(candidate_reviews)
-          heapq.heappush(candidate_reviews, -new_review)
-      else:
-        if len(top_reviews) > 0 and new_review > top_reviews[0]:
-          heapq.heappush(candidate_reviews, -top_reviews[0])
-          heapq.heappop(top_reviews)
-          heapq.heappush(top_reviews, new_review)
-        else:
-          heapq.heappush(candidate_reviews, -new_review)
-    else:
-      if len(top_reviews) > 0:
-        results.append(top_reviews[0])
-      else:
-        results.append('No reviews yet')
+    top_reviews = []      # min-heap for top 1/3
+    candidate_reviews = []  # max-heap (negated) for remaining
+    n = int(input())
+    results = []
+    num_reviews = 0
 
-  print(*results, sep='\n')
+    for _ in range(n):
+        command = input().strip()
+        if command.startswith('1'):
+            num_reviews += 1
+            new_review = int(command.split()[1])
+            if len(top_reviews) < num_reviews // 3:
+                if not candidate_reviews or new_review > -candidate_reviews[0]:
+                    heappush(top_reviews, new_review)
+                else:
+                    heappush(top_reviews, -heappop(candidate_reviews))
+                    heappush(candidate_reviews, -new_review)
+            else:
+                if top_reviews and new_review > top_reviews[0]:
+                    heappush(candidate_reviews, -heapreplace(top_reviews, new_review))
+                else:
+                    heappush(candidate_reviews, -new_review)
+        else:
+            results.append(top_reviews[0] if top_reviews else 'No reviews yet')
+
+    print(*results, sep='\n')
 
 solution()
 ```
@@ -142,32 +137,29 @@ Maintain a min-heap of size 3 with the largest elements. The heap root is always
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heapify, heapreplace
+from math import prod
 
 def solution():
-  N = int(input())
-  A = list(map(int, input().split()))
+    n = int(input())
+    a = list(map(int, input().split()))
 
-  if N < 3:
-    print(-1)
-    if N > 1:
-      print(-1)
-    return
+    if n < 3:
+        print('\n'.join(['-1'] * n))
+        return
 
-  max_list = A[:3]
-  heapq.heapify(max_list)
+    top3 = a[:3]
+    heapify(top3)
 
-  for i in range(N):
-    if i < 3:
-      if i == 2:
-        print(max_list[0]*max_list[1]*max_list[2])
-      else:
-        print(-1)
-    else:
-      if A[i] > max_list[0]:
-        heapq.heappop(max_list)
-        heapq.heappush(max_list, A[i])
-      print(max_list[0]*max_list[1]*max_list[2])
+    for i, val in enumerate(a):
+        if i < 2:
+            print(-1)
+        elif i == 2:
+            print(prod(top3))
+        else:
+            if val > top3[0]:
+                heapreplace(top3, val)
+            print(prod(top3))
 
 solution()
 ```
@@ -230,45 +222,38 @@ Use a min-heap of size 5 tracking top trending by score change. Custom compariso
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop, heapreplace
 
 class Topic:
-  def __init__(self, topic_id, current_score, posts, likes, comments, shares):
-    self.id = topic_id
-    self.new_score = posts * 50 + likes * 5 + comments * 10 + shares * 20
-    self.change_in_score = self.new_score - current_score
+    def __init__(self, topic_id, current_score, posts, likes, comments, shares):
+        self.id = topic_id
+        self.new_score = posts * 50 + likes * 5 + comments * 10 + shares * 20
+        self.change_in_score = self.new_score - current_score
 
-  def __lt__(self, other):
-    if self.change_in_score < other.change_in_score:
-      return True
-    if self.change_in_score == other.change_in_score:
-      if self.id < other.id:
-        return True
-      else:
-        return False
-    return False
+    def __lt__(self, other):
+        if self.change_in_score != other.change_in_score:
+            return self.change_in_score < other.change_in_score
+        return self.id < other.id
 
 def solution():
-  N = int(input())
+    n = int(input())
+    top_trends = []
 
-  top_trends = []
-  for i in range(N):
-    topic_id, Z, P, L, C, S = map(int, input().strip().split())
-    topic = Topic(topic_id, Z, P, L, C, S)
+    for i in range(n):
+        topic_id, z, p, l, c, s = map(int, input().split())
+        topic = Topic(topic_id, z, p, l, c, s)
 
-    if i >= 5:
-      if top_trends[0] < topic:
-        heapq.heappop(top_trends)
-        heapq.heappush(top_trends, topic)
-    else:
-      heapq.heappush(top_trends, topic)
+        if i < 5:
+            heappush(top_trends, topic)
+        elif top_trends[0] < topic:
+            heapreplace(top_trends, topic)
 
-  results = []
-  while len(top_trends) > 0:
-    topic = heapq.heappop(top_trends)
-    results = [str(topic.id) + ' ' + str(topic.new_score)] + results
+    results = []
+    while top_trends:
+        topic = heappop(top_trends)
+        results.append(f"{topic.id} {topic.new_score}")
 
-  print(*results, sep='\n')
+    print(*reversed(results), sep='\n')
 
 solution()
 ```
@@ -325,29 +310,25 @@ Use a heap with lazy deletion. Track deleted elements separately and clean them 
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import Counter
 
 def solution():
-  Q = int(input())
-  my_list = []
-  delete_list = []
-  for i in range(Q):
-    query = input()
-    if query.startswith('3'):
-      while True:
-        if my_list[0] not in delete_list:
-          break
-        pos = delete_list.index(my_list[0])
-        delete_list.pop(pos)
-        heapq.heappop(my_list)
+    q = int(input())
+    heap = []
+    deleted = Counter()
 
-      print(my_list[0])
-    else:
-      command, param = map(int, query.split())
-      if command == 1:
-        heapq.heappush(my_list, param)
-      else:
-        delete_list.append(param)
+    for _ in range(q):
+        query = input().split()
+        if query[0] == '3':
+            while deleted[heap[0]] > 0:
+                deleted[heap[0]] -= 1
+                heappop(heap)
+            print(heap[0])
+        elif query[0] == '1':
+            heappush(heap, int(query[1]))
+        else:
+            deleted[int(query[1])] += 1
 
 solution()
 ```
@@ -405,49 +386,49 @@ Sort by deadline, use heap to always speed up the cheapest project first. When a
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
 
 class Project:
-  def __init__(self, a, b, d):
-    self.a = a
-    self.b = b
-    self.d = d
+    def __init__(self, a, b, d):
+        self.a = a  # cost per unit time
+        self.b = b  # time needed
+        self.d = d  # deadline
 
-  def __lt__(self, other):
-    return self.a > other.a
+    def __lt__(self, other):
+        return self.a > other.a  # max-heap by cost (cheaper to speed up first)
 
 def solution():
-  t = int(input())
+    t = int(input())
 
-  for i in range(t):
-    sum_money = 0
-    initial_time = 0
-    priority_queue = []
-    projects = []
-    n = int(input())
-    for j in range(n):
-      a, b, d = map(int, input().strip().split())
-      projects.append(Project(a, b, d))
-    projects.sort(key=lambda x: x.d, reverse=False)
+    for _ in range(t):
+        total_cost = 0.0
+        current_time = 0
+        pq = []
 
-    for j in range(n):
-      initial_time += projects[j].b
-      heapq.heappush(priority_queue, projects[j])
-      if initial_time <= projects[j].d:
-        continue
-      while True:
-        pop_project = heapq.heappop(priority_queue)
-        if initial_time - pop_project.b <= projects[j].d:
-          pop_project.b -= initial_time-projects[j].d
-          sum_money += (initial_time-projects[j].d) / pop_project.a
-          initial_time = projects[j].d
-          heapq.heappush(priority_queue, pop_project)
-          break
-        else:
-          sum_money += pop_project.b / pop_project.a
-          initial_time -= pop_project.b
+        n = int(input())
+        projects = [Project(*map(int, input().split())) for _ in range(n)]
+        projects.sort(key=lambda x: x.d)
 
-    print("{0:.2f}".format(sum_money))
+        for proj in projects:
+            current_time += proj.b
+            heappush(pq, proj)
+
+            if current_time <= proj.d:
+                continue
+
+            while current_time > proj.d:
+                cheapest = heappop(pq)
+                time_over = current_time - proj.d
+                if cheapest.b >= time_over:
+                    cheapest.b -= time_over
+                    total_cost += time_over / cheapest.a
+                    current_time = proj.d
+                    heappush(pq, cheapest)
+                else:
+                    total_cost += cheapest.b / cheapest.a
+                    current_time -= cheapest.b
+
+        print(f"{total_cost:.2f}")
 
 solution()
 ```
@@ -499,43 +480,46 @@ Use two heaps (min and max) with lazy deletion to track receipts efficiently.
 ##### Python Solution
 
 ```python
-import heapq
-
-MAX = 1000005
+from heapq import heappush, heappop
+from collections import defaultdict
 
 def solution():
-  n = int(input())
-  sum_prizes = 0
-  max_heap = []
-  min_heap = []
+    n = int(input())
+    total_prizes = 0
+    max_heap = []  # negated for max behavior
+    min_heap = []
 
-  deleted_max = [0 for i in range(MAX)]
-  deleted_min = [0 for i in range(MAX)]
+    deleted_from_max = defaultdict(int)
+    deleted_from_min = defaultdict(int)
 
-  for i in range(n):
-    line = list(map(int, input().strip().split()))
-    num_rc = line[0]
-    receipts = line[1:]
-    for j in range(num_rc):
-      heapq.heappush(min_heap, receipts[j])
-      heapq.heappush(max_heap, -receipts[j])
+    for _ in range(n):
+        line = list(map(int, input().split()))
+        receipts = line[1:]
 
-    if len(max_heap) >= 2:
-      from_max = heapq.heappop(max_heap)
-      from_min = heapq.heappop(min_heap)
-      while deleted_min[-from_max] > 0:
-        deleted_min[-from_max] -= 1
-        from_max = heapq.heappop(max_heap)
-      while deleted_max[-from_min] > 0:
-        deleted_max[-from_min] -= 1
-        from_min = heapq.heappop(min_heap)
+        for receipt in receipts:
+            heappush(min_heap, receipt)
+            heappush(max_heap, -receipt)
 
-      deleted_max[from_max] += 1
-      deleted_min[from_min] += 1
+        if len(max_heap) >= 2:
+            # Get max (skip deleted)
+            while deleted_from_min[-max_heap[0]] > 0:
+                deleted_from_min[-max_heap[0]] -= 1
+                heappop(max_heap)
+            from_max = heappop(max_heap)
 
-      sum_prizes -= (from_max + from_min)
+            # Get min (skip deleted)
+            while deleted_from_max[min_heap[0]] > 0:
+                deleted_from_max[min_heap[0]] -= 1
+                heappop(min_heap)
+            from_min = heappop(min_heap)
 
-  print(sum_prizes)
+            # Mark as deleted for the other heap
+            deleted_from_max[from_max] += 1
+            deleted_from_min[from_min] += 1
+
+            total_prizes -= (from_max + from_min)
+
+    print(total_prizes)
 
 solution()
 ```
@@ -599,72 +583,56 @@ Simulate all three structures simultaneously and check consistency with each ext
 ##### Python Solution
 
 ```python
-import heapq
-import queue
+from heapq import heappush, heappop
+from collections import deque
 import sys
 
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
 def solution():
-  while inp.has_next():
-    N = int(inp.next())
-    my_heap = []
-    my_queue = queue.Queue()
-    mystack = []
-    is_heap = 1
-    is_stack = 1
-    is_queue = 1
-    for i in range(N):
-      c_type = int(inp.next())
-      x = int(inp.next())
-      if is_stack + is_queue + is_heap == 0:
-        continue
-      if c_type == 1:
-        if is_heap == 1:
-          heapq.heappush(my_heap, -x)
-        if is_stack == 1:
-          mystack.append(x)
-        if is_queue == 1:
-          my_queue.put(x)
-      else:
-        if is_heap == 1:
-          if len(my_heap) == 0 or -x != heapq.heappop(my_heap):
-            is_heap = 0
-        if is_stack == 1:
-          if len(mystack) == 0 or x != mystack[-1]:
-            is_stack = 0
-          else:
-            mystack.pop()
-        if is_queue == 1:
-          if my_queue.qsize() == 0 or x != my_queue.queue[0]:
-            is_queue = 0
-          else:
-            my_queue.get()
-    if is_heap + is_queue + is_stack > 1:
-      print('not sure')
-    elif is_heap + is_queue + is_stack == 0:
-      print('impossible')
-    else:
-      if is_stack == 1:
-        print('stack')
-      if is_queue == 1:
-        print('queue')
-      if is_heap == 1:
-        print('priority queue')
+    tokens = sys.stdin.read().split()[::-1]
+
+    while tokens:
+        n = int(tokens.pop())
+        heap = []           # max-heap (negated)
+        stack = []
+        queue = deque()
+
+        is_heap = is_stack = is_queue = True
+
+        for _ in range(n):
+            op, x = int(tokens.pop()), int(tokens.pop())
+
+            if not any([is_heap, is_stack, is_queue]):
+                continue
+
+            if op == 1:
+                if is_heap:
+                    heappush(heap, -x)
+                if is_stack:
+                    stack.append(x)
+                if is_queue:
+                    queue.append(x)
+            else:
+                if is_heap:
+                    if not heap or -heappop(heap) != x:
+                        is_heap = False
+                if is_stack:
+                    if not stack or stack.pop() != x:
+                        is_stack = False
+                if is_queue:
+                    if not queue or queue.popleft() != x:
+                        is_queue = False
+
+        matches = sum([is_heap, is_stack, is_queue])
+        if matches > 1:
+            print('not sure')
+        elif matches == 0:
+            print('impossible')
+        elif is_stack:
+            print('stack')
+        elif is_queue:
+            print('queue')
+        else:
+            print('priority queue')
 
 solution()
 ```
@@ -718,23 +686,25 @@ Huffman-like algorithm - always add the two smallest numbers using a min-heap.
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heapify, heappop, heappush
 
 def solution():
-  while True:
-    N = int(input())
-    if N == 0:
-      return
-    array = list(map(int, input().strip().split()))
-    heapq.heapify(array)
-    sum = 0
-    while len(array) > 1:
-      first = heapq.heappop(array)
-      second = heapq.heappop(array)
-      sum += (first + second)
-      heapq.heappush(array, first + second)
+    while True:
+        n = int(input())
+        if n == 0:
+            return
 
-    print(sum)
+        nums = list(map(int, input().split()))
+        heapify(nums)
+        total_cost = 0
+
+        while len(nums) > 1:
+            first, second = heappop(nums), heappop(nums)
+            combined = first + second
+            total_cost += combined
+            heappush(nums, combined)
+
+        print(total_cost)
 
 solution()
 ```

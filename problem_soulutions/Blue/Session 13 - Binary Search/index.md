@@ -46,49 +46,39 @@ Key insight: GCD(a+k, b+k) = GCD(a+k, |b-a|) = GCD(b+k, |b-a|). The GCD must be 
 ##### Python Solution
 
 ```python
-from math import sqrt
+from math import gcd, isqrt
 
-INF = 1e18
+INF = float('inf')
 
 
-def gcd(x, y):
-  if y == 0:
-    return x
-  else:
-    return gcd(y, x % y)
+def get_k_and_lcm(a, b, divisor, best_k, min_lcm):
+    """Calculate k for a given divisor and check if it gives a smaller LCM."""
+    current_k = (divisor - b % divisor) % divisor
+    lcm = (a + current_k) * (b + current_k) // divisor
+    if lcm < min_lcm:
+        return current_k, lcm
+    return best_k, min_lcm
 
 
 def solution():
-  atmp, btmp = map(int, input().strip().split())
-  a = max(atmp, btmp)
-  b = min(atmp, btmp)
-  k = 0
+    a, b = map(int, input().strip().split())
+    a, b = max(a, b), min(a, b)
 
-  delta = a - b
-  min_lcm = INF
+    delta = a - b
+    if delta == 0:
+        print(0)
+        return
 
-  if delta == 0:
-    print(0)
-    exit(0)
+    best_k = 0
+    min_lcm = INF
 
-  range_gcd = int(sqrt(delta)) + 1
-  for i in range(1, range_gcd):
-    if delta % i == 0:
-      k, min_lcm = getk(a, b, i, k, min_lcm)
-      k, min_lcm = getk(a, b, delta / i, k, min_lcm)
+    # Check all divisors of delta
+    for i in range(1, isqrt(delta) + 1):
+        if delta % i == 0:
+            best_k, min_lcm = get_k_and_lcm(a, b, i, best_k, min_lcm)
+            best_k, min_lcm = get_k_and_lcm(a, b, delta // i, best_k, min_lcm)
 
-  print('{0:.0f}'.format(k))
-
-
-def getk(a, b, i, k, min_lcm):
-  current_k = 0
-  if b % i > 0:
-    current_k = ((b // i) + 1) * i - b
-  lcm = (a + current_k) * (b + current_k) / i
-  if lcm < min_lcm:
-    min_lcm = lcm
-    k = current_k
-  return k, min_lcm
+    print(best_k)
 
 
 solution()
@@ -138,32 +128,27 @@ Binary search on the answer (target energy level). For a given target, calculate
 ##### Python Solution
 
 ```python
-def check_possibility(_accumulators, max_value, n, k):
-  less = 0
-  more = 0
-  for i in range(n):
-    if _accumulators[i] > max_value:
-      more += _accumulators[i] - max_value
-    else:
-      less += max_value - _accumulators[i]
-
-  return more - k * more / 100 >= less
+def is_achievable(accumulators, target, loss_percent):
+    """Check if target energy level is achievable for all accumulators."""
+    excess = sum(max(0, acc - target) for acc in accumulators)
+    deficit = sum(max(0, target - acc) for acc in accumulators)
+    available = excess * (100 - loss_percent) / 100
+    return available >= deficit
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  accumulators = list(map(int, input().strip().split()))
+    n, k = map(int, input().strip().split())
+    accumulators = list(map(int, input().strip().split()))
 
-  lo = 0
-  hi = 1000
-  for i in range(100):
-    mid = (lo + hi) / 2
-    if check_possibility(accumulators, mid, n, k):
-      lo = mid
-    else:
-      hi = mid
+    lo, hi = 0.0, 1000.0
+    for _ in range(100):
+        mid = (lo + hi) / 2
+        if is_achievable(accumulators, mid, k):
+            lo = mid
+        else:
+            hi = mid
 
-  print('{0:.9f}'.format(lo))
+    print(f'{lo:.9f}')
 
 
 solution()
@@ -213,30 +198,25 @@ Binary search on the answer (saw height H). For a given height, calculate total 
 ##### Python Solution
 
 ```python
-def check_possibility(_accumulators, max_value, n, k):
-
-  total = 0
-  for i in range(n):
-    if _accumulators[i] > max_value:
-      total += _accumulators[i] - max_value
-
-  return total >= k
+def can_collect_enough(trees, height, required):
+    """Check if cutting at given height collects at least required wood."""
+    total = sum(max(0, tree - height) for tree in trees)
+    return total >= required
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  trees = list(map(int, input().strip().split()))
+    n, m = map(int, input().strip().split())
+    trees = list(map(int, input().strip().split()))
 
-  lo = 0
-  hi = int(2e9)
-  while lo < hi - 1:
-    mid = (lo + hi) // 2
-    if check_possibility(trees, mid, n, k):
-      lo = mid
-    else:
-      hi = mid
+    lo, hi = 0, int(2e9)
+    while lo < hi - 1:
+        mid = (lo + hi) // 2
+        if can_collect_enough(trees, mid, m):
+            lo = mid
+        else:
+            hi = mid
 
-  print(lo)
+    print(lo)
 
 
 solution()
@@ -286,31 +266,21 @@ Sort the array. For each element a[i], binary search for a[i] + k in the remaini
 ##### Python Solution
 
 ```python
-def binary_search(array, left, right, x):
-  while left <= right:
-    mid = (left + right) // 2
-    if x == array[mid]:
-      return True
-    elif x < array[mid]:
-      right = mid - 1
-    else:
-      left = mid + 1
-
-  return False
+import bisect
 
 
 def solution():
-  n, k = map(int, input().strip().split())
-  random_numbers = list(map(int, input().strip().split()))
-  random_numbers.sort()
-  total = 0
-  n = len(random_numbers)
+    n, k = map(int, input().strip().split())
+    numbers = sorted(map(int, input().strip().split()))
 
-  for i in range(n):
-    if binary_search(random_numbers, i+ 1, n - 1, random_numbers[i] + k):
-      total += 1
+    count = 0
+    for i, num in enumerate(numbers):
+        target = num + k
+        pos = bisect.bisect_left(numbers, target, i + 1)
+        if pos < len(numbers) and numbers[pos] == target:
+            count += 1
 
-  print(total)
+    print(count)
 
 
 solution()
@@ -367,25 +337,26 @@ Two-pointer technique on sorted array. Sort friends by money amount. Use left an
 
 ```python
 def solution():
-  T = int(input())
-  for i in range(T):
-    n, m = map(int, input().strip().split())
-    friends = list(map(int, input().strip().split()))
-    friends.sort()
-    left = 0
-    right = n - 1
-    total = 0
-    while left < right:
-      if friends[left] + friends[right] == m:
-        left += 1
-        right -= 1
-        total += 1
-      if friends[left] + friends[right] > m:
-        right -= 1
-      if friends[left] + friends[right] < m:
-        left += 1
+    t = int(input())
+    for _ in range(t):
+        n, pizza_cost = map(int, input().strip().split())
+        friends = sorted(map(int, input().strip().split()))
 
-    print(total)
+        left, right = 0, n - 1
+        pizzas = 0
+
+        while left < right:
+            total = friends[left] + friends[right]
+            if total == pizza_cost:
+                pizzas += 1
+                left += 1
+                right -= 1
+            elif total > pizza_cost:
+                right -= 1
+            else:
+                left += 1
+
+        print(pizzas)
 
 
 solution()
@@ -437,44 +408,50 @@ Binary search on the answer in range [0, 1]. Since function is monotonically dec
 ```python
 import math
 
-epsilon = math.pow(10, -9)
+EPSILON = 1e-9
 
 
-def calc_result(p, q, r, s, t, u, x):
-
-  return p * math.exp(-x) + q * math.sin(x) + r * math.cos(x) + s * math.tan(x) + t * math.pow(x, 2) + u
+def f(p, q, r, s, t, u, x):
+    """Evaluate the equation at x."""
+    return (p * math.exp(-x) + q * math.sin(x) + r * math.cos(x) +
+            s * math.tan(x) + t * x * x + u)
 
 
 def solution():
-  while True:
-    try:
-      p, q, r, s, t, u= map(int, input().strip().split())
-      lo, hi = 0, 1
-      if -epsilon < calc_result(p, q, r, s, t, u, lo) < epsilon:
-        print(lo)
-        continue
-      if -epsilon < calc_result(p, q, r, s, t, u, hi) < epsilon:
-        print(hi)
-        continue
+    while True:
+        try:
+            p, q, r, s, t, u = map(int, input().strip().split())
+            lo, hi = 0.0, 1.0
 
-      has_solution = False
-      for i in range(1000):
-        x = (lo + hi) / 2
-        result = calc_result(p, q, r, s, t, u, x)
+            # Check boundary cases
+            if abs(f(p, q, r, s, t, u, lo)) < EPSILON:
+                print(f'{lo:.4f}')
+                continue
+            if abs(f(p, q, r, s, t, u, hi)) < EPSILON:
+                print(f'{hi:.4f}')
+                continue
 
-        if -epsilon < result < epsilon:
-          print('{0:.4f}'.format(x))
-          has_solution = True
-          break
-        if result * calc_result(p, q, r, s, t, u, lo) < 0:
-          hi = x
-        elif result * calc_result(p, q, r, s, t, u, hi) < 0:
-          lo = x
-      if not has_solution:
-        print('No solution')
+            # Binary search for root
+            found = False
+            for _ in range(1000):
+                mid = (lo + hi) / 2
+                result = f(p, q, r, s, t, u, mid)
 
-    except Exception as e:
-      break
+                if abs(result) < EPSILON:
+                    print(f'{mid:.4f}')
+                    found = True
+                    break
+
+                if result * f(p, q, r, s, t, u, lo) < 0:
+                    hi = mid
+                elif result * f(p, q, r, s, t, u, hi) < 0:
+                    lo = mid
+
+            if not found:
+                print('No solution')
+
+        except:
+            break
 
 
 solution()
@@ -537,34 +514,28 @@ Sort the marbles. For each query, use binary search (bisect_left) to find positi
 ```python
 import bisect
 
-INF = float(1e9)
-
 
 def solution():
-  case = 1
-  while True:
-    N, Q = map(int, input().strip().split())
+    case = 1
+    while True:
+        n, q = map(int, input().strip().split())
 
-    if N == 0:
-      break
+        if n == 0:
+            break
 
-    marbles = []
-    for i in range(N):
-      marbles.append(int(input().strip()))
+        marbles = sorted(int(input().strip()) for _ in range(n))
 
-    marbles.sort()
+        print(f'CASE# {case}:')
+        for _ in range(q):
+            query = int(input().strip())
+            pos = bisect.bisect_left(marbles, query)
 
-    print('CASE# ' + str(case) + ':')
-    for i in range(Q):
-      q = int(input().strip())
-      result = bisect.bisect_left(marbles, q)
+            if pos < len(marbles) and marbles[pos] == query:
+                print(f'{query} found at {pos + 1}')
+            else:
+                print(f'{query} not found')
 
-      if 0 <= result < len(marbles) and marbles[result] == q:
-        print('{:d} found at {:d}'.format(q, result + 1))
-      else:
-        print('{:d} not found'.format(q))
-
-    case += 1
+        case += 1
 
 
 solution()
@@ -626,31 +597,25 @@ Use binary search (bisect_right) to find insertion point. For shorter: search ba
 ##### Python Solution
 
 ```python
-from bisect import bisect_right
+from bisect import bisect_left, bisect_right
 
 
 def solution():
-  N = int(input())
-  lady_chimps = list(map(int, input().strip().split()))
-  Q = int(input())
-  queries = list(map(int, input().strip().split()))
+    n = int(input())
+    heights = list(map(int, input().strip().split()))
+    q = int(input())
+    queries = list(map(int, input().strip().split()))
 
-  for q in queries:
-    upper_bound = bisect_right(lady_chimps, q)
-    shorter_index = -1
-    if upper_bound > 0:
-      for i in range(upper_bound - 1, -1, -1):
-        if lady_chimps[i] < q:
-          shorter_index = i
-          break
-    shorter = 'X'
-    taller = 'X'
-    if shorter_index != -1:
-      shorter = str(lady_chimps[shorter_index])
-    if upper_bound < N:
-      taller = str(lady_chimps[upper_bound])
+    for query in queries:
+        # Find tallest shorter (strictly less than query)
+        left_pos = bisect_left(heights, query) - 1
+        shorter = str(heights[left_pos]) if left_pos >= 0 else 'X'
 
-    print(shorter, taller)
+        # Find shortest taller (strictly greater than query)
+        right_pos = bisect_right(heights, query)
+        taller = str(heights[right_pos]) if right_pos < n else 'X'
+
+        print(shorter, taller)
 
 
 solution()
@@ -706,38 +671,42 @@ Binary search on the answer (initial strength k). For each k, simulate: check if
 ##### Python Solution
 
 ```python
-def check_possibility(rungs, k, n):
+def can_climb(rungs, strength):
+    """Check if monkey can reach top with given initial strength."""
+    remaining = strength
 
-  remain = k
-  if rungs[0] > remain:
-    return False
-  if rungs[0] == remain:
-    remain -= 1
-  for i in range(1, n):
-    if rungs[i] - rungs[i - 1] > remain:
-      return False
-    if rungs[i] - rungs[i-1] == remain:
-      remain -= 1
+    # First jump from ground
+    if rungs[0] > remaining:
+        return False
+    if rungs[0] == remaining:
+        remaining -= 1
 
-  return remain >= 0
+    # Subsequent jumps
+    for i in range(1, len(rungs)):
+        jump = rungs[i] - rungs[i - 1]
+        if jump > remaining:
+            return False
+        if jump == remaining:
+            remaining -= 1
+
+    return remaining >= 0
 
 
 def solution():
-  T = int(input())
-  for i in range(T):
-    N = int(input())
-    rungs = list(map(int, input().strip().split()))
+    t = int(input())
+    for case in range(1, t + 1):
+        n = int(input())
+        rungs = list(map(int, input().strip().split()))
 
-    lo = 0
-    hi = int(1e7)
-    while lo < hi - 1:
-      mid = (lo + hi) // 2
-      if check_possibility(rungs, mid, N):
-        hi = mid
-      else:
-        lo = mid
+        lo, hi = 0, int(1e7)
+        while lo < hi - 1:
+            mid = (lo + hi) // 2
+            if can_climb(rungs, mid):
+                hi = mid
+            else:
+                lo = mid
 
-    print('Case {0}: {1}'.format(i + 1, hi))
+        print(f'Case {case}: {hi}')
 
 
 solution()

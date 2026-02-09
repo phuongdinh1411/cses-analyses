@@ -76,56 +76,46 @@ Use BFS pathfinding with special handling for the destination cell. When we reac
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def can_reach_destination(starting_point, ending_point, n, m, matrix):
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+def can_reach_destination(start, end, n, m, matrix):
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    visited = [[False] * m for _ in range(n)]
+    visited[start[0]][start[1]] = True
 
-  visited = [[False for i in range(m)] for j in range(n)]
-  visited[starting_point[0]][starting_point[1]] = True
+    queue = deque([start])
 
-  q = queue.Queue()
-  q.put(starting_point)
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if (nx, ny) == tuple(end):
+                if matrix[nx][ny] == 'X':
+                    return 'YES'
+                # Check if destination has another adjacent passable cell
+                for ddx, ddy in directions:
+                    nnx, nny = nx + ddx, ny + ddy
+                    if (0 <= nnx < n and 0 <= nny < m and
+                        matrix[nnx][nny] == '.' and (nnx, nny) != (x, y)):
+                        return 'YES'
+                return 'NO'
+            if (0 <= nx < n and 0 <= ny < m and
+                matrix[nx][ny] == '.' and not visited[nx][ny]):
+                queue.append((nx, ny))
+                visited[nx][ny] = True
 
-  while not q.empty():
-    checking_node = q.get()
-    for l in range(4):
-      neighbor_x = checking_node[0] + dx[l]
-      neighbor_y = checking_node[1] + dy[l]
-      if neighbor_x == ending_point[0] and neighbor_y == ending_point[1]:
-        if matrix[neighbor_x][neighbor_y] == 'X':
-          return 'YES'
-        else:
-          for end_check in range(4):
-            end_neighbor_x = neighbor_x + dx[end_check]
-            end_neighbor_y = neighbor_y + dy[end_check]
-            if 0 <= end_neighbor_x < n and 0 <= end_neighbor_y < m and matrix[end_neighbor_x][end_neighbor_y] == '.':
-              if end_neighbor_x != checking_node[0] or end_neighbor_y != checking_node[1]:
-                return 'YES'
-          return 'NO'
-      else:
-        if 0 <= neighbor_x < n and 0 <= neighbor_y < m and matrix[neighbor_x][neighbor_y] == '.' and not visited[neighbor_x][neighbor_y]:
-          q.put([neighbor_x, neighbor_y])
-          visited[neighbor_x][neighbor_y] = True
-
-  return 'NO'
+    return 'NO'
 
 def solution():
-  n, m = map(int, input().split())
-  matrix = []
-  for i in range(n):
-    matrix.append(input().strip())
+    n, m = map(int, input().split())
+    matrix = [input().strip() for _ in range(n)]
 
-  starting_point = list(map(int, input().split()))
-  ending_point = list(map(int, input().split()))
+    r1, c1 = map(int, input().split())
+    r2, c2 = map(int, input().split())
+    start = (r1 - 1, c1 - 1)
+    end = (r2 - 1, c2 - 1)
 
-  starting_point[0] -= 1
-  starting_point[1] -= 1
-  ending_point[0] -= 1
-  ending_point[1] -= 1
-
-  print(can_reach_destination(starting_point, ending_point, n, m, matrix))
+    print(can_reach_destination(start, end, n, m, matrix))
 
 solution()
 ```
@@ -180,41 +170,41 @@ BFS from root, tracking consecutive cats on each path. When we encounter a non-c
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def bfs_count_possible_leaves(n, m, a, graph):
-  consecutive_cats = [-1 for i in range(n+9)]
-  total_restaurants = 0
-  consecutive_cats[1] = a[0]
+def bfs_count_possible_leaves(n, max_cats, cats, graph):
+    consecutive_cats = [-1] * (n + 1)
+    consecutive_cats[1] = cats[0]
+    total_restaurants = 0
 
-  q = queue.Queue()
-  q.put(1)
+    queue = deque([1])
 
-  while not q.empty():
-    u = q.get()
-    if len(graph[u]) == 1 and u != 1:
-      total_restaurants += 1
-    else:
-      for v in graph[u]:
-        if consecutive_cats[v] == -1:
-          if a[v-1] == 0:
-            consecutive_cats[v] = 0
-          else:
-            consecutive_cats[v] = consecutive_cats[u] + 1
-          if consecutive_cats[v] <= m:
-            q.put(v)
-  return total_restaurants
+    while queue:
+        u = queue.popleft()
+        # Leaf node (not root)
+        if len(graph[u]) == 1 and u != 1:
+            total_restaurants += 1
+            continue
+
+        for v in graph[u]:
+            if consecutive_cats[v] == -1:
+                consecutive_cats[v] = consecutive_cats[u] + 1 if cats[v - 1] else 0
+                if consecutive_cats[v] <= max_cats:
+                    queue.append(v)
+
+    return total_restaurants
 
 def solution():
-  n, m = map(int, input().split())
-  a = list(map(int, input().split()))
-  graph = [[] for i in range(n + 1)]
-  for i in range(1, n):
-    s, e = map(int, input().split())
-    graph[s].append(e)
-    graph[e].append(s)
+    n, m = map(int, input().split())
+    cats = list(map(int, input().split()))
+    graph = [[] for _ in range(n + 1)]
 
-  print(bfs_count_possible_leaves(n, m, a, graph))
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        graph[u].append(v)
+        graph[v].append(u)
+
+    print(bfs_count_possible_leaves(n, m, cats, graph))
 
 solution()
 ```
@@ -278,46 +268,34 @@ BFS where each state is a key value (0-99999), and edges represent multiplicatio
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def find_minimum_time(key_value, lock_value, keys):
-  if key_value == lock_value:
-    return 0
+def find_minimum_time(key_value, lock_value, magic_keys):
+    if key_value == lock_value:
+        return 0
 
-  visited = [False for i in range(100000)]
-  path = [-1 for i in range(100000)]
-  q = queue.Queue()
-  q.put(key_value)
+    MOD = 100000
+    dist = [-1] * MOD
+    dist[key_value] = 0
+    queue = deque([key_value])
 
-  while not q.empty():
-    u = q.get()
-    for key in keys:
-      new_key = (key * u) % 100000
-      if not visited[new_key]:
-        visited[new_key] = True
-        q.put(new_key)
-        path[new_key] = u
-        if lock_value == new_key:
-          return get_time(key_value, lock_value, path)
+    while queue:
+        curr = queue.popleft()
+        for key in magic_keys:
+            new_val = (curr * key) % MOD
+            if dist[new_val] == -1:
+                dist[new_val] = dist[curr] + 1
+                if new_val == lock_value:
+                    return dist[new_val]
+                queue.append(new_val)
 
-  return -1
-
-def get_time(key_value, lock_value, path):
-  total_time = 0
-  current_node = lock_value
-  while True:
-    if key_value == path[current_node]:
-      return total_time + 1
-    else:
-      total_time += 1
-      current_node = path[current_node]
+    return -1
 
 def solution():
-  key_value, lock_value = map(int, input().split())
-  N = int(input())
-  keys = list(map(int, input().split()))
-
-  print(find_minimum_time(key_value, lock_value, keys))
+    key_value, lock_value = map(int, input().split())
+    n = int(input())
+    magic_keys = list(map(int, input().split()))
+    print(find_minimum_time(key_value, lock_value, magic_keys))
 
 solution()
 ```
@@ -372,66 +350,36 @@ Standard BFS from the starting node, multiply hop count by 6 for final distance 
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque, defaultdict
 
-def bfs(n, m, edges, s):
-  MAX = n + 9
-  visited = [False for i in range(MAX)]
-  path = [-1 for i in range(MAX)]
-  for i in range(1, n + 1):
-    visited[i] = False
+def bfs(n, edges, start):
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
 
-  graph = [[] for i in range(MAX)]
-  for e in edges:
-    graph[e[0]].append(e[1])
-    graph[e[1]].append(e[0])
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    queue = deque([start])
 
-  q = queue.Queue()
-  visited[s] = True
-  q.put(s)
+    while queue:
+        u = queue.popleft()
+        for v in graph[u]:
+            if dist[v] == -1:
+                dist[v] = dist[u] + 1
+                queue.append(v)
 
-  while not q.empty():
-    u = q.get()
-    for v in graph[u]:
-      if not visited[v]:
-        visited[v] = True
-        q.put(v)
-        path[v] = u
-
-  _result = []
-  for i in range(1, n + 1):
-    if i != s:
-      _result.append(calc_path(s, i, path))
-
-  return _result
-
-def calc_path(s, f, path):
-  steps = 0
-  if path[f] == -1:
-    return -1
-
-  while True:
-    steps += 1
-    f = path[f]
-    if f == s:
-      break
-  return steps * 6
+    return [dist[i] * 6 if dist[i] != -1 else -1 for i in range(1, n + 1) if i != start]
 
 if __name__ == '__main__':
-  q = int(input())
+    q = int(input())
 
-  for q_itr in range(q):
-    nm = input().split()
-    n = int(nm[0])
-    m = int(nm[1])
-
-    edges = []
-    for _ in range(m):
-      edges.append(list(map(int, input().rstrip().split())))
-
-    s = int(input())
-    result = bfs(n, m, edges, s)
-    print(' '.join(map(str, result)))
+    for _ in range(q):
+        n, m = map(int, input().split())
+        edges = [tuple(map(int, input().split())) for _ in range(m)]
+        start = int(input())
+        result = bfs(n, edges, start)
+        print(' '.join(map(str, result)))
 ```
 
 ##### Complexity Analysis
@@ -489,46 +437,47 @@ BFS flood fill from prince's position to count all reachable cells.
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def calculate_possible_cells(wi, hi, matrix, prince_position):
-  total_possible_cells = 1
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+def calculate_possible_cells(width, height, matrix, prince_pos):
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    visited = [[False] * width for _ in range(height)]
+    visited[prince_pos[0]][prince_pos[1]] = True
+    total_cells = 1
 
-  visited = [[False for i in range(wi)] for j in range(hi)]
-  q = queue.Queue()
-  q.put(prince_position)
+    queue = deque([prince_pos])
 
-  while not q.empty():
-    checking_node = q.get()
-    for i in range(4):
-      neighbor_x = checking_node[0] + dx[i]
-      neighbor_y = checking_node[1] + dy[i]
-      if neighbor_x >= 0 and neighbor_y >= 0 and neighbor_x < hi and neighbor_y < wi and matrix[neighbor_x][neighbor_y] == '.':
-        if not visited[neighbor_x][neighbor_y]:
-          q.put([neighbor_x, neighbor_y])
-          visited[neighbor_x][neighbor_y] = True
-          total_possible_cells += 1
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if (0 <= nx < height and 0 <= ny < width and
+                matrix[nx][ny] == '.' and not visited[nx][ny]):
+                queue.append((nx, ny))
+                visited[nx][ny] = True
+                total_cells += 1
 
-  return total_possible_cells
+    return total_cells
 
 def solution():
-  results = []
-  T = int(input())
-  for i in range(T):
-    Wi, Hi = map(int, input().split())
-    matrix = []
-    prince_position = []
-    for j in range(Hi):
-      new_line = input().strip()
-      if new_line.find('@') >= 0:
-        prince_position.append(j)
-        prince_position.append(new_line.find('@'))
-      matrix.append(new_line)
-    results.append('Case {0}: {1}'.format(i + 1, calculate_possible_cells(Wi, Hi, matrix, prince_position)))
+    results = []
+    T = int(input())
 
-  print(*results, sep='\n')
+    for case in range(1, T + 1):
+        width, height = map(int, input().split())
+        matrix = []
+        prince_pos = None
+
+        for row in range(height):
+            line = input().strip()
+            if '@' in line:
+                prince_pos = (row, line.index('@'))
+            matrix.append(line)
+
+        cells = calculate_possible_cells(width, height, matrix, prince_pos)
+        results.append(f'Case {case}: {cells}')
+
+    print('\n'.join(results))
 
 solution()
 ```
@@ -589,72 +538,70 @@ BFS to find connected components of non-fence cells. For each component, check i
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def calc_survive(N, M, matrix):
-  visited = [[False for i in range(M)] for j in range(N)]
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+def calc_survive(n, m, matrix):
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    visited = [[False] * m for _ in range(n)]
+    passable = {'.', 'k', 'v'}
 
-  wolfs_counter = 0
-  sheeps_counter = 0
+    total_sheep = total_wolves = 0
 
-  for row_counter in range(N):
-    for col_counter in range(M):
-      if (matrix[row_counter][col_counter] == '.' or matrix[row_counter][col_counter] == 'k' or
-            matrix[row_counter][col_counter] == 'v') and not visited[row_counter][col_counter]:
-        visited[row_counter][col_counter] = True
-        q = queue.Queue()
-        q.put([row_counter, col_counter])
-        sheeps, wolfs = 0, 0
-        if matrix[row_counter][col_counter] == 'k':
-          sheeps = 1
-        if matrix[row_counter][col_counter] == 'v':
-          wolfs = 1
-        belong_to_sector = True
-        while not q.empty():
-          checking_node = q.get()
-          for l in range(4):
-            neighbor_x = checking_node[0] + dx[l]
-            neighbor_y = checking_node[1] + dy[l]
-            if 0 <= neighbor_x < N and 0 <= neighbor_y < M and (
-                      matrix[neighbor_x][neighbor_y] == '.' or matrix[neighbor_x][
-                    neighbor_y] == 'k' or
-                    matrix[neighbor_x][neighbor_y] == 'v') and not visited[neighbor_x][neighbor_y]:
-              q.put([neighbor_x, neighbor_y])
-              visited[neighbor_x][neighbor_y] = True
-              if matrix[neighbor_x][neighbor_y] == 'k':
-                sheeps += 1
-              if matrix[neighbor_x][neighbor_y] == 'v':
-                wolfs += 1
-              if neighbor_y == 0 or neighbor_x == 0 or neighbor_y == M - 1 or neighbor_x == N - 1:
-                belong_to_sector = False
-        if belong_to_sector:
-          if sheeps > wolfs:
-            sheeps_counter += sheeps
-          else:
-            wolfs_counter += wolfs
-        else:
-          sheeps_counter += sheeps
-          wolfs_counter += wolfs
+    for start_row in range(n):
+        for start_col in range(m):
+            if matrix[start_row][start_col] in passable and not visited[start_row][start_col]:
+                visited[start_row][start_col] = True
+                queue = deque([(start_row, start_col)])
+                sheep = wolves = 0
+                is_enclosed = start_row not in (0, n - 1) and start_col not in (0, m - 1)
 
-  return [sheeps_counter, wolfs_counter]
+                if matrix[start_row][start_col] == 'k':
+                    sheep = 1
+                elif matrix[start_row][start_col] == 'v':
+                    wolves = 1
+
+                while queue:
+                    x, y = queue.popleft()
+                    for dx, dy in directions:
+                        nx, ny = x + dx, y + dy
+                        if (0 <= nx < n and 0 <= ny < m and
+                            matrix[nx][ny] in passable and not visited[nx][ny]):
+                            queue.append((nx, ny))
+                            visited[nx][ny] = True
+
+                            if matrix[nx][ny] == 'k':
+                                sheep += 1
+                            elif matrix[nx][ny] == 'v':
+                                wolves += 1
+
+                            if nx in (0, n - 1) or ny in (0, m - 1):
+                                is_enclosed = False
+
+                if is_enclosed:
+                    if sheep > wolves:
+                        total_sheep += sheep
+                    else:
+                        total_wolves += wolves
+                else:
+                    total_sheep += sheep
+                    total_wolves += wolves
+
+    return total_sheep, total_wolves
 
 def solution():
-  while True:
-    new_line = input().strip()
-    if new_line:
-      N, M = map(int, new_line.split())
-      break
-  backyard = []
-  i = 0
-  while i < N:
-    new_line = input().strip()
-    if new_line:
-      backyard.append(new_line)
-      i += 1
+    while True:
+        line = input().strip()
+        if line:
+            n, m = map(int, line.split())
+            break
 
-  print(*calc_survive(N, M, backyard), sep=' ')
+    backyard = []
+    while len(backyard) < n:
+        line = input().strip()
+        if line:
+            backyard.append(line)
+
+    print(*calc_survive(n, m, backyard))
 
 solution()
 ```
@@ -719,85 +666,66 @@ First count boundary openings. If exactly 2, build a graph and use BFS to check 
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque
 
-def check_path(m, n, maze_graph, start_point, end_point):
-  visited = [[False for i in range(n)] for j in range(m)]
+def check_path(maze, start, end, rows, cols):
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    visited = [[False] * cols for _ in range(rows)]
+    visited[start[0]][start[1]] = True
+    queue = deque([start])
 
-  q = queue.Queue()
-  visited[start_point[0]][start_point[1]] = True
-  q.put(start_point)
-  while not q.empty():
-    u = q.get()
-    for v in maze_graph[u[0]][u[1]]:
-      if not visited[v[0]][v[1]]:
-        if v[0] == end_point[0] and v[1] == end_point[1]:
-          return True
-        visited[v[0]][v[1]] = True
-        q.put(v)
+    while queue:
+        x, y = queue.popleft()
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if (0 <= nx < rows and 0 <= ny < cols and
+                maze[nx][ny] and not visited[nx][ny]):
+                if (nx, ny) == end:
+                    return True
+                visited[nx][ny] = True
+                queue.append((nx, ny))
 
-  return False
+    return False
 
-def get_edge_openings(m, n, maze_matrix):
-  edge_openings_counter = 0
-  edge_openings = []
-  for i in range(m):
-    if maze_matrix[i][0]:
-      edge_openings_counter += 1
-      edge_openings.append([i, 0])
-    if n > 1 and maze_matrix[i][n - 1]:
-      edge_openings_counter += 1
-      edge_openings.append([i, n - 1])
-    if edge_openings_counter > 2:
-      return []
+def get_edge_openings(maze, rows, cols):
+    openings = []
 
-  for i in range(1, n - 1, 1):
-    if maze_matrix[0][i]:
-      edge_openings_counter += 1
-      edge_openings.append([0, i])
-    if m > 1 and maze_matrix[m - 1][i]:
-      edge_openings_counter += 1
-      edge_openings.append([m - 1, i])
-    if edge_openings_counter > 2:
-      return []
+    # Check left and right edges
+    for i in range(rows):
+        if maze[i][0]:
+            openings.append((i, 0))
+        if cols > 1 and maze[i][cols - 1]:
+            openings.append((i, cols - 1))
+        if len(openings) > 2:
+            return []
 
-  return edge_openings
+    # Check top and bottom edges (excluding corners)
+    for j in range(1, cols - 1):
+        if maze[0][j]:
+            openings.append((0, j))
+        if rows > 1 and maze[rows - 1][j]:
+            openings.append((rows - 1, j))
+        if len(openings) > 2:
+            return []
 
-def check_valid_maze(m, n, maze_matrix):
-  edge_openings = get_edge_openings(m, n, maze_matrix)
-  if len(edge_openings) == 2:
-    maze_graph = []
-    for i in range(m):
-      maze_graph.append([[] for l in range(n)])
-      for j in range(n):
-        if maze_matrix[i][j] == 1:
-          if i > 0 and maze_matrix[i - 1][j] == 1:
-            maze_graph[i][j].append([i - 1, j])
-          if j > 0 and maze_matrix[i][j - 1] == 1:
-            maze_graph[i][j].append([i, j - 1])
-          if i < m - 1 and maze_matrix[i + 1][j] == 1:
-            maze_graph[i][j].append([i + 1, j])
-          if j < n - 1 and maze_matrix[i][j + 1] == 1:
-            maze_graph[i][j].append([i, j + 1])
-    return check_path(m, n, maze_graph, edge_openings[0], edge_openings[1])
-  return False
+    return openings
+
+def check_valid_maze(maze, rows, cols):
+    openings = get_edge_openings(maze, rows, cols)
+    if len(openings) == 2:
+        return check_path(maze, openings[0], openings[1], rows, cols)
+    return False
 
 def solution():
-  t = int(input())
-  result = []
+    t = int(input())
+    results = []
 
-  for i in range(t):
-    m, n = map(int, input().split())
-    M = []
-    for row in range(m):
-      M.append([])
-      rowi = input().strip()
-      for col in range(n):
-        M[row].append(1 if rowi[col] == '.' else 0)
+    for _ in range(t):
+        rows, cols = map(int, input().split())
+        maze = [[c == '.' for c in input().strip()] for _ in range(rows)]
+        results.append('valid' if check_valid_maze(maze, rows, cols) else 'invalid')
 
-    result.append('valid' if check_valid_maze(m, n, M) else 'invalid')
-
-  print(*result, sep='\n')
+    print('\n'.join(results))
 
 solution()
 ```
@@ -858,60 +786,49 @@ BFS flood fill to find and measure connected components of oil cells.
 ##### Python Solution
 
 ```python
-import queue
+from collections import deque, defaultdict
 
-def calc_slick(N, M, matrix):
-  total_slicks = 0
-  slick_list = {}
+def calc_slick(n, m, matrix):
+    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
+    total_slicks = 0
+    slick_sizes = defaultdict(int)
 
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
+    for row in range(n):
+        for col in range(m):
+            if matrix[row][col] == 1:
+                total_slicks += 1
+                slick_size = 1
+                matrix[row][col] = 0
+                queue = deque([(row, col)])
 
-  for row_counter in range(N):
-    for col_counter in range(M):
-      if matrix[row_counter][col_counter] == 1:
-        total_slicks += 1
-        slick_size = 1
-        q = queue.Queue()
-        q.put([row_counter, col_counter])
-        matrix[row_counter][col_counter] = 0
-        while not q.empty():
-          checking_node = q.get()
-          for l in range(4):
-            neighbor_x = checking_node[0] + dx[l]
-            neighbor_y = checking_node[1] + dy[l]
-            if 0 <= neighbor_x < N and 0 <= neighbor_y < M and matrix[neighbor_x][neighbor_y] == 1:
-              q.put([neighbor_x, neighbor_y])
-              slick_size += 1
-              matrix[neighbor_x][neighbor_y] = 0
+                while queue:
+                    x, y = queue.popleft()
+                    for dx, dy in directions:
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < n and 0 <= ny < m and matrix[nx][ny] == 1:
+                            queue.append((nx, ny))
+                            matrix[nx][ny] = 0
+                            slick_size += 1
 
-        if slick_size in slick_list:
-          slick_list[slick_size] += 1
-        else:
-          slick_list[slick_size] = 1
+                slick_sizes[slick_size] += 1
 
-  results = [[total_slicks]]
-
-  for key in sorted(slick_list):
-    results.append([key, slick_list[key]])
-
-  return results
+    results = [[total_slicks]]
+    results.extend([size, count] for size, count in sorted(slick_sizes.items()))
+    return results
 
 def solution():
-  results = []
-  while True:
-    N, M = map(int, input().split())
-    if N == 0:
-      break
-    matrix = []
-    for i in range(N):
-      matrix.append(list(map(int, input().split())))
+    all_results = []
 
-    results.append(calc_slick(N, M, matrix))
+    while True:
+        n, m = map(int, input().split())
+        if n == 0:
+            break
+        matrix = [list(map(int, input().split())) for _ in range(n)]
+        all_results.append(calc_slick(n, m, matrix))
 
-  for i in range(len(results)):
-    for j in range(len(results[i])):
-      print(*results[i][j], sep=' ')
+    for result in all_results:
+        for line in result:
+            print(*line)
 
 solution()
 ```

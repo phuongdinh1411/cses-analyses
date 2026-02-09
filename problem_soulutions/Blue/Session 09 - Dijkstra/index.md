@@ -57,103 +57,51 @@ Run Dijkstra from A and from B. For each chocolate city within X distance from B
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(n, start, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(N, A, graph):
-  dist = [-1 for x in range(N+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(A, 0))
-  dist[A] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  return dist
+    return dist
 
 def solution():
-  N = int(inp.next())
-  M = int(inp.next())
-  k = int(inp.next())
-  x = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-  chocolate_cities = []
-  for i in range(k):
-    chocolate_cities.append(int(inp.next()))
+    n, m, k, x = (int(tokens.pop()) for _ in range(4))
+    chocolate_cities = [int(tokens.pop()) for _ in range(k)]
 
-  graph = [[] for i in range(N + 1)]
-  for i in range(M):
-    A = int(inp.next())
-    B = int(inp.next())
-    W = int(inp.next())
+    graph = defaultdict(list)
+    for _ in range(m):
+        a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+        graph[a].append((b, w))
+        graph[b].append((a, w))
 
-    graph[B].append(Node(A, W))
-    graph[A].append(Node(B, W))
+    start, end = int(tokens.pop()), int(tokens.pop())
 
-  A = int(inp.next())
-  B = int(inp.next())
+    dist_from_end = dijkstra(n, end, graph)
+    dist_from_start = dijkstra(n, start, graph)
 
-  dist_from_b = dijkstra(N, B, graph)
-  found_chocolate_city_to_b = False
-  for i in range(k):
-    if x >= dist_from_b[chocolate_cities[i]] >= 0:
-      found_chocolate_city_to_b = True
-      break
+    # Find minimum time through a valid chocolate city
+    min_time = -1
+    for city in chocolate_cities:
+        if 0 <= dist_from_end[city] <= x and dist_from_start[city] >= 0:
+            total = dist_from_start[city] + dist_from_end[city]
+            if min_time == -1 or total < min_time:
+                min_time = total
 
-  if not found_chocolate_city_to_b:
-    print(-1)
-    return
-
-  dist_from_a = dijkstra(N, A, graph)
-
-  found_chocolate_city_to_a = False
-  for i in range(k):
-    if dist_from_a[chocolate_cities[i]] >= 0:
-      found_chocolate_city_to_a = True
-      break
-
-  if not found_chocolate_city_to_a:
-    print(-1)
-    return
-
-  min_time = -1
-
-  for i in range(k):
-    if x >= dist_from_b[chocolate_cities[i]] >= 0 and dist_from_a[chocolate_cities[i]] >= 0:
-      if min_time == -1 or min_time > dist_from_b[chocolate_cities[i]] + dist_from_a[chocolate_cities[i]]:
-        min_time = dist_from_b[chocolate_cities[i]] + dist_from_a[chocolate_cities[i]]
-
-  print(min_time)
+    print(min_time)
 
 solution()
 ```
@@ -214,79 +162,48 @@ Run Dijkstra from S and from D, find max sum for any building to get the time of
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(n, start, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(n, S, T, graph):
-  dist = [-1 for x in range(n+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(S, 0))
-  dist[S] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-      if neighbor.id == T:
-        return dist[neighbor.id]
+    return dist
 
 def solution():
-  T = int(inp.next())
-  results = []
-  case_number = 0
+    tokens = sys.stdin.read().split()[::-1]
+    t = int(tokens.pop())
+    results = []
 
-  for i in range(T):
-    case_number += 1
-    N = int(inp.next())
-    R = int(inp.next())
-    graph = [[] for i in range(N + 1)]
-    for j in range(R):
-      A = int(inp.next())
-      B = int(inp.next())
+    for case_num in range(1, t + 1):
+        n, r = int(tokens.pop()), int(tokens.pop())
+        graph = defaultdict(list)
 
-      graph[B].append(Node(A, 1))
-      graph[A].append(Node(B, 1))
+        for _ in range(r):
+            a, b = int(tokens.pop()), int(tokens.pop())
+            graph[a].append((b, 1))
+            graph[b].append((a, 1))
 
-    s = int(inp.next())
-    d = int(inp.next())
+        s, d = int(tokens.pop()), int(tokens.pop())
 
-    mx = 0
-    for j in range(N):
-      p = dijkstra(N, s, j, graph)
-      q = dijkstra(N, j, d, graph)
-      mx = max(mx, p + q)
+        dist_from_s = dijkstra(n, s, graph)
+        dist_from_d = dijkstra(n, d, graph)
 
-    results.append('Case ' + str(case_number) + ': ' + str(mx))
+        max_time = max(dist_from_s[j] + dist_from_d[j] for j in range(n))
+        results.append(f"Case {case_num}: {max_time}")
 
-  print(*results, sep='\n')
+    print(*results, sep='\n')
 
 solution()
 ```
@@ -343,74 +260,44 @@ Run Dijkstra from exit on REVERSED graph. Count cells whose distance is within T
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(start, n, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(E, T, N, graph):
-  dist = [-1 for x in range(N+1)]
-  path = [-1 for y in range(N+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(E, 0))
-  dist[E] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-        path[neighbor.id] = u
-
-  result = 0
-  for i in range(1, N+1):
-    if 0 <= dist[i] <= T:
-      result += 1
-
-  return result
+    return dist
 
 def solution():
-  N = int(inp.next())
-  E = int(inp.next())
-  T = int(inp.next())
-  M = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-  graph = [[] for i in range(N + 1)]
-  for i in range(M):
-    A = int(inp.next())
-    B = int(inp.next())
-    W = int(inp.next())
+    n = int(tokens.pop())
+    exit_cell = int(tokens.pop())
+    time_limit = int(tokens.pop())
+    m = int(tokens.pop())
 
-    graph[B].append(Node(A, W))
+    # Build reversed graph (from destination to sources)
+    graph = defaultdict(list)
+    for _ in range(m):
+        a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+        graph[b].append((a, w))
 
-  result = dijkstra(E, T, N, graph)
+    dist = dijkstra(exit_cell, n, graph)
 
-  print(result)
+    # Count mice that can reach exit within time limit
+    result = sum(1 for i in range(1, n + 1) if 0 <= dist[i] <= time_limit)
+    print(result)
 
 solution()
 ```
@@ -478,55 +365,46 @@ Dijkstra from source to destination for each query using city name to index mapp
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
+def dijkstra(n, start, dest, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def __lt__(self, other):
-    return self.dist < other.dist
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-def dijkstra(n, s, d, graph):
-  dist = [-1 for x in range(n + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(s, 0))
-  dist[s] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  return dist[d]
+    return dist[dest]
 
 def solution():
-  s = int(input())
+    num_cases = int(input())
 
-  for i in range(s):
-    new_line = input().strip()
-    if not new_line:
-      n = int(input())
-    else:
-      n = int(new_line)
-    cities_index = {}
-    graph = [[] for xx in range(n + 1)]
-    for xxx in range(n):
-      cities_index[input()] = xxx + 1
-      n_road = int(input())
-      for r in range(n_road):
-        ct, we = map(int, input().strip().split())
-        graph[xxx + 1].append(Node(ct, we))
+    for _ in range(num_cases):
+        line = input().strip()
+        n = int(line) if line else int(input())
 
-    num_roads = int(input())
-    for nr in range(num_roads):
-      st, ds = map(str, input().strip().split())
-      print(dijkstra(n, cities_index[st], cities_index[ds], graph))
+        city_to_idx = {}
+        graph = defaultdict(list)
+
+        for city_idx in range(1, n + 1):
+            city_name = input().strip()
+            city_to_idx[city_name] = city_idx
+            num_roads = int(input())
+            for _ in range(num_roads):
+                neighbor, weight = map(int, input().split())
+                graph[city_idx].append((neighbor, weight))
+
+        num_queries = int(input())
+        for _ in range(num_queries):
+            src, dst = input().split()
+            print(dijkstra(n, city_to_idx[src], city_to_idx[dst], graph))
 
 solution()
 ```
@@ -581,104 +459,66 @@ Run Dijkstra from S on original graph and from T on reversed graph. Try each pro
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(n, start, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(n, s, graph):
-  dist = [-1 for x in range(n + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(s, 0))
-  dist[s] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  return dist
+    return dist
 
 def solution():
-  T = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
+    num_tests = int(tokens.pop())
 
-  for test_case in range(T):
-    n = int(inp.next())
-    m = int(inp.next())
-    k = int(inp.next())
-    s = int(inp.next())
-    t = int(inp.next())
-    graph = [[] for i in range(n + 1)]
-    rev_graph = [[] for i in range(n + 1)]
-    matrix = [[-1 for i in range(n+1)] for j in range(n+1)]
-    for i in range(m):
-      A = int(inp.next())
-      B = int(inp.next())
-      W = int(inp.next())
+    for _ in range(num_tests):
+        n, m, k, s, t = (int(tokens.pop()) for _ in range(5))
 
-      matrix[A][B] = W
+        graph = defaultdict(list)
+        rev_graph = defaultdict(list)
+        existing = {}
 
-      graph[A].append(Node(B, W))
-      rev_graph[B].append(Node(A, W))
+        for _ in range(m):
+            a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+            existing[(a, b)] = w
+            graph[a].append((b, w))
+            rev_graph[b].append((a, w))
 
-    propose_roads = []
-    for i in range(k):
-      A = int(inp.next())
-      B = int(inp.next())
-      W = int(inp.next())
+        proposed = [(int(tokens.pop()), int(tokens.pop()), int(tokens.pop())) for _ in range(k)]
 
-      propose_roads.append({"u": A, "v": B, "w": W})
+        dist_from_s = dijkstra(n, s, graph)
+        dist_from_t = dijkstra(n, t, rev_graph)
 
-    from_s = dijkstra(n, s, graph)
-    from_t = dijkstra(n, t, rev_graph)
+        min_path = dist_from_s[t] if dist_from_s[t] > 0 else -1
 
-    minimum_path = -1
+        for u, v, w in proposed:
+            # Check if existing edge is shorter
+            edge_weight = min(w, existing.get((u, v), w))
 
-    for new_road in propose_roads:
-      new_path = -1
-      midle_weight = new_road['w']
-      if 0 < matrix[new_road['u']][new_road['v']] < midle_weight:
-        midle_weight = matrix[new_road['u']][new_road['v']]
-      if from_s[new_road['u']] >= 0 and from_t[new_road['v']] >= 0:
-        new_path = from_s[new_road['u']] + from_t[new_road['v']] + midle_weight
+            # Try u -> v direction
+            if dist_from_s[u] >= 0 and dist_from_t[v] >= 0:
+                path = dist_from_s[u] + edge_weight + dist_from_t[v]
+                if min_path == -1 or path < min_path:
+                    min_path = path
 
-      if from_t[new_road['u']] >= 0 and from_s[new_road['v']] >= 0:
-        new_path2 = from_t[new_road['u']] + from_s[new_road['v']] + midle_weight
-        if new_path == -1 or new_path > new_path2:
-          new_path = new_path2
+            # Try v -> u direction (bidirectional proposed road)
+            if dist_from_s[v] >= 0 and dist_from_t[u] >= 0:
+                path = dist_from_s[v] + edge_weight + dist_from_t[u]
+                if min_path == -1 or path < min_path:
+                    min_path = path
 
-      if minimum_path == -1 or new_path < minimum_path:
-        minimum_path = new_path
-
-    if 0 < from_s[t] < minimum_path:
-      minimum_path = from_s[t]
-    print(minimum_path)
+        print(min_path)
 
 solution()
 ```
@@ -737,83 +577,46 @@ Single Dijkstra from U, answer all queries from the precomputed distance array.
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
 
 MAX = 1100
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
+def dijkstra(start, graph):
+    dist = [-1] * MAX
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def __lt__(self, other):
-    return self.dist < other.dist
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-def dijkstra(s, graph, queries):
-  dist = [-1 for x in range(MAX)]
-  path = [-1 for y in range(MAX)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(s, 0))
-  dist[s] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-        path[neighbor.id] = u
-
-  results = []
-  nqueries = len(queries)
-  for i in range(nqueries):
-    if dist[queries[i]] != -1:
-      results.append(str(dist[queries[i]]))
-    else:
-      results.append('NO PATH')
-
-  return results
+    return dist
 
 def solution():
-  N = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-  graph = [[] for i in range(MAX)]
-  for i in range(N):
-    A = int(inp.next())
-    B = int(inp.next())
-    W = int(inp.next())
+    n = int(tokens.pop())
+    graph = defaultdict(list)
 
-    graph[A].append(Node(B, W))
-    graph[B].append(Node(A, W))
+    for _ in range(n):
+        a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+        graph[a].append((b, w))
+        graph[b].append((a, w))
 
-  U = int(inp.next())
-  Q = int(inp.next())
-  queries = []
-  for i in range(Q):
-    queries.append(int(inp.next()))
+    start = int(tokens.pop())
+    q = int(tokens.pop())
+    queries = [int(tokens.pop()) for _ in range(q)]
 
-  results = dijkstra(U, graph, queries)
+    dist = dijkstra(start, graph)
+    results = [str(dist[dest]) if dist[dest] != -1 else 'NO PATH' for dest in queries]
 
-  print(*results, sep='\n')
+    print(*results, sep='\n')
 
 solution()
 ```
@@ -870,77 +673,44 @@ Standard Dijkstra's algorithm from S to T.
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(n, start, dest, graph):
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(n, S, T, graph, case_number):
-  dist = [-1 for x in range(n+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(S, 0))
-  dist[S] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  result = 'unreachable'
-  if dist[T] >= 0:
-    result = str(dist[T])
-
-  return 'Case #' + str(case_number) + ': ' + result
+    return dist[dest] if dist[dest] >= 0 else None
 
 def solution():
-  N = int(inp.next())
-  results = []
-  case_number = 0
+    tokens = sys.stdin.read().split()[::-1]
+    num_cases = int(tokens.pop())
+    results = []
 
-  for i in range(N):
-    case_number += 1
-    n = int(inp.next())
-    m = int(inp.next())
-    S = int(inp.next())
-    T = int(inp.next())
-    graph = [[] for i in range(n + 1)]
-    for i in range(m):
-      A = int(inp.next())
-      B = int(inp.next())
-      W = int(inp.next())
+    for case_num in range(1, num_cases + 1):
+        n, m, s, t = (int(tokens.pop()) for _ in range(4))
+        graph = defaultdict(list)
 
-      graph[B].append(Node(A, W))
-      graph[A].append(Node(B, W))
+        for _ in range(m):
+            a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+            graph[a].append((b, w))
+            graph[b].append((a, w))
 
-    results.append(dijkstra(n, S, T, graph, case_number))
+        dist = dijkstra(n, s, t, graph)
+        result = str(dist) if dist is not None else 'unreachable'
+        results.append(f"Case #{case_num}: {result}")
 
-  print(*results, sep='\n')
+    print(*results, sep='\n')
 
 solution()
 ```
@@ -998,96 +768,63 @@ Run Dijkstra from S and reverse Dijkstra from D. Identify edges on shortest path
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra(n, start, graph, blocked):
+    dist = [-1] * n
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            if (u, v) not in blocked:
+                new_dist = d + w
+                if dist[v] == -1 or new_dist < dist[v]:
+                    dist[v] = new_dist
+                    heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(n, s, graph, matrix):
-  dist = [-1 for x in range(n)]
-  path = [-1 for y in range(n)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(s, 0))
-  dist[s] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if matrix[u][neighbor.id] != -1:
-        if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-          dist[neighbor.id] = w + neighbor.dist
-          heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-          path[neighbor.id] = u
-
-  return [dist, path]
+    return dist
 
 def solution():
-  while True:
-    n = int(inp.next())
-    if n == 0:
-      break
-    m = int(inp.next())
-    s = int(inp.next())
-    d = int(inp.next())
-    graph = [[] for i in range(n)]
-    rev_graph = [[] for i in range(n)]
-    matrix = [[-1 for i in range(n)] for j in range(n)]
-    rev_matrix = [[-1 for i in range(n)] for j in range(n)]
-    for i in range(m):
-      A = int(inp.next())
-      B = int(inp.next())
-      W = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-      matrix[A][B] = W
-      rev_matrix[B][A] = W
+    while True:
+        n = int(tokens.pop())
+        if n == 0:
+            break
 
-      graph[A].append(Node(B, W))
-      rev_graph[B].append(Node(A, W))
+        m, s, d = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
 
-    from_s = dijkstra(n, s, graph, matrix)
-    from_d = dijkstra(n, d, rev_graph, rev_matrix)
+        graph = defaultdict(list)
+        rev_graph = defaultdict(list)
 
-    dist_from_s = from_s[0]
-    dist_from_d = from_d[0]
+        for _ in range(m):
+            a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+            graph[a].append((b, w))
+            rev_graph[b].append((a, w))
 
-    shortest = dist_from_s[d]
+        dist_from_s = dijkstra(n, s, graph, set())
+        dist_from_d = dijkstra(n, d, rev_graph, set())
 
-    if shortest == -1:
-      print(-1)
-      continue
+        shortest = dist_from_s[d]
 
-    for i in range(n):
-      if dist_from_d[i] + dist_from_s[i] == shortest:
-        matrix[s][i] = -1
-        matrix[i][d] = -1
+        if shortest == -1:
+            print(-1)
+            continue
 
-    shortest = dijkstra(n, s, graph, matrix)[0][d]
+        # Find and block edges on any shortest path
+        blocked = set()
+        for u in range(n):
+            for v, w in graph[u]:
+                if (dist_from_s[u] >= 0 and dist_from_d[v] >= 0 and
+                    dist_from_s[u] + w + dist_from_d[v] == shortest):
+                    blocked.add((u, v))
 
-    print(shortest)
+        almost_shortest = dijkstra(n, s, graph, blocked)[d]
+        print(almost_shortest)
 
 solution()
 ```

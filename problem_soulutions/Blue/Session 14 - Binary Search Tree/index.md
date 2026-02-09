@@ -51,18 +51,28 @@ Two points are on the same ray if they have the same angle from origin. For each
 ##### Python Solution
 
 ```python
-def solution():
-  n, x0, y0 = map(int, input().strip().split())
-  shots = set()
-  for i in range(n):
-    x, y = map(int, input().strip().split())
-    x, y = x - x0, y - y0
-    angle = 1e4
-    if y != 0:
-      angle = x / y
-    shots.add(angle)
+from math import gcd
 
-  print(len(shots))
+
+def solution():
+    n, x0, y0 = map(int, input().strip().split())
+    rays = set()
+
+    for _ in range(n):
+        x, y = map(int, input().strip().split())
+        dx, dy = x - x0, y - y0
+
+        # Normalize direction using GCD for exact comparison
+        g = gcd(abs(dx), abs(dy)) or 1
+        dx, dy = dx // g, dy // g
+
+        # Handle sign normalization for opposite directions on same ray
+        if dx < 0 or (dx == 0 and dy < 0):
+            dx, dy = -dx, -dy
+
+        rays.add((dx, dy))
+
+    print(len(rays))
 
 
 solution()
@@ -125,44 +135,39 @@ Use sets to track unread notifications per application. Use a queue to track not
 ##### Python Solution
 
 ```python
-import queue
-
-
-class Node:
-  def __init__(self, noti_index, app_index):
-    self.noti_index = noti_index
-    self.app_index = app_index
-
-  def __lt__(self, other):
-    return self.noti_index < other.noti_index
+from collections import deque
 
 
 def solution():
-  n, q = map(int, input().strip().split())
-  apps = [set() for i in range(n + 1)]
-  noti_queue = queue.Queue()
-  current_noti = 0
-  read_noti = 0
-  current_noti_index = 1
-  for i in range(q):
-    q1, q2 = map(int, input().split())
-    if q1 == 1:
-      apps[q2].add(current_noti_index)
-      noti_queue.put(Node(current_noti_index, q2))
-      current_noti_index += 1
-      current_noti += 1
-    if q1 == 2:
-      current_noti -= len(apps[q2])
-      apps[q2].clear()
-    if q1 == 3:
-      while read_noti < q2:
-        to_be_read = noti_queue.get()
-        if to_be_read.noti_index in apps[to_be_read.app_index]:
-          current_noti -= 1
-          apps[to_be_read.app_index].remove(to_be_read.noti_index)
-        read_noti += 1
+    n, num_ops = map(int, input().strip().split())
+    app_notifications = [set() for _ in range(n + 1)]
+    notification_queue = deque()
+    unread_count = 0
+    notification_id = 1
+    processed_count = 0
 
-    print(current_noti)
+    for _ in range(num_ops):
+        op_type, param = map(int, input().split())
+
+        if op_type == 1:  # New notification from app
+            app_notifications[param].add(notification_id)
+            notification_queue.append((notification_id, param))
+            notification_id += 1
+            unread_count += 1
+
+        elif op_type == 2:  # Read all from specific app
+            unread_count -= len(app_notifications[param])
+            app_notifications[param].clear()
+
+        elif op_type == 3:  # Read first t notifications in order
+            while processed_count < param:
+                noti_id, app_id = notification_queue.popleft()
+                if noti_id in app_notifications[app_id]:
+                    unread_count -= 1
+                    app_notifications[app_id].discard(noti_id)
+                processed_count += 1
+
+        print(unread_count)
 
 
 solution()
@@ -223,21 +228,19 @@ Use a set to count distinct elements in O(n). Compare set size with X to determi
 ##### Python Solution
 
 ```python
-def check_distinct(_n, _x, _a):
-  distinct_set = set(_a)
-  if len(distinct_set) == _x:
-    return 'Good'
-  if len(distinct_set) < _x:
-    return 'Bad'
-  return 'Average'
+def check_distinct(arr, target):
+    distinct_count = len(set(arr))
+    if distinct_count == target:
+        return 'Good'
+    return 'Bad' if distinct_count < target else 'Average'
 
 
 def solution():
-  T = int(input())
-  for i in range(T):
-    N, X = map(int, input().strip().split())
-    A = list(map(int, input().strip().split()))
-    print(check_distinct(N, X, A))
+    t = int(input())
+    for _ in range(t):
+        n, x = map(int, input().strip().split())
+        arr = list(map(int, input().strip().split()))
+        print(check_distinct(arr, x))
 
 
 solution()
@@ -287,78 +290,33 @@ Build a BST as we process prices in chronological order. For each new price (pot
 ##### Python Solution
 
 ```python
-import math
-import os
-import random
-import re
-import sys
+import bisect
 
 
-class Node:
-  def __init__(self, value):
-    self.value = value
-    self.left = None
-    self.right = None
+def minimum_loss(prices):
+    """Find minimum loss by buying and selling house."""
+    INF = float('inf')
+    min_loss = INF
+    sorted_prices = []
 
+    for price in prices:
+        # Find the smallest price greater than current (valid past buy price)
+        pos = bisect.bisect_right(sorted_prices, price)
 
-def add_node(root, x):
-  if root is None:
-    return Node(x)
-  if x < root.value:
-    root.left = add_node(root.left, x)
-  elif x > root.value:
-    root.right = add_node(root.right, x)
-  return root
+        if pos < len(sorted_prices):
+            loss = sorted_prices[pos] - price
+            min_loss = min(min_loss, loss)
 
+        # Insert current price into sorted list
+        bisect.insort(sorted_prices, price)
 
-def max_value_node(root):
-  current = root
-  while current.right is not None:
-    current = current.right
-  return current.value
-
-
-def __find_min_loss(root):
-  if root is None or root.left is None:
-    return -1
-  return root.value - max_value_node(root.left)
-
-
-def find_min_loss(root, min_loss):
-  if root is None:
     return min_loss
-  current_min_loss = __find_min_loss(root)
-  if current_min_loss != -1 and min_loss > current_min_loss:
-    min_loss = current_min_loss
-
-  min_loss_right = find_min_loss(root.right, min_loss)
-  min_loss_left = find_min_loss(root.left, min_loss_right)
-
-  return min_loss_left
-
-
-def minimum_loss(price):
-  n = len(price)
-  root = Node(price[0])
-  for i in range(1, n):
-    add_node(root, price[i])
-
-  min_loss = 1e16
-  return find_min_loss(root, min_loss)
 
 
 if __name__ == '__main__':
-  fptr = sys.stdout
-
-  n = int(input())
-
-  price = list(map(int, input().rstrip().split()))
-
-  result = minimum_loss(price)
-
-  fptr.write(str(result) + '\n')
-
-  fptr.close()
+    n = int(input())
+    prices = list(map(int, input().rstrip().split()))
+    print(minimum_loss(prices))
 ```
 
 ##### Complexity Analysis
@@ -409,24 +367,17 @@ Use a set to store IDs of friends inside the class. For each arriving friend, ch
 ##### Python Solution
 
 ```python
-def check_exist(_in, _out):
-  inside_class = set(_in)
-  for stu in _out:
-    if stu in inside_class:
-      print('YES')
-    else:
-      print('NO')
-    inside_class.add(stu)
-
-
 def solution():
-  T = int(input())
-  for i in range(T):
-    N, M = map(int, input().strip().split())
-    A = list(map(int, input().strip().split()))
-    inside_class = A[:N]
-    outside_class = A[N:]
-    check_exist(inside_class, outside_class)
+    t = int(input())
+    for _ in range(t):
+        n, m = map(int, input().strip().split())
+        ids = list(map(int, input().strip().split()))
+
+        present = set(ids[:n])
+
+        for student_id in ids[n:]:
+            print('YES' if student_id in present else 'NO')
+            present.add(student_id)
 
 
 solution()
@@ -485,45 +436,14 @@ Build a Binary Search Tree from memorized years. For each exam question, search 
 ##### Python Solution
 
 ```python
-class Node:
-  def __init__(self, value):
-    self.value = value
-    self.left = None
-    self.right = None
-
-
-def add_node(root, x):
-  if root is None:
-    return Node(x)
-  if x < root.value:
-    root.left = add_node(root.left, x)
-  elif x > root.value:
-    root.right = add_node(root.right, x)
-  return root
-
-
-def search_node(root, x):
-  if root is None or root.value == x:
-    return root
-  if root.value < x:
-    return search_node(root.right, x)
-  return search_node(root.left, x)
-
-
 def solution():
-  n = int(input().strip())
+    n = int(input().strip())
+    memorized = {int(input()) for _ in range(n)}
 
-  root = Node(int(input()))
-  for i in range(n - 1):
-    add_node(root, int(input()))
-  m = int(input().strip())
-  mark = 0
-  for i in range(m):
-    year = int(input())
-    if search_node(root, year) is not None:
-      mark += 1
+    m = int(input().strip())
+    correct = sum(1 for _ in range(m) if int(input()) in memorized)
 
-  print(mark)
+    print(correct)
 
 
 solution()
@@ -584,52 +504,20 @@ Parse input to extract words (alphabetic sequences only). Convert to lowercase. 
 import re
 
 
-class Node:
-  def __init__(self, value):
-    self.value = value
-    self.left = None
-    self.right = None
-
-
-def add_node(root, x):
-  if root is None:
-    return Node(x)
-  if x < root.value:
-    root.left = add_node(root.left, x)
-  elif x > root.value:
-    root.right = add_node(root.right, x)
-  return root
-
-
-def print_tree(root):
-  if root is None:
-    return
-  print_tree(root.left)
-  print(root.value)
-  print_tree(root.right)
-
-
 def solution():
-  root = None
-  while True:
-    new_line = None
-    new_words = []
-    try:
-      new_line = input().strip()
-      new_words = list(map(lambda word: re.sub('[^a-z]+', '', word.lower()), re.compile(r'[^A-Za-z]').split(new_line)))
-    except Exception:
-      break
+    words = set()
 
-    new_words = list(filter(lambda x: x is not '', new_words))
+    while True:
+        try:
+            line = input().strip()
+            # Extract alphabetic words and convert to lowercase
+            line_words = re.findall(r'[A-Za-z]+', line)
+            words.update(word.lower() for word in line_words)
+        except:
+            break
 
-    if root is None:
-      if len(new_words) > 0:
-        root = Node(new_words[0])
-
-    for word in new_words:
-      add_node(root, word)
-
-  print_tree(root)
+    for word in sorted(words):
+        print(word)
 
 
 solution()
@@ -692,61 +580,35 @@ Parse input handling hyphenated words and line-continuation hyphens. Track incom
 import re
 
 
-class Node:
-  def __init__(self, value):
-    self.value = value
-    self.left = None
-    self.right = None
-
-
-def add_node(root, x):
-  if root is None:
-    return Node(x)
-  if x < root.value:
-    root.left = add_node(root.left, x)
-  elif x > root.value:
-    root.right = add_node(root.right, x)
-  return root
-
-
-def print_tree(root):
-  if root is None:
-    return
-  print_tree(root.left)
-  print(root.value)
-  print_tree(root.right)
-
-
 def solution():
-  root = None
-  imcompleted_word = None
-  while True:
+    words = set()
+    incomplete_word = ''
 
-    try:
-      new_line = input().strip()
-      new_words = list(map(lambda word: re.sub('[^a-z\-]+', '', word.lower()), re.compile(r'[^A-Za-z\-]').split(new_line)))
-    except Exception:
-      break
+    while True:
+        try:
+            line = input().strip()
+            # Extract words with hyphens
+            line_words = [w.lower() for w in re.findall(r'[A-Za-z-]+', line) if w]
+        except:
+            break
 
-    new_words = list(filter(lambda x: x is not '', new_words))
+        if not line_words:
+            continue
 
-    if imcompleted_word is not None and len(new_words) > 0:
-      new_words[0] = imcompleted_word[:-1] + new_words[0]
+        # Handle continuation from previous line
+        if incomplete_word:
+            line_words[0] = incomplete_word[:-1] + line_words[0]
+            incomplete_word = ''
 
-    if len(new_words) and new_words[-1].endswith('-'):
-      imcompleted_word = new_words[-1]
-      new_words = new_words[:-1]
-    else:
-      imcompleted_word = None
+        # Check if last word continues to next line
+        if line_words[-1].endswith('-'):
+            incomplete_word = line_words[-1]
+            line_words = line_words[:-1]
 
-    if root is None:
-      if len(new_words) > 0 and not new_words[0].endswith('-'):
-        root = Node(new_words[0])
+        words.update(line_words)
 
-    for word in new_words:
-      add_node(root, word)
-
-  print_tree(root)
+    for word in sorted(words):
+        print(word)
 
 
 solution()

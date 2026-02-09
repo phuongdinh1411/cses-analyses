@@ -57,19 +57,19 @@ Sort months by growth potential in descending order, then greedily pick the high
 k = int(input())
 a = list(map(int, input().split()))
 
-growth_cent = 0
+a.sort(reverse=True)
+growth = 0
 
-a.sort(key=lambda x: -x)
-for i in range(12):
-  if growth_cent >= k:
-    print(i)
-    exit()
-  growth_cent += a[i]
-  if growth_cent >= k:
-    print(i + 1)
-    exit()
+for i, month_growth in enumerate(a):
+    if growth >= k:
+        print(i)
+        exit()
+    growth += month_growth
+    if growth >= k:
+        print(i + 1)
+        exit()
 
-print('-1')
+print(-1)
 ```
 
 ##### Complexity Analysis
@@ -185,41 +185,19 @@ Extract and sort the unique x and y coordinates. Check that there are exactly 3 
 
 ##### Python Solution
 ```python
-x = []
-y = []
-for i in range(8):
-  xi, yi = map(int, input().split())
-  x.append(xi)
-  y.append(yi)
+points = [tuple(map(int, input().split())) for _ in range(8)]
+point_set = set(points)
 
-xtmp = sorted(x)
-ytmp = sorted(y)
+x_vals = sorted(set(p[0] for p in points))
+y_vals = sorted(set(p[1] for p in points))
 
-xdist_list = [xtmp[0]]
-ydist_list = [ytmp[0]]
-for i in range(1, 8):
-  if xtmp[i] != xtmp[i-1]:
-    xdist_list.append(xtmp[i])
-  if ytmp[i] != ytmp[i-1]:
-    ydist_list.append(ytmp[i])
+if len(x_vals) != 3 or len(y_vals) != 3:
+    print('ugly')
+    exit()
 
-if len(xdist_list) != 3 or len(ydist_list) != 3:
-  print('ugly')
-  exit()
+required = {(x_vals[i], y_vals[j]) for i in range(3) for j in range(3) if (i, j) != (1, 1)}
 
-full_eight_points_set = []
-for i in range(3):
-  for j in range(3):
-    if i != 1 or j != 1:
-      found = False
-      for k in range(8):
-        if x[k] == xdist_list[i] and y[k] == ydist_list[j]:
-          found = True
-          break
-      if not found:
-        print('ugly')
-        exit()
-print('respectable')
+print('respectable' if required == point_set else 'ugly')
 ```
 
 ##### Complexity Analysis
@@ -274,24 +252,16 @@ Sort the bars and count consecutive groups of same length bars.
 
 ##### Python Solution
 ```python
+from collections import Counter
+
 n = int(input())
 L = list(map(int, input().split()))
-L.sort()
 
-number_of_towers = 1
-highest_tower = 1
-current_tower_height = 1
+counts = Counter(L)
+highest_tower = max(counts.values())
+number_of_towers = len(counts)
 
-for i in range(1, n):
-  if L[i] == L[i - 1]:
-    current_tower_height += 1
-    if current_tower_height > highest_tower:
-      highest_tower = current_tower_height
-  else:
-    number_of_towers += 1
-    current_tower_height = 1
-
-print(highest_tower, number_of_towers, sep=' ')
+print(highest_tower, number_of_towers)
 ```
 
 ##### Complexity Analysis
@@ -340,9 +310,9 @@ c = list(map(int, input().split()))
 c.sort()
 total_time = 0
 
-for i in range(n):
-  total_time += c[i] * x
-  x = x - 1 if x > 1 else 1
+for chapters in c:
+    total_time += chapters * x
+    x = max(x - 1, 1)
 
 print(total_time)
 ```
@@ -413,30 +383,29 @@ Find the single decreasing segment in the array, then check if reversing it resu
 n = int(input())
 a = list(map(int, input().split()))
 
-found_decreasing_segment = False
-start_segment = 0
-end_segment = 0
-
+start, end = 0, 0
+found = False
 i = 0
+
 while i < n - 1:
-  if a[i] > a[i + 1]:
-    if found_decreasing_segment:
-      print('no')
-      exit()
-    start_segment = i
-    found_decreasing_segment = True
-    while i < n - 1 and a[i] > a[i + 1]:
-      i += 1
-    end_segment = i
-    if (end_segment < n - 1 and a[start_segment] > a[end_segment + 1]) \
-        or (start_segment > 0 and a[end_segment] < a[start_segment - 1]):
-      print('no')
-      exit()
-  else:
-    i += 1
+    if a[i] > a[i + 1]:
+        if found:
+            print('no')
+            exit()
+        start = i
+        found = True
+        while i < n - 1 and a[i] > a[i + 1]:
+            i += 1
+        end = i
+        if (end < n - 1 and a[start] > a[end + 1]) or \
+           (start > 0 and a[end] < a[start - 1]):
+            print('no')
+            exit()
+    else:
+        i += 1
 
 print('yes')
-print(start_segment + 1, end_segment + 1, sep=' ')
+print(start + 1, end + 1)
 ```
 
 ##### Complexity Analysis
@@ -483,15 +452,15 @@ Sort the ratings in descending order, then for each original rating, find its po
 ```python
 n = int(input())
 a = list(map(int, input().split()))
-bsorted = sorted(a, key=lambda x: -x)
-ranking_list = []
+sorted_desc = sorted(a, reverse=True)
 
-for i in range(n):
-  for j in range(n):
-    if a[i] == bsorted[j]:
-      ranking_list.append(j + 1)
-      break
-print(*ranking_list, sep=' ')
+rank_map = {}
+for i, val in enumerate(sorted_desc):
+    if val not in rank_map:
+        rank_map[val] = i + 1
+
+ranking_list = [rank_map[x] for x in a]
+print(*ranking_list)
 ```
 
 ##### Complexity Analysis

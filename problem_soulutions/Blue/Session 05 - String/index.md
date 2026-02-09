@@ -47,20 +47,12 @@ Count goals for each team using a simple counter. Track the first team and compa
 
 ##### Python Solution
 ```python
-n = int(input())
-result = {}
-first_team = input().strip()
-first_team_score = 1
-second_team = ''
-for i in range(1, n):
-  cur_team_score = input().strip()
-  if cur_team_score != first_team:
-    first_team_score -= 1
-    second_team = cur_team_score
-  else:
-    first_team_score += 1
+from collections import Counter
 
-print(first_team if first_team_score > 0 else second_team)
+n = int(input())
+goals = [input().strip() for _ in range(n)]
+goal_count = Counter(goals)
+print(max(goal_count, key=goal_count.get))
 ```
 
 ##### Complexity Analysis
@@ -113,51 +105,33 @@ Check character frequencies. If same length, only swaps needed. If t is subseque
 
 ##### Python Solution
 ```python
-def check_solution(_s, _t):
-  is_array = False
+from collections import Counter
 
-  s_map = [0] * 26
-  t_map = [0] * 26
+def check_solution(s, t):
+    s_count, t_count = Counter(s), Counter(t)
 
-  s_length = len(_s)
-  t_length = len(_t)
+    # Check if t has characters not available in s
+    if any(t_count[c] > s_count[c] for c in t_count):
+        return 'need tree'
 
-  for i in range(s_length):
-    s_map[ord(_s[i]) - 97] += 1
+    # Same length means only swaps needed
+    if len(s) == len(t):
+        return 'array'
 
-  for i in range(t_length):
-    t_map[ord(_t[i]) - 97] += 1
+    # Check if t is a subsequence of s
+    s_idx, t_idx = 0, 0
+    while s_idx < len(s) and t_idx < len(t):
+        if s[s_idx] == t[t_idx]:
+            t_idx += 1
+        s_idx += 1
+        # Not enough chars left in s to match remaining t
+        if len(s) - s_idx < len(t) - t_idx:
+            return 'both'
 
-  for i in range(26):
-    if s_map[i] < t_map[i]:
-      return 'need tree'
-
-  if s_length == t_length:
-    return 'array'
-
-  s_left = 0
-  t_left = 0
-  while True:
-    if s_left >= s_length or t_left >= t_length:
-      break
-    if _s[s_left] != _t[t_left]:
-      s_left += 1
-    else:
-      s_left += 1
-      t_left += 1
-    if s_length - s_left < t_length - t_left:
-      is_array = True
-      break
-
-  if is_array:
-    return 'both'
-
-  return 'automaton'
-
+    return 'automaton'
 
 s = input()
 t = input()
-
 print(check_solution(s, t))
 ```
 
@@ -205,29 +179,15 @@ Build a dictionary mapping first language words to their pairs. For each lecture
 
 ##### Python Solution
 ```python
-def get_shorter(ci, _a, _b):
-  _i = 0
-  while ci != _a[_i]:
-    _i += 1
-
-  return _a[_i] if len(_a[_i]) <= len(_b[_i]) else _b[_i]
-
-
 n, m = map(int, input().split())
-a = []
-b = []
-for i in range(m):
-  ai, bi = input().split()
-  a.append(ai)
-  b.append(bi)
-c = input().split()
+dictionary = {}
+for _ in range(m):
+    word1, word2 = input().split()
+    dictionary[word1] = word1 if len(word1) <= len(word2) else word2
 
-result = []
-
-for i in range(n):
-  result.append(get_shorter(c[i], a, b))
-
-print(*result, sep=' ')
+lecture = input().split()
+result = [dictionary[word] for word in lecture]
+print(' '.join(result))
 ```
 
 ##### Complexity Analysis
@@ -282,28 +242,27 @@ Try to increment s to find a string between s and t. Handle carry-over carefully
 ```python
 s = input().strip()
 t = input().strip()
-first_smaller = -1
 result = 'No such string'
-for i in range(len(s)):
-  if ord(t[i]) - ord(s[i]) >= 2:
-    result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
-    break
-  if ord(t[i]) > ord(s[i]):
-    first_smaller = i
-    break
 
-if first_smaller >= 0:
-  if s[first_smaller + 1:] >= t[first_smaller + 1:]:
-    for i in range(first_smaller + 1, len(t)):
-      if t[i] is not 'a':
-        result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + t[first_smaller + 1:i] + chr(
-          ord(t[i]) - 1) + t[i + 1:]
+for i, (sc, tc) in enumerate(zip(s, t)):
+    diff = ord(tc) - ord(sc)
+    if diff >= 2:
+        result = s[:i] + chr(ord(sc) + 1) + s[i + 1:]
         break
-      if s[i] is not 'z':
-        result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
+    if diff == 1:
+        first_smaller = i
+        if s[first_smaller + 1:] >= t[first_smaller + 1:]:
+            for j in range(first_smaller + 1, len(t)):
+                if t[j] != 'a':
+                    result = (s[:first_smaller] + chr(ord(s[first_smaller]) + 1) +
+                              t[first_smaller + 1:j] + chr(ord(t[j]) - 1) + t[j + 1:])
+                    break
+                if s[j] != 'z':
+                    result = s[:j] + chr(ord(s[j]) + 1) + s[j + 1:]
+                    break
+        else:
+            result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + s[first_smaller + 1:]
         break
-  elif s[first_smaller + 1:] < t[first_smaller + 1:]:
-    result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + s[first_smaller + 1:]
 
 print(result)
 ```
@@ -348,63 +307,30 @@ Count character frequencies for both strings, matching exact case first, then wr
 
 ##### Python Solution
 ```python
+from collections import Counter
+
 s = input().strip()
 t = input().strip()
 
-yay = 0
-whoops = 0
+s_count = Counter(s)
+t_count = Counter(t)
 
-slength = len(s)
-tlength = len(t)
+yay = whoops = 0
 
-s_map = [0] * 58
-t_map = [0] * 58
-up_low_distance = 32
+for c in s_count:
+    # Exact match (YAY!)
+    matched = min(s_count[c], t_count[c])
+    yay += matched
+    s_count[c] -= matched
+    t_count[c] -= matched
 
-for i in range(slength):
-  s_map[ord(s[i]) - 65] += 1
-
-for i in range(tlength):
-  t_map[ord(t[i]) - 65] += 1
-
-for i in range(26):
-  # Go with YAY!
-  if t_map[i] >= s_map[i]:
-    yay += s_map[i]
-    t_map[i] -= s_map[i]
-    s_map[i] = 0
-  else:
-    yay += t_map[i]
-    s_map[i] -= t_map[i]
-    t_map[i] = 0
-
-  if t_map[i + up_low_distance] >= s_map[i + up_low_distance]:
-    yay += s_map[i + up_low_distance]
-    t_map[i + up_low_distance] -= s_map[i + up_low_distance]
-    s_map[i + up_low_distance] = 0
-  else:
-    yay += t_map[i + up_low_distance]
-    s_map[i + up_low_distance] -= t_map[i + up_low_distance]
-    t_map[i + up_low_distance] = 0
-
-  # Go with WHOOPS
-  if t_map[i] >= s_map[i + up_low_distance]:
-    whoops += s_map[i + up_low_distance]
-    t_map[i] -= s_map[i + up_low_distance]
-    s_map[i + up_low_distance] = 0
-  else:
-    whoops += t_map[i]
-    s_map[i + up_low_distance] -= t_map[i]
-    t_map[i] = 0
-
-  if t_map[i + up_low_distance] >= s_map[i]:
-    whoops += s_map[i]
-    t_map[i + up_low_distance] -= s_map[i]
-    s_map[i] = 0
-  else:
-    whoops += t_map[i + up_low_distance]
-    s_map[i] -= t_map[i + up_low_distance]
-    t_map[i + up_low_distance] = 0
+for c in s_count:
+    # Case-insensitive match (WHOOPS)
+    opposite = c.swapcase()
+    matched = min(s_count[c], t_count[opposite])
+    whoops += matched
+    s_count[c] -= matched
+    t_count[opposite] -= matched
 
 print(yay, whoops)
 ```
@@ -455,21 +381,22 @@ Normalize all strings (remove special chars, convert to lowercase), then check i
 
 ##### Python Solution
 ```python
-str11 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
-str12 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
-str13 = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
+from itertools import permutations
+
+def normalize(s):
+    return s.strip().replace(';', '').replace('-', '').replace('_', '').lower()
+
+strings = [normalize(input()) for _ in range(3)]
+valid_combinations = {''.join(p) for p in permutations(strings)}
+expected_len = sum(len(s) for s in strings)
 
 n = int(input())
-for i in range(n):
-  ai = input().strip().replace(';', '').replace('-', '').replace('_', '').lower()
-  if len(ai) != len(str11) + len(str12) + len(str13):
-    print('WA')
-    continue
-  if (str11 + str12 + str13) == ai or (str11 + str13 + str12) == ai or (str12 + str11 + str13) == ai or (
-      str12 + str13 + str11) == ai or (str13 + str11 + str12) == ai or (str13 + str12 + str11) == ai:
-    print('ACC')
-    continue
-  print('WA')
+for _ in range(n):
+    answer = normalize(input())
+    if len(answer) == expected_len and answer in valid_combinations:
+        print('ACC')
+    else:
+        print('WA')
 ```
 
 ##### Complexity Analysis
@@ -519,40 +446,27 @@ Sort passwords by length, find the position range of the correct password, calcu
 ##### Python Solution
 ```python
 n, k = map(int, input().split())
-
-passwords = []
-for i in range(n):
-  passwords.append(input())
-
-passwords = sorted(passwords, key=lambda x: -len(x))
+passwords = [input() for _ in range(n)]
 correct_pwd = input()
-right_break_point = n - 1
-left_break_point = 0
-for i in range(n - 1, -1, -1):
-  if len(correct_pwd) == len(passwords[i]):
-    right_break_point = i
-    break
 
-for i in range(right_break_point, -1, -1):
-  if len(correct_pwd) != len(passwords[i]):
-    left_break_point = i + 1
-    break
+correct_len = len(correct_pwd)
+passwords.sort(key=len, reverse=True)
 
-same_length_list = passwords[left_break_point:right_break_point + 1]
+# Find range of passwords with same length as correct
+same_len_passwords = [p for p in passwords if len(p) == correct_len]
+shorter_count = sum(1 for p in passwords if len(p) < correct_len)
+num_correct_matches = same_len_passwords.count(correct_pwd)
 
-number_of_corrects = 0
-for i in range(len(same_length_list)):
-  if same_length_list[i] == correct_pwd:
-    number_of_corrects += 1
+# Best case: try fewest same-length before correct (just 1)
+counter_best = shorter_count + 1
+# Worst case: try all same-length duplicates of correct last
+counter_worst = shorter_count + len(same_len_passwords) - num_correct_matches + 1
 
-counter_best_case = n - right_break_point
-counter_worst_case = n - (left_break_point + number_of_corrects - 1)
-best_case_mod = 1 if counter_best_case % k == 0 and counter_best_case // k > 0 else 0
-worst_case_mod = 1 if counter_worst_case % k == 0 and counter_worst_case // k > 0 else 0
-best_case = counter_best_case + (counter_best_case // k - best_case_mod) * 5
-worst_case = counter_worst_case + (counter_worst_case // k - worst_case_mod) * 5
+def calc_time(attempts):
+    penalties = (attempts - 1) // k
+    return attempts + penalties * 5
 
-print(best_case, worst_case)
+print(calc_time(counter_best), calc_time(counter_worst))
 ```
 
 ##### Complexity Analysis
@@ -593,12 +507,15 @@ For each character, calculate the minimum of clockwise and counterclockwise dist
 
 ##### Python Solution
 ```python
-ex_name = input()
+name = input()
 result = 0
-cur_pos = 97
-for c in ex_name:
-  result += min(abs(ord(c) - cur_pos), 26 - abs(ord(c) - cur_pos))
-  cur_pos = ord(c)
+cur_pos = ord('a')
+
+for c in name:
+    diff = abs(ord(c) - cur_pos)
+    result += min(diff, 26 - diff)
+    cur_pos = ord(c)
+
 print(result)
 ```
 
@@ -655,34 +572,23 @@ Mark each cell if its letter repeats in the same row or column. Output unmarked 
 
 ##### Python Solution
 ```python
+from collections import Counter
+
 n, m = map(int, input().split())
-rectangular = []
-result = ''
+grid = [input() for _ in range(n)]
 
-matrix = [[0 for i in range(m)] for j in range(n)]
+# Count frequencies for each row and column
+row_counts = [Counter(row) for row in grid]
+col_counts = [Counter(grid[i][j] for i in range(n)) for j in range(m)]
 
+result = []
 for i in range(n):
-  rectangular.append(input())
+    for j in range(m):
+        char = grid[i][j]
+        if row_counts[i][char] == 1 and col_counts[j][char] == 1:
+            result.append(char)
 
-for i in range(n):
-  for j in range(m):
-    if matrix[i][j] == 0:
-      for row_checker in range(m):
-        if row_checker != j and rectangular[i][row_checker] == rectangular[i][j]:
-          matrix[i][row_checker] = 1
-          matrix[i][j] = 1
-      for col_checker in range(n):
-        if col_checker != i and rectangular[col_checker][j] == rectangular[i][j]:
-          matrix[col_checker][j] = 1
-          matrix[i][j] = 1
-
-
-for i in range(n):
-  for j in range(m):
-    if matrix[i][j] == 0:
-      result += rectangular[i][j]
-
-print(result)
+print(''.join(result))
 ```
 
 ##### Complexity Analysis

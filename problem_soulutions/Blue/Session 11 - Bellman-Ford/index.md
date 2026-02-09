@@ -60,61 +60,37 @@ Use Bellman-Ford algorithm with negated edge weights. Negate weights to convert 
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+INF = float('inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges):
+    dist = [INF] * (n + 1)
+    dist[1] = 0
 
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
-INF = int(1e9)
+    # Check for negative cycle
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            return 'Yes'
 
-
-def bellman_ford(N, M, E):
-  dist = [INF for i in range(N + 1)]
-
-  dist[1] = 0
-  for i in range(1, N):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      return 'Yes'
-
-  return 'No'
+    return 'No'
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      C = int(inp.next())
-      E.append([i, j, -C])
-    print(bellman_ford(N, M, E))
+    tokens = sys.stdin.read().split()[::-1]
+    t = int(tokens.pop())
+
+    for _ in range(t):
+        n, m = int(tokens.pop()), int(tokens.pop())
+        edges = [
+            (int(tokens.pop()), int(tokens.pop()), -int(tokens.pop()))
+            for _ in range(m)
+        ]
+        print(bellman_ford(n, edges))
 
 
 solution()
@@ -178,79 +154,51 @@ Use Bellman-Ford algorithm for single-source shortest path with negative weights
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+INF = float('inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges, queries):
+    dist = [INF] * (n + 1)
+    neg_cycle = [False] * (n + 1)
 
+    dist[0] = 0
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
-INF = int(1e9)
+    # Detect nodes affected by negative cycles
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            dist[v] = dist[u] + w
+            neg_cycle[v] = True
 
-
-def bellman_ford(N, M, E, q):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
-
-  dist[0] = 0
-  for i in range(1, N):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
-
-  for cq in q:
-    if flag[cq]:
-      print('-Infinity')
-    elif dist[cq] == INF:
-      print('Impossible')
-    else:
-      print(dist[cq])
+    for q in queries:
+        if neg_cycle[q]:
+            print('-Infinity')
+        elif dist[q] == INF:
+            print('Impossible')
+        else:
+            print(dist[q])
 
 
 def solution():
-  while True:
-    N = int(inp.next())
-    if N == 0:
-      break
-    M = int(inp.next())
-    Q = int(inp.next())
-    S = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      w = int(inp.next())
-      E.append([i, j, w])
-    q = []
-    for x in range(Q):
-      q.append(int(inp.next()))
+    while True:
+        n = int(tokens.pop())
+        if n == 0:
+            break
+        m, num_queries, _ = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
 
-    bellman_ford(N, M, E, q)
-    print()
+        edges = [
+            (int(tokens.pop()), int(tokens.pop()), int(tokens.pop()))
+            for _ in range(m)
+        ]
+        queries = [int(tokens.pop()) for _ in range(num_queries)]
+
+        bellman_ford(n, edges, queries)
+        print()
 
 
 solution()
@@ -321,79 +269,51 @@ Use Bellman-Ford algorithm to handle negative edge weights. Edge weight = (busyn
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+INF = float('inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges, queries, case_number):
+    dist = [INF] * (n + 1)
+    neg_cycle = [False] * (n + 1)
 
+    print(f'Case {case_number}:')
 
-INF = int(1e9)
+    dist[1] = 0
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            dist[v] = dist[u] + w
+            neg_cycle[v] = True
 
-def bellman_ford(N, M, E, q, case_number):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
-
-  print('Case ' + str(case_number) + ':')
-
-  dist[1] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
-
-  for cq in q:
-    if flag[cq] or dist[cq] < 3 or dist[cq] == INF:
-      print('?')
-    else:
-      print(dist[cq])
+    for q in queries:
+        if neg_cycle[q] or dist[q] < 3 or dist[q] == INF:
+            print('?')
+        else:
+            print(dist[q])
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    busyness = [0 for x in range(N + 1)]
-    counter = 1
-    for x in range(N):
-      busyness[counter] = int(inp.next())
-      counter += 1
+    tokens = sys.stdin.read().split()[::-1]
+    t = int(tokens.pop())
 
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      E.append([i, j, busyness[j] - busyness[i]])
-    nq = int(inp.next())
-    q = []
-    for x in range(nq):
-      q.append(int(inp.next()))
+    for case in range(1, t + 1):
+        n = int(tokens.pop())
+        busyness = [0] + [int(tokens.pop()) for _ in range(n)]
 
-    bellman_ford(N, M, E, q, t + 1)
+        m = int(tokens.pop())
+        edges = []
+        for _ in range(m):
+            i, j = int(tokens.pop()), int(tokens.pop())
+            edges.append((i, j, busyness[j] - busyness[i]))
+
+        num_queries = int(tokens.pop())
+        queries = [int(tokens.pop()) for _ in range(num_queries)]
+
+        bellman_ford(n, edges, queries, case)
 
 
 solution()
@@ -457,80 +377,71 @@ Use Bellman-Ford algorithm for each unique source in queries. Handle negative ed
 ```python
 from collections import defaultdict
 
-INF = int(1e9)
+INF = float('inf')
 
 
-def bellman_ford(N, M, E, query):
-  dist = [INF for i in range(N + 1)]
-  flag = [False for i in range(N + 1)]
+def bellman_ford(n, edges, source):
+    dist = [INF] * (n + 1)
+    neg_cycle = [False] * (n + 1)
 
-  dist[query] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      dist[v] = dist[u] + w
-      flag[v] = True
+    dist[source] = 0
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
-  return [dist, flag]
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            dist[v] = dist[u] + w
+            neg_cycle[v] = True
+
+    return dist, neg_cycle
 
 
 def solution():
-  counter = 1
-  while True:
-    N = int(input())
-    if N == 0:
-      break
+    case_num = 1
+    while True:
+        n = int(input())
+        if n == 0:
+            break
 
-    E = []
-    monuments = ['' for i in range(N)]
-    for x in range(N):
-      line = input().split()
-      monuments[x] = line[0]
-      for i in range(1, N + 1):
-        if int(line[i]) != 0:
-          if int(line[i]) < 0 or x != i - 1:
-            E.append([x, i - 1, int(line[i])])
+        edges = []
+        monuments = []
+        for x in range(n):
+            line = input().split()
+            monuments.append(line[0])
+            for i, cost in enumerate(line[1:], start=0):
+                cost = int(cost)
+                if cost != 0 and (cost < 0 or x != i):
+                    edges.append((x, i, cost))
 
-    nq = int(input())
-    q = []
-    queries = defaultdict(list)
-    for x in range(nq):
-      pair = list(map(int, (input().split())))
-      q.append(pair)
-      queries[pair[0]].append(pair[1])
+        num_queries = int(input())
+        query_list = []
+        unique_sources = defaultdict(list)
+        for _ in range(num_queries):
+            src, dest = map(int, input().split())
+            query_list.append((src, dest))
+            unique_sources[src].append(dest)
 
-    print('Case #' + str(counter) + ':')
+        print(f'Case #{case_num}:')
 
-    dists = [[] for x in range(N)]
-    neg_flags = [[] for x in range(N)]
+        # Cache results per source
+        dist_cache = {}
+        neg_cache = {}
+        for source in unique_sources:
+            dist_cache[source], neg_cache[source] = bellman_ford(n, edges, source)
 
-    for query in queries.keys():
-      bf_result = bellman_ford(N, len(E), E, query)
-      dists[query] = bf_result[0]
-      neg_flags[query] = bf_result[1]
+        for src, dest in query_list:
+            dist = dist_cache[src][dest]
+            is_neg = neg_cache[src][dest]
+            if (dist < 0 and src == dest) or is_neg:
+                print("NEGATIVE CYCLE")
+            elif dist == INF:
+                print(f"{monuments[src]}-{monuments[dest]} NOT REACHABLE")
+            else:
+                print(f"{monuments[src]}-{monuments[dest]} {dist}")
 
-    for qq in q:
-      dist = dists[qq[0]][qq[1]]
-      is_neg = neg_flags[qq[0]][qq[1]]
-      if (dist < 0 and qq[0] == qq[1]) or is_neg:
-        print("NEGATIVE CYCLE")
-      else:
-        if dist == INF:
-          dist = "NOT REACHABLE"
-        start_city = monuments[qq[0]]
-        dest_city = monuments[qq[1]]
-        print("{}-{} {}".format(start_city, dest_city, dist))
-
-    counter += 1
+        case_num += 1
 
 
 solution()
@@ -590,58 +501,36 @@ Use modified Bellman-Ford to maximize product of probabilities. Initialize sourc
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+NEG_INF = float('-inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges):
+    dist = [NEG_INF] * (n + 1)
+    dist[1] = 100
 
+    for _ in range(n - 1):
+        for u, v, prob in edges:
+            if dist[u] != NEG_INF and dist[u] * prob / 100 > dist[v]:
+                dist[v] = dist[u] * prob / 100
 
-INF = -int(1e9)
-
-
-def bellman_ford(n, m, E):
-  dist = [INF for i in range(n + 1)]
-  dist[1] = 100
-  for i in range(1, n):
-    for j in range(m):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] * w / 100 > dist[v]:
-        dist[v] = dist[u] * w / 100
-
-  return "{:.6f}".format(dist[n]) + ' percent'
+    return f"{dist[n]:.6f} percent"
 
 
 def solution():
-  while True:
-    n = int(inp.next())
-    if n == 0:
-      break
-    m = int(inp.next())
+    tokens = sys.stdin.read().split()[::-1]
 
-    E = []
-    for i in range(m):
-      a = int(inp.next())
-      b = int(inp.next())
-      p = int(inp.next())
-      E.append([a, b, p])
-      E.append([b, a, p])
+    while True:
+        n = int(tokens.pop())
+        if n == 0:
+            break
+        m = int(tokens.pop())
 
-    print(bellman_ford(n, m * 2, E))
+        edges = []
+        for _ in range(m):
+            a, b, p = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+            edges.extend([(a, b, p), (b, a, p)])  # Bidirectional
+
+        print(bellman_ford(n, edges))
 
 
 solution()
@@ -699,66 +588,49 @@ Use modified Bellman-Ford to maximize energy (find longest path). Only traverse 
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+NEG_INF = float('-inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges):
+    dist = [NEG_INF] * n
+    dist[0] = 100
 
+    for _ in range(n - 1):
+        for u, v, energy in edges:
+            if dist[u] != NEG_INF and dist[u] + energy > dist[v] and dist[u] + energy > 0:
+                dist[v] = dist[u] + energy
 
-INF = int(1e9)
+    # Check for positive cycle (can gain infinite energy)
+    for u, v, energy in edges:
+        if dist[u] != NEG_INF and dist[u] + energy > dist[v] != NEG_INF:
+            return 'winnable'
 
-
-def bellman_ford(N, M, E):
-  dist = [-INF for i in range(N)]
-
-  dist[0] = 100
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != -INF and dist[u] + w > dist[v] and dist[u] + w > 0:
-        dist[v] = dist[u] + w
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != -INF and dist[u] + w > dist[v] != -INF:
-      return 'winnable'
-
-  return 'hopeless' if dist[N - 1] < 0 else 'winnable'
+    return 'hopeless' if dist[n - 1] < 0 else 'winnable'
 
 
 def solution():
-  while True:
-    N = int(inp.next())
-    if N == -1:
-      break
-    E = []
-    energies = []
-    for i in range(N):
-      energy = int(inp.next())
-      energies.append(energy)
-      connections = int(inp.next())
-      for j in range(connections):
-        neighbor = int(inp.next()) - 1
-        E.append([i, neighbor])
-    for connection in E:
-      connection.append(energies[connection[1]])
-    print(bellman_ford(N, len(E), E))
+    tokens = sys.stdin.read().split()[::-1]
+
+    while True:
+        n = int(tokens.pop())
+        if n == -1:
+            break
+
+        edges = []
+        energies = []
+        for i in range(n):
+            energy = int(tokens.pop())
+            energies.append(energy)
+            num_connections = int(tokens.pop())
+            for _ in range(num_connections):
+                neighbor = int(tokens.pop()) - 1
+                edges.append([i, neighbor])
+
+        # Add energy values to edges
+        for edge in edges:
+            edge.append(energies[edge[1]])
+
+        print(bellman_ford(n, edges))
 
 
 solution()
@@ -811,40 +683,33 @@ Use Bellman-Ford algorithm. Build undirected graph from lower triangular matrix.
 ##### Python Solution
 
 ```python
-INF = int(1e9)
+INF = float('inf')
 
 
-def bellman_ford(N, M, E):
-  dist = [INF for i in range(N)]
+def bellman_ford(n, edges):
+    dist = [INF] * n
+    dist[0] = 0
 
-  dist[0] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
-  max = 0
-  for di in dist:
-    if di > max:
-      max = di
-
-  return max
+    return max(dist)
 
 
 def solution():
-  N = int(input())
-  E = []
-  for i in range(N - 1):
-    line = list(map(str, input().strip().split()))
-    for j in range(i + 1):
-      if line[j] is not 'x':
-        E.append([i + 1, j, int(line[j])])
-        E.append([j, i + 1, int(line[j])])
+    n = int(input())
+    edges = []
 
-  print(bellman_ford(N, len(E), E))
+    for i in range(n - 1):
+        line = input().strip().split()
+        for j, val in enumerate(line[:i + 1]):
+            if val != 'x':
+                cost = int(val)
+                edges.extend([(i + 1, j, cost), (j, i + 1, cost)])
+
+    print(bellman_ford(n, edges))
 
 
 solution()
@@ -908,61 +773,37 @@ Use Bellman-Ford algorithm to detect negative cycles. Run N-1 iterations of rela
 ```python
 import sys
 
-
-class input_tokenizer:
-  __tokens = None
-
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
-
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+INF = float('inf')
 
 
-inp = input_tokenizer()
+def bellman_ford(n, edges):
+    dist = [INF] * (n + 1)
+    dist[0] = 0
 
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
 
-INF = int(1e9)
+    # Check for negative cycle
+    for u, v, w in edges:
+        if dist[u] != INF and dist[u] + w < dist[v]:
+            return 'possible'
 
-
-def bellman_ford(N, M, E):
-  dist = [INF for i in range(N + 1)]
-
-  dist[0] = 0
-  for i in range(0, N-1):
-    for j in range(M):
-      u = E[j][0]
-      v = E[j][1]
-      w = E[j][2]
-      if dist[u] != INF and dist[u] + w < dist[v]:
-        dist[v] = dist[u] + w
-  for j in range(M):
-    u = E[j][0]
-    v = E[j][1]
-    w = E[j][2]
-    if dist[u] != INF and dist[u] + w < dist[v]:
-      return 'possible'
-
-  return 'not possible'
+    return 'not possible'
 
 
 def solution():
-  T = int(inp.next())
-  for t in range(T):
-    N = int(inp.next())
-    M = int(inp.next())
-    E = []
-    for m in range(M):
-      i = int(inp.next())
-      j = int(inp.next())
-      C = int(inp.next())
-      E.append([i, j, C])
-    print(bellman_ford(N, M, E))
+    tokens = sys.stdin.read().split()[::-1]
+    t = int(tokens.pop())
+
+    for _ in range(t):
+        n, m = int(tokens.pop()), int(tokens.pop())
+        edges = [
+            (int(tokens.pop()), int(tokens.pop()), int(tokens.pop()))
+            for _ in range(m)
+        ]
+        print(bellman_ford(n, edges))
 
 
 solution()

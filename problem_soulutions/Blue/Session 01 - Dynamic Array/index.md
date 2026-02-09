@@ -59,18 +59,18 @@ Count the number of unfastened buttons. For n=1, check if the single button is f
 
 ```python
 def solve():
-  n = int(input())
-  a = list(map(int, input().split()))
+    n = int(input())
+    a = list(map(int, input().split()))
 
-  unfastened = sum(1 - x for x in a)
+    unfastened = a.count(0)
 
-  if n == 1:
-    print("YES" if a[0] == 1 else "NO")
-  else:
-    print("YES" if unfastened == 1 else "NO")
+    if n == 1:
+        print("YES" if a[0] == 1 else "NO")
+    else:
+        print("YES" if unfastened == 1 else "NO")
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -187,24 +187,21 @@ Track the global minimum left endpoint and maximum right endpoint. Then find if 
 
 ```python
 def solve():
-  n = int(input())
-  segments = []
-  for _ in range(n):
-    l, r = map(int, input().split())
-    segments.append((l, r))
+    n = int(input())
+    segments = [tuple(map(int, input().split())) for _ in range(n)]
 
-  min_left = min(s[0] for s in segments)
-  max_right = max(s[1] for s in segments)
+    min_left = min(s[0] for s in segments)
+    max_right = max(s[1] for s in segments)
 
-  for i, (l, r) in enumerate(segments):
-    if l == min_left and r == max_right:
-      print(i + 1)
-      return
+    for i, (l, r) in enumerate(segments, 1):
+        if l == min_left and r == max_right:
+            print(i)
+            return
 
-  print(-1)
+    print(-1)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -334,25 +331,20 @@ Check gaps between consecutive interesting moments. If any gap exceeds 15 minute
 
 ```python
 def solve():
-  n = int(input())
-  t = list(map(int, input().split()))
+    n = int(input())
+    t = list(map(int, input().split()))
 
-  if t[0] > 15:
-    print(15)
-    return
+    prev = 0
+    for moment in t:
+        if moment - prev > 15:
+            print(prev + 15)
+            return
+        prev = moment
 
-  for i in range(1, n):
-    if t[i] - t[i - 1] > 15:
-      print(t[i - 1] + 15)
-      return
-
-  if 90 - t[n - 1] > 15:
-    print(t[n - 1] + 15)
-  else:
-    print(90)
+    print(min(prev + 15, 90))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -404,42 +396,39 @@ The first ceil(n/2) from each semifinal are guaranteed to qualify. The remaining
 
 ```python
 def solve():
-  n = int(input())
-  a, b = [], []
-  for _ in range(n):
-    ai, bi = map(int, input().split())
-    a.append(ai)
-    b.append(bi)
+    n = int(input())
+    a, b = zip(*[map(int, input().split()) for _ in range(n)])
+    a, b = list(a), list(b)
 
-  k = n // 2
-  chances = [[1] * k + [0] * (n - k) for _ in range(2)]
+    k = n // 2
+    chances = [[1] * k + [0] * (n - k) for _ in range(2)]
 
-  last_a = k - 1
-  last_b = k - 1
+    last_a = k - 1
+    last_b = k - 1
 
-  if n % 2 == 1:
-    if a[k] < b[k]:
-      last_a += 1
-      chances[0][k] = 1
-    else:
-      last_b += 1
-      chances[1][k] = 1
+    if n % 2 == 1:
+        if a[k] < b[k]:
+            last_a += 1
+            chances[0][k] = 1
+        else:
+            last_b += 1
+            chances[1][k] = 1
 
-  while last_a < n - 1 and last_b < n - 1:
-    if a[last_a + 1] < b[n - (last_a + 1) - 1]:
-      last_a += 1
-      chances[0][last_a] = 1
-    elif b[last_b + 1] < a[n - (last_b + 1) - 1]:
-      last_b += 1
-      chances[1][last_b] = 1
-    else:
-      break
+    while last_a < n - 1 and last_b < n - 1:
+        if a[last_a + 1] < b[n - (last_a + 1) - 1]:
+            last_a += 1
+            chances[0][last_a] = 1
+        elif b[last_b + 1] < a[n - (last_b + 1) - 1]:
+            last_b += 1
+            chances[1][last_b] = 1
+        else:
+            break
 
-  print(''.join(map(str, chances[0])))
-  print(''.join(map(str, chances[1])))
+    print(''.join(map(str, chances[0])))
+    print(''.join(map(str, chances[1])))
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -487,17 +476,16 @@ You can move either 1 or n to an endpoint (position 0 or n-1) to maximize distan
 
 ```python
 def solve():
-  n = int(input())
-  a = list(map(int, input().split()))
+    n = int(input())
+    a = list(map(int, input().split()))
 
-  pos_min = a.index(1)
-  pos_max = a.index(n)
+    pos_min, pos_max = a.index(1), a.index(n)
 
-  result = max(n - 1 - pos_max, n - 1 - pos_min, pos_max, pos_min)
-  print(result)
+    result = max(n - 1 - pos_max, n - 1 - pos_min, pos_max, pos_min)
+    print(result)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -544,23 +532,24 @@ Count books per genre, then sum count[i] * count[j] for all pairs i < j.
 ##### Python Solution
 
 ```python
+from collections import Counter
+
 def solve():
-  n, m = map(int, input().split())
-  a = list(map(int, input().split()))
+    n, m = map(int, input().split())
+    a = list(map(int, input().split()))
 
-  genre_count = [0] * m
-  for genre in a:
-    genre_count[genre - 1] += 1
+    genre_count = Counter(a)
+    counts = list(genre_count.values())
 
-  total = 0
-  for i in range(m - 1):
-    for j in range(i + 1, m):
-      total += genre_count[i] * genre_count[j]
+    total = 0
+    for i, ci in enumerate(counts):
+        for cj in counts[i + 1:]:
+            total += ci * cj
 
-  print(total)
+    print(total)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis
@@ -618,52 +607,48 @@ Try inserting between each pair of adjacent x-colored balls, simulate chain reac
 
 ```python
 def solve():
-  n, k, x = map(int, input().split())
-  c = list(map(int, input().split()))
+    n, k, x = map(int, input().split())
+    c = list(map(int, input().split()))
 
-  def destroy_balls(a, b, target):
-    if len(a) == 0 or len(b) == 0:
-      return 0
+    def destroy_balls(a, b, target):
+        if not a or not b:
+            return 0
 
-    if a[-1] != b[0]:
-      return 0
+        if a[-1] != b[0]:
+            return 0
 
-    to_destroy = 2
-    a_idx = len(a) - 2
-    b_idx = 1
+        to_destroy = 2
+        a_idx = len(a) - 2
+        b_idx = 1
 
-    while a_idx >= 0 and a[a_idx] == target:
-      to_destroy += 1
-      a_idx -= 1
+        while a_idx >= 0 and a[a_idx] == target:
+            to_destroy += 1
+            a_idx -= 1
 
-    while b_idx < len(b) and b[b_idx] == target:
-      to_destroy += 1
-      b_idx += 1
+        while b_idx < len(b) and b[b_idx] == target:
+            to_destroy += 1
+            b_idx += 1
 
-    if to_destroy > 2:
-      new_target = a[a_idx] if a_idx >= 0 else None
-      return to_destroy + destroy_balls(a[:a_idx + 1], b[b_idx:], new_target)
+        if to_destroy > 2:
+            new_target = a[a_idx] if a_idx >= 0 else None
+            return to_destroy + destroy_balls(a[:a_idx + 1], b[b_idx:], new_target)
 
-    return 0
+        return 0
 
-  max_destroyed = 0
-
-  for i in range(n - 1):
-    if c[i] == x and c[i] == c[i + 1]:
-      left = c[:i + 1] + [x]
-      right = c[i + 1:]
-      destroyed = destroy_balls(left, right, x)
-      max_destroyed = max(max_destroyed, destroyed)
-
-  if max_destroyed >= 2:
-    max_destroyed -= 1
-  else:
     max_destroyed = 0
 
-  print(max_destroyed)
+    for i in range(n - 1):
+        if c[i] == x == c[i + 1]:
+            left = c[:i + 1] + [x]
+            right = c[i + 1:]
+            max_destroyed = max(max_destroyed, destroy_balls(left, right, x))
+
+    max_destroyed = max_destroyed - 1 if max_destroyed >= 2 else 0
+
+    print(max_destroyed)
 
 if __name__ == "__main__":
-  solve()
+    solve()
 ```
 
 ##### Complexity Analysis

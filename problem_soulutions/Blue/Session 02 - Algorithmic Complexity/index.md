@@ -55,40 +55,32 @@ n, m, x, y = map(int, input().split())
 a = list(map(int, input().split()))
 b = list(map(int, input().split()))
 
-u, v = [], []
+pairs = []
+sindex, vindex = 0, 0
 
-sindex = 0
-vindex = 0
+while sindex < n and vindex < m:
+    while vindex < m and a[sindex] - x > b[vindex]:
+        vindex += 1
 
-while True:
+    if vindex >= m:
+        break
 
-  while vindex < m and a[sindex] - x > b[vindex]:  # too small
-    vindex += 1  # Add vest's size
+    while sindex < n and a[sindex] + y < b[vindex]:
+        sindex += 1
 
-  if vindex >= m:
-    break
+    if sindex >= n:
+        break
 
-  while sindex < n and a[sindex] + y < b[vindex]:  # too big
-    sindex += 1  # Add solider's size
+    if a[sindex] - x > b[vindex]:
+        continue
 
-  if sindex >= n:
-    break
+    pairs.append((sindex + 1, vindex + 1))
+    sindex += 1
+    vindex += 1
 
-  if a[sindex] - x > b[vindex]:
-    continue
-
-  u.append(sindex + 1)
-  v.append(vindex + 1)
-
-  sindex += 1
-  vindex += 1
-
-  if sindex >= n or vindex >= m:
-    break
-
-print(len(u))
-for i in range(len(u)):
-  print(u[i], v[i], sep=' ')
+print(len(pairs))
+for soldier, vest in pairs:
+    print(soldier, vest)
 ```
 
 ##### Complexity Analysis
@@ -222,34 +214,19 @@ n, t = map(int, input().split())
 a = list(map(int, input().split()))
 
 total_time = 0
-
 left = 0
-right = 0
+max_books = 0
 
-max_total_book = 0
-max_left = 0
-
-while True:
-
-  while right < n and total_time + a[right] <= t:
+for right in range(n):
     total_time += a[right]
-    right += 1
 
-  while total_time > t:
-    total_time -= a[left]
-    left += 1
+    while total_time > t:
+        total_time -= a[left]
+        left += 1
 
-  if right - left > max_total_book:
-    max_total_book = right - left
-    max_left = left
+    max_books = max(max_books, right - left + 1)
 
-  if right < n:
-    total_time += a[right]
-    right += 1
-  else:
-    break
-
-print(max_total_book)
+print(max_books)
 ```
 
 ##### Complexity Analysis
@@ -306,31 +283,25 @@ Use two-pointer simulation from both ends, greedily selecting the larger card at
 n = int(input())
 cards = list(map(int, input().split()))
 
-Sereja = 0
-Dima = 0
+sereja, dima = 0, 0
+left, right = 0, n - 1
+is_sereja_turn = True
 
-left = 0
-right = n - 1
+while left <= right:
+    if cards[left] > cards[right]:
+        chosen = cards[left]
+        left += 1
+    else:
+        chosen = cards[right]
+        right -= 1
 
-while True:
-  if cards[left] > cards[right]:
-    Sereja += cards[left]
-    left += 1
-  else:
-    Sereja += cards[right]
-    right -= 1
-  if left > right:
-    break
-  if cards[left] > cards[right]:
-    Dima += cards[left]
-    left += 1
-  else:
-    Dima += cards[right]
-    right -= 1
-  if left > right:
-    break
+    if is_sereja_turn:
+        sereja += chosen
+    else:
+        dima += chosen
+    is_sereja_turn = not is_sereja_turn
 
-print(Sereja, Dima, sep=' ')
+print(sereja, dima)
 ```
 
 ##### Complexity Analysis
@@ -392,28 +363,18 @@ n, m = map(int, input().split())
 a = list(map(int, input().split()))
 b = list(map(int, input().split()))
 
-needed_problem_index = 0
-prepared_problem_index = 0
+matched = 0
+j = 0
 
-while True:
+for needed in a:
+    while j < m and b[j] < needed:
+        j += 1
+    if j >= m:
+        break
+    matched += 1
+    j += 1
 
-  while prepared_problem_index < m and b[prepared_problem_index] < a[needed_problem_index]:
-    prepared_problem_index += 1
-
-  if prepared_problem_index >= m:
-    break
-
-  prepared_problem_index += 1
-
-  needed_problem_index += 1
-
-  if prepared_problem_index >= m:
-    break
-
-  if needed_problem_index >= n:
-    break
-
-print(n - needed_problem_index)
+print(n - matched)
 ```
 
 ##### Complexity Analysis
@@ -466,50 +427,27 @@ Use sliding window technique while tracking minimum and maximum values in the cu
 
 ##### Python Solution
 ```python
+from collections import defaultdict
+
 n = int(input())
 a = list(map(int, input().split()))
 
-left, right = 0, 0
-max_almost_constant_range = 1
-evaluating_range = 1
-range_max = a[0]
-range_min = a[0]
+freq = defaultdict(int)
+left = 0
+max_len = 1
 
-while True:
-  if right >= n - 1:
-    break
-  right += 1
-  if a[right] > range_max and range_max - range_min >= 1:
-    range_max = a[right]
-    if max_almost_constant_range <= evaluating_range:
-      max_almost_constant_range = evaluating_range
-    evaluating_range = 1
-    for i in range(right - 1, left - 1, -1):
-      if a[i] == range_min:
-        left = i + 1
-        range_min += 1
-        break
-      evaluating_range += 1
-  elif a[right] < range_min and range_max - range_min >= 1:
-    range_min = a[right]
-    if max_almost_constant_range <= evaluating_range:
-      max_almost_constant_range = evaluating_range
-    evaluating_range = 1
-    for i in range(right - 1, left - 1, -1):
-      if a[i] == range_max:
-        left = i + 1
-        range_max -= 1
-        break
-      evaluating_range += 1
-  else:
-    if a[right] > range_max:
-      range_max = a[right]
-    elif a[right] < range_min:
-      range_min = a[right]
-    evaluating_range += 1
-    if max_almost_constant_range < evaluating_range:
-      max_almost_constant_range = evaluating_range
-print(max_almost_constant_range)
+for right in range(n):
+    freq[a[right]] += 1
+
+    while max(freq.keys()) - min(freq.keys()) > 1:
+        freq[a[left]] -= 1
+        if freq[a[left]] == 0:
+            del freq[a[left]]
+        left += 1
+
+    max_len = max(max_len, right - left + 1)
+
+print(max_len)
 ```
 
 ##### Complexity Analysis
@@ -557,26 +495,21 @@ Use two-pointer simulation with time tracking from both ends.
 n = int(input())
 t = list(map(int, input().split()))
 
-alice_eating_index = 0
-bob_eating_index = n - 1
-while True:
-  if alice_eating_index >= bob_eating_index - 1:
-    break
-  if t[alice_eating_index] > t[bob_eating_index]:
-    t[alice_eating_index] -= t[bob_eating_index]
-    bob_eating_index -= 1
-  elif t[alice_eating_index] < t[bob_eating_index]:
-    t[bob_eating_index] -= t[alice_eating_index]
-    alice_eating_index += 1
-  else:
-    if bob_eating_index - alice_eating_index == 2:
-      alice_eating_index += 1
+left, right = 0, n - 1
+
+while left < right - 1:
+    if t[left] > t[right]:
+        t[left] -= t[right]
+        right -= 1
+    elif t[left] < t[right]:
+        t[right] -= t[left]
+        left += 1
     else:
-      alice_eating_index += 1
-      bob_eating_index -= 1
+        left += 1
+        if left < right:
+            right -= 1
 
-
-print(alice_eating_index + 1, n - alice_eating_index - 1)
+print(left + 1, n - left - 1)
 ```
 
 ##### Complexity Analysis
@@ -634,19 +567,20 @@ Process from right to left, tracking kill coverage and counting survivors.
 n = int(input())
 L = list(map(int, input().split()))
 
-total_people = n
-last_kill = 0
+survivors = n
+kill_range = 0
+
 for i in range(n - 1, 0, -1):
-  if L[i] > last_kill:
-    if L[i] < i:
-      total_people -= (L[i] - last_kill)
-      last_kill = L[i] - 1
+    if L[i] > kill_range:
+        kills = min(L[i], i) - kill_range
+        survivors -= kills
+        kill_range = min(L[i], i) - 1
+        if L[i] >= i:
+            break
     else:
-      total_people -= (i - last_kill)
-      break
-  else:
-    last_kill = last_kill - 1 if last_kill > 0 else 0
-print(total_people)
+        kill_range = max(0, kill_range - 1)
+
+print(survivors)
 ```
 
 ##### Complexity Analysis

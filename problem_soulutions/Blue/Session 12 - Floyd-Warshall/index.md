@@ -53,57 +53,26 @@ Use dynamic programming approach (simplified from Floyd-Warshall concept). For e
 ##### Python Solution
 
 ```python
-import sys
-
-INF = int(1e9)
-
-
-def floyd_warshall(M, graph):
-  dist = [[0] * M for i in range(M)]
-  for i in range(M):
-    for j in range(M):
-      dist[i][j] = graph[i][j]
-
-  for x in range(5):
-    for k in range(M):
-      for i in range(M):
-        for j in range(M):
-          if i <= k <= j and dist[i][j] < dist[i][k] + dist[k][j]:
-            dist[i][j] = dist[i][k] + dist[k][j]
-
-  max_comp = 0
-  for i in range(M):
-    for j in range(M):
-      if max_comp < dist[i][j]:
-        max_comp = dist[i][j]
-
-  return max_comp
-
-
 def solution():
-  T = int(input().strip())
-  M = 49
-  for i in range(T):
-    graph = [[0] * M for x in range(M)]
-    N = int(input().strip())
-    e_max = 0
+    t = int(input().strip())
+    max_endpoint = 49
 
-    for j in range(N):
-      si, ei, ci = map(int, input().strip().split())
-      if ei > e_max:
-        e_max = ei
-      if ci > graph[si][ei]:
-        graph[si][ei] = ci
+    for _ in range(t):
+        graph = [[0] * max_endpoint for _ in range(max_endpoint)]
+        n = int(input().strip())
+        e_max = 0
 
-    mmax = [0 for x in range(M)]
-    for x in range(1, e_max + 1):
-      m = 0
-      for xx in range(x):
-        if m < graph[xx][x] + mmax[xx]:
-          m = graph[xx][x] + mmax[xx]
-        mmax[x] = m
+        for _ in range(n):
+            si, ei, ci = map(int, input().strip().split())
+            e_max = max(e_max, ei)
+            graph[si][ei] = max(graph[si][ei], ci)
 
-    print(mmax[e_max])
+        # DP: mmax[x] = max total cost ending at position x
+        mmax = [0] * max_endpoint
+        for x in range(1, e_max + 1):
+            mmax[x] = max(graph[xx][x] + mmax[xx] for xx in range(x))
+
+        print(mmax[e_max])
 
 
 solution()
@@ -157,49 +126,49 @@ Reverse the deletion order to process as additions. Use incremental Floyd-Warsha
 ##### Python Solution
 
 ```python
-INF = float(1e9)
+INF = float('inf')
 
 
-def floyd_warshall(N, matrix, del_list):
+def floyd_warshall(n, matrix, del_list):
+    ans = [0] * (n + 1)
 
-  ans = [0 for i in range(N + 1)]
+    for k in range(n, 0, -1):
+        c = del_list[k]
 
-  for k in range(N, 0, -1):
-    c = del_list[k]
-    for i in range(k + 1, N + 1):
-      a = del_list[i]
-      for j in range(k, N + 1):
-        b = del_list[j]
-        matrix[c][a] = min(matrix[c][a], matrix[c][b] + matrix[b][a])
-        matrix[a][c] = min(matrix[a][c], matrix[a][b] + matrix[b][c])
+        # Update distances through the newly added vertex c
+        for i in range(k + 1, n + 1):
+            a = del_list[i]
+            for j in range(k, n + 1):
+                b = del_list[j]
+                matrix[c][a] = min(matrix[c][a], matrix[c][b] + matrix[b][a])
+                matrix[a][c] = min(matrix[a][c], matrix[a][b] + matrix[b][c])
 
-    for i in range(k, N + 1):
-      a = del_list[i]
-      for j in range(k, N + 1):
-        b = del_list[j]
-        if a == b:
-          continue
-        matrix[a][b] = min(matrix[a][b], matrix[a][c] + matrix[c][b])
+        for i in range(k, n + 1):
+            a = del_list[i]
+            for j in range(k, n + 1):
+                b = del_list[j]
+                if a != b:
+                    matrix[a][b] = min(matrix[a][b], matrix[a][c] + matrix[c][b])
 
-    for i in range(k, N + 1):
-      a = del_list[i]
-      for j in range(k, N + 1):
-        b = del_list[j]
-        ans[k] += matrix[a][b]
+        # Sum all shortest paths
+        ans[k] = sum(
+            matrix[del_list[i]][del_list[j]]
+            for i in range(k, n + 1)
+            for j in range(k, n + 1)
+        )
 
-  return ans[1:N+1]
+    return ans[1:n + 1]
 
 
 def solution():
-  N = int(input().strip())
-  matrix = [[]]
-  for i in range(N):
-    new_line = [0] + list(map(int, input().strip().split()))
-    matrix.append(new_line)
+    n = int(input().strip())
+    matrix = [[]] + [
+        [0] + list(map(int, input().strip().split()))
+        for _ in range(n)
+    ]
+    del_list = [0] + list(map(int, input().strip().split()))
 
-  del_list = [0] + list(map(int, input().strip().split()))
-
-  print(*floyd_warshall(N, matrix, del_list), sep=' ')
+    print(*floyd_warshall(n, matrix, del_list), sep=' ')
 
 
 solution()
@@ -260,45 +229,38 @@ Use modified Floyd-Warshall for product maximization instead of sum minimization
 ##### Python Solution
 
 ```python
-INF = float(1e9)
+def floyd_warshall(m, matrix):
+    for k in range(m):
+        for i in range(m):
+            for j in range(m):
+                matrix[i][j] = max(matrix[i][j], matrix[i][k] * matrix[k][j])
 
-
-def floyd_warshall(M, matrix):
-
-  for k in range(M):
-    for i in range(M):
-      for j in range(M):
-        if matrix[i][j] < matrix[i][k] * matrix[k][j]:
-          matrix[i][j] = matrix[i][k] * matrix[k][j]
-  for i in range(M):
-    if matrix[i][i] > 1:
-      return 'Yes'
-
-  return 'No'
+    # Check for arbitrage (any diagonal > 1 means profit cycle)
+    return 'Yes' if any(matrix[i][i] > 1 for i in range(m)) else 'No'
 
 
 def solution():
-  n_case = 1
-  while True:
-    line = input().strip()
-    while not line:
-      line = input().strip()
-    M = int(line)
-    if M == 0:
-      break
+    case_num = 1
+    while True:
+        line = input().strip()
+        while not line:
+            line = input().strip()
 
-    my_dict = {}
-    for i in range(M):
-      my_dict[input().strip()] = i
+        m = int(line)
+        if m == 0:
+            break
 
-    exchanges = int(input().strip())
-    matrix = [[0.0] * M for i in range(M)]
-    for i in range(exchanges):
-      c1, rate, c2 = map(str, input().strip().split())
-      matrix[my_dict[c1]][my_dict[c2]] = float(rate)
+        currency_index = {input().strip(): i for i in range(m)}
 
-    print('Case ' + str(n_case) + ': ' + floyd_warshall(M, matrix))
-    n_case += 1
+        num_exchanges = int(input().strip())
+        matrix = [[0.0] * m for _ in range(m)]
+
+        for _ in range(num_exchanges):
+            c1, rate, c2 = input().strip().split()
+            matrix[currency_index[c1]][currency_index[c2]] = float(rate)
+
+        print(f'Case {case_num}: {floyd_warshall(m, matrix)}')
+        case_num += 1
 
 
 solution()
@@ -352,43 +314,31 @@ Use modified Floyd-Warshall concept for transitive closure. For each person i, c
 ##### Python Solution
 
 ```python
-def floyd_warshall(M, matrix):
-  dist = [[False] * M for i in range(M)]
-  for i in range(M):
-    n_friend = 0
-    for j in range(M):
-      if matrix[i][j] == 'Y':
-        n_friend += 1
-        dist[i][j] = True
+def floyd_warshall(m, matrix):
+    # Track direct friendships
+    connected = [[matrix[i][j] == 'Y' for j in range(m)] for i in range(m)]
 
-  n_more_friends = [0 for i in range(M)]
-  for k in range(M):
-    for i in range(M):
-      for j in range(M):
-        if not dist[i][j] and i != j and matrix[i][k] == 'Y' and matrix[k][j] == 'Y':
-          dist[i][j] = True
-          n_more_friends[i] += 1
+    # Count new friends through friend-of-friend
+    new_friends = [0] * m
+    for k in range(m):
+        for i in range(m):
+            for j in range(m):
+                if not connected[i][j] and i != j and matrix[i][k] == 'Y' and matrix[k][j] == 'Y':
+                    connected[i][j] = True
+                    new_friends[i] += 1
 
-  max_new_friends = n_more_friends[0]
-  most_pop_person = 0
-  for i in range(1, M):
-    if n_more_friends[i] > max_new_friends:
-      max_new_friends = n_more_friends[i]
-      most_pop_person = i
-  print(most_pop_person, max_new_friends)
+    # Find person with most new friends
+    best_person = max(range(m), key=lambda i: new_friends[i])
+    print(best_person, new_friends[best_person])
 
 
 def solution():
-  T = int(input())
-  for i in range(T):
-    matrix = []
-    first_line = input().strip()
-    M = len(first_line)
-    matrix.append(first_line)
-    for j in range(M - 1):
-      matrix.append(input().strip())
-
-    floyd_warshall(M, matrix)
+    t = int(input())
+    for _ in range(t):
+        first_line = input().strip()
+        m = len(first_line)
+        matrix = [first_line] + [input().strip() for _ in range(m - 1)]
+        floyd_warshall(m, matrix)
 
 
 solution()
@@ -448,71 +398,61 @@ Build separate graphs for young and old person. Run Floyd-Warshall on both graph
 ##### Python Solution
 
 ```python
-INF = float(1e9)
+INF = float('inf')
 MAXN = 26
 
 
 def floyd_warshall(young_graph, old_graph, start_young, start_old):
-  for k in range(MAXN):
-    for i in range(MAXN):
-      for j in range(MAXN):
-        young_graph[i][j] = min(young_graph[i][j], young_graph[i][k] + young_graph[k][j])
-        old_graph[i][j] = min(old_graph[i][j], old_graph[i][k] + old_graph[k][j])
+    for k in range(MAXN):
+        for i in range(MAXN):
+            for j in range(MAXN):
+                young_graph[i][j] = min(young_graph[i][j], young_graph[i][k] + young_graph[k][j])
+                old_graph[i][j] = min(old_graph[i][j], old_graph[i][k] + old_graph[k][j])
 
-  min_dist, min_i = INF, -1
-  for i in range(MAXN):
-    d = young_graph[start_young][i] + old_graph[start_old][i]
-    if d < min_dist:
-      min_dist, min_i = d, i
-  if min_dist >= INF:
-    print('You will never meet.')
-  else:
-    flag = False
-    for i in range(MAXN):
-      d = young_graph[start_young][i] + old_graph[start_old][i]
-      if d == min_dist:
-        if flag:
-          print(' {:s}'.format(chr(ord('A') + i)), end='')
-        else:
-          flag = True
-          print('{:d} {:s}'.format(min_dist, chr(ord('A') + i)), end='')
-    print()
+    # Find minimum meeting cost
+    min_dist = min(
+        young_graph[start_young][i] + old_graph[start_old][i]
+        for i in range(MAXN)
+    )
+
+    if min_dist >= INF:
+        print('You will never meet.')
+    else:
+        # Find all cities with minimum cost
+        meeting_cities = [
+            chr(ord('A') + i)
+            for i in range(MAXN)
+            if young_graph[start_young][i] + old_graph[start_old][i] == min_dist
+        ]
+        print(f"{min_dist} {' '.join(meeting_cities)}")
 
 
 def solution():
-  counte = 1
-  while True:
-    N = int(input().strip())
-    if N == 0:
-      break
+    while True:
+        n = int(input().strip())
+        if n == 0:
+            break
 
-    young_graph = [[INF] * MAXN for i in range(MAXN)]
-    old_graph = [[INF] * MAXN for i in range(MAXN)]
+        young_graph = [[INF] * MAXN for _ in range(MAXN)]
+        old_graph = [[INF] * MAXN for _ in range(MAXN)]
 
-    for i in range(MAXN):
-      young_graph[i][i] = old_graph[i][i] = 0
+        for i in range(MAXN):
+            young_graph[i][i] = old_graph[i][i] = 0
 
-    for i in range(N):
-      line = list(map(str, input().strip().split()))
+        for _ in range(n):
+            parts = input().strip().split()
+            age, direction, city1, city2, cost = parts[0], parts[1], parts[2], parts[3], int(parts[-1])
+            x, y = ord(city1) - ord('A'), ord(city2) - ord('A')
 
-      if line[0] == 'Y':
-        x = ord(line[2]) - 65
-        y = ord(line[3]) - 65
-        if x != y:
-          young_graph[x][y] = int(line[-1])
-          if line[1] == 'B':
-            young_graph[y][x] = int(line[-1])
-      else:
-        x = ord(line[2]) - 65
-        y = ord(line[3]) - 65
-        if x != y:
-          old_graph[x][y] = int(line[-1])
-          if line[1] == 'B':
-            old_graph[y][x] = int(line[-1])
+            if x != y:
+                graph = young_graph if age == 'Y' else old_graph
+                graph[x][y] = cost
+                if direction == 'B':
+                    graph[y][x] = cost
 
-    start_young, start_old = map(lambda x: ord(x) - 65, input().strip().split())
+        start_young, start_old = (ord(c) - ord('A') for c in input().strip().split())
 
-    floyd_warshall(young_graph, old_graph, start_young, start_old)
+        floyd_warshall(young_graph, old_graph, start_young, start_old)
 
 
 solution()
@@ -575,68 +515,62 @@ Use modified Floyd-Warshall tracking both path distance and maximum feast cost. 
 ##### Python Solution
 
 ```python
-import sys
-
-INF = int(1e9)
+INF = float('inf')
 
 
-def floyd_warshall(M, graph, case_number, queries, feast_cost):
-  dist = [[INF] * M for i in range(M)]
-  worst_feast_costs = [[INF] * M for i in range(M)]
-  for i in range(M):
-    worst_feast_costs[i][i] = feast_cost[i]
-  for i in range(M):
-    for j in range(M):
-      dist[i][j] = graph[i][j]
-      max_feast_cost = max(worst_feast_costs[i][i], worst_feast_costs[j][j])
-      worst_feast_costs[i][j] = max_feast_cost
-      worst_feast_costs[j][i] = max_feast_cost
+def floyd_warshall(m, graph, case_number, queries, feast_cost):
+    dist = [[graph[i][j] for j in range(m)] for i in range(m)]
+    max_feast = [[max(feast_cost[i], feast_cost[j]) for j in range(m)] for i in range(m)]
 
-  for t in range(2):
-    for k in range(M):
-      for i in range(M):
-        for j in range(M):
-          max_feast_cost = max(worst_feast_costs[i][k], worst_feast_costs[k][j])
-          if dist[i][j] + worst_feast_costs[i][j] > dist[i][k] + dist[k][j] + max_feast_cost:
-            dist[i][j] = dist[i][k] + dist[k][j]
-            worst_feast_costs[i][j] = max_feast_cost
+    for i in range(m):
+        max_feast[i][i] = feast_cost[i]
 
-  print('Case #' + str(case_number))
-  for i in range(len(queries)):
-    cost = dist[queries[i][0] - 1][queries[i][1] - 1]
-    if cost == INF:
-      print(-1)
-    else:
-      print(cost + worst_feast_costs[queries[i][0] - 1][queries[i][1] - 1])
+    for _ in range(2):  # Multiple iterations for convergence
+        for k in range(m):
+            for i in range(m):
+                for j in range(m):
+                    new_feast = max(max_feast[i][k], max_feast[k][j])
+                    new_total = dist[i][k] + dist[k][j] + new_feast
+                    old_total = dist[i][j] + max_feast[i][j]
+                    if new_total < old_total:
+                        dist[i][j] = dist[i][k] + dist[k][j]
+                        max_feast[i][j] = new_feast
+
+    print(f'Case #{case_number}')
+    for src, dest in queries:
+        cost = dist[src - 1][dest - 1]
+        if cost == INF:
+            print(-1)
+        else:
+            print(cost + max_feast[src - 1][dest - 1])
 
 
 def solution():
-  n_case = 1
-  while True:
+    case_num = 1
+    while True:
+        line = input().strip()
+        while not line:
+            line = input().strip()
 
-    line = input().strip()
-    while not line:
-      line = input().strip()
-    C, R, Q = map(int, line.split())
-    if C == 0:
-      break
-    if n_case != 1:
-      print()
-    feast_cost = list(map(int, input().strip().split()))
+        c, r, q = map(int, line.split())
+        if c == 0:
+            break
 
-    graph = [[INF] * C for i in range(C)]
-    for i in range(R):
-      c1, c2, d = map(int, input().strip().split())
-      graph[c1 - 1][c2 - 1] = d
-      graph[c2 - 1][c1 - 1] = d
+        if case_num != 1:
+            print()
 
-    queries = []
-    for i in range(Q):
-      query = list(map(int, input().strip().split()))
-      queries.append(query)
+        feast_cost = list(map(int, input().strip().split()))
 
-    floyd_warshall(C, graph, n_case, queries, feast_cost)
-    n_case += 1
+        graph = [[INF] * c for _ in range(c)]
+        for _ in range(r):
+            c1, c2, d = map(int, input().strip().split())
+            graph[c1 - 1][c2 - 1] = d
+            graph[c2 - 1][c1 - 1] = d
+
+        queries = [tuple(map(int, input().strip().split())) for _ in range(q)]
+
+        floyd_warshall(c, graph, case_num, queries, feast_cost)
+        case_num += 1
 
 
 solution()
@@ -702,61 +636,46 @@ Build graph: connect towns within 10 units distance. Floyd-Warshall for all-pair
 ```python
 import math
 
-INF = float(1e9)
+INF = float('inf')
 
 
-def floyd_warshall(M, towns):
+def floyd_warshall(m, towns):
+    # Build graph: connect towns within 10 units
+    dist = [[INF] * m for _ in range(m)]
 
-  graph = [[INF] * M for i in range(M)]
-  for i in range(M):
-    for j in range(i + 1, M):
-      pow2_dist = math.pow((towns[i][0] - towns[j][0]), 2) + math.pow((towns[i][1] - towns[j][1]), 2)
-      if pow2_dist <= 100:
-        graph[i][j] = math.sqrt(pow2_dist)
-        graph[j][i] = math.sqrt(pow2_dist)
+    for i in range(m):
+        dist[i][i] = 0
+        for j in range(i + 1, m):
+            dx, dy = towns[i][0] - towns[j][0], towns[i][1] - towns[j][1]
+            sq_dist = dx * dx + dy * dy
+            if sq_dist <= 100:  # Within 10 units (10^2 = 100)
+                distance = math.sqrt(sq_dist)
+                dist[i][j] = dist[j][i] = distance
 
-  for i in range(M):
-    graph[i][i] = 0
+    # Floyd-Warshall
+    for k in range(m):
+        for i in range(m):
+            for j in range(m):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-  dist = [[INF] * M for i in range(M)]
-  for i in range(M):
-    for j in range(M):
-      dist[i][j] = graph[i][j]
+    # Find network diameter
+    max_dist = max(dist[i][j] for i in range(m) for j in range(m))
 
-  for k in range(M):
-    for i in range(M):
-      for j in range(M):
-        if dist[i][j] > dist[i][k] + dist[k][j]:
-          dist[i][j] = dist[i][k] + dist[k][j]
-
-  max_range = 0
-  for i in range(M):
-    for j in range(M):
-      if dist[i][j] == INF:
-        return 0
-      if max_range < dist[i][j]:
-        max_range = dist[i][j]
-
-  return max_range
+    return 0 if max_dist == INF else max_dist
 
 
 def solution():
-  T = int(input().strip())
-  for t in range(T):
-    M = int(input().strip())
-    towns = []
-    for i in range(M):
-      x, y = map(int, input().strip().split())
-      towns.append([x, y])
+    t = int(input().strip())
+    for case in range(t):
+        m = int(input().strip())
+        towns = [tuple(map(int, input().strip().split())) for _ in range(m)]
 
-    if t != 0:
-      print()
-    print('Case #' + str(t + 1) + ':')
-    result = floyd_warshall(M, towns)
-    if result > 0:
-      print("{:.4f}".format(result))
-    else:
-      print('Send Kurdy')
+        if case != 0:
+            print()
+        print(f'Case #{case + 1}:')
+
+        result = floyd_warshall(m, towns)
+        print(f"{result:.4f}" if result > 0 else 'Send Kurdy')
 
 
 solution()
@@ -838,54 +757,47 @@ Build undirected graph with 20 nodes from adjacency lists. Floyd-Warshall for al
 ##### Python Solution
 
 ```python
-import sys
+INF = float('inf')
+NUM_COUNTRIES = 20
 
-INF = int(1e9)
 
+def floyd_warshall(graph, case_number, queries):
+    dist = [[graph[i][j] for j in range(NUM_COUNTRIES)] for i in range(NUM_COUNTRIES)]
 
-def floyd_warshall(M, graph, case_number, queries):
-  dist = [[INF] * M for i in range(M)]
-  for i in range(M):
-    for j in range(M):
-      dist[i][j] = graph[i][j]
+    for k in range(NUM_COUNTRIES):
+        for i in range(NUM_COUNTRIES):
+            for j in range(NUM_COUNTRIES):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
 
-  for k in range(M):
-    for i in range(M):
-      for j in range(M):
-        if dist[i][j] > dist[i][k] + dist[k][j]:
-          dist[i][j] = dist[i][k] + dist[k][j]
-
-  print('Test Set #' + str(case_number))
-  for i in range(len(queries)):
-    print("{:2d} to {:2d}: {:d}".format(queries[i][0], queries[i][1], dist[queries[i][0] - 1][queries[i][1] - 1]).rstrip('0'))
+    print(f'Test Set #{case_number}')
+    for src, dest in queries:
+        print(f"{src:2d} to {dest:2d}: {dist[src - 1][dest - 1]}")
 
 
 def solution():
-  n_case = 1
-  while True:
-    M = 20
-    graph = [[INF] * M for i in range(M)]
-    for i in range(M - 1):
-      try:
-        line = list(map(int, input().strip().split()))
-      except:
-        return
-      if len(line) == 0:
-        return
-      n_neighbor = line[0]
-      for j in range(1, n_neighbor + 1):
-        graph[i][line[j] - 1] = 1
-        graph[line[j] - 1][i] = 1
+    case_num = 1
+    while True:
+        graph = [[INF] * NUM_COUNTRIES for _ in range(NUM_COUNTRIES)]
 
-    n_queries = int(input())
-    queries = []
-    for i in range(n_queries):
-      query = list(map(int, input().strip().split()))
-      queries.append(query)
+        for i in range(NUM_COUNTRIES - 1):
+            try:
+                line = list(map(int, input().strip().split()))
+            except:
+                return
+            if not line:
+                return
 
-    floyd_warshall(M, graph, n_case, queries)
-    print()
-    n_case += 1
+            num_neighbors = line[0]
+            for neighbor in line[1:num_neighbors + 1]:
+                graph[i][neighbor - 1] = 1
+                graph[neighbor - 1][i] = 1
+
+        num_queries = int(input())
+        queries = [tuple(map(int, input().strip().split())) for _ in range(num_queries)]
+
+        floyd_warshall(graph, case_num, queries)
+        print()
+        case_num += 1
 
 
 solution()

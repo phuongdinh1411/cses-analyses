@@ -59,69 +59,44 @@ Use Prim's algorithm with priority queue to find MST. Sort MST edge weights and 
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph, C):
-  dist = [-1 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]  # (distance, node) - tuples work with heapq
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    d, u = heapq.heappop(pqueue)
     visited[u] = True
-    for neighbor in graph[u]:
-      v = neighbor.id
-      w = neighbor.dist
-      if not visited[v] and (w < dist[v] or dist[v] == -1):
+    for v, w in graph[u]:
+      if not visited[v] and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
   dist.sort()
   C.sort()
 
-  for i in range(len(C)):
-    if i <= N + 1:
-      if dist[-i - 1] > C[i]:
-        dist[-i - 1] = C[i]
-      else:
-        break
-    else:
+  for i, c in enumerate(C):
+    if i > N + 1 or dist[-i - 1] <= c:
       break
+    dist[-i - 1] = c
 
-  result = 0
-  for i in range(1, N + 1):
-    if dist[i] != -1:
-      result += dist[i]
-
-  return result
+  return sum(d for d in dist[1:N + 1] if d != -1)
 
 
 def solution():
   N, M = map(int, input().split())
 
-  graph = [[] for i in range(N + 1)]
-  for i in range(M):
+  graph = [[] for _ in range(N + 1)]
+  for _ in range(M):
     A, B, W = map(int, input().split())
-    graph[A].append(Node(B, W))
-    graph[B].append(Node(A, W))
+    graph[A].append((B, W))
+    graph[B].append((A, W))
 
   Q = int(input())
-  C = []
-  if Q > 0:
-    C = list(map(int, input().strip().split()))
+  C = list(map(int, input().strip().split())) if Q > 0 else []
 
-  result = prim(N, graph, C)
-  print(result)
+  print(prim(N, graph, C))
 
 
 solution()
@@ -179,52 +154,33 @@ Prim's algorithm using a min-heap (priority queue). Start from node 1, greedily 
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph):
-  dist = [-1 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]  # (distance, node)
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for neighbor in graph[u]:
-      v = neighbor.id
-      w = neighbor.dist
-      if not visited[v] and (w < dist[v] or dist[v] == -1):
+    for v, w in graph[u]:
+      if not visited[v] and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  result = 0
-  for i in range(1, N + 1):
-    if dist[i] != -1:
-      result += dist[i]
-
-  return result
+  return sum(d for d in dist[1:N + 1] if d != -1)
 
 
 def solution():
   N, M = map(int, input().split())
 
-  graph = [[] for i in range(N + 1)]
-  for i in range(M):
+  graph = [[] for _ in range(N + 1)]
+  for _ in range(M):
     A, B, W = map(int, input().split())
-    graph[A].append(Node(B, W))
-    graph[B].append(Node(A, W))
+    graph[A].append((B, W))
+    graph[B].append((A, W))
 
-  result = prim(N, graph)
-  print(result)
+  print(prim(N, graph))
 
 
 solution()
@@ -289,41 +245,25 @@ Map city names to indices using dictionary. Apply Prim's algorithm with priority
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph):
-  dist = [-1 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for neighbor in graph[u]:
-      v = neighbor.id
-      w = neighbor.dist
-      if not visited[v] and (w < dist[v] or dist[v] == -1):
+    for v, w in graph[u]:
+      if not visited[v] and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  result = 0
   for i in range(1, N + 1):
-    if dist[i] != -1:
-      result += dist[i]
-    else:
+    if dist[i] == -1:
       return 'Impossible'
 
-  return str(result)
+  return str(sum(d for d in dist[1:N + 1] if d != -1))
 
 
 def solution():
@@ -331,23 +271,20 @@ def solution():
   for j in range(t):
     input()
     m = int(input())
-    graph = [[] for i in range(m * 2 + 1)]
+    graph = [[] for _ in range(m * 2 + 1)]
     cities = {}
-    index = 0
-    for i in range(m):
-      city1, city2, cost = map(str, input().strip().split())
-      if cities.get(city1) is None:
-        index += 1
-        cities[city1] = index
-      if cities.get(city2) is None:
-        index += 1
-        cities[city2] = index
-      cost = int(cost)
-      graph[cities[city1]].append(Node(cities[city2], cost))
-      graph[cities[city2]].append(Node(cities[city1], cost))
 
-    result = prim(len(cities), graph)
-    print('Case {}: {}'.format(j + 1, result))
+    for _ in range(m):
+      city1, city2, cost = input().strip().split()
+      cost = int(cost)
+      if city1 not in cities:
+        cities[city1] = len(cities) + 1
+      if city2 not in cities:
+        cities[city2] = len(cities) + 1
+      graph[cities[city1]].append((cities[city2], cost))
+      graph[cities[city2]].append((cities[city1], cost))
+
+    print(f"Case {j + 1}: {prim(len(cities), graph)}")
 
 
 solution()
@@ -411,55 +348,37 @@ Use Prim's algorithm to find MST. Multiply MST total edge weight by price per me
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph):
-  dist = [-1 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for neighbor in graph[u]:
-      v = neighbor.id
-      w = neighbor.dist
-      if not visited[v] and (w < dist[v] or dist[v] == -1):
+    for v, w in graph[u]:
+      if not visited[v] and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  result = 0
-  for i in range(1, N + 1):
-    if dist[i] != -1:
-      result += dist[i]
-
-  return result
+  return sum(d for d in dist[1:N + 1] if d != -1)
 
 
 def solution():
   t = int(input())
-  for j in range(t):
+  for _ in range(t):
     p = int(input())
     n = int(input())
     m = int(input())
-    graph = [[] for i in range(n + 1)]
-    for i in range(m):
-      a, b, c = map(int, input().strip().split())
-      graph[a].append(Node(b, c))
-      graph[b].append(Node(a, c))
+    graph = [[] for _ in range(n + 1)]
 
-    result = prim(n, graph)
-    print(result * p)
+    for _ in range(m):
+      a, b, c = map(int, input().strip().split())
+      graph[a].append((b, c))
+      graph[b].append((a, c))
+
+    print(prim(n, graph) * p)
 
 
 solution()
@@ -516,52 +435,33 @@ Standard Prim's algorithm implementation. Use min-heap priority queue for effici
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph):
-  dist = [-1 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for neighbor in graph[u]:
-      v = neighbor.id
-      w = neighbor.dist
-      if not visited[v] and (w < dist[v] or dist[v] == -1):
+    for v, w in graph[u]:
+      if not visited[v] and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  result = 0
-  for i in range(1, N + 1):
-    if dist[i] != -1:
-      result += dist[i]
-
-  return result
+  return sum(d for d in dist[1:N + 1] if d != -1)
 
 
 def solution():
   N, M = map(int, input().split())
 
-  graph = [[] for i in range(N + 1)]
-  for i in range(M):
+  graph = [[] for _ in range(N + 1)]
+  for _ in range(M):
     A, B, W = map(int, input().split())
-    graph[A].append(Node(B, W))
-    graph[B].append(Node(A, W))
+    graph[A].append((B, W))
+    graph[B].append((A, W))
 
-  result = prim(N, graph)
-  print(result)
+  print(prim(N, graph))
 
 
 solution()
@@ -626,32 +526,30 @@ INF = 1e9
 
 
 def solution():
-  index = 0
+  case_num = 0
   while True:
     C, S, Q = map(int, input().strip().split())
     if C == 0:
       break
-    if index > 0:
+    if case_num > 0:
       print()
-    graph = [[INF for j in range(C + 1)] for i in range(C + 1)]
-    for i in range(S):
-      A, B, W = map(int, input().strip().split())
-      graph[A][B] = min(graph[A][B], W)
-      graph[B][A] = min(graph[A][B], W)
 
+    graph = [[INF] * (C + 1) for _ in range(C + 1)]
+    for _ in range(S):
+      A, B, W = map(int, input().strip().split())
+      graph[A][B] = graph[B][A] = min(graph[A][B], W)
+
+    # Floyd-Warshall for minimax path
     for k in range(1, C + 1):
       for i in range(1, C + 1):
         for j in range(1, C + 1):
           graph[i][j] = min(graph[i][j], max(graph[i][k], graph[k][j]))
 
-    index += 1
-    print("Case #{}".format(index))
-    for i in range(Q):
+    case_num += 1
+    print(f"Case #{case_num}")
+    for _ in range(Q):
       s, e = map(int, input().strip().split())
-      if graph[s][e] == INF:
-        print('no path')
-      else:
-        print(graph[s][e])
+      print('no path' if graph[s][e] == INF else int(graph[s][e]))
 
 
 solution()
@@ -713,90 +611,55 @@ import heapq
 import sys
 
 
-class input_tokenizer:
-  __tokens = None
+class InputTokenizer:
+  def __init__(self):
+    self._tokens = sys.stdin.read().split()[::-1]
 
   def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    return bool(self._tokens)
 
   def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
+    return self._tokens.pop()
 
 
-inp = input_tokenizer()
-
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
+inp = InputTokenizer()
 
 
 def prim(N, graph):
-  dist = [-1.0 for x in range(N+1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(0, 0))
+  dist = [-1.0] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0.0, 0)]
   dist[0] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for i in range(N):
-      v = i
-      w = graph[u][i]
-      if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1.0):
+    for v in range(N):
+      w = graph[u][v]
+      if not visited[v] and w != -1 and (dist[v] == -1.0 or w < dist[v]):
         dist[v] = w
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  result = 0
-  for i in range(N):
-    if dist[i] != -1.0:
-      result += dist[i]
-
-  return result
-
-
-def distance(city1, city2):
-  return math.sqrt((city1[0] - city2[0]) * (city1[0] - city2[0]) + (city1[1] - city2[1]) * (city1[1] - city2[1]))
+  return sum(d for d in dist[:N] if d != -1.0)
 
 
 def solution():
-  while True:
-    try:
-      n = int(inp.next())
-    except:
-      return
-    cities = []
-    for i in range(n):
-      x = int(inp.next())
-      y = int(inp.next())
-      cities.append([x, y])
-    graph = [[-1.0 for j in range(n + 1)] for i in range(n + 1)]
+  while inp.has_next():
+    n = int(inp.next())
+    cities = [(int(inp.next()), int(inp.next())) for _ in range(n)]
+
+    graph = [[-1.0] * (n + 1) for _ in range(n + 1)]
     for i in range(n):
       for j in range(i + 1, n):
-        distij = distance(cities[i], cities[j])
-        graph[i][j] = distij
-        graph[j][i] = distij
+        d = math.hypot(cities[i][0] - cities[j][0], cities[i][1] - cities[j][1])
+        graph[i][j] = graph[j][i] = d
 
     m = int(inp.next())
-    for i in range(m):
-      x = int(inp.next())
-      y = int(inp.next())
-      graph[x - 1][y - 1] = 0
-      graph[y - 1][x - 1] = 0
+    for _ in range(m):
+      x, y = int(inp.next()) - 1, int(inp.next()) - 1
+      graph[x][y] = graph[y][x] = 0
 
-    result = prim(n, graph)
-    print("{:.2f}".format(result))
+    print(f"{prim(n, graph):.2f}")
 
 
 solution()
@@ -856,67 +719,47 @@ First, find the MST using Prim's algorithm (track the path/edges used). For seco
 import heapq
 
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-
 def prim(N, graph):
-  dist = [-1 for x in range(N+1)]
-  path = [-1 for x in range(N + 1)]
-  visited = [False for i in range(N + 1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(1, 0))
+  dist = [-1] * (N + 1)
+  path = [-1] * (N + 1)
+  visited = [False] * (N + 1)
+  pqueue = [(0, 1)]
   dist[1] = 0
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
+  while pqueue:
+    _, u = heapq.heappop(pqueue)
     visited[u] = True
-    for i in range(1, N + 1):
-      v = i
-      w = graph[u][i]
-      if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1):
+    for v in range(1, N + 1):
+      w = graph[u][v]
+      if not visited[v] and w != -1 and (dist[v] == -1 or w < dist[v]):
         dist[v] = w
         path[v] = u
-        heapq.heappush(pqueue, Node(v, w))
+        heapq.heappush(pqueue, (w, v))
 
-  mst_cost = 0
-  for i in range(1, N + 1):
-    if dist[i] != -1:
-      mst_cost += dist[i]
-
+  mst_cost = sum(d for d in dist[1:N + 1] if d != -1)
   return path, mst_cost
 
 
 def solution():
   T = int(input())
-  for i in range(T):
+  for _ in range(T):
     N, M = map(int, input().strip().split())
 
-    graph = [[-1 for j in range(N + 1)] for i in range(N + 1)]
-    for i in range(M):
+    graph = [[-1] * (N + 1) for _ in range(N + 1)]
+    for _ in range(M):
       A, B, C = map(int, input().strip().split())
-      graph[A][B] = C
-      graph[B][A] = C
+      graph[A][B] = graph[B][A] = C
 
     mst, mst_cost = prim(N, graph)
 
-    second_mst_cost = 1e9
-    for i in range(len(mst)):
-      if mst[i] != -1:
-        tmp_weight = graph[i][mst[i]]
-        graph[i][mst[i]] = -1
-        graph[mst[i]][i] = -1
-        current_mst, current_mst_cost = prim(N, graph)
-        if current_mst_cost < second_mst_cost:
-          second_mst_cost = current_mst_cost
-        graph[i][mst[i]] = tmp_weight
-        graph[mst[i]][i] = tmp_weight
+    second_mst_cost = int(1e9)
+    for i, parent in enumerate(mst):
+      if parent != -1:
+        tmp_weight = graph[i][parent]
+        graph[i][parent] = graph[parent][i] = -1
+        _, current_cost = prim(N, graph)
+        second_mst_cost = min(second_mst_cost, current_cost)
+        graph[i][parent] = graph[parent][i] = tmp_weight
 
     print(mst_cost, second_mst_cost)
 

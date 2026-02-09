@@ -55,58 +55,44 @@ Dijkstra's algorithm (BFS would also work since all edges have weight 1). Use pr
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import deque
 
-class Node:
-  def __init__(self, idx, idy, dist):
-    self.dist = dist
-    self.idx = idx
-    self.idy = idy
+DIRECTIONS = [(1, 0), (0, -1), (-1, 0), (0, 1)]
 
-  def __lt__(self, other):
-    return self.dist < other.dist
+def bfs(rows, cols, start, dest, mines):
+    dist = [[-1] * cols for _ in range(rows)]
+    dist[start[0]][start[1]] = 0
+    queue = deque([(start[0], start[1], 0)])
 
-def dijkstra(r, c, s, d, matrix):
-  dist = [[-1 for x in range(c)] for y in range(r)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(s[0], s[1], 0))
-  dist[s[0]][s[1]] = 0
+    while queue:
+        x, y, d = queue.popleft()
+        for dx, dy in DIRECTIONS:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < rows and 0 <= ny < cols and not mines[nx][ny] and dist[nx][ny] == -1:
+                dist[nx][ny] = d + 1
+                queue.append((nx, ny, d + 1))
 
-  dx = [1, 0, -1, 0]
-  dy = [0, -1, 0, 1]
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.idx
-    v = top.idy
-    w = top.dist
-    for ll in range(4):
-      neighbor_x = u + dx[ll]
-      neighbor_y = v + dy[ll]
-      if 0 <= neighbor_x < r and 0 <= neighbor_y < c and matrix[neighbor_x][neighbor_y] == False:
-        if w + 1 < dist[neighbor_x][neighbor_y] or dist[neighbor_x][neighbor_y] == -1:
-          dist[neighbor_x][neighbor_y] = w + 1
-          heapq.heappush(pqueue, Node(neighbor_x, neighbor_y, dist[neighbor_x][neighbor_y]))
-
-  return dist[d[0]][d[1]]
+    return dist[dest[0]][dest[1]]
 
 def solution():
-  while True:
-    R, C = map(int, input().strip().split())
-    if R == 0:
-      break
+    while True:
+        r, c = map(int, input().split())
+        if r == 0:
+            break
 
-    boom_rows = int(input())
-    matrix = [[False for i in range(C)] for j in range(R)]
+        num_mine_rows = int(input())
+        mines = [[False] * c for _ in range(r)]
 
-    for i in range(boom_rows):
-      booms = list(map(int, input().strip().split()))
-      for j in range(2, booms[1] + 2):
-        matrix[booms[0]][booms[j]] = True
+        for _ in range(num_mine_rows):
+            line = list(map(int, input().split()))
+            row_idx, count = line[0], line[1]
+            for col_idx in line[2:2 + count]:
+                mines[row_idx][col_idx] = True
 
-    s = list(map(int, input().strip().split()))
-    d = list(map(int, input().strip().split()))
-    print(dijkstra(R, C, s, d, matrix))
+        start = tuple(map(int, input().split()))
+        dest = tuple(map(int, input().split()))
+        print(bfs(r, c, start, dest, mines))
 
 solution()
 ```
@@ -154,20 +140,18 @@ Greedy approach using a counter. Track opening brackets with a counter. For each
 
 ```python
 def solution():
-  s = input().strip()
-  pos = 0
-  total = 0
-  for c in s:
-    if c == '(':
-      pos += 1
-    else:
-      pos -= 1
-      if pos >= 0:
-        total += 2
-      else:
-        pos += 1
+    s = input().strip()
+    open_count = 0
+    matched = 0
 
-  print(total)
+    for char in s:
+        if char == '(':
+            open_count += 1
+        elif open_count > 0:
+            open_count -= 1
+            matched += 2
+
+    print(matched)
 
 solution()
 ```
@@ -218,18 +202,15 @@ Sort array A. For each query b[i], use binary search (bisect_right) to find the 
 ##### Python Solution
 
 ```python
-import bisect
+from bisect import bisect_right
 
 def solution():
-  n, m = map(int, input().strip().split())
-  a = list(map(int, input().strip().split()))
-  b = list(map(int, input().strip().split()))
+    n, m = map(int, input().split())
+    a = sorted(map(int, input().split()))
+    b = list(map(int, input().split()))
 
-  a.sort()
-
-  for i in range(m - 1):
-    print(bisect.bisect_right(a, b[i]), end=' ')
-  print(bisect.bisect_right(a, b[m - 1]))
+    results = [bisect_right(a, x) for x in b]
+    print(*results)
 
 solution()
 ```
@@ -279,12 +260,9 @@ Sort the array in ascending order and return the element at index N//2.
 
 ```python
 def solution():
-  n = int(input())
-  ar = list(map(int, input().strip().split()))
-  ar.sort()
-  mid_index = n//2
-
-  print(ar[mid_index])
+    n = int(input())
+    arr = sorted(map(int, input().split()))
+    print(arr[n // 2])
 
 solution()
 ```
@@ -332,13 +310,10 @@ Start with count = 1 (for the first word). Iterate through each character. If ch
 
 ```python
 def solution():
-  s = input().strip()
-  counter = 1
-  for c in s:
-    if ord(c) < 97:
-      counter += 1
-
-  print(counter)
+    s = input().strip()
+    # Count uppercase letters + 1 for the first word
+    word_count = 1 + sum(1 for c in s if c.isupper())
+    print(word_count)
 
 solution()
 ```
@@ -399,76 +374,47 @@ Modified Dijkstra's algorithm. Instead of summing weights, track the maximum edg
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 import sys
 
-class input_tokenizer:
-  __tokens = None
+def dijkstra_minimax(n, start, graph):
+    """Modified Dijkstra for minimax path (minimum of maximum edge weights)."""
+    dist = [-1] * (n + 1)
+    dist[start] = 0
+    pq = [(0, start)]
 
-  def has_next(self):
-    return self.__tokens != [] and self.__tokens != None
+    while pq:
+        d, u = heappop(pq)
+        if d > dist[u] and dist[u] != -1:
+            continue
+        for v, w in graph[u]:
+            new_dist = max(w, dist[u])
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  def next(self):
-    token = self.__tokens[-1]
-    self.__tokens.pop()
-    return token
-
-  def __init__(self):
-    self.__tokens = sys.stdin.read().split()[::-1]
-
-inp = input_tokenizer()
-
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
-
-  def __lt__(self, other):
-    return self.dist < other.dist
-
-def dijkstra(n, t, graph):
-  dist = [-1 for x in range(n+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(t, 0))
-  dist[t] = 0
-
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if (neighbor.dist < dist[neighbor.id] and dist[u] < dist[neighbor.id]) or dist[neighbor.id] == -1:
-        dist[neighbor.id] = max(neighbor.dist, dist[u])
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  return dist
+    return dist
 
 def solution():
-  T = int(inp.next())
-  case_number = 0
+    tokens = sys.stdin.read().split()[::-1]
+    num_cases = int(tokens.pop())
 
-  for i in range(T):
-    case_number += 1
-    N = int(inp.next())
-    M = int(inp.next())
-    graph = [[] for x in range(N + 1)]
-    for j in range(M):
-      A = int(inp.next())
-      B = int(inp.next())
-      W = int(inp.next())
+    for case_num in range(1, num_cases + 1):
+        n, m = int(tokens.pop()), int(tokens.pop())
+        graph = defaultdict(list)
 
-      graph[B].append(Node(A, W))
-      graph[A].append(Node(B, W))
+        for _ in range(m):
+            a, b, w = int(tokens.pop()), int(tokens.pop()), int(tokens.pop())
+            graph[a].append((b, w))
+            graph[b].append((a, w))
 
-    t = int(inp.next())
+        source = int(tokens.pop())
+        dist = dijkstra_minimax(n, source, graph)
 
-    print('Case ' + str(case_number) + ':')
-    dist = dijkstra(N, t, graph)
-    for d in dist:
-      if d > -1:
-        print(d)
-      else:
-        print('Impossible')
+        print(f"Case {case_num}:")
+        for i in range(n):
+            print(dist[i] if dist[i] >= 0 else 'Impossible')
 
 solution()
 ```
@@ -518,23 +464,13 @@ Use a boolean array of size 26 to track presence of each letter. Convert each ch
 
 ```python
 def solution():
-  num_of_chars = int(input())
-  checking_string = input().strip()
+    _ = int(input())  # length not needed
+    s = input().strip().lower()
 
-  checking_array = [False for i in range(26)]
+    seen = set(s)
+    is_pangram = all(chr(ord('a') + i) in seen for i in range(26))
 
-  for i in range(num_of_chars):
-    char_index = ord(checking_string[i]) - 65
-    if char_index >= 26:
-      char_index = ord(checking_string[i]) - 97
-
-    checking_array[char_index] = True
-
-  for i in range(26):
-    if not checking_array[i]:
-      print('NO')
-      return
-  print('YES')
+    print('YES' if is_pangram else 'NO')
 
 solution()
 ```
@@ -586,32 +522,33 @@ Simulate the printer queue. Sort priorities in descending order to know which pr
 ##### Python Solution
 
 ```python
+from collections import deque
+
 def solution():
-  tcs = int(input())
-  for i in range(tcs):
-    n, m = map(int, input().split())
-    printer_queue = list(map(int, input().split()))
-    sorted_list = sorted(printer_queue, reverse=True)
-    counter = 0
-    pointer = 0
-    largest_pos = 0
-    while True:
-      if largest_pos >= n:
-        break
+    num_cases = int(input())
 
-      if printer_queue[pointer] == sorted_list[largest_pos]:
-        counter += 1
-        largest_pos += 1
-        if pointer == m:
-          break
-      else:
-        if pointer == m:
-          m = len(printer_queue)
-        printer_queue.append(printer_queue[pointer])
+    for _ in range(num_cases):
+        n, target_pos = map(int, input().split())
+        priorities = list(map(int, input().split()))
 
-      pointer += 1
+        # Queue of (priority, original_index)
+        queue = deque((p, i) for i, p in enumerate(priorities))
+        sorted_priorities = sorted(priorities, reverse=True)
 
-    print(counter)
+        printed = 0
+        priority_idx = 0
+
+        while queue:
+            job = queue.popleft()
+            if job[0] == sorted_priorities[priority_idx]:
+                printed += 1
+                priority_idx += 1
+                if job[1] == target_pos:
+                    break
+            else:
+                queue.append(job)
+
+        print(printed)
 
 solution()
 ```
@@ -662,13 +599,9 @@ Total cost = k * (1 + 2 + ... + w) = k * w * (w + 1) / 2. Amount to borrow = max
 
 ```python
 def solution():
-  k, n, w = map(int, input().strip().split())
-
-  result = int((w + 1) * w * k / 2 - n)
-  if result < 0:
-    result = 0
-
-  print(result)
+    k, n, w = map(int, input().split())
+    total_cost = k * w * (w + 1) // 2
+    print(max(0, total_cost - n))
 
 solution()
 ```
@@ -723,87 +656,75 @@ Build a graph where nodes are dictionary words. Connect two words with an edge i
 ##### Python Solution
 
 ```python
-import heapq
+from heapq import heappush, heappop
+from collections import defaultdict
 
-class Node:
-  def __init__(self, id, dist):
-    self.dist = dist
-    self.id = id
+def differs_by_one(word1, word2):
+    """Check if two words differ by exactly one character."""
+    if len(word1) != len(word2):
+        return False
+    return sum(c1 != c2 for c1, c2 in zip(word1, word2)) == 1
 
-  def __lt__(self, other):
-    return self.dist < other.dist
+def dijkstra(n, start, dest, graph):
+    dist = [-1] * n
+    dist[start] = 0
+    pq = [(0, start)]
 
-def dijkstra(n, S, T, graph):
-  dist = [-1 for x in range(n+1)]
-  pqueue = []
-  heapq.heappush(pqueue, Node(S, 0))
-  dist[S] = 0
+    while pq:
+        d, u = heappop(pq)
+        for v, w in graph[u]:
+            new_dist = d + w
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heappush(pq, (new_dist, v))
 
-  while len(pqueue) > 0:
-    top = heapq.heappop(pqueue)
-    u = top.id
-    w = top.dist
-    for neighbor in graph[u]:
-      if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-        dist[neighbor.id] = w + neighbor.dist
-        heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
-
-  return dist[T]
+    return dist[dest]
 
 def solution():
-  N = int(input().strip())
-  for tc in range(N):
-    dictionary = []
-    while True:
-      new_word = input().strip()
-      if not new_word:
-        continue
-      if new_word == '*':
-        break
-      dictionary.append(new_word)
+    num_cases = int(input().strip())
 
-    queries = []
-    while True:
-      try:
-        new_query = input().strip()
-      except Exception as e:
-        break
-      if not new_query:
-        break
-      queries.append(list(map(str, new_query.split())))
+    for tc in range(num_cases):
+        dictionary = []
+        while True:
+            word = input().strip()
+            if not word:
+                continue
+            if word == '*':
+                break
+            dictionary.append(word)
 
-    n_words = len(dictionary)
-    n_queries = len(queries)
-    graph = [[] for i in range(n_words)]
-    for i in range(n_words):
-      for j in range(i, n_words):
-        if len(dictionary[i]) == len(dictionary[j]):
-          diff = 0
-          w_length = len(dictionary[i])
-          for c in range(w_length):
-            if dictionary[i][c] is not dictionary[j][c]:
-              diff += 1
-            if diff > 1:
-              break
+        queries = []
+        while True:
+            try:
+                line = input().strip()
+            except EOFError:
+                break
+            if not line:
+                break
+            queries.append(line.split())
 
-          if diff == 1:
-            graph[i].append(Node(j, 1))
-            graph[j].append(Node(i, 1))
+        # Build word index mapping
+        word_to_idx = {word: i for i, word in enumerate(dictionary)}
+        n_words = len(dictionary)
 
-    for q in range(n_queries):
-      start = -1
-      end = -1
-      for w in range(n_words):
-        if start >= 0 and end >= 0:
-          break
-        if queries[q][0] == dictionary[w]:
-          start = w
-        if queries[q][1] == dictionary[w]:
-          end = w
+        # Build graph connecting words that differ by one character
+        graph = defaultdict(list)
+        for i, word1 in enumerate(dictionary):
+            for j in range(i + 1, n_words):
+                word2 = dictionary[j]
+                if differs_by_one(word1, word2):
+                    graph[i].append((j, 1))
+                    graph[j].append((i, 1))
 
-      print(queries[q][0], queries[q][1], dijkstra(n_words, start, end, graph), sep=' ')
-    if tc < N - 1:
-      print()
+        # Answer queries
+        for src, dst in queries:
+            start_idx = word_to_idx[src]
+            end_idx = word_to_idx[dst]
+            dist = dijkstra(n_words, start_idx, end_idx, graph)
+            print(src, dst, dist)
+
+        if tc < num_cases - 1:
+            print()
 
 solution()
 ```
