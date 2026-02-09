@@ -55,10 +55,7 @@ Strategy:
 ```python
 def solve():
   m, n = map(int, input().split())
-  B = []
-  for _ in range(m):
-    row = list(map(int, input().split()))
-    B.append(row)
+  B = [list(map(int, input().split())) for _ in range(m)]
 
   # Initialize A with all 1s
   A = [[1] * n for _ in range(m)]
@@ -67,37 +64,20 @@ def solve():
   for i in range(m):
     for j in range(n):
       if B[i][j] == 0:
-        # Set row i to all 0s
-        for k in range(n):
-          A[i][k] = 0
-        # Set column j to all 0s
+        A[i] = [0] * n  # Set row i to all 0s
         for k in range(m):
-          A[k][j] = 0
+          A[k][j] = 0  # Set column j to all 0s
 
-  # Verify: compute B' from A
-  # B'[i][j] = (OR of row i) OR (OR of column j)?
-  # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
-  # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
+  # Precompute row OR and column OR using any()
+  row_or = [any(A[i]) for i in range(m)]
+  col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
 
-  # Precompute row OR and column OR
-  row_or = [0] * m
-  col_or = [0] * n
-
-  for i in range(m):
-    for j in range(n):
-      row_or[i] |= A[i][j]
-      col_or[j] |= A[i][j]
-
-  # B'[i][j] = row_or[i] | col_or[j]
-  valid = True
-  for i in range(m):
-    for j in range(n):
-      computed = row_or[i] | col_or[j]
-      if computed != B[i][j]:
-        valid = False
-        break
-    if not valid:
-      break
+  # Verify: B'[i][j] = row_or[i] | col_or[j]
+  valid = all(
+    (row_or[i] or col_or[j]) == B[i][j]
+    for i in range(m)
+    for j in range(n)
+  )
 
   if valid:
     print("YES")
@@ -123,26 +103,26 @@ def solve():
   zero_rows = set()
   zero_cols = set()
 
-  for i in range(m):
-    for j in range(n):
-      if B[i][j] == 0:
-        zero_rows.add(i)
-        zero_cols.add(j)
+  zero_rows = {i for i in range(m) for j in range(n) if B[i][j] == 0}
+  zero_cols = {j for i in range(m) for j in range(n) if B[i][j] == 0}
 
   # Build A: 1 unless in zero_row or zero_col
   A = [[0 if i in zero_rows or j in zero_cols else 1
     for j in range(n)] for i in range(m)]
 
   # Verify
-  row_or = [any(A[i]) for i in range(m)]
+  row_or = [any(row) for row in A]
   col_or = [any(A[i][j] for i in range(m)) for j in range(n)]
 
-  for i in range(m):
-    for j in range(n):
-      expected = 1 if (row_or[i] or col_or[j]) else 0
-      if expected != B[i][j]:
-        print("NO")
-        return
+  valid = all(
+    (1 if (row_or[i] or col_or[j]) else 0) == B[i][j]
+    for i in range(m)
+    for j in range(n)
+  )
+
+  if not valid:
+    print("NO")
+    return
 
   print("YES")
   for row in A:

@@ -76,22 +76,13 @@ def solve():
     str_input, patt = input().split()
 
     # Map each character to its first occurrence index in str
-    char_index = {}
-    for i, char in enumerate(str_input):
-      if char not in char_index:
-        char_index[char] = i
-
-    min_index = float('inf')
-    result_char = None
+    char_index = {char: i for i, char in enumerate(str_input) if char not in str_input[:i]}
 
     # Find character in patt with minimum index in str
-    for char in patt:
-      if char in char_index and char_index[char] < min_index:
-        min_index = char_index[char]
-        result_char = char
+    valid_chars = [(char_index[c], c) for c in patt if c in char_index]
 
-    if result_char:
-      print(result_char)
+    if valid_chars:
+      print(min(valid_chars)[1])
     else:
       print("No character present")
 

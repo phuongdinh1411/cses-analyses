@@ -71,13 +71,8 @@ def solve():
 
   for _ in range(d):
     # Read Agnes' route
-    agnes = []
     line = input().split()
-    for x in line:
-      val = int(x)
-      if val == 0:
-        break
-      agnes.append(val)
+    agnes = [int(x) for x in line if int(x) != 0]
 
     max_meetings = 0
 
@@ -89,16 +84,10 @@ def solve():
       if line[0] == '0':
         break
 
-      tom = []
-      for x in line:
-        val = int(x)
-        if val == 0:
-          break
-        tom.append(val)
+      tom = [int(x) for x in line if int(x) != 0]
 
       # Compute LCS
-      meetings = lcs(agnes, tom)
-      max_meetings = max(max_meetings, meetings)
+      max_meetings = max(max_meetings, lcs(agnes, tom))
 
     print(max_meetings)
 
