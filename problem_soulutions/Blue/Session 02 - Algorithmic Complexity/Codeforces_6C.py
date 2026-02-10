@@ -7,7 +7,7 @@
 # Bob starts from the right side. They eat simultaneously and continuously.
 # Each bar i takes t[i] seconds to eat. When they meet (or would overlap),
 # they stop. If they finish a chocolate at the same time and there's one
-# bar left, Alice gets it.
+# bar left, Alice gets it (Alice has priority on ties).
 #
 # Determine how many chocolates each person eats.
 #
@@ -17,28 +17,32 @@
 #
 # Output: Two integers - chocolates eaten by Alice and Bob
 #
-# Approach: Two-pointer simulation with time tracking
+# Approach: Two-pointer simulation with cumulative time tracking
+# - Track Alice's total time eating from left
+# - Track Bob's total time eating from right
+# - Alice gets the chocolate if her cumulative time <= Bob's (tie goes to Alice)
 
 n = int(input())
 t = list(map(int, input().split()))
 
-alice_eating_index = 0
-bob_eating_index = n - 1
-while True:
-    if alice_eating_index >= bob_eating_index - 1:
-        break
-    if t[alice_eating_index] > t[bob_eating_index]:
-        t[alice_eating_index] -= t[bob_eating_index]
-        bob_eating_index -= 1
-    elif t[alice_eating_index] < t[bob_eating_index]:
-        t[bob_eating_index] -= t[alice_eating_index]
-        alice_eating_index += 1
+alice_count = 0
+bob_count = 0
+alice_time = 0
+bob_time = 0
+
+left = 0
+right = n - 1
+
+while left <= right:
+    if alice_time <= bob_time:
+        # Alice eats the next chocolate (tie goes to Alice)
+        alice_time += t[left]
+        alice_count += 1
+        left += 1
     else:
-        if bob_eating_index - alice_eating_index == 2:
-            alice_eating_index += 1
-        else:
-            alice_eating_index += 1
-            bob_eating_index -= 1
+        # Bob eats the next chocolate
+        bob_time += t[right]
+        bob_count += 1
+        right -= 1
 
-
-print(alice_eating_index + 1, n - alice_eating_index - 1)
+print(alice_count, bob_count)

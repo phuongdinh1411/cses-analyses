@@ -23,86 +23,82 @@
 # Key Approach/Algorithm:
 # - Bellman-Ford algorithm for each unique source in queries
 # - Handle negative edge weights and detect negative cycles
-# - Cache results to avoid recomputing for same source
+# - Propagate negative cycle effects to all reachable nodes
 
 from collections import defaultdict
 
-INF = int(1e9)
+INF = float('inf')
 
 
-def bellman_ford(N, M, E, query):
-    dist = [INF for i in range(N + 1)]
-    flag = [False for i in range(N + 1)]
+def bellman_ford(n, edges, source):
+    dist = [INF] * n
+    affected_by_neg_cycle = [False] * n
 
-    dist[query] = 0
-    for i in range(0, N-1):
-        for j in range(M):
-            u = E[j][0]
-            v = E[j][1]
-            w = E[j][2]
+    dist[source] = 0
+
+    # Standard Bellman-Ford: N-1 iterations
+    for _ in range(n - 1):
+        for u, v, w in edges:
             if dist[u] != INF and dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
-    for j in range(M):
-        u = E[j][0]
-        v = E[j][1]
-        w = E[j][2]
-        if dist[u] != INF and dist[u] + w < dist[v]:
-            dist[v] = dist[u] + w
-            flag[v] = True
 
-    return [dist, flag]
+    # Fixed: Run N-1 more iterations to propagate negative cycle effects
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                affected_by_neg_cycle[v] = True
+            if affected_by_neg_cycle[u]:
+                affected_by_neg_cycle[v] = True
+
+    return dist, affected_by_neg_cycle
 
 
 def solution():
-    counter = 1
+    case_number = 1
     while True:
         N = int(input())
         if N == 0:
             break
 
-        E = []
-        monuments = ['' for i in range(N)]
-        for x in range(N):
+        edges = []
+        monuments = []
+        for i in range(N):
             line = input().split()
-            monuments[x] = line[0]
-            for i in range(1, N + 1):
-                if int(line[i]) != 0:
-                    if int(line[i]) < 0 or x != i - 1:
-                        E.append([x, i - 1, int(line[i])])
+            monuments.append(line[0])
+            for j in range(1, N + 1):
+                cost = int(line[j])
+                if cost != 0 or (cost < 0):
+                    # Add edge if cost is non-zero, or if it's negative (cost 0 to self is ok)
+                    if cost != 0 or i != j - 1:
+                        edges.append((i, j - 1, cost))
 
-        nq = int(input())
-        q = []
-        queries = defaultdict(list)
-        for x in range(nq):
-            pair = list(map(int, (input().split())))
-            q.append(pair)
-            queries[pair[0]].append(pair[1])
+        num_queries = int(input())
+        queries = []
+        unique_sources = set()
+        for _ in range(num_queries):
+            pair = list(map(int, input().split()))
+            queries.append(pair)
+            unique_sources.add(pair[0])
 
-        print('Case #' + str(counter) + ':')
+        print(f'Case #{case_number}:')
 
-        dists = [[] for x in range(N)]
-        neg_flags = [[] for x in range(N)]
+        # Compute Bellman-Ford for each unique source
+        results = {}
+        for source in unique_sources:
+            results[source] = bellman_ford(N, edges, source)
 
-        for query in queries.keys():
-            bf_result = bellman_ford(N, len(E), E, query)
-            dists[query] = bf_result[0]
-            neg_flags[query] = bf_result[1]
-
-        for qq in q:
-            dist = dists[qq[0]][qq[1]]
-            is_neg = neg_flags[qq[0]][qq[1]]
-            if (dist < 0 and qq[0] == qq[1]) or is_neg:
+        # Answer queries
+        for src, dst in queries:
+            dist, affected = results[src]
+            if affected[dst]:
                 print("NEGATIVE CYCLE")
+            elif dist[dst] == INF:
+                print(f"{monuments[src]}-{monuments[dst]} NOT REACHABLE")
             else:
-                if dist == INF:
-                    dist = "NOT REACHABLE"
-                start_city = monuments[qq[0]]
-                dest_city = monuments[qq[1]]
-                print("{}-{} {}".format(start_city, dest_city, dist))
+                print(f"{monuments[src]}-{monuments[dst]} {dist[dst]}")
 
-        counter += 1
+        case_number += 1
 
 
 solution()
-
-

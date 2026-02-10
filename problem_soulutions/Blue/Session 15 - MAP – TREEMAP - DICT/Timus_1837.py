@@ -18,37 +18,48 @@
 #   "name number" or "name undefined" if not connected to Isenbaev
 #
 # Approach:
-# - Use dictionary to store each person's proximity to Isenbaev
-# - For each team, propagate the minimum proximity value
+# - Build an adjacency list of teammates
+# - Use BFS from Isenbaev to find shortest paths to all reachable people
 # - Sort and output results alphabetically
 
-
-INF = int(1e9)
+from collections import deque, defaultdict
 
 
 def solution():
-    players = {'Isenbaev': 0}
     n_teams = int(input())
-    for i in range(n_teams):
-        players_line = input().split()
-        if players.get(players_line[0]) is None:
-            players[players_line[0]] = INF
-        min_proximity = players[players_line[0]]
-        min_index = 0
-        for j in range(1, len(players_line)):
-            if players.get(players_line[j]) is None:
-                players[players_line[j]] = INF
-            if min_proximity > players[players_line[j]]:
-                min_proximity = players[players_line[j]]
-                min_index = j
-        if min_proximity < INF:
-            for j in range(len(players_line)):
-                if j is not min_index and players[players_line[j]] > min_proximity:
-                    players[players_line[j]] = min_proximity + 1
 
-    for key in sorted(players.keys()):
-        proximity = str(players[key]) if players[key] is not INF else 'undefined'
-        print(key + ' ' + proximity)
+    # Build adjacency list of teammates
+    teammates = defaultdict(set)
+    all_players = set()
+
+    for _ in range(n_teams):
+        team = input().split()
+        all_players.update(team)
+        # Each pair of team members are teammates
+        for i in range(3):
+            for j in range(3):
+                if i != j:
+                    teammates[team[i]].add(team[j])
+
+    # BFS from Isenbaev to find shortest paths
+    distance = {}
+    if 'Isenbaev' in all_players:
+        distance['Isenbaev'] = 0
+        queue = deque(['Isenbaev'])
+
+        while queue:
+            person = queue.popleft()
+            for teammate in teammates[person]:
+                if teammate not in distance:
+                    distance[teammate] = distance[person] + 1
+                    queue.append(teammate)
+
+    # Output results in alphabetical order
+    for name in sorted(all_players):
+        if name in distance:
+            print(f'{name} {distance[name]}')
+        else:
+            print(f'{name} undefined')
 
 
 solution()

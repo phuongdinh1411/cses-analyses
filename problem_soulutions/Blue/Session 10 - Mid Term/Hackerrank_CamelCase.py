@@ -14,18 +14,24 @@
 # - A single integer: the number of words in the string
 #
 # Key Approach/Algorithm:
-# - Start with count = 1 (for the first word)
+# - Start with count = 1 (for the first word) if string is non-empty
 # - Iterate through each character
-# - If character is uppercase (ASCII < 97), increment counter
+# - If character is uppercase, increment counter
 # - Each uppercase letter marks the start of a new word
 
 
 def solution():
-
     s = input().strip()
+
+    # Fixed: Handle empty string edge case
+    if not s:
+        print(0)
+        return
+
     counter = 1
     for c in s:
-        if ord(c) < 97:
+        # Fixed: Use isupper() instead of ASCII comparison to properly detect uppercase
+        if c.isupper():
             counter += 1
 
     print(counter)

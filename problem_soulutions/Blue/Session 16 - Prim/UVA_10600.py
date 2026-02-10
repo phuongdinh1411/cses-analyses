@@ -19,79 +19,82 @@
 # Approach:
 # - First, find the MST using Prim's algorithm (track the path/edges used)
 # - For second-best MST: try removing each MST edge one at a time
-# - Recompute MST without that edge, find minimum among all such trees
-# - Time complexity: O(V * E log V)
+# - Recompute MST without that edge, verify the graph remains connected
+# - Find minimum among all valid such trees
 
 
 import heapq
 
 
-class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+def prim(n, graph):
+    """Run Prim's algorithm, return (parent array, MST cost, connected count)."""
+    dist = [-1] * (n + 1)
+    parent = [-1] * (n + 1)
+    visited = [False] * (n + 1)
 
-    def __lt__(self, other):
-        return self.dist < other.dist
-
-
-def prim(N, graph):
-
-    dist = [-1 for x in range(N+1)]
-    path = [-1 for x in range(N + 1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
     dist[1] = 0
+    pqueue = [(0, 1)]
+    connected = 0
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
+    while pqueue:
+        d, u = heapq.heappop(pqueue)
+
+        if visited[u]:
+            continue
         visited[u] = True
-        for i in range(1, N + 1):
-            v = i
-            w = graph[u][i]
-            if not visited[v] and w != -1 and (w < dist[v] or dist[v] == -1):
+        connected += 1
+
+        for v in range(1, n + 1):
+            w = graph[u][v]
+            if w != -1 and not visited[v] and (dist[v] == -1 or w < dist[v]):
                 dist[v] = w
-                path[v] = u
-                heapq.heappush(pqueue, Node(v, w))
+                parent[v] = u
+                heapq.heappush(pqueue, (w, v))
 
-    mst_cost = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            mst_cost += dist[i]
-
-    return path, mst_cost
+    mst_cost = sum(d for d in dist[1:n+1] if d != -1)
+    return parent, mst_cost, connected
 
 
 def solution():
-
     T = int(input())
-    for i in range(T):
+
+    for _ in range(T):
         N, M = map(int, input().strip().split())
 
-        graph = [[-1 for j in range(N + 1)] for i in range(N + 1)]
-        for i in range(M):
+        graph = [[-1] * (N + 1) for _ in range(N + 1)]
+        for _ in range(M):
             A, B, C = map(int, input().strip().split())
-            graph[A][B] = C
-            graph[B][A] = C
+            # Handle multiple edges between same nodes - keep minimum
+            if graph[A][B] == -1 or C < graph[A][B]:
+                graph[A][B] = C
+                graph[B][A] = C
 
-        mst, mst_cost = prim(N, graph)
+        # Find first MST
+        mst_parent, mst_cost, _ = prim(N, graph)
 
-        second_mst_cost = 1e9
-        for i in range(len(mst)):
-            if mst[i] != -1:
-                tmp_weight = graph[i][mst[i]]
-                graph[i][mst[i]] = -1
-                graph[mst[i]][i] = -1
-                current_mst, current_mst_cost = prim(N, graph)
-                if current_mst_cost < second_mst_cost:
-                    second_mst_cost = current_mst_cost
-                graph[i][mst[i]] = tmp_weight
-                graph[mst[i]][i] = tmp_weight
+        # Find second-best MST by removing each MST edge
+        second_mst_cost = float('inf')
+
+        for i in range(1, N + 1):
+            if mst_parent[i] != -1:
+                # Temporarily remove this MST edge
+                u, v = i, mst_parent[i]
+                tmp_weight = graph[u][v]
+                graph[u][v] = -1
+                graph[v][u] = -1
+
+                # Recompute MST
+                _, new_cost, connected = prim(N, graph)
+
+                # Fixed: Only consider if graph is still connected (all N nodes reached)
+                if connected == N and new_cost < second_mst_cost:
+                    second_mst_cost = new_cost
+
+                # Restore edge
+                graph[u][v] = tmp_weight
+                graph[v][u] = tmp_weight
 
         print(mst_cost, second_mst_cost)
 
 
 solution()
-

@@ -23,28 +23,33 @@
 # Approach: BFS flood fill from prince's position
 
 
-import queue
+from collections import deque
 
 
-def calculate_possible_cells(wi, hi, matrix, prince_position):
-    total_possible_cells = 1
+def calculate_possible_cells(width, height, matrix, prince_position):
     dx = [1, 0, -1, 0]
     dy = [0, -1, 0, 1]
 
-    visited = [[False for i in range(wi)] for j in range(hi)]
-    q = queue.Queue()
-    q.put(prince_position)
+    visited = [[False for _ in range(width)] for _ in range(height)]
+    q = deque()
+    q.append(prince_position)
 
-    while not q.empty():
-        checking_node = q.get()
+    # Fixed: Mark starting position as visited
+    visited[prince_position[0]][prince_position[1]] = True
+    total_possible_cells = 1
+
+    while q:
+        checking_node = q.popleft()
         for i in range(4):
             neighbor_x = checking_node[0] + dx[i]
             neighbor_y = checking_node[1] + dy[i]
-            if neighbor_x >= 0 and neighbor_y >= 0 and neighbor_x < hi and neighbor_y < wi and matrix[neighbor_x][neighbor_y] == '.':
-                if not visited[neighbor_x][neighbor_y]:
-                    q.put([neighbor_x, neighbor_y])
-                    visited[neighbor_x][neighbor_y] = True
-                    total_possible_cells += 1
+            if (0 <= neighbor_x < height and
+                0 <= neighbor_y < width and
+                matrix[neighbor_x][neighbor_y] in '.@' and
+                not visited[neighbor_x][neighbor_y]):
+                q.append([neighbor_x, neighbor_y])
+                visited[neighbor_x][neighbor_y] = True
+                total_possible_cells += 1
 
     return total_possible_cells
 
@@ -58,9 +63,8 @@ def solution():
         prince_position = []
         for j in range(Hi):
             new_line = input().strip()
-            if new_line.find('@') >= 0:
-                prince_position.append(j)
-                prince_position.append(new_line.find('@'))
+            if '@' in new_line:
+                prince_position = [j, new_line.find('@')]
             matrix.append(new_line)
         results.append('Case {0}: {1}'.format(i + 1, calculate_possible_cells(Wi, Hi, matrix, prince_position)))
 

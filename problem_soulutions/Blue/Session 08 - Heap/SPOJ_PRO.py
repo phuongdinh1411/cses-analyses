@@ -22,41 +22,44 @@
 import heapq
 
 
-MAX = 1000005
-
-
 def solution():
-
     n = int(input())
     sum_prizes = 0
-    max_heap = []
+    max_heap = []  # Store negated values for max-heap behavior
     min_heap = []
 
-    deleted_max = [0 for i in range(MAX)]
-    deleted_min = [0 for i in range(MAX)]
+    # Lazy deletion tracking using dictionaries for efficiency
+    deleted_from_max = {}  # Track values deleted via min_heap operations
+    deleted_from_min = {}  # Track values deleted via max_heap operations
 
-    for i in range(n):
+    for _ in range(n):
         line = list(map(int, input().strip().split()))
-        num_rc = line[0]
+        num_receipts = line[0]
         receipts = line[1:]
-        for j in range(num_rc):
-            heapq.heappush(min_heap, receipts[j])
-            heapq.heappush(max_heap, -receipts[j])
+
+        for receipt in receipts:
+            heapq.heappush(min_heap, receipt)
+            heapq.heappush(max_heap, -receipt)
 
         if len(max_heap) >= 2:
-            from_max = heapq.heappop(max_heap)
-            from_min = heapq.heappop(min_heap)
-            while deleted_min[-from_max] > 0:
-                deleted_min[-from_max] -= 1
-                from_max = heapq.heappop(max_heap)
-            while deleted_max[-from_min] > 0:
-                deleted_max[-from_min] -= 1
-                from_min = heapq.heappop(min_heap)
+            # Get maximum value (remove lazy-deleted entries first)
+            while max_heap and -max_heap[0] in deleted_from_max and deleted_from_max[-max_heap[0]] > 0:
+                val = -heapq.heappop(max_heap)
+                deleted_from_max[val] -= 1
 
-            deleted_max[from_max] += 1
-            deleted_min[from_min] += 1
+            # Get minimum value (remove lazy-deleted entries first)
+            while min_heap and min_heap[0] in deleted_from_min and deleted_from_min[min_heap[0]] > 0:
+                val = heapq.heappop(min_heap)
+                deleted_from_min[val] -= 1
 
-            sum_prizes -= (from_max + from_min)
+            max_val = -heapq.heappop(max_heap)
+            min_val = heapq.heappop(min_heap)
+
+            # Mark these values as deleted in the other heap
+            deleted_from_min[max_val] = deleted_from_min.get(max_val, 0) + 1
+            deleted_from_max[min_val] = deleted_from_max.get(min_val, 0) + 1
+
+            sum_prizes += max_val - min_val
 
     print(sum_prizes)
 

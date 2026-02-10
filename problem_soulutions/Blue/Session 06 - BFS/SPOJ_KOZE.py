@@ -25,58 +25,62 @@
 # Approach: BFS to find connected components, check if each touches boundary
 
 
-import queue
+from collections import deque
 
 
 def calc_survive(N, M, matrix):
-    visited = [[False for i in range(M)] for j in range(N)]
+    visited = [[False for _ in range(M)] for _ in range(N)]
 
     dx = [1, 0, -1, 0]
     dy = [0, -1, 0, 1]
 
-    wolfs_counter = 0
-    sheeps_counter = 0
+    total_wolves = 0
+    total_sheep = 0
 
-    for row_counter in range(N):
-        for col_counter in range(M):
-            if (matrix[row_counter][col_counter] == '.' or matrix[row_counter][col_counter] == 'k' or
-                        matrix[row_counter][col_counter] == 'v') and not visited[row_counter][col_counter]:
-                visited[row_counter][col_counter] = True
-                q = queue.Queue()
-                q.put([row_counter, col_counter])
-                sheeps, wolfs = 0, 0
-                if matrix[row_counter][col_counter] == 'k':
-                    sheeps = 1
-                if matrix[row_counter][col_counter] == 'v':
-                    wolfs = 1
-                belong_to_sector = True
-                while not q.empty():
-                    checking_node = q.get()
-                    for l in range(4):
-                        neighbor_x = checking_node[0] + dx[l]
-                        neighbor_y = checking_node[1] + dy[l]
-                        if 0 <= neighbor_x < N and 0 <= neighbor_y < M and (
-                                            matrix[neighbor_x][neighbor_y] == '.' or matrix[neighbor_x][
-                                        neighbor_y] == 'k' or
-                                        matrix[neighbor_x][neighbor_y] == 'v') and not visited[neighbor_x][neighbor_y]:
-                            q.put([neighbor_x, neighbor_y])
-                            visited[neighbor_x][neighbor_y] = True
-                            if matrix[neighbor_x][neighbor_y] == 'k':
-                                sheeps += 1
-                            if matrix[neighbor_x][neighbor_y] == 'v':
-                                wolfs += 1
-                            if neighbor_y == 0 or neighbor_x == 0 or neighbor_y == M - 1 or neighbor_x == N - 1:
-                                belong_to_sector = False
-                if belong_to_sector:
-                    if sheeps > wolfs:
-                        sheeps_counter += sheeps
+    for row in range(N):
+        for col in range(M):
+            cell = matrix[row][col]
+            if cell in '.kv' and not visited[row][col]:
+                visited[row][col] = True
+                q = deque()
+                q.append([row, col])
+
+                sheep_count = 1 if cell == 'k' else 0
+                wolf_count = 1 if cell == 'v' else 0
+
+                # Fixed: Check if starting cell is on boundary
+                is_fenced = not (row == 0 or row == N - 1 or col == 0 or col == M - 1)
+
+                while q:
+                    curr = q.popleft()
+                    for i in range(4):
+                        nx = curr[0] + dx[i]
+                        ny = curr[1] + dy[i]
+                        if (0 <= nx < N and 0 <= ny < M and
+                            matrix[nx][ny] in '.kv' and
+                            not visited[nx][ny]):
+                            q.append([nx, ny])
+                            visited[nx][ny] = True
+                            if matrix[nx][ny] == 'k':
+                                sheep_count += 1
+                            elif matrix[nx][ny] == 'v':
+                                wolf_count += 1
+                            # Check if this cell is on boundary
+                            if nx == 0 or nx == N - 1 or ny == 0 or ny == M - 1:
+                                is_fenced = False
+
+                if is_fenced:
+                    # In a fenced area: only the majority survives
+                    if sheep_count > wolf_count:
+                        total_sheep += sheep_count
                     else:
-                        wolfs_counter += wolfs
+                        total_wolves += wolf_count
                 else:
-                    sheeps_counter += sheeps
-                    wolfs_counter += wolfs
+                    # Not fenced: both survive
+                    total_sheep += sheep_count
+                    total_wolves += wolf_count
 
-    return [sheeps_counter, wolfs_counter]
+    return [total_sheep, total_wolves]
 
 
 def solution():

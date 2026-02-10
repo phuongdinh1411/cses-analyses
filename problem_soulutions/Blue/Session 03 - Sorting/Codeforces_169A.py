@@ -9,7 +9,10 @@
 # where a + b = n.
 #
 # The "gap" is the difference between the easiest chore Petya does and the
-# hardest chore Vasya does. After sorting, this is h[b] - h[b-1].
+# hardest chore Vasya does. After sorting in ascending order:
+# - Vasya does chores at indices 0 to a-1
+# - Petya does chores at indices a to n-1
+# - Gap = h[a] - h[a-1]
 #
 # Input:
 # - Line 1: n a b (total chores, Vasya's count, Petya's count)
@@ -17,11 +20,14 @@
 #
 # Output: The gap between Petya's easiest and Vasya's hardest chore
 #
-# Approach: Sort and find difference between position b and b-1
+# Approach: Sort and find difference between position a and a-1
 
 n, a, b = map(int, input().split())
 h = list(map(int, input().split()))
 
 h.sort()
 
-print(h[b] - h[b - 1])
+# Vasya takes indices 0 to a-1 (a easiest chores)
+# Petya takes indices a to n-1 (b hardest chores)
+# Gap is h[a] - h[a-1]
+print(h[a] - h[a - 1])

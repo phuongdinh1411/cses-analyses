@@ -1,34 +1,33 @@
 # Problem from SPOJ
 # https://www.spoj.com/problems/ONP/
-
+#
 # ONP - Transform the Expression
-# #stack
-# Transform the algebraic expression with brackets into RPN form (Reverse Polish Notation). Two-argument operators: +, -, *, /, ^ (priority from the lowest to the highest), brackets ( ). Operands: only letters: a,b,...,z. Assume that there is only one RPN form (no expressions like a*b*c).
 #
-# Input
-# t [the number of expressions <= 100]
-# expression [length <= 400]
-# [other expressions]
-# Text grouped in [ ] does not appear in the input file.
+# Transform algebraic expression with brackets into RPN form (Reverse Polish Notation).
+# Operators: +, -, *, /, ^ (priority from lowest to highest)
+# Brackets: ( )
+# Operands: only letters a-z
 #
-# Output
-# The expressions in RPN form, one per line.
-# Example
 # Input:
-# 3
-# (a+(b*c))
-# ((a+b)*(z+x))
-# ((a+t)*((b+(a+c))^(c+d)))
+# - t: number of expressions (<= 100)
+# - t lines of expressions (length <= 400)
 #
-# Output:
-# abc*+
-# ab+zx+*
-# at+bac++cd+^*
+# Output: Expressions in RPN form, one per line
+#
+# Example:
+# Input: (a+(b*c))
+# Output: abc*+
+#
+# Approach: Shunting-yard algorithm
+# - Operands go directly to output
+# - Operators go to stack, pop higher/equal priority operators first
+# - '(' goes to stack
+# - ')' pops until '(' is found
 
 n = int(input())
 results = []
 
-operator_list = {
+operator_priority = {
     '+': 1,
     '-': 2,
     '*': 3,
@@ -38,30 +37,36 @@ operator_list = {
 
 for i in range(n):
     cur_exp = input()
-    cur_length = len(cur_exp)
     cur_output = ''
-    temp_stack = []
-    for j in range(cur_length):
-        cur_elem = cur_exp[j]
-        cur_prio = operator_list.get(cur_elem)
-        if cur_prio is None and cur_elem is not ')' and cur_elem is not '(': # This is a number
-            cur_output += cur_elem
-        elif cur_prio is not None: # This is an operator
-            if len(temp_stack) > 0 and operator_list.get(temp_stack[-1]) is not None and operator_list.get(temp_stack[-1]) >= cur_prio:
-                cur_output += temp_stack.pop()
-            temp_stack.append(cur_elem)
-        elif cur_elem is '(':
-            temp_stack.append(cur_elem)
-        else:
-            while len(temp_stack) > 0:
-                fr_stack = temp_stack.pop()
-                if fr_stack is '(':
-                    break
-                cur_output += fr_stack
+    operator_stack = []
 
-    while len(temp_stack) > 0:
-        fr_stack = temp_stack.pop()
-        cur_output += fr_stack
+    for char in cur_exp:
+        char_priority = operator_priority.get(char)
+
+        # Fixed: Use == and != instead of 'is' and 'is not' for string comparison
+        if char_priority is None and char != ')' and char != '(':
+            # This is an operand (letter)
+            cur_output += char
+        elif char_priority is not None:
+            # This is an operator
+            while (operator_stack and
+                   operator_priority.get(operator_stack[-1]) is not None and
+                   operator_priority.get(operator_stack[-1]) >= char_priority):
+                cur_output += operator_stack.pop()
+            operator_stack.append(char)
+        elif char == '(':
+            operator_stack.append(char)
+        else:  # char == ')'
+            while operator_stack:
+                top = operator_stack.pop()
+                if top == '(':
+                    break
+                cur_output += top
+
+    # Pop remaining operators
+    while operator_stack:
+        top = operator_stack.pop()
+        cur_output += top
 
     results.append(cur_output)
 

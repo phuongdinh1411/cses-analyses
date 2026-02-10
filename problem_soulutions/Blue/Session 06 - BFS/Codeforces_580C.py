@@ -21,49 +21,64 @@
 # Approach: BFS/DFS from root, tracking consecutive cats on each path
 
 
-import queue
+from collections import deque
 
 
-def bfs_count_possible_leaves(n, m, a, graph):
+def bfs_count_possible_leaves(n, m, has_cat, graph):
+    # Fixed: Handle edge case where n=1 (single node is both root and leaf)
+    if n == 1:
+        # Single node: it's a restaurant if it doesn't exceed cat limit
+        return 1 if has_cat[0] <= m else 0
 
-    consecutive_cats = [-1 for i in range(n+9)]
+    consecutive_cats = [-1] * (n + 1)
+    consecutive_cats[1] = has_cat[0]  # has_cat is 0-indexed
+
+    # If root already exceeds limit, no restaurants reachable
+    if consecutive_cats[1] > m:
+        return 0
 
     total_restaurants = 0
 
-    consecutive_cats[1] = a[0]
+    q = deque()
+    q.append(1)
 
-    q = queue.Queue()
-    q.put(1)
+    while q:
+        u = q.popleft()
 
-    while not q.empty():
-        u = q.get()
-        if len(graph[u]) == 1 and u != 1:
+        # Count neighbors (excluding parent via consecutive_cats check)
+        children_count = sum(1 for v in graph[u] if consecutive_cats[v] == -1)
+
+        # A leaf is a node with no unvisited children (and not the root if it has edges)
+        if children_count == 0 and u != 1:
+            total_restaurants += 1
+        elif children_count == 0 and u == 1 and len(graph[1]) == 0:
+            # Root with no edges (shouldn't happen for n > 1)
             total_restaurants += 1
         else:
             for v in graph[u]:
                 if consecutive_cats[v] == -1:
-                    if a[v-1] == 0:
+                    if has_cat[v - 1] == 0:
                         consecutive_cats[v] = 0
                     else:
                         consecutive_cats[v] = consecutive_cats[u] + 1
+
                     if consecutive_cats[v] <= m:
-                        q.put(v)
+                        q.append(v)
+
     return total_restaurants
 
 
 def solution():
     n, m = map(int, input().split())
-    a = list(map(int, input().split()))
-    graph = [[] for i in range(n + 1)]
-    root = -1
-    for i in range(1, n):
+    has_cat = list(map(int, input().split()))
+    graph = [[] for _ in range(n + 1)]
+
+    for _ in range(n - 1):
         s, e = map(int, input().split())
         graph[s].append(e)
         graph[e].append(s)
 
-    print(bfs_count_possible_leaves(n, m, a, graph))
+    print(bfs_count_possible_leaves(n, m, has_cat, graph))
 
 
 solution()
-
-

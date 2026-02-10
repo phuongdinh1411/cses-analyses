@@ -18,82 +18,76 @@
 # - Minimum total cost to connect all nodes
 #
 # Approach:
-# - Use Prim's algorithm with priority queue to find MST
-# - Sort MST edge weights and free connection costs
+# - Use Prim's algorithm to find MST and collect edge weights
+# - Sort MST edge weights in descending order
+# - Sort free connection costs in ascending order
 # - Greedily replace expensive MST edges with cheaper free connections
 
 
 import heapq
 
 
-class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+def prim(n, graph):
+    """Run Prim's algorithm, return list of MST edge weights (excluding source)."""
+    dist = [-1] * (n + 1)
+    visited = [False] * (n + 1)
 
-    def __lt__(self, other):
-        return self.dist < other.dist
-
-
-def prim(N, graph, C):
-
-    dist = [-1 for x in range(N+1)]
-    visited = [False for i in range(N + 1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(1, 0))
     dist[1] = 0
+    pqueue = [(0, 1)]
+    mst_edges = []
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
+    while pqueue:
+        d, u = heapq.heappop(pqueue)
+
+        if visited[u]:
+            continue
         visited[u] = True
-        for neighbor in graph[u]:
-            v = neighbor.id
-            w = neighbor.dist
-            if not visited[v] and (w < dist[v] or dist[v] == -1):
+
+        # Record edge weight (except for source node)
+        if d > 0:
+            mst_edges.append(d)
+
+        for v, w in graph[u]:
+            if not visited[v] and (dist[v] == -1 or w < dist[v]):
                 dist[v] = w
-                heapq.heappush(pqueue, Node(v, w))
+                heapq.heappush(pqueue, (w, v))
 
-    dist.sort()
-    C.sort()
-
-    for i in range(len(C)):
-        if i <= N + 1:
-            if dist[-i - 1] > C[i]:
-                dist[-i - 1] = C[i]
-            else:
-                break
-        else:
-            break
-
-    result = 0
-    for i in range(1, N + 1):
-        if dist[i] != -1:
-            result += dist[i]
-
-    return result
+    return mst_edges
 
 
 def solution():
-
     N, M = map(int, input().split())
 
-    graph = [[] for i in range(N + 1)]
-    for i in range(M):
+    graph = [[] for _ in range(N + 1)]
+    for _ in range(M):
         A, B, W = map(int, input().split())
-
-        graph[A].append(Node(B, W))
-        graph[B].append(Node(A, W))
+        graph[A].append((B, W))
+        graph[B].append((A, W))
 
     Q = int(input())
-    C = []
+    free_costs = []
     if Q > 0:
-        C = list(map(int, input().strip().split()))
+        free_costs = list(map(int, input().strip().split()))
 
-    result = prim(N, graph, C)
+    # Get MST edge weights
+    mst_edges = prim(N, graph)
 
-    print(result)
+    # Sort MST edges descending (most expensive first)
+    mst_edges.sort(reverse=True)
+
+    # Sort free costs ascending (cheapest first)
+    free_costs.sort()
+
+    # Fixed: Greedily replace expensive MST edges with cheaper free connections
+    # Only replace if free connection is actually cheaper
+    for i in range(min(len(free_costs), len(mst_edges))):
+        if free_costs[i] < mst_edges[i]:
+            mst_edges[i] = free_costs[i]
+        else:
+            # Free connections are sorted, so no point continuing
+            break
+
+    print(sum(mst_edges))
 
 
 solution()
-

@@ -21,42 +21,57 @@
 # Key Approach/Algorithm:
 # - Build a graph where nodes are dictionary words
 # - Connect two words with an edge if they differ by exactly one character
-# - Use Dijkstra's algorithm (or BFS) to find shortest path between query words
-
-import heapq
+# - Use BFS to find shortest path between query words
 
 
-class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
-
-    def __lt__(self, other):
-        return self.dist < other.dist
+from collections import deque
 
 
-def dijkstra(n, S, T, graph):
+def bfs(start, end, graph, word_to_idx):
+    """BFS to find shortest path from start word to end word."""
+    if start not in word_to_idx or end not in word_to_idx:
+        return -1
 
-    dist = [-1 for x in range(n+1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(S, 0))
-    dist[S] = 0
+    start_idx = word_to_idx[start]
+    end_idx = word_to_idx[end]
 
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        w = top.dist
-        for neighbor in graph[u]:
-            if w + neighbor.dist < dist[neighbor.id] or dist[neighbor.id] == -1:
-                dist[neighbor.id] = w + neighbor.dist
-                heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
+    if start_idx == end_idx:
+        return 0
 
-    return dist[T]
+    n = len(graph)
+    dist = [-1] * n
+    dist[start_idx] = 0
+
+    queue = deque([start_idx])
+    while queue:
+        u = queue.popleft()
+        for v in graph[u]:
+            if dist[v] == -1:
+                dist[v] = dist[u] + 1
+                if v == end_idx:
+                    return dist[v]
+                queue.append(v)
+
+    return -1
+
+
+def differs_by_one(word1, word2):
+    """Check if two words differ by exactly one character."""
+    if len(word1) != len(word2):
+        return False
+    diff = 0
+    for c1, c2 in zip(word1, word2):
+        # Fixed: Use != instead of 'is not' for string comparison
+        if c1 != c2:
+            diff += 1
+            if diff > 1:
+                return False
+    return diff == 1
 
 
 def solution():
-
     N = int(input().strip())
+
     for tc in range(N):
         dictionary = []
         while True:
@@ -71,42 +86,30 @@ def solution():
         while True:
             try:
                 new_query = input().strip()
-            except Exception as e:
+            except:
                 break
             if not new_query:
                 break
-            queries.append(list(map(str, new_query.split())))
+            queries.append(new_query.split())
 
+        # Build word to index mapping
+        word_to_idx = {word: i for i, word in enumerate(dictionary)}
         n_words = len(dictionary)
-        n_queries = len(queries)
-        graph = [[] for i in range(n_words)]
+
+        # Build graph: connect words that differ by one character
+        graph = [[] for _ in range(n_words)]
         for i in range(n_words):
-            for j in range(i, n_words):
-                if len(dictionary[i]) == len(dictionary[j]):
-                    diff = 0
-                    w_length = len(dictionary[i])
-                    for c in range(w_length):
-                        if dictionary[i][c] is not dictionary[j][c]:
-                            diff += 1
-                        if diff > 1:
-                            break
+            for j in range(i + 1, n_words):
+                if differs_by_one(dictionary[i], dictionary[j]):
+                    graph[i].append(j)
+                    graph[j].append(i)
 
-                    if diff == 1:
-                        graph[i].append(Node(j, 1))
-                        graph[j].append(Node(i, 1))
+        # Process queries
+        for query in queries:
+            start_word, end_word = query[0], query[1]
+            result = bfs(start_word, end_word, graph, word_to_idx)
+            print(start_word, end_word, result)
 
-        for q in range(n_queries):
-            start = -1
-            end = -1
-            for w in range(n_words):
-                if start >= 0 and end >= 0:
-                    break
-                if queries[q][0] == dictionary[w]:
-                    start = w
-                if queries[q][1] == dictionary[w]:
-                    end = w
-
-            print(queries[q][0], queries[q][1], dijkstra(n_words, start, end, graph), sep=' ')
         if tc < N - 1:
             print()
 

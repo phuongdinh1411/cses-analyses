@@ -21,50 +21,42 @@
 #           multiplications by magic numbers
 
 
-import queue
+from collections import deque
 
 
-def find_minimum_time(key_value, lock_value, keys):
-
+def find_minimum_time(key_value, lock_value, magic_numbers):
     if key_value == lock_value:
         return 0
 
-    visited = [False for i in range(100000)]
-    path = [-1 for i in range(100000)]
-    q = queue.Queue()
-    q.put(key_value)
+    visited = [False] * 100000
+    distance = [-1] * 100000
 
-    while not q.empty():
-        u = q.get()
-        for key in keys:
-            new_key = (key * u) % 100000
+    q = deque()
+    q.append(key_value)
+    # Fixed: Mark starting state as visited
+    visited[key_value] = True
+    distance[key_value] = 0
+
+    while q:
+        u = q.popleft()
+        for magic in magic_numbers:
+            new_key = (magic * u) % 100000
             if not visited[new_key]:
                 visited[new_key] = True
-                q.put(new_key)
-                path[new_key] = u
-                if lock_value == new_key:
-                    return get_time(key_value, lock_value, path)
+                distance[new_key] = distance[u] + 1
+                if new_key == lock_value:
+                    return distance[new_key]
+                q.append(new_key)
 
     return -1
-
-
-def get_time(key_value, lock_value, path):
-    total_time = 0
-    current_node = lock_value
-    while True:
-        if key_value == path[current_node]:
-            return total_time + 1
-        else:
-            total_time += 1
-            current_node = path[current_node]
 
 
 def solution():
     key_value, lock_value = map(int, input().split())
     N = int(input())
-    keys = list(map(int, input().split()))
+    magic_numbers = list(map(int, input().split()))
 
-    print(find_minimum_time(key_value, lock_value, keys))
+    print(find_minimum_time(key_value, lock_value, magic_numbers))
 
 
 solution()

@@ -15,42 +15,43 @@
 # Output:
 # - For each test case: each tree species followed by its percentage (4 decimal places)
 # - Species listed in alphabetical order
+# - Blank line between test cases
 #
 # Approach:
 # - Use dictionary to count occurrences of each tree species
 # - Calculate percentage = (count / total) * 100
 # - Sort keys alphabetically for output
-
-# import sys
-
-
-# sys.stdin = open("file.txt", "r")
+# - Fixed: Use format specifier to ensure exactly 4 decimal places
 
 
 def solution():
     n = int(input())
-    input()
+    input()  # Consume blank line after number of cases
 
-    for i in range(n):
+    for case in range(n):
         population = {}
         total = 0
+
         while True:
             try:
-                new_line = input()
-                if not new_line:
+                tree_name = input()
+                if not tree_name:
                     break
-            except:
+            except EOFError:
                 break
-            if population.get(new_line) is None:
-                population[new_line] = 1
-            else:
-                population[new_line] += 1
 
+            population[tree_name] = population.get(tree_name, 0) + 1
             total += 1
-        sorted_list = sorted(population.keys())
 
-        for tree in sorted_list:
-            print(tree + ' ' + str(round(population.get(tree) * 100 / total, 4)))
+        # Output results in alphabetical order
+        for tree in sorted(population.keys()):
+            percentage = population[tree] * 100 / total
+            # Fixed: Use format specifier to guarantee 4 decimal places
+            print(f'{tree} {percentage:.4f}')
+
+        # Fixed: Print blank line between test cases (but not after the last one)
+        if case < n - 1:
+            print()
 
 
 solution()

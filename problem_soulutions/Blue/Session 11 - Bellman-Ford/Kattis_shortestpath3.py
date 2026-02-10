@@ -22,62 +22,56 @@
 # Key Approach/Algorithm:
 # - Bellman-Ford algorithm for single-source shortest path with negative weights
 # - Run N-1 iterations for standard relaxation
-# - Run one more iteration to detect nodes affected by negative cycles
-# - Nodes that can still be relaxed are affected by negative cycles
+# - Run N-1 MORE iterations to propagate negative cycle effects to all reachable nodes
 
 import sys
 
 
-class input_tokenizer:
-    __tokens = None
-
-    def has_next(self):
-        return self.__tokens != [] and self.__tokens != None
+class InputTokenizer:
+    def __init__(self):
+        self._tokens = sys.stdin.read().split()[::-1]
 
     def next(self):
-        token = self.__tokens[-1]
-        self.__tokens.pop()
-        return token
-
-    def __init__(self):
-        self.__tokens = sys.stdin.read().split()[::-1]
+        return self._tokens.pop()
 
 
-inp = input_tokenizer()
+inp = InputTokenizer()
+
+INF = float('inf')
 
 
-INF = int(1e9)
+def bellman_ford(n, edges, source, queries):
+    dist = [INF] * n
+    affected_by_neg_cycle = [False] * n
 
+    # Fixed: Use the actual source from input, not hardcoded 0
+    dist[source] = 0
 
-def bellman_ford(N, M, E, q):
-    dist = [INF for i in range(N + 1)]
-    flag = [False for i in range(N + 1)]
-
-    dist[0] = 0
-    for i in range(1, N):
-        for j in range(M):
-            u = E[j][0]
-            v = E[j][1]
-            w = E[j][2]
+    # Standard Bellman-Ford: N-1 iterations
+    for _ in range(n - 1):
+        for u, v, w in edges:
             if dist[u] != INF and dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
 
-    # for i in range(N):
-    for j in range(M):
-        u = E[j][0]
-        v = E[j][1]
-        w = E[j][2]
-        if dist[u] != INF and dist[u] + w < dist[v]:
-            dist[v] = dist[u] + w
-            flag[v] = True
+    # Fixed: Run N-1 more iterations to propagate negative cycle effects
+    # Any node that can still be relaxed is affected by a negative cycle,
+    # as is any node reachable from such a node
+    for _ in range(n - 1):
+        for u, v, w in edges:
+            if dist[u] != INF and dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                affected_by_neg_cycle[v] = True
+            if affected_by_neg_cycle[u]:
+                affected_by_neg_cycle[v] = True
 
-    for cq in q:
-        if flag[cq]:
+    # Answer queries
+    for q in queries:
+        if affected_by_neg_cycle[q]:
             print('-Infinity')
-        elif dist[cq] == INF:
+        elif dist[q] == INF:
             print('Impossible')
         else:
-            print(dist[cq])
+            print(dist[q])
 
 
 def solution():
@@ -87,22 +81,21 @@ def solution():
             break
         M = int(inp.next())
         Q = int(inp.next())
-        S = int(inp.next())
+        S = int(inp.next())  # Source node
 
-        E = []
-        for m in range(M):
-            i = int(inp.next())
-            j = int(inp.next())
+        edges = []
+        for _ in range(M):
+            u = int(inp.next())
+            v = int(inp.next())
             w = int(inp.next())
-            E.append([i, j, w])
-        q = []
-        for x in range(Q):
-            q.append(int(inp.next()))
+            edges.append((u, v, w))
 
-        bellman_ford(N, M, E, q)
+        queries = []
+        for _ in range(Q):
+            queries.append(int(inp.next()))
+
+        bellman_ford(N, edges, S, queries)
         print()
 
 
 solution()
-
-

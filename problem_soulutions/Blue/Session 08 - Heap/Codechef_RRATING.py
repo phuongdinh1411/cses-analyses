@@ -17,40 +17,49 @@
 #
 # Output: For each query (type 2), print the answer
 #
-# Approach: Use two heaps - one for top 1/3 ratings (min-heap), another for
-#           candidates (max-heap). Keep balance as reviews are added.
+# Approach: Use two heaps - one for top ceil(n/3) ratings (min-heap), another
+#           for candidates (max-heap). Keep balance as reviews are added.
 
 
 import heapq
 
 
 def solution():
-    top_reviews = []
-    candidate_reviews = []
+    top_reviews = []      # Min-heap: stores top ceil(n/3) ratings
+    candidate_reviews = []  # Max-heap (negated): stores remaining ratings
     N = int(input())
     results = []
-    num_of_reviews = 0
-    for i in range(N):
+    num_reviews = 0
+
+    for _ in range(N):
         command = input().strip()
         if command.startswith('1'):
-            num_of_reviews += 1
+            num_reviews += 1
             new_review = int(command.split()[1])
-            if len(top_reviews) < num_of_reviews // 3:
-                if len(candidate_reviews) < 0 or new_review > -candidate_reviews[0]:
+
+            # Fixed: Use ceiling division for target size
+            # ceil(n/3) = (n + 2) // 3
+            target_top_size = (num_reviews + 2) // 3
+
+            if len(top_reviews) < target_top_size:
+                # Need to add to top_reviews
+                if not candidate_reviews or new_review >= -candidate_reviews[0]:
                     heapq.heappush(top_reviews, new_review)
                 else:
-                    heapq.heappush(top_reviews, -candidate_reviews[0])
-                    heapq.heappop(candidate_reviews)
+                    # Move largest from candidates to top, add new to candidates
+                    heapq.heappush(top_reviews, -heapq.heappop(candidate_reviews))
                     heapq.heappush(candidate_reviews, -new_review)
             else:
-                if len(top_reviews) > 0 and new_review > top_reviews[0]:
-                    heapq.heappush(candidate_reviews, -top_reviews[0])
-                    heapq.heappop(top_reviews)
+                # top_reviews is at capacity
+                if top_reviews and new_review > top_reviews[0]:
+                    # New review belongs in top, move smallest from top to candidates
+                    heapq.heappush(candidate_reviews, -heapq.heappop(top_reviews))
                     heapq.heappush(top_reviews, new_review)
                 else:
                     heapq.heappush(candidate_reviews, -new_review)
         else:
-            if len(top_reviews) > 0:
+            # Query
+            if top_reviews:
                 results.append(top_reviews[0])
             else:
                 results.append('No reviews yet')

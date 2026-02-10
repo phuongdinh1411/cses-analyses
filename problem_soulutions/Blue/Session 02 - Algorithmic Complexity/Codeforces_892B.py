@@ -16,21 +16,24 @@
 #
 # Output: Number of survivors
 #
-# Approach: Process from right to left, tracking kill coverage
+# Approach: Process from right to left, tracking the leftmost position
+# that will be killed by someone to the right.
+# - kill_reach tracks the leftmost index that is guaranteed to be killed
+# - A person at index i survives if i < kill_reach (not in kill zone)
+# - Time complexity: O(n)
 
 n = int(input())
 L = list(map(int, input().split()))
 
-total_people = n
-last_kill = 0
-for i in range(n - 1, 0, -1):
-    if L[i] > last_kill:
-        if L[i] < i:
-            total_people -= (L[i] - last_kill)
-            last_kill = L[i] - 1
-        else:
-            total_people -= (i - last_kill)
-            break
-    else:
-        last_kill = last_kill - 1 if last_kill > 0 else 0
-print(total_people)
+survivors = 0
+kill_reach = n  # Leftmost position that will be killed (initially beyond array)
+
+for i in range(n - 1, -1, -1):
+    if i < kill_reach:
+        # Person i is not killed by anyone to their right
+        survivors += 1
+    # Person i can kill people in range [max(0, i - L[i]), i - 1]
+    # Update kill_reach to be the minimum of current reach and i - L[i]
+    kill_reach = min(kill_reach, i - L[i])
+
+print(survivors)

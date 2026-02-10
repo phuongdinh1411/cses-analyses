@@ -13,28 +13,30 @@
 #
 # Key Approach/Algorithm:
 # - Use a boolean array of size 26 to track presence of each letter
-# - Convert each character to index (0-25) regardless of case
-# - Mark the corresponding index as True
+# - Convert each alphabetic character to index (0-25) regardless of case
+# - Skip non-alphabetic characters
 # - If all 26 positions are True, it's a pangram
+
 
 def solution():
     num_of_chars = int(input())
     checking_string = input().strip()
 
-    checking_array = [False for i in range(26)]
+    # Track which letters (a-z) have been seen
+    seen = [False] * 26
 
-    for i in range(num_of_chars):
-        char_index = ord(checking_string[i]) - 65
-        if char_index >= 26:
-            char_index = ord(checking_string[i]) - 97
+    for char in checking_string:
+        # Fixed: Only process alphabetic characters
+        if char.isalpha():
+            # Convert to lowercase and get index (0-25)
+            index = ord(char.lower()) - ord('a')
+            seen[index] = True
 
-        checking_array[char_index] = True
-
-    for i in range(26):
-        if not checking_array[i]:
-            print('NO')
-            return
-    print('YES')
+    # Check if all letters are present
+    if all(seen):
+        print('YES')
+    else:
+        print('NO')
 
 
 solution()

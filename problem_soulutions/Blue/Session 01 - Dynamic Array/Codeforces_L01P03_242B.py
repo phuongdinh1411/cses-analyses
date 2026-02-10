@@ -15,30 +15,24 @@
 # Output: Index of the covering segment (1-based), or -1 if none exists
 #
 # Example: Segments [1,5], [2,3], [1,10] → 3 (segment [1,10] covers all)
+#
+# Approach:
+# 1. Find the global minimum left endpoint and maximum right endpoint
+# 2. Find any segment that has both min_left and max_right
+# Time complexity: O(n)
 
 
-def check_cover(_l, _r, _n):
-    min_left, max_right = _l[0], _r[0]
-    pos = 0
-    for i in range(1, n):
-        if _l[i] < min_left:
-            min_left = _l[i]
-            if _r[i] >= max_right:
-                pos = i
-                max_right = _r[i]
-            else:
-                pos = -2
-        elif _r[i] > max_right:
-            max_right = _r[i]
-            if _l[i] <= min_left:
-                pos = i
-                min_left = _l[i]
-            else:
-                pos = -2
-        elif _l[i] == min_left and _r[i] == max_right:
-            pos = i
+def find_covering_segment(left_endpoints, right_endpoints, num_segments):
+    # Find global min left and max right
+    min_left = min(left_endpoints)
+    max_right = max(right_endpoints)
 
-    return pos + 1
+    # Find a segment that matches both bounds
+    for i in range(num_segments):
+        if left_endpoints[i] == min_left and right_endpoints[i] == max_right:
+            return i + 1  # 1-based index
+
+    return -1
 
 
 n = int(input())
@@ -47,4 +41,5 @@ for i in range(n):
     li, ri = map(int, input().split())
     l.append(li)
     r.append(ri)
-print(check_cover(l, r, n))
+
+print(find_covering_segment(l, r, n))

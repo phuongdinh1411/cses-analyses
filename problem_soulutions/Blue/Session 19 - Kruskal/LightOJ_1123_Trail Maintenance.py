@@ -6,7 +6,7 @@
 # Description:
 # A park has N fields connected by trails. Trails are added one by one.
 # After each trail is added, compute the MST weight. Output -1 if the
-# graph is not yet connected (before N-1 edges are added).
+# graph is not yet connected.
 #
 # Input:
 # - T (test cases)
@@ -21,90 +21,85 @@
 # - Incrementally add edges to the graph
 # - After each addition, run Kruskal's algorithm to find MST
 # - Use DSU for cycle detection in Kruskal's
-# - Return -1 until at least N-1 edges connect all nodes
+# - Return -1 if fewer than N-1 edges form the MST (graph not connected)
 
 
-class Triad:
+import sys
+sys.setrecursionlimit(10000)
+
+
+class Edge:
     def __init__(self, source, target, weight):
         self.source = source
         self.target = target
         self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+
+def make_set(n):
+    return list(range(n + 1)), [0] * (n + 1)
 
 
-parent = []
-ranks = []
-dist = []
-graph = []
-
-
-def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
-
-
-def find_set(u):
+def find_set(parent, u):
     if parent[u] != u:
-        parent[u] = find_set(parent[u])
+        parent[u] = find_set(parent, parent[u])
     return parent[u]
 
 
-def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
+def union_set(parent, rank, u, v):
+    up = find_set(parent, u)
+    vp = find_set(parent, v)
     if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
+        return False
+    if rank[up] > rank[vp]:
         parent[vp] = up
-    elif ranks[up] < ranks[vp]:
+    elif rank[up] < rank[vp]:
         parent[up] = vp
     else:
         parent[up] = vp
-        ranks[vp] += 1
+        rank[vp] += 1
+    return True
 
 
-def kruskal(number_of_fields):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    while len(dist) != number_of_fields - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
+def kruskal(n, edges):
+    """Run Kruskal's algorithm. Return MST weight or -1 if not connected."""
+    edges_sorted = sorted(edges, key=lambda e: e.weight)
+    parent, rank = make_set(n)
+
+    mst_weight = 0
+    edges_used = 0
+
+    for edge in edges_sorted:
+        if edges_used == n - 1:
+            break
+        u = find_set(parent, edge.source)
+        v = find_set(parent, edge.target)
         if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            mst += edge.weight
+            union_set(parent, rank, u, v)
+            mst_weight += edge.weight
+            edges_used += 1
 
-    if len(dist) == number_of_fields - 1:
-        return mst
-    else:
-        return -1
+    # Fixed: Check if we have enough edges to connect all nodes
+    if edges_used == n - 1:
+        return mst_weight
+    return -1
 
 
 def solution():
-
     T = int(input())
 
     for t in range(T):
-        global graph, dist
-        graph = []
         N, M = map(int, input().split())
-        print('Case {0}:'.format(t + 1))
+        print(f'Case {t + 1}:')
+
+        edges = []
         for i in range(M):
             x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
-            if i < N - 1:
-                print(-1)
-            else:
-                dist = []
-                make_set(N)
-                minimum_distance = kruskal(N)
-                print(minimum_distance)
+            edges.append(Edge(x, y, z))
+
+            # Fixed: Always run Kruskal and let it determine if connected
+            # Don't assume first N-1 edges can't form a connected graph
+            result = kruskal(N, edges)
+            print(result)
 
 
 solution()

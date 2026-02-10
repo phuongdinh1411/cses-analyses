@@ -20,91 +20,90 @@
 # Approach:
 # - Modified Kruskal's algorithm
 # - Only add edge to MST if its cost < airport cost A
-# - Cities not connected by cheap roads get airports
-# - Count components (each needs one airport)
+# - Each connected component needs exactly one airport
+# - Count final number of components
 
 
-class Triad:
+import sys
+sys.setrecursionlimit(10000)
+
+
+class Edge:
     def __init__(self, source, target, weight):
         self.source = source
         self.target = target
         self.weight = weight
 
-    def __repr__(self):
-        return str(self.source) + '-' + str(self.target) + ': ' + str(self.weight)
+
+def make_set(n):
+    return list(range(n + 1)), [0] * (n + 1)
 
 
-parent = []
-ranks = []
-dist = []
-graph = []
-
-
-def make_set(V):
-    global parent, ranks, dist
-    parent = [i for i in range(V + 1)]
-    ranks = [0 for _ in range(V + 1)]
-
-
-def find_set(u):
+def find_set(parent, u):
     if parent[u] != u:
-        parent[u] = find_set(parent[u])
+        parent[u] = find_set(parent, parent[u])
     return parent[u]
 
 
-def union_set(u, v):
-    up = find_set(u)
-    vp = find_set(v)
+def union_set(parent, rank, u, v):
+    up = find_set(parent, u)
+    vp = find_set(parent, v)
     if up == vp:
-        return
-    if ranks[up] > ranks[vp]:
+        return False
+    if rank[up] > rank[vp]:
         parent[vp] = up
-    elif ranks[up] < ranks[vp]:
+    elif rank[up] < rank[vp]:
         parent[up] = vp
     else:
         parent[up] = vp
-        ranks[vp] += 1
+        rank[vp] += 1
+    return True
 
 
-def kruskal(number_of_cities, airport_cost):
-    graph.sort(key=lambda _edge: _edge.weight)
-    i = 0
-    mst = 0
-    n_airports = number_of_cities
-    while len(dist) != number_of_cities - 1 and i < len(graph):
-        edge = graph[i]
-        i += 1
-        u = find_set(edge.source)
-        v = find_set(edge.target)
+def kruskal(n, edges, airport_cost):
+    """
+    Modified Kruskal: only use edges cheaper than airport cost.
+    Returns (total_cost, number_of_airports).
+    """
+    edges_sorted = sorted(edges, key=lambda e: e.weight)
+    parent, rank = make_set(n)
+
+    road_cost = 0
+
+    for edge in edges_sorted:
+        # Fixed: Only add edge if it's cheaper than building an airport
+        if edge.weight >= airport_cost:
+            break  # Sorted by weight, so remaining edges are also >= airport_cost
+
+        u = find_set(parent, edge.source)
+        v = find_set(parent, edge.target)
         if u != v:
-            dist.append(edge)
-            union_set(u, v)
-            if edge.weight < airport_cost:
-                n_airports -= 1
-                mst += edge.weight
+            union_set(parent, rank, u, v)
+            road_cost += edge.weight
 
-    return mst + n_airports * airport_cost, n_airports
+    # Count number of connected components (each needs an airport)
+    roots = set()
+    for i in range(1, n + 1):
+        roots.add(find_set(parent, i))
+    num_airports = len(roots)
+
+    total_cost = road_cost + num_airports * airport_cost
+    return total_cost, num_airports
 
 
 def solution():
-
     T = int(input())
 
     for t in range(T):
-        global graph, dist
-        graph = []
-        dist = []
         N, M, A = map(int, input().split())
 
+        edges = []
         for _ in range(M):
             x, y, z = map(int, input().split())
-            graph.append(Triad(x, y, z))
+            edges.append(Edge(x, y, z))
 
-        make_set(N)
-
-        cost, n_airports = kruskal(N, A)
-
-        print('Case #{0}: {1} {2}'.format(t + 1, cost, n_airports))
+        cost, num_airports = kruskal(N, edges, A)
+        print(f'Case #{t + 1}: {cost} {num_airports}')
 
 
 solution()

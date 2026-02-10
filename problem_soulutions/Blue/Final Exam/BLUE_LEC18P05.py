@@ -33,39 +33,51 @@ Algorithm/Approach:
 
 class Node:
     def __init__(self):
-        self.countWord = 0
-        self.child = dict()
+        self.is_end_of_word = False
+        self.children = {}
 
 
 def add_word(root, s):
-    tmp = root
+    """
+    Add a word to the trie. Return False if prefix conflict detected.
+    """
+    node = root
     for ch in s:
-        if ch not in tmp.child:
-            tmp.child[ch] = Node()
-        tmp = tmp.child[ch]
-        if tmp.countWord > 0:
+        if ch not in node.children:
+            node.children[ch] = Node()
+        node = node.children[ch]
+        # Check if current prefix is already a complete word
+        if node.is_end_of_word:
             return False
 
-    if len(tmp.child) > 0:
+    # Check if this word is a prefix of an existing word
+    if node.children:
         return False
-    tmp.countWord += 1
+
+    node.is_end_of_word = True
     return True
 
 
 def solution():
     tc = int(input())
-    for t in range(tc):
+    for _ in range(tc):
         root = Node()
         n = int(input())
-        duplicated = False
+        is_consistent = True
+
         for i in range(n):
-            s = input()
-            result = add_word(root, s)
-            if not result:
-                print('NO')
-                duplicated = True
-                break
-        if not duplicated:
+            s = input().strip()
+            if is_consistent:
+                result = add_word(root, s)
+                if not result:
+                    is_consistent = False
+                    print('NO')
+                    # Fixed: Consume remaining input lines for this test case
+                    for j in range(i + 1, n):
+                        input()
+                    break
+
+        if is_consistent:
             print('YES')
 
 

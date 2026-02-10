@@ -13,49 +13,41 @@
 #
 # Output: Length of the longest "almost constant" subarray
 #
-# Approach: Sliding window tracking min/max values
+# Approach: Sliding window with monotonic deques to track min/max efficiently
+# - Use two deques: one for tracking maximum (decreasing), one for minimum (increasing)
+# - Expand window to the right, shrink from left when max - min > 1
+# - Time complexity: O(n), Space complexity: O(n)
+
+from collections import deque
 
 n = int(input())
 a = list(map(int, input().split()))
 
-left, right = 0, 0
-max_almost_constant_range = 1
-evaluating_range = 1
-range_max = a[0]
-range_min = a[0]
+max_deque = deque()  # Indices of elements in decreasing order (front = max)
+min_deque = deque()  # Indices of elements in increasing order (front = min)
+left = 0
+result = 0
 
-while True:
-    if right >= n - 1:
-        break
-    right += 1
-    if a[right] > range_max and range_max - range_min >= 1:
-        range_max = a[right]
-        if max_almost_constant_range <= evaluating_range:
-            max_almost_constant_range = evaluating_range
-        evaluating_range = 1
-        for i in range(right - 1, left - 1, -1):
-            if a[i] == range_min:
-                left = i + 1
-                range_min += 1
-                break
-            evaluating_range += 1
-    elif a[right] < range_min and range_max - range_min >= 1:
-        range_min = a[right]
-        if max_almost_constant_range <= evaluating_range:
-            max_almost_constant_range = evaluating_range
-        evaluating_range = 1
-        for i in range(right - 1, left - 1, -1):
-            if a[i] == range_max:
-                left = i + 1
-                range_max -= 1
-                break
-            evaluating_range += 1
-    else:
-        if a[right] > range_max:
-            range_max = a[right]
-        elif a[right] < range_min:
-            range_min = a[right]
-        evaluating_range += 1
-        if max_almost_constant_range < evaluating_range:
-            max_almost_constant_range = evaluating_range
-print(max_almost_constant_range)
+for right in range(n):
+    # Maintain decreasing deque for maximum
+    while max_deque and a[max_deque[-1]] < a[right]:
+        max_deque.pop()
+    max_deque.append(right)
+
+    # Maintain increasing deque for minimum
+    while min_deque and a[min_deque[-1]] > a[right]:
+        min_deque.pop()
+    min_deque.append(right)
+
+    # Shrink window from left while max - min > 1
+    while a[max_deque[0]] - a[min_deque[0]] > 1:
+        left += 1
+        # Remove elements outside the window
+        if max_deque[0] < left:
+            max_deque.popleft()
+        if min_deque[0] < left:
+            min_deque.popleft()
+
+    result = max(result, right - left + 1)
+
+print(result)

@@ -22,83 +22,71 @@
 # Key Approach/Algorithm:
 # - Modified Dijkstra's algorithm
 # - Instead of summing weights, track the maximum edge weight on the path
-# - For relaxation: dist[v] = max(dist[u], edge_weight) if this is smaller than current dist[v]
+# - For relaxation: new_dist = max(dist[u], edge_weight), update if smaller than current dist[v]
+
 
 import heapq
 import sys
 
 
-class input_tokenizer:
-    __tokens = None
-
-    def has_next(self):
-        return self.__tokens != [] and self.__tokens != None
+class InputTokenizer:
+    def __init__(self):
+        self._tokens = sys.stdin.read().split()[::-1]
 
     def next(self):
-        token = self.__tokens[-1]
-        self.__tokens.pop()
-        return token
-
-    def __init__(self):
-        self.__tokens = sys.stdin.read().split()[::-1]
+        return self._tokens.pop()
 
 
-inp = input_tokenizer()
+inp = InputTokenizer()
 
 
-class Node:
-    def __init__(self, id, dist):
-        self.dist = dist
-        self.id = id
+def dijkstra_minimax(n, source, graph):
+    """Modified Dijkstra for minimax path problem."""
+    dist = [-1] * n
+    dist[source] = 0
+    pqueue = [(0, source)]  # (max_edge_weight_so_far, node)
 
-    def __lt__(self, other):
-        return self.dist < other.dist
+    while pqueue:
+        d, u = heapq.heappop(pqueue)
 
+        # Skip stale entries
+        if dist[u] != -1 and d > dist[u]:
+            continue
 
-def dijkstra(n, t, graph):
-
-    dist = [-1 for x in range(n+1)]
-    pqueue = []
-    heapq.heappush(pqueue, Node(t, 0))
-    dist[t] = 0
-
-    while len(pqueue) > 0:
-        top = heapq.heappop(pqueue)
-        u = top.id
-        w = top.dist
-        for neighbor in graph[u]:
-            if (neighbor.dist < dist[neighbor.id] and dist[u] < dist[neighbor.id]) or dist[neighbor.id] == -1:
-                dist[neighbor.id] = max(neighbor.dist, dist[u])
-                heapq.heappush(pqueue, Node(neighbor.id, dist[neighbor.id]))
+        for v, w in graph[u]:
+            # New distance is the max of current path's max and this edge
+            new_dist = max(d, w)
+            if dist[v] == -1 or new_dist < dist[v]:
+                dist[v] = new_dist
+                heapq.heappush(pqueue, (new_dist, v))
 
     return dist
 
 
 def solution():
-
     T = int(inp.next())
-    case_number = 0
 
-    for i in range(T):
-        case_number += 1
+    for case_num in range(1, T + 1):
         N = int(inp.next())
         M = int(inp.next())
-        graph = [[] for x in range(N + 1)]
-        for j in range(M):
+
+        graph = [[] for _ in range(N)]
+        for _ in range(M):
             A = int(inp.next())
             B = int(inp.next())
             W = int(inp.next())
+            graph[A].append((B, W))
+            graph[B].append((A, W))
 
-            graph[B].append(Node(A, W))
-            graph[A].append(Node(B, W))
+        source = int(inp.next())
 
-        t = int(inp.next())
+        dist = dijkstra_minimax(N, source, graph)
 
-        print('Case ' + str(case_number) + ':')
-        dist = dijkstra(N, t, graph)
-        for d in dist:
-            if d > -1:
-                print(d)
+        print(f'Case {case_num}:')
+        # Fixed: Only print N values (nodes 0 to N-1), not N+1
+        for i in range(N):
+            if dist[i] != -1:
+                print(dist[i])
             else:
                 print('Impossible')
 

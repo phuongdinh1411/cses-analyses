@@ -22,42 +22,43 @@
 # - Find shortest paths from processor 0 to all others
 # - Return the maximum of all shortest path distances
 
-INF = int(1e9)
+INF = float('inf')
 
 
-def bellman_ford(N, M, E):
-    dist = [INF for i in range(N)]
-
+def bellman_ford(n, edges):
+    dist = [INF] * n
     dist[0] = 0
-    for i in range(0, N-1):
-        for j in range(M):
-            u = E[j][0]
-            v = E[j][1]
-            w = E[j][2]
+
+    # Standard Bellman-Ford: N-1 iterations
+    for _ in range(n - 1):
+        for u, v, w in edges:
             if dist[u] != INF and dist[u] + w < dist[v]:
                 dist[v] = dist[u] + w
 
-    max = 0
-    for di in dist:
-        if di > max:
-            max = di
+    # Find maximum distance (broadcast completion time)
+    max_dist = 0
+    for d in dist:
+        if d != INF and d > max_dist:
+            max_dist = d
 
-    return max
+    return max_dist
 
 
 def solution():
     N = int(input())
-    E = []
-    for i in range(N - 1):
-        line = list(map(str, input().strip().split()))
-        for j in range(i + 1):
-            if line[j] is not 'x':
-                E.append([i + 1, j, int(line[j])])
-                E.append([j, i + 1, int(line[j])])
+    edges = []
 
-    print(bellman_ford(N, len(E), E))
+    for i in range(1, N):
+        line = input().strip().split()
+        for j in range(i):
+            # Fixed: Use != instead of 'is not' for string comparison
+            if line[j] != 'x':
+                weight = int(line[j])
+                # Bidirectional edges
+                edges.append((i, j, weight))
+                edges.append((j, i, weight))
+
+    print(bellman_ford(N, edges))
 
 
 solution()
-
-
