@@ -451,8 +451,85 @@ print(max_len)
 ```
 
 ##### Complexity Analysis
-- **Time Complexity:** O(n) - amortized linear time with sliding window
-- **Space Complexity:** O(1) - constant extra space
+- **Time Complexity:** O(n·k) - where k is distinct values in window (max/min on keys)
+- **Space Complexity:** O(k) - frequency dictionary
+
+##### Optimized Solution 1: Monotonic Deques (O(n))
+
+Use two deques to track max and min in O(1) per query:
+
+```python
+from collections import deque
+
+n = int(input())
+a = list(map(int, input().split()))
+
+max_deque = deque()  # Decreasing: front is max
+min_deque = deque()  # Increasing: front is min
+left = 0
+max_len = 1
+
+for right in range(n):
+    # Add a[right] to deques
+    while max_deque and a[max_deque[-1]] <= a[right]:
+        max_deque.pop()
+    max_deque.append(right)
+
+    while min_deque and a[min_deque[-1]] >= a[right]:
+        min_deque.pop()
+    min_deque.append(right)
+
+    # Shrink window while invalid
+    while a[max_deque[0]] - a[min_deque[0]] > 1:
+        left += 1
+        if max_deque[0] < left:
+            max_deque.popleft()
+        if min_deque[0] < left:
+            min_deque.popleft()
+
+    max_len = max(max_len, right - left + 1)
+
+print(max_len)
+```
+
+**How it works:**
+- `max_deque`: stores indices in decreasing value order, front = current max
+- `min_deque`: stores indices in increasing value order, front = current min
+- Each element enters/exits each deque exactly once → O(n) total
+
+##### Optimized Solution 2: SortedList (O(n log n))
+
+Using `sortedcontainers.SortedList` for cleaner code:
+
+```python
+from sortedcontainers import SortedList
+
+n = int(input())
+a = list(map(int, input().split()))
+
+window = SortedList()
+left = 0
+max_len = 1
+
+for right in range(n):
+    window.add(a[right])
+
+    while window[-1] - window[0] > 1:  # O(1) min/max access
+        window.remove(a[left])          # O(log n) removal
+        left += 1
+
+    max_len = max(max_len, right - left + 1)
+
+print(max_len)
+```
+
+##### Approach Comparison
+
+| Approach | Time | Space | Notes |
+|----------|------|-------|-------|
+| Frequency dict | O(n·k) | O(k) | Simple, good for small k |
+| Monotonic deques | O(n) | O(n) | Optimal, classic technique |
+| SortedList | O(n log n) | O(n) | Clean code, external library |
 
 ---
 
@@ -560,27 +637,47 @@ No one has killing range, both survive.
 #### Solution
 
 ##### Approach
-Process from right to left, tracking kill coverage and counting survivors.
+Process from right to left, tracking the "death zone" - the leftmost position that will be killed by someone to the right.
+
+**Key insight:** Person at index `i` can kill positions `[i - L[i], i - 1]`. As we scan right-to-left, we maintain `kill_reach` = the leftmost index guaranteed to die. If `i < kill_reach`, person `i` is outside the death zone and survives.
 
 ##### Python Solution
 ```python
 n = int(input())
 L = list(map(int, input().split()))
 
-survivors = n
-kill_range = 0
+survivors = 0
+kill_reach = n  # Leftmost position that will be killed (initially beyond array)
 
-for i in range(n - 1, 0, -1):
-    if L[i] > kill_range:
-        kills = min(L[i], i) - kill_range
-        survivors -= kills
-        kill_range = min(L[i], i) - 1
-        if L[i] >= i:
-            break
-    else:
-        kill_range = max(0, kill_range - 1)
+for i in range(n - 1, -1, -1):
+    if i < kill_reach:
+        # Person i is not killed by anyone to their right
+        survivors += 1
+    # Person i can kill people in range [i - L[i], i - 1]
+    # Update kill_reach to extend death zone further left
+    kill_reach = min(kill_reach, i - L[i])
 
 print(survivors)
+```
+
+##### Walkthrough Example
+```
+L = [0, 1, 0, 10]
+Positions: 0  1  2  3
+
+i=3: kill_reach=4, 3 < 4 → survives ✓
+     kill_reach = min(4, 3-10) = -7
+
+i=2: kill_reach=-7, 2 < -7? NO → dead
+     kill_reach = min(-7, 2-0) = -7
+
+i=1: kill_reach=-7, 1 < -7? NO → dead
+     kill_reach = min(-7, 1-1) = -7
+
+i=0: kill_reach=-7, 0 < -7? NO → dead
+     kill_reach = min(-7, 0-0) = -7
+
+Answer: 1 survivor
 ```
 
 ##### Complexity Analysis
