@@ -29,3 +29,5 @@ A curated collection of algorithm problems with detailed solutions and analyses.
 
 - [Awesome LeetCode Resources](https://github.com/ashishps1/awesome-leetcode-resources) - Curated LeetCode patterns and guides
 - [CSES Problem Set](https://cses.fi/problemset/) - Original problem source
+- [Concurrency Interview](https://algomaster.io/learn/concurrency-interview/introduction-to-concurrency) - Introduction to concurrency concepts
+- [DSA Course Roadmap](https://algomaster.io/learn/dsa/course-roadmap) - Structured learning path for DSA
