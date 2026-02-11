@@ -208,6 +208,52 @@ def solution():
 solution()
 ```
 
+##### Recursive Solution
+
+```python
+import sys
+sys.setrecursionlimit(100001)
+
+def find_girl_recursive(n, graph, girls):
+    visited = [False] * (n + 1)
+    result = [n, n]  # [closest_girl_node, distance]
+
+    def dfs(node, dist):
+        visited[node] = True
+
+        # Check if this node has a girl
+        if girls[node]:
+            if dist < result[1] or (dist == result[1] and node < result[0]):
+                result[0] = node
+                result[1] = dist
+
+        # Visit all unvisited neighbors
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                dfs(neighbor, dist + 1)
+
+    dfs(1, 0)  # Start from node 1 with distance 0
+    return result[0]
+
+def solution():
+    n = int(input())
+    graph = [[] for _ in range(n + 1)]
+
+    for _ in range(n - 1):
+        u, v = map(int, input().split())
+        graph[u].append(v)
+        graph[v].append(u)
+
+    q = int(input())
+    girls = [False] * (n + 1)
+    for _ in range(q):
+        girls[int(input())] = True
+
+    print(find_girl_recursive(n, graph, girls))
+
+solution()
+```
+
 ##### Complexity Analysis
 - **Time Complexity:** O(N) for DFS traversal of the tree
 - **Space Complexity:** O(N) for graph and auxiliary arrays
@@ -312,6 +358,60 @@ def solution():
             graph[v].append(u)
 
         results.append(count_components(n, graph))
+
+    print('\n'.join(map(str, results)))
+
+solution()
+```
+
+##### Recursive Solution
+
+```python
+import sys
+sys.setrecursionlimit(100001)
+
+def count_components_recursive(n, graph):
+    visited = [False] * n
+
+    def dfs(node):
+        visited[node] = True
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                dfs(neighbor)
+
+    components = 0
+    for i in range(n):
+        if not visited[i]:
+            dfs(i)
+            components += 1
+
+    return components
+
+def solution():
+    results = []
+
+    while True:
+        line = input().strip()
+        if line:
+            t = int(line)
+            break
+
+    for _ in range(t):
+        while True:
+            line = input().strip()
+            if line:
+                n = int(line)
+                break
+
+        e = int(input())
+        graph = [[] for _ in range(n)]
+
+        for _ in range(e):
+            u, v = map(int, input().split())
+            graph[u].append(v)
+            graph[v].append(u)
+
+        results.append(count_components_recursive(n, graph))
 
     print('\n'.join(map(str, results)))
 
@@ -429,6 +529,63 @@ def solution():
                     break
 
         results.append(has_cycle(n, graph))
+
+    print('\n'.join(results))
+
+solution()
+```
+
+##### Recursive Solution
+
+```python
+import sys
+sys.setrecursionlimit(100001)
+
+def has_cycle_recursive(n, graph):
+    # States: 0 = unvisited, 1 = in current path, 2 = fully processed
+    state = [0] * (n + 1)
+
+    def dfs(node):
+        state[node] = 1  # Mark as in current path
+
+        for neighbor in graph[node]:
+            if state[neighbor] == 1:  # Back edge found
+                return True
+            if state[neighbor] == 0 and dfs(neighbor):
+                return True
+
+        state[node] = 2  # Mark as fully processed
+        return False
+
+    for i in range(1, n + 1):
+        if state[i] == 0 and dfs(i):
+            return 'SIM'
+
+    return 'NAO'
+
+def solution():
+    results = []
+    t = int(input())
+
+    for _ in range(t):
+        while True:
+            line = input().strip()
+            if line:
+                n, m = map(int, line.split())
+                break
+
+        graph = [[] for _ in range(n + 1)]
+
+        for _ in range(m):
+            while True:
+                line = input().strip()
+                if line:
+                    a, b = map(int, line.split())
+                    if b not in graph[a]:
+                        graph[a].append(b)
+                    break
+
+        results.append(has_cycle_recursive(n, graph))
 
     print('\n'.join(results))
 
