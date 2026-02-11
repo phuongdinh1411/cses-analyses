@@ -168,9 +168,9 @@ letter message
 codeforces contest letter contest
 
 Output:
-codeforces round letter round
+codesexy round letter round
 ```
-"codeforces" (10) vs "codesexy" (8) → keep "codeforces" (equal, prefer first). "contest" (7) vs "round" (5) → use "round".
+"codeforces" (10) vs "codesexy" (8) → use "codesexy" (shorter). "contest" (7) vs "round" (5) → use "round" (shorter).
 
 #### Solution
 
