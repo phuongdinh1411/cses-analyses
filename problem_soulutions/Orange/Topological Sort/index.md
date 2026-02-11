@@ -576,13 +576,6 @@ if __name__ == "__main__":
 - **Time Complexity:** O(n × L + 26) where L is the maximum name length
 - **Space Complexity:** O(26²) for the graph
 
-##### Example
-For names ["hack", "heaven"], comparing:
-- 'h' == 'h' ✓
-- 'a' vs 'e' → 'a' must come before 'e'
-
-The topological sort will produce an alphabet where 'a' comes before 'e'.
-
 ---
 
 ### Hierarchy

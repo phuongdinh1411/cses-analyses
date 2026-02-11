@@ -52,7 +52,6 @@ Output:
 8
 0
 ```
-In the first case, the 3x3 grid has 8 emeralds connected in a ring pattern. There are 8 different sets of 8 consecutive emeralds (octaves) that can be collected. In the second case, there are only 4 emeralds, so no octave (8 consecutive emeralds) is possible.
 
 #### Solution
 
@@ -139,7 +138,6 @@ Input:
 Output:
 0.500000000000
 ```
-The original commands "++-+-" result in position 0+1+1-1+1-1 = 1. The received commands "+-+??" give a fixed position of +1-1+1 = 1, with 2 unknown commands. To reach target position 1, Dreamoon needs the two '?' to sum to 0 (one '+' and one '-'). There are 4 possible outcomes for two coin tosses (++, +-, -+, --), and 2 of them (+-  and -+) give the desired result. Thus probability = 2/4 = 0.5.
 
 #### Solution
 
@@ -214,7 +212,6 @@ Output:
 1 3 4 5 6 7
 2 3 4 5 6 7
 ```
-With k=7 numbers {1,2,3,4,5,6,7}, we generate all C(7,6)=7 combinations of 6 numbers in lexicographical order. Each line represents one possible Lotto game selection.
 
 #### Solution
 
@@ -275,7 +272,6 @@ Input:
 Output:
 3 1 4 2
 ```
-With array [1, 2, 3, 4, 5] (indices 0-4), choosing indices 3,1,4,2 gives |(4/2) - (5/3)| = |2 - 1.667| = 0.333, which is the minimum possible absolute difference. The output represents the indices of the four chosen numbers in the expression (a/b) - (c/d).
 
 #### Solution
 
@@ -338,7 +334,6 @@ Output:
 9 4
 37 10
 ```
-For n=13 (binary 1101), the 1-bits are at positions 0, 2, 3 (counting from right, 0-indexed). The 1st and 3rd 1-bits (positions 0 and 3) go to a, giving 1001 = 9. The 2nd 1-bit (position 2) goes to b, giving 0100 = 4. For n=47 (binary 101111), the 1-bits at odd positions (1st, 3rd, 5th) form a=37, and even positions (2nd, 4th) form b=10.
 
 #### Solution
 
@@ -410,7 +405,6 @@ ABAB
 ABBA
 ABBB
 ```
-Each board is 4x4. Valid PigEwu words must: (1) be exactly 4 letters, (2) contain exactly 2 vowels, (3) use distinct adjacent squares. The output lists all such words that can be formed on both boards, sorted lexicographically. Words like "AAAB" contain 2 vowels (A, A) and can be traced on both boards using adjacent cells.
 
 #### Solution
 
@@ -490,7 +484,6 @@ Output:
 1100
 
 ```
-With N=4 and H=2, we need all 4-bit strings with exactly 2 ones (Hamming distance 2 from "0000"). There are C(4,2)=6 such strings, listed in lexicographical order. Each string has exactly 2 bits set to 1.
 
 #### Solution
 

@@ -35,7 +35,6 @@ Input:
 Output:
 2
 ```
-Sort by growth: [3,3,3,3,2,2,2,2,1,1,1,1]. Pick first two months (3+3=6 >= 5).
 
 ```
 Input:
@@ -45,7 +44,6 @@ Input:
 Output:
 -1
 ```
-All months have 0 growth, impossible to reach 11.
 
 #### Solution
 
@@ -105,7 +103,6 @@ Input:
 Output:
 2
 ```
-Sorted: [1,3,6,8,9]. Vasya does easiest 2: [1,3]. Petya does hardest 3: [6,8,9]. Gap = 6 - 3 = 2 (note: in code using b=3, h[3]-h[2] = 8-6... actually the code uses different indexing).
 
 #### Solution
 
@@ -160,7 +157,6 @@ Input:
 Output:
 respectable
 ```
-Points form a 3x3 grid minus the center (1,1). x-values: {0,1,2}, y-values: {0,1,2}.
 
 ```
 Input:
@@ -176,7 +172,6 @@ Input:
 Output:
 ugly
 ```
-Point (1,1) is present but (1,2) is missing.
 
 #### Solution
 
@@ -233,7 +228,6 @@ Input:
 Output:
 2 2
 ```
-Two bars of length 1 form one tower (height 2). One bar of length 2 forms another tower. Tallest = 2, count = 2.
 
 ```
 Input:
@@ -243,7 +237,6 @@ Input:
 Output:
 5 1
 ```
-All bars have the same length, forming one tower of height 5.
 
 #### Solution
 
@@ -295,7 +288,6 @@ Input:
 Output:
 11
 ```
-Sort chapters: [2, 4]. First subject: 2×3=6 hours. Second subject: 4×2=8 hours. Total = 6+8 = 14... wait, let me recalculate: 2×3 + 4×2 = 6 + 8 = 14. But if we don't sort: 4×3 + 2×2 = 12 + 4 = 16. So sorted order gives 14.
 
 #### Solution
 
@@ -350,7 +342,6 @@ Output:
 yes
 1 3
 ```
-Reverse entire array [3,2,1] → [1,2,3].
 
 ```
 Input:
@@ -361,7 +352,6 @@ Output:
 yes
 1 2
 ```
-Reverse [2,1] → [1,2], array becomes [1,2,3,4].
 
 ```
 Input:
@@ -371,7 +361,6 @@ Input:
 Output:
 no
 ```
-No single reversal can sort this array.
 
 #### Solution
 
@@ -441,7 +430,6 @@ Input:
 Output:
 4 1 1 3
 ```
-Sorted desc: [3,3,2,1]. Student 1 (rating 1) is position 4. Students 2,3 (rating 3) share position 1. Student 4 (rating 2) is position 3.
 
 #### Solution
 
@@ -494,7 +482,6 @@ Input:
 Output:
 9
 ```
-Sort cups: [3,3,3,3]. Girls get x ml each, boys get 2x ml. With cups of size 3, x can be at most 1.5 (since boys need 2x and smallest boy cup is 3). Total = 2×1.5 + 2×3 = 9.
 
 #### Solution
 

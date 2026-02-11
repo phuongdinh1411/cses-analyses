@@ -418,20 +418,6 @@ if __name__ == "__main__":
 - **Time Complexity:** O(S) where S is the sum of digits (length of resulting string)
 - **Space Complexity:** O(S) for storing the string, or O(D) where D is number of digits for optimized version
 
-##### Example
-For N = 61:
-- Digits: [6, 1]
-- Sum: 6 + 1 = 7
-- String: "6161616" (repeating [6,1] for 7 characters)
-- As letters: "gbgbgbg"
-- Is palindrome? Yes (reads same forwards and backwards)
-
-For N = 12:
-- Digits: [1, 2]
-- Sum: 1 + 2 = 3
-- String: "121"
-- Is palindrome? Yes
-
 ---
 
 ### Polo the Penguin and the XOR

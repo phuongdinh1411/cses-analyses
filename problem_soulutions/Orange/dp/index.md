@@ -94,17 +94,6 @@ if __name__ == "__main__":
 - **Time Complexity:** O(n) where n is the length of the string
 - **Space Complexity:** O(n) for the DP array (can be optimized to O(1))
 
-##### Example
-For "25114":
-- dp[0] = 1 (empty)
-- dp[1] = 1 ("2" → B)
-- dp[2] = 2 ("25" → BE or Y)
-- dp[3] = 2 ("251" → BEA or YA)
-- dp[4] = 3 ("2511" → BEAA, YAA, BKA)
-- dp[5] = 5 ("25114" → BEAAD, YAAD, YKD, YAN, BEAN, BEKD... wait, let me recount)
-
-The answer is 6 different decodings.
-
 ---
 
 ### Bytelandian gold coins
@@ -441,16 +430,6 @@ if __name__ == "__main__":
 ##### Complexity Analysis
 - **Time Complexity:** O(N)
 - **Space Complexity:** O(1) for optimized version, O(N) for basic DP
-
-##### Example
-For N=2, K=10:
-- dp[1][0] = 0 (can't start with 0)
-- dp[1][1] = 9 (digits 1-9)
-- dp[2][0] = 9 (numbers: 10, 20, ..., 90)
-- dp[2][1] = 9 * 9 = 81 (any digit 1-9 can follow any first digit)
-- Total = 9 + 81 = 90
-
-This matches: 2-digit numbers in base 10 are 10-99 (90 numbers), and all are valid since none have "00".
 
 ---
 

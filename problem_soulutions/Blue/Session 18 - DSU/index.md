@@ -44,7 +44,6 @@ Input:
 Output:
 NO
 ```
-There are 6 vertices and 6 edges, but the graph has 2 connected components (triangle 1-2-3 and triangle 4-5-6). Cthulhu requires a single connected component.
 
 #### Solution
 
@@ -135,7 +134,6 @@ Input:
 Output:
 1
 ```
-Drifts at (0,0), (1,0), (0,1) share x=0 or y=0, forming one component. Drift (2,2) is isolated. Answer = 2 components - 1 = 1.
 
 #### Solution
 
@@ -226,7 +224,6 @@ YES
 0
 0
 ```
-a=5, b=9. Set A: {2,3} because 2+3=5. Set B: {4,5} because 4+5=9.
 
 #### Solution
 
@@ -341,7 +338,6 @@ Output:
 1
 -1
 ```
-setFriends(0,1), setEnemies(1,2). areFriends(0,2)? 0 and 1 are friends, 1 and 2 are enemies, so 0 and 2 are enemies (answer: 1). areEnemies(0,2)? Yes (answer: 1). setFriends(1,2)? Contradicts existing enemy relation (answer: -1).
 
 #### Solution
 
@@ -450,7 +446,6 @@ Input:
 Output:
 2
 ```
-Person 1 supports topics {1,2}, Person 2 supports {2}, Person 3 supports {1,2}. Persons 1 and 3 have identical opinions, so 2 groups.
 
 #### Solution
 
@@ -556,7 +551,6 @@ Input:
 Output:
 5
 ```
-Friendships connect: 1-2, 3-4, 2-3, 4-5. All 5 people are connected through the chain. Largest group = 5.
 
 #### Solution
 
@@ -651,7 +645,6 @@ Output:
 3
 4
 ```
-Fred-Barney: network size 2. Barney-Betty: Betty joins Fred-Barney network, size 3. Betty-Wilma: Wilma joins, size 4.
 
 #### Solution
 
@@ -746,7 +739,6 @@ BC
 Output:
 2
 ```
-Nodes A, B, C, D exist. Edges: A-B, B-C form one component {A,B,C}. Node D is isolated. Total = 2 components.
 
 #### Solution
 

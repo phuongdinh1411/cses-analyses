@@ -41,7 +41,6 @@ xyz
 Output:
 vulnerable
 ```
-Password "abc" is a prefix of "abcd", making the system vulnerable.
 
 #### Solution
 
@@ -142,7 +141,6 @@ YES
 10
 11
 ```
-Three binary strings of lengths 1, 2, 2 with no prefix conflicts: "0", "10", "11".
 
 #### Solution
 
@@ -249,7 +247,6 @@ Output:
 20
 -1
 ```
-"app" matches "apple"(10), "application"(15), "app"(5) - max is 15. "ban" matches "banana"(20), "band"(12) - max is 20. "cat" has no matches.
 
 #### Solution
 
@@ -337,7 +334,6 @@ Output:
 BAD SET
 aacghgh
 ```
-"aac" is a prefix of "aacghgh", so "aacghgh" causes the conflict.
 
 #### Solution
 
@@ -443,7 +439,6 @@ Output:
 2
 0
 ```
-After adding "hack" and "hackerrank", "hac" matches both (count 2). "hak" matches none (count 0).
 
 #### Solution
 
@@ -550,7 +545,6 @@ Output:
 Case 1: NO
 Case 2: YES
 ```
-Case 1: "911" is a prefix of "91125426". Case 2: No number is a prefix of another.
 
 #### Solution
 
@@ -642,7 +636,6 @@ ACG
 Output:
 Case 1: 12
 ```
-Prefix "ACG" is shared by all 4 strings. Score = length(3) * count(4) = 12. This is the maximum achievable.
 
 #### Solution
 
@@ -719,7 +712,6 @@ customerQuery = 'coddle'
 Output:
 [['code', 'codePhone', 'coddle'], ['code', 'codePhone', 'coddle'], ['coddle', 'coddles'], ['coddle', 'coddles'], ['coddle', 'coddles']]
 ```
-For prefix "co": all 5 match, return first 3 alphabetically. For "codd": only coddle/coddles match.
 
 #### Solution
 
@@ -833,7 +825,6 @@ hi
 Output:
 8
 ```
-Portuguese prefixes: "a", "ab", "abc", "d", "de". Spanish suffixes for each. Combinations: a+fg, a+g, a+hi, a+i, ab+fg, ab+g, etc. Total unique = 8.
 
 #### Solution
 

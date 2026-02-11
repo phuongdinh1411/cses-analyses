@@ -48,7 +48,6 @@ Case 1:
 7
 5
 ```
-First two edges insufficient for 3 nodes. After 3 edges: MST = 3+4 = 7. After edge 1-2 with weight 2: MST = 2+3 = 5.
 
 #### Solution
 
@@ -154,7 +153,6 @@ Input:
 Output:
 30
 ```
-Total edges = 10+20+5+15+8 = 58. MST = 5+8+10 = 23 (using edges 1-2, 2-3, 0-1). Saved = 58 - 23 = 35.
 
 #### Solution
 
@@ -263,7 +261,6 @@ Terminal
 Output:
 45
 ```
-MST connects all 4 stations: Central-North (10), Central-South (15), North-East (20). Total = 45.
 
 #### Solution
 
@@ -369,7 +366,6 @@ Input:
 Output:
 Case #1: 210 1
 ```
-Road costs: 50+60+70=180 < 4 airports (400). But only 3 roads connect 4 cities. MST uses all 3 roads (110) + 1 airport = 210 with 1 airport.
 
 #### Solution
 
@@ -469,7 +465,6 @@ Input:
 Output:
 150
 ```
-MST edges: 0-1 (100), 1-3 (120), 1-2 (150). Maximum edge = 150, which is the minimum driving range needed.
 
 #### Solution
 
@@ -572,7 +567,6 @@ Case 1:
 A-B 10
 B-C 15
 ```
-3 cities A, B, C. Edges: A-B (10), A-C (20), B-C (15). MST = A-B (10) + B-C (15) = 25.
 
 #### Solution
 
@@ -677,7 +671,6 @@ Input:
 Output:
 26
 ```
-From 0000: to reach 1234 costs min(1,9)+min(2,8)+min(3,7)+min(4,6) = 1+2+3+4 = 10. Then connect locks via MST for minimum total rotations.
 
 #### Solution
 

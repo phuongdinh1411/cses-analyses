@@ -107,7 +107,6 @@ Input:
 Output:
 4
 ```
-Friends with heights 4 and 5 walk normally (width 1 each), friend with height 14 must bend (width 2). Total: 1+1+2 = 4.
 
 #### Solution
 
@@ -164,7 +163,6 @@ Input:
 Output:
 3
 ```
-Segment 3 [1, 10] covers all others since min_left=1 and max_right=10.
 
 ```
 Input:
@@ -176,7 +174,6 @@ Input:
 Output:
 -1
 ```
-No single segment has both the minimum left (1) and maximum right (6).
 
 #### Solution
 
@@ -242,7 +239,6 @@ Input:
 Output:
 YES
 ```
-First 2 elements of a: [1, 2], max is 2. Last 1 element of b: [5], min is 5. Since 2 < 5, output YES.
 
 ```
 Input:
@@ -254,7 +250,6 @@ Input:
 Output:
 NO
 ```
-First 3 elements of a: [1, 2, 3], max is 3. Last 3 elements of b: [3, 4, 5], min is 3. Since 3 is not < 3, output NO.
 
 #### Solution
 
@@ -310,7 +305,6 @@ Input:
 Output:
 35
 ```
-Gap from 20 to 88 is 68 minutes (> 15), so bear stops at 20 + 15 = 35.
 
 ```
 Input:
@@ -320,7 +314,6 @@ Input:
 Output:
 90
 ```
-All gaps are <= 15 minutes, bear watches until the end.
 
 #### Solution
 
@@ -385,7 +378,6 @@ Output:
 1100
 1100
 ```
-Top 2 from each semifinal (positions 1-2) are guaranteed to qualify. Positions 3-4 have no chance.
 
 #### Solution
 
@@ -465,7 +457,6 @@ Input:
 Output:
 3
 ```
-Element 1 is at index 2, element 4 is at index 0. Swap 1 with element at index 3, now distance = |3 - 0| = 3.
 
 #### Solution
 
@@ -522,7 +513,6 @@ Input:
 Output:
 4
 ```
-Genre 1 has 2 books (positions 2, 3), Genre 2 has 2 books (positions 1, 4). Ways = 2 × 2 = 4.
 
 #### Solution
 
@@ -586,7 +576,6 @@ Input:
 Output:
 6
 ```
-Insert color 2 ball between positions 4 and 5 (where colors are 2,2). Now we have 2,2,1,1,2,2,2 which triggers chain destruction.
 
 ```
 Input:
@@ -596,7 +585,6 @@ Input:
 Output:
 0
 ```
-No adjacent pair of color 1 balls to insert between.
 
 #### Solution
 

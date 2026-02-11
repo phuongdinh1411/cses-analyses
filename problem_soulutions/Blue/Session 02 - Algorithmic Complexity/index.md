@@ -42,7 +42,6 @@ Output:
 1 1
 3 2
 ```
-Soldier 1 (size 1) gets vest 1 (size 1). Soldier 3 (size 3) gets vest 2 (size 3).
 
 #### Solution
 
@@ -114,7 +113,6 @@ Input:
 Output:
 2 4
 ```
-Segment [2,4] contains values {2, 1, 3} - exactly 3 distinct values.
 
 ```
 Input:
@@ -124,7 +122,6 @@ Input:
 Output:
 -1 -1
 ```
-Array only has 3 distinct values, impossible to find segment with 5 distinct.
 
 #### Solution
 
@@ -191,7 +188,6 @@ Input:
 Output:
 3
 ```
-Books 2, 3, 4 take 1+2+1=4 minutes, which is within 5 minutes. That's 3 consecutive books.
 
 ```
 Input:
@@ -201,7 +197,6 @@ Input:
 Output:
 1
 ```
-Each book takes 2 minutes, can only read 1 book completely in 3 minutes.
 
 #### Solution
 
@@ -262,7 +257,6 @@ Input:
 Output:
 12 5
 ```
-Turn 1 (Sereja): picks 10 (right). Turn 2 (Dima): picks 4 (left). Turn 3 (Sereja): picks 2 (right). Turn 4 (Dima): picks 1.
 
 ```
 Input:
@@ -339,7 +333,6 @@ Input:
 Output:
 2
 ```
-Need difficulties [1,2,3]. Only prepared problem with difficulty 1 can cover requirement 1. Need to create 2 new problems.
 
 ```
 Input:
@@ -350,7 +343,6 @@ Input:
 Output:
 2
 ```
-Prepared difficulty 3 can cover requirement 3, but need 2 more problems for requirements 1 and 2.
 
 #### Solution
 
@@ -408,7 +400,6 @@ Input:
 Output:
 4
 ```
-Subarray [2,3,3,2] has max=3, min=2, difference=1 which satisfies <= 1.
 
 ```
 Input:
@@ -418,7 +409,6 @@ Input:
 Output:
 4
 ```
-Subarray [5,5,4,5] has max=5, min=4, difference=1.
 
 #### Solution
 
@@ -560,7 +550,6 @@ Input:
 Output:
 2 3
 ```
-Alice eats chocolates 1,2 (times 2,9), Bob eats 3,4,5 (times 8,2,7). They meet after Alice finishes chocolate 2.
 
 #### Solution
 
@@ -622,7 +611,6 @@ Input:
 Output:
 1
 ```
-Person 4 kills 3 people to their left (persons 1,2,3). Only person 4 survives.
 
 ```
 Input:
@@ -632,7 +620,6 @@ Input:
 Output:
 2
 ```
-No one has killing range, both survive.
 
 #### Solution
 
