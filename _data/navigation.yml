@@ -792,5 +792,7 @@ main:
     url: /cses-analyses/pattern/dp
   - title: Tree Patterns
     url: /cses-analyses/pattern/tree
+  - title: Graph Patterns
+    url: /cses-analyses/pattern/graph
 - title: About
   url: /cses-analyses/about
