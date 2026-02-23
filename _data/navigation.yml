@@ -783,5 +783,14 @@ main:
     url: /cses-analyses/quick_reference/advanced_algorithms
   - title: Common Mistakes
     url: /cses-analyses/quick_reference/common_mistakes
+- title: Patterns
+  url: /cses-analyses/pattern
+  children:
+  - title: LCA
+    url: /cses-analyses/pattern/lca
+  - title: Dynamic Programming
+    url: /cses-analyses/pattern/dp
+  - title: Tree Patterns
+    url: /cses-analyses/pattern/tree
 - title: About
   url: /cses-analyses/about
