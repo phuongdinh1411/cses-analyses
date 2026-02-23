@@ -796,5 +796,11 @@ main:
     url: /cses-analyses/pattern/graph
   - title: Stack & Queue
     url: /cses-analyses/pattern/stack-queue
+  - title: Binary Search
+    url: /cses-analyses/pattern/binary-search
+  - title: Prefix Sum
+    url: /cses-analyses/pattern/prefix-sum
+  - title: Backtracking
+    url: /cses-analyses/pattern/backtracking
 - title: About
   url: /cses-analyses/about
