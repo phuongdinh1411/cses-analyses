@@ -794,5 +794,7 @@ main:
     url: /cses-analyses/pattern/tree
   - title: Graph Patterns
     url: /cses-analyses/pattern/graph
+  - title: Stack & Queue
+    url: /cses-analyses/pattern/stack-queue
 - title: About
   url: /cses-analyses/about
