@@ -772,6 +772,8 @@ main:
     url: /cses-analyses/system_design/design-google-drive
   - title: Message Queue
     url: /cses-analyses/system_design/design-message-queue
+  - title: Ad Click Aggregation
+    url: /cses-analyses/system_design/design-ad-click-aggregation
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
