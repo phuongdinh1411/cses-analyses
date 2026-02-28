@@ -804,5 +804,7 @@ main:
     url: /cses-analyses/pattern/prefix-sum
   - title: Backtracking
     url: /cses-analyses/pattern/backtracking
+  - title: Bitmask Techniques
+    url: /cses-analyses/pattern/bitmask
 - title: About
   url: /cses-analyses/about
