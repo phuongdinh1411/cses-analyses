@@ -610,6 +610,54 @@ def lcs_string(s1, s2):
     return ''.join(reversed(result))
 ```
 
+### Space Optimization for LCS
+
+The full 2D table uses O(MN) space. Since each row `dp[i]` only depends on `dp[i-1]`, we can reduce to **O(min(M,N))** using two rows (or a single row with a saved variable):
+
+```python
+def lcs_optimized(s1, s2):
+    # ensure s2 is shorter for minimal space
+    if len(s1) < len(s2):
+        s1, s2 = s2, s1
+    m, n = len(s1), len(s2)
+    prev = [0] * (n + 1)
+
+    for i in range(1, m + 1):
+        curr = [0] * (n + 1)
+        for j in range(1, n + 1):
+            if s1[i-1] == s2[j-1]:
+                curr[j] = prev[j-1] + 1
+            else:
+                curr[j] = max(prev[j], curr[j-1])
+        prev = curr
+
+    return prev[n]
+```
+
+**Single-row trick** (saves one allocation, but trickier):
+
+```python
+def lcs_single_row(s1, s2):
+    if len(s1) < len(s2):
+        s1, s2 = s2, s1
+    m, n = len(s1), len(s2)
+    dp = [0] * (n + 1)
+
+    for i in range(1, m + 1):
+        prev_diag = 0  # saves dp[i-1][j-1] before overwrite
+        for j in range(1, n + 1):
+            temp = dp[j]  # this is dp[i-1][j], save before overwrite
+            if s1[i-1] == s2[j-1]:
+                dp[j] = prev_diag + 1
+            else:
+                dp[j] = max(dp[j], dp[j-1])
+            prev_diag = temp
+
+    return dp[n]
+```
+
+**Caveat**: With O(N) space you can compute the LCS **length**, but **not reconstruct** the actual LCS string. Reconstruction requires the full 2D table (or Hirschberg's algorithm for O(N) space reconstruction in O(MN) time).
+
 ### LCS Family
 
 | Problem | Relation to LCS |
@@ -691,6 +739,12 @@ def max_coins(nums):
     return dp[0][n-1]
 ```
 
+### Space Optimization for Interval DP
+
+Interval DP generally **cannot** be space-optimized below O(N^2). Unlike linear or grid DP where each row depends only on the previous row, interval DP entries `dp[i][j]` depend on arbitrary sub-intervals `dp[i][k]` and `dp[k+1][j]` — you need the full table.
+
+**Exception**: Some interval-like problems (e.g., palindrome partitioning) can be reformulated as linear DP, reducing space to O(N). See below.
+
 ### Example: Palindrome Partitioning (Min Cuts)
 
 **Problem**: Minimum cuts to partition a string into palindromes.
@@ -770,6 +824,27 @@ def max_profit_cooldown(prices):
 
     return max(rest[n-1], cool[n-1])
 ```
+
+### Space Optimization for State Machine DP
+
+Since each state at step `i` only depends on step `i-1`, replace arrays with variables — O(N) space → O(1):
+
+```python
+def max_profit_cooldown_optimized(prices):
+    if not prices:
+        return 0
+    rest, hold, cool = 0, -prices[0], 0
+
+    for i in range(1, len(prices)):
+        new_rest = max(rest, cool)
+        new_hold = max(hold, rest - prices[i])
+        new_cool = hold + prices[i]
+        rest, hold, cool = new_rest, new_hold, new_cool
+
+    return max(rest, cool)
+```
+
+**Key**: Update all states simultaneously (use `new_` variables or tuple unpacking) to avoid using partially-updated values from the current step.
 
 ### Example: Best Time to Buy and Sell Stock with K Transactions
 
@@ -1211,6 +1286,94 @@ def count_paths_dag(adj, n, src, dst):
 ## 15. DP Optimizations
 
 When the basic DP is too slow, apply these optimizations.
+
+### 15.0 Space Optimization Principles
+
+The most common DP optimization — reducing memory without changing time complexity. This is a **frequent interview follow-up**: "Can you do it in less space?"
+
+#### The Core Rule
+
+> **If `dp[i]` only depends on a bounded window of previous states, you only need to keep that window in memory.**
+
+#### Decision Framework
+
+| Dependency pattern | Reduction | Technique |
+|-------------------|-----------|-----------|
+| `dp[i]` depends only on `dp[i-1]` | O(N) → O(1) | Two variables |
+| `dp[i]` depends on `dp[i-1]` and `dp[i-2]` | O(N) → O(1) | Three variables |
+| `dp[i][j]` depends on row `i-1` only | O(MN) → O(N) | Two rows or single row |
+| `dp[i][j]` depends on `dp[i-1][j-1]`, `dp[i-1][j]`, `dp[i][j-1]` | O(MN) → O(N) | Single row + saved diagonal |
+| `dp[i][j]` depends on any `dp[i][k]`, `dp[k][j]` | **Cannot reduce** | Need full table (interval DP) |
+| `dp[mask]` over subsets | **Cannot reduce** | Need full 2^N table |
+
+#### The Reverse-Iteration Trick (Critical for Knapsack)
+
+When flattening 2D → 1D, the **iteration direction** determines whether old or new values are read:
+
+```
+Forward iteration (left to right):
+  dp[w - weight[i]] reads the ALREADY-UPDATED value from THIS iteration
+  → item i can be reused → UNBOUNDED knapsack
+
+Reverse iteration (right to left):
+  dp[w - weight[i]] reads the NOT-YET-UPDATED value from PREVIOUS iteration
+  → item i used at most once → 0/1 knapsack
+
+Mnemonic: "Reverse = Restrict (to one use)"
+```
+
+#### The Diagonal-Save Trick (for LCS / Edit Distance)
+
+When a single-row DP depends on `dp[i-1][j-1]` (the diagonal), that value gets overwritten as you process column `j`. Save it before overwriting:
+
+```python
+prev_diag = 0
+for j in range(1, n + 1):
+    temp = dp[j]           # save dp[i-1][j] before overwrite
+    dp[j] = f(dp[j],       # dp[i-1][j]  (old value, still intact)
+              dp[j-1],      # dp[i][j-1]  (already updated this row)
+              prev_diag)    # dp[i-1][j-1] (saved from last iteration)
+    prev_diag = temp        # carry forward for next column
+```
+
+#### The Simultaneous-Update Rule (State Machine DP)
+
+When multiple states depend on each other at step `i-1`, update them **simultaneously** — otherwise you'll accidentally read a partially-updated current-step value:
+
+```python
+# WRONG: hold uses the just-updated rest value
+rest = max(rest, cool)
+hold = max(hold, rest - prices[i])  # bug: rest is already step i!
+
+# CORRECT: compute all new values, then assign
+new_rest = max(rest, cool)
+new_hold = max(hold, rest - prices[i])
+new_cool = hold + prices[i]
+rest, hold, cool = new_rest, new_hold, new_cool
+
+# ALSO CORRECT: Python tuple unpacking (idiomatic)
+rest, hold, cool = max(rest, cool), max(hold, rest - prices[i]), hold + prices[i]
+```
+
+#### When Space Optimization Isn't Possible
+
+- **Interval DP**: `dp[i][j]` depends on arbitrary sub-intervals — need full O(N^2) table
+- **Bitmask DP**: `dp[mask]` over all 2^N subsets — need full table
+- **When you need to reconstruct the solution**: Space optimization preserves the final answer but discards the path. To reconstruct, either keep the full table or use Hirschberg's divide-and-conquer trick (works for LCS in O(N) space)
+- **Tree DP with rerooting**: Needs full dp_down[] and dp_up[] arrays
+
+#### Space Optimization Summary by Pattern
+
+| Pattern | Original space | Optimized space | How |
+|---------|---------------|----------------|-----|
+| Fibonacci / Linear (window) | O(N) | O(1) | Rolling variables |
+| Grid DP | O(MN) | O(N) | Process row by row |
+| 0/1 Knapsack | O(NW) | O(W) | 1D array, **reverse** iteration |
+| Unbounded Knapsack | O(NW) | O(W) | 1D array, **forward** iteration |
+| LCS / Edit Distance | O(MN) | O(min(M,N)) | Single row + diagonal save |
+| State Machine DP | O(N × S) | O(S) | S variables, simultaneous update |
+| Interval DP | O(N^2) | O(N^2) | Cannot reduce |
+| Bitmask DP | O(2^N) | O(2^N) | Cannot reduce |
 
 ### 15.1 Convex Hull Trick
 

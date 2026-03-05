@@ -774,6 +774,8 @@ main:
     url: /cses-analyses/system_design/design-message-queue
   - title: Ad Click Aggregation
     url: /cses-analyses/system_design/design-ad-click-aggregation
+  - title: S3 Object Storage
+    url: /cses-analyses/system_design/design-s3-object-storage
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
