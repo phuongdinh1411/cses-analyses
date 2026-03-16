@@ -808,5 +808,9 @@ main:
     url: /cses-analyses/pattern/backtracking
   - title: Bitmask Techniques
     url: /cses-analyses/pattern/bitmask
+  - title: Bitmask DP — Subset Partition
+    url: /cses-analyses/pattern/bitmask-dp-subset-partition
+  - title: Digit DP
+    url: /cses-analyses/pattern/digit-dp
 - title: About
   url: /cses-analyses/about
