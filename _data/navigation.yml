@@ -812,5 +812,7 @@ main:
     url: /cses-analyses/pattern/bitmask-dp-subset-partition
   - title: Digit DP
     url: /cses-analyses/pattern/digit-dp
+  - title: Edge Contribution & Rerooting
+    url: /cses-analyses/pattern/edge-contribution
 - title: About
   url: /cses-analyses/about
