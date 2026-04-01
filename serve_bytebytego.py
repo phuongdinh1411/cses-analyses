@@ -182,7 +182,9 @@ a:hover { text-decoration: underline; }
 .sidebar .back a:hover { color: #2563eb; }
 
 /* Content */
-.content { margin-left: 280px; flex: 1; padding: 40px 60px; max-width: 900px; }
+.content { margin-left: 280px; flex: 1; padding: 40px 60px; }
+.content-inner { max-width: 780px; margin: 0 auto; }
+.home-content .content-inner { max-width: none; }
 .content h1 { font-size: 28px; margin-bottom: 20px; color: #111827; font-weight: 700; }
 .content h2 { font-size: 22px; margin: 30px 0 15px; color: #111827; font-weight: 600;
               border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
@@ -306,7 +308,7 @@ def page_html(title, body, sidebar=""):
 </head>
 <body>
 {sidebar_html}
-<main class="{layout}">{body}</main>
+<main class="{layout}"><div class="content-inner">{body}</div></main>
 <script>
 function toggleSection(el){{el.closest('.section-group').classList.toggle('collapsed')}}
 function switchTab(btn){{var c=btn.closest('.code-tabs'),idx=+btn.getAttribute('data-idx');c.querySelectorAll('.tab-btn').forEach(function(b){{b.classList.remove('active')}});c.querySelectorAll('.tab-panel').forEach(function(p){{p.classList.remove('active')}});btn.classList.add('active');c.querySelectorAll('.tab-panel')[idx].classList.add('active')}}
