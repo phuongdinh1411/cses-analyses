@@ -1,0 +1,1391 @@
+[
+  {
+    "key": "system-design-interview",
+    "title": "System Design Interview",
+    "authors": "Alex Xu \u00b7 Bestselling author",
+    "lessons": 30,
+    "students": 250000,
+    "lastModified": "2022.03.01",
+    "url": "https://bytebytego.com/courses/system-design-interview",
+    "chapters": [
+      {
+        "chapter": 0,
+        "title": "Foreword",
+        "slug": "foreword",
+        "free": true
+      },
+      {
+        "chapter": 1,
+        "title": "Join the Community",
+        "slug": "join-discord-community",
+        "free": false
+      },
+      {
+        "chapter": 2,
+        "title": "Scale From Zero To Millions Of Users",
+        "slug": "scale-from-zero-to-millions-of-users",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "Back-of-the-envelope Estimation",
+        "slug": "back-of-the-envelope-estimation",
+        "free": true
+      },
+      {
+        "chapter": 4,
+        "title": "A Framework For System Design Interviews",
+        "slug": "a-framework-for-system-design-interviews",
+        "free": true
+      },
+      {
+        "chapter": 5,
+        "title": "Design A Rate Limiter",
+        "slug": "design-a-rate-limiter",
+        "free": true
+      },
+      {
+        "chapter": 6,
+        "title": "Design Consistent Hashing",
+        "slug": "design-consistent-hashing",
+        "free": true
+      },
+      {
+        "chapter": 7,
+        "title": "Design A Key-value Store",
+        "slug": "design-a-key-value-store",
+        "free": true
+      },
+      {
+        "chapter": 8,
+        "title": "Design A Unique ID Generator In Distributed Systems",
+        "slug": "design-a-unique-id-generator-in-distributed-systems",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "Design A URL Shortener",
+        "slug": "design-a-url-shortener",
+        "free": true
+      },
+      {
+        "chapter": 10,
+        "title": "Design A Web Crawler",
+        "slug": "design-a-web-crawler",
+        "free": true
+      },
+      {
+        "chapter": 11,
+        "title": "Design A Notification System",
+        "slug": "design-a-notification-system",
+        "free": false
+      },
+      {
+        "chapter": 12,
+        "title": "Design A News Feed System",
+        "slug": "design-a-news-feed-system",
+        "free": true
+      },
+      {
+        "chapter": 13,
+        "title": "Design A Chat System",
+        "slug": "design-a-chat-system",
+        "free": true
+      },
+      {
+        "chapter": 14,
+        "title": "Design A Search Autocomplete System",
+        "slug": "design-a-search-autocomplete-system",
+        "free": false
+      },
+      {
+        "chapter": 15,
+        "title": "Design YouTube",
+        "slug": "design-youtube",
+        "free": true
+      },
+      {
+        "chapter": 16,
+        "title": "Design Google Drive",
+        "slug": "design-google-drive",
+        "free": false
+      },
+      {
+        "chapter": 17,
+        "title": "Proximity Service",
+        "slug": "proximity-service",
+        "free": false
+      },
+      {
+        "chapter": 18,
+        "title": "Nearby Friends",
+        "slug": "nearby-friends",
+        "free": false
+      },
+      {
+        "chapter": 19,
+        "title": "Google Maps",
+        "slug": "google-maps",
+        "free": false
+      },
+      {
+        "chapter": 20,
+        "title": "Distributed Message Queue",
+        "slug": "distributed-message-queue",
+        "free": false
+      },
+      {
+        "chapter": 21,
+        "title": "Metrics Monitoring and Alerting System",
+        "slug": "metrics-monitoring-and-alerting-system",
+        "free": false
+      },
+      {
+        "chapter": 22,
+        "title": "Ad Click Event Aggregation",
+        "slug": "ad-click-event-aggregation",
+        "free": false
+      },
+      {
+        "chapter": 23,
+        "title": "Hotel Reservation System",
+        "slug": "hotel-reservation-system",
+        "free": true
+      },
+      {
+        "chapter": 24,
+        "title": "Distributed Email Service",
+        "slug": "distributed-email-service",
+        "free": false
+      },
+      {
+        "chapter": 25,
+        "title": "S3-like Object Storage",
+        "slug": "s3-like-object-storage",
+        "free": false
+      },
+      {
+        "chapter": 26,
+        "title": "Real-time Gaming Leaderboard",
+        "slug": "real-time-gaming-leaderboard",
+        "free": true
+      },
+      {
+        "chapter": 27,
+        "title": "Payment System",
+        "slug": "payment-system",
+        "free": false
+      },
+      {
+        "chapter": 28,
+        "title": "Digital Wallet",
+        "slug": "digital-wallet",
+        "free": false
+      },
+      {
+        "chapter": 29,
+        "title": "Stock Exchange",
+        "slug": "stock-exchange",
+        "free": false
+      },
+      {
+        "chapter": 30,
+        "title": "The Learning Continues",
+        "slug": "the-learning-continues",
+        "free": true
+      }
+    ]
+  },
+  {
+    "key": "machine-learning-system-design-interview",
+    "title": "Machine Learning System Design Interview",
+    "authors": "Ali Aminian \u00b7 Staff Engineer at Adobe, Ex-Google",
+    "lessons": 11,
+    "students": 25000,
+    "lastModified": "2023.01.28",
+    "url": "https://bytebytego.com/courses/machine-learning-system-design-interview",
+    "chapters": [
+      {
+        "chapter": 1,
+        "title": "Introduction and Overview",
+        "slug": "introduction-and-overview",
+        "free": false
+      },
+      {
+        "chapter": 2,
+        "title": "Visual Search System",
+        "slug": "visual-search-system",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "Google Street View Blurring System",
+        "slug": "google-street-view-blurring-system",
+        "free": false
+      },
+      {
+        "chapter": 4,
+        "title": "YouTube Video Search",
+        "slug": "youtube-video-search",
+        "free": true
+      },
+      {
+        "chapter": 5,
+        "title": "Harmful Content Detection",
+        "slug": "harmful-content-detection",
+        "free": false
+      },
+      {
+        "chapter": 6,
+        "title": "Video Recommendation System",
+        "slug": "video-recommendation-system",
+        "free": true
+      },
+      {
+        "chapter": 7,
+        "title": "Event Recommendation System",
+        "slug": "event-recommendation-system",
+        "free": false
+      },
+      {
+        "chapter": 8,
+        "title": "Ad Click Prediction on Social Platforms",
+        "slug": "ad-click-prediction-on-social-platforms",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "Similar Listings on Vacation Rental Platforms",
+        "slug": "similar-listings-on-vacation-rental-platforms",
+        "free": false
+      },
+      {
+        "chapter": 10,
+        "title": "Personalized News Feed",
+        "slug": "personalized-news-feed",
+        "free": true
+      },
+      {
+        "chapter": 11,
+        "title": "People You May Know",
+        "slug": "people-you-may-know",
+        "free": false
+      }
+    ]
+  },
+  {
+    "key": "coding-patterns",
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "lessons": 101,
+    "students": 10000,
+    "lastModified": "2024.01.28",
+    "url": "https://bytebytego.com/courses/coding-patterns",
+    "chapters": [
+      {
+        "chapter": "01-00",
+        "title": "Introduction to Two Pointers",
+        "slug": "two-pointers/introduction-to-two-pointers",
+        "free": true
+      },
+      {
+        "chapter": "01-01",
+        "title": "Pair Sum - Sorted",
+        "slug": "two-pointers/pair-sum-sorted",
+        "free": true
+      },
+      {
+        "chapter": "01-02",
+        "title": "Triplet Sum",
+        "slug": "two-pointers/triplet-sum",
+        "free": true
+      },
+      {
+        "chapter": "01-03",
+        "title": "Is Palindrome Valid",
+        "slug": "two-pointers/is-palindrome-valid",
+        "free": true
+      },
+      {
+        "chapter": "01-04",
+        "title": "Largest Container",
+        "slug": "two-pointers/largest-container",
+        "free": true
+      },
+      {
+        "chapter": "01-05",
+        "title": "Shift Zeros to the End",
+        "slug": "two-pointers/shift-zeros-to-the-end",
+        "free": false
+      },
+      {
+        "chapter": "01-06",
+        "title": "Next Lexicographical Sequence",
+        "slug": "two-pointers/next-lexicographical-sequence",
+        "free": false
+      },
+      {
+        "chapter": "02-00",
+        "title": "Introduction to Hash Maps and Sets",
+        "slug": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+        "free": false
+      },
+      {
+        "chapter": "02-01",
+        "title": "Pair Sum - Unsorted",
+        "slug": "hash-maps-and-sets/pair-sum-unsorted",
+        "free": false
+      },
+      {
+        "chapter": "02-02",
+        "title": "Verify Sudoku Board",
+        "slug": "hash-maps-and-sets/verify-sudoku-board",
+        "free": false
+      },
+      {
+        "chapter": "02-03",
+        "title": "Zero Striping",
+        "slug": "hash-maps-and-sets/zero-striping",
+        "free": false
+      },
+      {
+        "chapter": "02-04",
+        "title": "Longest Chain of Consecutive Numbers",
+        "slug": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+        "free": false
+      },
+      {
+        "chapter": "02-05",
+        "title": "Geometric Sequence Triplets",
+        "slug": "hash-maps-and-sets/geometric-sequence-triplets",
+        "free": false
+      },
+      {
+        "chapter": "03-00",
+        "title": "Introduction to Linked Lists",
+        "slug": "linked-lists/introduction-to-linked-lists",
+        "free": false
+      },
+      {
+        "chapter": "03-01",
+        "title": "Linked List Reversal",
+        "slug": "linked-lists/linked-list-reversal",
+        "free": false
+      },
+      {
+        "chapter": "03-02",
+        "title": "Remove the Kth Last Node From a Linked List",
+        "slug": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+        "free": false
+      },
+      {
+        "chapter": "03-03",
+        "title": "Linked List Intersection",
+        "slug": "linked-lists/linked-list-intersection",
+        "free": false
+      },
+      {
+        "chapter": "03-04",
+        "title": "LRU Cache",
+        "slug": "linked-lists/lru-cache",
+        "free": false
+      },
+      {
+        "chapter": "03-05",
+        "title": "Palindromic Linked List",
+        "slug": "linked-lists/palindromic-linked-list",
+        "free": false
+      },
+      {
+        "chapter": "03-06",
+        "title": "Flatten a Multi-Level Linked List",
+        "slug": "linked-lists/flatten-a-multi-level-linked-list",
+        "free": false
+      },
+      {
+        "chapter": "04-00",
+        "title": "Introduction to Fast and Slow Pointers",
+        "slug": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+        "free": false
+      },
+      {
+        "chapter": "04-01",
+        "title": "Linked List Loop",
+        "slug": "fast-and-slow-pointers/linked-list-loop",
+        "free": false
+      },
+      {
+        "chapter": "04-02",
+        "title": "Linked List Midpoint",
+        "slug": "fast-and-slow-pointers/linked-list-midpoint",
+        "free": false
+      },
+      {
+        "chapter": "04-03",
+        "title": "Happy Number",
+        "slug": "fast-and-slow-pointers/happy-number",
+        "free": false
+      },
+      {
+        "chapter": "05-00",
+        "title": "Introduction to Sliding Windows",
+        "slug": "sliding-windows/introduction-to-sliding-windows",
+        "free": false
+      },
+      {
+        "chapter": "05-01",
+        "title": "Substring Anagrams",
+        "slug": "sliding-windows/substring-anagrams",
+        "free": false
+      },
+      {
+        "chapter": "05-02",
+        "title": "Longest Substring With Unique Characters",
+        "slug": "sliding-windows/longest-substring-with-unique-characters",
+        "free": false
+      },
+      {
+        "chapter": "05-03",
+        "title": "Longest Uniform Substring After Replacements",
+        "slug": "sliding-windows/longest-uniform-substring-after-replacements",
+        "free": false
+      },
+      {
+        "chapter": "06-00",
+        "title": "Introduction to Binary Search",
+        "slug": "binary-search/introduction-to-binary-search",
+        "free": false
+      },
+      {
+        "chapter": "06-01",
+        "title": "Find the Insertion Index",
+        "slug": "binary-search/find-the-insertion-index",
+        "free": false
+      },
+      {
+        "chapter": "06-02",
+        "title": "First and Last Occurrences of a Number",
+        "slug": "binary-search/first-and-last-occurrences-of-a-number",
+        "free": false
+      },
+      {
+        "chapter": "06-03",
+        "title": "Cutting Wood",
+        "slug": "binary-search/cutting-wood",
+        "free": false
+      },
+      {
+        "chapter": "06-04",
+        "title": "Find the Target in a Rotated Sorted Array",
+        "slug": "binary-search/find-the-target-in-a-rotated-sorted-array",
+        "free": false
+      },
+      {
+        "chapter": "06-05",
+        "title": "Find the Median From Two Sorted Arrays",
+        "slug": "binary-search/find-the-median-from-two-sorted-arrays",
+        "free": false
+      },
+      {
+        "chapter": "06-06",
+        "title": "Matrix Search",
+        "slug": "binary-search/matrix-search",
+        "free": false
+      },
+      {
+        "chapter": "06-07",
+        "title": "Local Maxima in Array",
+        "slug": "binary-search/local-maxima-in-array",
+        "free": false
+      },
+      {
+        "chapter": "06-08",
+        "title": "Weighted Random Selection",
+        "slug": "binary-search/weighted-random-selection",
+        "free": false
+      },
+      {
+        "chapter": "07-00",
+        "title": "Introduction to Stacks",
+        "slug": "stacks/introduction-to-stacks",
+        "free": false
+      },
+      {
+        "chapter": "07-01",
+        "title": "Valid Parenthesis Expression",
+        "slug": "stacks/valid-parenthesis-expression",
+        "free": false
+      },
+      {
+        "chapter": "07-02",
+        "title": "Next Largest Number to the Right",
+        "slug": "stacks/next-largest-number-to-the-right",
+        "free": false
+      },
+      {
+        "chapter": "07-03",
+        "title": "Evaluate Expression",
+        "slug": "stacks/evaluate-expression",
+        "free": false
+      },
+      {
+        "chapter": "07-04",
+        "title": "Repeated Removal of Adjacent Duplicates",
+        "slug": "stacks/repeated-removal-of-adjacent-duplicates",
+        "free": false
+      },
+      {
+        "chapter": "07-05",
+        "title": "Implement a Queue using Stacks",
+        "slug": "stacks/implement-a-queue-using-stacks",
+        "free": false
+      },
+      {
+        "chapter": "07-06",
+        "title": "Maximums of Sliding Window",
+        "slug": "stacks/maximums-of-sliding-window",
+        "free": false
+      },
+      {
+        "chapter": "08-00",
+        "title": "Introduction to Heaps",
+        "slug": "heaps/introduction-to-heaps",
+        "free": false
+      },
+      {
+        "chapter": "08-01",
+        "title": "K Most Frequent Strings",
+        "slug": "heaps/k-most-frequent-strings",
+        "free": false
+      },
+      {
+        "chapter": "08-02",
+        "title": "Combine Sorted Linked Lists",
+        "slug": "heaps/combine-sorted-linked-lists",
+        "free": false
+      },
+      {
+        "chapter": "08-03",
+        "title": "Median of an Integer Stream",
+        "slug": "heaps/median-of-an-integer-stream",
+        "free": false
+      },
+      {
+        "chapter": "08-04",
+        "title": "Sort a K-Sorted Array",
+        "slug": "heaps/sort-a-k-sorted-array",
+        "free": false
+      },
+      {
+        "chapter": "09-00",
+        "title": "Introduction to Intervals",
+        "slug": "intervals/introduction-to-intervals",
+        "free": false
+      },
+      {
+        "chapter": "09-01",
+        "title": "Merge Overlapping Intervals",
+        "slug": "intervals/merge-overlapping-intervals",
+        "free": false
+      },
+      {
+        "chapter": "09-02",
+        "title": "Identify All Interval Overlaps",
+        "slug": "intervals/identify-all-interval-overlaps",
+        "free": false
+      },
+      {
+        "chapter": "09-03",
+        "title": "Largest Overlap of Intervals",
+        "slug": "intervals/largest-overlap-of-intervals",
+        "free": false
+      },
+      {
+        "chapter": "10-00",
+        "title": "Introduction to Prefix Sums",
+        "slug": "prefix-sums/introduction-to-prefix-sums",
+        "free": false
+      },
+      {
+        "chapter": "10-01",
+        "title": "Sum Between Range",
+        "slug": "prefix-sums/sum-between-range",
+        "free": false
+      },
+      {
+        "chapter": "10-02",
+        "title": "K-Sum Subarrays",
+        "slug": "prefix-sums/k-sum-subarrays",
+        "free": false
+      },
+      {
+        "chapter": "10-03",
+        "title": "Product Array Without Current Element",
+        "slug": "prefix-sums/product-array-without-current-element",
+        "free": false
+      },
+      {
+        "chapter": "11-00",
+        "title": "Introduction to Trees",
+        "slug": "trees/introduction-to-trees",
+        "free": false
+      },
+      {
+        "chapter": "11-01",
+        "title": "Invert Binary Tree",
+        "slug": "trees/invert-binary-tree",
+        "free": false
+      },
+      {
+        "chapter": "11-02",
+        "title": "Balanced Binary Tree Validation",
+        "slug": "trees/balanced-binary-tree-validation",
+        "free": false
+      },
+      {
+        "chapter": "11-03",
+        "title": "Rightmost Nodes of a Binary Tree",
+        "slug": "trees/rightmost-nodes-of-a-binary-tree",
+        "free": false
+      },
+      {
+        "chapter": "11-04",
+        "title": "Widest Binary Tree Level",
+        "slug": "trees/widest-binary-tree-level",
+        "free": false
+      },
+      {
+        "chapter": "11-05",
+        "title": "Binary Search Tree Validation",
+        "slug": "trees/binary-search-tree-validation",
+        "free": false
+      },
+      {
+        "chapter": "11-06",
+        "title": "Lowest Common Ancestor",
+        "slug": "trees/lowest-common-ancestor",
+        "free": false
+      },
+      {
+        "chapter": "11-07",
+        "title": "Build Binary Tree From Preorder and Inorder Traversals",
+        "slug": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+        "free": false
+      },
+      {
+        "chapter": "11-08",
+        "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+        "slug": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+        "free": false
+      },
+      {
+        "chapter": "11-09",
+        "title": "Binary Tree Symmetry",
+        "slug": "trees/binary-tree-symmetry",
+        "free": false
+      },
+      {
+        "chapter": "11-10",
+        "title": "Binary Tree Columns",
+        "slug": "trees/binary-tree-columns",
+        "free": false
+      },
+      {
+        "chapter": "11-11",
+        "title": "Kth Smallest Number in a Binary Search Tree",
+        "slug": "trees/kth-smallest-number-in-a-binary-search-tree",
+        "free": false
+      },
+      {
+        "chapter": "11-12",
+        "title": "Serialize and Deserialize a Binary Tree",
+        "slug": "trees/serialize-and-deserialize-a-binary-tree",
+        "free": false
+      },
+      {
+        "chapter": "12-00",
+        "title": "Introduction to Tries",
+        "slug": "tries/introduction-to-tries",
+        "free": false
+      },
+      {
+        "chapter": "12-01",
+        "title": "Design a Trie",
+        "slug": "tries/design-a-trie",
+        "free": false
+      },
+      {
+        "chapter": "12-02",
+        "title": "Insert and Search Words with Wildcards",
+        "slug": "tries/insert-and-search-words-with-wildcards",
+        "free": false
+      },
+      {
+        "chapter": "12-03",
+        "title": "Find All Words on a Board",
+        "slug": "tries/find-all-words-on-a-board",
+        "free": false
+      },
+      {
+        "chapter": "13-00",
+        "title": "Introduction to Graphs",
+        "slug": "graphs/introduction-to-graphs",
+        "free": false
+      },
+      {
+        "chapter": "13-01",
+        "title": "Graph Deep Copy",
+        "slug": "graphs/graph-deep-copy",
+        "free": false
+      },
+      {
+        "chapter": "13-02",
+        "title": "Count Islands",
+        "slug": "graphs/count-islands",
+        "free": false
+      },
+      {
+        "chapter": "13-03",
+        "title": "Matrix Infection",
+        "slug": "graphs/matrix-infection",
+        "free": false
+      },
+      {
+        "chapter": "13-04",
+        "title": "Bipartite Graph Validation",
+        "slug": "graphs/bipartite-graph-validation",
+        "free": false
+      },
+      {
+        "chapter": "13-05",
+        "title": "Longest Increasing Path",
+        "slug": "graphs/longest-increasing-path",
+        "free": false
+      },
+      {
+        "chapter": "13-06",
+        "title": "Shortest Transformation Sequence",
+        "slug": "graphs/shortest-transformation-sequence",
+        "free": false
+      },
+      {
+        "chapter": "13-07",
+        "title": "Merging Communities",
+        "slug": "graphs/merging-communities",
+        "free": false
+      },
+      {
+        "chapter": "13-08",
+        "title": "Prerequisites",
+        "slug": "graphs/prerequisites",
+        "free": false
+      },
+      {
+        "chapter": "13-09",
+        "title": "Shortest Path",
+        "slug": "graphs/shortest-path",
+        "free": false
+      },
+      {
+        "chapter": "13-10",
+        "title": "Connect the Dots",
+        "slug": "graphs/connect-the-dots",
+        "free": false
+      },
+      {
+        "chapter": "14-00",
+        "title": "Introduction to Backtracking",
+        "slug": "backtracking/introduction-to-backtracking",
+        "free": false
+      },
+      {
+        "chapter": "14-01",
+        "title": "Find All Permutations",
+        "slug": "backtracking/find-all-permutations",
+        "free": false
+      },
+      {
+        "chapter": "14-02",
+        "title": "Find All Subsets",
+        "slug": "backtracking/find-all-subsets",
+        "free": false
+      },
+      {
+        "chapter": "14-03",
+        "title": "N Queens",
+        "slug": "backtracking/n-queens",
+        "free": false
+      },
+      {
+        "chapter": "14-04",
+        "title": "Combinations of a Sum",
+        "slug": "backtracking/combinations-of-a-sum",
+        "free": false
+      },
+      {
+        "chapter": "14-05",
+        "title": "Phone Keypad Combinations",
+        "slug": "backtracking/phone-keypad-combinations",
+        "free": false
+      },
+      {
+        "chapter": "15-00",
+        "title": "Introduction to Dynamic Programming",
+        "slug": "dynamic-programming/introduction-to-dynamic-programming",
+        "free": false
+      },
+      {
+        "chapter": "15-01",
+        "title": "Climbing Stairs",
+        "slug": "dynamic-programming/climbing-stairs",
+        "free": false
+      },
+      {
+        "chapter": "15-02",
+        "title": "Minimum Coin Combination",
+        "slug": "dynamic-programming/minimum-coin-combination",
+        "free": false
+      },
+      {
+        "chapter": "15-03",
+        "title": "Matrix Pathways",
+        "slug": "dynamic-programming/matrix-pathways",
+        "free": false
+      },
+      {
+        "chapter": "15-04",
+        "title": "Neighborhood Burglary",
+        "slug": "dynamic-programming/neighborhood-burglary",
+        "free": false
+      },
+      {
+        "chapter": "15-05",
+        "title": "Longest Common Subsequence",
+        "slug": "dynamic-programming/longest-common-subsequence",
+        "free": false
+      },
+      {
+        "chapter": "15-06",
+        "title": "Longest Palindrome in a String",
+        "slug": "dynamic-programming/longest-palindrome-in-a-string",
+        "free": false
+      },
+      {
+        "chapter": "15-07",
+        "title": "Maximum Subarray Sum",
+        "slug": "dynamic-programming/maximum-subarray-sum",
+        "free": false
+      },
+      {
+        "chapter": "15-08",
+        "title": "0/1 Knapsack",
+        "slug": "dynamic-programming/01-knapsack",
+        "free": false
+      },
+      {
+        "chapter": "15-09",
+        "title": "Largest Square in a Matrix",
+        "slug": "dynamic-programming/largest-square-in-a-matrix",
+        "free": false
+      },
+      {
+        "chapter": "16-00",
+        "title": "Introduction to Greedy Algorithms",
+        "slug": "greedy/introduction-to-greedy-algorithms",
+        "free": false
+      },
+      {
+        "chapter": "16-01",
+        "title": "Jump to the End",
+        "slug": "greedy/jump-to-the-end",
+        "free": false
+      },
+      {
+        "chapter": "16-02",
+        "title": "Gas Stations",
+        "slug": "greedy/gas-stations",
+        "free": false
+      },
+      {
+        "chapter": "16-03",
+        "title": "Candies",
+        "slug": "greedy/candies",
+        "free": false
+      },
+      {
+        "chapter": "17-00",
+        "title": "Introduction to Sort and Search",
+        "slug": "sort-and-search/introduction-to-sort-and-search",
+        "free": false
+      },
+      {
+        "chapter": "17-01",
+        "title": "Sort Linked List",
+        "slug": "sort-and-search/sort-linked-list",
+        "free": false
+      },
+      {
+        "chapter": "17-02",
+        "title": "Sort Array",
+        "slug": "sort-and-search/sort-array",
+        "free": false
+      },
+      {
+        "chapter": "17-03",
+        "title": "Kth Largest Integer",
+        "slug": "sort-and-search/kth-largest-integer",
+        "free": false
+      },
+      {
+        "chapter": "17-04",
+        "title": "Dutch National Flag",
+        "slug": "sort-and-search/dutch-national-flag",
+        "free": false
+      },
+      {
+        "chapter": "18-00",
+        "title": "Introduction to Bit Manipulation",
+        "slug": "bit-manipulation/introduction-to-bit-manipulation",
+        "free": false
+      },
+      {
+        "chapter": "18-01",
+        "title": "Hamming Weights of Integers",
+        "slug": "bit-manipulation/hamming-weights-of-integers",
+        "free": false
+      },
+      {
+        "chapter": "18-02",
+        "title": "Lonely Integer",
+        "slug": "bit-manipulation/lonely-integer",
+        "free": false
+      },
+      {
+        "chapter": "18-03",
+        "title": "Swap Odd and Even Bits",
+        "slug": "bit-manipulation/swap-odd-and-even-bits",
+        "free": false
+      },
+      {
+        "chapter": "19-00",
+        "title": "Introduction to Math and Geometry",
+        "slug": "math-and-geometry/introduction-to-math-and-geometry",
+        "free": false
+      },
+      {
+        "chapter": "19-01",
+        "title": "Spiral Traversal",
+        "slug": "math-and-geometry/spiral-traversal",
+        "free": false
+      },
+      {
+        "chapter": "19-02",
+        "title": "Reverse 32-Bit Integer",
+        "slug": "math-and-geometry/reverse-32-bit-integer",
+        "free": false
+      },
+      {
+        "chapter": "19-03",
+        "title": "Maximum Collinear Points",
+        "slug": "math-and-geometry/maximum-collinear-points",
+        "free": false
+      },
+      {
+        "chapter": "19-04",
+        "title": "The Josephus Problem",
+        "slug": "math-and-geometry/the-josephus-problem",
+        "free": false
+      },
+      {
+        "chapter": "19-05",
+        "title": "Triangle Numbers",
+        "slug": "math-and-geometry/triangle-numbers",
+        "free": false
+      }
+    ]
+  },
+  {
+    "key": "genai-system-design-interview",
+    "title": "Generative AI System Design Interview",
+    "authors": "Alex Xu",
+    "lessons": 11,
+    "students": 10000,
+    "lastModified": "2024.12.07",
+    "url": "https://bytebytego.com/courses/genai-system-design-interview",
+    "chapters": [
+      {
+        "chapter": 1,
+        "title": "Introduction and Overview",
+        "slug": "introduction-and-overview",
+        "free": true
+      },
+      {
+        "chapter": 2,
+        "title": "Gmail Smart Compose",
+        "slug": "gmail-smart-compose",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "Google Translate",
+        "slug": "google-translate",
+        "free": false
+      },
+      {
+        "chapter": 4,
+        "title": "ChatGPT: Personal Assistant Chatbot",
+        "slug": "chatgpt-personal-assistant-chatbot",
+        "free": false
+      },
+      {
+        "chapter": 5,
+        "title": "Image Captioning",
+        "slug": "image-captioning",
+        "free": false
+      },
+      {
+        "chapter": 6,
+        "title": "Retrieval-Augmented Generation",
+        "slug": "retrieval-augmented-generation",
+        "free": false
+      },
+      {
+        "chapter": 7,
+        "title": "Realistic Face Generation",
+        "slug": "realistic-face-generation",
+        "free": false
+      },
+      {
+        "chapter": 8,
+        "title": "High-Resolution Image Synthesis",
+        "slug": "high-resolution-image-synthesis",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "Text-to-Image Generation",
+        "slug": "text-to-image-generation",
+        "free": false
+      },
+      {
+        "chapter": 10,
+        "title": "Personalized Headshot Generation",
+        "slug": "personalized-headshot-generation",
+        "free": false
+      },
+      {
+        "chapter": 11,
+        "title": "Text-to-Video Generation",
+        "slug": "text-to-video-generation",
+        "free": false
+      }
+    ]
+  },
+  {
+    "key": "tech-resume",
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "lessons": 13,
+    "students": 5000,
+    "lastModified": "2025.02.11",
+    "url": "https://bytebytego.com/courses/tech-resume",
+    "chapters": [
+      {
+        "chapter": 1,
+        "title": "Acknowledgements",
+        "slug": "p0-c1-acknowledgements",
+        "free": false
+      },
+      {
+        "chapter": 2,
+        "title": "Introduction",
+        "slug": "p0-c2-introduction",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "PART 1: RESUMES AND THE HIRING PROCESS",
+        "slug": "p1-c0-resumes-and-the-hiring-process",
+        "free": true
+      },
+      {
+        "chapter": 4,
+        "title": "Chapter 1: Why Resumes and CVs are Important",
+        "slug": "p1-c1-why-resumes-and-cvs-are-important",
+        "free": true
+      },
+      {
+        "chapter": 5,
+        "title": "Chapter 2: The Hiring Pipeline",
+        "slug": "p1-c2-the-hiring-pipeline",
+        "free": true
+      },
+      {
+        "chapter": 6,
+        "title": "PART 2: WRITING THE RESUME",
+        "slug": "p2-c0-writing-the-resume",
+        "free": false
+      },
+      {
+        "chapter": 7,
+        "title": "Chapter 3: Tech Resume Basics",
+        "slug": "p2-c1-tech-resume-basics",
+        "free": false
+      },
+      {
+        "chapter": 8,
+        "title": "Chapter 4: Resume Structure",
+        "slug": "p2-c2-resume-structure",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "Chapter 5: Standing Out",
+        "slug": "p2-c3-standing-out",
+        "free": false
+      },
+      {
+        "chapter": 10,
+        "title": "Chapter 6: Common Mistakes",
+        "slug": "p2-c4-common-mistakes",
+        "free": false
+      },
+      {
+        "chapter": 11,
+        "title": "Chapter 7: Different Experience Levels, Different Career Paths",
+        "slug": "p2-c5-different-experience-levels-different-career-paths",
+        "free": false
+      },
+      {
+        "chapter": 12,
+        "title": "Chapter 8: Exercises to Polish Your Resume",
+        "slug": "p2-c6-exercises-to-polish-your-resume",
+        "free": false
+      },
+      {
+        "chapter": 13,
+        "title": "Chapter 9: Beyond the Resume",
+        "slug": "p2-c7-beyond-the-resume",
+        "free": false
+      },
+      {
+        "chapter": 14,
+        "title": "PART 3: EXAMPLES AND INSPIRATION",
+        "slug": "p3-c0-examples-and-inspiration",
+        "free": false
+      },
+      {
+        "chapter": 15,
+        "title": "Chapter 10: Good Resume Template Principles",
+        "slug": "p3-c1-good-resume-template-principles",
+        "free": false
+      },
+      {
+        "chapter": 16,
+        "title": "Chapter 11: Resume Templates",
+        "slug": "p3-c2-resume-templates",
+        "free": false
+      },
+      {
+        "chapter": 17,
+        "title": "Chapter 12: Resume Improvement Examples",
+        "slug": "p3-c3-resume-improvement-examples",
+        "free": false
+      },
+      {
+        "chapter": 18,
+        "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process",
+        "slug": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+        "free": false
+      },
+      {
+        "chapter": 19,
+        "title": "Conclusion",
+        "slug": "p4-c0-conclusion",
+        "free": false
+      }
+    ]
+  },
+  {
+    "key": "behavioral-interview",
+    "title": "Behavioral Interview",
+    "authors": "Alex Xu",
+    "lessons": 15,
+    "students": 10,
+    "lastModified": "2025.02.11",
+    "url": "https://bytebytego.com/courses/behavioral-interview",
+    "chapters": []
+  },
+  {
+    "key": "object-oriented-design-interview",
+    "title": "Object-Oriented Design Interview",
+    "authors": "Alex Xu",
+    "lessons": 14,
+    "students": 5000,
+    "lastModified": "2025.02.11",
+    "url": "https://bytebytego.com/courses/object-oriented-design-interview",
+    "chapters": [
+      {
+        "chapter": 1,
+        "title": "What is an Object-Oriented Design Interview",
+        "slug": "what-is-an-object-oriented-design-interview",
+        "free": true
+      },
+      {
+        "chapter": 2,
+        "title": "A Framework for the OOD Interview",
+        "slug": "a-framework-for-the-ood-interview",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "OOP Fundamentals",
+        "slug": "oop-fundamentals",
+        "free": false
+      },
+      {
+        "chapter": 4,
+        "title": "Design a Parking Lot",
+        "slug": "design-a-parking-lot",
+        "free": true
+      },
+      {
+        "chapter": 5,
+        "title": "Design a Movie Ticket Booking System",
+        "slug": "movie-ticket-booking-system",
+        "free": false
+      },
+      {
+        "chapter": 6,
+        "title": "Design a Unix File Search System",
+        "slug": "design-a-unix-file-search",
+        "free": false
+      },
+      {
+        "chapter": 7,
+        "title": "Design a Vending Machine",
+        "slug": "design-a-vending-machine",
+        "free": false
+      },
+      {
+        "chapter": 8,
+        "title": "Design an Elevator System",
+        "slug": "design-an-elevator-system",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "Design a Grocery Store System",
+        "slug": "grocery-store-system",
+        "free": false
+      },
+      {
+        "chapter": 10,
+        "title": "Design a Tic Tac Toe Game",
+        "slug": "design-a-tic-tac-toe-game",
+        "free": false
+      },
+      {
+        "chapter": 11,
+        "title": "Design a Blackjack Game",
+        "slug": "design-a-blackjack-game",
+        "free": false
+      },
+      {
+        "chapter": 12,
+        "title": "Design a Shipping Locker System",
+        "slug": "design-a-shipping-locker",
+        "free": false
+      },
+      {
+        "chapter": 13,
+        "title": "Design an ATM System",
+        "slug": "design-an-automated-teller-machine-atm",
+        "free": false
+      },
+      {
+        "chapter": 14,
+        "title": "Design a Restaurant Management System",
+        "slug": "design-a-restaurant-management-system",
+        "free": false
+      }
+    ]
+  },
+  {
+    "key": "mobile-system-design-interview",
+    "title": "Mobile System Design Interview",
+    "authors": "Alex Xu",
+    "lessons": 11,
+    "students": 1000,
+    "lastModified": "2025.02.11",
+    "url": "https://bytebytego.com/courses/mobile-system-design-interview",
+    "chapters": [
+      {
+        "chapter": 1,
+        "title": "Introduction",
+        "slug": "introduction",
+        "free": true
+      },
+      {
+        "chapter": 2,
+        "title": "A framework for Mobile SD interviews",
+        "slug": "a-framework-for-mobile-sd-interviews",
+        "free": true
+      },
+      {
+        "chapter": 3,
+        "title": "News feed app",
+        "slug": "news-feed-app",
+        "free": true
+      },
+      {
+        "chapter": 4,
+        "title": "Chat app",
+        "slug": "chat-app",
+        "free": false
+      },
+      {
+        "chapter": 5,
+        "title": "Stock trading app",
+        "slug": "stock-trading-app",
+        "free": false
+      },
+      {
+        "chapter": 6,
+        "title": "Pagination library",
+        "slug": "pagination-library",
+        "free": false
+      },
+      {
+        "chapter": 7,
+        "title": "Hotel reservation app",
+        "slug": "hotel-reservation-app",
+        "free": false
+      },
+      {
+        "chapter": 8,
+        "title": "Google Drive app",
+        "slug": "google-drive-app",
+        "free": false
+      },
+      {
+        "chapter": 9,
+        "title": "YouTube app",
+        "slug": "youtube-app",
+        "free": false
+      },
+      {
+        "chapter": 10,
+        "title": "Mobile System Design Building Blocks",
+        "slug": "mobile-system-design-building-blocks",
+        "free": false
+      },
+      {
+        "chapter": 11,
+        "title": "Quick Reference Cheat Sheet for MSD Interview",
+        "slug": "quick-reference-cheat-sheet-for-msd-interview",
+        "free": false
+      }
+    ]
+  }
+]
