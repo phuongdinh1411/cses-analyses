@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "two-pointers/next-lexicographical-sequence",
+  "chapter": "01-06",
+  "title": "Next Lexicographical Sequence",
+  "free": false,
+  "code": "var Component=(()=>{var x=Object.create;var n=Object.defineProperty;var N=Object.getOwnPropertyDescriptor;var F=Object.getOwnPropertyNames;var j=Object.getPrototypeOf,_=Object.prototype.hasOwnProperty;var q=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),T=(t,e)=>{for(var i in e)n(t,i,{get:e[i],enumerable:!0})},V=(t,e,i,a)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of F(e))!_.call(t,l)&&l!==i&&n(t,l,{get:()=>e[l],enumerable:!(a=N(e,l))||a.enumerable});return t};var I=(t,e,i)=>(i=t!=null?x(j(t)):{},V(e||!t||!t.__esModule?n(i,\"default\",{value:t,enumerable:!0}):i,t)),A=t=>V(n({},\"__esModule\",{value:!0}),t);var H=q(($,c)=>{c.exports=_jsx_runtime});var Q={};T(Q,{default:()=>v,frontmatter:()=>K});var C=I(H());var o=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-1-XNEZVNFM.svg\";var d=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-2-3NFPMURJ.svg\";var p=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-3-6Y6TYFIZ.svg\";var M=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-4-M7GGRR7V.svg\";var Z=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-5-XGO6V7S7.svg\";var f=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-6-DIDUMSFS.svg\";var L=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-7-LIXSX3R6.svg\";var m=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-8-KIIULURN.svg\";var g=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-9-TFGGHBXG.svg\";var b=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-10-NINVKU4R.svg\";var u=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-11-OXCTWZW3.svg\";var w=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-12-DX55UISX.svg\";var k=\"/images/courses/coding-patterns/two-pointers/next-lexicographical-sequence/image-01-06-13-GYKDMNYC.svg\";var K={chapter:\"01-06\",difficulty:\"Medium\",title:\"Next Lexicographical Sequence\"};function y(t){let e={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",math:\"math\",mi:\"mi\",mo:\"mo\",mrow:\"mrow\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",ul:\"ul\",...t.components},{CodeTabs:i,Figure:a,Image:l,OpenCodeEditor:h,ProblemDescription:r}=e;return i||s(\"CodeTabs\",!0),a||s(\"Figure\",!0),l||s(\"Image\",!0),h||s(\"OpenCodeEditor\",!0),r||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsxs)(e.p,{children:[\"Given a string of lowercase English letters, rearrange the characters to form a new string representing the \",(0,C.jsx)(e.strong,{children:\"next immediate sequence in lexicographical\"}),\" (alphabetical) \",(0,C.jsx)(e.strong,{children:\"order\"}),\". If the given string is already last in lexicographical order among all possible arrangements, return the arrangement that's first in lexicographical order.\"]}),(0,C.jsx)(e.h4,{id:\"example-1\",children:\"Example 1:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: s = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcd'\"}),`\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abdc'\"}),`\n`]})}),(0,C.jsxs)(e.p,{children:[\"Explanation: \",(0,C.jsx)(e.code,{children:'\"abdc\"'}),\" is the next sequence in lexicographical order after rearranging \",(0,C.jsx)(e.code,{children:'\"abcd\"'}),\".\"]}),(0,C.jsx)(e.h4,{id:\"example-2\",children:\"Example 2:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: s = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'dcba'\"}),`\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcd'\"}),`\n`]})}),(0,C.jsxs)(e.p,{children:[\"Explanation: Since \",(0,C.jsx)(e.code,{children:'\"dcba\"'}),\" is the last sequence in lexicographical order, we return the first sequence: \",(0,C.jsx)(e.code,{children:'\"abcd\"'}),\".\"]}),(0,C.jsx)(e.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"The string contains at least one character.\"}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"Before devising a solution, let\\u2019s first make sure we understand what the next lexicographical sequence of a string is.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"An important detail is that a string\\u2019s next lexicographical sequence is lexicographically \",(0,C.jsx)(e.em,{children:\"larger\"}),\" than the original string. Consider the string \\u201Cabc\\u201D and all its permutations in a lexicographically ordered sequence:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:o,alt:\"Image represents a table of three columns and six rows containing permutations of the letters 'a', 'b', and 'c'.  Each row presents a unique arrangement of these three letters. A vertical arrow separates the table from the text 'lexicographical order'. This arrow indicates that the rows in the table are ordered lexicographically; that is, they are arranged in ascending order as they would appear in a dictionary.  The ordering starts with 'a' as the smallest element, followed by 'b', and then 'c'.  The first row is 'abc', the second is 'acb', and so on, systematically exhausting all possible permutations of the three letters in lexicographical order.\",width:\"257\",height:\"163\"})}),`\n`,(0,C.jsx)(e.p,{children:\"We can see the increasing order of the strings in the sequence when we translate each letter to its position in the alphabet:\"}),`\n`,\" \",`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:d,alt:\"Image represents a mapping of permutations of the letters 'a', 'b', and 'c' to their corresponding numerical representations.  Six rows display all possible orderings of these three letters.  Each row shows a permutation on the left side, followed by a grey arrow indicating a transformation.  On the right side, each permutation is mapped to a unique set of numbers (1, 2, and 3), representing the rank of each letter within its permutation.  For example, in the first row, 'a', 'b', and 'c' map to 1, 2, and 3 respectively, reflecting their increasing order.  The vertical orange arrow and the word 'increasing' highlight that the numerical mapping consistently assigns 1 to the smallest letter, 2 to the next smallest, and 3 to the largest within each row's permutation.  The arrangement visually demonstrates a one-to-one correspondence between letter permutations and their ranked numerical equivalents.\",width:\"400\",height:\"180\"})}),`\n`,(0,C.jsx)(e.p,{children:\"From this, we also notice the next string in the sequence after \\u201Cabc\\u201D is \\u201Cacb\\u201D, which is the first string larger than the original string:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:p,alt:\"Image represents a table illustrating a mapping between character sequences and numerical sequences.  Six rows display different permutations of the characters 'a', 'b', and 'c' in the leftmost column.  Each character sequence is connected via a grey arrow to a corresponding numerical sequence (1, 2, 3) in the rightmost column.  The numerical sequences represent rankings or assignments based on the input character sequence.  For example, the sequence 'abc' maps to '1 2 3', while 'acb' maps to '1 3 2'.  An orange arrow points from the numerical sequence '1 3 2' to the text 'next largest after 'abc'', indicating that this numerical sequence represents the next largest ranking after the sequence 'abc' based on some implied ordering or ranking system.  The image demonstrates a pattern or algorithm that transforms character permutations into ranked numerical sequences.\",width:\"470\",height:\"170\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This gives us some indication of what we need to find. The next lexicographical string:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"Incurs the \",(0,C.jsx)(e.strong,{children:\"smallest possible lexicographical increase\"}),\" from the original string.\"]}),`\n`,(0,C.jsx)(e.li,{children:\"Uses the same letters as the original string.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Identifying which characters to rearrange\"}),(0,C.jsx)(e.br,{}),`\n`,\"Since our goal is to make the smallest possible increase, we need to somehow rearrange the characters on the right side of the string.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"To understand why, imagine trying to \\u201Cincrease\\u201D a string\\u2019s value. Increasing the rightmost letter causes the resulting string to be closer to the original string lexicographically than increasing the leftmost letter does:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:M,alt:\"Image represents two rows of data, each showing a sequence of letters (a, b, c, d, e) with corresponding numerical values (1, 2, 3, 4, 5) beneath them.  The top row displays the sequence 'a b c e d d,' with values '1 2 3 5 4 4' respectively. The bottom row shows a slightly altered sequence: 'b a b c e d d a,' with values '2 1 2 3 5 4 4 1' respectively.  A diagonal strikethrough line connects 'a' (value 1) in the top row to 'b' (value 2) in the top row, and similarly connects 'a' (value 1) in the bottom row to 'b' (value 2) in the bottom row.  The top row is labeled '(small increase)' and the bottom row is labeled '(big increase),' indicating that the changes between the two rows represent different magnitudes of increase in the value associated with 'a'.  The numerical values under each letter represent the magnitude of each element in the sequence. The visual emphasis is on the change in the position and value of 'a' between the two rows, highlighting the concept of a small versus a big increase in a sequence.\",width:\"420\",height:\"120\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Therefore, \",(0,C.jsx)(e.strong,{children:\"we should focus on rearranging characters on the right-hand side of the string first\"}),\", if possible.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"A key insight is that the last string in a lexicographical sequence (i.e., the largest permutation) will always follow a \",(0,C.jsx)(e.strong,{children:\"non-increasing\"}),\" order. We can see this with the string \\u201Cabcc\\u201D, for example, with its largest possible permutation being \\u201Cccba\\u201D:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a diagram illustrating a coding pattern transformation.  The diagram shows two sequences of characters, 'a', 'b', 'c', 'c' and 'c', 'c', 'b', 'a', arranged vertically with their corresponding numerical indices (1, 2, 3, 3 and 3, 3, 2, 1 respectively) displayed below. A black arrow connects the first sequence to the second, labeled 'last permutation'.  Above this arrow and connected to the second sequence by an orange arrow is the label 'non-increasing', indicating the transformation's goal. The transformation shows the initial sequence being reordered into a non-increasing sequence, where the elements are arranged in descending order, or if equal, maintain their original order.  The numerical indices also reflect this reordering, demonstrating the change in position of the elements after the transformation.\",width:\"420\",height:\"56\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"How does this help us? We know we need to rearrange the characters on the right of the string, but we don\\u2019t know how many to rearrange. From now on, let\\u2019s refer to the rightmost characters that should be rearranged as the \",(0,C.jsx)(e.strong,{children:\"suffix\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:['Take the string \"abcedda\" as an example. We traverse it from right to left with the ',(0,C.jsx)(e.strong,{children:\"goal of finding the shortest suffix that can be rearranged to form a larger permutation.\"}),\" The last 4 characters form a non-increasing suffix, and cannot be rearranged to make the string larger:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:f,alt:\"Image represents three rows of data illustrating a non-increasing subsequence pattern. Each row displays a sequence of characters (a, b, c, e, d, d, a) with corresponding numerical values (1, 2, 3, 5, 4, 4, 1) beneath them.  The arrangement shows the initial sequence followed by progressively identified non-increasing subsequences.  The non-increasing subsequences (d, d, a) are highlighted with a peach-colored background and the label 'non-increasing' is written in orange text above each subsequence. The numerical values remain consistent across all rows, demonstrating how the non-increasing subsequence is identified within the larger sequence.  The visual structure emphasizes the iterative identification of the non-increasing subsequence from the original sequence.\",width:\"300\",height:\"197\"})}),`\n`,(0,C.jsx)(e.p,{children:\"However, the next character, \\u2018c\\u2019, breaks the non-increasing sequence:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:L,alt:\"Image represents a sequence of characters 'a', 'b', 'c', 'e', 'd', 'd', 'a' displayed horizontally, each character having a corresponding numerical value (1, 2, 3, 5, 4, 4, 1) shown below.  The characters 'c', 'e' are highlighted in a peach-colored background, indicating they form a non-increasing subsequence (3, 5). A curved arrow connects the numerical values 3 and 5, pointing downwards to '3 < 5', explicitly showing the non-increasing relationship.  A horizontal arrow connects the entire character sequence to the text 'can rearrange to incur an increase' in orange, indicating that because the sequence is not monotonically non-increasing, it can be rearranged to create an increasing sequence. The text 'not non-increasing!' in orange further emphasizes the initial sequence's non-monotonic nature.\",width:\"460\",height:\"78\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Let\\u2019s call this character the \",(0,C.jsx)(e.strong,{children:\"pivot\"}),\":\"]}),`\n`,\" \",`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:m,alt:\"Image represents a visual depiction of a pivot operation, likely within a sorting algorithm.  The top shows the word 'pivot' in light blue, with a downward-pointing arrow indicating the pivot element. Below, a horizontal sequence of elements is displayed: 'a', 'b', 'c', 'e', 'd', 'd', 'a'. Each element is associated with a numerical value (1, 2, 3, 5, 4, 4, 1) written beneath it in orange.  The element 'c' (with value 3) is highlighted in a peach-colored background, indicating it's the chosen pivot. The arrangement shows the initial state before the pivot operation, with the pivot element visually separated. The numbers likely represent the values being sorted, and the letters are placeholders or keys associated with those values. The image illustrates a single step in a sorting algorithm where the pivot is selected and the data is prepared for partitioning or comparison based on the pivot's value.\",width:\"300\",height:\"80\"})}),`\n`,(0,C.jsx)(e.p,{children:\"If no pivot is found, it means the string is already the last lexicographical sequence. In this case, we need to obtain its first lexicographical permutation as the problem states. This can be done by reversing the string:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:g,alt:\"Image represents a simple illustration of a data reversal operation.  On the left, a sequence of four lowercase letters, 'd', 'c', 'b', and 'a', are arranged from left to right. A thick, black arrow connects this sequence to another sequence on the right. The arrow is labeled 'reverse' indicating the transformation applied. The sequence on the right shows the same letters, but in reversed order: 'a', 'b', 'c', and 'd', arranged from left to right. The diagram visually demonstrates how the 'reverse' operation transforms the input sequence into its reversed counterpart.  No URLs or parameters are present.\",width:\"384\",height:\"27\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Rearranging characters\"}),(0,C.jsx)(e.br,{}),`\n`,\"Having identified the shortest suffix to rearrange, the next objective is to rearrange this suffix to make the \",(0,C.jsx)(e.strong,{children:\"smallest increase possible\"}),\". We have to start the rearrangement at the pivot since the rest of the suffix is already arranged in its largest permutation.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"To make the character at the pivot position larger, we\\u2019d need to \",(0,C.jsx)(e.strong,{children:\"swap the pivot with a character larger than it on the right\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"In our example, which character should our pivot (\\u2018c\\u2019) swap with? We want to swap it with a character larger than 'c,' but not \",(0,C.jsx)(e.em,{children:\"too\"}),\" much larger because the increase should be as small as possible. Let\\u2019s figure out how we find such a character.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Since the substring after the pivot is lexicographically non-increasing, we can find the closest character larger than \\u2018c\\u2019 by \",(0,C.jsx)(e.strong,{children:\"traversing this suffix from right to left and stopping at the first character larger than it.\"}),\" In other words, we\\u2019re finding the rightmost successor to the pivot, which is \\u2018d\\u2019:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:b,alt:\"Image represents a diagram illustrating a concept likely related to data structures or algorithms, specifically focusing on finding a pivot and its rightmost successor.  The diagram shows two sequences of characters ('a', 'b', 'c', 'e', 'd', 'a') with associated numerical indices (1, 2, 3, 5, 4, 1, 4, 1) beneath them.  The character 'c' is highlighted in cyan and labeled 'pivot,' indicating it's a selected element. A downward-pointing arrow connects 'pivot' to 'c', showing its selection.  Separately, the text 'rightmost_successor' is shown above a downward-pointing arrow pointing to the second instance of 'd' in the sequence. This suggests that 'd' is identified as the rightmost successor of the pivot 'c' within the context of the algorithm or data structure being depicted. The arrangement implies a process where a pivot is chosen, and then a specific successor element is identified based on some criteria (in this case, the rightmost occurrence).\",width:\"310\",height:\"80\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Now, we swap the pivot and the rightmost successor:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:u,alt:\"Image represents a visual depiction of a data transformation or rearrangement process.  The left side shows a sequence of characters ('a', 'b', 'c', 'e', 'd', 'a') each with a numerical subscript (1, 2, 3, 5, 4, 1 respectively).  The characters 'c' and 'a' are highlighted in cyan and black respectively.  These characters are connected by a curved arrow forming a loop, indicating a cyclical or iterative relationship. The arrow points from 'a' to 'c' and then back to 'a'. A straight arrow points from this looped sequence to a second sequence on the right. The right-side sequence is a rearrangement of the left-side sequence ('a', 'b', 'd', 'e', 'd', 'c', 'a'), maintaining the same numerical subscripts (1, 2, 4, 5, 4, 3, 1) but with a changed order.  The character 'c' remains highlighted in cyan, and 'a' in black, indicating that these elements retain their identity despite the shift in position within the sequence. The overall diagram illustrates a transformation where the order of elements changes, but the elements themselves and their associated numerical values remain consistent.\",width:\"641\",height:\"70\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"The character at the pivot has increased, so to get the next permutation, \",(0,C.jsx)(e.strong,{children:\"we should make the substring after the pivot as small as possible\"}),\". After the swap shown above, we see that substring \\u201Cedca\\u201D is not at its smallest permutation. So, we need to minimize the permutation of this substring.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"An important observation is that after the previous swap, the substring after the pivot is still lexicographically non-increasing.\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:w,alt:\"Image represents a sequence of elements ('a', 'b', 'd', 'e', 'd', 'c', 'a') each associated with a numerical value (1, 2, 4, 5, 4, 4, 1 respectively) displayed below.  A downward-pointing arrow labeled 'pivot' in orange text points to the element 'd' (with value 4), indicating this element as a pivot point.  A horizontal arrow in orange text connects the elements 'e', 'd', 'c', 'a' (with values 5, 4, 4, 1 respectively), which are highlighted in a peach-colored background.  The text 'still non-increasing' describes the relationship between these highlighted elements, indicating their values are not increasing.  Another orange text phrase, 'make this as small as possible,' suggests an optimization goal: to minimize the range or size of this highlighted subsequence.  The overall diagram illustrates a concept related to finding a pivot point within a sequence and optimizing a subsequence based on a non-increasing condition.\",width:\"501\",height:\"85\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This means we can minimize this substring\\u2019s permutation by reversing it:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(l,{src:k,alt:\"Image represents a sequence transformation process.  The input is a sequence 'a b d e d c a' with corresponding numerical values '1 2 3 5 4 3 1' displayed below. This input sequence is highlighted in a peach-colored rectangle. An arrow labeled 'reverse' indicates the transformation applied to the input. The output sequence is 'a c d e' with values '1 3 4 5' shown below, highlighted in a light green rectangle. The transformation 'reverse' implies that the input sequence within the peach rectangle is reversed, resulting in the output sequence within the green rectangle.  The numerical values associated with each element remain consistent before and after the reversal, indicating that the transformation only affects the order of the elements, not their associated numerical values.\",width:\"661\",height:\"60\"})}),`\n`,(0,C.jsx)(e.p,{children:\"And just like that, we found the next lexicographical sequence! The two-pointer strategy used in this problem is staged traversal, where we first identify the pivot, and then identify the rightmost successor relative to it.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Many steps are involved in identifying the next lexicographical sequence. So, here\\u2019s a summary:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Locate the pivot.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"The pivot is the first character that breaks the non-increasing sequence from the right of the string.\"}),`\n`,(0,C.jsx)(e.li,{children:\"If no pivot is found, the string is already at its last lexicographical sequence, and the result is just the reverse of the string.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.ol,{start:\"2\",children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Find the rightmost successor to the pivot.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Swap the rightmost successor with the pivot to increase the lexicographical order of the suffix.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Reverse the suffix after the pivot to minimize its permutation.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_lexicographical_sequence\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"s: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),`:\n    letters = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"list\"}),`(s)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Locate the pivot, which is the first character from the right that breaks\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# non-increasing order. Start searching from the second-to-last position.\"}),`\n    pivot = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(letters) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" pivot >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),\" letters[pivot] >= letters[pivot + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]:\n        pivot -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If pivot is not found, the string is already in its largest permutation. In\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# this case, reverse the string to obtain the smallest permutation.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" pivot == -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"''\"}),\".join(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"reversed\"}),`(letters))\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Find the rightmost successor to the pivot.\"}),`\n    rightmost_successor = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(letters) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` letters[rightmost_successor] <= letters[pivot]:\n        rightmost_successor -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Swap the rightmost successor with the pivot to increase the lexicographical\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# order of the suffix.\"}),`\n    letters[pivot], letters[rightmost_successor] = (letters[rightmost_successor], letters[pivot])\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Reverse the suffix after the pivot to minimize its permutation.\"}),`\n    letters[pivot + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\":] = \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"reversed\"}),\"(letters[pivot + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`:])\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"''\"}),`.join(letters)\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_lexicographical_sequence\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"s\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" letters = s.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"split\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"''\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Locate the pivot, which is the first character from the right that breaks\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// non-increasing order. Start searching from the second-to-last position.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" pivot = letters.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (pivot >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\" && letters[pivot] >= letters[pivot + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]) {\n    pivot -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If pivot is not found, the string is already in its largest permutation. In\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// this case, reverse the string to obtain the smallest permutation.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (pivot === -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" letters.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse\"}),\"().\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"join\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"''\"}),`)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the rightmost successor to the pivot.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" rightmostSuccessor = letters.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (letters[rightmostSuccessor] <= letters[pivot]) {\n    rightmostSuccessor -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Swap the rightmost successor with the pivot to increase the lexicographical\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// order of the suffix.\"}),`\n  ;[letters[pivot], letters[rightmostSuccessor]] = [\n    letters[rightmostSuccessor],\n    letters[pivot],\n  ]\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Reverse the suffix after the pivot to minimize its permutation.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" suffix = letters.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"splice\"}),\"(pivot + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\").\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse\"}),`()\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" letters.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"concat\"}),\"(suffix).\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"join\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"''\"}),`)\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" String \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_lexicographical_sequence\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(String s)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),`[] letters = s.toCharArray();\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Locate the pivot, which is the first character from the right that breaks\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// non-increasing order. Start searching from the second-to-last position.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"pivot\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" letters.length - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (pivot >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\" && letters[pivot] >= letters[pivot + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]) {\n            pivot--;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If pivot is not found, the string is already in its largest permutation. In\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// this case, reverse the string to obtain the smallest permutation.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (pivot == -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`) {\n            reverse(letters, `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", letters.length - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"String\"}),`(letters);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the rightmost successor to the pivot.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"rightmostSuccessor\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" letters.length - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (letters[rightmostSuccessor] <= letters[pivot]) {\n            rightmostSuccessor--;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Swap the rightmost successor with the pivot to increase the lexicographical\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// order of the suffix.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"temp\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` letters[pivot];\n        letters[pivot] = letters[rightmostSuccessor];\n        letters[rightmostSuccessor] = temp;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Reverse the suffix after the pivot to minimize its permutation.\"}),`\n        reverse(letters, pivot + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", letters.length - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"String\"}),`(letters);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),\"[] arr, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" left, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" right)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"temp\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` arr[left];\n            arr[left] = arr[right];\n            arr[right] = temp;\n            left++;\n            right--;\n        }\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"next_lexicographical_sequence\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the input string. This is because we perform a maximum of two iterations across the string: one to find the pivot and another to find the rightmost character in the suffix that\\u2019s greater in value than the pivot. We also perform one reversal, which takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the letters list. In Python, this additional space is used because strings are immutable, which necessitates storing the input string as a list.\"]}),`\n`,(0,C.jsx)(e.h3,{id:\"test-cases\",children:\"Test Cases\"}),`\n`,(0,C.jsx)(e.p,{children:\"In addition to the examples discussed, below are more examples to consider when testing your code.\"}),`\n`,(0,C.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,C.jsxs)(e.table,{children:[(0,C.jsx)(e.thead,{children:(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Input\"}),(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Expected output\"}),(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Description\"})]})}),(0,C.jsxs)(e.tbody,{children:[(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"s = 'a'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"'a'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests a string with a single character.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"s = 'aaaa'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"'aaaa'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests a string with a repeated character.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"s = 'ynitsed'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"'ynsdeit'\"}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests a string with a random pivot character.\"})]})]})]})}),`\n`,(0,C.jsx)(e.h2,{id:\"interview-tip\",children:\"Interview Tip\"}),`\n`,(0,C.jsx)(e.p,{children:\"Tip: Be precise with your language. It\\u2019s crucial to be precise with your choice of words during an interview, especially for technical descriptions. For instance, in this problem, we use \\u201Cnon-increasing\\u201D instead of \\u201Cdecreasing,\\u201D as \\u201Cdecreasing\\u201D implies each term is strictly smaller than the previous one, which isn\\u2019t true in this case since adjacent characters can be equal.\"})]})}function v(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(y,{...t})}):y(t)}function s(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return A(Q);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

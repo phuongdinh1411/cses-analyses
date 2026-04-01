@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "trees/binary-tree-columns",
+  "chapter": "11-10",
+  "title": "Binary Tree Columns",
+  "free": false,
+  "code": "var Component=(()=>{var L=Object.create;var n=Object.defineProperty;var f=Object.getOwnPropertyDescriptor;var w=Object.getOwnPropertyNames;var b=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var g=(l,C)=>()=>(C||l((C={exports:{}}).exports,C),C.exports),x=(l,C)=>{for(var a in C)n(l,a,{get:C[a],enumerable:!0})},h=(l,C,a,s)=>{if(C&&typeof C==\"object\"||typeof C==\"function\")for(let t of w(C))!y.call(l,t)&&t!==a&&n(l,t,{get:()=>C[t],enumerable:!(s=f(C,t))||s.enumerable});return l};var N=(l,C,a)=>(a=l!=null?L(b(l)):{},h(C||!l||!l.__esModule?n(a,\"default\",{value:l,enumerable:!0}):a,l)),j=l=>h(n({},\"__esModule\",{value:!0}),l);var d=g((z,o)=>{o.exports=_jsx_runtime});var B={};x(B,{default:()=>Z,frontmatter:()=>I});var e=N(d());var V=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-1-MXLDMH5U.svg\";var H=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-2-LDWD3XTH.svg\";var m=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-3-MLPZJ65V.svg\";var p=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-4-BK6PPAZP.svg\";var M=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-5-IJ77ZM66.svg\";var k=\"/images/courses/coding-patterns/trees/binary-tree-columns/image-11-10-6-GFIDQVPD.svg\";var I={chapter:\"11-10\",difficulty:\"Medium\",title:\"Binary Tree Columns\"};function u(l){let C={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",...l.components},{CodeTabs:a,Figure:s,Image:t,OpenCodeEditor:r,ProblemDescription:c}=C;return a||i(\"CodeTabs\",!0),s||i(\"Figure\",!0),t||i(\"Image\",!0),r||i(\"OpenCodeEditor\",!0),c||i(\"ProblemDescription\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsxs)(c,{children:[(0,e.jsxs)(C.p,{children:[\"Given the root of a binary tree, return a list of arrays where each array represents a \",(0,e.jsx)(C.strong,{children:\"vertical column of the tree\"}),\". Nodes in the same column should be ordered from top to bottom. Nodes in the same row and column should be ordered from left to right.\"]}),(0,e.jsx)(C.h4,{id:\"example\",children:\"Example:\"}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-python\",children:[\"Output: [[\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"2\"}),\"], [\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"9\"}),\"], [\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"4\"}),\"], [\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"3\"}),\"], [\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"7\"}),`]]\n`]})})]}),`\n`,(0,e.jsx)(C.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,e.jsx)(C.p,{children:\"First and foremost, to get the columns of a binary tree, we'll need a way to identify what column each node is in.\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Column ids\"}),(0,e.jsx)(C.br,{}),`\n`,\"One way to distinguish between different columns is to represent each column by a distinct numerical value: an id. Initially, we don't know how many columns there are to the left or to the right of the root node, but we at least know the column which contains the root node itself. Let's give this column an id of 0. This lets us set positive column ids for nodes to the right of the root and negative ids to the left:\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:V,alt:\"Image represents a binary tree structure visualized across columns representing levels or time steps.  The topmost node, labeled '5', resides in column '0'.  This node connects to two child nodes: '9' in column '-1' and '3' in column '1'. Node '9' further branches into nodes '2' in column '-2' and '1' in column '0'. Node '3' connects to node '4' in column '0' and node '7' in column '2'.  Each column is delineated by a vertically oriented orange bar at the top, with column labels '-2', '-1', '0', '1', and '2' indicating the level or time step. The area between the orange bars is shaded lightly peach, providing visual separation between the columns. The nodes are represented as circles containing numerical values, and the connections between them represent parent-child relationships within the tree structure.\",width:\"330\",height:\"191\"})}),`\n`,(0,e.jsxs)(C.p,{children:[\"How can we identify what column id a node is associated with? A handy observation is that every time we move to the right, the column id increases by 1, and every time we move to the left, it decreases by 1. This allows us to assign ids as we traverse the tree: for any node, the column ids of \",(0,e.jsx)(C.code,{children:\"node.left\"}),\" and \",(0,e.jsx)(C.code,{children:\"node.right\"}),\" are \",(0,e.jsx)(C.code,{children:\"column - 1\"}),\" and \",(0,e.jsx)(C.code,{children:\"column + 1\"}),\", respectively:\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:H,alt:\"Image represents a directed acyclic graph illustrating a simple coding pattern, possibly related to tree traversal or a decision-making process within a program.  The graph consists of four nodes, each represented by a circle containing a numerical value (5, 9, 3, and 1) and labeled with a 'column' value (0, -1, 1, and 0 respectively).  Directed edges connect the nodes, indicating the flow of information or execution. Node 5, with column value 0, branches to node 9 (column -1) via an edge labeled 'column - 1' and to node 3 (column 1) via an edge labeled 'column + 1'. Node 9, with column value -1, connects to node 1 (column 0) via an edge labeled 'column + 1'.  The labels on the edges suggest that the value of a 'column' variable is modified as the program traverses the graph, potentially representing an index or counter within a data structure.  The overall structure suggests a recursive or iterative process where the value of the 'column' variable determines the path taken through the graph.\",width:\"270\",height:\"148\"})}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Tracking node values by their column id\"}),(0,e.jsx)(C.br,{}),`\n`,\"Now that we have a way to determine a node\\u2019s column, we\\u2019ll need a way to keep track of which node values belong to which columns. This can be done using a \",(0,e.jsx)(C.strong,{children:\"hash map\"}),\" where keys are column ids and the value of each column id is a list of the node values at that column.\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:m,alt:\"Image represents a visualization of a data structure, likely a tree or graph, alongside a mapping table.  A binary tree is shown with nodes containing numerical values (2, 5, 9, 1, 4, 3, 7).  The nodes are connected by edges, illustrating parent-child relationships.  The tree is positioned above a series of vertically aligned, peach-colored columns labeled -2, -1, 0, 1, and 2 at the top.  Each column visually aligns with a subset of the tree's nodes, suggesting a spatial organization or partitioning. To the right, a table labeled 'column_map' maps column IDs (-2 to 2) to lists of node values.  For example, column 0 contains nodes with values 5, 1, and 4, as reflected in the table's entry for column ID 0.  The table's labels 'id' and 'node values' clearly define the meaning of its columns.  The overall diagram illustrates a relationship between the spatial arrangement of nodes in the tree and their association with specific columns, as defined by the `column_map` table.\",width:\"413\",height:\"200\"})}),`\n`,(0,e.jsx)(C.p,{children:\"Now, let\\u2019s consider what traversal algorithm we should use to populate this hash map.\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Breadth-first search\"}),(0,e.jsx)(C.br,{}),`\n`,\"In general, we can employ any traversal method to assign column ids to each node, as long as we increment the column id whenever we move right and decrement it whenever we move left. However, we need to be cautious about the following two requirements:\"]}),`\n`,(0,e.jsxs)(C.ol,{children:[`\n`,(0,e.jsxs)(C.li,{children:[`\n`,(0,e.jsx)(C.p,{children:\"Nodes in the same column should be ordered from top to bottom.\"}),`\n`]}),`\n`,(0,e.jsxs)(C.li,{children:[`\n`,(0,e.jsx)(C.p,{children:\"Nodes in the same row and column should be ordered from left to right.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsxs)(C.p,{children:[\"So, we\\u2019ll need an algorithm that traverses the tree from top to bottom and then from left to right. This calls for \",(0,e.jsx)(C.strong,{children:\"BFS\"}),\".\"]}),`\n`,(0,e.jsx)(C.p,{children:\"BFS processes nodes level by level, starting from the root and moving horizontally across the tree at each level. This method ensures nodes are visited from top to bottom, and for nodes in the same row (level), they are visited from left to right.\"}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:p,alt:\"Image represents a tree-like data structure, possibly illustrating a coding pattern like a binary tree or a similar hierarchical structure.  The structure consists of nodes containing numerical values (5, 9, 3, 2, 1, 4, 7) connected by branches. Node 5 sits at the top, acting as the root.  It branches down to nodes 9 and 3. Node 9 further branches to nodes 2 and 1, while node 3 branches to nodes 4 and 7.  Horizontal light-blue lines with right-pointing cyan arrows traverse the diagram at three levels, indicating a flow of information or processing from left to right across each level. The leftmost vertical cyan arrow suggests an input or starting point for the process, while the rightmost horizontal arrow at the bottom level suggests an output or final result.  The overall arrangement suggests a layered processing model where data is processed level by level, potentially representing a parallel or pipelined algorithm.\",width:\"305\",height:\"157\"})}),`\n`,(0,e.jsx)(C.p,{children:\"Traversing the tree this way ensures node values are added to the hash map in the desired order, complying with the two requirements above.\"}),`\n`,(0,e.jsx)(C.p,{children:\"We can see how the hash map is populated level by level below:\"}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:M,alt:\"Image represents a visualization of a coding pattern, likely related to tree traversal or data structure manipulation.  The image shows three instances of a binary tree, each with a root node labeled '5'.  Each node in the tree contains a numerical value.  To the right of each tree is a table labeled 'column_map,' which acts as a mapping between a unique identifier ('id') and the values of nodes at a specific level or column within the tree.  Light blue arrows connect nodes horizontally across each tree, indicating a traversal or processing step.  Orange numbers next to the nodes in the trees represent some kind of associated value or index, possibly indicating the order of processing or a relative position.  The first tree shows a single column (id 0) with the root node 5 and its children. The second tree shows a horizontal connection between nodes 9 and 3, with the column_map updated to include ids -1, 0, and 1, reflecting the nodes' positions after this step. The third tree shows a horizontal connection spanning all leaf nodes, with the column_map further updated to include ids -2, -1, 0, 1, and 2, reflecting the final state after processing all nodes.  The overall pattern suggests a process that iteratively traverses the tree horizontally, updating the column_map to track the processed nodes and their values.\",width:\"407\",height:\"545\"})}),`\n`,(0,e.jsx)(C.p,{children:\"Once BFS concludes, the hash map is populated with lists of values for each column id. However, the hash map itself is not the expected output. So, let\\u2019s discuss what to do next.\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Creating the output\"}),(0,e.jsx)(C.br,{}),`\n`,\"This problem expects us to return the column ids from left to right. As we know, a hash map does not inherently maintain the order of its keys (column ids), which means we\\u2019ll need to find a way to attain the output in the desired order.\"]}),`\n`,(0,e.jsxs)(C.p,{children:[\"To retrieve the column ids in the desired order, it would be useful to know the \",(0,e.jsx)(C.strong,{children:\"leftmost column id\"}),\" and the \",(0,e.jsx)(C.strong,{children:\"rightmost column id\"}),\". This allows us to increment through all ids in the range [\",(0,e.jsx)(C.code,{children:\"leftmost_column\"}),\", \",(0,e.jsx)(C.code,{children:\"rightmost_column\"}),\"], ensuring we can build the output in the desired order.\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(t,{src:k,alt:\"Image represents a binary tree structure visualized within a columnar arrangement.  At the top, two rectangular boxes labeled 'leftmost_column' and 'rightmost_column' are positioned above their respective columns.  Arrows descend from these boxes, pointing to horizontal orange bars that span the width of their respective columns.  These bars are segmented into sections labeled with integers -2, -1, 0, 1, and 2, representing column indices. The main body of the image shows a binary tree; node 5 is the root, branching down to nodes 9 and 3. Node 9 further branches to nodes 2 and 1, while node 3 branches to nodes 4 and 7. Each node contains a single integer value. The tree is positioned such that nodes are vertically aligned within their respective columns based on the index labels, with the root node (5) centered in column 0.  The peach-colored background columns visually separate the nodes based on their column index.\",width:\"363\",height:\"235\"})}),`\n`,(0,e.jsx)(r,{}),`\n`,(0,e.jsx)(C.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,e.jsxs)(a,{children:[(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-python\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"from\"}),\" ds \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` TreeNode\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"List\"}),`\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"from\"}),\" collections \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` defaultdict, deque\n\\u200A\\u200A\\u200A\\u200A\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"binary_tree_columns\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-params\",children:\"root: TreeNode\"}),\") -> \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"}),`]]:\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"not\"}),` root:\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),` []\n    column_map = defaultdict(`,(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"list\"}),`)\n    leftmost_column = rightmost_column = `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`\n    queue = deque([(root, `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`)])\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"while\"}),` queue:\n        node, column = queue.popleft()\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),` node:\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Add the current node's value to its corresponding list in the hash\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# map.\"}),`\n            column_map[column].append(node.val)\n            leftmost_column = `,(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"min\"}),`(leftmost_column, column)\n            rightmost_column = `,(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"max\"}),`(rightmost_column, column)\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Add the current node's children to the queue with their respective\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# column ids.\"}),`\n            queue.append((node.left, column - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`))\n            queue.append((node.right, column + `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`))\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Construct the output list by collecting values from each column in the hash\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# map in the correct order.\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" [column_map[i] \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),\"(leftmost_column, rightmost_column + \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`)]\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-javascript\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),\" { \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),\" } \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"from\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-string\",children:\"'./ds.js'\"}),`\n\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"binary_tree_columns\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-params\",children:\"root\"}),`) {\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),` (!root) {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),` []\n  }\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"const\"}),\" columnMap = \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Map\"}),`()\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" leftmostColumn = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" rightmostColumn = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"const\"}),\" queue = [[root, \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`]]\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"while\"}),\" (queue.\",(0,e.jsx)(C.span,{className:\"hljs-property\",children:\"length\"}),\" > \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`) {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"const\"}),\" [node, column] = queue.\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"shift\"}),`()\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),` (node) {\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Add the current node's value to its corresponding list in the hash\"}),`\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// map.\"}),`\n      `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" (!columnMap.\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"has\"}),`(column)) {\n        columnMap.`,(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"set\"}),`(column, [])\n      }\n      columnMap.`,(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"get\"}),\"(column).\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"push\"}),\"(node.\",(0,e.jsx)(C.span,{className:\"hljs-property\",children:\"val\"}),`)\n      leftmostColumn = `,(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"min\"}),`(leftmostColumn, column)\n      rightmostColumn = `,(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"max\"}),`(rightmostColumn, column)\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Add the current node's children to the queue with their respective\"}),`\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// column ids.\"}),`\n      queue.`,(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"push\"}),\"([node.\",(0,e.jsx)(C.span,{className:\"hljs-property\",children:\"left\"}),\", column - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`])\n      queue.`,(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"push\"}),\"([node.\",(0,e.jsx)(C.span,{className:\"hljs-property\",children:\"right\"}),\", column + \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`])\n    }\n  }\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Construct the output list by collecting values from each column in the hash\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// map in the correct order.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"const\"}),` result = []\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),` i = leftmostColumn; i <= rightmostColumn; i++) {\n    result.`,(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"push\"}),\"(columnMap.\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"get\"}),`(i))\n  }\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),` result\n}\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-java\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.HashMap;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.LinkedList;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Queue;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Map;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` core.BinaryTree.TreeNode;\n\n`,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Helper class to store a node and its column index.\"}),`\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Pair\"}),` {\n    TreeNode<Integer> node;\n    `,(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),` column;\n\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"Pair\"}),(0,e.jsxs)(C.span,{className:\"hljs-params\",children:[\"(TreeNode<Integer> node, \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" column)\"]}),` {\n        `,(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"this\"}),`.node = node;\n        `,(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"this\"}),`.column = column;\n    }\n}\n\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"public\"}),\" ArrayList<ArrayList<Integer>> \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"binary_tree_columns\"}),(0,e.jsx)(C.span,{className:\"hljs-params\",children:\"(TreeNode<Integer> root)\"}),` {\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" (root == \",(0,e.jsx)(C.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Add the current node's value to its corresponding list in the hash map.\"}),`\n        Map<Integer, ArrayList<Integer>> columnMap = `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"HashMap\"}),`<>();\n        `,(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"leftmostColumn\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),\", rightmostColumn = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Use a queue to perform BFS; store (node, column index) pairs.\"}),`\n        Queue<Pair> queue = `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"LinkedList\"}),`<>();\n        queue.offer(`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Pair\"}),\"(root, \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`));\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"while\"}),` (!queue.isEmpty()) {\n            `,(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"Pair\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"current\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),` queue.poll();\n            TreeNode<Integer> node = current.node;\n            `,(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"column\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),` current.column;\n            columnMap.putIfAbsent(column, `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>());\n            columnMap.get(column).add(node.val);\n            leftmostColumn = Math.min(leftmostColumn, column);\n            rightmostColumn = Math.max(rightmostColumn, column);\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Add the current node's children to the queue with their respective column ids.\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" (node.left != \",(0,e.jsx)(C.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n                queue.offer(`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Pair\"}),\"(node.left, column - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`));\n            }\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" (node.right != \",(0,e.jsx)(C.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n                queue.offer(`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Pair\"}),\"(node.right, column + \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`));\n            }\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Construct the output list by collecting values from each column in the hash map in the correct order.\"}),`\n        ArrayList<ArrayList<Integer>> result = `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),` leftmostColumn; i <= rightmostColumn; i++) {\n            result.add(columnMap.get(i));\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),` result;\n    }\n}\n`]})})]}),`\n`,(0,e.jsx)(C.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,e.jsx)(C.code,{children:\"binary_tree_columns\"}),\" is \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"O\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\"(\"}),(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\")\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,e.jsx)(C.span,{className:\"mopen\",children:\"(\"}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mclose\",children:\")\"})]})})]}),\" where \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsx)(C.mrow,{children:(0,e.jsx)(C.mi,{children:\"n\"})}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the number of nodes in the tree. This is because we process each node of the tree once during the level\\u2010order traversal.\"]}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"O\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\"(\"}),(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\")\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,e.jsx)(C.span,{className:\"mopen\",children:\"(\"}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the queue. The queue\\u2019s size will grow as large as the level with the most nodes. In the worst case, this occurs at the final level when all the last\\u2010level nodes are non\\u2010null, totaling approximately \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mi,{mathvariant:\"normal\",children:\"/\"}),(0,e.jsx)(C.mn,{children:\"2\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"n/2\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mord\",children:\"/2\"})]})})]}),\" nodes. Note that the output array created at the return statement does not contribute to the space complexity.\"]})]})}function Z(l={}){let{wrapper:C}=l.components||{};return C?(0,e.jsx)(C,{...l,children:(0,e.jsx)(u,{...l})}):u(l)}function i(l,C){throw new Error(\"Expected \"+(C?\"component\":\"object\")+\" `\"+l+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return j(B);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

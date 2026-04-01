@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "intervals/largest-overlap-of-intervals",
+  "chapter": "09-03",
+  "title": "Largest Overlap of Intervals",
+  "free": false,
+  "code": "var Component=(()=>{var u=Object.create;var r=Object.defineProperty;var v=Object.getOwnPropertyDescriptor;var b=Object.getOwnPropertyNames;var y=Object.getPrototypeOf,x=Object.prototype.hasOwnProperty;var N=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),j=(t,e)=>{for(var n in e)r(t,n,{get:e[n],enumerable:!0})},V=(t,e,n,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of b(e))!x.call(t,a)&&a!==n&&r(t,a,{get:()=>e[a],enumerable:!(i=v(e,a))||i.enumerable});return t};var _=(t,e,n)=>(n=t!=null?u(y(t)):{},V(e||!t||!t.__esModule?r(n,\"default\",{value:t,enumerable:!0}):n,t)),F=t=>V(r({},\"__esModule\",{value:!0}),t);var o=N((W,c)=>{c.exports=_jsx_runtime});var R={};j(R,{default:()=>f,frontmatter:()=>O});var C=_(o());var H=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/largest-overlap-of-intervals-V2DL57PB.svg\";var d=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-1-NNENYBVW.svg\";var p=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-2-5XE7U5LK.svg\";var M=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-3-5ZR2Z7KQ.svg\";var Z=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-4-4KRZJALX.svg\";var m=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-5-KTMLDM72.svg\";var L=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-6-AL2TRFD2.svg\";var w=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-7-H4BUCLTS.svg\";var k=\"/images/courses/coding-patterns/intervals/largest-overlap-of-intervals/image-09-03-8-RCMABJSN.svg\";var O={chapter:\"09-03\",difficulty:\"Medium\",title:\"Largest Overlap of Intervals\"};function g(t){let e={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:n,Figure:i,Image:a,OpenCodeEditor:l,ProblemDescription:h}=e;return n||s(\"CodeTabs\",!0),i||s(\"Figure\",!0),a||s(\"Image\",!0),l||s(\"OpenCodeEditor\",!0),h||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsx)(e.p,{children:\"Given an array of intervals, determine the maximum number of intervals that overlap at any point. Each interval is half-open, meaning it includes the start point but excludes the end point.\"}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:H,width:\"370\",height:\"150\",alt:\"Image represents a horizontal number line ranging from 1 to 8, illustrating three overlapping intervals.  Four horizontal line segments, representing the intervals, are drawn above the number line.  The left endpoints of the segments are marked with solid circles, and the right endpoints with open circles. The first segment spans approximately from 1 to 3. The second segment starts around 2 and ends around 6. The third segment begins around 4 and ends around 7. The fourth segment starts at approximately 6 and ends at 7. A dashed orange rectangle highlights the area where three intervals (segments 2, 3, and 4) overlap, located roughly between 5 and 6 on the number line. An orange curved arrow points to this rectangle with the text '3 overlapping intervals' above it.  The number line provides a visual representation of the intervals' positions and their degree of overlap.\",priority:!0})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: intervals = [[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\"], [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"7\"}),\"], [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\"], [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"8\"}),`]]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),`\n`]})}),(0,C.jsx)(e.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"The input will contain at least one interval.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"For every index \",(0,C.jsx)(e.code,{children:\"i\"}),\" in the list, \",(0,C.jsx)(e.code,{children:\"intervals[i].start < intervals[i].end\"}),\".\"]}),`\n`]}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"Think about what it means when x intervals overlap at a certain point in time. This means at this point, there are x \\u201C\",(0,C.jsx)(e.strong,{children:\"active\"}),\"\\u201D intervals, where an interval is active if it has started but not ended.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"In the example below, we see three active intervals at time 5 (intervals that started at or before this time, and haven\\u2019t yet ended):\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:d,alt:\"Image represents a horizontal timeline ranging from 1 to 8, depicting four horizontal line segments representing intervals.  Each segment starts with a filled circle and ends with an unfilled circle, indicating a start and end point respectively. Three of these segments overlap within a region highlighted by a dashed orange rectangle around the 5 mark on the timeline. A curved orange arrow points from this overlapping region to a grey box labeled '3 active intervals,' further specifying that these three intervals 'have started' and 'haven't yet ended.' The fourth segment lies entirely to the left of the orange dashed rectangle, indicating it has already ended.  The lengths of the segments vary, representing different durations of the intervals.\",width:\"540\",height:\"128\"})}),`\n`,(0,C.jsx)(e.p,{children:\"To find the number of active intervals at any point in time, we need to identify when an interval has started and when an interval has ended. The start point of an interval indicates the start of a new active interval, whereas an end point represents an active interval finishing. This suggests an approach which looks at start and end points individually could be useful. Let\\u2019s explore this idea further.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Processing start points and end points\"}),(0,C.jsx)(e.br,{}),`\n`,\"Let\\u2019s step through each point in the array of intervals in chronological order, and see if we can determine the number of active intervals at each point.\"]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The first point is a start point, indicating the start of the first active interval. So, let\\u2019s increment our counter:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:p,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to interval management or event tracking.  The diagram features a numbered horizontal axis ranging from 1 to 8.  Above the axis are several horizontal line segments representing intervals; the lowest segment, highlighted in light blue at its left end, starts at point 1 and extends to point 3.  Above this are three more intervals: one starting at point 4 and ending at point 5, another starting at point 2 and ending at point 7, and a final one starting at point 6 and ending at point 7. A square box labeled 'i' is positioned above the axis and a downward arrow connects it to the beginning of the lowest interval, suggesting an input or initialization point. To the right, a dashed-line box contains the code snippet 'start point -> active_intervals += 1 = 1', indicating that when a 'start point' is encountered (presumably the beginning of an interval), a variable named 'active_intervals' is incremented by 1, resulting in a value of 1.  The overall diagram visually depicts how intervals are identified and counted, possibly within a larger algorithm.\",width:\"624\",height:\"77\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The next point is another start point. This is the start of the second active interval, so let\\u2019s increment our counter again. Now, the number of active intervals is 2, which correctly corresponds with the number of overlapping intervals at this point:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:M,alt:\"Image represents a visualization of an algorithm, possibly related to interval scheduling or similar.  The diagram shows a number line spanning from 1 to 8, with several horizontal line segments representing intervals. A light-blue circle at point 2 on the number line indicates a starting point, marked by a downward-pointing arrow originating from a square box labeled 'i'.  Three intervals are depicted: one extending from 1 to 3, another from 4 to 7, and a shorter one from 6 to 7.  A separate, dashed-line box to the right displays a code snippet: 'start point \\u2192 active_intervals += 1 = 2', indicating that upon reaching the start point (2), the variable `active_intervals` is incremented by 1, resulting in a value of 2. This suggests the algorithm counts or tracks active intervals based on the starting point and the overlapping intervals on the number line.\",width:\"624\",height:\"81\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The next point is an end point, which means an active interval has just finished. So, let\\u2019s decrement our counter. Now, the number of active intervals is 1, which also corresponds with the current number of overlapping intervals:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:Z,alt:\"Image represents a diagram illustrating a coding pattern, likely related to interval management or event processing.  The diagram's core is a horizontal number line spanning from 1 to 8, representing a time or sequence axis.  On this line, several horizontal line segments are drawn, each representing an interval.  A thicker, peach-colored circle at point 3 marks a specific event or point of interest.  A square labeled 'i' above the number line points downwards with an arrow to this circle, suggesting an input or trigger at this point.  Three distinct intervals are shown: one starting at approximately 1 and ending at 3 (peach circle), another starting at 2 and ending at 7, and a third starting at 6 and ending at 7.  The intervals are represented by thick black lines with endpoints marked by small circles. To the right, a light gray box with dashed borders contains a code snippet showing an operation: 'end point \\u2192 active_intervals -= 1' followed by '= 1', indicating that when an interval's endpoint is reached, a variable named 'active_intervals' is decremented by 1, and the result is 1.  This suggests the diagram visualizes how the number of active intervals changes over time based on interval endpoints.\",width:\"624\",height:\"79\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"We\\u2019ve now rationalized what we need to do whenever we encounter a start point or end point:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"If we encounter a \",(0,C.jsx)(e.strong,{children:\"start point\"}),\": \",(0,C.jsxs)(e.strong,{children:[\"increment \",(0,C.jsx)(e.code,{children:\"active_intervals\"})]}),\".\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"If we encounter an \",(0,C.jsx)(e.strong,{children:\"end point\"}),\": \",(0,C.jsxs)(e.strong,{children:[\"decrement \",(0,C.jsx)(e.code,{children:\"active_intervals\"})]}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Processing the remaining points allows us to attain the number of active intervals at each point. \",(0,C.jsxs)(e.strong,{children:[\"The final answer is obtained by recording the largest value of \",(0,C.jsx)(e.code,{children:\"active_intervals\"})]}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Edge case: processing concurrent start and end points\"}),(0,C.jsx)(e.br,{}),`\n`,\"An edge case to consider is when a start and end point occur simultaneously:\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:m,alt:\"Image represents a horizontal line graph illustrating the concept of overlapping intervals.  The x-axis is numbered from 1 to 8, representing a numerical scale. Four horizontal line segments of varying lengths are plotted above the x-axis.  The left endpoint of each segment indicates a start point, and the right endpoint indicates an end point, representing an interval.  The first segment spans from approximately 1 to 3. The second segment extends from approximately 4.2 to 7. The third segment runs from approximately 4.8 to 8. The fourth and shortest segment is positioned from approximately 5 to 5.5.  A dashed box highlights the intersection of the second and fourth segments, specifically around the x-axis value of 6. Within this box, a light peach-colored circle represents the endpoint of the fourth segment, and a light blue circle represents the start point of the second segment, indicating an overlap between these two intervals. The circles at the endpoints of the line segments are open, suggesting that the endpoints are not included in the intervals.\",width:\"340\",height:\"90\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Which point should we process first? Keep in mind the value of \",(0,C.jsx)(e.code,{children:\"active_intervals\"}),\" is 3 right before we reach time = 6 in the above example.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"At time 6, if we process the start point first and increment \",(0,C.jsx)(e.code,{children:\"active_intervals\"}),\", we would update it to 4 first, which is incorrect as there are never 4 active intervals at this moment. This is an issue because our final answer is the largest value of \",(0,C.jsx)(e.code,{children:\"active_intervals\"}),\" encountered, which means we\\u2019ll incorrectly record 4 as the answer.\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:L,alt:\"Image represents a flowchart illustrating a process where an initial value, `active_intervals = 3`, is processed.  A light-blue arrow labeled 'process start point' indicates the flow from the initial value to an intermediate value of `4`, enclosed in a red box.  An orange arrow labeled 'process end point' shows the flow from the intermediate value of `4` to a final value of `3`. A curved red arrow points from the intermediate value `4` to the text 'wrong: too high,' indicating that the intermediate result is incorrect because it exceeds the expected final value.  The diagram visually demonstrates a process where an input value is transformed, resulting in an output that is evaluated for correctness based on a predefined constraint.\",width:\"480\",height:\"60\"})}),`\n`,(0,C.jsx)(e.p,{children:\"If we process the end point first, we won\\u2019t encounter this issue:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:w,alt:\"Image represents a diagram illustrating a process with two stages.  The diagram begins with the text 'active_intervals = 3', indicating an initial state where the number of active intervals is 3.  An orange arrow then extends from this initial state, labeled above with 'process' in orange text and below with 'end point' in orange text, pointing to the number '2'. This signifies a process that reduces the number of active intervals from 3 to 2.  Following this, a light-blue arrow starts from '2' and points to '3', labeled above with 'process' in light-blue text and below with 'start point' in light-blue text. This represents a second process that increases the number of active intervals back to 3. The entire diagram visually depicts a cyclical process affecting the number of active intervals, starting and ending with a count of 3, with an intermediate state of 2.\",width:\"480\",height:\"37\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Therefore, for start and end points that occur simultaneously, we should \",(0,C.jsx)(e.strong,{children:\"process end points before start points\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Iterating over interval points in order\"}),(0,C.jsx)(e.br,{}),`\n`,\"We need a way to iterate through the start and end points in the order they should be processed. To do this, we can combine all start and end points into a single array and sort it. For start and end points of the same value, we ensure end points are prioritized before start points while the points are being sorted.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s use \\u2018S\\u2019 and \\u2018E\\u2019 to differentiate between start and end points, respectively:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:k,alt:\"Image represents a coding pattern illustration demonstrating the transformation of a list of intervals into a sorted list of points.  The top line shows a Python-like list called `intervals` containing five sub-lists, each representing an interval with a start and end point: `[1, 3]`, `[2, 6]`, `[4, 8]`, `[6, 7]`, and `[5, 7]`. A right arrow indicates a transformation to the `points` list below, which contains all the start and end points from the `intervals` list: `[1 2 3 4 5 6 6 7 7 8]`. Underneath each point in the `points` list, 'S' (in light blue) denotes a start point of an interval and 'E' (in orange) denotes an end point.  A small downward-pointing arrow underlines the 'E' and 'S' representing an end point appearing before a start point, highlighting a condition where the end point of one interval is sorted before the start point of another. The text 'end point sorted before start point' explains this specific arrangement and the implication of the sorting process.\",width:\"420\",height:\"107\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The algorithm we used to solve this problem is known as a \\u2018sweeping line algorithm.\\u2019 It works by processing the start and end points of intervals in order, as if a vertical line was sweeping across them. This method efficiently handles the dynamic nature of interval overlaps by specifically focusing on start and end points, rather than individual intervals.\"}),`\n`,(0,C.jsx)(l,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(n,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" ds \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` Interval\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_overlap_of_intervals\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"intervals: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[Interval]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n   points = []\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" interval \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` intervals:\n       points.append((interval.start, `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`))\n       points.append((interval.end, `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'E'\"}),`))\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Sort in chronological order. If multiple points occur at the same time, ensure\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# end points are prioritized before start points in the sorting order.\"}),`\n   points.sort(key=`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"lambda\"}),\" x: (x[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"], x[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]))\n   active_intervals = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n   max_overlaps = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" time, point_type \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` points:\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" point_type == \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`:\n           active_intervals += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n           active_intervals -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n       max_overlaps = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_overlaps, active_intervals)\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_overlaps\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" { \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Interval\"}),\" } \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'./ds.js'\"}),`\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_overlap_of_intervals\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"intervals\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` points = []\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" interval \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` intervals) {\n    points.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),\"([interval.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"start\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`])\n    points.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),\"([interval.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"end\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'E'\"}),`])\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Sort in chronological order. Prioritize 'E' before 'S' if times are equal\"}),`\n  points.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"a, b\"}),\") =>\"]}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (a[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] === b[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" a[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] === \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'E'\"}),\" ? -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\" : \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" a[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] - b[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n  })\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" active_intervals = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" max_overlaps = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" [time, pointType] \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` points) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (pointType === \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`) {\n      active_intervals += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      active_intervals -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n    max_overlaps = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(max_overlaps, active_intervals)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_overlaps\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Collections;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Comparator;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` core.Interval.Interval;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_overlap_of_intervals\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Interval> intervals)\"}),` {\n        ArrayList<EventPoint> points = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),` (Interval interval : intervals) {\n            points.add(`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"EventPoint\"}),\"(interval.start, \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`));\n            points.add(`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"EventPoint\"}),\"(interval.end, \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'E'\"}),`));\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Sort in chronological order. If multiple points occur at the same time, ensure\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// end points are prioritized before start points in the sorting order.\"}),`\n        Collections.sort(points, `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Comparator\"}),`<EventPoint>() {\n            `,(0,C.jsx)(e.span,{className:\"hljs-meta\",children:\"@Override\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"compare\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(EventPoint a, EventPoint b)\"}),` {\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (a.time != b.time) {\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` Integer.compare(a.time, b.time);\n                }\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" Character.compare(a.type, b.type); \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// 'E' < 'S' in ASCII\"}),`\n            }\n        });\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"active_intervals\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"max_overlaps\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),` (EventPoint point : points) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (point.type == \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'S'\"}),`) {\n                active_intervals += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n            } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                active_intervals -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n            max_overlaps = Math.max(max_overlaps, active_intervals);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_overlaps;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper class to represent an event point (either start or end of an interval)\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"EventPoint\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` time;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),` type;\n\n        EventPoint(`,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" time, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),` type) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.time = time;\n            `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.type = type;\n        }\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"largest_overlap_of_intervals\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the number of intervals. This is because we sort the points array of size \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mi,{children:\"n\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"2n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" before iterating over it in \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the \",(0,C.jsx)(e.code,{children:\"points\"}),\" array.\"]})]})}function f(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(g,{...t})}):g(t)}function s(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return F(R);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "course": "mobile-system-design-interview",
+  "id": "a-framework-for-mobile-sd-interviews",
+  "chapter": 2,
+  "title": "A framework for Mobile SD interviews",
+  "free": true,
+  "code": "var Component=(()=>{var Z=Object.create;var n=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var f=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,b=Object.prototype.hasOwnProperty;var m=(t,C)=>()=>(C||t((C={exports:{}}).exports,C),C.exports),L=(t,C)=>{for(var i in C)n(t,i,{get:C[i],enumerable:!0})},r=(t,C,i,l)=>{if(C&&typeof C==\"object\"||typeof C==\"function\")for(let a of f(C))!b.call(t,a)&&a!==i&&n(t,a,{get:()=>C[a],enumerable:!(l=u(C,a))||l.enumerable});return t};var k=(t,C,i)=>(i=t!=null?Z(g(t)):{},r(C||!t||!t.__esModule?n(i,\"default\",{value:t,enumerable:!0}):i,t)),w=t=>r(n({},\"__esModule\",{value:!0}),t);var o=m((A,s)=>{s.exports=_jsx_runtime});var v={};L(v,{default:()=>M,frontmatter:()=>H});var e=k(o());var h=\"/images/courses/mobile-system-design-interview/a-framework-for-mobile-sd-interviews/figure-2-1-2ETKJDTJ.svg\";var d=\"/images/courses/mobile-system-design-interview/a-framework-for-mobile-sd-interviews/image-2-1-X2ITWQUT.svg\";var H={chapter:2,free:!0,title:\"A framework for Mobile SD interviews\"};function c(t){let C={em:\"em\",h2:\"h2\",h3:\"h3\",li:\"li\",ol:\"ol\",p:\"p\",strong:\"strong\",ul:\"ul\",...t.components},{Figure:i,Image:l}=C;return i||p(\"Figure\",!0),l||p(\"Image\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(C.p,{children:\"Having a clear framework for Mobile System Design (MSD) interviews is more important than many realize. Without a clear structure, the interview can feel disorganized and challenging for both you and the interviewer. Unlike coding interviews with defined solutions, system design challenges invite multiple valid approaches, making a methodical strategy essential.\"}),`\n`,(0,e.jsx)(C.p,{children:\"Below, we briefly outline a 5-step framework to give you a high-level understanding. Detailed explanations and practical applications of each step are explored through case studies in later chapters.\"}),`\n`,(0,e.jsx)(C.h2,{id:\"a-5-step-framework-for-effective-mobile-system-design-interviews\",children:\"A 5-step framework for effective mobile system design interviews\"}),`\n`,(0,e.jsx)(i,{caption:\"Figure 1: High-level steps of the MSDI framework\",children:(0,e.jsx)(l,{src:h,alt:\"Image represents a flowchart outlining a five-step process for mobile system design.  The process begins with step 1, 'Understand the problem and establish design scope,' a rectangular box labeled with a bold '1' in a circle.  A line connects this box to step 2, 'API design,' another rectangular box labeled with a bold '2' in a circle.  Step 2 is connected to step 3, 'High-level client architecture,' a rectangular box labeled with a bold '3' in a circle.  Step 3 is connected to step 4, 'Design deep dive,' a rectangular box labeled with a bold '4' in a circle. Finally, step 4 connects to step 5, 'Wrap-up,' a rectangular box labeled with a bold '5' in a circle. The flow is generally sequential, with the exception of the connection from step 3 back to step 4, suggesting an iterative refinement process between high-level architecture and the detailed design.  All boxes are light gray with dark gray borders and text inside.  The connections between the boxes are represented by simple lines with small circles indicating connection points.\",width:\"500\",height:\"328\",priority:!0})}),`\n`,(0,e.jsx)(C.h3,{id:\"step-1-understand-the-problem-and-establish-design-scope\",children:\"Step 1: Understand the problem and establish design scope\"}),`\n`,(0,e.jsx)(C.p,{children:'MSD interviews typically start with broad questions such as \"Design a News Feed app\" or \"Design a Pagination library.\" While these questions may seem straightforward, understanding exactly what you need to design is a crucial part of the interview.'}),`\n`,(0,e.jsx)(C.p,{children:\"Your first task is to clarify what's in and out of scope by asking targeted questions to define the boundaries of your design. The interviewer's answers will guide your technology choices and help you make informed trade-offs. This initial scoping sets the foundation for your solution, making each interview unique.\"}),`\n`,(0,e.jsx)(C.p,{children:\"What kind of questions should you ask? Here's a list of different types of questions to help you get started:\"}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsxs)(C.li,{children:[`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"What are we building?\"}),\" These help uncover both functional and non-functional requirements, as well as what is out of scope for the interview. For example, you could ask:\"]}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"What features, screens, or critical user journeys are we designing?\"})}),`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"Are we pre-fetching data? Are we including user authentication in the design?\"})}),`\n`]}),`\n`]}),`\n`,(0,e.jsxs)(C.li,{children:[`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"For whom are we building?\"}),\" These help understand the scale, usage patterns, and how performant the solution should be. For example, you could ask:\"]}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"How many daily active users (DAU) does the product have? What's the expected growth?\"})}),`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"Are we building a minimum viable product (MVP) or a final product?\"})}),`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"What's our target market? A specific region or worldwide? What's the typical usage scenario? At home or on the train?\"})}),`\n`]}),`\n`]}),`\n`,(0,e.jsxs)(C.li,{children:[`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"What are the system's constraints?\"}),\" These clarify the system boundaries and technology choices. For example, you could ask:\"]}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"Which mobile platforms are we targeting (e.g., iOS, Android, or both)?\"})}),`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.em,{children:\"Are there any existing systems or APIs the mobile app must integrate with?\"})}),`\n`]}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(C.p,{children:\"While gathering requirements, you may find that some answers reveal information about other aspects of the system. Feel free to make reasonable assumptions based on these responses, just be sure to state them clearly so your interviewer can correct any misunderstandings.\"}),`\n`,(0,e.jsx)(C.p,{children:\"The goal isn't to ask every possible question. Instead, focus your questions on what's most relevant for the specific problem at hand, using your judgment to determine which details are most important to clarify.\"}),`\n`,(0,e.jsx)(\"div\",{className:\"note-block\",children:(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"\\u{1F4CC} Remember\"}),\": Your interviewer's answers to these questions will guide your technical decisions and trade-offs throughout the design process. Make sure to reference back to these requirements when explaining your choices later in the interview.\"]})}),`\n`,(0,e.jsx)(C.h3,{id:\"step-2-api-design\",children:\"Step 2: API design\"}),`\n`,(0,e.jsx)(C.p,{children:\"The API design step is where you establish the contract between our client apps and external dependencies. This step is crucial because it helps align your understanding with the interviewer's expectations and creates a solid foundation for the rest of your design.\"}),`\n`,(0,e.jsx)(C.p,{children:\"When designing an app that needs to communicate with a backend, start by defining the appropriate communication protocols for your specific use cases and the endpoints involved. On the other hand, if you're designing a mobile library, focus on outlining its public APIs, including how host apps will initialize, configure, and interact with your library.\"}),`\n`,(0,e.jsx)(C.p,{children:\"As you define the API, outline the data models that will power these interactions. Whether you're working with JSON payloads, Swift structs, Kotlin data classes, or even protocol buffers for efficiency, these models need to capture the data's structure and relationships clearly.\"}),`\n`,(0,e.jsx)(C.h3,{id:\"step-3-high-level-client-architecture\",children:\"Step 3: High-level client architecture\"}),`\n`,(0,e.jsx)(C.p,{children:\"After finishing the API design, it's time to create a high-level client architecture diagram that shows how these components work together.\"}),`\n`,(0,e.jsx)(C.p,{children:\"This high-level diagram sets the stage for the design and shows exactly which components you need to fulfill our requirements. Most importantly, it helps you validate that you have a complete end-to-end flow that meets all the functionality our system needs. As you create the diagram, you should also identify interesting points that warrant deeper discussion in the deep dive step later.\"}),`\n`,(0,e.jsx)(C.h3,{id:\"step-4-design-deep-dive\",children:\"Step 4: Design deep dive\"}),`\n`,(0,e.jsx)(C.p,{children:\"In this step, work with your interviewer to identify bottlenecks and explore specific components in greater detail. Generally, you should aim for two to three strong deep-dive discussions, though this isn't a strict rule and can vary depending on the situation.\"}),`\n`,(0,e.jsx)(C.p,{children:\"You should continue refining your client architecture during this step. Make sure to update your diagrams to reflect any new decisions or components you introduce.\"}),`\n`,(0,e.jsx)(C.p,{children:\"Pay attention to your interviewer's reactions and questions. If they express interest in multiple topics, manage your time carefully to give each topic the attention it deserves while staying within the interview's time constraints.\"}),`\n`,(0,e.jsx)(C.h3,{id:\"step-5-wrap-up-optional\",children:\"Step 5: Wrap-up (optional)\"}),`\n`,(0,e.jsx)(C.p,{children:\"If time allows, the final phase of your interview provides an opportunity to demonstrate your ability to think critically about your design and consider future improvements. Here's how to wrap up effectively:\"}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Summarize key decisions\"}),\". If your discussion involved multiple trade-offs or complex decisions, consider providing a brief recap. This helps solidify the key points of your design and ensures the interviewer understands your reasoning, particularly after a detailed technical discussion.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Showcase critical thinking\"}),\". When asked about potential improvements to your design, resist the urge to defend it as perfect. Instead, thoughtfully discuss areas where your solution could evolve. This demonstrates self-awareness and analytical thinking, qualities that interviewers value highly.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Address edge cases\"}),\". Take this opportunity to discuss any failure points or error cases you haven't covered earlier. This shows that you think holistically about system reliability and user experience, not just the happy path.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Consider future scale\"}),\". Think about how your system would handle growth, whether that's supporting more users or accommodating a larger development team. This demonstrates that you design with the future in mind and understand both technical and organizational scaling challenges.\"]}),`\n`]}),`\n`,(0,e.jsx)(C.h3,{id:\"time-allocation-for-each-step\",children:\"Time allocation for each step\"}),`\n`,(0,e.jsx)(C.p,{children:\"Time management is key in MSD interviews. With only 45-60 minutes to work with and a lot of ground to cover, having a solid plan helps you stay on track. Here's how to break down a typical 45-minute interview:\"}),`\n`,(0,e.jsx)(i,{children:(0,e.jsx)(l,{src:d,alt:\"Image represents a pie chart illustrating the time allocation for different stages of a mobile system design interview.  The chart is divided into five equal segments, each representing a phase of the interview.  A central circle acts as the pivot point.  Clockwise from the top, the segments are labeled: 'API Design 5-10min' (shaded grey), 'Architecture Design 10-15min' (white), 'Deep Dive 15-20min' (shaded grey), 'Wrap-up 0-5min' (white), and 'Understand Problem 5-10min' (white).  A thick black pointer indicates the current stage of the interview, currently pointing to the 'Understand Problem' segment, suggesting the interview is in its initial phase.  Each segment clearly displays the estimated time duration allocated to that specific phase.\",width:\"602\",height:\"401\"})}),`\n`,(0,e.jsxs)(C.ol,{children:[`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Understand the problem and establish design scope (5-10 minutes)\"}),\": Take time to fully understand the problem and define its scope.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"API design (5-10 minutes)\"}),\": Map out how your app will communicate with backend services and define the core data models.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"High-level client architecture (10-15 minutes)\"}),\": Outline the main components of your system and how they work together.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Design deep dive (15-20 minutes)\"}),\": Focus on the most important technical challenges and implementation details.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.strong,{children:\"Wrap-up (0-5 minutes)\"}),\": Summarize key decisions and discuss potential improvements or trade-offs.\"]}),`\n`]}),`\n`,(0,e.jsxs)(C.p,{children:[\"Remember that these are guidelines rather than strict rules. \",(0,e.jsx)(C.strong,{children:\"Be ready to adjust based on the specific problem and your interviewer's interests\"}),\". The key is maintaining enough flexibility to explore important areas while ensuring you complete the full design within the time limit.\"]})]})}function M(t={}){let{wrapper:C}=t.components||{};return C?(0,e.jsx)(C,{...t,children:(0,e.jsx)(c,{...t})}):c(t)}function p(t,C){throw new Error(\"Expected \"+(C?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return w(v);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "introduction"
+      ],
+      "id": "introduction",
+      "chapter": 1,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "a-framework-for-mobile-sd-interviews"
+      ],
+      "id": "a-framework-for-mobile-sd-interviews",
+      "chapter": 2,
+      "free": true,
+      "title": "A framework for Mobile SD interviews"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "news-feed-app"
+      ],
+      "id": "news-feed-app",
+      "chapter": 3,
+      "free": true,
+      "title": "News feed app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "chat-app"
+      ],
+      "id": "chat-app",
+      "chapter": 4,
+      "title": "Chat app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "stock-trading-app"
+      ],
+      "id": "stock-trading-app",
+      "chapter": 5,
+      "title": "Stock trading app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "pagination-library"
+      ],
+      "id": "pagination-library",
+      "chapter": 6,
+      "title": "Pagination library"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "hotel-reservation-app"
+      ],
+      "id": "hotel-reservation-app",
+      "chapter": 7,
+      "title": "Hotel reservation app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "google-drive-app"
+      ],
+      "id": "google-drive-app",
+      "chapter": 8,
+      "title": "Google Drive app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "youtube-app"
+      ],
+      "id": "youtube-app",
+      "chapter": 9,
+      "title": "YouTube app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "mobile-system-design-building-blocks"
+      ],
+      "id": "mobile-system-design-building-blocks",
+      "chapter": 10,
+      "title": "Mobile System Design Building Blocks"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "quick-reference-cheat-sheet-for-msd-interview"
+      ],
+      "id": "quick-reference-cheat-sheet-for-msd-interview",
+      "chapter": 11,
+      "title": "Quick Reference Cheat Sheet for MSD Interview"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Mobile System Design Interview",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "mobile-system-design-interview",
+    "defaultChapter": "/courses/mobile-system-design-interview/introduction",
+    "rootPath": "/courses/mobile-system-design-interview",
+    "lessons": 11,
+    "students": 1000,
+    "showChapter": true,
+    "lastModified": "2025.02.11"
+  }
+}

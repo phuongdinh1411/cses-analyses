@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "stacks/next-largest-number-to-the-right",
+  "chapter": "07-02",
+  "title": "Next Largest Number to the Right",
+  "free": false,
+  "code": "var Component=(()=>{var b=Object.create;var n=Object.defineProperty;var w=Object.getOwnPropertyDescriptor;var y=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,v=Object.prototype.hasOwnProperty;var N=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),j=(a,e)=>{for(var i in e)n(a,i,{get:e[i],enumerable:!0})},h=(a,e,i,l)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let t of y(e))!v.call(a,t)&&t!==i&&n(a,t,{get:()=>e[t],enumerable:!(l=w(e,t))||l.enumerable});return a};var _=(a,e,i)=>(i=a!=null?b(x(a)):{},h(e||!a||!a.__esModule?n(i,\"default\",{value:a,enumerable:!0}):i,a)),T=a=>h(n({},\"__esModule\",{value:!0}),a);var H=N((W,c)=>{c.exports=_jsx_runtime});var E={};j(E,{default:()=>k,frontmatter:()=>R});var C=_(H());var d=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/next-largest-number-to-the-right-Q2HHRQD7.svg\";var M=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-1-CL4SCUVP.svg\";var o=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-2-Z7VU4XRS.svg\";var Z=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-3-C2LMQVN6.svg\";var p=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-4-LKP2OZXK.svg\";var L=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-5-HFSAGFWH.svg\";var m=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-6-UZ3BT3JX.svg\";var f=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-7-2HFEIZWT.svg\";var g=\"/images/courses/coding-patterns/stacks/next-largest-number-to-the-right/image-07-02-8-BMCWANAK.svg\";var R={chapter:\"07-02\",difficulty:\"Medium\",title:\"Next Largest Number to the Right\"};function u(a){let e={annotation:\"annotation\",blockquote:\"blockquote\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...a.components},{CodeTabs:i,Figure:l,Image:t,OpenCodeEditor:V,ProblemDescription:r}=e;return i||s(\"CodeTabs\",!0),l||s(\"Figure\",!0),t||s(\"Image\",!0),V||s(\"OpenCodeEditor\",!0),r||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsxs)(e.p,{children:[\"Given an integer array \",(0,C.jsx)(e.code,{children:\"nums\"}),\", return an output array res where, for each value \",(0,C.jsx)(e.code,{children:\"nums[i]\"}),\", \",(0,C.jsx)(e.code,{children:\"res[i]\"}),\" is the first number to the right that's larger than \",(0,C.jsx)(e.code,{children:\"nums[i]\"}),\". If no larger number exists to the right of \",(0,C.jsx)(e.code,{children:\"nums[i]\"}),\", set \",(0,C.jsx)(e.code,{children:\"res[i]\"}),\" to \\u20101.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:d,width:\"264\",height:\"204\",alt:\"The image represents a bar chart illustrating a data transformation or accumulation process.  The horizontal axis displays an unsorted sequence of numerical values (5, 2, 4, 6, 1), each represented by a black vertical bar whose height corresponds to its magnitude.  Below the chart, a list `res = [6 4 6 -1 -1]` shows the resulting data after some operation.  Dashed orange arrows connect the tops of the bars to corresponding values in the `res` list, indicating a mapping or transformation.  For instance, the bar representing '5' maps to '6' in the `res` list, the bar representing '2' maps to '4', and so on.  The vertical axis represents the magnitude of the values, ranging from 0 to 6.  The chart visually demonstrates how the input values are processed to produce the output values in the `res` list, suggesting a potential algorithm involving accumulation or modification of the input sequence.  The negative values in `res` suggest a possible subtraction or other negative transformation applied to some input values.\",priority:!0})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]\nOutput: [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]\n`]})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"A brute-force solution to this problem involves iterating through each number in the array and, for each of these numbers, linearly searching to their right to find the first larger number. This approach takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the array. Can we think of something better?\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Let\\u2019s approach this problem from a different perspective. Instead of finding the next largest number for each value, what if we \",(0,C.jsx)(e.strong,{children:\"check whether the value itself is the next largest number for any value(s) to its left\"}),\"? For example, can we figure out which values in the following example have 6 as their next largest number?:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:M,alt:\"Image represents a bar chart illustrating a concept related to finding the next largest number. The horizontal axis displays numerical values (5, 2, 4, 6, 1), each represented by a vertical bar whose height corresponds to its magnitude.  A taller bar signifies a larger number.  Dashed orange arrows connect the bars representing 5 and 4 to the bar representing 6. This visually indicates that 6 is identified as the next largest number after 5 and 4. The bar representing 6 is highlighted with a peach-colored background. Below the chart, an arrow points to the text '6 is the next largest number of 5 and 4,' explicitly stating the relationship shown graphically.  The vertical axis represents the magnitude of the numbers, ranging from 0 to 6.\",width:\"379\",height:\"221\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"With this shift in perspective, we should search the array from right to left: certain values we encounter from the right could potentially be the next largest number of values to their left. Let\\u2019s call these values \\u201C\",(0,C.jsx)(e.strong,{children:\"candidates\"}),\".\\u201D But how do we determine which numbers qualify as candidates?\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Consider the example below:\"}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:o,alt:\"Image represents a bar chart illustrating a frequency distribution.  The horizontal axis displays a sequence of numbers: [1, 1, 2, 3, 2, 3, 2, 4], representing data points.  The vertical axis represents frequency, ranging from 0 to 4.  Above each number on the horizontal axis, a vertical bar extends upwards to a height corresponding to its frequency of occurrence within the sequence. For instance, the number '1' appears twice, thus its bar reaches the height of '1' on the vertical axis; the number '2' appears three times, resulting in its bar reaching the height of '2'; the number '3' appears twice, reaching the height of '2'; and the number '4' appears once, reaching the height of '4'.  The chart visually summarizes the frequency of each unique value in the given data set.\",width:\"308\",height:\"146\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s start at the rightmost index, where the only value we know initially is 4:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:Z,alt:\"Image represents a Cartesian coordinate system illustrating a data structure or algorithm, possibly related to candidate selection or a similar process.  The horizontal axis depicts an array or list, labeled `[ ... 4 ]` at its ends, suggesting a sequence of elements where '4' is the last visible element, and ellipses (...) indicate unseen preceding elements. The vertical axis represents a numerical value or index, ranging from 0 to 4. A vertical line segment extends from the horizontal axis at the point labeled '4' to the top of the diagram, indicating a selection or operation focused on the element '4'.  To the right, the text `candidates = []` shows an empty array or list named 'candidates', suggesting this structure might store selected elements.  The text `res = []` similarly shows an empty array named 'res', likely representing the results or output of the process. The downward-pointing arrow above the vertical line suggests data flow or an operation being performed on the element '4'. The overall diagram likely visualizes a step in an algorithm where the element '4' is being processed or selected, with the 'candidates' and 'res' arrays potentially storing intermediate or final results.\",width:\"484\",height:\"164\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Right now, we can say 4 is a candidate as it might be the next largest number of values to its left. No candidates have been encountered before 4 because it\\u2019s the rightmost element, so we should mark the result for 4 in res as -1:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:p,alt:\"Image represents a Cartesian coordinate system illustrating a step in a coding pattern, possibly related to backtracking or a similar algorithm.  The horizontal axis represents an index or iterator, with values implicitly ranging from an unspecified starting point to 4, indicated by the label `[... 4]`. The vertical axis represents a value or counter, ranging from 0 to 4. A vertical line segment extends from the horizontal axis at the point x=4, reaching a value of approximately 4 on the y-axis.  To the right of the coordinate system, the text `candidates = [4]` indicates a list or array named `candidates` containing the single element 4. Below this, `res = [-1]` shows a list or array named `res` containing the single element -1, highlighted in a peach-colored box.  The downward-pointing arrow above the vertical line suggests a process is occurring at index 4, potentially modifying the `res` array. The overall diagram likely visualizes a state within an iterative algorithm where the `candidates` list is being processed, and the `res` list is being updated.\",width:\"484\",height:\"162\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Next, we encounter a 2. The next largest number of 2 is the most recently added candidate that\\u2019s larger than it. In this case, the rightmost candidate in the candidates list represents the most recently added candidate, which is 4 in this case.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Record 4 as the next largest number of 2 in res, and then add 2 to the candidates list because it could be the next largest number of elements to its left:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:L,alt:\"Image represents a Cartesian coordinate system illustrating a step in a coding algorithm, possibly related to backtracking or dynamic programming.  The horizontal axis shows a range of values, with labeled points at 2 and 4, implying a discrete domain.  The vertical axis represents a count or index, ranging from 0 to 4. Two vertical lines are drawn at x=2 and x=4, extending from the horizontal axis to y=2 and y=4 respectively. A dashed orange arrow points from the line at x=2 to the line at x=4, indicating a transition or step in the algorithm.  Below the horizontal axis, `res = [ ... 4 -1]` is shown, suggesting a result array or list where '4' (highlighted in peach) is a current value and '-1' might represent a placeholder or a special value. To the right, `candidates = [4 2]` is displayed, indicating a list of candidate values used by the algorithm. The overall diagram visualizes a process where the algorithm moves from a state represented by the line at x=2 to a state represented by the line at x=4, updating the `res` array in the process, using values from the `candidates` list.\",width:\"516\",height:\"164\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The next number is 3. Notice that with the introduction of 3, number 2 should no longer be considered a candidate. This is because it\\u2019s now impossible for 2 to be the next largest number of any value to its left. Since 3 is both larger and further to the left, it will always be prioritized over 2 as the next largest number. So, let\\u2019s remove 2 from the candidates list, as well as any other candidate that\\u2019s less than or equal to 3:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:m,alt:\"Image represents a graphical illustration of a filtering process within a coding pattern, likely related to candidate selection or data pruning.  A horizontal axis displays a sequence of numbers, including 2, 3, and 4, representing candidate values.  Vertical lines of varying styles indicate the presence and status of these candidates.  A solid black vertical line at '3' and '4' signifies that these candidates are initially present. A dashed red vertical line at '2' shows it as a candidate that will be removed. A downward-pointing grey arrow above the '3' suggests a filtering operation is being applied. To the right, the text 'remove all candidates \\u2264 3:' in red describes the filtering criterion, while 'candidates = [4 2]' shows the initial candidates, and 'candidates = [4]' shows the candidates after filtering. Below, 'res = [4 -1]' likely represents the result of a subsequent operation on the remaining candidates. The vertical axis likely represents a frequency or some other metric, but its scale is not explicitly defined. The overall diagram visually demonstrates the removal of candidates based on a specified condition, resulting in a filtered set of candidates.\",width:\"577\",height:\"163\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Since we removed all candidates smaller than 3, the rightmost candidate is now 4. So, let\\u2019s record 4 as the next largest number of 3 in res and add 3 to the candidates list:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:f,alt:\"Image represents a graphical depiction of a step in an algorithm, possibly related to candidate selection or a similar process.  The core of the image is a Cartesian coordinate system with a horizontal x-axis and a vertical y-axis ranging from 0 to 4.  Along the x-axis, a partially visible array `[ ... 3 2 4]` is shown, indicating a sequence of numbers. Two vertical lines, one black and one light gray, represent elements within this array. The black line is positioned at x=3 and extends vertically to y=3, while the light gray line is at x=2 and extends to y=1.  A dashed orange arrow points horizontally from the top of the black line (at y=3) to a second black line positioned at x=4, extending vertically to y=4.  Below the x-axis, the text `candidates = [4 3]` is displayed, suggesting these are the current candidates being considered.  Additionally, `res = [ 4 4 -1]` is shown, likely representing the results or output of the algorithm so far, with the number 4 highlighted in a peach color. The downward-pointing gray arrow above the first black line indicates the current processing step. The overall diagram illustrates a transition or movement of data, possibly a value of 3, from one position in the array to another, updating the `candidates` and `res` arrays accordingly.\",width:\"513\",height:\"163\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"This provides a crucial insight:\"}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Whenever we move to a new number, all candidates less than or equal to this number should be removed from the candidates list.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Another key observation is that \",(0,C.jsx)(e.strong,{children:\"the list of candidates always maintains a strictly decreasing order of values\"}),\". This is because we always remove candidates less than or equal to each new value, ensuring values are added in decreasing order. We can see this more clearly in the final state of the candidates list of the previous example:\"]}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:g,alt:\"Image represents a bar graph combined with a line graph illustrating a coding pattern. The x-axis displays a sequence of numbers: [1, 1, 2, 3, 2, 3, 2, 4], representing an input array.  Above each x-axis value, a vertical bar is drawn; the height of the bar corresponds to the values in a second array, `res = [2, 2, 3, 4, 3, 4, 4, -1]`, shown below the x-axis.  The bars are black for positive values in `res` and light gray for the last value (-1). An orange line connects points representing a cumulative sum or another derived value from the `res` array. This line starts at (1,1) and increases with each subsequent point, indicating a trend.  Separately, a rectangular box displays the array `candidates = [4, 3, 2, 1]`, which is labeled as 'decreasing,' indicating the array's elements are in descending order. An orange arrow points from the `candidates` array to the right, visually connecting it to the graph, suggesting that the `candidates` array is the input or a related data structure used to generate the graph's data.\",width:\"597\",height:\"180\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This indicates a \",(0,C.jsx)(e.strong,{children:\"stack\"}),\" is the ideal data structure for storing the candidates list, since stacks can be used to efficiently maintain a \",(0,C.jsx)(e.strong,{children:\"monotonic decreasing order\"}),\" of values, as mentioned in the introduction.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"The top of the stack represents the most recent candidate to the right of each new number encountered. Given this, here\\u2019s how to use the stack to add and remove candidates at each value:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Pop off all candidates from the top of the stack less than or equal to the current value.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"The top of the stack will then represent the next largest number of the current value.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Record the top of the stack as the answer for the current value.\"}),`\n`,(0,C.jsx)(e.li,{children:\"If the stack is empty, there\\u2019s no next largest number for the current value. So, record -1.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.ol,{start:\"3\",children:[`\n`,(0,C.jsx)(e.li,{children:\"Add the current value as a new candidate by pushing it to the top of the stack.\"}),`\n`]}),`\n`,(0,C.jsx)(V,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_largest_number_to_the_right\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`]:\n    res = [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] * \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(nums)\n    stack = []\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Find the next largest number of each element, starting with the rightmost\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# element.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(nums) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Pop values from the top of the stack until the current value's next largest\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# number is at the top.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" stack \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),\" stack[-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] <= nums[i]:\n            stack.pop()\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Record the current value's next largest number, which is at the top of the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# stack. If the stack is empty, record -1.\"}),`\n        res[i] = stack[-`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" stack \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        stack.append(nums[i])\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` res\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_largest_number_to_the_right\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" res = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\").\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` stack = []\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the next largest number for each element, starting from the right.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Pop values from the stack until the current value's next largest\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// number is found or the stack is empty.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (stack.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" && stack[stack.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] <= nums[i]) {\n      stack.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"pop\"}),`()\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the stack is empty, no greater number to the right exists.\"}),`\n    res[i] = stack.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" ? stack[stack.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] : -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Push the current number onto the stack.\"}),`\n    stack.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),`(nums[i])\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` res\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Stack;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" ArrayList<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next_largest_number_to_the_right\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> nums)\"}),` {\n        ArrayList<Integer> res = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        Stack<Integer> stack = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Stack\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Initialize result list with zeros.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < nums.size(); i++) {\n            res.add(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the next largest number of each element, starting with the rightmost\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// element.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" nums.size() - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Pop values from the top of the stack until the current value's next largest\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// number is at the top.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (!stack.isEmpty() && stack.peek() <= nums.get(i)) {\n                stack.pop();\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Record the current value's next largest number, which is at the top of the\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// stack. If the stack is empty, record -1.\"}),`\n            res.set(i, stack.isEmpty() ? -`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),` : stack.peek());\n            stack.push(nums.get(i));\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` res;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"next_largest_number_to_the_right\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". This is because each value of \",(0,C.jsx)(e.code,{children:\"nums\"}),\" is pushed and popped from the stack at most once.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because the stack can potentially store all \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" values.\"]})]})}function k(a={}){let{wrapper:e}=a.components||{};return e?(0,C.jsx)(e,{...a,children:(0,C.jsx)(u,{...a})}):u(a)}function s(a,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+a+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return T(E);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

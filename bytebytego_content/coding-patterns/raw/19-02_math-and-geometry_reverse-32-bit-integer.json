@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "math-and-geometry/reverse-32-bit-integer",
+  "chapter": "19-02",
+  "title": "Reverse 32-Bit Integer",
+  "free": false,
+  "code": "var Component=(()=>{var k=Object.create;var H=Object.defineProperty;var j=Object.getOwnPropertyDescriptor;var T=Object.getOwnPropertyNames;var I=Object.getPrototypeOf,F=Object.prototype.hasOwnProperty;var A=(i,e)=>()=>(e||i((e={exports:{}}).exports,e),e.exports),q=(i,e)=>{for(var a in e)H(i,a,{get:e[a],enumerable:!0})},r=(i,e,a,n)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let t of T(e))!F.call(i,t)&&t!==a&&H(i,t,{get:()=>e[t],enumerable:!(n=j(e,t))||n.enumerable});return i};var P=(i,e,a)=>(a=i!=null?k(I(i)):{},r(e||!i||!i.__esModule?H(a,\"default\",{value:i,enumerable:!0}):a,i)),X=i=>r(H({},\"__esModule\",{value:!0}),i);var c=A((t1,h)=>{h.exports=_jsx_runtime});var e1={};q(e1,{default:()=>x,frontmatter:()=>C1});var C=P(c());var d=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-1-DPK5QSUP.svg\";var M=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-2-2SPTS6CN.svg\";var o=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-3-YBMPA5DI.svg\";var L=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-4-GOEH6QWZ.svg\";var Z=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-5-H67HN22L.svg\";var m=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-6-HCN2TVUM.svg\";var p=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-7-LVFJX2NQ.svg\";var g=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-8-YEI6L22L.svg\";var u=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-9-X7UWQRUZ.svg\";var w=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-10-3QH7FSBM.svg\";var f=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-11-LSB5XEQI.svg\";var v=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-12-KJRI7KFI.svg\";var N=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-13-HMDDCSVE.svg\";var b=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-14-NT6ISA3X.svg\";var y=\"/images/courses/coding-patterns/math-and-geometry/reverse-32-bit-integer/image-19-02-15-KPSLUEDV.svg\";var C1={chapter:\"19-02\",difficulty:\"Medium\",title:\"Reverse 32-Bit Integer\"};function _(i){let e={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",...i.components},{CodeTabs:a,Figure:n,Image:t,OpenCodeEditor:l,ProblemDescription:V}=e;return a||s(\"CodeTabs\",!0),n||s(\"Figure\",!0),t||s(\"Image\",!0),l||s(\"OpenCodeEditor\",!0),V||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(V,{children:[(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Reverse the digits\"}),\" of a signed 32-bit integer. If the reversed integer overflows (i.e., is outside the range [\",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mn,{children:\"31\"})]})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"-2^{31}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8974em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"\\u2212\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"31\"})})})]})})})})})]})]})})]}),\", \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mn,{children:\"31\"})]}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"1\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"2^{31} - 1\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8974em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"31\"})})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"})]})]})]}),\"]), return 0. Assume the environment only allows you to store integers within the signed 32-bit integer range.\"]}),(0,C.jsx)(e.h4,{id:\"example-1\",children:\"Example 1:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: n = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"420\"}),`\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"24\"}),`\n`]})}),(0,C.jsx)(e.h4,{id:\"example-2\",children:\"Example 2:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: n = -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"15\"}),`\nOutput: -`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"51\"}),`\n`]})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"The primary challenge with this problem is in handling its edge cases. Before tackling these edge cases, let\\u2019s first try handling the more basic cases and later see how we would need to modify our strategy.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Reversing positive numbers\"}),(0,C.jsx)(e.br,{}),`\n`,\"Consider n = 123. Let's try building the reversed integer one digit at a time. The first thing to figure out is how to iterate through the digits of n to build our reversed number (initially set to 0):\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:d,alt:\"Image represents a simple illustration demonstrating a reversal operation.  The left side shows an input sequence 'n = 1 2 3', indicating a variable 'n' assigned a sequence of three integers: 1, 2, and 3. A comma follows this sequence. The right side displays the result of a reversal operation, labeled 'reversed n = \\u03B8', showing the variable 'n' after reversal is assigned an empty sequence represented by the symbol '\\u03B8'.  There is no explicit connection drawn between the input and output; the implication is that the operation transforms the input sequence into an empty sequence.  The text 'reversed' acts as a label describing the transformation applied to the input sequence 'n'.\",width:\"246\",height:\"15\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"One way to do this is by starting at the last digit of \",(0,C.jsx)(e.code,{children:\"n\"}),\" and appending each digit to \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\":\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:M,alt:\"Image represents a visual depiction of a recursive function reversing a sequence of numbers.  Three horizontal rows illustrate the function's iterative steps. Each row shows an input sequence 'm' (on the left) and the corresponding reversed output sequence 'reversed_n' (on the right).  Orange boxes contain the numbers in each sequence.  Orange arrows connect the input 'm' to the output 'reversed_n' in each row.  The first row shows the input sequence 'm = 1 2 3' and the output 'reversed_n = 3'. The second row shows the input 'm = 1 2' and the output 'reversed_n = 3 2', building upon the previous step.  The third row shows the input 'm = 1' and the final reversed output 'reversed_n = 3 2 1', completing the reversal of the initial sequence.  The diagram visually demonstrates how the function recursively processes the input sequence, adding the next element to the beginning of the reversed sequence in each iteration.\",width:\"288\",height:\"130\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Let\\u2019s explore how we can do this. To extract the last digit, we can use the modulus operator: \",(0,C.jsx)(e.code,{children:\"n % 10\"}),\". This operation effectively finds what the remainder of \",(0,C.jsx)(e.code,{children:\"n\"}),\" would be if divided by 10:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:o,alt:\"Image represents a code snippet demonstrating how to extract the last digit from an integer.  The top line declares an integer variable 'n' and assigns it the value 123. The next line shows a calculation to extract the last digit:  'digit = n % 10'. This uses the modulo operator (%) which returns the remainder after division.  In this case, 123 modulo 10 equals 3, representing the remainder when 123 is divided by 10. The final line shows the result of this calculation: 'digit = 3', indicating that the last digit of 123 is 3. The arrangement is vertical, with each line representing a step in the calculation, flowing from the variable declaration to the calculation and finally to the result.\",width:\"141\",height:\"53\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"After extracting the last digit, we can remove it by dividing \",(0,C.jsx)(e.code,{children:\"n\"}),\" by 10, which shifts the second-to-last digit to the last position, preparing it for the next iteration:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:L,alt:\"Image represents a mathematical equation demonstrating integer division. The equation is structured as follows:  'n = n // 10'.  This indicates that a variable 'n' is being assigned a new value. The new value is calculated by performing integer division (represented by '//') of the original value of 'n' by 10.  Below this, a second line shows ' = 12', indicating that after the integer division operation, the variable 'n' now holds the value 12.  The equation implies that the original value of 'n' before the division was 120 (since 120 // 10 = 12).  There are no URLs or parameters present; the image solely depicts a simple arithmetic operation within a coding context, likely illustrating a specific step in an algorithm or calculation.\",width:\"110\",height:\"33\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Once that\\u2019s done, let\\u2019s add the last digit extracted to our reversed number:\"}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:Z,alt:\"Image represents a line of code snippet, likely from a program designed to reverse an integer.  The snippet shows an assignment statement where a variable named `reversed_n` is being updated.  The operation is an addition (`+=`) of a variable named `digit`, which currently holds the value 3. This suggests that the algorithm is iteratively building the reversed integer by appending digits one at a time. The `reversed_n` variable accumulates the reversed number, with `digit` representing the next digit to be added to the reversed number. The overall structure implies a loop where `digit` would take on different values in successive iterations, each contributing to the construction of `reversed_n`.\",width:\"190\",height:\"34\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Below, we see the current states of \",(0,C.jsx)(e.code,{children:\"n\"}),\" and \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\":\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:m,alt:\"Image represents a simple illustration of a coding pattern, specifically demonstrating the concept of reversing a sequence.  The image consists of a linear arrangement of text elements.  It begins with 'n = 1 2,', indicating an initial sequence represented by the variable 'n' containing the values 1 and 2.  This is followed by the word 'reversed', signifying the operation being performed. Finally, 'n = 3' shows the reversed sequence, implying that the original sequence '1 2' has been reversed to become '2 1' (although only the result '3' is shown, suggesting a simplified or incomplete representation of the reversal process, possibly due to context missing from the image).  There are no visual connections or arrows; the relationship between the initial and reversed sequences is implied solely through the textual description and the change in the value of 'n'.\",width:\"229\",height:\"16\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"To process the next digit, let\\u2019s extract it from \",(0,C.jsx)(e.code,{children:\"n\"}),\" using the modulus operation, then remove it by dividing n by 10:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:p,alt:\"Image represents a code snippet illustrating an algorithm to extract digits from an integer.  The top line shows an assignment statement: `digit = n % 10`, where `n` represents an integer input and the modulo operator (`%`) calculates the remainder when `n` is divided by 10, effectively extracting the last digit. This is then assigned to the variable `digit`. Below, a sample calculation is shown, where the result of `n % 10` is `2`. The next line shows another assignment statement: `n = n // 10`, using floor division (`//`) to remove the last digit from `n` by integer division.  A sample calculation follows, showing the result of `n // 10` as `1`.  The arrangement vertically displays the sequential steps of the algorithm: first extracting the last digit, then updating the integer by removing that digit.  The algorithm implicitly iterates to extract all digits sequentially.\",width:\"143\",height:\"82\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"To append this digit to \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\", we can multiply \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" by 10 to shift its digits to the left, making space for the new digit. Then, we just add the new digit as before:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:g,alt:\"Image represents a step-by-step calculation illustrating a coding pattern, likely for reversing an integer.  The top line shows an equation: `reversed_n = 10 * reversed_n + digit`. This suggests an iterative process where `reversed_n` accumulates the reversed digits of a number, and `digit` represents the next digit to be added.  The next line shows a specific instance of this equation: `= 30 + 2`, implying that at this step, the current reversed number (`reversed_n`) is 30, and the next digit (`digit`) is 2. The final line shows the result of this addition: `= 32`, indicating the updated value of `reversed_n` after incorporating the digit 2.  The overall structure demonstrates how a reversed integer is constructed digit by digit through repeated multiplication and addition.\",width:\"335\",height:\"58\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"We can repeat the above process until all digits of n are appended to \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" (i.e., until \",(0,C.jsx)(e.code,{children:\"n\"}),\" equals 0). Here\\u2019s a breakdown of this process:\"]}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"Extract the last digit: \",(0,C.jsx)(e.code,{children:\"digit = n % 10\"}),\".\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"Remove the last digit: \",(0,C.jsx)(e.code,{children:\"n = n // 10\"}),\".\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"Append the digit: \",(0,C.jsx)(e.code,{children:\"reversed_n = reversed_n * 10 + digit\"}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Reversing negative numbers\"}),(0,C.jsx)(e.br,{}),`\n`,\"Before considering a separate strategy to handle negative numbers, let's first check if the set of steps above also work for negative numbers. Applying these steps to n = -15 gives:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:u,alt:\"Image represents a step-by-step calculation demonstrating a coding pattern for reversing a negative integer.  The top line initializes two variables: `n` to -15 and `reversed_n` to 0.  Below, the calculation proceeds in three steps. First, `digit` is calculated as `n % 10`, resulting in -5 (the modulo operator finds the remainder after division). Second, `n` is updated to `n // 10` using floor division, resulting in -1 (integer division discarding the remainder). Finally, `reversed_n` is updated using the formula `10 * reversed_n + digit`, which incorporates the extracted digit into the reversed number, resulting in -5.  The calculations are shown with both the formula and the resulting value for each step, illustrating the iterative process of extracting digits and building the reversed integer.\",width:\"376\",height:\"176\"})}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:w,alt:\"Image represents a step-by-step calculation demonstrating a single iteration of an algorithm to reverse a negative integer.  The top line initializes two variables: `n` with a value of -1 and `reversed_n` with a value of -5.  Below, the algorithm extracts the last digit of `n` using the modulo operator (`%`), assigning the result (-1) to the variable `digit`. Next, integer division (`//`) is used to remove the last digit from `n`, updating `n` to 0. Finally, the reversed number is updated by multiplying the current `reversed_n` by 10, adding `digit`, and assigning the result (-51) back to `reversed_n`.  The calculations are clearly shown with the formulas and their results displayed sequentially, illustrating the flow of data between the variables.\",width:\"373\",height:\"175\"})}),`\n`,(0,C.jsx)(e.p,{children:\"As we can see, it works for negative numbers. Now, let\\u2019s tackle situations in which reversing a number could result in integer overflow or underflow.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Detecting integer overflow\"}),(0,C.jsx)(e.br,{}),`\n`,\"If the reverse of a positive number is larger than \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mn,{children:\"31\"})]}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"1\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"2^{31} - 1\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8974em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"31\"})})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"})]})]})]}),\", it will overflow, and we should return 0. Let\\u2019s call this maximum value \",(0,C.jsx)(e.code,{children:\"INT_MAX\"}),\".\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:f,alt:\"Image represents an equation showing the maximum value for a 32-bit signed integer.  The left side of the equation is labeled 'INT_MAX ='.  The right side begins with '2<sup>31</sup> - 1 =', indicating that the maximum integer value is calculated by subtracting 1 from 2 raised to the power of 31. The result of this calculation, 2147483647, is displayed to the far right of the equation, representing the maximum positive value that can be stored in a 32-bit signed integer variable.  The equation demonstrates a common calculation in computer science to determine the upper limit of integer data types based on their bit size.\",width:\"336\",height:\"19\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Initially, it might seem sufficient to reverse the number completely, check if it exceeds \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mn,{children:\"31\"})]}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"1\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"2^{31} - 1\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8974em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"31\"})})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"})]})]})]}),\", and return 0 if it does. However, in an environment where integers larger than \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mn,{children:\"31\"})]}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"1\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"2^{31} - 1\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8974em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"31\"})})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"})]})]})]}),\" cannot be stored, attempting to reverse such an integer would cause an overflow:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:v,alt:\"Image represents a sequence of operations and their outcome.  It begins with the integer 2199999999.  A gray arrow labeled 'reverse' points to the right, indicating a reversal of the digits, resulting in the integer 9999999912.  A second gray arrow, pointing to the right, shows a comparison:  '9999999912 > INT_MAX'. This signifies that the reversed number is greater than the maximum value allowed for an integer data type (INT_MAX). Finally, a red arrow points to the right from the comparison, leading to the word 'overflow' in red text, indicating that the operation has resulted in an integer overflow error due to exceeding the maximum representable integer value.\",width:\"592\",height:\"20\"})}),`\n`,(0,C.jsx)(e.p,{children:\"So, let\\u2019s think of another way to detect overflow.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"We're constructing the number \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" one digit at a time, which means we need to ensure not to cause the number to overflow with each new digit we add. Let's think about when adding a new digit might cause \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" to become too large. Here's how we can analyze this:\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"If \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" is equal to \",(0,C.jsx)(e.code,{children:\"214748364\"}),\" (i.e., \",(0,C.jsx)(e.code,{children:\"INT_MAX // 10\"}),\"), then the final digit we can add to it must be less than or equal to 7 to avoid an overflow (since \",(0,C.jsx)(e.code,{children:\"214748364**7** == INT_MAX\"}),\"):\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:N,alt:\"Image represents a step-by-step calculation demonstrating the appending of a digit to a reversed number.  Initially, the variable `reversed_n` holds the value 21478364, and the variable `digit` holds the value 7. The process, labeled 'append digit:', involves the calculation `reversed_n = reversed_n * 10 + digit`. This results in a new value for `reversed_n`, which is 214783647.  A comparison is then made, showing that this new value is equal to `INT_MAX` (presumably representing the maximum value for an integer data type), and an arrow indicates that this equality leads to 'no overflow,' suggesting the calculation successfully appended the digit without exceeding the integer's maximum capacity.\",width:\"592\",height:\"60\"})}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:b,alt:\"Image represents a step-by-step calculation demonstrating integer overflow.  The top line initializes a variable `reversed_n` to the value 21478364 and a variable `digit` to 8. The second line shows the calculation for appending `digit` to `reversed_n`:  `reversed_n` is multiplied by 10 and `digit` is added to the result, updating `reversed_n`. The third line displays the outcome of this calculation: `reversed_n` becomes 214783648.  A comparison follows, indicating that this new value (214783648) exceeds `INT_MAX` (the maximum value for an integer data type), resulting in an integer overflow, which is highlighted in red as 'overflow'.  The gray text 'append digit:' acts as a label describing the operation performed in the second line.\",width:\"565\",height:\"59\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now, keep in mind that when \",(0,C.jsx)(e.code,{children:\"reversed_n == INT_MAX // 10\"}),\", only one more digit can be added to it. The key observation here is that this digit can only ever be 1 because a larger final digit would be impossible, as shown below:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(t,{src:y,alt:\"Image represents two examples illustrating a coding pattern related to integer reversal and overflow.  Each example shows a process where a number (`reversed_n`) is reversed, and the result (`n`) is compared against the maximum integer value (`INT_MAX`). The first example begins with `reversed_n = 2147483641`.  Above it, in orange text, is `INT_MAX // 10`, indicating a potential division operation. A grey arrow labeled 'implies' connects `reversed_n` to the reversed number `n = 1463847412`. The second example follows the same structure, starting with `reversed_n = 2147483642`, also with `INT_MAX // 10` above it.  The reversed number is `n = 2463847412`.  However, this result is greater than `INT_MAX`, as indicated by `n = 2463847412 > INT_MAX`, leading to a red 'impossible input' label, highlighting a potential overflow error.  Both examples use the same initial operation (`INT_MAX // 10`) suggesting a common step in the algorithm before the reversal.\",width:\"754\",height:\"119\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This means that when \",(0,C.jsx)(e.code,{children:\"reversed_n == INT_MAX // 10\"}),\", the last digit added to it won\\u2019t cause an overflow, meaning we don\\u2019t need to check the last digit in this case.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"If \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" is already larger than \",(0,C.jsx)(e.code,{children:\"INT_MAX // 10\"}),\", adding any digit will cause it to overflow. We can handle this case with the following condition:\"]}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:(0,C.jsx)(e.code,{children:\"if reversed_n > INT_MAX // 10: return 0\"})}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Detecting integer underflow\"}),(0,C.jsx)(e.br,{}),`\n`,\"We can apply similar logic to the above for handling integer underflow. Here, we just need to check that \",(0,C.jsx)(e.code,{children:\"reversed_n\"}),\" never falls below \",(0,C.jsx)(e.code,{children:\"INT_MIN // 10\"}),\":\"]}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:(0,C.jsx)(e.code,{children:\"if reversed_n < INT_MIN // 10: return 0\"})}),`\n`]}),`\n`,(0,C.jsx)(l,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"In Python, using the modulus operator (%) with a negative number gives a positive result. To avoid this, we can instead use \",(0,C.jsx)(e.strong,{children:\"math.fmod\"}),\" and cast its result to an integer to attain a negative modulus value.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"For division, Python's // operator performs floor division, which can result in an undesired value when dealing with negative numbers (e.g., -15 // 10 results in -2, instead of the desired -1). To achieve the desired behavior, use \",(0,C.jsx)(e.strong,{children:\"/\"}),\" for division and cast its result to an integer.\"]}),`\n`,(0,C.jsxs)(a,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` math\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse_32_bit_integer\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"n: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    INT_MAX = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\"**\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"31\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    INT_MIN = -`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\"**\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"31\"}),`\n    reversed_n = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Keep looping until we've added all digits of 'n' to 'reversed_n' in reverse\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# order.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" n != \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# digit = n % 10\"}),`\n        digit = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"(math.fmod(n, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`))\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# n = n // 10\"}),`\n        n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"(n / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Check for integer overflow or underflow.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" reversed_n > \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"(INT_MAX / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),\") \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"or\"}),\" reversed_n < \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"(INT_MIN / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`):\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Add the current digit to 'reversed_n'.\"}),`\n        reversed_n = reversed_n * `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),` + digit\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` reversed_n\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse_32_bit_integer\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"n\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable constant_\",children:\"INT_MAX\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"pow\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"31\"}),\") - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable constant_\",children:\"INT_MIN\"}),\" = -\",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"pow\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"31\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" reversed = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Keep looping until we've added all digits of 'n' to 'reversed_n' in reverse\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// order.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (n !== \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" digit = n % \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`\n    n = (n / `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),\") | \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Truncate towards zero\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Check for integer overflow or underflow.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (\n      reversed > `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"trunc\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-variable constant_\",children:\"INT_MAX\"}),\" / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`) ||\n      reversed < `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"trunc\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-variable constant_\",children:\"INT_MIN\"}),\" / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`)\n    ) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Add the current digit to 'reversed_n'.\"}),`\n    reversed = reversed * `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),` + digit\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` reversed\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" Integer \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reverse_32_bit_integer\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"INT_MAX\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Integer.MAX_VALUE;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"INT_MIN\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Integer.MIN_VALUE;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"reversedN\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Keep looping until we've added all digits of 'n' to 'reversed_n' in reverse\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// order.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (n != \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// digit = n % 10\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"digit\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" n % \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`;\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// n = n // 10\"}),`\n            n = n / `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`;\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Check for integer overflow or underflow.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (reversedN > INT_MAX / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),\" || reversedN < INT_MIN / \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),`) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Add the current digit to 'reversed_n'.\"}),`\n            reversedN = reversedN * `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"10\"}),` + digit;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` reversedN;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of reverse_32_bit_integer is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" because we loop through each digit of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\", of which there are roughly \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\log(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" digits. As this environment only supports 32-bit integers, the time complexity can also be considered \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]})]})}function x(i={}){let{wrapper:e}=i.components||{};return e?(0,C.jsx)(e,{...i,children:(0,C.jsx)(_,{...i})}):_(i)}function s(i,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return X(e1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

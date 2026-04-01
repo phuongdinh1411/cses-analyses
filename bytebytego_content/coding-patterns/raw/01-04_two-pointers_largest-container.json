@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "two-pointers/largest-container",
+  "chapter": "01-04",
+  "title": "Largest Container",
+  "free": true,
+  "code": "var Component=(()=>{var b=Object.create;var H=Object.defineProperty;var y=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,N=Object.prototype.hasOwnProperty;var j=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),v=(t,e)=>{for(var l in e)H(t,l,{get:e[l],enumerable:!0})},r=(t,e,l,V)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of u(e))!N.call(t,a)&&a!==l&&H(t,a,{get:()=>e[a],enumerable:!(V=y(e,a))||V.enumerable});return t};var _=(t,e,l)=>(l=t!=null?b(x(t)):{},r(e||!t||!t.__esModule?H(l,\"default\",{value:t,enumerable:!0}):l,t)),F=t=>r(H({},\"__esModule\",{value:!0}),t);var c=j((R,n)=>{n.exports=_jsx_runtime});var P={};v(P,{default:()=>f,frontmatter:()=>q});var C=_(c());var o=\"/images/courses/coding-patterns/two-pointers/largest-container/largest-container-PA3WJKJH.svg\";var d=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-1-T7WVY3OS.svg\";var L=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-2-2GSU2V4T.svg\";var M=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-3-PY4WBGRL.svg\";var Z=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-4-HYLGZML2.svg\";var p=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-5-RVU2TMEL.svg\";var m=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-6-POJJUDHN.svg\";var k=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-7-M2EWX37E.svg\";var g=\"/images/courses/coding-patterns/two-pointers/largest-container/image-01-04-8-3RGGE6AS.svg\";var q={chapter:\"01-04\",difficulty:\"Medium\",free:!0,title:\"Largest Container\"};function w(t){let e={annotation:\"annotation\",blockquote:\"blockquote\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",ul:\"ul\",...t.components},{CodeTabs:l,Figure:V,Image:a,OpenCodeEditor:h,ProblemDescription:s}=e;return l||i(\"CodeTabs\",!0),V||i(\"Figure\",!0),a||i(\"Image\",!0),h||i(\"OpenCodeEditor\",!0),s||i(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(s,{children:[(0,C.jsxs)(e.p,{children:[\"You are given an array of numbers, each representing the height of a vertical line on a graph. A container can be formed with any pair of these lines, along with the x-axis of the graph. Return the amount of water which the \",(0,C.jsx)(e.strong,{children:\"largest container\"}),\" can hold.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(V,{children:(0,C.jsx)(a,{src:o,alt:\"Image represents a bar chart or histogram with a horizontal x-axis ranging from 0 to 5 and a vertical y-axis ranging from 0 to 8.  The y-axis represents frequency or count, while the x-axis likely represents categories or data points.  The chart displays several vertical bars of varying heights. A bar at x=0 has a height of 2.  Bars at x=1, x=2, x=4, and x=5 all reach a height of 6, forming a plateau of light-blue filled area.  A shorter bar at x=3 reaches a height of 3.  The bars are represented by vertical black lines extending from the x-axis to their respective heights on the y-axis.  The area under the bars from y=0 to y=6 between x=1 and x=5 is filled with light blue, visually highlighting the consistent frequency across those data points.\",width:\"450\",height:\"120\",priority:!0})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: heights = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"7\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"8\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"7\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),`]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"24\"}),`\n`]})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"If we have two vertical lines, \",(0,C.jsx)(e.code,{children:\"heights[i]\"}),\" and \",(0,C.jsx)(e.code,{children:\"heights[j]\"}),\", the amount of water that can be contained between these two lines is \",(0,C.jsx)(e.code,{children:\"min(heights[i], heights[j]) * (j - i)\"}),\", where \",(0,C.jsx)(e.code,{children:\"j - i\"}),\" represents the width of the container. We take the minimum height because filling water above this height would result in overflow.\"]}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(a,{src:d,alt:\"Image represents a graphical illustration of a calculation alongside its formula and result.  The left side shows a 2D Cartesian coordinate system with a light-blue rectangle representing a volume of water. The rectangle's base extends from x=0 to x=2 on the x-axis and its height is 3 units along the y-axis, reaching from y=0 to y=3.  A vertical line segment at x=1 is also present within the rectangle.  A curved grey arrow originates from the top-right corner of the rectangle and points to the right, indicating the direction of the calculation's result. To the right of the graph, the formula 'water = min(4, 3) \\u22C5 (2 - 0)' is displayed, calculating the volume of water.  'min(4, 3)' finds the minimum value between 4 and 3 (which is 3), and this is multiplied by the base length (2 - 0 = 2). The subsequent lines show the calculation steps: '3 \\u22C5 2' and the final result '6', representing the total volume of water (likely in some arbitrary units).\",width:\"388\",height:\"143\"})}),`\n`,(0,C.jsx)(e.p,{children:\"In other words, the area of the container depends on two things:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"The \",(0,C.jsx)(e.strong,{children:\"width\"}),\" of the rectangle.\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"The \",(0,C.jsx)(e.strong,{children:\"height\"}),\" of the rectangle, as dictated by the shorter of the two lines.\"]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"The brute force approach to this problem involves checking all pairs of lines, and returning the largest area found between each pair:\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container_brute_force\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"heights: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n   n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(heights)\n   max_water = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Find the maximum amount of water stored between all pairs of lines.\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),`(n):\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" j \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n           water = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"min\"}),`(heights[i], heights[j]) * (j - i)\n           max_water = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_water, water)\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_water\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"heights\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = heights.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxWater = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the maximum amount of water stored between all pairs of lines.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" j = i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; j < n; j++) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" water = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"min\"}),`(heights[i], heights[j]) * (j - i)\n      maxWater = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(maxWater, water)\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxWater\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container_brute_force\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> heights)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` heights.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"max_water\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Find the maximum amount of water stored between all pairs of lines.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"j\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; j < n; j++) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"water\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Math.min(heights.get(i), heights.get(j)) * (j - i);\n                max_water = Math.max(max_water, water);\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_water;\n    }\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Searching through all possible pairs of values takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the array. Let's look for a more efficient solution.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"We would like both the height and width to be as large as possible to have the largest container.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"It\\u2019s not immediately obvious how to find the container with the largest height, as the heights of the lines in the array don\\u2019t follow a clear pattern. However, we do know the container with the maximum width: the one starting at index 0 and ending at index \",(0,C.jsx)(e.code,{children:\"n - 1\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"So, we could start by maximizing the width by setting a pointer at each end of the array. Then, we can gradually reduce the width by moving these two pointers inward, hoping to find a container with a larger height that potentially yields a larger area. This suggests we can use the \",(0,C.jsx)(e.strong,{children:\"two-pointer\"}),\" pattern to solve the problem.\"]}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Moving a pointer inward means shifting either the left pointer to the right, or the right pointer to the left, effectively narrowing the gap between them.\"}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"Consider the following example:\"}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(a,{src:L,alt:\"Image represents a bar chart visualizing the data contained within the Python list `heights = [2, 7, 8, 3, 7, 6]`.  The horizontal axis represents the index of each element in the list (0 through 5), while the vertical axis represents the value of each element, ranging from 0 to 8.  Each vertical bar corresponds to an element in the list; its height corresponds to the element's value. For example, the first bar at index 0 has a height of 2, the second bar at index 1 has a height of 7, and so on. The vertical axis is marked with numerical labels (0 through 8) indicating the height of the bars, and the horizontal axis is implicitly marked by the position of the bars, corresponding to the list indices.  The arrowheads on the axes indicate the direction of increasing values.\",width:\"314\",height:\"225\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"The widest container can store an area of water equal to 10. Since this is the largest container we\\u2019ve found so far, let\\u2019s set \",(0,C.jsx)(e.code,{children:\"max_water\"}),\" to 10.\"]}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:M,alt:\"Image represents a diagram illustrating a calculation of maximum trapped water.  The left side shows a bar chart with a horizontal axis labeled from 0 to 5 and a vertical axis representing height from 0 to 8.  Vertical bars of varying heights (2, 7, 8, 3, 6) are plotted at each integer position on the horizontal axis. A light-blue area represents the trapped water, extending horizontally between the bars and reaching a height of 2 units.  Arrows point upwards from the labels 'left' and 'right' below the horizontal axis, indicating the direction of calculation. On the right, a light-grey box displays a calculation: 'water = min(2, 6) . (5 - 0) = 10' and 'max_water = 10', showing the minimum height between the leftmost (height 2) and rightmost (height 6) bars multiplied by the width (5-0) to determine the total trapped water, which is 10 units.\",width:\"578\",height:\"230\"})}),`\n`,(0,C.jsx)(e.p,{children:\"How should we proceed? Moving either pointer inward yields a container with a shorter width. This leaves height as the determining factor. In this case, the left line is shorter than the right line, which means that the left line limits the water's height. Therefore, to find a larger container, let's move the left pointer inward:\"}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:Z,alt:\"Image represents a visual explanation of a coding pattern, likely related to algorithms operating on arrays or lists.  The left side shows a bar chart with a horizontal axis labeled from 0 to 5 and a vertical axis representing height from 0 to 8.  Several bars of varying heights are displayed; the heights are implicitly represented by the vertical extent of the bars. A light-blue rectangle fills the area below the height of the bars, representing a water level.  An orange box labeled 'left' points to the leftmost bar, and another orange box labeled 'right' points to the rightmost bar.  These labels 'left' and 'right' likely represent index pointers within an array. On the right side, a light-grey dashed-bordered box contains a conditional statement in code-like notation:  `heights[left] < heights[right] \\u2192 left += 1`. This indicates that if the height at the index `left` is less than the height at the index `right`, then the `left` index is incremented by 1.  The arrow implies a flow of information or control; the condition's evaluation dictates the update of the `left` pointer. The overall diagram illustrates a step within an algorithm, possibly for finding the largest rectangular area in a histogram or a similar problem involving array traversal and comparison.\",width:\"578\",height:\"229\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"The current container can hold 24 units of water, the largest amount so far. So, let\\u2019s update \",(0,C.jsx)(e.code,{children:\"max_water\"}),\" to 24. Here, the right line is shorter, limiting the water's height. To find a larger container, move the right pointer inward:\"]}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:p,alt:\"Image represents a bar chart illustrating a coding pattern, likely related to finding the maximum area of water trapped between vertical bars.  The horizontal axis shows indices (0 to 5), and the vertical axis represents heights.  Vertical bars of varying heights are drawn at each index; their heights are 2, 6, 6, 3, 6, and 0 respectively. A light-blue area is filled between the bars at indices 1, 2, 3, and 4, representing the trapped water.  Arrows labeled 'left' and 'right' point towards the x-axis, indicating the direction of traversal in an algorithm. A separate box contains code snippets: `water = min(7, 6) * (5 - 1) = 24` calculates the water trapped between specific bars (likely using the minimum height as the limiting factor and the distance between them), `max_water = 24` stores the maximum water found so far, and `heights[left] > heights[right] \\u2192 right -= 1` shows a conditional statement, suggesting an algorithm iterates from left and right, moving the right pointer inwards if the left bar is taller.  The overall diagram visually explains a two-pointer approach to solving a 'trapping rain water' problem.\",width:\"577\",height:\"230\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"After this, we encounter a situation where \",(0,C.jsx)(e.strong,{children:\"the height of the left and right lines are equal\"}),\". In this situation, which pointer should we move inward? Well, regardless of which one, the next container is guaranteed to store less water than the current one. Let\\u2019s try to understand why.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Moving either pointer inward yields a container of shorter width, leaving height as the determining factor. However, regardless of which pointer we move inward, the other pointer remains at the same line. So, even if a pointer is moved to a taller line, the other pointer will restrict the height of the water, as we take the minimum of the two lines.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Therefore, since we can\\u2019t increase height by moving just one pointer, we can just move both pointers inward:\"}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:m,alt:\"Image represents a bar chart illustrating a 'two-pointer' approach to finding the maximum area that can be contained between vertical bars. The horizontal axis shows indices (0 to 5), and the vertical axis represents height.  Several vertical bars of varying heights are depicted; one bar at index 0 has a height of 2, a group of bars from index 1 to 3 have a height of 7, and a bar at index 3 has a height of 6. The area between the bars at indices 1 and 3 is shaded light blue, representing the calculated water trapped between them.  Two orange rectangular boxes labeled 'left' and 'right' point to the indices 1 and 4 respectively, indicating the pointers used in the algorithm. A separate box displays calculation details: `water = min(7, 7) * (4 - 1) = 21`, showing the calculation of the water trapped between the pointers; `max_water = 24` indicates the maximum water trapped found so far; and `heights[left] == heights[right] => left += 1 and right -= 1` describes the algorithm's logic: if the heights at the left and right pointers are equal, both pointers move inwards.\",width:\"574\",height:\"229\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Now, the right line is limiting the height of the water. So, we move the right pointer inward:\"}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:k,alt:\"Image represents a diagram illustrating a coding pattern, likely related to finding the maximum trapped rainwater between vertical bars.  The left side shows a bar chart with vertical bars of varying heights (1, 7, 3, 7, 6) at positions 0, 1, 2, 3, 4, 5 respectively on the x-axis and heights on the y-axis. A light-blue rectangle is filled between bars of height 3 and 7 at positions 2 and 3, representing trapped water.  Below the chart, orange rectangular boxes labeled 'left' and 'right' indicate pointers or indices used to iterate through the bars.  An arrow points upwards from 'left' to the bar at position 2 and another from 'right' to the bar at position 3. The right side contains a light-grey box with code-like annotations.  These annotations show a calculation: `water = min(8, 3) * (3 - 2) = 3`, indicating the calculation of water trapped between two bars; `max_water = 24`, representing the maximum trapped water; and `heights[left] > heights[right] => right -= 1`, suggesting a conditional statement controlling the movement of the 'right' pointer based on the heights of the bars at the 'left' and 'right' indices.  The overall diagram visually explains an algorithm for calculating maximum trapped rainwater using two pointers.\",width:\"569\",height:\"229\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Finally, the left and right pointers meet. We can conclude our search here and return \",(0,C.jsx)(e.code,{children:\"max_water\"}),\":\"]}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(a,{src:g,alt:\"Image represents a diagram illustrating a coding pattern, likely within a search or sorting algorithm.  The left side shows a bar chart with the x-axis ranging from 0 to 5 and the y-axis representing a value, with bars of varying heights at different x-axis positions (0, 1, 2, 3, 4, and 5).  Below the chart, two rectangular boxes labeled 'left' and 'right' are shown, with arrows pointing upwards towards the x-axis, suggesting these labels represent index pointers or boundaries within a data structure. On the right side, a dashed-line rectangle contains the condition 'left == right' with a solid arrow pointing to the word 'break,' indicating that when the condition 'left' equals 'right' is met, the algorithm terminates or exits the loop using a 'break' statement.  The overall diagram visually depicts the process of a binary search or similar algorithm where two pointers converge until a condition is met, resulting in the termination of the process.\",width:\"541\",height:\"238\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Based on the decisions taken in the example, we can summarize the logic:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"If the left line is smaller, move the left pointer inward.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"If the right line is smaller, move the right pointer inward.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"If both lines have the same height, move both pointers inward.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n  \n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"heights: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    max_water = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    left, right = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(heights) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right):\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Calculate the water contained between the current pair of lines.\"}),`\n        water = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"min\"}),`(heights[left], heights[right]) * (right - left)\n        max_water = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_water, water)\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Move the pointers inward, always moving the pointer at the shorter line. If\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# both lines have the same height, move both pointers inward.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (heights[left] < heights[right]):\n            left += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"elif\"}),` (heights[left] > heights[right]):\n            right -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n            left += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n            right -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_water\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"heights\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxWater = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" left = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" right = heights.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Calculate the water contained between the current pair of lines.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" water = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"min\"}),`(heights[left], heights[right]) * (right - left)\n    maxWater = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(maxWater, water)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Move the pointers inward, always moving the pointer at the shorter line. If\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// both lines have the same height, move both pointers inward.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (heights[left] < heights[right]) {\n      left += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (heights[left] > heights[right]) {\n      right -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      left += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n      right -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxWater\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"largest_container\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> heights)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"max_water\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"left\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", right = heights.size() - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Calculate the water contained between the current pair of lines.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"water\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Math.min(heights.get(left), heights.get(right)) * (right - left);\n            max_water = Math.max(max_water, water);\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Move the pointers inward, always moving the pointer at the shorter line. If\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// both lines have the same height, move both pointers inward.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (heights.get(left) < heights.get(right)) {\n                left++;\n            } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (heights.get(left) > heights.get(right)) {\n                right--;\n            } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                left++;\n                right--;\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_water;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"largest_container\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we perform approximately \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" iterations using the two-pointer technique.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" We only allocated a constant number of variables, so the space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`,(0,C.jsx)(e.h3,{id:\"test-cases\",children:\"Test Cases\"}),`\n`,(0,C.jsx)(e.p,{children:\"In addition to the examples discussed throughout this explanation, below are some other examples to consider when testing your code.\"}),`\n`,(0,C.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,C.jsxs)(e.table,{children:[(0,C.jsx)(e.thead,{children:(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Input\"}),(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Expected output\"}),(0,C.jsx)(e.th,{style:{textAlign:\"left\"},children:\"Description\"})]})}),(0,C.jsxs)(e.tbody,{children:[(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = []\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"0\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an empty array.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = [1]\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"0\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an array with just one element.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = [0, 1, 0]\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"0\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an array with no containers that can contain water.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = [3, 3, 3, 3]\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"9\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an array where all heights are the same.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = [1, 2, 3]\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"2\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an array with strictly increasing heights.\"})]}),(0,C.jsxs)(e.tr,{children:[(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"heights = [3, 2, 1]\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:(0,C.jsx)(e.code,{children:\"2\"})}),(0,C.jsx)(e.td,{style:{textAlign:\"left\"},children:\"Tests an array with strictly decreasing heights.\"})]})]})]})})]})}function f(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(w,{...t})}):w(t)}function i(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return F(P);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

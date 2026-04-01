@@ -1,0 +1,201 @@
+{
+  "course": "tech-resume",
+  "id": "p0-c1-acknowledgements",
+  "chapter": 1,
+  "title": "Acknowledgements",
+  "free": false,
+  "code": "var Component=(()=>{var m=Object.create;var i=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var k=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var p=(n,e)=>()=>(e||n((e={exports:{}}).exports,e),e.exports),w=(n,e)=>{for(var t in e)i(n,t,{get:e[t],enumerable:!0})},s=(n,e,t,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let o of g(e))!f.call(n,o)&&o!==t&&i(n,o,{get:()=>e[o],enumerable:!(r=u(e,o))||r.enumerable});return n};var y=(n,e,t)=>(t=n!=null?m(k(n)):{},s(e||!n||!n.__esModule?i(t,\"default\",{value:n,enumerable:!0}):t,n)),b=n=>s(i({},\"__esModule\",{value:!0}),n);var d=p((S,h)=>{h.exports=_jsx_runtime});var M={};w(M,{default:()=>c,frontmatter:()=>v});var a=y(d()),v={chapter:1,title:\"Acknowledgements\"};function l(n){let e={p:\"p\",...n.components};return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(e.p,{children:\"This book has been written with significant input from some of the best technical recruiters, engineering managers and engineers within my network\\u2014many of them considered industry veterans. They were all generous with their time and feedback and made the book significantly better.\"}),`\n`,(0,a.jsx)(e.p,{children:\"On the recruiting side, thank you to Amy Miller, Angelica Shah, Blake Stockman, Csudi Csudutov, Chukwuemeka Ugorji, Claire Taylor, Jos\\xE9 Marchena, Jorick Thijs Polderman, Keki Mwaba, Ken Liu, Konstanty Sliwowski, Sebastian Prieto Tovar, Sofi Djelassi, Victoria Farrelly, Veronika Nagy, and Yinka Coker. All of you have scanned more developer resumes than myself, and your insights and feedback helped make the book more accurate and helpful.\"}),`\n`,(0,a.jsx)(e.p,{children:\"I am grateful for the feedback from engineering managers and engineers James Stanier, Jordan Bonnet, Manan Patel, Matt Dickenson, Monica Lent, Neville Kuyt, Pat Kua, Randall Kanna, Rodrigo Pimentel, Rodrigo Prates, Stuart Davidson, and Steve Ball. Thank you for both the reviews, the corrections and for confirming where you also would give similar advice.\"}),`\n`,(0,a.jsx)(e.p,{children:\"The feedback and encouragement from the early beta book readers has been great. People who have helped with feedback and suggestions include Aleph Melo, Anmol Singh Jaggi, Christopher Paika, David Kiss, Fabien Townsend, Jamie Robertson, Maroof Haque, Munasir Priom, Oliver Mensah, Patrick Doyle, Simon Van de Water and Waseef Akhtar. Thank you! I made several improvements in the book\\u2014such as adding Recap sections at the end of many chapters\\u2014after these reader suggestions.\"}),`\n`,(0,a.jsx)(e.p,{children:\"I\\u2019d like to give special thanks to the book\\u2019s editor, Mike Reeves-McMillan, who worked with me from the other side of the world to create something that people will find pleasant to read.\"})]})}function c(n={}){let{wrapper:e}=n.components||{};return e?(0,a.jsx)(e,{...n,children:(0,a.jsx)(l,{...n})}):l(n)}return b(M);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c1-acknowledgements"
+      ],
+      "id": "p0-c1-acknowledgements",
+      "chapter": 1,
+      "title": "Acknowledgements"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c2-introduction"
+      ],
+      "id": "p0-c2-introduction",
+      "chapter": 2,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c0-resumes-and-the-hiring-process"
+      ],
+      "id": "p1-c0-resumes-and-the-hiring-process",
+      "chapter": 3,
+      "free": true,
+      "title": "PART 1: RESUMES AND THE HIRING PROCESS"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c1-why-resumes-and-cvs-are-important"
+      ],
+      "id": "p1-c1-why-resumes-and-cvs-are-important",
+      "chapter": 4,
+      "free": true,
+      "title": "Chapter 1: Why Resumes and CVs are Important"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c2-the-hiring-pipeline"
+      ],
+      "id": "p1-c2-the-hiring-pipeline",
+      "chapter": 5,
+      "free": true,
+      "title": "Chapter 2: The Hiring Pipeline"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c0-writing-the-resume"
+      ],
+      "id": "p2-c0-writing-the-resume",
+      "chapter": 6,
+      "title": "PART 2: WRITING THE RESUME"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c1-tech-resume-basics"
+      ],
+      "id": "p2-c1-tech-resume-basics",
+      "chapter": 7,
+      "title": "Chapter 3: Tech Resume Basics"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c2-resume-structure"
+      ],
+      "id": "p2-c2-resume-structure",
+      "chapter": 8,
+      "title": "Chapter 4: Resume Structure"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c3-standing-out"
+      ],
+      "id": "p2-c3-standing-out",
+      "chapter": 9,
+      "title": "Chapter 5: Standing Out"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c4-common-mistakes"
+      ],
+      "id": "p2-c4-common-mistakes",
+      "chapter": 10,
+      "title": "Chapter 6: Common Mistakes"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c5-different-experience-levels-different-career-paths"
+      ],
+      "id": "p2-c5-different-experience-levels-different-career-paths",
+      "chapter": 11,
+      "title": "Chapter 7: Different Experience Levels, Different Career Paths"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c6-exercises-to-polish-your-resume"
+      ],
+      "id": "p2-c6-exercises-to-polish-your-resume",
+      "chapter": 12,
+      "title": "Chapter 8: Exercises to Polish Your Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c7-beyond-the-resume"
+      ],
+      "id": "p2-c7-beyond-the-resume",
+      "chapter": 13,
+      "title": "Chapter 9: Beyond the Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c0-examples-and-inspiration"
+      ],
+      "id": "p3-c0-examples-and-inspiration",
+      "chapter": 14,
+      "title": "PART 3: EXAMPLES AND INSPIRATION"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c1-good-resume-template-principles"
+      ],
+      "id": "p3-c1-good-resume-template-principles",
+      "chapter": 15,
+      "title": "Chapter 10: Good Resume Template Principles"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c2-resume-templates"
+      ],
+      "id": "p3-c2-resume-templates",
+      "chapter": 16,
+      "title": "Chapter 11: Resume Templates"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c3-resume-improvement-examples"
+      ],
+      "id": "p3-c3-resume-improvement-examples",
+      "chapter": 17,
+      "title": "Chapter 12: Resume Improvement Examples"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process"
+      ],
+      "id": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+      "chapter": 18,
+      "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p4-c0-conclusion"
+      ],
+      "id": "p4-c0-conclusion",
+      "chapter": 19,
+      "title": "Conclusion"
+    }
+  ],
+  "courseMetadata": {
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "tech-resume",
+    "defaultChapter": "/courses/tech-resume/p0-c2-introduction",
+    "rootPath": "/courses/tech-resume",
+    "lessons": 13,
+    "students": 5000,
+    "showChapter": false,
+    "lastModified": "2025.02.11"
+  }
+}

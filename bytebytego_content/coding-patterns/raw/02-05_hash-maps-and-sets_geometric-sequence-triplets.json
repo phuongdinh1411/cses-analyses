@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "hash-maps-and-sets/geometric-sequence-triplets",
+  "chapter": "02-05",
+  "title": "Geometric Sequence Triplets",
+  "free": false,
+  "code": "var Component=(()=>{var j=Object.create;var i=Object.defineProperty;var q=Object.getOwnPropertyDescriptor;var F=Object.getOwnPropertyNames;var D=Object.getPrototypeOf,E=Object.prototype.hasOwnProperty;var T=(V,e)=>()=>(e||V((e={exports:{}}).exports,e),e.exports),B=(V,e)=>{for(var a in e)i(V,a,{get:e[a],enumerable:!0})},r=(V,e,a,H)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of F(e))!E.call(V,l)&&l!==a&&i(V,l,{get:()=>e[l],enumerable:!(H=q(e,l))||H.enumerable});return V};var A=(V,e,a)=>(a=V!=null?j(D(V)):{},r(e||!V||!V.__esModule?i(a,\"default\",{value:V,enumerable:!0}):a,V)),I=V=>r(i({},\"__esModule\",{value:!0}),V);var h=T((a1,L)=>{L.exports=_jsx_runtime});var l1={};B(l1,{default:()=>_,frontmatter:()=>V1});var C=A(h());var c=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/geometric-sequences-triplets-ZJZMJ6MD.svg\";var d=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-1-752GC5NK.svg\";var M=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-2-UYW7WJIW.svg\";var Z=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-3-MVBXD5RU.svg\";var o=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-4-ZCKYY7SP.svg\";var p=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-5-BXUCZYYO.svg\";var m=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-6-UWRMOSID.svg\";var f=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-7-TYGFBIEY.svg\";var u=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-8-5GDFYZ4K.svg\";var g=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-9-OAMR6D5N.svg\";var b=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-10-DQMIHSMN.svg\";var k=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-11-7SP3U7QX.svg\";var w=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-12-F3WBBFPZ.svg\";var y=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-13-XPXQHUAJ.svg\";var x=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-14-TG7MSPTM.svg\";var N=\"/images/courses/coding-patterns/hash-maps-and-sets/geometric-sequence-triplets/image-02-05-15-ICJE5233.svg\";var V1={chapter:\"02-05\",difficulty:\"Medium\",title:\"Geometric Sequence Triplets\"};function v(V){let e={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",mtext:\"mtext\",munder:\"munder\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...V.components},{CodeTabs:a,Figure:H,Image:l,OpenCodeEditor:n,ProblemDescription:s}=e;return a||t(\"CodeTabs\",!0),H||t(\"Figure\",!0),l||t(\"Image\",!0),n||t(\"OpenCodeEditor\",!0),s||t(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(s,{children:[(0,C.jsxs)(e.p,{children:[\"A geometric sequence triplet is a \",(0,C.jsx)(e.strong,{children:\"sequence of three numbers\"}),\" where each successive number is obtained by multiplying the preceding number by a constant called the \",(0,C.jsx)(e.strong,{children:\"common ratio\"}),\".\"]}),(0,C.jsx)(e.p,{children:\"Let's examine three triplets to understand how this works:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"(1, 2, 4): This is a geometric sequence with a ratio of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"2\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{2}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" (i.e., [1, 1\\u22C5\",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"2\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{2}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" = 2, 2\\u22C5\",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"2\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{2}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" = 4]).\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"(5, 15, 45): This is a geometric sequence with a ratio of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"3\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{3}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"3\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" (i.e., [5, 5\\u22C5\",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"3\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{3}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"3\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" = 15, 15\\u22C5\",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"3\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{3}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8444em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6444em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"3\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]}),\" = 45]).\"]}),`\n`,(0,C.jsx)(e.li,{children:\"(2, 3, 4): Not a geometric sequence.\"}),`\n`]}),(0,C.jsxs)(e.p,{children:[\"Given an array of integers and a common ratio \",(0,C.jsx)(e.code,{children:\"r\"}),\", find all triplets of indexes \",(0,C.jsx)(e.code,{children:\"(i, j, k)\"}),\" that follow a geometric sequence for \",(0,C.jsx)(e.code,{children:\"i < j < k\"}),\". It's possible to encounter duplicate triplets in the array.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:c,width:\"500\",height:\"241\",alt:\"Image represents five rows demonstrating a geometric sequence. Each row begins with a bracketed sequence of numbers: [2, 1, 2, 4, 8], with some rows having additional numbers (8) at the end.  The numbers 2, 4, and 8 within the brackets are highlighted in peach-colored circles, and small numbers beneath them indicate their position within the sequence (0, 2, 3, 4, 5).  Following each bracketed sequence is a colon and then an equation demonstrating the pattern: (2, 2*2 = 4, 4*2 = 8).  The first number in the equation (2) corresponds to the first highlighted number in the bracket, and subsequent numbers are generated by multiplying the preceding number by 2. The last row shows a variation where the sequence starts with 1 instead of 2, resulting in a modified equation: (1, 1*2 = 2, 2*2 = 4).  The overall image illustrates the concept of a geometric progression where each term is obtained by multiplying the previous term by a constant value (in this case, 2).\",priority:!0})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"8\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"8\"}),\"], `r` = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),`\n`]})}),(0,C.jsx)(e.p,{children:\"Explanation:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"Triplet \",(0,C.jsx)(e.code,{children:\"[2, 4, 8]\"}),\" occurs at indexes \",(0,C.jsx)(e.code,{children:\"(0, 3, 4)\"}),\", \",(0,C.jsx)(e.code,{children:\"(0, 3, 5)\"}),\", \",(0,C.jsx)(e.code,{children:\"(2, 3, 4)\"}),\", \",(0,C.jsx)(e.code,{children:\"(2, 3, 5)\"}),\".\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"Triplet \",(0,C.jsx)(e.code,{children:\"[1, 2, 4]\"}),\" occurs at indexes \",(0,C.jsx)(e.code,{children:\"(1, 2, 3)\"}),\".\"]}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"For a triplet to form a geometric sequence, it has to adhere to two main rules:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"It consists of three values that follow a geometric sequence with a common ratio \",(0,C.jsx)(e.code,{children:\"r\"}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"The three values forming the triplet must appear in the same order within the array as they do in the geometric sequence. This means for a geometric triplet (\",(0,C.jsx)(e.code,{children:\"nums[i]\"}),\", \",(0,C.jsx)(e.code,{children:\"nums[j]\"}),\", \",(0,C.jsx)(e.code,{children:\"nums[k]\"}),\"), the indexes must follow the order \",(0,C.jsx)(e.code,{children:\"i < j < k\"}),\".\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"How can we represent a geometric sequence so that it follows rule 1? Let\\u2019s say the first number is \",(0,C.jsx)(e.code,{children:\"x\"}),\". The second number is the first number multiplied by \",(0,C.jsx)(e.code,{children:\"r\"}),\" (i.e., \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\"), and the third is the second number multiplied by \",(0,C.jsx)(e.code,{children:\"r\"}),\" (i.e., \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\\u22C5r = x\\u22C5r^2\"}),\"). So, a triplet in a geometric sequence can be represented as (\",(0,C.jsx)(e.code,{children:\"x\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r^2\"}),\").\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"A brute force approach is to iterate over every possible triplet in the array and check if any of these triplets follow a geometric progression. However, it would take three nested for-loops to search through all the triplets, resulting in a time complexity of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"3\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^3)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"3\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the input array. Can we do better?\"]}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:\"An important observation here is that if we know one value of a triplet, we can calculate what the other two values should be.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"This is because all three values are related by the common ratio \",(0,C.jsx)(e.code,{children:\"r\"}),\". So, for any number \",(0,C.jsx)(e.code,{children:\"x\"}),\" in the array, we just need to find the values \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" and \",(0,C.jsx)(e.code,{children:\"x\\u22C5r^2\"}),\" to form a geometric triplet (\",(0,C.jsx)(e.code,{children:\"x\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r^2\"}),\"). However, we could run into issues when using this triplet representation. While it\\u2019s clear the values \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" and \",(0,C.jsx)(e.code,{children:\"x\\u22C5r^2\"}),\" must be positioned to the right of x, we have to be careful since the order of these values matters: we don\\u2019t want to accidentally identify a triplet such as (\",(0,C.jsx)(e.code,{children:\"x\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r^2\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\"), which is invalid:\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:d,alt:\"Image represents a diagram illustrating an ordering problem in a data structure.  A single 'X' at the top points downwards via a grey arrow to a horizontal array-like structure enclosed in square brackets `[ ]`. This array contains several elements represented by dots (`.`) as placeholders, with a single 'X' and then 'x*r\\xB2' and 'x*r' appearing in the array. Below the array, a grey box highlights the text '(x, x*r\\xB2, x*r)' labeled as 'triplet valves,' indicating that these three elements are expected to form a triplet. The text 'appear in the wrong order' explains that the order of these elements within the array does not match the expected order defined in the triplet valves.  The diagram visually shows the incorrect arrangement of the triplet within a larger data structure, highlighting the problem of out-of-order elements.\",width:\"449\",height:\"85\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"We can work around this issue by using the \",(0,C.jsxs)(e.strong,{children:[\"(\",(0,C.jsx)(e.code,{children:\"x/r\"}),\", \",(0,C.jsx)(e.code,{children:\"x\"}),\", \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\")\"]}),\" triplet representation, which allows us to always maintain order by looking for \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" to the left of \",(0,C.jsx)(e.code,{children:\"x\"}),\" and \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" to the right:\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:M,alt:\"Image represents a comparison of two search operations within a data structure, likely an array.  The left side shows a light-blue rectangular box representing an array containing several elements (represented by black dots). A gray line extends below the box, indicating a range, with a downward-pointing triangle marking a midpoint. Below the line, the text 'find x/r' suggests a search operation aiming to find an element 'x' at or near the middle ('r' possibly representing a range or index). The right side mirrors this structure but uses a peach-colored rectangle.  The text 'find x*r' suggests a different search operation, possibly indicating a search for 'x' within a range defined by 'r', but with a different search algorithm or criteria implied by the asterisk (*). The letter 'X' separates the two diagrams, visually distinguishing the two search methods.  Both diagrams use brackets to visually represent the beginning and end of the array.\",width:\"280\",height:\"58\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"One way we can find the \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" and \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" values is by linearly searching through the left and right subarrays. This linear search would need to be done for each number in the array, resulting in an \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time complexity. While this is an improvement from the brute force solution, it would be great if we had a way to find those values faster.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Hash maps\"}),(0,C.jsx)(e.br,{}),`\n`,\"A hash map would be a great way to solve this problem, as it allows us to query specific values in constant time.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"What we would need are two hash maps:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[\"A hash map that contains numbers to the left of each \",(0,C.jsx)(e.code,{children:\"x\"}),\" (\",(0,C.jsx)(e.code,{children:\"left_map\"}),\").\"]}),`\n`,(0,C.jsxs)(e.li,{children:[\"A hash map that contains numbers to the right of each \",(0,C.jsx)(e.code,{children:\"x\"}),\" (\",(0,C.jsx)(e.code,{children:\"right_map\"}),\").\"]}),`\n`]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a diagram illustrating a data structure concept, likely within the context of a two-pointer approach or similar algorithm.  The diagram shows two rectangular boxes, one light blue labeled implicitly as a 'left_map' and the other peach-colored labeled implicitly as a 'right_map'. Each box contains several dots (...), representing data elements within each respective map.  A horizontal line extends below each box, ending in a downward-pointing triangle, visually indicating a storage location. Below each line, the text 'store in' is written, followed by 'left_map' under the light blue box and 'right_map' under the peach box.  The two boxes are separated by the letter 'X', suggesting a separation or comparison point between the two data structures. The overall structure suggests that data is stored and potentially processed separately in 'left_map' and 'right_map', with the 'X' possibly representing a pivot or comparison point in an algorithm.\",width:\"275\",height:\"74\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Hash maps allow us to query for both \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" in the left hash map and query for \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" in the right hash map in constant time on average. Note that a hash map would be preferred over a hash set because hash maps can also store the frequency of each value it stores. This is crucial since the array might contain duplicates, and we need to know the frequency of each value to accurately identify all possible triplets.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsxs)(e.strong,{children:[\"Finding all (\",(0,C.jsx)(e.code,{children:\"x/r\"}),\", x, x\"]}),\"\\u22C5\",(0,C.jsx)(e.strong,{children:\"r) triplets\"}),(0,C.jsx)(e.br,{}),`\n`,\"Our goal is to find all triplets that follow a geometric sequence, representing each number in the array as the middle (x) number of a triplet.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Before we find a triplet\\u2019s \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" value, we need to \",(0,C.jsxs)(e.strong,{children:[\"check if \",(0,C.jsx)(e.code,{children:\"x\"}),\" is divisible by r\"]}),\". If it\\u2019s not, it\\u2019s impossible to form a triplet from the current value of \",(0,C.jsx)(e.code,{children:\"x\"}),\". Otherwise, we can proceed to look for the triplet.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"For any element x, there could be multiple instances of \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" in \",(0,C.jsx)(e.code,{children:\"left_map\"}),\" and multiple instances of \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" in \",(0,C.jsx)(e.code,{children:\"right_map\"}),\", implying that multiple triplets can be formed using \",(0,C.jsx)(e.code,{children:\"x\"}),\" as the middle value. So, to get the total number of triplets that can be formed with \",(0,C.jsx)(e.code,{children:\"x\"}),\" in the middle, \",(0,C.jsxs)(e.strong,{children:[\"multiply the frequencies of \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" and \",(0,C.jsx)(e.code,{children:\"x/r\"})]}),\":\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:o,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to data structures or algorithms.  The diagram shows two parallel structures, each representing a set of numbers. The left structure, labeled 'x/r = 2' in light blue, depicts a set [2, 1, 2], where two instances of the number 2 are connected by a line labeled 'two 2's' to a central node.  The right structure, labeled 'x/r = 8' in orange, shows a set [8, 8], with two instances of 8 connected by a line labeled 'two 8's' to the same central node. A downward-pointing arrow labeled 'x' connects the two structures, indicating a transformation or operation. The central node, connected to both structures, is labeled '2 * 2 = 4', suggesting a calculation based on the number of instances in each structure. Finally, an arrow pointing to the right indicates the result: '4 instances of [2, 4, 8]', implying that the combined result of the operation on the two input structures produces four instances of the combined set [2, 4, 8].\",width:\"253\",height:\"142\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This overall methodology can be summarized in the following steps:\"}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:p,alt:\"Image represents a flowchart illustrating a coding pattern for counting triplets.  The top shows two arrays, a light-blue array labeled `[`...`]` on the left representing values of `x/r`, and a peach-colored array labeled `[`...`]` on the right representing values of `x*r`, separated by the variable 'x'.  Step \\u2460, labeled 'check that x%r == 0', indicates a condition that must be met.  Step \\u2461, labeled 'get frequency of x/r from left_map', shows an arrow pointing from the left array to step \\u2463.  Similarly, step \\u2462, labeled 'get frequency of x*r from right_map', shows an arrow pointing from the right array to step \\u2463.  Step \\u2463, labeled 'multiply the frequencies to get the number of triplets with this x in the middle', indicates that the frequencies obtained in steps \\u2461 and \\u2462 are multiplied to determine the count of triplets where 'x' is the central element, satisfying the condition in step \\u2460.  The arrows visually represent the data flow, showing how the frequencies from the left and right arrays are combined to calculate the final result.\",width:\"379\",height:\"168\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that if either \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" or \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\" are not found in their hash maps, their frequency is 0 by default.\"]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s implement this strategy using the example below:\"}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(l,{src:m,alt:\"Image represents a one-dimensional array or list enclosed in square brackets `[` and `]`, containing the integer sequence `[2, 1, 2, 4, 8, 8]`.  This array is separated by a comma from the assignment `r = 2`, indicating a variable `r` is assigned the integer value 2.  The arrangement shows the array as a data structure, and the assignment suggests a potential relationship between the array and the variable `r`, possibly representing a parameter or index related to the array's processing or manipulation within a larger algorithm or code.  There are no URLs or other parameters present beyond the numerical values and variable assignment.\",width:\"314\",height:\"26\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"To ensure the hash maps always contain the correct values, we\\u2019d need to incorporate a dynamic strategy that involves updating the hash maps as we go because the values in both hash maps will be different depending on the position of \",(0,C.jsx)(e.code,{children:\"x\"}),\" in the array.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Since we're traversing the array from left to right, we should \",(0,C.jsx)(e.strong,{children:\"initially fill the right hash map with all values in the array\"}),\". This is because, before the start of the iteration, every element is a potential candidate for \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\". Meanwhile, the left hash map is initially empty because there are no preceding elements to consider as potential \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" values:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:f,alt:\"Image represents a visual depiction of a data transformation process, likely related to frequency counting or mapping.  The input is a list of numbers `[2, 1, 2, 4, 8, 8]` and a value `r = 2`.  This input is processed to generate two maps: `left_map` and `right_map`.  `right_map` is a table with two columns: `x*r` and `freq`. It shows the results of multiplying each element in the input list by `r` (2) in the `x*r` column, and the frequency of each resulting value in the `freq` column. For example, 2*2=4 appears once, 1*2=2 appears twice, 4*2=8 appears twice. `left_map` is an empty table with columns `x/r` and `freq`, suggesting it would contain the results of dividing each input element by `r` and their corresponding frequencies, but these values are not shown in the image.  The overall diagram illustrates a process where an input list is transformed based on a given value `r`, resulting in frequency counts displayed in two separate tables representing different operations (multiplication and division by `r`).\",width:\"520\",height:\"156\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now let\\u2019s look for triplets. Start by representing the first value as the middle value (\",(0,C.jsx)(e.code,{children:\"x\"}),\") of a triplet.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"First, let\\u2019s \",(0,C.jsxs)(e.strong,{children:[\"update \",(0,C.jsx)(e.code,{children:\"right_map\"})]}),\". We should remove the current value (2) from \",(0,C.jsx)(e.code,{children:\"right_map\"}),\" since this 2 is not to the right of itself. There are two 2\\u2019s in \",(0,C.jsx)(e.code,{children:\"right_map\"}),\", so let\\u2019s reduce its frequency to 1:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:u,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to frequency counting or mapping.  The diagram shows an input array `x = [2, 1, 2, 4, 8, 8]` and a value `r = 2`.  This input is processed to create two maps: `left_map` and `right_map`.  `left_map` is empty, suggesting it's a placeholder or the result of a computation not yet shown. `right_map` is a table with two columns: `x*r` (representing elements of the input array multiplied by `r`) and `freq` (representing the frequency of each element in `x*r`).  The `right_map` contains the following entries: `x*r` values of 2, 1, 4, 8 and their corresponding frequencies in `freq` as 2, 1, 1, 2 respectively. An arrow points from the `freq` column value of 2 (corresponding to `x*r` = 2) to the number 1, indicating a potential further processing step or mapping not fully depicted.  The overall structure suggests a process where an input array is manipulated based on a given value `r`, resulting in frequency counts displayed in the `right_map`, with a possible additional transformation indicated by the arrow.\",width:\"540\",height:\"156\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Next, \",(0,C.jsxs)(e.strong,{children:[\"check if \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" is an integer.\"]}),\" In this case, it is, so let\\u2019s \",(0,C.jsxs)(e.strong,{children:[\"find the number of triplets with \",(0,C.jsx)(e.code,{children:\"x\"}),\" as the middle number\"]}),\" by multiplying the frequencies of \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" and \",(0,C.jsx)(e.code,{children:\"x\\u22C5r\"}),\", which we can get from the respective hash maps. Since \",(0,C.jsx)(e.code,{children:\"left_map\"}),\" doesn\\u2019t contain \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" at this point, its frequency is 0:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:g,alt:\"The image represents a code snippet illustrating a calculation process. On the left, an array `[2 1 2 4 8 8]` is shown, with a variable `r` assigned the value 2.  A downward-pointing arrow suggests this array is input to the process. On the right, a light-grey box contains a conditional statement and a series of calculations. The condition `x % r == 0` checks if a variable `x` (not explicitly defined in the image but implied to be an element from the input array) is divisible by `r`. If true, the `count` variable is updated. The update involves multiplying values from two maps, `left_map` and `right_map`, using `x/r` and `x*r` as indices respectively.  The example shows the calculation for `x=2`, resulting in `count += left_map[2/2] * right_map[2*2]`, which simplifies to `count += left_map[1] * right_map[4]`.  Subsequent lines show further additions to `count`, ultimately resulting in `count += 0`, suggesting that the initial multiplication resulted in zero, and subsequent additions also contributed zero.  The overall structure depicts a conditional update of a counter based on array elements and lookups in two maps (`left_map` and `right_map`).\",width:\"604\",height:\"104\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Before moving on to the next value, let\\u2019s \",(0,C.jsxs)(e.strong,{children:[\"add the current number to the \",(0,C.jsx)(e.code,{children:\"left_map\"})]}),\" because it now becomes a potential \",(0,C.jsx)(e.code,{children:\"x/r\"}),\" value for future triplets in the array:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:b,alt:\"Image represents a comparison of two maps, labeled 'left_map' and 'right_map,' each depicted as a table with two columns.  The left column in both maps is labeled 'x/r' in the left map and 'x*r' in the right map, representing some form of input data (possibly x divided by r and x multiplied by r respectively). The right column in both maps is labeled 'freq,' indicating frequency.  'left_map' contains two rows: one with '2' in the 'x/r' column and '1' in the 'freq' column, and another with an empty 'x/r' cell and an empty 'freq' cell. 'right_map' contains four rows showing different pairings of 'x*r' and 'freq': (2,1), (1,1), (4,1), and (8,2).  The maps are presented side-by-side for visual comparison, highlighting the difference in data representation and frequency distribution between the 'x/r' and 'x*r' transformations.\",width:\"240\",height:\"139\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Repeating this process for the rest of the array allows us to find all geometric triplets with a ratio of \",(0,C.jsx)(e.code,{children:\"r\"}),\". To clarify, the hash maps in the upcoming diagrams represent their state at the current position of \",(0,C.jsx)(e.code,{children:\"x\"}),\" in the array. This means that \",(0,C.jsx)(e.code,{children:\"left_map\"}),\" includes values to the left of the current \",(0,C.jsx)(e.code,{children:\"x\"}),\", and the \",(0,C.jsx)(e.code,{children:\"right_map\"}),\" includes values to the right of it.\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:k,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to data processing or algorithm design.  At the top, an input array `[2 1 2 4 8 8]` and a parameter `r = 2` are shown.  A downward-pointing arrow indicates the processing of the input array. Below, two tables are presented side-by-side, labeled 'left_map' and 'right_map'.  'left_map' contains a column labeled 'x/r' with values (presumably resulting from dividing elements of the input array by `r`) and a column labeled 'freq' representing their frequencies. Similarly, 'right_map' has columns 'x*r' (likely representing multiplication of input array elements by `r`) and 'freq' showing their frequencies.  A light gray rectangular box displays the condition `x % r != 0 \\u2192 can't form a triplet \\u2192 continue`, indicating that if the remainder of an element divided by `r` is not zero, a triplet cannot be formed, and the process continues to the next element.  The overall diagram suggests a frequency analysis or counting process involving division and multiplication by a given parameter `r`, with a conditional check for triplet formation.\",width:\"650\",height:\"200\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:w,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to frequency counting or data manipulation.  At the top, an input array `[2 1 2 4 8 8]` and a value `r = 2` are given. Below, two tables labeled 'left_map' and 'right_map' are shown.  'left_map' contains two columns: 'x/r' representing values after integer division by `r`, and 'freq' representing their frequencies.  Similarly, 'right_map' has columns 'x*r' (values after multiplication by `r`) and 'freq'.  The values in these tables seem pre-calculated based on the input array. A dashed-line box to the right shows a calculation process.  It starts with a condition `x % r == 0`, implying a check for divisibility by `r`. If true, a `count` variable is updated by adding the product of a value from 'left_map' (indexed by `x/r`) and a value from 'right_map' (indexed by `x*r`). An example calculation is shown, where `x` is implicitly 2, resulting in `left_map[2/2] * right_map[2*2]`, which simplifies to `1 * 1`, adding 1 to the `count`.  The entire process suggests an algorithm that uses pre-computed frequency maps ('left_map' and 'right_map') to efficiently process the input array based on divisibility by `r`.\",width:\"700\",height:\"200\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:y,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to frequency counting or data manipulation.  At the top, an input array `[2 1 2 4 8 8]` and a value `r = 2` are given.  Below, two tables labeled 'left_map' and 'right_map' are shown.  'left_map' has two columns: 'x/r' (representing the element of the input array divided by r) and 'freq' (frequency). It contains the values 2 (x/r) and 2 (freq) in the first row, and 1 (x/r) and 1 (freq) in the second row. 'right_map' similarly has columns 'x*r' (element multiplied by r) and 'freq', with values 2 and 0, 1 and 0, 4 and 0, and 8 and 2. To the right, a dashed box shows a calculation:  `x % r == 0 \\u2192 count += left_map[x/r] * right_map[x*r]`. This formula is then broken down step-by-step, substituting values from the input array and the maps: `+= left_map[4/2] * right_map[4*2]`, `+= 2 * 2`, and finally `+= 4`, demonstrating how the count is updated based on the values in the 'left_map' and 'right_map' tables.  The overall diagram visualizes a process where an input array is processed using two pre-computed frequency maps ('left_map' and 'right_map') to calculate a final count.\",width:\"700\",height:\"200\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:x,alt:\"Image represents a coding pattern illustration focusing on a calculation involving two maps, `left_map` and `right_map`, and an input array `[2, 1, 2, 4, 8, 8]` with `r` set to 2.  An arrow points downwards from 'x' suggesting an input value. `left_map` and `right_map` are presented as tables with two columns: the first labeled 'x/r' or 'x*r' respectively, representing the result of integer division by `r` or multiplication by `r`, and the second labeled 'freq', likely representing frequency counts.  The `left_map` contains entries (2,2), (1,1), (4,1), (8,1), while `right_map` contains (2,0), (1,0), (4,0), (8,1). A dashed box to the right shows a calculation process:  `x % r == 0` (checking if `x` is a multiple of `r`) leads to `count += left_map[x/r] * right_map[x*r]`.  The calculation is further broken down with example values, showing `count` being updated by adding the product of `left_map[8/2]` (which is 1) and `right_map[8*2]` (which is 1), resulting in a final `count` of 0.  The diagram illustrates how the maps are used to perform a calculation based on the input array and the value of `r`.\",width:\"700\",height:\"200\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(l,{src:N,alt:\"Image represents a diagram illustrating a coding pattern, possibly for counting occurrences based on modulo operation.  At the top, an input array `[2 1 2 4 8 8]` and a value `r = 2` are given. Below, two tables labeled 'left_map' and 'right_map' are shown side-by-side.  Each table has two columns: the first column in 'left_map' lists the elements of the input array divided by `r` (integer division), while the second column represents their frequencies. Similarly, 'right_map' has its first column listing elements of the input array multiplied by `r`, and the second column showing their frequencies.  A dashed-line box to the right contains a calculation sequence. It starts with a condition `x % r == 0`, indicating that if an element `x` modulo `r` equals 0, a counter (`count`) is updated. The update involves multiplying the frequency from 'left_map' (using the integer division of `x` by `r` as the index) with the frequency from 'right_map' (using `x` multiplied by `r` as the index). The example calculation shows how this is done for the element 8: `left_map[8/2]` (which is 1) is multiplied by `right_map[8*2]` (which is 0), resulting in 0 being added to the counter.  The final result of the calculation is 0 in this specific example.\",width:\"700\",height:\"200\"})}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(a,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" collections \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` defaultdict\n    \n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"geometric_sequence_triplets\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], r: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Use 'defaultdict' to ensure the default value of 0 is returned when\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# accessing a key that doesn\\u2019t exist in the hash map. This effectively sets\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# the default frequency of all elements to 0.\"}),`\n    left_map = defaultdict(`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`)\n    right_map = defaultdict(`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`)\n    count = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Populate 'right_map' with the frequency of each element in the array.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" x \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` nums:\n        right_map[x] += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Search for geometric triplets that have x as the center.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" x \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` nums:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Decrement the frequency of x in 'right_map' since x is now being\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# processed and is no longer to the right.\"}),`\n        right_map[x] -= `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" x % r == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`:\n            count += left_map[x // r] * right_map[x * r]\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Increment the frequency of x in 'left_map' since it'll be a part of the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# left side of the array once we iterate to the next value of `x`.\"}),`\n        left_map[x] += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` count\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"geometric_sequence_triplets\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums, r\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use Maps to track frequencies, similar to defaultdict in Python\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" leftMap = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Map\"}),`()\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" rightMap = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Map\"}),`()\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" count = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Populate 'rightMap' with the frequency of each element in the array\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" x \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` nums) {\n    rightMap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"set\"}),\"(x, (rightMap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(x) || \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Search for geometric triplets that have x as the center\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" x \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` nums) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Decrement the frequency of x in 'rightMap' since x is now being\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// processed and is no longer to the right\"}),`\n    rightMap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"set\"}),\"(x, rightMap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(x) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (x % r === \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Get frequencies of potential left and right elements\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" leftFreq = leftMap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(x / r) || \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" rightFreq = rightMap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(x * r) || \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Add the number of triplets formed with x as the middle element\"}),`\n      count += leftFreq * rightFreq\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Increment the frequency of x in 'leftMap' since it'll be a part of the\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// left side of the array once we iterate to the next value of `x`\"}),`\n    leftMap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"set\"}),\"(x, (leftMap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(x) || \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` count\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.HashMap;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"geometric_sequence_triplets\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" r)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use 'HashMap' to ensure the default value of 0 is returned when\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// accessing a key that doesn\\u2019t exist in the hash map. This effectively sets\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// the default frequency of all elements to 0.\"}),`\n        HashMap<Long, Long> leftMap = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashMap\"}),`<>();\n        HashMap<Long, Long> rightMap = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashMap\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"long\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"count\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Populate 'rightMap' with the frequency of each element in the array.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` num : nums) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"long\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"x\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"long\"}),`) num;\n            rightMap.put(x, rightMap.getOrDefault(x, `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0L\"}),\") + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Search for geometric triplets that have x as the center.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` num : nums) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"long\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"x\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"long\"}),`) num;\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Decrement the frequency of x in 'rightMap' since x is now being\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// processed and is no longer to the right.\"}),`\n            rightMap.put(x, rightMap.get(x) - `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (x % r == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n                count += leftMap.getOrDefault(x / r, `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0L\"}),\") * rightMap.getOrDefault(x * r, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0L\"}),`);\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Increment the frequency of x in 'leftMap' since it'll be a part of the\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// left side of the array once we iterate to the next value of `x`.\"}),`\n            leftMap.put(x, leftMap.getOrDefault(x, `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0L\"}),\") + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),`) count;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"\"}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"geometric_sequence_triplets\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we iterate through the \",(0,C.jsx)(e.code,{children:\"nums\"}),\" array and perform constant-time hash map operations at each iteration.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because the hash maps can grow up to \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" in size.\"]})]})}function _(V={}){let{wrapper:e}=V.components||{};return e?(0,C.jsx)(e,{...V,children:(0,C.jsx)(v,{...V})}):v(V)}function t(V,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+V+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return I(l1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "binary-search/cutting-wood",
+  "chapter": "06-03",
+  "title": "Cutting Wood",
+  "free": false,
+  "code": "var Component=(()=>{var b=Object.create;var l=Object.defineProperty;var F=Object.getOwnPropertyDescriptor;var y=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,D=Object.prototype.hasOwnProperty;var v=(V,t)=>()=>(t||V((t={exports:{}}).exports,t),t.exports),j=(V,t)=>{for(var A in t)l(V,A,{get:t[A],enumerable:!0})},h=(V,t,A,H)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let e of y(t))!D.call(V,e)&&e!==A&&l(V,e,{get:()=>t[e],enumerable:!(H=F(t,e))||H.enumerable});return V};var N=(V,t,A)=>(A=V!=null?b(x(V)):{},h(t||!V||!V.__esModule?l(A,\"default\",{value:V,enumerable:!0}):A,V)),T=V=>h(l({},\"__esModule\",{value:!0}),V);var o=v((e1,s)=>{s.exports=_jsx_runtime});var t1={};j(t1,{default:()=>m,frontmatter:()=>C1});var C=N(o());var d=\"/images/courses/coding-patterns/binary-search/cutting-wood/cutting-wood-PK2Z54DP.svg\";var n=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-1-JK3WE7XA.svg\";var M=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-2-XO2PAOFB.svg\";var Z=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-3-HVOCASGL.svg\";var L=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-4-ZNUVBJUB.svg\";var c=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-5-IJ7UXZNX.svg\";var g=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-6-36ODJV67.svg\";var p=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-7-C3ZRTEAA.svg\";var f=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-8-QEHGEBVM.svg\";var k=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-9-VKKR7JIP.svg\";var B=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-10-6AYEALZT.svg\";var w=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-11-ZHFTUMW6.svg\";var E=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-12-DBIMLMNS.svg\";var Q=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-13-P5XNFFU5.svg\";var I=\"/images/courses/coding-patterns/binary-search/cutting-wood/image-06-03-14-DAQCTSJ2.svg\";var C1={chapter:\"06-03\",difficulty:\"Medium\",title:\"Cutting Wood\"};function u(V){let t={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...V.components},{CodeTabs:A,Figure:H,Image:e,OpenCodeEditor:a,ProblemDescription:r}=t;return A||i(\"CodeTabs\",!0),H||i(\"Figure\",!0),e||i(\"Image\",!0),a||i(\"OpenCodeEditor\",!0),r||i(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsxs)(t.p,{children:[\"You are given an array representing the heights of trees, and an integer \",(0,C.jsx)(t.code,{children:\"k\"}),\" representing the total length of wood that needs to be cut.\"]}),(0,C.jsxs)(t.p,{children:[\"For this task, a woodcutting machine is set to a certain height, \",(0,C.jsx)(t.code,{children:\"H\"}),\". The machine cuts off the top part of all trees taller than \",(0,C.jsx)(t.code,{children:\"H\"}),\", while trees shorter than \",(0,C.jsx)(t.code,{children:\"H\"}),\" remain untouched. \",(0,C.jsx)(t.strong,{children:\"Determine the highest possible setting\"}),\" of the woodcutter (\",(0,C.jsx)(t.code,{children:\"H\"}),\") so that it cuts \",(0,C.jsxs)(t.strong,{children:[\"at least \",(0,C.jsx)(t.code,{children:\"k\"}),\" meters\"]}),\" of wood.\"]}),(0,C.jsx)(t.p,{children:\"Assume the woodcutter cannot be set higher than the height of the tallest tree in the array.\"}),(0,C.jsx)(t.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:d,width:\"302\",height:\"255\",alt:\"Image represents a bar chart illustrating a coding pattern, likely related to data structures or algorithms.  The horizontal axis (labeled 'i' at the far right) represents an index or position, while the vertical axis is labeled 'height'. Four bars are shown, with heights varying. The first bar, at index 0, has a height of 2. The second bar, at index 1, has a base height of 3 (light gray) and an additional height of 3 (orange hatched pattern), totaling 6. The third bar, at index 2, has a height of 3. The fourth bar, at index 3, has a base height of 3 (light gray) and an additional height of 5 (orange hatched pattern), totaling 8. A horizontal orange line is drawn at height 3, labeled 'H = 3'.  Braces in light blue indicate the additional height above this line for bars at indices 1 and 3, with the values '3' and '5' respectively written next to them.  The chart visually demonstrates a pattern where a base height is consistently present, with varying additional heights stacked on top.\",priority:!0})}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-python\",children:[\"Input: heights = [\",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"6\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"8\"}),\"], k = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"7\"}),`\nOutput: `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"3\"}),`\n`]})}),(0,C.jsxs)(t.p,{children:[\"Explanation: The highest possible height setting that yields at least \",(0,C.jsx)(t.code,{children:\"k = 7\"}),\" meters of wood is 3, which yields 8 meters of wood. Any height setting higher than this will yield less than 7 meters of wood.\"]}),(0,C.jsx)(t.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(t.ul,{children:[`\n`,(0,C.jsxs)(t.li,{children:[\"It's always possible to attain at least \",(0,C.jsx)(t.code,{children:\"k\"}),\" meters of wood.\"]}),`\n`,(0,C.jsx)(t.li,{children:\"There's at least one tree.\"}),`\n`]})]}),`\n`,(0,C.jsx)(t.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(t.p,{children:[\"At first, it might strike you as strange that this problem is in the \",(0,C.jsx)(t.em,{children:\"Binary Search\"}),\" chapter. The given input array isn't necessarily sorted, so how is binary search applicable here? Well, this is an example of a common application of binary search, where the search space does not encompass the input array.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"Let\\u2019s consider a visualization of four trees of heights \",(0,C.jsx)(t.code,{children:\"[2, 6, 3, 8]\"}),\" and assume k = 7:\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:n,alt:\"Image represents a bar chart illustrating a data set where the horizontal axis, labeled 'i', represents an index or identifier, and the vertical axis, labeled 'height', represents a corresponding numerical value.  Four bars are displayed, each with a distinct height.  The first bar, at index '0', has a height of approximately 2 units. The second bar, at index '1', reaches approximately 6 units. The third bar, at index '2', has a height of around 3 units. Finally, the fourth bar, at index '3', has the greatest height, approximately 8 units.  The bars are light gray, outlined in black, and are positioned along the horizontal axis with equal spacing between them.  The chart visually depicts the relationship between the index 'i' and its associated 'height' value, showing a non-linear pattern of increasing and decreasing heights across the data points.\",width:\"272\",height:\"232\"})}),`\n`,(0,C.jsx)(t.p,{children:\"The tallest tree above has a height of 8. So the height setting, H, can be set to any height between 0 and 8.\"}),`\n`,(0,C.jsxs)(t.ul,{children:[`\n`,(0,C.jsx)(t.li,{children:\"The most amount of wood is cut at H = 0, where all trees are cut from the bottom.\"}),`\n`,(0,C.jsx)(t.li,{children:\"The least amount of wood is cut at H = 8, where no wood is cut at all.\"}),`\n`]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:M,alt:\"Image represents a comparative visualization of two scenarios involving wood cutting.  The left side depicts a scenario where the height of the axe (H) is 0, resulting in a total wood cut of 19 units. This is shown as a bar chart with four bars of varying heights (2, 6, 3, 8 units respectively) representing the amount of wood cut at each of four positions (i = 0, 1, 2, 3).  Each bar is orange with diagonal stripes.  The y-axis represents the 'height' of the wood cut at each position, and the x-axis represents the position 'i'.  The right side shows a scenario where the axe height (H) is 8.  In this case, the total wood cut is 0, represented by a horizontal orange line at height 8.  The bar chart on this side shows four bars (2, 6, 3, 8 units respectively) representing the initial wood heights at each position, but they are light gray, indicating no wood was cut.  Both charts share the same x-axis scale (i = 0, 1, 2, 3) and a similar y-axis scale ('height').  A small axe icon is drawn next to each chart, with the corresponding axe height (H) value labeled in orange text.  The total wood cut for each scenario is displayed above each chart.\",width:\"624\",height:\"208\"})}),`\n`,(0,C.jsx)(t.p,{children:\"Gradually increasing the height setting of the woodcutter from H = 0 to H = 8 yields less and less wood, and our goal is to find the highest value of H that gives us at least k meters of wood.\"}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Determining if a height setting yields enough wood\"}),(0,C.jsx)(t.br,{}),`\n`,\"We need a function that determines if any given height setting H yields at least k meters of wood.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"Let\\u2019s name this function \",(0,C.jsx)(t.strong,{children:(0,C.jsx)(t.code,{children:\"cuts_enough_wood(H, k)\"})}),\", which will calculate the total wood obtained by cutting the trees taller than H, and return true if this total meets or exceeds k. Below is a visual representation of how to determine if a height setting of 3 yields enough wood in the example:\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:Z,alt:\"Image represents a bar chart illustrating a function `cuts_enough_wood(H = 3, k = 7)`.  The chart's x-axis is labeled 'i' and represents the index of wood pieces, ranging from 0 to 3. The y-axis is labeled 'height' and represents the height of wood pieces in meters. Three bars are shown; the first has a height of 2 meters, the second has a height of 6 meters with an additional 3 meters highlighted in orange stripes, and the third has a height of 3 meters with an additional 5 meters highlighted in orange stripes.  Arrows point upwards from the top of the orange sections of the second and third bars, labeled '3 meters' and '5 meters' respectively.  These values represent the heights of the additional wood collected from those pieces.  To the right, a box displays the calculation `wood_collected = 3 + 5`, indicating the sum of the additional wood heights.  This sum, 8, is then compared to 'k' (which is 7, as defined in the function's parameters), resulting in the condition `8 \\u2265 k`, which evaluates to true.  Finally, an arrow points to the text 'return True,' indicating the function's output based on the condition's result.\",width:\"604\",height:\"274\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"Applying this function to all possible values of H (from 0 to 8) gives us the outcome below, where heights 0 to 3 yield at least k meters of wood and heights 4 to 8 are too high and don\\u2019t yield enough. Note that here, we visualize which H values make the function \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood\"}),\" return true, and which will result in false.\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:L,alt:\"Image represents a sequence of nine rectangular boxes arranged horizontally.  The first four boxes are colored green and contain the text 'True', while the remaining five boxes are colored red and contain the text 'False'.  Below each box is a label of the form 'H=n', where 'n' is an integer ranging from 0 to 8, sequentially corresponding to each box.  The arrangement visually depicts a boolean array or list, where the value of each element (True or False) is associated with an index (H=n). The color-coding further emphasizes the distinction between the True and False values, suggesting a possible visual representation of a condition or a result of a computation.\",width:\"519\",height:\"40\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"We could call \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood\"}),\" on each value of H from 0 to 8 until we reach the highest value that still causes \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood\"}),\" to return true. However, a key observation is that the above sequence of boolean outcomes is effectively a \",(0,C.jsx)(t.strong,{children:\"sorted sequence\"}),\", since all true outcomes are positioned before false ones.\"]}),`\n`,(0,C.jsx)(t.p,{children:\"As this is a sorted sequence, we should try using binary search.\"}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Binary search\"}),(0,C.jsx)(t.br,{}),`\n`,\"The goal is to find the last value of H that cuts at least k meters of wood. In other words, we\\u2019re looking for the upper bound value of H that satisfies this condition.\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:c,alt:\"The image represents a visual depiction of a boolean array or list, likely illustrating a concept within a binary search or similar algorithm.  Nine rectangular boxes are arranged horizontally. The first four boxes are green, labeled 'True' and indexed H=0 through H=3.  The remaining five boxes are red, labeled 'False' and indexed H=4 through H=8.  Each box displays a boolean value (True or False) and its corresponding index (H=n, where n is an integer from 0 to 8). An orange upward-pointing arrow below the fourth box (H=3) is labeled 'upper bound,' indicating that this index represents the upper boundary of a subset within the larger array.  The arrangement visually separates the 'True' values from the 'False' values, suggesting a potential division point in a search algorithm where the 'True' values represent a successful search condition and the 'False' values represent an unsuccessful one.\",width:\"523\",height:\"93\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"As such, we should use \",(0,C.jsx)(t.strong,{children:\"upper-bound binary search\"}),`. This means we\\u2019ll need to calculate\nthe midpoint using `,(0,C.jsx)(t.strong,{children:(0,C.jsx)(t.code,{children:\"mid = (left + right) // 2 + 1\"})}),\", as mentioned in the \",(0,C.jsx)(t.em,{children:`First\nand Last Occurrences of a Number`}),\" problem.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"Let\\u2019s first \",(0,C.jsx)(t.strong,{children:\"define the search space\"}),\". Our search space should encompass all values of H between 0 and the height of the tallest tree in the array, as these are all possible answers.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"To figure out how to \",(0,C.jsx)(t.strong,{children:\"narrow the search space\"}),\", let's use the example below, setting left and right pointers at the ends of the search space:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:g,alt:\"Image represents a diagram illustrating a binary search concept or a similar partitioning algorithm.  Two orange rectangular boxes labeled 'left' and 'right' are positioned above a row of nine rectangular boxes.  Arrows descend from 'left' and 'right' pointing to the first and last boxes in the row respectively. The nine boxes represent a sequence of values, each labeled with 'H=n' where 'n' ranges from 0 to 8, indicating an index or position. The first four boxes (H=0 to H=3) are colored green and contain the value 'True,' while the remaining five boxes (H=4 to H=8) are colored red and contain the value 'False.'  The arrangement shows a split between 'True' and 'False' values, suggesting a search or partitioning process where the 'left' pointer initially points to a set of 'True' values and the 'right' pointer points to a set of 'False' values.  The diagram likely visualizes the state of a data structure at a specific point during a search or sorting algorithm.\",width:\"507\",height:\"79\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[\"Initially, the midpoint is set to H = 4. When we call \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood(4, k)\"}),\", it returns false. This means the height setting is not yielding enough wood and is, hence, set too high. To find a lower height setting, we should narrow our search space toward the left:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:p,alt:\"Image represents a visual depiction of a binary search algorithm or a similar iterative process.  Three rectangular boxes labeled 'left,' 'mid,' and 'right' at the top represent the initial boundaries and a midpoint of a search space. Arrows descend from 'left' and 'right' to a series of nine rectangular boxes, each displaying either 'True' (in green) or 'False' (in red) and labeled with 'H=0' through 'H=8,' indicating an index or iteration.  An arrow descends from 'mid' to the boxes starting at index 4. The boxes labeled 'True' from H=0 to H=3 are shaded light green, while those labeled 'False' from H=4 to H=8 are shaded light red.  A separate box at the bottom shows the code snippet 'cuts_enough_wood(4) = False,' indicating a function call that returned false at the midpoint (H=4).  Below this, an arrow and the assignment 'right = mid - 1' illustrate the algorithm's adjustment of the search space's right boundary based on the result of the function call, implying a narrowing of the search range in subsequent iterations.  The overall diagram illustrates a step in a search algorithm where the midpoint evaluation leads to a reduction of the search space.\",width:\"515\",height:\"141\"})}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:f,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to searching or traversal.  The diagram shows two distinct sections. The left section features a grey box labeled 'left' with a downward arrow pointing to four green boxes, each containing the word 'True' and a label 'H=n' (where n is 0, 1, 2, and 3 respectively) indicating an index or counter.  A similarly styled orange box labeled 'right' sits above a series of grey boxes, each containing 'False' and labeled 'H=n' (where n ranges from 4 to 8). A dashed orange line connects the 'right' box to the last 'True' box on the left, suggesting a connection or data flow between these two points. The arrangement implies a process where a 'left' operation produces a sequence of 'True' values up to a certain point, after which a 'right' operation yields a sequence of 'False' values.  The overall structure suggests a binary search or a similar algorithm where a condition is checked, resulting in either a 'True' or 'False' outcome at each step.\",width:\"518\",height:\"80\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[\"The next midpoint is set to H = 2. When we call \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood(2, k)\"}),\", it returns true. This means the upper bound is either at the midpoint or to its right, as the upper bound is the rightmost height setting that cuts enough wood.\"]}),`\n`,(0,C.jsx)(t.p,{children:\"So, narrow the search space toward the right while including the midpoint:\"}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:k,alt:\"The image represents a visual depiction of a binary search algorithm or a similar iterative process.  Three rectangular boxes labeled 'left,' 'mid' (in light blue), and 'right' (in dark gray) are positioned at the top, each pointing downwards with an arrow. Below these, a series of rectangular boxes represent the evaluation of a function, `cuts_enough_wood`, at different index values (H=0 through H=8). The boxes labeled H=0, H=1, H=2, and H=3 contain 'True' in green, indicating that the condition is met for these indices. The remaining boxes (H=4 through H=8) contain 'False' in light gray, showing the condition is not met. A separate gray box at the bottom displays the result of the function call `cuts_enough_wood(2) = True` and the subsequent assignment `left = mid`, indicating that the 'left' variable is updated to the value of 'mid' based on the function's output.  The arrangement shows the flow of information: the initial values of 'left', 'mid', and 'right' trigger the evaluation of the function at different indices, and the results of these evaluations determine the update of the 'left' variable.\",width:\"527\",height:\"144\"})}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:B,alt:\"Image represents a diagram illustrating a binary search algorithm or a similar traversal process.  A sequence of rectangular boxes, each labeled with 'True' or 'False' and an index 'H=n' (where n represents an integer from 0 to 8), are arranged horizontally.  Two boxes labeled 'True' at indices H=2 and H=3 are highlighted in green, indicating a potential search result or a point of interest.  Above these highlighted boxes, two orange rectangular boxes labeled 'left' and 'right' represent directional pointers or decision points.  A solid downward arrow from 'right' points to the 'True' box at H=3, while a dashed orange curved arrow connects 'left' to the 'True' box at H=2.  The remaining boxes, labeled 'False,' are light gray, suggesting they were not selected during the search. The overall structure suggests a search algorithm that starts at a point and moves left or right based on some condition, ultimately identifying the highlighted 'True' values.\",width:\"525\",height:\"84\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[\"The next midpoint is set to H = 3. When we call \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood(3, k)\"}),\", it returns true. So, narrow the search space toward the right while including the midpoint:\"]}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:w,alt:\"Image represents a visual depiction of a binary search or similar algorithm's execution.  At the top, three labeled boxes, 'left,' 'mid' (in light blue), and 'right,' represent index pointers or variables.  Arrows indicate that 'left' points downwards to a 'True' box labeled 'H=2,' and 'mid' and 'right' point downwards to 'True' (H=3) and a series of 'False' boxes (H=4 through H=8) respectively. These boxes, arranged horizontally, represent the evaluation of a condition, 'cuts_enough_wood(3),' at different indices (H values). The green boxes ('True' at H=2 and H=3) signify that the condition is met at those indices. The grey boxes ('False' at H=4 to H=8) indicate the condition is not met.  A separate box at the bottom shows the result of the function call `cuts_enough_wood(3)` as 'True' and the subsequent assignment `left = mid`, indicating an update to the 'left' pointer based on the search result.  The overall diagram illustrates a step in a search process where the search space is narrowed down based on the evaluation of a condition at different indices.\",width:\"529\",height:\"146\"})}),`\n`,(0,C.jsx)(H,{align:\"left\",children:(0,C.jsx)(e,{src:E,alt:\"Image represents a diagram illustrating a coding pattern, likely related to searching or traversal.  A horizontal sequence of nine rectangular boxes displays boolean values ('True' or 'False'), each labeled with an index 'H=n' (where n ranges from 0 to 8).  Three additional rectangular boxes are positioned above: two labeled 'left' (in orange) and 'right' (in gray).  A solid arrow points from 'right' to the box labeled 'True' at index H=3. A dashed arrow points from 'left' to the same 'True' box at H=3.  The boxes at indices H=0, H=1, and H=2 show 'True,' while those at indices H=4 through H=8 show 'False.' The central 'True' box (H=3) is highlighted in green, suggesting it's the result or focus of the operation. The arrows indicate that the 'left' and 'right' labels represent directional parameters or conditions influencing the selection or identification of the 'True' value at H=3.\",width:\"530\",height:\"82\"})}),`\n`,(0,C.jsx)(t.p,{children:\"Once the left and right pointers meet, we have located the upper bound height setting that yields at least k meters of wood.\"}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Summary\"}),(0,C.jsx)(t.br,{}),`\n`,\"Case 1: The midpoint is set at a height that allows us to cut at least k meters of wood, indicating the upper bound is somewhere to the right. Narrow the search space to the right while including the midpoint:\"]}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:Q,alt:\"Image represents a visual depiction of a binary search algorithm, likely within a function called `cuts_enough_wood`.  The top section shows a code snippet: `if not cuts_enough_wood(mid): right = mid - 1`, indicating a conditional statement where if the function `cuts_enough_wood` returns `False` for a given `mid` value, the `right` boundary is adjusted. Below this, two rows of boxes illustrate the algorithm's iterations. Each box represents a value (H=0 to H=6) and displays whether `cuts_enough_wood` returned `True` (green) or `False` (red) for that value.  Arrows labeled 'left' and 'right' show the search space boundaries.  In the first row, the `mid` value is tested, and based on the result (False), the `right` boundary is updated (as per the code snippet). The second row shows the updated search space after the `right` boundary has been moved to the left.  A dashed orange line connects the old and new `right` boundaries, visually representing the adjustment.  The boxes in the second row that are greyed out represent values that are no longer considered in the search after the boundary update.\",width:\"415\",height:\"263\"})}),`\n`,(0,C.jsx)(t.p,{children:\"Case 2: The midpoint is at a height that doesn\\u2019t allow us to cut enough wood, indicating the upper bound is somewhere to the left. Narrow the search space to the left while excluding the midpoint:\"}),`\n`,(0,C.jsx)(H,{children:(0,C.jsx)(e,{src:I,alt:\"Image represents a visual depiction of a binary search algorithm, likely within a wood-cutting context.  The top section shows a conditional statement: `if cuts_enough_wood(mid): left = mid;`. This implies a function `cuts_enough_wood` is used to determine if a sufficient amount of wood is cut at a midpoint (`mid`). If true, the `left` boundary is updated to `mid`. Below, two rows of rectangular boxes represent an array, each box showing a boolean value (`True` or `False`) indicating whether a cut at that index (`H=0` to `H=6`) meets the condition.  The top row shows the initial state.  A light-blue box labeled `mid` points down to the middle of the top row, indicating the initial midpoint.  Gray boxes labeled `left` and `right` point to the leftmost and rightmost elements respectively.  The bottom row shows the state after the conditional statement is executed.  A dashed orange line connects the initial `left` section to the updated `left` section in the bottom row, visually demonstrating the shift of the `left` boundary.  The `right` boundary remains unchanged.  The green boxes represent `True` values (enough wood cut), while red boxes represent `False` values (insufficient wood cut).  The overall diagram illustrates how the search space is narrowed down iteratively based on the result of the `cuts_enough_wood` function.\",width:\"421\",height:\"266\"})}),`\n`,(0,C.jsx)(a,{}),`\n`,(0,C.jsx)(t.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(A,{children:[(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-python\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutting_wood\"}),\"(\",(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"heights: \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),\"], k: \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    left, right = `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"max\"}),`(heights)\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` left < right:\n        `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# Bias the midpoint to the right during the upper-bound binary search.\"}),`\n        mid = (left + right) // `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\" + \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` cuts_enough_wood(mid, k, heights):\n            left = mid\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n            right = mid - `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` right\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# Determine if the current value of 'H' cuts at least 'k' meters of wood.\"}),`\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cuts_enough_wood\"}),\"(\",(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"H: \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),\", k: \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),\", heights: \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"bool\"}),`:\n    wood_collected = `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"for\"}),\" height \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"in\"}),` heights:\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` height > H:\n            wood_collected += (height - H)\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` wood_collected >= k\n`]})}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutting_wood\"}),\"(\",(0,C.jsx)(t.span,{className:\"hljs-params\",children:\"heights, k\"}),`) {\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"let\"}),\" left = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"let\"}),\" right = \",(0,C.jsx)(t.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"max\"}),`(...heights)\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// Bias the midpoint to the right during the upper-bound binary search.\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"const\"}),\" mid = \",(0,C.jsx)(t.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"floor\"}),\"((left + right) / \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\") + \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutsEnoughWood\"}),`(mid, k, heights)) {\n      left = mid\n    } `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      right = mid - `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n  }\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` right\n}\n\n`,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// Determine if the current value of 'H' cuts at least 'k' meters of wood.\"}),`\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutsEnoughWood\"}),\"(\",(0,C.jsx)(t.span,{className:\"hljs-params\",children:\"H, k, heights\"}),`) {\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"let\"}),\" wood_collected = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"const\"}),\" height \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"of\"}),` heights) {\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (height > H) {\n      wood_collected += height - H\n    }\n  }\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` wood_collected >= k\n}\n`]})}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-java\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutting_wood\"}),(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> heights, \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" k)\"]}),` {\n        `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"left\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"right\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),` max(heights);\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n            `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// Bias the midpoint to the right during the upper-bound binary search.\"}),`\n            `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"mid\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),\" (left + right) / \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\" + \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`;\n            `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (cutsEnoughWood(mid, k, heights)) {\n                left = mid;\n            } `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                right = mid - `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n        }\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` right;\n    }\n\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// Determine if the current value of 'H' cuts at least 'k' meters of wood.\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"boolean\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"cutsEnoughWood\"}),(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" H, \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" k, ArrayList<Integer> heights)\"]}),` {\n        `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"wood_collected\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),` height : heights) {\n            `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (height > H) {\n                wood_collected += (height - H);\n            }\n        }\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` wood_collected >= k;\n    }\n\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"max\"}),(0,C.jsx)(t.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> list)\"}),` {\n        `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"maxVal\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),` Integer.MIN_VALUE;\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),` num : list) {\n            `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (num > maxVal) {\n                maxVal = num;\n            }\n        }\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` maxVal;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(t.h2,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(t.code,{children:\"cutting_wood\"}),\" is \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mi,{children:\"log\"}),(0,C.jsx)(t.mo,{children:\"\\u2061\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"m\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(m))\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(t.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(t.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"m\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\"))\"})]})})]}),\", where \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsx)(t.mrow,{children:(0,C.jsx)(t.mi,{children:\"m\"})}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"m\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"m\"})]})})]}),\" is the maximum height of the trees. This is because we perform a binary search over the range [0, \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsx)(t.mrow,{children:(0,C.jsx)(t.mi,{children:\"m\"})}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"m\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"m\"})]})})]}),\"]. Each iteration of the binary search calls the \",(0,C.jsx)(t.code,{children:\"cuts_enough_wood\"}),\" function, which runs in \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, where \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsx)(t.mrow,{children:(0,C.jsx)(t.mi,{children:\"n\"})}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" is the number of trees. This results in an overall time complexity of \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"log\"}),(0,C.jsx)(t.mo,{children:\"\\u2061\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"m\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mo,{children:\"=\"}),(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mi,{children:\"log\"}),(0,C.jsx)(t.mo,{children:\"\\u2061\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"m\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(m))O(n)=O(n\\\\log(m))\"})]})})}),(0,C.jsxs)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(t.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(t.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"m\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\"))\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}}),(0,C.jsx)(t.span,{className:\"mrel\",children:\"=\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}})]}),(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(t.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(t.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"m\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\"))\"})]})]})]}),\".\"]}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mn,{children:\"1\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]})]})}function m(V={}){let{wrapper:t}=V.components||{};return t?(0,C.jsx)(t,{...V,children:(0,C.jsx)(u,{...V})}):u(V)}function i(V,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+V+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return T(t1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

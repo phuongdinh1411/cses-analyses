@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "graphs/merging-communities",
+  "chapter": "13-07",
+  "title": "Merging Communities",
+  "free": false,
+  "code": "var Component=(()=>{var j=Object.create;var s=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var v=Object.getOwnPropertyNames;var F=Object.getPrototypeOf,z=Object.prototype.hasOwnProperty;var T=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),I=(a,e)=>{for(var i in e)s(a,i,{get:e[i],enumerable:!0})},h=(a,e,i,l)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of v(e))!z.call(a,n)&&n!==i&&s(a,n,{get:()=>e[n],enumerable:!(l=_(e,n))||l.enumerable});return a};var X=(a,e,i)=>(i=a!=null?j(F(a)):{},h(e||!a||!a.__esModule?s(i,\"default\",{value:a,enumerable:!0}):i,a)),Y=a=>h(s({},\"__esModule\",{value:!0}),a);var d=T((e1,o)=>{o.exports=_jsx_runtime});var $={};I($,{default:()=>x,frontmatter:()=>Q});var C=X(d());var p=\"/images/courses/coding-patterns/graphs/merging-communities/merging-communities-4AA4FKUZ.svg\";var L=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-1-DSZKDVYN.svg\";var V=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-2-6OTED2OP.svg\";var m=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-3-XYZK55GO.svg\";var H=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-4-U3YJIFER.svg\";var M=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-5-MCIEEMA5.svg\";var Z=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-6-BQLPJMHJ.svg\";var f=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-7-ZCC3ROGM.svg\";var g=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-8-DLAA6QUB.svg\";var k=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-9-SST4WO65.svg\";var w=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-10-2FZAWREQ.svg\";var u=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-11-4W4TDMMR.svg\";var b=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-12-6LF5BU4G.svg\";var y=\"/images/courses/coding-patterns/graphs/merging-communities/image-13-07-13-2JXJTNID.svg\";var Q={chapter:\"13-07\",difficulty:\"Medium\",title:\"Merging Communities\"};function N(a){let e={a:\"a\",annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",ol:\"ol\",p:\"p\",pre:\"pre\",section:\"section\",semantics:\"semantics\",span:\"span\",strong:\"strong\",sup:\"sup\",ul:\"ul\",...a.components},{CodeTabs:i,Figure:l,Image:n,OpenCodeEditor:r,ProblemDescription:c}=e;return i||t(\"CodeTabs\",!0),l||t(\"Figure\",!0),n||t(\"Image\",!0),r||t(\"OpenCodeEditor\",!0),c||t(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(c,{children:[(0,C.jsxs)(e.p,{children:[\"There are \",(0,C.jsx)(e.code,{children:\"n\"}),\" people numbered from \",(0,C.jsx)(e.code,{children:\"0\"}),\" to \",(0,C.jsx)(e.code,{children:\"n - 1\"}),\" , with each person initially belonging to a separate community. When two people from different communities connect, their communities merge into a single community.\"]}),(0,C.jsx)(e.p,{children:\"Your goal is to write two functions:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"connect(x: int, y: int) -> None\"}),\": Connects person \",(0,C.jsx)(e.code,{children:\"x\"}),\" with person \",(0,C.jsx)(e.code,{children:\"y\"}),\" and merges their communities.\"]}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"get_community_size(x: int) -> int\"}),\": Returns the size of the community which person \",(0,C.jsx)(e.code,{children:\"x\"}),\" belongs to.\"]}),`\n`]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:p,width:\"490\",height:\"235\",alt:\"Image represents a visualization of a graph's evolution and community size calculations.  The image is divided into five sections. The first two sections show the `connect(x, y)` function calls, visually represented by numbered nodes (0-4) within circles.  Lines connecting the nodes indicate the creation of edges between them.  `connect(0, 1)` shows a line connecting node 0 and node 1. `connect(1, 2)` adds a line connecting node 1 and node 2. The third section displays the result of `get_community_size(3)`, which returns 1, indicating node 3 is in a community of size one. The fourth section shows the result of `get_community_size(0)`, returning 3, indicating node 0 belongs to a community of size three (nodes 0, 1, and 2). The fifth section shows `connect(3, 4)`, adding a connection between node 3 and node 4. Finally, `get_community_size(4)` returns 2, showing that nodes 3 and 4 now form a community of size two.  The arrangement demonstrates how adding connections (`connect`) affects the community sizes (`get_community_size`), illustrating a fundamental concept in graph theory and network analysis.\",priority:!0})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: n = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),`,\n       [\n         connect(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`),\n         connect(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`),\n         get_community_size(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),`),\n         get_community_size(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`),\n         connect(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`),\n         get_community_size(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`),\n       ]\nOutput: [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`]\n`]})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"In this problem, we start with \",(0,C.jsx)(e.code,{children:\"n\"}),\" individuals, each in their own separate community. As we connect pairs of individuals, their respective communities merge. The challenge is to efficiently manage these connections and quickly determine the size of the community for any given individual.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"This is where the \",(0,C.jsx)(e.strong,{children:\"Union-Find\"}),\" data structure, also known as the Disjoint Set Union (DSU) data structure, comes in. Union-Find consists of two operations:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.strong,{children:\"Union\"}),\": takes two elements from different sets and makes them part of the same set.\"]}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.strong,{children:\"Find\"}),\": determines what set an element belongs to.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"In the context of this problem, the \",(0,C.jsx)(e.code,{children:\"union\"}),\" operation can be used to merge the communities of two people, while the \",(0,C.jsx)(e.code,{children:\"find\"}),\" operation can be used to determine which community a person belongs to. To make this work, we need a way to represent each community. For example, let\\u2019s say there are 5 people, with persons 0 and 1 in one community, and persons 2, 3, and 4 in another:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:L,alt:\"Image represents two distinct graphs.  The left graph is a linear graph, depicted with a light blue background, containing two nodes labeled '0' and '1'.  Node '0' is positioned above node '1', and an implied connection exists between them, suggesting a sequential or directional relationship. The right graph is a triangular graph, filled with a light purple background, consisting of three nodes at the vertices of the triangle labeled '2', '3', and '4'. Node '4' is positioned at the base of the triangle, while nodes '2' and '3' are at the top corners.  Implied connections exist between all three nodes, indicating a mutual or interconnected relationship. The two graphs are presented side-by-side for comparison, highlighting the difference in their structure and the potential implications for data flow or processing within a coding context.\",width:\"223\",height:\"94\"})}),`\n`,(0,C.jsx)(e.p,{children:\"One way to distinguish between them is to designate a representative for each community. Let's assign person 0 as the representative of the left community, and person 2 as the representative of the right community. We can represent these communities as a graph, where each community is a connected component, and each person in a community points to their representative:\"}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:V,alt:\"Image represents two distinct directed acyclic graphs (DAGs).  The left DAG, highlighted in light blue, is a simple linear graph with two nodes labeled '0' and '1'.  Node '1' has a directed edge pointing towards node '0', indicating a dependency where '0' depends on '1'.  Each node is encircled and numbered with a small circle containing the same number as the node itself. The right DAG, highlighted in light purple, is a triangular graph with three nodes labeled '2', '3', and '4'. Node '2' receives directed edges from both nodes '3' and '4', signifying that '2' depends on both '3' and '4'.  Node '3' has a directed edge pointing to node '2', and node '4' also has a directed edge pointing to node '2'.  Similar to the left DAG, each node is encircled and numbered.  The two DAGs are presented side-by-side for comparison, illustrating different dependency structures within a system.\",width:\"233\",height:\"107\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This can be reflected using a parent array, where \",(0,C.jsx)(e.code,{children:\"parent[i]\"}),\" stores the parent of person \",(0,C.jsx)(e.code,{children:\"i\"}),\". This parent array is discussed later.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now that we have a way to represent communities, let\\u2019s discuss how the \",(0,C.jsx)(e.code,{children:\"union\"}),\" and \",(0,C.jsx)(e.code,{children:\"find\"}),\" functions would work in more detail.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Union\"}),(0,C.jsx)(e.br,{}),`\n`,\"Consider the previous example of 5 people. Let\\u2019s say we want to connect persons 1 and 4 (i.e., \",(0,C.jsx)(e.code,{children:\"union(1, 4)\"}),\"):\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:m,alt:\"Image represents a directed graph illustrating a union operation within a data structure, likely a disjoint-set data structure or similar.  The graph contains five nodes, each represented by a circle containing a numerical label (0, 1, 2, 3, and 4).  Arrows indicate the direction of connections between nodes. Node 3 points to node 2, and node 1 points to node 0.  Node 4 points to node 2.  Nodes 1 and 4 are enclosed within a dashed orange oval, labeled with the text 'union(1, 4):' in orange, indicating that a union operation is being performed on these two nodes. This operation likely merges the sets containing nodes 1 and 4, resulting in a change to the overall structure of the data structure, potentially affecting the parent-child relationships between nodes.  The resulting structure after the union operation is not explicitly shown, but it would involve a change in the connections between nodes 1, 2, and 4.\",width:\"213\",height:\"100\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"We first need to identify their representatives so we know which communities these two people belong to. We can use the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function for this, which will be discussed later:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:H,alt:\"Image represents a diagram illustrating a find operation within a data structure, likely a disjoint-set data structure or similar.  The diagram shows two separate components. The left component features a node labeled '1' connected by an upward-pointing arrow to a node labeled '0' which is highlighted in orange.  Next to this connection, the text 'rep_x = find(1) = 0' indicates that a find operation on element '1' returns the representative element '0'. The right component shows a node labeled '4' connected by an upward-pointing arrow to a node labeled '2', also highlighted in orange.  A rightward arrow connects node '2' to node '3'.  The text 'rep_y = find(4) = 2' indicates that a find operation on element '4' returns the representative element '2'.  The arrows represent the path taken during the find operation, ultimately leading to the representative element for each set.  The orange highlighting suggests that nodes '0' and '2' are the root or representative elements of their respective sets.\",width:\"276\",height:\"155\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Before merging these communities, we need to pick one of the two current representatives as the representative of the merged community. For now, let\\u2019s just pick person 0.\"}),`\n`,(0,C.jsx)(e.p,{children:\"From here, one strategy is to connect everyone in the second community directly to person 0:\"}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:M,alt:\"Image represents a directed acyclic graph (DAG) illustrating a data flow or dependency structure.  The graph features a central node labeled '\\u03B8' (theta), depicted as a larger circle with an orange border and a light beige fill, representing a final result or aggregated output. Four smaller, circular nodes labeled '1', '2', '3', and '4' are connected to the central node '\\u03B8' via directed edges (arrows).  These arrows point towards '\\u03B8', indicating that the data or results from nodes '1', '2', '3', and '4' are inputs or contributing factors to the computation or aggregation performed at node '\\u03B8'.  The arrangement suggests that '\\u03B8' depends on the completion or output of '1', '2', '3', and '4', implying a parallel or concurrent processing model where '\\u03B8' is calculated only after all its dependencies are satisfied.\",width:\"246\",height:\"115\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This would require individually setting the parent of all these people to person 0, which can be quite expensive if the community has many people. A more efficient strategy is to just connect the representative of this community, person 2, to person 0.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"In code, this is done by setting the parent of \",(0,C.jsx)(e.code,{children:\"rep_y\"}),\" to be \",(0,C.jsx)(e.code,{children:\"rep_x\"}),\" (\",(0,C.jsx)(e.code,{children:\"parent[rep_y] = rep_x\"}),\"):\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:Z,alt:\"Image represents a directed acyclic graph (DAG) illustrating a data flow or dependency structure, possibly within a coding pattern context.  The graph consists of five nodes, numbered 0 through 4, represented as circles. Node 0, highlighted with an orange outline and labeled '0', is designated with the text 'rep_x' above it, suggesting it represents a repeated x-value or a replicated data source.  Node 1 points to node 0 via a directed edge (arrow), indicating a data dependency. Node 2 receives data from node 3 via a directed edge and, in turn, sends data to node 0.  Node 4 points to node 2, showing a data dependency. Node 3 has no outgoing edges, suggesting it's a source or terminal node. The overall structure suggests a pipeline or branching process where data flows from nodes 1, 3, and 4, converging at node 2 before potentially being replicated or used in node 0, labeled 'rep_x' to indicate replication or repetition of the x-component.  The label 'rep_y' above node 2 suggests a possible connection to a y-component or a second replication process.\",width:\"209\",height:\"122\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This way, everyone originally in the second community is indirectly connected to person 0, making person 0 the representative of all nodes.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Note that if rep_x and rep_y are the same person, then they belong to the same community, in which case we don\\u2019t need to merge anything.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Find\"}),(0,C.jsx)(e.br,{}),`\n`,\"The \",(0,C.jsx)(e.code,{children:\"find\"}),\" function should return the representative of the community a person is in:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:f,alt:\"Image represents two disjoint sets of nodes, each representing a disjoint-set data structure, visually illustrating the `find` operation.  The left set, depicted in cyan, shows node 0 pointing to itself (indicated by a self-looping cyan dashed arrow), and node 1 pointing to node 0 (a solid black arrow).  The text `find(0) = 0` and `find(1) = 0` indicates that finding the root of 0 returns 0, and finding the root of 1 returns 0 (because 1 points to 0). The right set, depicted in orange, shows node 2 pointing to itself (self-looping orange dashed arrow), node 4 pointing to node 2 (solid black arrow), and node 3 pointing to node 2 (solid black arrow). The text `find(2) = 2`, `find(3) = 2`, and `find(4) = 2` indicates that the root of 2, 3, and 4 is 2.  The dashed arrows represent the path followed during the find operation, showing how each node eventually leads to its respective root node.  The solid arrows represent the parent-child relationships within each set.\",width:\"373\",height:\"168\"})}),`\n`,(0,C.jsx)(e.p,{children:\"At this point, it's important to note the difference between a parent and a representative:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"A representative is the person who represents the community. This is effectively the \\u201Croot\\u201D node of the community.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"A parent of a person is the node that person is pointing to.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"For example, in the community below, we see that person 0's parent is person 1, whereas person 0\\u2019s representative is person 2:\"}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:g,alt:\"Image represents a directed graph illustrating a chain of relationships.  Three nodes, numbered 0, 1, and 2, are depicted as circles. Node 0 is connected to node 1 by a solid arrow, indicating a unidirectional relationship.  Above this connection, the text 'parent of person \\u03B8' is written in gray, suggesting node 0 is the parent of the person represented by node 1. Node 1 is further connected to node 2 by another solid arrow.  Node 2 is colored orange and labeled 'representative' in orange text, indicating its role.  Dashed arrows form a loop connecting node 0 back to itself and node 1 to node 2, suggesting a cyclical or feedback relationship, though the nature of this feedback is not explicitly defined.  The overall structure shows a linear progression from parent (0) to person (1) to representative (2), with an implied cyclical feedback mechanism.\",width:\"320\",height:\"82\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"We can implement the \",(0,C.jsx)(e.code,{children:\"find(x)\"}),\" function by traversing \",(0,C.jsx)(e.code,{children:\"x\"}),\"\\u2019s parent chain until we reach the representative. \",(0,C.jsx)(e.strong,{children:\"The representative is the person whose parent is themselves\"}),\", so we can identify them by checking if the current person is their own parent. The code snippet for this is provided below.\"]}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If x is equal to its parent, we found the representative.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` x == parent[x]:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Otherwise, continue traversing through x's parent chain.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` find(parent[x])\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If x is equal to its parent, we found the representative.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (parent[x] === x) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Otherwise, continue traversing through x's parent chain.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(parent[x])\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x)\"]}),` {\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If x is equal to its parent, we found the representative.\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (x == parent[x]) {\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x;\n   }\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Otherwise, continue traversing through x's parent chain.\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` find(parent[x]);\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now we\\u2019ve discussed both the \",(0,C.jsx)(e.code,{children:\"union\"}),\" and the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function, let\\u2019s discuss what optimizations can be made to them.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Union by size\"}),(0,C.jsx)(e.br,{}),`\n`,\"Recall that before merging two communities, we need to pick someone to represent the merged community. Our choice is between \",(0,C.jsx)(e.code,{children:\"rep_x\"}),\" and \",(0,C.jsx)(e.code,{children:\"rep_y\"}),\". Is one a better choice than the other? Consider the following two communities:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:k,alt:\"Image represents two distinct directed acyclic graphs.  The left graph, labeled 'rep_x', depicts a tree structure where a central node labeled '0' receives input from five nodes numbered '1' through '5'.  Arrows indicate the direction of information flow, showing that nodes 1 through 5 send data to node 0.  The right graph, labeled 'rep_y', is simpler, showing a single upward arrow from node '7' to node '6', indicating that node 7 sends data to node 6.  Both graphs illustrate data flow, possibly representing different representations (x and y) of a similar underlying structure or process, with the numbered nodes potentially representing individual data points or features, and the nodes labeled '0' and '6' representing aggregated or processed results.\",width:\"380\",height:\"131\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Let's see what the difference is when we pick \",(0,C.jsx)(e.code,{children:\"rep_x\"}),\" to be the representative versus picking \",(0,C.jsx)(e.code,{children:\"rep_y\"}),\":\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:w,alt:\"Image represents two directed acyclic graphs illustrating a concept likely related to choosing a representative node.  The left graph, labeled 'choose rep_x:', shows nodes numbered 1 through 7, with arrows pointing upwards towards a central node labeled '0' (highlighted in orange), indicating that node 0 is chosen as the representative ('rep_x') for nodes 1-7. Node 6 has an additional incoming arrow from node 7. The right graph, labeled 'choose rep_y:', similarly shows nodes 1 through 7, with arrows pointing upwards towards a central node labeled '0', which in turn points upwards to node 6 (highlighted in orange), indicating that node 6 is chosen as the representative ('rep_y') for nodes 0, 1, 2, 3, 4, 5, and 7.  The arrangement visually demonstrates two different representative selection processes, possibly highlighting different algorithms or strategies for choosing a representative node within a dataset or graph structure.\",width:\"624\",height:\"204\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"As we can see, when we choose a representative from one of two communities, the people in the other community have a longer distance to their new representative, with the distance increased by 1. Therefore, it\\u2019s better to \",(0,C.jsx)(e.strong,{children:\"pick the representative from the larger community,\"}),\" so that only the people from the smaller community are impacted by this adjusted distance.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"This optimization requires a way to determine the size of a community. We can do this using a size array, where \",(0,C.jsx)(e.code,{children:\"size[i]\"}),\" is the size of the community represented by person \",(0,C.jsx)(e.code,{children:\"i\"}),\". The code for this can be seen below:\"]}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", y: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n   rep_x, rep_y = find(x), find(y)\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` rep_x != rep_y:\n       `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'rep_x' represents a larger community, connect 'rep_y's community to it.\"}),`\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` size[rep_x] > size[rep_y]:\n           parent[rep_y] = rep_x\n           size[rep_x] += size[rep_y]\n       `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'rep_y' represents a larger community, or both communities are of the same\"}),`\n       `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# size, connect 'rep_x's community to it.\"}),`\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n           parent[rep_x] = rep_y\n           size[rep_y] += size[rep_x]\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x, y\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" repX = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(x)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" repY = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(y)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX !== repY) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repX' represents a larger community, connect 'repY's community to it.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (size[repX] > size[repY]) {\n      parent[repY] = repX\n      size[repX] += size[repY]\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repY' represents a larger community, or both are the same size,\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// connect 'repX's community to it.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      parent[repX] = repY\n      size[repY] += size[repX]\n    }\n  }\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" y)\"]}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"repX\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` find(x);\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"repY\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` find(y);\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX != repY) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repX' represents a larger community, connect 'repY's community to it.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (size[repX] > size[repY]) {\n            parent[repY] = repX;\n            size[repX] += size[repY];\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repY' represents a larger community, or both are the same size,\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// connect 'repX's community to it.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n            parent[repX] = repY;\n            size[repY] += size[repX];\n        }\n    }\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[\"A similar optimization to union by size is union by rank, which optimizes the \",(0,C.jsx)(e.code,{children:\"union\"}),\" function in a very similar way \",(0,C.jsx)(e.a,{href:\"https://en.wikipedia.org/wiki/Disjoint-set_data_structure#Union_by_rank\",children:\"[1]\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that the \",(0,C.jsx)(e.code,{children:\"size\"}),\" array makes the implementation of \",(0,C.jsx)(e.strong,{children:(0,C.jsx)(e.code,{children:\"get_community_size\"})}),(0,C.jsx)(e.code,{children:\"(x)\"}),\" quite straightforward: we just return the size of x\\u2019s representative (i.e., return \",(0,C.jsx)(e.code,{children:\"size[find(x)]\"}),\").\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Path compression\"}),(0,C.jsx)(e.br,{}),`\n`,\"There\\u2019s another major optimization that can be made. Consider the following community, with person 0 as the representative. The further down we go in this diagram, the further away the people are from the representative. We can see this for persons 3 and 6, for example:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:u,alt:\"Image represents a tree-like data structure illustrating a 'find' operation within a disjoint-set data structure, likely used for representing sets and their relationships.  The central node, labeled '0' and highlighted in orange, is the representative element ('rep') of the entire set.  Nodes 1 through 6 represent other elements within the set. Solid black arrows indicate the parent-child relationships within the structure; for example, node 2 is a child of node 1, and node 1 is a child of node 0. Dashed gray arrows represent the path a 'find(parent[i])' operation would take to locate the representative element for a given node 'i'.  For instance, `find(parent[3])` would traverse from node 3 to node 2, then to node 1, and finally to node 0 (the representative).  Each leaf node (3 and 6) has a label indicating a `find(i)` operation, suggesting a direct path to find the element itself.  The overall structure shows how the `find` operation navigates the tree to identify the representative element of a given node's set.\",width:\"624\",height:\"219\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"What\\u2019s important to realize is that performing \",(0,C.jsx)(e.code,{children:\"find(3)\"}),\" and \",(0,C.jsx)(e.code,{children:\"find(6)\"}),\" will not only return the representative to persons 3 and 6, but it will also cause it to be returned by all the other nodes in their parent chains because this is a recursive function:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:b,alt:\"Image represents a directed graph illustrating a coding pattern, possibly related to recursion or a state machine.  The graph features seven nodes (circles) numbered 0 through 6. Node 0, colored orange and labeled 'rep,' sits at the top and represents a potentially recursive function's main call or a central state.  Nodes 1, 2, 4, 5, and 6 are connected to each other and to node 0 with solid black arrows indicating the primary flow of execution or state transitions.  Node 0 has solid black arrows pointing to nodes 1 and 4, representing function calls or state changes. Nodes 1 and 4 are connected to nodes 2 and 5 respectively, with similar solid black arrows. Nodes 2 and 5 are connected to nodes 3 and 6 respectively, again with solid black arrows.  Dashed orange arrows connect nodes 1 and 4 back to node 0, and nodes 2 and 5 back to nodes 1 and 4 respectively, and nodes 3 and 6 back to nodes 2 and 5 respectively, labeled 'return 0,' suggesting return values or state transitions back to previous states.  Dashed gray arrows form loops around nodes 1, 2, 4, 5, and 6, possibly indicating alternative paths or error handling. The overall structure suggests a hierarchical or tree-like pattern with a central node (0) and branching sub-processes or states.\",width:\"430\",height:\"220\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This means every person in their parent chains also knows their representative is person 0. So, if we update the parent of each of these people to person 0 in the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function, all the nodes in this chain will connect to the representative. This technique is known as path compression, and it allows us to flatten the graph:\"]}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(n,{src:y,alt:\"Image represents a directed graph illustrating a 'rep' pattern, likely within a coding context.  The graph features a central node labeled '0' and colored orange, representing a central repository or aggregation point.  Six other nodes, numbered 1 through 6, are connected to the central node with unidirectional arrows pointing towards node '0'. This indicates that data or information flows from nodes 1 through 6 into the central node '0'.  The arrangement suggests a pattern where multiple sources (1-6) contribute to or update a single representative element (0), possibly representing data aggregation, merging, or a similar process in a software system. The label 'rep' above node 0 reinforces this interpretation, signifying a representative or aggregated data structure.\",width:\"298\",height:\"135\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The code for this optimization is provided below:\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` x == parent[x]:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Path compression: updates the representative of x, flattening the structure of\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# the community as we go.\"}),`\n    parent[x] = find(parent[x])\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` parent[x]\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (x === parent[x]) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Path compression: updates the representative of x, flattening the structure of\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// the community as we go.\"}),`\n  parent[x] = `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(parent[x])\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` parent[x]\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x)\"]}),` {\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (x == parent[x]) {\n       `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x;\n   }\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Path compression: updates the representative of x, flattening the structure of\"}),`\n   `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// the community as we go.\"}),`\n   parent[x] = find(parent[x]);\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` parent[x];\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[\"This path compression optimization allows us to restructure the graph at every \",(0,C.jsx)(e.code,{children:\"find\"}),\" call, effectively reducing the distance between people and their representative, and making future \",(0,C.jsx)(e.code,{children:\"find\"}),\" calls more efficient.\"]}),`\n`,(0,C.jsx)(r,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsx)(e.p,{children:\"Below is the implementation of the Union-Find data structure.\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, size: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".parent = [i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),`(size)]\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] * size\n\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", y: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        rep_x, rep_y = `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".find(x), \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.find(y)\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` rep_x != rep_y:\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'rep_x' represents a larger community, connect 'rep_y's community to\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# it.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_x] > \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_y]:\n                `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[rep_y] = rep_x\n                `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_x] += \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_y]\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Otherwise, connect 'rep_x's community to 'rep_y'.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n                `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[rep_x] = rep_y\n                `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_y] += \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_x]\n\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" x == \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[x]:\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".parent[x] = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".find(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".parent[x]) \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Path compression.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[x]\n\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get_size\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.find(x)]\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),` {\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"size\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Array\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"from\"}),\"({ \",(0,C.jsx)(e.span,{className:\"hljs-attr\",children:\"length\"}),\": size }, \",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"_, i\"}),\") =>\"]}),` i)\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(size).\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x, y\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" repX = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(x)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" repY = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(y)\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX !== repY) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repX' represents a larger community, connect 'repY's community to it.\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\"[repX] > \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),`[repY]) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),`[repY] = repX\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\"[repX] += \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),`[repY]\n      }\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Otherwise, connect 'repX's community to 'repY'.\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),`[repX] = repY\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\"[repY] += \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),`[repX]\n      }\n    }\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (x === \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),`[x]) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Path compression: flatten the structure as we go.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),\"[x] = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),`[x])\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"parent\"}),`[x]\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"getSize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),`(x)]\n  }\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),`[] parent;\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),`[] size;\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"UnionFind\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        parent = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        size = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Initialize each element to be its own parent and size to 1.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            parent[i] = i;\n            size[i] = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" y)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"repX\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` find(x);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"repY\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` find(y);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX != repY) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'repX' represents a larger community, connect 'repY's community to it.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (size[repX] > size[repY]) {\n                parent[repY] = repX;\n                size[repX] += size[repY];\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Otherwise, connect 'repX's community to 'repY'.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                parent[repX] = repY;\n                size[repY] += size[repX];\n            }\n        }\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"find\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (x == parent[x]) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` x;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Path compression.\"}),`\n        parent[x] = find(parent[x]);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` parent[x];\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"getSize\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" x)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` size[find(x)];\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.p,{children:\"Below is the implementation of the main problem using the above Union-Find data structure:\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"MergingCommunities\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, n: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.uf = UnionFind(n)\n\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"connect\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", y: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.uf.union(x, y)\n\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get_community_size\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, x: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.uf.get_size(x)\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"MergingCommunities\"}),` {\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"n\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"uf\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`(n)\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"connect\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x, y\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"uf\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"union\"}),`(x, y)\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get_community_size\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"x\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"uf\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"getSize\"}),`(x)\n  }\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"MergingCommunities\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),` UnionFind uf;\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"MergingCommunities\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        uf = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`(n);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"connect\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Integer x, Integer y)\"}),` {\n        uf.union(x, y);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" Integer \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"getCommunitySize\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Integer x)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` uf.getSize(x);\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" Let\\u2019s break down the time complexity of the Union-Find functions:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"With the path compression and union by size optimizations, \",(0,C.jsx)(e.code,{children:\"find\"}),\" has a time complexity of amortized \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),(0,C.jsx)(e.sup,{children:(0,C.jsx)(e.a,{href:\"#user-content-fn-1\",id:\"user-content-fnref-1\",\"data-footnote-ref\":!0,\"aria-describedby\":\"footnote-label\",children:\"1\"})}),\" because the branches of the graph become very short over time, making the function effectively constant-time in most cases.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Since \",(0,C.jsx)(e.code,{children:\"union\"}),\" just uses the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function twice, it also has a time complexity of amortized \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Since \",(0,C.jsx)(e.code,{children:\"get_size\"}),\" just uses the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function once, it also has a time complexity of amortized \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Therefore, the time complexities of connect and \",(0,C.jsx)(e.code,{children:\"get_community_size\"}),\" are both amortized \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". The time complexity of the constructor is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we initialize two arrays of size \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" when creating the \",(0,C.jsx)(e.code,{children:\"UnionFind\"}),\" object.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because the Union-Find data structure has two arrays of size \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\": \",(0,C.jsx)(e.code,{children:\"parent\"}),\" and \",(0,C.jsx)(e.code,{children:\"size\"}),\". The space taken up by the recursive call stack is amortized \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" since the branches of the graph become very short over time, resulting in fewer recursive calls made to the \",(0,C.jsx)(e.code,{children:\"find\"}),\" function.\"]}),`\n`,(0,C.jsxs)(e.section,{\"data-footnotes\":!0,className:\"footnotes\",children:[(0,C.jsx)(e.h2,{className:\"sr-only\",id:\"footnote-label\",children:\"Footnotes\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{id:\"user-content-fn-1\",children:[`\n`,(0,C.jsxs)(e.p,{children:[\"We can also write the time complexity here as \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"\\u03B1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(\\u03B1(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.0037em\"},children:\"\\u03B1\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"\\u03B1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\u03B1(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.0037em\"},children:\"\\u03B1\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" is the inverse Ackermann function, which grows extremely slowly but is not constant. \",(0,C.jsx)(e.a,{href:\"#user-content-fnref-1\",\"data-footnote-backref\":\"\",\"aria-label\":\"Back to reference 1\",className:\"data-footnote-backref\",children:\"\\u21A9\"})]}),`\n`]}),`\n`]}),`\n`]})]})}function x(a={}){let{wrapper:e}=a.components||{};return e?(0,C.jsx)(e,{...a,children:(0,C.jsx)(N,{...a})}):N(a)}function t(a,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+a+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return Y($);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

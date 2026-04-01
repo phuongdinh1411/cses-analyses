@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "trees/serialize-and-deserialize-a-binary-tree",
+  "chapter": "11-12",
+  "title": "Serialize and Deserialize a Binary Tree",
+  "free": false,
+  "code": "var Component=(()=>{var b=Object.create;var i=Object.defineProperty;var N=Object.getOwnPropertyDescriptor;var y=Object.getOwnPropertyNames;var j=Object.getPrototypeOf,v=Object.prototype.hasOwnProperty;var x=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),_=(t,e)=>{for(var r in e)i(t,r,{get:e[r],enumerable:!0})},c=(t,e,r,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of y(e))!v.call(t,l)&&l!==r&&i(t,l,{get:()=>e[l],enumerable:!(s=N(e,l))||s.enumerable});return t};var z=(t,e,r)=>(r=t!=null?b(j(t)):{},c(e||!t||!t.__esModule?i(r,\"default\",{value:t,enumerable:!0}):r,t)),F=t=>c(i({},\"__esModule\",{value:!0}),t);var o=x((Q,H)=>{H.exports=_jsx_runtime});var W={};_(W,{default:()=>g,frontmatter:()=>E});var C=z(o());var d=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/serialize-and-deserialize-a-binary-tree-BUP4YUS6.svg\";var V=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-2-UQLBVE5N.svg\";var L=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-3-HE75B4TN.svg\";var p=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-4-4PKXTCTX.svg\";var m=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-5-PM3MXUMT.svg\";var M=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-6-KOBFL32Q.svg\";var k=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-7-K3GMVLPA.svg\";var Z=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-8-AS4RELBM.svg\";var w=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-9-DU275P3B.svg\";var f=\"/images/courses/coding-patterns/trees/serialize-and-deserialize-a-binary-tree/image-11-12-10-B7DTTYX6.svg\";var E={chapter:\"11-12\",difficulty:\"Medium\",title:\"Serialize and Deserialize a Binary Tree\"};function u(t){let e={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",li:\"li\",math:\"math\",mi:\"mi\",mo:\"mo\",mrow:\"mrow\",mtext:\"mtext\",munder:\"munder\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:r,Figure:s,Image:l,OpenCodeEditor:n,ProblemDescription:h}=e;return r||a(\"CodeTabs\",!0),s||a(\"Figure\",!0),l||a(\"Image\",!0),n||a(\"OpenCodeEditor\",!0),h||a(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsxs)(e.p,{children:[\"Write a function to \",(0,C.jsx)(e.strong,{children:\"serialize\"}),\" a binary tree into a string, and another function to \",(0,C.jsx)(e.strong,{children:\"deserialize\"}),\" that string back into the original binary tree structure.\"]}),(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:d,width:\"778\",height:\"208\",alt:\"Image represents a serialization and deserialization process of a tree data structure.  The image shows two identical binary trees, each with a root node labeled '5'.  The left subtree of the root contains nodes '9', '2', and '11', where '2' is a child of '9', and '11' is a child of '2'. The right subtree contains nodes '3', '4', '7', and '6', where '4' and '7' are children of '3', and '6' is a child of '4'.  An arrow labeled `serialize` points from the first tree to the string `serialized_string`, representing the process of converting the tree into a string representation. Another arrow labeled `deserialize` points from `serialized_string` to the second tree, illustrating the reconstruction of the tree from its string representation.  Both trees are structurally identical, demonstrating the successful serialization and deserialization of the tree data.\",priority:!0})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"The primary challenge of this problem lies in how we serialize the tree into a string since this will determine if it\\u2019s possible to reconstruct the tree using this string alone.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Let's first decide on a traversal strategy because the method we use to serialize the tree will impact how we deserialize the string. Two options:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Use BFS to serialize the tree level by level.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Use DFS. In this case, we\\u2019d need to choose between inorder, preorder, and postorder traversal.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"There\\u2019s flexibility in choosing the traversal algorithm because serializing with a specific traversal method allows us to rebuild (deserialize) the tree using the same traversal algorithm.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Serialization\"}),(0,C.jsx)(e.br,{}),`\n`,\"An important piece of information needed in our serialized string is the node values. In addition, we\\u2019ll need to \",(0,C.jsx)(e.strong,{children:\"ensure we can identify the root node's value\"}),\", since this is the first node to create when we deserialize the string.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"As such, a traversal algorithm like preorder traversal is a good choice because it processes the root node first, then the left subtree, and finally the right subtree. This ensures the first value in our serialized string is the root node's value.\"}),`\n`,(0,C.jsx)(e.p,{children:\"So, let\\u2019s try serializing the following binary tree using preorder traversal, separating each node with a comma:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:V,alt:\"Image represents a binary tree on the left, undergoing a preorder serialization process, resulting in a serialized string on the right. The tree's root node, labeled '5', connects to two child nodes: '9' on the left and '3' on the right. Node '9' further connects to '2', which in turn connects to '11'. Node '3' connects to '4' and '7'. Node '4' connects to '6'.  A horizontal arrow labeled 'preorder serialization' points from the tree to a string '5,9,2,11,3,4,6,7', representing the preorder traversal of the tree (root, left subtree, right subtree).  Each comma-separated number in the string corresponds to a node visited in the preorder traversal sequence.\",width:\"524\",height:\"202\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The issue with this serialization is that it doesn't guarantee we can reconstruct the exact original tree from its serialized string representation. This is because the string could represent multiple different trees, which means preorder deserialization could result in the creation of an invalid tree:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:L,alt:\"Image represents three different binary search trees, each rooted at the number 5, generated from the input sequence '5,9,2,11,3,4,6,7'.  A curved gray arrow points from the input sequence to each of the three root nodes (5), each marked with a red 'X'. Each tree visually depicts a different possible structure resulting from variations in the order of insertion of the numbers into the tree.  The numbers in the sequence are arranged as nodes in the trees, with each node having at most two children (left and right).  The left child is always smaller than the parent node, and the right child is always larger.  The differences between the three trees illustrate the non-uniqueness of binary search trees constructed from the same input sequence, depending on the insertion order.\",width:\"600\",height:\"358\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This is because the string is missing crucial information: \",(0,C.jsx)(e.strong,{children:\"null child nodes\"}),\". For instance, after placing the root node with a value of 5 in the above example, we don't yet know where to place the node of value 9, which is the next value in the string. That is, we can't determine whether node 9 should be the left or right child of node 5:\"]}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:p,alt:\"Image represents two simple tree structures separated by the word 'OR'.  Both trees have a root node containing the number '5'. The left tree has a single child node connected to the root with a solid black line; this child node contains the number '9'. The right tree also has a single child node containing '9', connected to the root with a solid black line.  Between the two trees, and below the root nodes, are two dashed-line circles, each containing the text 'null' in light gray.  The left tree's root node is connected to one of the 'null' nodes with a light gray line, and the right tree's root node is connected to the other 'null' node with a light gray line. The overall image likely illustrates a concept of optional or alternative branches in a data structure, where the 'null' nodes represent the absence of a connection or a specific value.\",width:\"302\",height:\"100\"})}),`\n`,(0,C.jsx)(e.p,{children:\"If the string indicates where the null child nodes are, we can correctly deserialize the tree because we have a complete representation of the tree\\u2019s structure. Let's use the character '#' to represent a null node:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:m,alt:\"Image represents a binary tree undergoing preorder serialization.  The tree's root node, labeled '5', connects to two child nodes: '9' on the left and '3' on the right. Node '9' further connects to '2' (left) and a null node (right), while '2' connects to '11' (left) and another null node (right).  '11' has two null children. Node '3' connects to '4' (left) and '7' (right). Node '4' connects to '6' (right) and a null node (left), and '6' has two null children. Node '7' has two null children. All null nodes are represented by circles with the text 'null' inside, displayed in light gray. A solid arrow labeled 'preorder serialization' points from the tree to a string representation: '5,9,2,11,#,#,#,#,3,4,#,6,#,#,7,#,#'. This string represents the tree's preorder traversal, where each node's value is followed by '#' representing null children.  The order reflects the preorder traversal algorithm: root, left subtree, right subtree, recursively.\",width:\"687\",height:\"257\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Deserialization\"}),(0,C.jsx)(e.br,{}),`\n`,\"To deserialize a string created with preorder traversal, we also need to use preorder traversal to reconstruct the tree.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"The first step is to split the string using the comma delimiter, so each node value and \\u2018#\\u2019 is in a list:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:M,alt:\"Image represents a data transformation process illustrating the 'split' operation.  At the top, a string '5,9,2,11,#,#,#,#,3,4,#,6,#,#,7,#,#' is shown.  A downward-pointing arrow labeled 'split' connects this string to a list-like structure below. This list contains the same elements as the string, but arranged in a vertical array within square brackets `[]`. Each element from the original string is now on a separate line within the list.  The '#' characters, representing null or placeholder values, maintain their positions relative to the numbers.  The process visually demonstrates how a string of comma-separated values is split into individual elements, effectively transforming the string into a list or array data structure.\",width:\"597\",height:\"112\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The first value in the list is the root node of the tree:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:k,alt:\"Image represents a simple diagram illustrating a data structure, possibly an array or list.  The word 'root' in orange text is positioned above a downward-pointing arrow, indicating the origin or starting point of the data structure. The arrow points to a bracketed sequence of numbers and hash symbols. The sequence begins with the numbers 5, 9, 2, and 11, followed by several hash symbols (#) representing null or placeholder values, then the numbers 3, 4, 6, and 7, with more hash symbols filling the remaining spaces within the brackets.  The numbers are presented in a linear fashion, suggesting a sequential arrangement.  There are no explicit connections between individual elements beyond their sequential order within the brackets.  The overall structure suggests a root node pointing to a linear data structure with some empty or unused slots.\",width:\"597\",height:\"52\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Starting from this root value, recursively construct the tree node by node using preorder traversal. Each new node will be created with the next value in the list of preorder values. Whenever we encounter a \\u2018#\\u2019, we return null. The code snippet for this:\"}),`\n`,(0,C.jsxs)(r,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Helper function to construct the tree using preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"build_tree\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"values: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\"]\"]}),`) -> TreeNode:\n    val = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`(values)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Base case: '#' indicates a null node.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" val == \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Use preorder traversal to create the current node first, then the left and\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# right subtrees.\"}),`\n    node = TreeNode(`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`(val))\n    node.left = build_tree(values)\n    node.right = build_tree(values)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to construct the tree using preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"values\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next\"}),\" = (\",(0,C.jsx)(e.span,{className:\"hljs-params\"}),\") => values.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shift\"}),\"() \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Simulates Python's next()\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"helper\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" val = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"next\"}),`()\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: '#' indicates a null node.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (val === \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use preorder traversal to create the current node first, then the left and right subtrees.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" node = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"parseInt\"}),`(val))\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"left\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"helper\"}),`()\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"right\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"helper\"}),`()\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"helper\"}),`()\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to construct the tree using preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" TreeNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Queue<String> values)\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"val\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` values.poll();\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: '#' indicates a null node.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (val.equals(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\"#\"'}),`)) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use preorder traversal processes the current node first, then the left and\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// right children.\"}),`\n    TreeNode<Integer> node = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),`<>(Integer.parseInt(val));\n    node.left = buildTree(values);\n    node.right = buildTree(values);\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node;\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Follow-up: what if you must use a different traversal algorithm?\"}),(0,C.jsx)(e.br,{}),`\n`,\"It\\u2019s possible to serialize and deserialize a binary tree using other traversal algorithms than preorder traversal. Let\\u2019s explore some alternatives.\"]}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Postorder\\xA0Traversal:\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Postorder Traversal:}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8944em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6944em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Postorder\\xA0Traversal:\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})}),`\n`,(0,C.jsx)(e.p,{children:\"When we serialize the tree using postorder traversal, we get the following string (ignoring the null nodes in this discussion to focus on the node values and their order):\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a binary tree on the left, undergoing a postorder serialization process, resulting in a serialized string on the right. The tree's root node, labeled '5', connects to two child nodes: '9' on the left and '3' on the right. Node '9' further branches into '2' and '11', while node '3' connects to '4' and '7'. Node '4' has a child node '6', and node '7' has no children.  A horizontal arrow labeled 'postorder serialization' points from the tree to the resulting string '11,2,9,4,6,7,3,5'.  The string represents the postorder traversal of the tree (left subtree, right subtree, root), with each node's value separated by commas. An orange arrow points to the '5' in the string, labeled 'root', indicating its position as the root node in the original tree.\",width:\"617\",height:\"197\"})}),`\n`,(0,C.jsx)(e.p,{children:\"As we see, one big difference is that the root node will be the final value in the string, since postorder traversal processes the left subtree, then the right subtree, and finally the root node.\"}),`\n`,(0,C.jsx)(e.p,{children:\"During deserialization, we\\u2019d build the tree by iterating through the node values from right to left instead of left to right, since the root value is at the right. In addition, we\\u2019d need to create each node\\u2019s right subtree before we create its left subtree, as we go through the string in reverse.\"}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Inorder\\xA0traversal:\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Inorder traversal:}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.8944em\",verticalAlign:\"-0.2em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6944em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.84em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Inorder\\xA0traversal:\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})}),`\n`,(0,C.jsx)(e.p,{children:\"A lot more care needs to be taken when serializing a tree using inorder traversal. The main reason is that it\\u2019s unclear where the root node of the tree is in the string, and where the root node of each subtree is, as we can see below:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:w,alt:\"Image represents a binary tree on the left undergoing inorder serialization, resulting in a string representation on the right. The tree's root node, labeled '5', connects to two child nodes: '9' on the left and '3' on the right.  Node '9' further branches into '2' and '11', while node '3' connects to '4' and '7'. Node '4' has a child node '6'.  A horizontal arrow labeled 'inorder serialization' points from the tree to a string '11,2,9,5,3,4,6,7'. This string represents the inorder traversal of the tree, meaning it lists the nodes in the order: left subtree, root, right subtree recursively.  A curved orange arrow points to the '5' within the string, labeled 'root', indicating its position as the root node in the original tree structure.\",width:\"617\",height:\"197\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This doesn\\u2019t make it impossible to use inorder traversal. It just means significantly more information needs to be provided in the serialized string to make deserialization possible. In particular, we need to include details about which value serves as the root node for each subtree as we iterate through them.\"}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Breadth-first\\xA0search\\xA0(BFS):\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Breadth-first search (BFS):}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.2em\",verticalAlign:\"-0.45em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.75em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.59em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Breadth-first\\xA0search\\xA0(BFS):\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.45em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})}),`\n`,(0,C.jsx)(e.p,{children:\"BFS starts processing each node from the root of the tree, and traverses through it level by level, and from left to right. Serializing the tree using BFS gives the following order of values:\"}),`\n`,(0,C.jsx)(s,{children:(0,C.jsx)(l,{src:f,alt:\"Image represents a tree data structure undergoing Breadth-First Search (BFS) serialization.  The left side shows a tree with node 5 as the root. Node 5 connects to nodes 9 and 3. Node 9 connects to node 2, which further connects to node 11. Node 3 connects to nodes 4 and 7, with node 4 connecting to node 6.  A horizontal arrow labeled 'BFS serialization' points from the tree to a string '5,9,3,2,4,7,11,6'. This string represents the serialized form of the tree, generated by traversing the tree level by level from left to right using BFS.  The number 5, highlighted in a peach-colored box, is explicitly labeled as the 'root' with an orange arrow pointing to it within the serialized string.  The entire process demonstrates how a tree structure can be converted into a linear representation using BFS.\",width:\"617\",height:\"197\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Similarly to preorder traversal, we just need to follow the exact traversal order for reconstructing the tree when deserializing the string.\"}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsx)(e.p,{children:\"In the following implementation, we opt for preorder traversal for serialization and deserialization.\"}),`\n`,(0,C.jsxs)(r,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" ds \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` TreeNode\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"serialize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"root: TreeNode\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Perform a preorder traversal to add node values to a list, then convert the\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# list to a string.\"}),`\n    serialized_list = []\n    preorder_serialize(root, serialized_list)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Convert the list to a string and separate each value using a comma\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# delimiter.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"','\"}),`.join(serialized_list)\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Helper function to perform serialization through preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorder_serialize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node, serialized_list\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Base case: mark null nodes as '#'.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" node \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"is\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        serialized_list.append(`,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Preorder traversal processes the current node first, then the left and right\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# children.\"}),`\n    serialized_list.append(`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),`(node.val))\n    preorder_serialize(node.left, serialized_list)\n    preorder_serialize(node.right, serialized_list)\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"deserialize\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"data: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"})]}),`) -> TreeNode:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Obtain the node values by splitting the string using the comma delimiter.\"}),`\n    node_values = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"iter\"}),\"(data.split(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"','\"}),`))\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` build_tree(node_values)\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Helper function to construct the tree using preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"build_tree\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"values: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\"]\"]}),`) -> TreeNode:\n    val = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`(values)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Base case: '#' indicates a null node.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" val == \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Use preorder traversal processes the current node first, then the left and\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# right children.\"}),`\n    node = TreeNode(`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`(val))\n    node.left = build_tree(values)\n    node.right = build_tree(values)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" { \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),\" } \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'./ds.js'\"}),`\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"serialize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"root\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` serializedList = []\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorderSerialize\"}),`(root, serializedList)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" serializedList.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"join\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"','\"}),`)\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to perform serialization through preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorderSerialize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node, serializedList\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (node === \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n    serializedList.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),`\n  }\n  serializedList.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"String\"}),\"(node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),`))\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorderSerialize\"}),\"(node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"left\"}),`, serializedList)\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorderSerialize\"}),\"(node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"right\"}),`, serializedList)\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"deserialize\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"data\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Obtain the node values by splitting the string using the comma delimiter.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" nodeValues = data.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"split\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"','\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),`(nodeValues)\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to construct the tree using preorder traversal.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"values\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" val = values.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shift\"}),`()\n  # `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Base\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-attr\",children:\"case\"}),\": \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),\" indicates a \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),` node.\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (val === \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'#'\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use preorder traversal processes the current node first, then the left and\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// right children.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" node = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"parseInt\"}),`(val))\n  node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"left\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),`(values)\n  node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"right\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),`(values)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` core.BinaryTree.TreeNode;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Arrays;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.LinkedList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.List;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Queue;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"UserCode\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" String \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"serialize\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(TreeNode<Integer> root)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Perform a preorder traversal to add node values to a list, then convert the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// list to a string.\"}),`\n        List<String> serializedList = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        preorderSerialize(root, serializedList);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Convert the list to a string and separate each value using a comma\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// delimiter.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" String.join(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\",\"'}),`, serializedList);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to perform serialization through preorder traversal.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"preorderSerialize\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(TreeNode<Integer> node, List<String> serializedList)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: mark null nodes as '#'.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (node == \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            serializedList.add(`,(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\"#\"'}),`);\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Preorder traversal processes the current node first, then the left and right\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// children.\"}),`\n        serializedList.add(String.valueOf(node.val));\n        preorderSerialize(node.left, serializedList);\n        preorderSerialize(node.right, serializedList);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" TreeNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"deserialize\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(String data)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Obtain the node values by splitting the string using the comma delimiter.\"}),`\n        Queue<String> values = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LinkedList\"}),\"<>(Arrays.asList(data.split(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\",\"'}),`)));\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` buildTree(values);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Helper function to construct the tree using preorder traversal.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" TreeNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"buildTree\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Queue<String> values)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"val\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` values.poll();\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: '#' indicates a null node.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (val.equals(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\"#\"'}),`)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use preorder traversal processes the current node first, then the left and\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// right children.\"}),`\n        TreeNode<Integer> node = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"TreeNode\"}),`<>(Integer.parseInt(val));\n        node.left = buildTree(values);\n        node.right = buildTree(values);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of both serialize and deserialize is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the number of nodes in the tree. This is because we visit each of the \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" nodes in the binary tree exactly once during preorder traversal. The serialize function additionally converts the serialized list to a string, which also takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity of both serialize and deserialize is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the recursive call stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is \\u{1D45B}.\"]})]})}function g(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(u,{...t})}):u(t)}function a(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return F(W);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

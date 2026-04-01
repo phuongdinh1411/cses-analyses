@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "sort-and-search/sort-linked-list",
+  "chapter": "17-01",
+  "title": "Sort Linked List",
+  "free": false,
+  "code": "var Component=(()=>{var _=Object.create;var n=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var A=Object.getOwnPropertyNames;var T=Object.getPrototypeOf,D=Object.prototype.hasOwnProperty;var B=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),q=(t,e)=>{for(var a in e)n(t,a,{get:e[a],enumerable:!0})},h=(t,e,a,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of A(e))!D.call(t,l)&&l!==a&&n(t,l,{get:()=>e[l],enumerable:!(i=E(e,l))||i.enumerable});return t};var I=(t,e,a)=>(a=t!=null?_(T(t)):{},h(e||!t||!t.__esModule?n(a,\"default\",{value:t,enumerable:!0}):a,t)),R=t=>h(n({},\"__esModule\",{value:!0}),t);var o=B((n1,V)=>{V.exports=_jsx_runtime});var a1={};q(a1,{default:()=>j,frontmatter:()=>i1});var C=I(o());var d=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/sort-linked-list-FE77B7AU.svg\";var H=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-1-M2QI4XCS.svg\";var L=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-2-L4BVIUUA.svg\";var M=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-3-Z5R7GCCM.svg\";var Z=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-4-QVMERH4Z.svg\";var p=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-5-TIWMID7C.svg\";var m=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-6-IUE5HW3V.svg\";var k=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-7-SEXWYXWN.svg\";var f=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-8-MTV2TPOB.svg\";var w=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-9-R6EN3IYJ.svg\";var g=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-10-EX3IW2SX.svg\";var b=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-11-7H7MSIUQ.svg\";var y=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-12-KVD7LUYH.svg\";var x=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-13-JGY3FAAG.svg\";var u=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-14-J3DWHPSZ.svg\";var F=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-15-XSYI467J.svg\";var N=\"/images/courses/coding-patterns/sort-and-search/sort-linked-list/image-17-01-16-2QMQB55U.svg\";var i1={chapter:\"17-01\",difficulty:\"Medium\",title:\"Sort Linked List\"};function v(t){let e={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msub:\"msub\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:a,Figure:i,Image:l,OpenCodeEditor:r,ProblemDescription:c}=e;return a||s(\"CodeTabs\",!0),i||s(\"Figure\",!0),l||s(\"Image\",!0),r||s(\"OpenCodeEditor\",!0),c||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(c,{children:[(0,C.jsxs)(e.p,{children:[\"Given the head of a singly linked list, \",(0,C.jsx)(e.strong,{children:\"sort the linked list\"}),\" in ascending order.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:d,width:\"361\",height:\"123\",alt:\"Image represents two linear sequences of numbered nodes (3, 2, 4, 5, 1) and (1, 2, 3, 4, 5) connected by unidirectional arrows indicating a flow from left to right.  The top sequence uses black-bordered circles containing numbers 3, 2, 4, 5, and 1 respectively, linked sequentially by black arrows.  The bottom sequence uses orange-bordered circles with the same numbers (1, 2, 3, 4, 5) arranged sequentially and connected by black arrows. A downward-pointing grey arrow connects the node '4' in the top sequence to the node '3' in the bottom sequence, suggesting a transformation or transition between the two sequences.  The overall arrangement visually depicts a before-and-after scenario, or a process that reorders the sequence of nodes.\",priority:!0})})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s start by finding a sorting algorithm that allows us to sort a linked list.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Choosing a sorting algorithm\"}),(0,C.jsx)(e.br,{}),`\n`,\"We're tasked with sorting a linked list, not an array. This distinction is crucial because algorithms like quicksort rely on random access through indexing, which linked lists don't support. Merge sort is a great \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" time option, where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the linked list, because it does not require random access and works well with linked lists, as we\\u2019ll see in this explanation.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Merge sort\"}),(0,C.jsx)(e.br,{}),`\n`,\"The merge sort algorithm uses a divide and conquer strategy. At a high level, it can be broken down into three steps:\"]}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Split the linked list into two halves:\"}),`\n`]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:H,alt:\"Image represents a directed graph illustrating a coding pattern, possibly related to state transitions or workflow.  The upper path shows a sequence of nodes (circles) numbered 3, 2, 4, 5, and 1, connected by solid black arrows indicating a directional flow from one node to the next.  A lower path mirrors part of the upper path, starting with nodes 3, 2, and 4, also connected by solid black arrows.  The key difference is that node 4 in the upper path has two gray curved arrows emanating from it, one pointing downwards to node 2 in the lower path, and another pointing downwards to node 5 in the lower path, which is then followed by node 1. This suggests a branching or conditional logic where node 4's processing can lead to two different subsequent sequences, both ultimately ending at node 1, but via different intermediate nodes (2 and 4 versus 5).  The numbers within the nodes likely represent states or steps in a process.\",width:\"419\",height:\"131\"})}),`\n`,(0,C.jsxs)(e.ol,{start:\"2\",children:[`\n`,(0,C.jsx)(e.li,{children:\"Recursively sort both halves:\"}),`\n`]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:L,alt:\"Image represents a visual depiction of the merge sort algorithm's operation on two input arrays.  The top half shows the initial input array `(3, 2, 4)` represented as three interconnected circles, each containing a number, with arrows indicating the flow of data.  The numbers are connected sequentially from left to right. Below this, a second row shows the result of an intermediate step in the merge sort, `(2, 3, 4)`, also represented by interconnected circles with arrows showing data flow.  A grey arrow connects the initial input to the intermediate result, suggesting a transformation.  The right side mirrors this structure, showing the initial input array `(5, 1)` in the top row and the intermediate result `(1, 5)` in the bottom row, again with arrows indicating data flow and a grey arrow connecting the input to the intermediate result.  The text 'merge_sort(' precedes each input array, indicating the function being applied.  The parentheses enclose the input arrays, and the closing parenthesis follows the last element of each array.\",width:\"547\",height:\"78\"})}),`\n`,(0,C.jsxs)(e.ol,{start:\"3\",children:[`\n`,(0,C.jsx)(e.li,{children:\"Merge the halves back together in a sorted manner to form a single sorted list:\"}),`\n`]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:M,alt:\"Image represents a diagram illustrating a merge operation in a coding pattern.  The upper portion shows two separate sequences: one sequence (in black circles) progresses from node '2' to '3' and then to '4'; the other sequence (also in black circles) goes from node '1' to '5'.  The lower portion depicts a merged sequence (in orange circles) resulting from the combination of the upper sequences.  A curved grey arrow labeled 'merge' connects nodes '3' and '5' from the upper sequences to node '3' in the lower sequence, indicating the merging point. The merged sequence in the lower portion flows from node '1' to '2', then to '3', '4', and finally '5'.  The numbers within the circles represent data elements or nodes in the sequences, and the arrows indicate the flow or order of processing.\",width:\"444\",height:\"139\"})}),`\n`,(0,C.jsx)(e.p,{children:\"We can see what the entire process looks like in the diagram below:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a directed graph illustrating a coding pattern, possibly related to state transitions or workflow.  The graph consists of nodes, represented by circles containing numbers (1 through 5), and directed edges, represented by grey arrows connecting the nodes.  Several distinct paths are visible, with some nodes appearing multiple times in different paths.  The numbers within the nodes likely represent different states or stages in a process.  Some nodes are colored light blue, others are colored orange, suggesting a possible distinction between different types of states or stages.  The paths show the sequence of transitions between these states.  For example, one path shows a sequence of 3 \\u2192 2 \\u2192 4 \\u2192 5 \\u2192 1, while another shows 3 \\u2192 2 \\u2192 4, and yet another shows a loop involving nodes 2 and 3. The overall structure suggests a complex system with multiple possible state transitions and potentially parallel or branching workflows.\",width:\"472\",height:\"457\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This is what this process looks like as pseudocode:\"}),`\n`,(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"merge_sort\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"head\"}),`):\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Split the linked list into two halves.\"}),`\n    second_head = split_list(head)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Recursively sort both halves.\"}),`\n    first_half_sorted = merge_sort(head)\n    second_half_sorted = merge_sort(second_head)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Merge the sorted sublists.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` merge(first_half_sorted, second_half_sorted)\n`]})}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s discuss in more detail how to split a linked list, and how to merge two sorted linked lists.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Splitting the linked list in half\"}),(0,C.jsx)(e.br,{}),`\n`,\"To split a linked list in half, we need access to its middle node because the node next to the middle node can represent the head of the second linked list:\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:p,alt:\"The image represents a linked list divided into two halves.  The linked list consists of nodes containing the numbers 3, 2, 4, 5, and 1, connected sequentially by arrows indicating the next element in the sequence.  A gray box labeled 'mid' points down to node 4, indicating this node as the midpoint of the list.  The nodes 3, 2, and 4 are enclosed under a gray line labeled 'first half,' while nodes 5 and 1 are enclosed under an orange line labeled 'second half.'  An orange box labeled 'mid.next' points down to node 5, highlighting the node immediately following the midpoint.  The arrows visually represent the flow of data through the linked list, showing the connections between consecutive nodes.\",width:\"337\",height:\"102\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"We can retrieve the middle node using the \",(0,C.jsx)(e.strong,{children:\"fast and slow pointer\"}),\" technique, as described in the \",(0,C.jsx)(e.em,{children:\"Linked List Midpoint\"}),\" problem:\"]}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:m,alt:\"Image represents a linked list traversal visualization illustrating a 'fast' and 'slow' pointer technique.  The linked list is depicted as a sequence of numbered nodes (3, 2, 4, 5, 1) connected by solid arrows indicating the direction of traversal. A light-blue rectangular box labeled 'slow' points to node 4, and an orange rectangular box labeled 'fast' points to node 1.  Dashed arrows show the movement of the pointers; the slow pointer moves one node at a time (3\\u21922\\u21924), while the fast pointer moves two nodes at a time (1\\u21925\\u21921). A grey dashed-line box to the right displays the condition 'fast.next == null \\u2192 break,' indicating that the algorithm terminates when the fast pointer reaches the end of the list (where the next node is null).  The overall diagram demonstrates a common pattern used in algorithms like cycle detection in linked lists, where the fast pointer's faster traversal allows for efficient detection of loops or the end of the list.\",width:\"624\",height:\"87\"})}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:k,alt:\"Image represents a linked list data structure illustrating a pointer manipulation technique.  The diagram shows a singly linked list with nodes numbered 3, 2, 4, 5, and 1.  Arrows indicate the direction of the `next` pointers connecting each node. A rectangular box labeled 'head' points to node 3, indicating it's the head of the list. Another rectangular box labeled 'slow' points to node 4. A third rectangular box, 'second_head', points to node 5.  A dashed-line rectangle to the right displays the assignment statement 'second_head = slow.next', showing that the `second_head` pointer is being assigned the value of the `next` pointer of the `slow` pointer (which points to node 5).  The overall diagram depicts a step in an algorithm, likely involving two pointers traversing the list at different speeds, where `second_head` is being updated based on the position of the `slow` pointer.\",width:\"624\",height:\"69\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Then, we just need to disconnect the two halves by setting slow.next to null:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:f,alt:\"Image represents a linked list data structure with two pointers, 'slow' and 'second_head', traversing it.  A grey rectangular box labeled 'head' points to a circular node containing the number '3'. This node is connected via a right-pointing arrow to a node containing '2', which in turn connects to a node containing '4'. A light-blue rectangular box labeled 'slow' points to the node containing '4'.  Another circular node containing '5' is connected to a node containing '1' via a right-pointing arrow. A rectangular box labeled 'second_head' points to the node containing '5'. Finally, a dashed-line grey rectangle displays the condition 'slow.next = null', indicating that the next pointer of the node pointed to by 'slow' is null, signifying the end of a linked list segment.  The arrows represent the connections between nodes, showing the flow of traversal through the list.\",width:\"624\",height:\"69\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that when the linked list is of even length, there are two middle nodes. We want the slow pointer to stop at the first middle node so we can get the head of the second half more easily. As mentioned in \",(0,C.jsx)(e.em,{children:\"Linked List Midpoint\"}),\", we can achieve this by stopping the fast pointer when \",(0,C.jsx)(e.code,{children:\"fast.next.next\"}),\" is null:\"]}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:w,alt:\"Image represents a linked list traversal visualization illustrating a fast and slow pointer approach.  The diagram shows a singly linked list with nodes numbered 3, 2, 4, and 5.  A rectangular box labeled 'slow' in light blue points to node 2 with a downward-pointing arrow, indicating the slow pointer's initial position.  Similarly, a rectangular box labeled 'fast' in orange points to node 4, showing the fast pointer's starting position. Solid arrows indicate the forward traversal of the list: node 3 points to node 2, node 2 to node 4, and node 4 to node 5.  Dashed orange and light blue curved arrows from node 3 to node 2 and from node 4 to node 2 represent the iterative movement of the fast and slow pointers, respectively.  A separate light gray box with dashed borders displays a conditional statement: 'fast.next.next == null \\u2192 break,' indicating that the traversal terminates when the pointer two steps ahead of the fast pointer (fast.next.next) reaches the end of the list (null).\",width:\"624\",height:\"87\"})}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:g,alt:\"Image represents a linked list data structure illustrating a pointer manipulation technique.  Three rectangular boxes labeled 'head', 'slow', and 'second_head' point to nodes within the linked list.  The linked list consists of four circular nodes containing the numerical values 3, 2, 4, and 5 respectively.  Arrows indicate the connections between nodes, showing the sequence of the list.  'head' points to node 3, 'slow' points to node 2, and 'second_head' points to node 4. A dashed rectangular box to the right displays the assignment statement 'second_head = slow.next', indicating that the pointer 'second_head' is being assigned the value of the 'next' pointer of the node pointed to by 'slow'. This demonstrates how 'second_head' is advanced one step ahead of 'slow' in the linked list.\",width:\"546\",height:\"71\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Merging two sorted linked lists\"}),(0,C.jsx)(e.br,{}),`\n`,\"First, let's consider merging two linked lists, each containing a single node, meaning they\\u2019re both inherently sorted. We merge them by placing the smaller node first, followed by the other node:\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(l,{src:b,alt:\"Image represents a diagram illustrating a data flow or transformation process.  Two circles labeled '5' and '1' are positioned at the top, representing input data points or sources.  These are connected via curved, grey arrows to a lower level containing two orange-bordered circles labeled '1' and '5'. The grey arrows indicate a merging or combining of the initial data.  A solid, black arrow connects the lower-left orange circle ('1') to the lower-right orange circle ('5'), suggesting a unidirectional transformation or processing step where data from '1' is processed to produce '5'. The arrangement visually depicts a scenario where two distinct inputs ('5' and '1') are combined and then undergo a transformation resulting in a new output ('5'), potentially implying a pattern of data aggregation and subsequent modification.\",width:\"163\",height:\"111\"})}),`\n`,(0,C.jsx)(e.p,{children:\"With that established, how would we merge two longer linked lists? To do this, we can set two pointers, one at the start of each linked list, then perform the following steps:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Compare the nodes at each pointer and add the node with the smaller value to the merged linked list.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Advance the pointer at that node with the smaller value to the next node in its linked list.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Repeat the above two steps until we can no longer advance either pointer.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"Before discussing the final step, observe how these steps are applied to the following two sorted linked lists. We can use a dummy node to point to the head of the merged linked list:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:y,alt:\"Image represents two linked lists being merged.  The top list consists of nodes labeled 2, 3, and 4, with a node labeled 11 pointing to node 2. The bottom list consists of nodes labeled 1 and 5, with a node labeled 12 pointing to node 1.  Arrows indicate the direction of links between nodes. A rectangular box describes the merging process:  if the value of node 11 is greater than the value of node 12, a new node (12) is added to the merged list, and the 'next' pointer of node 12 is set to point to the next node in the merged list (which is node 1 in this case).  To the right of the lists, a visual representation of this step shows a grey node labeled 'D' (likely representing a dummy node or pointer) pointing to an orange node labeled '1', illustrating the insertion of node 12 (implied, not explicitly shown) before node 1 in the merged list.\",width:\"624\",height:\"136\"})}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:x,alt:\"Image represents a visual explanation of a merging operation in a linked list data structure.  The top section shows two linked lists. The first list, in black, consists of nodes containing the values 2, 3, and 4, with a node labeled '11' pointing to the node with value 2. The second list, in gray, contains nodes with values 1 and 5, with a node labeled '12' pointing to the node with value 5.  Arrows indicate the direction of links between nodes. A rectangular box explains the logic:  '11.val < 12.val \\u2192 add node 11 to the merged list' and '11 = 11.next,' indicating that because the value of node 11 is less than the value of node 12, node 11 is added to the merged list, and its 'next' pointer is updated. The bottom section depicts the resulting merged list, where a new gray node 'D' points to an orange node '1', which points to an orange node '2'.  The orange nodes represent the merged list, showing the integration of node 11 (implicitly) into the sorted structure.\",width:\"624\",height:\"136\"})}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:u,alt:\"Image represents a visual explanation of a merging operation in linked lists.  The left side shows two linked lists: one with nodes containing values '2', '3', and '4', and another with nodes containing '1' and '5'.  Above each list, a square box indicates a node with value '11' and '12' respectively, representing nodes to be merged. Arrows depict the connections between nodes within each list.  The right side displays the result of merging the '11' node into a new list, which starts with a 'D' node (likely representing a dummy head node).  A rectangular box explains the merging logic: '11.val < 12.val \\u2192 add node 11 to the merged list \\u2014 11 = 11.next', indicating that the node with value '11' is added to the merged list because its value is less than the value of the next node ('12'), and its 'next' pointer is set to point to the next node in the merged list. The merged list visually shows nodes '1', '2', and '3' in orange, indicating that node '11' has been successfully integrated into the sorted merged list.\",width:\"624\",height:\"136\"})}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:F,alt:\"Image represents a visual explanation of a merging operation in a linked list data structure.  The top-left shows two linked lists; one in light gray with nodes containing values '2', '3', and a node '4' (in black, indicating it's a focus point), and another below it, also in light gray, with nodes '1' and '5' (also in black).  Above the node '4' is a gray box labeled '11', representing a node with value 11 to be inserted. Above the node '5' is a gray box labeled '12', representing a node with value 12. A downward arrow connects '11' to '4' and '12' to '5', indicating the insertion point. A large light-gray box in the center explains the logic: '11.val < 12.val \\u2192 add node 11 to the merged list \\u2014 11 = 11.next'. This describes the condition for merging (value 11 is less than value 12) and the action (inserting node 11) along with the pointer update (11.next will point to the next node). The bottom-right shows the resulting merged linked list, with nodes 'D', '1', '2', '3', and '4' (all in orange to highlight the merged list), connected by arrows indicating the sequence.  The 'D' node likely represents a dummy head node. The overall diagram illustrates the step-by-step process of merging two sorted linked lists.\",width:\"624\",height:\"136\"})}),`\n`,(0,C.jsx)(e.p,{children:\"If one of the linked lists has been entirely added to the merged list, we can just add the rest of the other linked list to the merged list:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(l,{src:N,alt:\"Image represents a visual explanation of a merging algorithm, likely for linked lists.  The top section shows two linked lists; one light gray list with nodes labeled '2', '3', and '4', and another light gray list with a single node labeled '1' connected to a node labeled '5' (in bold, indicating a potential end point). A gray box labeled '12' points down to node '5'.  A gray box labeled '11' points down to node '4'.  A dashed-line box contains the condition '11 == null \\u2192 add the rest of the second list to the merged list.'  The bottom section depicts the result of the merge.  A light gray node labeled 'D' (possibly representing a dummy node or the beginning of the merged list) connects to a linked list with nodes labeled '1', '2', '3', '4', and '5', all highlighted in orange, indicating they are part of the merged list. The arrows show the direction of connections within each list and the flow of data during the merge operation.  The condition in the dashed box suggests that if the pointer '11' reaches the end of the first list (null), the remaining elements of the second list are appended to the merged list.\",width:\"624\",height:\"136\"})}),`\n`,(0,C.jsx)(r,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(a,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort_linked_list\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"head: ListNode\"}),`) -> ListNode:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the linked list is empty or has only one element, it's already sorted.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" head \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"or\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" head.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` head\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Split the linked list into halves using the fast and slow pointer technique.\"}),`\n    second_head = split_list(head)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Recursively sort both halves.\"}),`\n    first_half_sorted = sort_linked_list(head)\n    second_half_sorted = sort_linked_list(second_head)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Merge the sorted sublists.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` merge(first_half_sorted, second_half_sorted)\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"split_list\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"head: ListNode\"}),`) -> ListNode:\n    slow = fast = head\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" fast.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),\" fast.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`:\n        slow = slow.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n        fast = fast.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n    second_head = slow.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n    slow.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` second_head\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"merge\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"l1: ListNode, l2: ListNode\"}),`) -> ListNode:\n    dummy = ListNode(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# This pointer will be used to append nodes to the tail of the merged linked list.\"}),`\n    tail = dummy\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Continually append the node with the smaller value from each linked list to the\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# merged linked list until one of the linked lists has no more nodes to merge.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" l1 \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),` l2:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` l1.val < l2.val:\n            tail.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),` = l1\n            l1 = l1.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n            tail.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),` = l2\n            l2 = l2.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n        tail = tail.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# One of the two linked lists could still have nodes remaining. Attach those nodes\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# to the end of the merged linked list.\"}),`\n    tail.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = l1 \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"or\"}),` l2\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" dummy.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort_linked_list\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"head\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the linked list is empty or has only one element, it's already sorted.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (!head || !head.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\") \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` head\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Split the linked list into halves using the fast and slow pointer technique.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" secondHead = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"splitList\"}),`(head)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Recursively sort both halves.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" firstHalfSorted = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort_linked_list\"}),`(head)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" secondHalfSorted = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort_linked_list\"}),`(secondHead)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Merge the sorted sublists.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"merge\"}),`(firstHalfSorted, secondHalfSorted)\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"splitList\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"head\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),` slow = head\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),` fast = head\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (fast.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" && fast.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`) {\n    slow = slow.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n    fast = fast.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" secondHead = slow.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n  slow.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` secondHead\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"merge\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"l1, l2\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" dummy = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"ListNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),` tail = dummy\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Continually append the node with the smaller value from each linked list\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// to the merged linked list until one of them has no more nodes to merge.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (l1 && l2) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (l1.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),\" < l2.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),`) {\n      tail.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),` = l1\n      l1 = l1.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n    } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      tail.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),` = l2\n      l2 = l2.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n    }\n    tail = tail.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Attach remaining nodes, if any.\"}),`\n  tail.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),` = l1 || l2\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" dummy.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` core.LinkedList.ListNode;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" ListNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"sort_linked_list\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ListNode<Integer> head)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the linked list is empty or has only one element, it's already sorted.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (head == \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),\" || head.next == \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` head;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Split the linked list into halves using the fast and slow pointer technique.\"}),`\n        ListNode<Integer> secondHead = splitList(head);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Recursively sort both halves.\"}),`\n        ListNode<Integer> firstHalfSorted = sort_linked_list(head);\n        ListNode<Integer> secondHalfSorted = sort_linked_list(secondHead);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Merge the sorted sublists.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` merge(firstHalfSorted, secondHalfSorted);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" ListNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"splitList\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ListNode<Integer> head)\"}),` {\n        ListNode<Integer> slow = head;\n        ListNode<Integer> fast = head;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (fast.next != \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),\" && fast.next.next != \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode<Integer> secondHead = slow.next;\n        slow.next = `,(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` secondHead;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" ListNode<Integer> \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"merge\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ListNode<Integer> l1, ListNode<Integer> l2)\"}),` {\n        ListNode<Integer> dummy = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"ListNode\"}),\"<>(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// This pointer will be used to append nodes to the tail of the merged linked list.\"}),`\n        ListNode<Integer> tail = dummy;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Continually append the node with the smaller value from each linked list to the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// merged linked list until one of the linked lists has no more nodes to merge.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (l1 != \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),\" && l2 != \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (l1.val < l2.val) {\n                tail.next = l1;\n                l1 = l1.next;\n            } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                tail.next = l2;\n                l2 = l2.next;\n            }\n            tail = tail.next;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// One of the two linked lists could still have nodes remaining. Attach those nodes\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// to the end of the merged linked list.\"}),`\n        tail.next = (l1 != `,(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`) ? l1 : l2;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` dummy.next;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"sort_linked_list\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" because it uses merge sort. Here\\u2019s the breakdown:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"The linked list is recursively split until each sublist contains only one node. This splitting process happens about \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msub,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"})]}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\log_2(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.207em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-2.4559em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2441em\"},children:(0,C.jsx)(e.span,{})})})]})})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" times because each split reduces the size of the linked list by half.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"At each level, we merge the split linked lists. Merging all elements at one level takes about \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" operations.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Since there are \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msub,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"})]}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\log_2(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.207em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-2.4559em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2441em\"},children:(0,C.jsx)(e.span,{})})})]})})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" levels of splitting and merging, and there are \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" operations at each level, the time complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\".\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" due to the recursive call stack, which can grow up to \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msub,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"})]}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\log_2(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.207em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-2.4559em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2441em\"},children:(0,C.jsx)(e.span,{})})})]})})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" in height.\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"stable-sorting\",children:\"Stable Sorting\"}),`\n`,(0,C.jsx)(e.p,{children:\"Merge sort is a stable sorting algorithm. This is important in scenarios where the original order of equal elements must be preserved. For example, if we are sorting a list of nodes that share the same value, but have an additional attribute storing the time they were created, then it\\u2019s important for the relative order of these nodes to stay the same. Stability can be important for database systems; for instance, where stable sorting is required to maintain data integrity and consistency across multiple operations.\"})]})}function j(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(v,{...t})}):v(t)}function s(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return R(a1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "course": "tech-resume",
+  "id": "p0-c2-introduction",
+  "chapter": 2,
+  "title": "Introduction",
+  "free": true,
+  "code": "var Component=(()=>{var p=Object.create;var i=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var w=(o,e)=>()=>(e||o((e={exports:{}}).exports,e),e.exports),y=(o,e)=>{for(var n in e)i(o,n,{get:e[n],enumerable:!0})},s=(o,e,n,a)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let r of u(e))!f.call(o,r)&&r!==n&&i(o,r,{get:()=>e[r],enumerable:!(a=m(e,r))||a.enumerable});return o};var k=(o,e,n)=>(n=o!=null?p(g(o)):{},s(e||!o||!o.__esModule?i(n,\"default\",{value:o,enumerable:!0}):n,o)),b=o=>s(i({},\"__esModule\",{value:!0}),o);var l=w((A,h)=>{h.exports=_jsx_runtime});var T={};y(T,{default:()=>d,frontmatter:()=>v});var t=k(l()),v={chapter:2,free:!0,title:\"Introduction\"};function c(o){let e={a:\"a\",h2:\"h2\",hr:\"hr\",li:\"li\",ol:\"ol\",p:\"p\",section:\"section\",strong:\"strong\",sup:\"sup\",...o.components};return(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(e.p,{children:\"There\\u2019s a myth of it being easy to get a job as a developer. While there are times where this might be true\\u2014especially if you are a senior or staff software engineer working at a well-known tech company\\u2014this is not the case for most developers. As soon as you get out on the job market and start directly applying for jobs, the feeling of having it easy quickly disappears.\"}),`\n`,(0,t.jsx)(e.p,{children:\"This book will help you craft a developer resume that represents you fairly, plays to your strengths, and increases your chances of getting to that recruiter call.\"}),`\n`,(0,t.jsx)(e.h2,{id:\"instructor\",children:\"Instructor\"}),`\n`,(0,t.jsxs)(e.p,{children:[\"Gergely Orosz writes The Pragmatic Engineer Newsletter - the #1 newsletter for engineering managers and senior engineers on Substack. You can find his newsletter \",(0,t.jsx)(e.a,{href:\"https://newsletter.pragmaticengineer.com/?ref=bytebytego\",children:\"here\"}),\".\"]}),`\n`,(0,t.jsx)(e.h2,{id:\"who-this-book-is-for\",children:\"Who This Book is For\"}),`\n`,(0,t.jsxs)(e.p,{children:[\"This book is tailored for people applying for developer jobs with tech companies in the US, Europe, and India, for companies where the language used for business is English. The book is especially relevant for companies with US headquarters: well-known tech companies like Facebook, Amazon, Apple, Netflix, Google (also referred to as FAANG\",(0,t.jsx)(e.sup,{children:(0,t.jsx)(e.a,{href:\"#user-content-fn-1\",id:\"user-content-fnref-1\",\"data-footnote-ref\":!0,\"aria-describedby\":\"footnote-label\",children:\"1\"})}),\"), unicorns like Stripe, Uber, Airbnb, Dropbox and fast-growing tech startups. The principles of the guide likely translate to other companies. However, different industries and different companies might follow different processes, and look for different things in a resume.\"]}),`\n`,(0,t.jsx)(e.p,{children:\"The book is written for software developers, tech leads and engineering managers. Most of the content is tailored from new grads, all the way to experienced software developers, with dedicated sections for leads and engineering managers. The book assumes that you already have the relevant experience for the positions you are applying for.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Everything presented in this guide is opinions that might or might not apply to the country and industry you are applying in, or the company you are applying to. Make sure to do your own research and get feedback from your network to tailor your resume or CV. There is no one-size-fits-all approach.\"}),`\n`,(0,t.jsx)(e.h2,{id:\"what-this-book-is-not\",children:\"What This Book is Not\"}),`\n`,(0,t.jsx)(e.p,{children:\"This book is not a definite guide on what works, and what doesn\\u2019t, when applying for any specific company. Though the author and contributing authors have worked at a variety of tech companies, this does not make it an official guide for any of the companies mentioned in the book.\"}),`\n`,(0,t.jsxs)(e.p,{children:[\"This goes back to how hiring works. As we\\u2019ll cover in \",(0,t.jsx)(e.a,{href:\"/courses/tech-resume/p1-c2-the-hiring-pipeline\",children:\"Chapter 2, The Hiring Pipeline\"}),\", hiring is a process that can differ not only per company, but also per hiring manager. Also, the likelihood of you receiving a follow-up call after applying for a position is dependent on many other factors that are impossible to predict. These include how many other qualified applications there are, what the timeline to fill the position is, how many open positions there are, and many others.\"]}),`\n`,(0,t.jsx)(e.p,{children:\"Software engineers realize that there are no one-size-fits-all solutions on what language to use to build a website, or what architecture to follow when designing a complex application. In a similar way, there is no one-size-fits-all resume template that will yield the best results, or resume contents that will always result in a recruiter call.\"}),`\n`,(0,t.jsx)(e.p,{children:\"The book will not be able to answer why you don\\u2019t hear back from companies you apply to. However, it does give context on how the process works, and advice that should help you navigate the resume writing process better, and with more structure and confidence.\"}),`\n`,(0,t.jsx)(e.h2,{id:\"how-to-read-this-book\",children:\"How to Read This Book\"}),`\n`,(0,t.jsx)(e.p,{children:\"The book is split into three different parts. I recommend skimming the book once, choosing one or two resume templates, then writing or re-writing your resume, as you go through the exercises laid out in Part 2: Writing the Resume.\"}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Part 1: Resumes and the Hiring Process\"}),\" shares context on why resumes are important, and how the hiring process works at most companies. If you have not been a hiring manager yourself, I recommend starting with this section. In order to deliberately write a good resume that recruiters and hiring managers will notice, knowing how the process works and who you are writing the resume for is important.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Part 2: Writing the Resume\"}),\" presents actionable advice on how to write a good resume. Each of the chapters in this part focus on a specific area within your resume. This part is heavy on examples.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Before and after examples\"}),\" showcase real-world, but anonymized resume snippets as their author originally wrote them. Improvement areas are visualized \",(0,t.jsx)(\"mark\",{className:\"highlight-magenta\",children:\"with highlights\"}),\", and the \",(0,t.jsx)(\"mark\",{className:\"highlight-green\",children:\"improvements afterwards\"}),\" are also made clear.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Recap: actions to improve your resume\"}),\" sections close each of the chapters in Part 2. These are practical checks and exercises you can do to make improvements to your resume.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Part 3: examples and inspiration\"}),\" provides templates to get started with writing your resume, as well as anonymized developer resume examples to kick start you with writing your own resume.\"]}),`\n`,(0,t.jsx)(\"table\",{className:\"inside-out\",children:(0,t.jsx)(\"tbody\",{children:(0,t.jsx)(\"tr\",{children:(0,t.jsxs)(\"td\",{children:[(0,t.jsx)(e.p,{children:(0,t.jsx)(e.strong,{children:\"From the inside out: insights from people running the hiring process\"})}),(0,t.jsx)(e.p,{children:\"The book contains a dozen \\u201Cfrom the inside out\\u201D sections. These are the thoughts and perspectives of hiring managers, tech recruiters and other people involved in the recruitment process on how and why things are done. These sections offer additional and interesting perspectives.\"})]})})})}),`\n`,(0,t.jsx)(e.hr,{}),`\n`,(0,t.jsxs)(e.section,{\"data-footnotes\":!0,className:\"footnotes\",children:[(0,t.jsx)(e.h2,{className:\"sr-only\",id:\"footnote-label\",children:\"Footnotes\"}),`\n`,(0,t.jsxs)(e.ol,{children:[`\n`,(0,t.jsxs)(e.li,{id:\"user-content-fn-1\",children:[`\n`,(0,t.jsxs)(e.p,{children:[\"FAANG: Facebook, Apple, Amazon, Netflix, Google. FAANG companies are known for the impressive stock growth they have shown in recent years. Engineers working at these companies receive hefty equity compensation on top of base salaries, making them some of the most attractive companies to work at\\u2014and the most competitive to get into. \",(0,t.jsx)(e.a,{href:\"#user-content-fnref-1\",\"data-footnote-backref\":\"\",\"aria-label\":\"Back to reference 1\",className:\"data-footnote-backref\",children:\"\\u21A9\"})]}),`\n`]}),`\n`]}),`\n`]})]})}function d(o={}){let{wrapper:e}=o.components||{};return e?(0,t.jsx)(e,{...o,children:(0,t.jsx)(c,{...o})}):c(o)}return b(T);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c1-acknowledgements"
+      ],
+      "id": "p0-c1-acknowledgements",
+      "chapter": 1,
+      "title": "Acknowledgements"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c2-introduction"
+      ],
+      "id": "p0-c2-introduction",
+      "chapter": 2,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c0-resumes-and-the-hiring-process"
+      ],
+      "id": "p1-c0-resumes-and-the-hiring-process",
+      "chapter": 3,
+      "free": true,
+      "title": "PART 1: RESUMES AND THE HIRING PROCESS"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c1-why-resumes-and-cvs-are-important"
+      ],
+      "id": "p1-c1-why-resumes-and-cvs-are-important",
+      "chapter": 4,
+      "free": true,
+      "title": "Chapter 1: Why Resumes and CVs are Important"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c2-the-hiring-pipeline"
+      ],
+      "id": "p1-c2-the-hiring-pipeline",
+      "chapter": 5,
+      "free": true,
+      "title": "Chapter 2: The Hiring Pipeline"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c0-writing-the-resume"
+      ],
+      "id": "p2-c0-writing-the-resume",
+      "chapter": 6,
+      "title": "PART 2: WRITING THE RESUME"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c1-tech-resume-basics"
+      ],
+      "id": "p2-c1-tech-resume-basics",
+      "chapter": 7,
+      "title": "Chapter 3: Tech Resume Basics"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c2-resume-structure"
+      ],
+      "id": "p2-c2-resume-structure",
+      "chapter": 8,
+      "title": "Chapter 4: Resume Structure"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c3-standing-out"
+      ],
+      "id": "p2-c3-standing-out",
+      "chapter": 9,
+      "title": "Chapter 5: Standing Out"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c4-common-mistakes"
+      ],
+      "id": "p2-c4-common-mistakes",
+      "chapter": 10,
+      "title": "Chapter 6: Common Mistakes"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c5-different-experience-levels-different-career-paths"
+      ],
+      "id": "p2-c5-different-experience-levels-different-career-paths",
+      "chapter": 11,
+      "title": "Chapter 7: Different Experience Levels, Different Career Paths"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c6-exercises-to-polish-your-resume"
+      ],
+      "id": "p2-c6-exercises-to-polish-your-resume",
+      "chapter": 12,
+      "title": "Chapter 8: Exercises to Polish Your Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c7-beyond-the-resume"
+      ],
+      "id": "p2-c7-beyond-the-resume",
+      "chapter": 13,
+      "title": "Chapter 9: Beyond the Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c0-examples-and-inspiration"
+      ],
+      "id": "p3-c0-examples-and-inspiration",
+      "chapter": 14,
+      "title": "PART 3: EXAMPLES AND INSPIRATION"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c1-good-resume-template-principles"
+      ],
+      "id": "p3-c1-good-resume-template-principles",
+      "chapter": 15,
+      "title": "Chapter 10: Good Resume Template Principles"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c2-resume-templates"
+      ],
+      "id": "p3-c2-resume-templates",
+      "chapter": 16,
+      "title": "Chapter 11: Resume Templates"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c3-resume-improvement-examples"
+      ],
+      "id": "p3-c3-resume-improvement-examples",
+      "chapter": 17,
+      "title": "Chapter 12: Resume Improvement Examples"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process"
+      ],
+      "id": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+      "chapter": 18,
+      "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p4-c0-conclusion"
+      ],
+      "id": "p4-c0-conclusion",
+      "chapter": 19,
+      "title": "Conclusion"
+    }
+  ],
+  "courseMetadata": {
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "tech-resume",
+    "defaultChapter": "/courses/tech-resume/p0-c2-introduction",
+    "rootPath": "/courses/tech-resume",
+    "lessons": 13,
+    "students": 5000,
+    "showChapter": false,
+    "lastModified": "2025.02.11"
+  }
+}

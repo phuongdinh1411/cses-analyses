@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "sliding-windows/longest-uniform-substring-after-replacements",
+  "chapter": "05-03",
+  "title": "Longest Uniform Substring After Replacements",
+  "free": false,
+  "code": "var Component=(()=>{var y=Object.create;var P=Object.defineProperty;var r=Object.getOwnPropertyDescriptor;var s=Object.getOwnPropertyNames;var v=Object.getPrototypeOf,m=Object.prototype.hasOwnProperty;var z=(M,H)=>()=>(H||M((H={exports:{}}).exports,H),H.exports),T=(M,H)=>{for(var R in H)P(M,R,{get:H[R],enumerable:!0})},i=(M,H,R,f)=>{if(H&&typeof H==\"object\"||typeof H==\"function\")for(let j of s(H))!m.call(M,j)&&j!==R&&P(M,j,{get:()=>H[j],enumerable:!(f=r(H,j))||f.enumerable});return M};var S=(M,H,R)=>(R=M!=null?y(v(M)):{},i(H||!M||!M.__esModule?P(R,\"default\",{value:M,enumerable:!0}):R,M)),J=M=>i(P({},\"__esModule\",{value:!0}),M);var A=z((o1,o)=>{o.exports=_jsx_runtime});var G1={};T(G1,{default:()=>l,frontmatter:()=>h1});var C=S(A());var e=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/longest-uniform-substring-after-replacements-KHLVZUYU.svg\";var Z=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-1-FYEWINUJ.svg\";var x=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-2-YYDIUJ65.svg\";var V=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-3-3PEN6ETI.svg\";var E=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-4-THMG57YT.svg\";var k=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-5-2S3UUUAZ.svg\";var n=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-6-A7DH6WHO.svg\";var Q=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-7-LJGWRHAO.svg\";var Y=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-8-PULTVZMZ.svg\";var L=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-9-JTTG4DT4.svg\";var g=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-10-OGQLA427.svg\";var O=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-11-UC4NPOWR.svg\";var a=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-12-7LWYVQ55.svg\";var c=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-13-XXLCDK5J.svg\";var w=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-14-4YHQETNP.svg\";var t=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-15-Y5U75GG2.svg\";var d=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-16-WSKICKEH.svg\";var B=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-17-PBYJWP3Z.svg\";var D=\"/images/courses/coding-patterns/sliding-windows/longest-uniform-substring-after-replacements/image-05-03-18-P2ILPAOJ.svg\";var h1={chapter:\"05-03\",difficulty:\"Medium\",title:\"Longest Uniform Substring After Replacements\"};function p(M){let H={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...M.components},{CodeTabs:R,Figure:f,Image:j,OpenCodeEditor:h,ProblemDescription:G}=H;return R||I(\"CodeTabs\",!0),f||I(\"Figure\",!0),j||I(\"Image\",!0),h||I(\"OpenCodeEditor\",!0),G||I(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(G,{children:[(0,C.jsxs)(H.p,{children:[\"A \",(0,C.jsx)(H.strong,{children:\"uniform\"}),\" substring is one in which all characters are identical. Given a string, determine the \",(0,C.jsx)(H.code,{children:\"length\"}),\" of the longest uniform substring that can be formed by \",(0,C.jsxs)(H.strong,{children:[\"replacing up to \",(0,C.jsx)(H.code,{children:\"k\"}),\" characters\"]}),\".\"]}),(0,C.jsx)(H.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:e,width:\"500\",height:\"45\",alt:\"The image represents a visual illustration of finding the longest uniform substring within a given string.  The input string 'a b c d c c c a' is shown on the left.  Two 'c' characters within this string are highlighted with orange diagonal lines, indicating they are part of a uniform substring. A rightward-pointing arrow separates the input string from the output. The output, displayed in a light-blue rectangular box, shows the identified longest uniform substring 'c c c c c'. Above the output box, the text 'Longest uniform substring' is written in light-blue, clearly labeling the purpose of the diagram. The diagram visually demonstrates the process of identifying and extracting the longest consecutive sequence of identical characters from a given input string.\",priority:!0})}),(0,C.jsx)(H.pre,{children:(0,C.jsxs)(H.code,{className:\"hljs language-python\",children:[\"Input: s = \",(0,C.jsx)(H.span,{className:\"hljs-string\",children:\"'aabcdcca'\"}),\", k = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"2\"}),`\nOutput: `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"5\"}),`\n`]})}),(0,C.jsx)(H.p,{children:`Explanation: if we can only replace 2 characters, the longest uniform substring we can achieve is \"ccccc\", obtained by replacing 'b' and 'd' with 'c'.`})]}),`\n`,(0,C.jsx)(H.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(H.p,{children:[(0,C.jsx)(H.strong,{children:\"Determining if a substring is uniform\"}),(0,C.jsx)(H.br,{}),`\n`,\"Before we try finding the longest uniform substring, let\\u2019s first determine the most efficient way to make a string uniform with the fewest character replacements. Consider the example below:\"]}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:Z,alt:\"Image represents a sequence of lowercase letters arranged horizontally.  The sequence is 'a b a a b a c', where each letter is individually spaced. There are no connections or arrows between the letters; they are simply presented as a linear string of characters. No URLs, parameters, or other information beyond the letters themselves are present in the image.  The letters appear to be a simple example data set, possibly illustrating a concept within the context of coding patterns, such as sequence analysis or pattern recognition.\",width:\"196\",height:\"15\"})}),`\n`,(0,C.jsx)(H.p,{children:\"Which characters should we replace to ensure the minimum number of replacements are performed to make the string uniform? There are three main choices: make the string all \\u2018a\\u2019s, or all \\u2018b\\u2019s, or all \\u2018c\\u2019s. The most efficient choice, requiring the fewest replacements, is to make all characters \\u2018a\\u2019, which involves just three replacements:\"}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:x,alt:\"Image represents a transformation process illustrated using sequences of characters.  On the left, we see three subsequences: 'ab', 'aa', and 'ac'.  Each subsequence is individually marked with an orange arrow pointing diagonally upwards and labeled with 'a', indicating that the 'a' element is being processed or removed. A thick black arrow points from the left-hand sequences to the right-hand sequence.  The right-hand side shows a sequence of eight 'a's. The diagram visually depicts a transformation where the input consists of three subsequences containing 'a's and other characters ('b' and 'c'). The transformation removes elements other than 'a' from each subsequence, resulting in an output sequence containing only 'a's, effectively filtering or extracting 'a's from the input.\",width:\"487\",height:\"26\"})}),`\n`,(0,C.jsxs)(H.p,{children:[\"The key observation is that the minimum number of replacements needed to achieve uniformity is obtained by \",(0,C.jsx)(H.strong,{children:\"replacing all characters except the most frequent one\"}),\".\"]}),`\n`,(0,C.jsx)(H.p,{children:\"This suggests that if we know the highest frequency of a character in a substring, we can determine if our value of k is sufficient to make that substring uniform. The number of characters that need to be replaced (num_chars_to_replace) can be found by subtracting this highest frequency from the total number of characters in the substring:\"}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:V,alt:\"Image represents a calculation to determine the number of characters to replace in a substring.  At the top, a sequence of characters 'a b a a b a c' is shown, with the character 'b' and 'c' crossed out in orange, indicating they are to be replaced. Below this, a grey box contains a calculation: `num_chars_to_replace = len(substring) - highest_freq`. This equation calculates the number of characters to replace by subtracting the highest frequency of any single character (`highest_freq`) from the total length of the substring (`len(substring)`).  The calculation is then shown step-by-step:  `len(substring)` is explicitly given as 7, `highest_freq` as 4, resulting in a final answer of 3 characters to replace (`num_chars_to_replace = 3`).  The variables `num_chars_to_replace`, `len(substring)`, and `highest_freq` are written in orange, black, and blue respectively, highlighting their roles in the calculation.\",width:\"487\",height:\"103\"})}),`\n`,(0,C.jsx)(H.p,{children:\"Once we\\u2019ve calculated num_chars_to_replace for a given substring, we can assess if the substring can be made uniform:\"}),`\n`,(0,C.jsxs)(H.ul,{children:[`\n`,(0,C.jsxs)(H.li,{children:[\"If \",(0,C.jsx)(H.code,{children:\"num_chars_to_replace \\u2264 k\"}),\", the substring can be made uniform.\"]}),`\n`,(0,C.jsxs)(H.li,{children:[\"If \",(0,C.jsx)(H.code,{children:\"num_chars_to_replace > k\"}),\", the substring cannot be made uniform.\"]}),`\n`]}),`\n`,(0,C.jsxs)(H.p,{children:[\"To calculate num_chars_to_replace, we need to know the value of \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\". This requires tracking the frequency of each character, which can be efficiently managed using a \",(0,C.jsx)(H.strong,{children:\"hash map\"}),\" (\",(0,C.jsx)(H.code,{children:\"freqs\"}),\"). This hash map allows us to update \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\" whenever we encounter a character with a higher frequency. Below is an illustration of how \",(0,C.jsx)(H.code,{children:\"freqs\"}),\" is updated:\"]}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:E,alt:\"Image represents a data flow diagram illustrating the process of finding the highest frequency of a character in a sequence.  The input, shown as 'a b c' with a downward arrow indicating data flow, represents a sequence of characters. This input feeds into a table labeled 'freqs', which is a two-column table with headers 'char' and 'freq'.  The table shows the character 'a' and its frequency '1'.  This table acts as an intermediate data structure storing character frequencies.  A separate box contains a code snippet: `highest_freq = max(highest_freq, freqs['a'])`, which calculates the highest frequency encountered so far.  The variable `highest_freq` is updated using the `max` function, comparing its current value with the frequency of character 'a' (obtained from the `freqs` table using the key 'a'). The result of this calculation, '1', is displayed below the equation, indicating that the highest frequency found so far is 1.  The overall diagram shows how the input sequence is processed to determine the highest character frequency.\",width:\"624\",height:\"55\"})}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:k,alt:\"Image represents a data flow diagram illustrating a frequency counting algorithm.  The input consists of a sequence of characters 'a', 'b', 'b', 'c', depicted by a downward-pointing arrow above the sequence. This input feeds into a table labeled 'freqs,' which is a two-column table with headers 'char' and 'freq.'  The table stores the frequency of each character; 'a' has a frequency of 1, and 'b' has a frequency of 1.  A separate, light-grey, dashed-bordered box contains a Python code snippet: `highest_freq = max(highest_freq, freqs['b'])`, which calculates the highest frequency encountered so far.  The result of this calculation, `= 1`, is shown below the code snippet.  The code implies an iterative process where `highest_freq` is updated by comparing it with the frequency of each character in the `freqs` table.  The 'b' is used as an example in the code snippet, suggesting the algorithm iterates through each character in the input sequence.\",width:\"624\",height:\"72\"})}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:n,alt:\"Image represents a data flow diagram illustrating the process of finding the highest frequency of characters in a sequence.  The input is a sequence of characters 'a b b c', depicted as a horizontal list. A downward arrow indicates this sequence is processed to generate a frequency table labeled 'freqs'. This table is a 2-column structure with the left column labeled 'char' representing characters and the right column labeled 'freq' representing their frequencies. The table shows 'a' with frequency 1 and 'b' with frequency 2.  To the right, a separate box shows a Python-like code snippet calculating the highest frequency. The code `highest_freq = max(highest_freq, freqs['b'])` calculates the maximum frequency by comparing a current `highest_freq` (implicitly initialized to 0 or a lower value not shown) with the frequency of character 'b' (which is 2 from the table). The result, `= 2`, is displayed below, indicating that 2 is the highest frequency found in the input sequence.\",width:\"624\",height:\"72\"})}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:Q,alt:\"Image represents a data flow diagram illustrating the process of finding the highest frequency of characters in a sequence.  The input is a sequence of characters 'a b b c' shown with a downward arrow indicating data flow into a frequency table labeled 'freqs'. This table is a two-column structure with 'char' representing the character and 'freq' representing its frequency. The table shows 'a' with frequency 1, 'b' with frequency 2, and 'c' with frequency 1.  To the right, a calculation is shown: `highest_freq = max(highest_freq, freqs['c']) = 2`. This equation indicates that the `highest_freq` variable is updated by taking the maximum value between its current value (implicitly assumed to be initialized to a value less than or equal to 2) and the frequency of character 'c' (which is 1 from the table), resulting in a final `highest_freq` value of 2.  The diagram visually demonstrates how the frequency table is generated from the input sequence and how a maximum frequency is calculated using the table's data.\",width:\"624\",height:\"89\"})}),`\n`,(0,C.jsx)(H.p,{children:\"Now that we have the tools to determine if a substring can be made uniform, the next step is to figure out how to identify the longest uniform substring. Let\\u2019s explore a technique that lets us do this.\"}),`\n`,(0,C.jsxs)(H.p,{children:[(0,C.jsx)(H.strong,{children:\"Dynamic sliding window\"}),(0,C.jsx)(H.br,{}),`\n`,\"We know sliding windows can be useful for solving problems involving substrings. This problem requires that we find the longest substring that satisfies a specific condition:\"]}),`\n`,(0,C.jsxs)(H.blockquote,{children:[`\n`,(0,C.jsx)(H.p,{children:\"num_chars_to_replace <= k\"}),`\n`]}),`\n`,(0,C.jsx)(H.p,{children:\"So, a dynamic sliding window might be appropriate, as discussed in the chapter introduction.\"}),`\n`,(0,C.jsx)(H.p,{children:\"We can use the above condition to determine how to expand or shrink the window:\"}),`\n`,(0,C.jsxs)(H.ul,{children:[`\n`,(0,C.jsxs)(H.li,{children:[`\n`,(0,C.jsxs)(H.p,{children:[\"If the condition is met (i.e., the window is valid), we \",(0,C.jsx)(H.strong,{children:\"expand\"}),\" the window to find a longer window that still meets this condition.\"]}),`\n`]}),`\n`,(0,C.jsxs)(H.li,{children:[`\n`,(0,C.jsxs)(H.p,{children:[\"If the condition is violated (i.e., the window is invalid), we \",(0,C.jsx)(H.strong,{children:\"shrink\"}),\" the window until it meets the condition again.\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(H.p,{children:\"Let\\u2019s see how this works over the example below:\"}),`\n`,(0,C.jsx)(f,{children:(0,C.jsx)(j,{src:Y,alt:\"Image represents a sequence of characters 'a a b c d c c a' followed by a comma and then an equation 'k = 2'.  The sequence of characters appears to be a data set or input, possibly representing a string or an array of elements.  The characters 'a', 'b', 'c', and 'd' are individual elements within this sequence, arranged linearly from left to right.  There's no explicit connection shown between the character sequence and the equation 'k = 2', but the proximity suggests a relationship, possibly indicating that 'k' is a parameter or variable related to the processing or analysis of the character sequence.  The value '2' assigned to 'k' might represent a length, a count, or some other relevant property of the sequence.  The comma acts as a separator between the character sequence and the equation.\",width:\"261\",height:\"13\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsxs)(H.p,{children:[\"Start by defining the left and right boundaries of the window at index 0. Continue expanding the window for as long as it satisfies our condition (\",(0,C.jsx)(H.code,{children:\"nums_char_to_replace <= k\"}),\"):\"]}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:L,alt:\"Image represents a visual explanation of a sliding window algorithm, possibly for character replacement or frequency analysis.  The left side shows a sequence of characters 'a a b c d c c a' with a light-blue highlighted 'a' at the beginning. Above this sequence, two boxes labeled 'left' and 'right' point downwards, indicating pointers or indices into the character sequence.  A value 'k = 2' is displayed, likely representing a parameter limiting the number of replacements or operations. The right side shows a calculation box. Inside, the variable `highest_freq` is set to 1.  A formula `num_chars_to_replace = window_length - highest_freq` is presented, followed by its evaluation as `1 - 1 = 0`. Finally, the condition `0 \\u2264 k` is shown, resulting in the action 'expand,' suggesting the window's size will increase. The overall diagram illustrates a step in an algorithm where the frequency of characters within a window is analyzed, and a decision is made based on the comparison of the number of characters to replace with the parameter 'k' to determine whether to expand the window.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:g,alt:\"Image represents a sliding window algorithm visualization.  Two labeled boxes, 'left' (in gray) and 'right' (in orange), point downwards with arrows towards a light-blue rectangular box containing the character sequence 'aa'. This sequence is part of a larger sequence 'aabcdcca' shown to the right.  A dashed arrow connects the 'right' box to the second 'a' in the light-blue box, indicating the window's current position. A separate gray box on the right displays calculations:  `highest_freq = 2`, representing the highest frequency of a character within the current window (which is 'a').  The next line calculates `num_chars_to_replace = window_length - highest_freq`, which evaluates to `2 - 2 = 0`. The final line states `0 \\u2264 k --> expand`, indicating that because the number of characters to replace is 0 or less, the window should expand.  The overall diagram illustrates a step in a sliding window algorithm where the window's size is determined by character frequencies.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:O,alt:\"Image represents a diagram illustrating a sliding window algorithm.  A sequence of characters 'a a b c d c c a' is shown.  Two rectangular boxes labeled 'left' and 'right' in gray and orange respectively, point downwards with arrows indicating the left and right boundaries of a sliding window currently encompassing 'a a b'.  A dashed orange arrow shows the window's right boundary moving one position to the right.  An upward red arrow labeled 'chars to replace' points to the character 'b' within the window, suggesting this character is a candidate for replacement. A separate gray box contains calculations:  `highest_freq` is set to 2, representing the highest frequency of a character within the window.  The formula `num_chars_to_replace = window_length - highest_freq` is shown, with a substitution using `window_length = 3` resulting in `num_chars_to_replace = 1`. Finally, the condition `1 \\u2264 k \\u2192 expand` indicates that if the number of characters to replace (k) is greater than or equal to 1, the window should expand.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:a,alt:\"Image represents a diagram illustrating a sliding window algorithm.  A light-blue rectangular box displays a sequence of characters: 'a a b_c_ d c c a'.  A gray rectangular box to the right shows calculations: `highest_freq = 2`, `num_chars_to_replace = window_length - highest_freq = 4 - 2 = 2`, and `2 \\u2264 k \\u2192 expand`.  Above the character sequence, a rectangular box labeled 'left' points down with an arrow to the beginning of the sequence, and another rectangular box labeled 'right' (in orange) points down with a dashed arrow to the characters 'b_c_'. Red upward arrows under 'b_c_' are labeled 'chars to replace', indicating these characters are targeted for replacement. The calculation in the gray box determines the number of characters to replace (`num_chars_to_replace`) based on the window length (4) and the highest frequency of any character within the window (2). The result (2) is compared to a variable 'k', and if 2 is less than or equal to k, the window expands.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(H.p,{children:\"Once the window expands to the fifth character (\\u2018d\\u2019), it will contain 3 characters that must be replaced to make the window uniform. Since we can only replace up to k = 2 characters, the window is invalid. So, we shrink the window:\"}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:c,alt:\"Image represents a sliding window algorithm visualization.  A sequence of characters 'a a b c_d c c a' is shown, with a light-red background highlighting a sub-sequence 'a a b c_d'.  Arrows pointing upwards from beneath this sub-sequence are labeled in red as 'chars to replace'.  A grey box to the right displays calculations: 'highest_freq = 2', indicating the highest frequency of any character within the window.  The next line calculates 'num_chars_to_replace = window_length - highest_freq', substituting values to get '5 - 2 = 3'. Finally, '3 > k \\u2192 shrink' suggests that if the number of characters to replace (3) exceeds a threshold 'k' (not explicitly defined), the window should shrink.  Rectangles labeled 'left' and 'right' above the character sequence indicate the direction of window movement, with a dashed arrow suggesting the right pointer's movement within the window.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:w,alt:\"The image represents a data structure manipulation process.  A sequence of characters 'a b c d' is shown centrally, highlighted in a light pink rectangle.  Above this sequence, two rectangular boxes labeled 'left' (in orange) and 'right' (in gray) indicate the direction of data input.  A downward-pointing arrow from 'left' connects to the first 'a' in the sequence, with a dashed arrow indicating an additional 'a' to the left of the main sequence. A downward-pointing arrow from 'right' connects to the last 'd' in the sequence. Below the central sequence, red upward-pointing arrows connect to each character (b, c, and d) with the text 'chars to replace' indicating these characters are targets for modification. To the right, a dashed-line rectangle displays the text 'highest_freq = 2 X', suggesting that the character with the highest frequency (presumably 'a' or 'c' based on the visible data) has a frequency of 2, and the 'X' likely represents a placeholder or an operation to be performed based on this frequency. The overall diagram illustrates a process where data is input from left and right, and characters within a central sequence are identified and potentially replaced based on frequency analysis.\",width:\"438\",height:\"88\"})}),`\n`,(0,C.jsxs)(H.p,{children:[\"Notice that after shrinking the window, the value of \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\" is still 2, which is no longer correct. Recall that our current method for updating \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\" only increases it when encountering a character with a higher frequency, meaning \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\" can only remain the same or increase, but it can never decrease.\"]}),`\n`,(0,C.jsxs)(H.p,{children:[\"One way to work around this is to develop a new method for updating \",(0,C.jsx)(H.code,{children:\"highest_freq\"}),\" that accurately decreases it when the highest frequency in a window decreases. However, our goal is to find the longest substring that meets the condition, so shrinking the window might not even be necessary. The crucial point here is that \",(0,C.jsx)(H.strong,{children:\"when we find a valid window of a certain length, no shorter window will provide a longer uniform substring\"}),\".\"]}),`\n`,(0,C.jsxs)(H.blockquote,{children:[`\n`,(0,C.jsx)(H.p,{children:\"This means we can just slide the window instead of shrinking it whenever we encounter an invalid window, effectively maintaining the length of the current window.\"}),`\n`]}),`\n`,(0,C.jsx)(H.p,{children:\"With this observation, we should correct our previous logic:\"}),`\n`,(0,C.jsxs)(H.ul,{children:[`\n`,(0,C.jsx)(H.li,{children:\"If the window satisfies the condition: expand.\"}),`\n`,(0,C.jsxs)(H.li,{children:[(0,C.jsx)(H.strong,{children:\"If the window doesn\\u2019t satisfy the condition: slide\"}),\".\"]}),`\n`]}),`\n`,(0,C.jsx)(H.p,{children:\"Let\\u2019s correct the action taken in the first invalid window above by sliding instead of shrinking. Then, we can continue processing the rest of the string.\"}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:t,alt:\"Image represents a sliding window algorithm visualization.  Two rectangular boxes labeled 'left' and 'right' point downwards to a sequence of characters 'a a b c d c c a' displayed horizontally. A light red background highlights the characters 'b c d' within the sequence. Red upward-pointing arrows beneath these highlighted characters are labeled 'chars to replace'.  To the right, a grey box shows a calculation:  `highest_freq` is set to 2; `num_chars_to_replace` is calculated as `window_length` (5) minus `highest_freq` (2), resulting in 3.  The final line indicates that if this result (3) is greater than some value `k` (not explicitly defined), a 'slide' operation should occur, implying the window moves along the character sequence.  The diagram illustrates how a sliding window identifies characters to be replaced based on frequency within the window, and the calculation determines the window's movement.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:d,alt:\"Image represents a sliding window algorithm visualization.  The left side shows a sequence of characters 'aabcdcca' with a highlighted sub-sequence 'a_b_c_d_c' in a light pink rectangle.  Orange boxes labeled 'left' and 'right' indicate pointers to the beginning and end of this window, respectively. Dashed orange arrows show the pointers moving across the sequence. Red upward arrows under the highlighted subsequence point to the text 'chars to replace,' indicating these characters within the window are candidates for replacement. The right side displays a calculation:  `highest_freq` is set to 2, representing the highest frequency of a character within the window.  The number of characters to replace is calculated as `window_length` (5) minus `highest_freq` (2), resulting in 3.  The final line states that if this result (3) is greater than a variable `k` (not defined in the image), then the window should slide.  The entire diagram illustrates how a sliding window algorithm determines which characters to replace based on frequency within a given window size.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:B,alt:\"Image represents a visual explanation of a sliding window algorithm, likely for character replacement or frequency analysis.  The left side shows a sequence of characters 'a a b c d c c a' with a light-blue highlighted window encompassing 'b c d c c'.  Orange rectangular boxes labeled 'left' and 'right' indicate pointers to the window's boundaries. Dashed arrows show the window's movement. Red upward arrows under the window point to the characters 'b', 'd', indicating these are characters to be replaced. The right side displays a calculation: `highest_freq` is set to 3, representing the highest frequency of a character within the window.  The number of characters to replace is calculated as `window_length - highest_freq` (5 - 3 = 2). The result (2) is compared to a variable 'k' (2 \\u2264 k), implying a condition for window expansion based on this comparison.  If the condition is met, the window expands; otherwise, it might contract or remain the same.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.hr,{}),`\n`,(0,C.jsx)(f,{align:\"left\",children:(0,C.jsx)(j,{src:D,alt:\"Image represents a sliding window algorithm visualization.  A sequence of characters 'a a b c d c c a' is shown.  A light-red rectangular box highlights a sub-sequence 'b c d c c a', representing a sliding window of length 6.  A grey box to the right displays calculations: `highest_freq = 3` (indicating the highest frequency of any character within the window), and `num_chars_to_replace = window_length - highest_freq = 6 - 3 = 3`.  This calculation determines the number of characters to replace within the window.  Red upward arrows under the window point to the characters 'b', 'd', and 'c' labeled 'chars to replace'.  Rectangular boxes labeled 'left' and 'right' with arrows indicate the direction of the sliding window movement.  A dashed arrow shows the rightward movement of the window. The final equation `3 < k \\u2192 slide` suggests that if the number of characters to replace (3) is less than some variable 'k', the window slides to the right.\",width:\"690\",height:\"110\"})}),`\n`,(0,C.jsx)(H.p,{children:\"The above window is the final window because we cannot expand or slide it any further. The longest valid window encountered during this process is a window of length 5.\"}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(H.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(R,{children:[(0,C.jsx)(H.pre,{children:(0,C.jsxs)(H.code,{className:\"hljs language-python\",children:[(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-title function_\",children:\"longest_uniform_substring_after_replacements\"}),\"(\",(0,C.jsxs)(H.span,{className:\"hljs-params\",children:[\"s: \",(0,C.jsx)(H.span,{className:\"hljs-built_in\",children:\"str\"}),\", k: \",(0,C.jsx)(H.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(H.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    freqs = {}\n    highest_freq = max_len = `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n    left = right = `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"while\"}),\" right < \",(0,C.jsx)(H.span,{className:\"hljs-built_in\",children:\"len\"}),`(s):\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Update the frequency of the character at the right pointer and the highest\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# frequency for the current window.\"}),`\n        freqs[s[right]] = freqs.get(s[right], `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),\") + \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n        highest_freq = `,(0,C.jsx)(H.span,{className:\"hljs-built_in\",children:\"max\"}),`(highest_freq, freqs[s[right]])\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Calculate replacements needed for the current window.\"}),`\n        num_chars_to_replace = (right - left + `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`) - highest_freq\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Slide the window if the number of replacements needed exceeds 'k'.\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# The right pointer always gets advanced, so we just need to advance 'left'.\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"if\"}),` num_chars_to_replace > k:\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Remove the character at the left pointer from the hash map before\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# advancing the left pointer.\"}),`\n            freqs[s[left]] -= `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n            left += `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Since the length of the current window increases or stays the same, assign\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# the length of the current window to 'max_len'.\"}),`\n        max_len = right - left + `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"# Expand the window.\"}),`\n        right += `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"return\"}),` max_len\n`]})}),(0,C.jsx)(H.pre,{children:(0,C.jsxs)(H.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-title function_\",children:\"longest_uniform_substring_after_replacements\"}),\"(\",(0,C.jsx)(H.span,{className:\"hljs-params\",children:\"s, k\"}),`) {\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"const\"}),` freqs = {}\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"let\"}),\" highestFreq = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxLen = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"let\"}),\" left = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"let\"}),\" right = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"while\"}),\" (right < s.\",(0,C.jsx)(H.span,{className:\"hljs-property\",children:\"length\"}),`) {\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Update the frequency of the character at the right pointer and the highest\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// frequency for the current window.\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"const\"}),` char = s[right]\n    freqs[char] = (freqs[char] || `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),\") + \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n    highestFreq = `,(0,C.jsx)(H.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(H.span,{className:\"hljs-title function_\",children:\"max\"}),`(highestFreq, freqs[char])\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Calculate replacements needed for the current window.\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"const\"}),\" numCharsToReplace = right - left + \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),` - highestFreq\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Slide the window if the number of replacements needed exceeds 'k'.\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// The right pointer always gets advanced, so we just need to advance 'left'.\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"if\"}),` (numCharsToReplace > k) {\n      freqs[s[left]] -= `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n      left += `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Since the length of the current window increases or stays the same, assign\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// the length of the current window to 'maxLen'.\"}),`\n    maxLen = right - left + `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Expand the window.\"}),`\n    right += `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`\n  }\n  `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"return\"}),` maxLen\n}\n`]})}),(0,C.jsx)(H.pre,{children:(0,C.jsxs)(H.code,{className:\"hljs language-java\",children:[(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.HashMap;\n\n`,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-title function_\",children:\"longest_uniform_substring_after_replacements\"}),(0,C.jsxs)(H.span,{className:\"hljs-params\",children:[\"(String s, \",(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" k)\"]}),` {\n        HashMap<Character, Integer> freqs = `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-title class_\",children:\"HashMap\"}),`<>();\n        `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"highestFreq\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"maxLen\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"left\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),\", right = \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"while\"}),` (right < s.length()) {\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Update the frequency of the character at the right pointer and the highest\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// frequency for the current window.\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"char\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"ch\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),` s.charAt(right);\n            freqs.put(ch, freqs.getOrDefault(ch, `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"0\"}),\") + \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`);\n            highestFreq = Math.max(highestFreq, freqs.get(ch));\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Calculate replacements needed for the current window.\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"numCharsToReplace\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),\" (right - left + \",(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`) - highestFreq;\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Slide the window if the number of replacements needed exceeds 'k'.\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// The right pointer always gets advanced, so we just need to advance 'left'.\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"if\"}),` (numCharsToReplace > k) {\n                `,(0,C.jsx)(H.span,{className:\"hljs-type\",children:\"char\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-variable\",children:\"leftChar\"}),\" \",(0,C.jsx)(H.span,{className:\"hljs-operator\",children:\"=\"}),` s.charAt(left);\n                freqs.put(leftChar, freqs.get(leftChar) - `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`);\n                left++;\n            }\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Since the length of the current window increases or stays the same, assign\"}),`\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// the length of the current window to 'max_len'.\"}),`\n            maxLen = right - left + `,(0,C.jsx)(H.span,{className:\"hljs-number\",children:\"1\"}),`;\n            `,(0,C.jsx)(H.span,{className:\"hljs-comment\",children:\"// Expand the window.\"}),`\n            right++;\n        }\n        `,(0,C.jsx)(H.span,{className:\"hljs-keyword\",children:\"return\"}),` maxLen;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(H.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(H.p,{children:[(0,C.jsx)(H.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(H.code,{children:\"longest_uniform_substring_after_replacements\"}),\" is \",(0,C.jsxs)(H.span,{className:\"katex\",children:[(0,C.jsx)(H.span,{className:\"katex-mathml\",children:(0,C.jsx)(H.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(H.semantics,{children:[(0,C.jsxs)(H.mrow,{children:[(0,C.jsx)(H.mi,{children:\"O\"}),(0,C.jsx)(H.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(H.mi,{children:\"n\"}),(0,C.jsx)(H.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(H.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(H.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(H.span,{className:\"base\",children:[(0,C.jsx)(H.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(H.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(H.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(H.span,{className:\"katex\",children:[(0,C.jsx)(H.span,{className:\"katex-mathml\",children:(0,C.jsx)(H.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(H.semantics,{children:[(0,C.jsx)(H.mrow,{children:(0,C.jsx)(H.mi,{children:\"n\"})}),(0,C.jsx)(H.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(H.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(H.span,{className:\"base\",children:[(0,C.jsx)(H.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" is the length of the input string. This is because we traverse the string linearly with two pointers.\"]}),`\n`,(0,C.jsxs)(H.p,{children:[(0,C.jsx)(H.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(H.span,{className:\"katex\",children:[(0,C.jsx)(H.span,{className:\"katex-mathml\",children:(0,C.jsx)(H.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(H.semantics,{children:[(0,C.jsxs)(H.mrow,{children:[(0,C.jsx)(H.mi,{children:\"O\"}),(0,C.jsx)(H.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(H.mi,{children:\"m\"}),(0,C.jsx)(H.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(H.annotation,{encoding:\"application/x-tex\",children:\"O(m)\"})]})})}),(0,C.jsx)(H.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(H.span,{className:\"base\",children:[(0,C.jsx)(H.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(H.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",children:\"m\"}),(0,C.jsx)(H.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(H.span,{className:\"katex\",children:[(0,C.jsx)(H.span,{className:\"katex-mathml\",children:(0,C.jsx)(H.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(H.semantics,{children:[(0,C.jsx)(H.mrow,{children:(0,C.jsx)(H.mi,{children:\"m\"})}),(0,C.jsx)(H.annotation,{encoding:\"application/x-tex\",children:\"m\"})]})})}),(0,C.jsx)(H.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(H.span,{className:\"base\",children:[(0,C.jsx)(H.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(H.span,{className:\"mord mathnormal\",children:\"m\"})]})})]}),\" is the number of unique characters in the string stored in the hash map \",(0,C.jsx)(H.code,{children:\"freqs\"}),\".\"]})]})}function l(M={}){let{wrapper:H}=M.components||{};return H?(0,C.jsx)(H,{...M,children:(0,C.jsx)(p,{...M})}):p(M)}function I(M,H){throw new Error(\"Expected \"+(H?\"component\":\"object\")+\" `\"+M+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return J(G1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

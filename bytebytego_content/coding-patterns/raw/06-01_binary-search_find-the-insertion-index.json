@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "binary-search/find-the-insertion-index",
+  "chapter": "06-01",
+  "title": "Find the Insertion Index",
+  "free": false,
+  "code": "var Component=(()=>{var _=Object.create;var H=Object.defineProperty;var T=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var I=Object.getPrototypeOf,P=Object.prototype.hasOwnProperty;var E=(i,t)=>()=>(t||i((t={exports:{}}).exports,t),t.exports),q=(i,t)=>{for(var l in t)H(i,l,{get:t[l],enumerable:!0})},r=(i,t,l,V)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let e of B(t))!P.call(i,e)&&e!==l&&H(i,e,{get:()=>t[e],enumerable:!(V=T(t,e))||V.enumerable});return i};var O=(i,t,l)=>(l=i!=null?_(I(i)):{},r(t||!i||!i.__esModule?H(l,\"default\",{value:i,enumerable:!0}):l,i)),z=i=>r(H({},\"__esModule\",{value:!0}),i);var d=E((n1,n)=>{n.exports=_jsx_runtime});var L1={};q(L1,{default:()=>j,frontmatter:()=>h1});var C=O(d());var s=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-1-7DDXG5I7.svg\";var M=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-2-3CRPXKXO.svg\";var Z=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-3-FQPOLG6X.svg\";var c=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-4-7V37KGDJ.svg\";var o=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-5-ZBUKWPAC.svg\";var p=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-6-5WWETRZI.svg\";var f=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-7-U2YJETFM.svg\";var g=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-8-UGTV47SZ.svg\";var m=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-9-35EGI4ZZ.svg\";var w=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-10-EBZUIING.svg\";var b=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-11-ZSNM22N6.svg\";var y=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-12-ZRXBWE7X.svg\";var u=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-13-TANKUKKW.svg\";var k=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-14-VUMKKPLG.svg\";var x=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-15-JZCCGIWY.svg\";var D=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-16-ANHMI7MN.svg\";var A=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-17-TLBBPQAB.svg\";var v=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-18-2JR5FV4I.svg\";var F=\"/images/courses/coding-patterns/binary-search/find-the-insertion-index/image-06-01-19-CKCIRTJR.svg\";var h1={chapter:\"06-01\",difficulty:\"Medium\",title:\"Find the Insertion Index\"};function N(i){let t={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...i.components},{CodeTabs:l,Figure:V,Image:e,OpenCodeEditor:h,ProblemDescription:L}=t;return l||a(\"CodeTabs\",!0),V||a(\"Figure\",!0),e||a(\"Image\",!0),h||a(\"OpenCodeEditor\",!0),L||a(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(L,{children:[(0,C.jsx)(t.p,{children:\"You are given a sorted array that contains unique values, along with an integer target.\"}),(0,C.jsxs)(t.ul,{children:[`\n`,(0,C.jsx)(t.li,{children:\"If the array contains the target value, return its index.\"}),`\n`,(0,C.jsxs)(t.li,{children:[\"Otherwise, \",(0,C.jsx)(t.strong,{children:\"return the insertion index\"}),\". This is the index where the target would be if it were inserted in order, maintaining the sorted sequence of the array.\"]}),`\n`]}),(0,C.jsx)(t.h4,{id:\"example-1\",children:\"Example 1:\"}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"7\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"8\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"9\"}),\"], target = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"4\"}),`\nOutput: `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),`\n`]})}),(0,C.jsx)(t.h4,{id:\"example-2\",children:\"Example 2:\"}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"7\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"8\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"9\"}),\"], target = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"6\"}),`\nOutput: `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"4\"}),`\n`]})}),(0,C.jsxs)(t.p,{children:[\"Explanation: 6 would be inserted at index 4 to be positioned between 5 and 7: \",(0,C.jsx)(t.code,{children:\"[1, 2, 4, 5, 6, 7, 8, 9]\"}),\".\"]})]}),`\n`,(0,C.jsx)(t.h2,{id:\"\"}),`\n`,(0,C.jsx)(t.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(t.p,{children:\"The goal of this problem varies depending on whether the sorted input array contains the target value or not. If it does, we should return its index. If it doesn\\u2019t, we return its insertion index.\"}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:s,alt:\"Image represents two scenarios illustrating a search or insertion operation within a sorted integer array.  The left side, titled 'case 1 - target exists in array:', shows an array `[1, 2, 4, 5, 7, 8, 9]` with indices displayed below each element (0-6). The target value, 4, is highlighted in a light green circle at index 2.  The right side, titled 'case 2 - target not in array:', displays the array `[1, 2, 4, 5, 7, 8, 9]` with indices (0-6) similarly shown.  Here, the target value is 6, which is not present. A light green circle highlights the index 4, indicating where the target value *would* be inserted to maintain the sorted order. A green upward-pointing arrow labeled 'insertion index' points to this highlighted index (4) in the second array.  Both cases demonstrate how a target value's presence or absence affects the outcome of a search or insertion algorithm within a sorted array.\",width:\"624\",height:\"123\"})}),`\n`,(0,C.jsx)(t.p,{children:\"When the target doesn\\u2019t exist in the array, we observe the insertion index is found at the first value in the array greater than the target, as can be seen in the second diagram above, where the first value larger than the target of 6, is 7.\"}),`\n`,(0,C.jsxs)(t.p,{children:[\"Since we don\\u2019t know if the target exists in the array before we start looking for it, we can combine both cases by finding the \",(0,C.jsx)(t.strong,{children:\"first value greater than or equal to the target\"}),\". This gives us a universal objective regardless of whether the target is in the array or not.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"As the array is sorted, we can use \",(0,C.jsx)(t.strong,{children:\"binary search\"}),\" to find the desired index.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Binary search\"}),(0,C.jsx)(t.br,{}),`\n`,\"In this binary search, we\\u2019re effectively looking for the first value that matches a \",(0,C.jsx)(t.strong,{children:\"condition\"}),\", where the condition is that the number is greater than or equal to the target. Let\\u2019s visualize which values of the array meet this condition and which don\\u2019t:\"]}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:M,alt:\"Image represents a visual explanation of a conditional operation applied to an array.  The top displays a conditional statement, `nums[i] >= target ?`, indicating a comparison where each element (`nums[i]`) of an array `nums` is checked against a `target` value. Below are two examples. Each example shows an array of numbers ([1, 2, 4, 5, 7, 8, 9]) and a specified `target` value (4 in the first example and 6 in the second).  Underneath each array, a corresponding array of 'F' (False) and 'T' (True) values is shown.  These boolean values represent the result of the comparison `nums[i] >= target` for each element.  Grey downward-pointing arrows connect each element in the number array to its corresponding boolean value in the result array.  In the first example (target = 4), elements less than 4 result in 'F', while elements greater than or equal to 4 result in 'T'.  Similarly, in the second example (target = 6), elements less than 6 are 'F', and those greater than or equal to 6 are 'T'.  The diagram illustrates how the conditional statement processes each array element to produce a boolean result array.\",width:\"624\",height:\"160\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"From this diagram, we can see the value we want to find is effectively the \",(0,C.jsx)(t.strong,{children:\"lower bound\"}),\" of values that satisfy this condition:\"]}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:Z,alt:\"The image represents two examples illustrating a lower bound in a data structure, likely an array.  Each example shows a sequence enclosed in square brackets `[]`.  The sequences consist of elements represented by 'F' (in red) and 'T' (in green).  In both examples, a single 'T' element, highlighted within a light green circle, is positioned near the beginning of the sequence.  An upward-pointing arrow originates from below this circled 'T' and points towards it, labeled 'lower bound'.  The first example shows the sequence `[F F F T T T T T]`, while the second example shows `[F F F F F T T T]`.  The arrangement demonstrates how the 'T' element acts as a lower bound, indicating a point in the sequence where the condition represented by 'T' begins to hold true. The difference between the two examples highlights that the exact position of the lower bound can vary depending on the data.\",width:\"624\",height:\"77\"})}),`\n`,(0,C.jsx)(t.p,{children:\"Note that finding the lower bound is equivalent to finding the leftmost value. With this in mind, let\\u2019s come up with an algorithm.\"}),`\n`,(0,C.jsxs)(t.p,{children:[\"First, \",(0,C.jsx)(t.strong,{children:\"define the search space\"}),\". If the target exists in the array, it could be located at any index within the range from 0 to n - 1. However, if the target is not in the array and is larger than all the elements, its insertion index is n. Therefore, our search space should cover all indexes in the range \",(0,C.jsx)(t.strong,{children:\"[0, n]\"}),\".\"]}),`\n`,(0,C.jsxs)(t.p,{children:[\"To figure out how we \",(0,C.jsx)(t.strong,{children:\"narrow the search space\"}),\", let\\u2019s first explore an example array that contains the target, then dive into an example where the array doesn\\u2019t contain the target.\"]}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Target exists in the array\"}),(0,C.jsx)(t.br,{}),`\n`,\"Consider searching for target value 4 in the following sorted array.\"]}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:c,alt:\"Image represents a visual depiction of a two-pointer approach to searching within a sorted array.  Two rectangular boxes labeled 'left' and 'right' are positioned above a sorted integer array [1, 2, 4, 5, 7, 8, 9].  Arrows descend from 'left' and 'right' pointing to the beginning and end of the array respectively.  The array elements are numbered below with their indices (0 to 7).  To the right of the array, the text 'target = 4' indicates the value being searched for.  The diagram illustrates the initial state of a binary search or similar algorithm where the 'left' pointer starts at index 0 and the 'right' pointer starts at index 6, preparing to search for the target value (4) within the array.\",width:\"461\",height:\"73\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(t.p,{children:\"Initially, the midpoint is positioned at element 5, which is a number that satisfies our condition of being greater than or equal to the target. This means the lower bound is either at this midpoint, or to its left since the lower bound is the leftmost value that satisfies the condition.\"}),`\n`,(0,C.jsxs)(t.p,{children:[\"So, narrow the search space toward the left, while including the midpoint (i.e., \",(0,C.jsx)(t.code,{children:\"right = mid\"}),\"):\"]}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:o,alt:\"Image represents a visual depiction of a binary search algorithm step.  Three rectangular boxes labeled 'left,' 'mid,' and 'right' are positioned above a numerical array [1, 2, 4, 5, 7, 8, 9], with each box pointing downwards via an arrow to its corresponding index in the array.  The 'mid' box is highlighted in light blue, indicating its current focus. The number 4 in the array is highlighted in light green, representing the element at the 'mid' index. A dashed-line rectangle to the right displays a conditional statement: 'nums[mid] \\u2265 4 \\u2192 right = mid,' indicating that if the value at the middle index ('nums[mid]') is greater than or equal to 4, then the 'right' index is updated to the current 'mid' index.  This illustrates a step in narrowing down the search space within the array.  The numbers below the array represent the indices (0-7) of each element.\",width:\"603\",height:\"69\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:p,alt:\"Image represents a visual depiction of a two-pointer approach in array traversal.  A rectangular box labeled 'left' points down to a bracketed sequence `[1 2 4 5 7 8 9]`, indicating the starting point of a left pointer.  The numbers are indexed below, starting from 0.  A second rectangular box labeled 'right' points down to the number 5 within the sequence. A light-green circle highlights the number 4, visually separating the left and right pointers' initial positions. A dashed orange line curves from the number 5 (the right pointer's initial position) to the closing bracket `]`, suggesting the right pointer's traversal direction.  The numbers 7, 8, and 9 are shown in lighter gray, indicating they are yet to be processed. The overall arrangement illustrates the initial state of a two-pointer algorithm operating on an array, where the left pointer starts at index 0 and the right pointer starts at index 3, with the right pointer moving towards the end of the array.\",width:\"298\",height:\"70\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(t.p,{children:\"Now, the midpoint is positioned at element 2. The lower bound should be a value greater than or equal to the target (4), which means the current midpoint is too small. To look for a larger value, we need to search to the right of the midpoint.\"}),`\n`,(0,C.jsx)(t.p,{children:\"So, narrow the search space toward the right while excluding the midpoint:\"}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:f,alt:\"Image represents a visual depiction of a step within a binary search algorithm.  Three rectangular boxes labeled 'left,' 'mid,' and 'right' are positioned above a numerical array [1, 2, 4, 5, 7, 8, 9], with index numbers displayed below each element.  Arrows descend from 'left,' 'mid,' and 'right' pointing to the array elements 1, 2, and 5 respectively. The element at index 2 (value 4) is highlighted in light green. To the right, a dashed-line box contains a conditional statement: 'nums[mid] < 4 \\u2192 left = mid + 1,' indicating that if the value at the middle index (nums[mid], which is 4 in this case) is less than 4, then the 'left' index should be updated to 'mid + 1'.  This illustrates how the algorithm adjusts the search space based on the comparison of the middle element with the target value (implicitly 4 in this example).\",width:\"624\",height:\"71\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:g,alt:\"Image represents a visual depiction of a data structure manipulation, possibly illustrating an algorithm or a coding pattern.  A horizontal line represents a sequence of numbered elements, bracketed by '[' and ']'.  The numbers 1 through 9 are shown along this line, with numbers 0 through 7 displayed below as indices.  A light green circle labeled '4' highlights an element within the sequence. Two rectangular boxes, one orange labeled 'left' and one gray labeled 'right', are positioned above the sequence. A solid orange arrow descends from 'left' pointing to the element '4', indicating a potential insertion or modification at that position. A solid gray arrow descends from 'right' pointing to the element '5', suggesting a similar action.  A dashed orange curved line connects the 'left' box to the element '4', implying a possible search or selection process leading to the element '4' from the left side.  The overall diagram likely illustrates how elements are accessed or manipulated within a sequence based on directional cues ('left' and 'right'), potentially demonstrating concepts like array indexing or list traversal.\",width:\"304\",height:\"74\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(t.p,{children:\"Now, the midpoint is positioned at element 4, which satisfies the condition of being greater than or equal to the target. So, narrow the search space toward the left while including the midpoint:\"}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:m,alt:\"Image represents a visual depiction of a step within a binary search algorithm.  At the top, three rectangular boxes labeled 'left,' 'mid,' and 'right' are shown horizontally.  Light blue arrows descend from 'mid' to highlight its index within a numerical array displayed below. This array, enclosed in square brackets `[ ]`, contains the numbers 1, 2, 4, 5, 7, 8, 9, with their indices (0-7) shown faintly beneath. The number 4, at index 2, is highlighted with a light green circle.  The array's element at the index indicated by 'mid' (which is 4) is being compared to the value 4. To the right, a light gray, dashed-bordered rectangle displays the conditional logic: `nums[mid] \\u2265 4 \\u2192 right = mid`, indicating that if the value at the middle index (`nums[mid]`) is greater than or equal to 4, then the 'right' index is updated to be equal to the 'mid' index. This illustrates a step in narrowing down the search space within the binary search.\",width:\"598\",height:\"76\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:w,alt:\"Image represents a visual depiction of a data structure, possibly an array or list, with elements numbered 1 through 9, enclosed within square brackets '[' and ']'.  A light-green circle labeled '4' highlights the element at index 2. Two rectangular boxes, one labeled 'left' in gray and the other 'right' in orange, indicate directional pointers.  A solid gray arrow points from 'left' to the circled '4', while a solid orange arrow points from 'right' to the circled '4'. A dashed orange curved arrow originates near the circled '4' and points back towards it, suggesting an iterative or cyclical process.  The numbers below the main line represent the indices of the array elements, ranging from 0 to 7, corresponding to the elements above. The overall diagram illustrates a concept related to accessing or manipulating an element within a data structure, potentially within the context of algorithms like binary search or other pointer-based operations.\",width:\"298\",height:\"72\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"Once the left and right pointers meet, the lower bound is located, which is the first value greater than or equal to the target. Now, we just return \",(0,C.jsx)(t.code,{children:\"left\"}),\" to return this value\\u2019s index.\"]}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Target doesn\\u2019t exist in the array\"}),(0,C.jsx)(t.br,{}),`\n`,\"Let\\u2019s test the above logic in the following example where the target is not in the array:\"]}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:b,alt:\"The image represents a visual depiction of a search for a target value within a numerical array.  The top row displays an array of integers enclosed in square brackets: [1, 2, 4, 5, 7, 8, 9].  To the right, separated by a comma, is the text 'target = 6,' indicating that the goal is to find the number 6 within the array. The bottom row shows the indices of the array elements, ranging from 0 to 7, corresponding to each element's position. A light-green circle highlights the index '4' which is below the number '7' in the array, suggesting that the algorithm is currently examining or has examined this element during its search for the target value 6.  The absence of the target value (6) in the array is implicitly shown by the highlighting of an index that does not correspond to the target value.\",width:\"440\",height:\"45\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:y,alt:\"Image represents a visual depiction of a binary search algorithm step.  Three rectangular boxes labeled 'left,' 'mid,' and 'right' are positioned above a numerical array [1, 2, 4, 5, 7, 8, 9], with each box pointing downwards via an arrow to its corresponding element's index in the array.  The 'mid' box is highlighted in light blue, indicating its current focus.  Below the array, indices 0 through 7 are displayed.  The element at index 4 (value 7) is highlighted in light green. A dashed-line rectangular box contains the conditional statement 'nums[mid] < 6 \\u2192 left = mid + 1,' illustrating that if the value at the middle index ('nums[mid]') is less than 6, the 'left' index is updated to 'mid + 1,' effectively narrowing the search space to the right half of the array for the next iteration.  The arrows visually represent the data flow and the conditional logic of the algorithm.\",width:\"624\",height:\"75\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:u,alt:\"Image represents a visual depiction of a data structure, possibly an array or list, illustrating a coding pattern.  A numerical sequence [1, 2, 4, 5, 7, 8, 9] is displayed, with numbers positioned along a horizontal axis labeled with indices 0 through 7 below.  An orange dashed line curves from a point between 1 and 2, reaching a point above the number 7.  An orange rectangle labeled 'left' is connected by a downward-pointing arrow to the number 7.  A gray rectangle labeled 'right' is connected by a downward-pointing arrow to the number 9.  A light green circle containing the number 4 is positioned below the number 7, possibly indicating an index or a specific element's value. The dashed line suggests a connection or operation involving the 'left' pointer and the element at index 4, potentially illustrating a search or traversal algorithm within the data structure.\",width:\"295\",height:\"76\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:k,alt:\"Image represents a visual depiction of a step within a binary search algorithm.  The top shows three labeled boxes: 'left,' 'mid' (highlighted in cyan), and 'right.' Arrows descend from 'left' and 'mid' pointing to the numbers 7 and 8 respectively, within a numerical array [1, 2, 4, 5, 7, 8, 9].  The array's indices are shown below, with index 4 highlighted in light green, corresponding to the value 7.  An arrow descends from 'right' to the number 9 in the array. A separate, light-grey, dashed-bordered box displays the conditional logic: 'nums[mid] \\u2265 6 \\u2192 right = mid,' indicating that if the element at the middle index (`mid`) is greater than or equal to 6, then the 'right' index is updated to the value of `mid`. This illustrates how the algorithm adjusts the search space based on the comparison of the middle element with a target value (implicitly 6 in this case).\",width:\"607\",height:\"81\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:x,alt:\"Image represents a visual depiction of a coding pattern, likely illustrating array indexing or pointer manipulation.  A numbered array, represented by `[1 2 4 5 7 8 9]`, is shown with indices displayed below (0-7). Two rectangular boxes labeled 'left' (gray) and 'right' (orange) point downwards to array elements 7 and 8 respectively. A downward-pointing arrow from 'left' indicates selection of element 7, while a similar arrow from 'right' points to element 8.  A dashed orange curved line connects 'right' to the array's closing bracket `]`, suggesting a potential iteration or traversal to the end of the array.  A small light green circle containing the number 4 is positioned below the element 7, possibly indicating an additional variable or index value related to the 'left' pointer.  The overall arrangement suggests a scenario where two pointers, 'left' and 'right,' operate on the array, potentially for searching, sorting, or other array-processing algorithms.\",width:\"307\",height:\"80\"})}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:D,alt:\"Image represents a visual depiction of a step within a binary search algorithm.  A numerical array `[1, 2, 4, 5, 7, 8, 9]` is shown, with indices displayed below.  Three labeled boxes, 'left,' 'mid' (highlighted in cyan), and 'right,' are positioned above the array, indicating pointers or indices. Arrows from 'left,' 'mid,' and 'right' point downwards to the elements 7, 7, and 8 respectively in the array.  The element at index 4 (value 7) is highlighted in light green, suggesting it's the current `mid` point. A separate, dashed-bordered box displays a conditional statement:  `nums[mid] \\u2265 6 \\u2192 right = mid`, indicating that if the value at the `mid` index (7 in this case) is greater than or equal to 6, then the `right` pointer is updated to the `mid` index's value. This illustrates a decision-making step within the algorithm's iterative process of narrowing down the search space.\",width:\"608\",height:\"81\"})}),`\n`,(0,C.jsx)(V,{align:\"left\",children:(0,C.jsx)(e,{src:A,alt:\"Image represents a visual depiction of a binary search algorithm operating on a sorted array.  A numbered array [1, 2, 4, 5, 7, 8, 9] is shown, with numbers 0 through 7 displayed below as indices.  A light green circle labeled '4' indicates the midpoint of the array after an initial search.  Two rectangular boxes, one labeled 'left' in gray and the other 'right' in orange, point downwards with arrows to the number '7' within the array.  The 'left' arrow indicates a search starting from the left side of the array, while the 'right' arrow indicates a search from the right. A dashed orange arrow from 'right' to '7' shows the right pointer converging on '7'. This illustrates how the algorithm iteratively narrows down the search space by comparing the target value (implicitly understood to be 7) with the middle element, adjusting the search boundaries ('left' and 'right' pointers) until the target is found.\",width:\"304\",height:\"77\"})}),`\n`,(0,C.jsxs)(t.p,{children:[\"As we can see, by the end of the binary search, we\\u2019ve narrowed down the search space to a single value, identifying index 4 as the insertion index. Return \",(0,C.jsx)(t.code,{children:\"left\"}),\".\"]}),`\n`,(0,C.jsx)(t.hr,{}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Summary\"}),(0,C.jsx)(t.br,{}),`\n`,\"For clarity, let\\u2019s summarize the two main scenarios we encounter while narrowing down the search space.\"]}),`\n`,(0,C.jsx)(t.p,{children:\"Case 1: The midpoint value is greater than or equal to the target, indicating the lower bound is either at the midpoint, or to its left. In this case, we narrow the search space toward the left, ensuring the midpoint is included:\"}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:v,alt:\"Image represents a visual depiction of a binary search algorithm's step.  At the top, a code snippet shows the conditional statement `if nums[mid] \\u2265 target: right = mid;`, indicating that if the element at the middle index (`mid`) of the array `nums` is greater than or equal to the target value, the `right` boundary of the search space is updated to `mid`. Below, two arrays, `[1, 2, 4, 5, 7, 8, 9]` and `[1, 2, 4, 5, 7, 8, 9]`, represent the initial and updated search spaces respectively.  Index numbers are shown below each element.  Boxes labeled 'left,' 'mid,' and 'right' indicate the boundaries of the search space. Arrows show the flow of information:  'left' points to the first element (index 0), 'mid' points to the element at index 3 (value 5), and 'right' initially points to the last element (index 7).  In the updated array, a dashed orange line connects the previous `right` pointer (index 7) to the new `right` pointer (index 3), visually representing the narrowing of the search space due to the condition being met. The element at `mid` (value 5) is highlighted, and the number 4 is highlighted in both arrays to emphasize its position relative to the `mid` and `left` pointers.\",width:\"362\",height:\"246\"})}),`\n`,(0,C.jsx)(t.p,{children:\"Case 2: The midpoint value is less than the target, indicating the lower bound is somewhere to the right. In this case, we narrow the search space toward the right, ensuring the midpoint is excluded:\"}),`\n`,(0,C.jsx)(V,{children:(0,C.jsx)(e,{src:F,alt:\"Image represents a visual depiction of a binary search algorithm's iteration.  The top shows a code snippet: `if nums[mid] < target: left = mid + 1`, indicating a conditional statement within the algorithm where if the value at the middle index (`mid`) of the array `nums` is less than the target value, the `left` boundary is updated to `mid + 1`. Below, two arrays `[1, 2, 4, 5, 7, 8, 9]` are shown, representing the search space.  The first array shows the initial state with index numbers (0-7) beneath each element.  Arrows labeled 'left,' 'mid,' and 'right' point to the respective boundaries of the search space (1, 5, and 9 initially).  The second array illustrates the next iteration.  The `mid` pointer has moved, and the `left` pointer has shifted to the right (indicated by an orange dashed arrow) because the condition `nums[mid] < target` was true.  The `right` pointer remains unchanged.  The index numbers are again shown below the array.  The number 8 is highlighted in light green in both arrays, suggesting it might be the target value or relevant to the search.\",width:\"365\",height:\"248\"})}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(t.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-python\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"find_the_insertion_index\"}),\"(\",(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),\"], target: \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    left, right = `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),\", \",(0,C.jsx)(t.span,{className:\"hljs-built_in\",children:\"len\"}),`(nums)\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` left < right:\n        mid = (left + right) // `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# If the midpoint value is greater than or equal to the target, the lower\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# bound is either at the midpoint, or to its left.\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` nums[mid] >= target:\n            right = mid\n        `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# The midpoint value is less than the target, indicating the lower bound is\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"# somewhere to the right.\"}),`\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n            left = mid + `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` left\n`]})}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"find_the_insertion_index\"}),\"(\",(0,C.jsx)(t.span,{className:\"hljs-params\",children:\"nums, target\"}),`) {\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"let\"}),\" left = \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"let\"}),\" right = nums.\",(0,C.jsx)(t.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"const\"}),\" mid = \",(0,C.jsx)(t.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"floor\"}),\"((left + right) / \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),`)\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// If the midpoint value is greater than or equal to the target, the lower\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// bound is either at the midpoint, or to its left.\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (nums[mid] >= target) {\n      right = mid\n    }\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// The midpoint value is less than the target, indicating the lower bound is\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// somewhere to the right.\"}),`\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n      left = mid + `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n  }\n  `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` left\n}\n`]})}),(0,C.jsx)(t.pre,{children:(0,C.jsxs)(t.code,{className:\"hljs language-java\",children:[(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-title function_\",children:\"find_the_insertion_index\"}),(0,C.jsxs)(t.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" target)\"]}),` {\n        `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"left\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"0\"}),`, right = nums.size();\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"while\"}),` (left < right) {\n            `,(0,C.jsx)(t.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-variable\",children:\"mid\"}),\" \",(0,C.jsx)(t.span,{className:\"hljs-operator\",children:\"=\"}),\" (left + right) / \",(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"2\"}),`;\n            `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// If the midpoint value is greater than or equal to the target, the lower\"}),`\n            `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// bound is either at the midpoint, or to its left.\"}),`\n            `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"if\"}),` (nums.get(mid) >= target) {\n                right = mid;\n            }\n            `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// The midpoint value is less than the target, indicating the lower bound is\"}),`\n            `,(0,C.jsx)(t.span,{className:\"hljs-comment\",children:\"// somewhere to the right.\"}),`\n            `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                left = mid + `,(0,C.jsx)(t.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n        }\n        `,(0,C.jsx)(t.span,{className:\"hljs-keyword\",children:\"return\"}),` left;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(t.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(t.code,{children:\"find_the_insertion_index\"}),\" is \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"log\"}),(0,C.jsx)(t.mo,{children:\"\\u2061\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(n))\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(t.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(t.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\"))\"})]})})]}),\" because it performs a binary search over a search space of size \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"n\"}),(0,C.jsx)(t.mo,{children:\"+\"}),(0,C.jsx)(t.mn,{children:\"1\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"n+1\"})]})})}),(0,C.jsxs)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"0.6667em\",verticalAlign:\"-0.0833em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(t.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(t.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(t.span,{className:\"mord\",children:\"1\"})]})]})]}),\".\"]}),`\n`,(0,C.jsxs)(t.p,{children:[(0,C.jsx)(t.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(t.span,{className:\"katex\",children:[(0,C.jsx)(t.span,{className:\"katex-mathml\",children:(0,C.jsx)(t.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(t.semantics,{children:[(0,C.jsxs)(t.mrow,{children:[(0,C.jsx)(t.mi,{children:\"O\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(t.mn,{children:\"1\"}),(0,C.jsx)(t.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(t.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(t.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(t.span,{className:\"base\",children:[(0,C.jsx)(t.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(t.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(t.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(t.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(t.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]})]})}function j(i={}){let{wrapper:t}=i.components||{};return t?(0,C.jsx)(t,{...i,children:(0,C.jsx)(N,{...i})}):N(i)}function a(i,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return z(L1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

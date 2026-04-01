@@ -1,0 +1,321 @@
+{
+  "course": "system-design-interview",
+  "id": "a-framework-for-system-design-interviews",
+  "chapter": 4,
+  "title": "A Framework For System Design Interviews",
+  "free": true,
+  "code": "var Component=(()=>{var k=Object.create;var o=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var P=Object.getOwnPropertyNames;var w=Object.getPrototypeOf,p=Object.prototype.hasOwnProperty;var y=(i,e)=>()=>(e||i((e={exports:{}}).exports,e),e.exports),D=(i,e)=>{for(var n in e)o(i,n,{get:e[n],enumerable:!0})},h=(i,e,n,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let r of P(e))!p.call(i,r)&&r!==n&&o(i,r,{get:()=>e[r],enumerable:!(s=m(e,r))||s.enumerable});return i};var b=(i,e,n)=>(n=i!=null?k(w(i)):{},h(e||!i||!i.__esModule?o(n,\"default\",{value:i,enumerable:!0}):n,i)),X=i=>h(o({},\"__esModule\",{value:!0}),i);var f=y((N,a)=>{a.exports=_jsx_runtime});var j={};D(j,{default:()=>c,frontmatter:()=>Z});var t=b(f());var l=\"/images/courses/system-design-interview/a-framework-for-system-design-interviews/figure-3-1-ZIAGKIG7.png\";var L=\"/images/courses/system-design-interview/a-framework-for-system-design-interviews/figure-3-2-4TY6XZV7.png\";var d=\"/images/courses/system-design-interview/a-framework-for-system-design-interviews/figure-3-3-OEFRG37K.png\";var g=\"/images/courses/system-design-interview/a-framework-for-system-design-interviews/figure-3-4-4ZXFIXDU.png\";var Z={chapter:4,title:\"A Framework For System Design Interviews\",free:!0};function u(i){let e={br:\"br\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...i.components},{Figure:n,Image:s}=e;return n||A(\"Figure\",!0),s||A(\"Image\",!0),(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(e.p,{children:\"You have just landed a coveted on-site interview at your dream company. The hiring coordinator sends you a schedule for that day. Scanning down the list, you feel pretty good about it until your eyes land on this interview session - System Design Interview.\"}),`\n`,(0,t.jsx)(e.p,{children:\"System design interviews are often intimidating. It could be as vague as \\u201Cdesigning a well-known product X?\\u201D. The questions are ambiguous and seem unreasonably broad. Your weariness is understandable. After all, how could anyone design a popular product in an hour that has taken hundreds if not thousands of engineers to build?\"}),`\n`,(0,t.jsx)(e.p,{children:\"The good news is that no one expects you to. Real-world system design is extremely complicated. For example, Google search is deceptively simple; however, the amount of technology that underpins that simplicity is truly astonishing. If no one expects you to design a real-world system in an hour, what is the benefit of a system design interview?\"}),`\n`,(0,t.jsx)(e.p,{children:\"The system design interview simulates real-life problem solving where two co-workers collaborate on an ambiguous problem and come up with a solution that meets their goals. The problem is open-ended, and there is no perfect answer. The final design is less important compared to the work you put in the design process. This allows you to demonstrate your design skill, defend your design choices, and respond to feedback in a constructive manner.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Let us flip the table and consider what goes through the interviewer\\u2019s head as she walks into the conference room to meet you. The primary goal of the interviewer is to accurately assess your abilities. The last thing she wants is to give an inconclusive evaluation because the session has gone poorly and there are not enough signals. What is an interviewer looking for in a system design interview?\"}),`\n`,(0,t.jsx)(e.p,{children:\"Many think that system design interview is all about a person's technical design skills. It is much more than that. An effective system design interview gives strong signals about a person's ability to collaborate, to work under pressure, and to resolve ambiguity constructively. The ability to ask good questions is also an essential skill, and many interviewers specifically look for this skill.\"}),`\n`,(0,t.jsx)(e.p,{children:\"A good interviewer also looks for red flags. Over-engineering is a real disease of many engineers as they delight in design purity and ignore tradeoffs. They are often unaware of the compounding costs of over-engineered systems, and many companies pay a high price for that ignorance. You certainly do not want to demonstrate this tendency in a system design interview. Other red flags include narrow mindedness, stubbornness, etc.\"}),`\n`,(0,t.jsx)(e.p,{children:\"In this chapter, we will go over some useful tips and introduce a simple and effective framework to solve system design interview problems.\"}),`\n`,(0,t.jsx)(e.h2,{id:\"a-4-step-process-for-effective-system-design-interview\",children:\"A 4-step process for effective system design interview\"}),`\n`,(0,t.jsx)(e.p,{children:\"Every system design interview is different. A great system design interview is open-ended and there is no one-size-fits-all solution. However, there are steps and common ground to cover in every system design interview.\"}),`\n`,(0,t.jsx)(e.h3,{id:\"step-1---understand-the-problem-and-establish-design-scope\",children:\"Step 1 - Understand the problem and establish design scope\"}),`\n`,(0,t.jsx)(e.p,{children:'\"Why did the tiger roar?\"'}),`\n`,(0,t.jsx)(e.p,{children:\"A hand shot up in the back of the class.\"}),`\n`,(0,t.jsx)(e.p,{children:'\"Yes, Jimmy?\", the teacher responded.'}),`\n`,(0,t.jsx)(e.p,{children:'\"Because he was HUNGRY\".'}),`\n`,(0,t.jsx)(e.p,{children:'\"Very good Jimmy.\"'}),`\n`,`\n`,(0,t.jsx)(e.p,{children:\"Throughout his childhood, Jimmy has always been the first to answer questions in the class. Whenever the teacher asks a question, there is always a kid in the classroom who loves to take a crack at the question, no matter if he knows the answer or not. That is Jimmy.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Jimmy is an ace student. He takes pride in knowing all the answers fast. In exams, he is usually the first person to finish the questions. He is a teacher's top choice for any academic competition.\"}),`\n`,(0,t.jsx)(e.p,{children:\"DON'T be like Jimmy.\"}),`\n`,(0,t.jsx)(e.p,{children:\"In a system design interview, giving out an answer quickly without thinking gives you no bonus points. Answering without a thorough understanding of the requirements is a huge red flag as the interview is not a trivia contest. There is no right answer.\"}),`\n`,(0,t.jsx)(e.p,{children:\"So, do not jump right in to give a solution. Slow down. Think deeply and ask questions to clarify requirements and assumptions. This is extremely important.\"}),`\n`,(0,t.jsx)(e.p,{children:\"As an engineer, we like to solve hard problems and jump into the final design; however, this approach is likely to lead you to design the wrong system. One of the most important skills as an engineer is to ask the right questions, make the proper assumptions, and gather all the information needed to build a system. So, do not be afraid to ask questions.\"}),`\n`,(0,t.jsx)(e.p,{children:\"When you ask a question, the interviewer either answers your question directly or asks you to make your assumptions. If the latter happens, write down your assumptions on the whiteboard or paper. You might need them later.\"}),`\n`,(0,t.jsx)(e.p,{children:\"What kind of questions to ask? Ask questions to understand the exact requirements. Here is a list of questions to help you get started:\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"What specific features are we going to build?\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"How many users does the product have?\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"How fast does the company anticipate to scale up? What are the anticipated scales in 3 months, 6 months, and a year?\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"What is the company\\u2019s technology stack? What existing services you might leverage to simplify the design?\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.h4,{id:\"example\",children:\"Example\"}),`\n`,(0,t.jsx)(e.p,{children:\"If you are asked to design a news feed system, you want to ask questions that help you clarify the requirements. The conversation between you and the interviewer might look like this:\"}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": Is this a mobile app? Or a web app? Or both?\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": Both.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": What are the most important features for the product?\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": Ability to make a post and see friends\\u2019 news feed.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": Is the news feed sorted in reverse chronological order or a particular order? The particular order means each post is given a different weight. For instance, posts from your close friends are more important than posts from a group.\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": To keep things simple, let us assume the feed is sorted by reverse chronological order.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": How many friends can a user have?\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": 5000\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": What is the traffic volume?\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": 10 million daily active users (DAU)\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsx)(e.strong,{children:\"Candidate\"}),\": Can feed contain images, videos, or just text?\",(0,t.jsx)(e.br,{}),`\n`,(0,t.jsx)(e.strong,{children:\"Interviewer\"}),\": It can contain media files, including both images and videos.\"]}),`\n`,(0,t.jsx)(e.p,{children:\"Above are some sample questions that you can ask your interviewer. It is important to understand the requirements and clarify ambiguities\"}),`\n`,(0,t.jsx)(e.h3,{id:\"step-2---propose-high-level-design-and-get-buy-in\",children:\"Step 2 - Propose high-level design and get buy-in\"}),`\n`,(0,t.jsx)(e.p,{children:\"In this step, we aim to develop a high-level design and reach an agreement with the interviewer on the design. It is a great idea to collaborate with the interviewer during the process.\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Come up with an initial blueprint for the design. Ask for feedback. Treat your interviewer as a teammate and work together. Many good interviewers love to talk and get involved.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Draw box diagrams with key components on the whiteboard or paper. This might include clients (mobile/web), APIs, web servers, data stores, cache, CDN, message queue, etc.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Do back-of-the-envelope calculations to evaluate if your blueprint fits the scale constraints. Think out loud. Communicate with your interviewer if back-of-the-envelope is necessary before diving into it.\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"If possible, go through a few concrete use cases. This will help you frame the high-level design. It is also likely that the use cases would help you discover edge cases you have not yet considered.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Should we include API endpoints and database schema here? This depends on the problem. For large design problems like \\u201CDesign Google search engine\\u201D, this is a bit of too low level. For a problem like designing the backend for a multi-player poker game, this is a fair game. Communicate with your interviewer.\"}),`\n`,(0,t.jsx)(e.h4,{id:\"example-1\",children:\"Example\"}),`\n`,(0,t.jsx)(e.p,{children:'Let us use \\u201CDesign a news feed system\\u201D to demonstrate how to approach the high-level design. Here you are not required to understand how the system actually works. All the details will be explained in the \"Design A News Feed System\" chapter.'}),`\n`,(0,t.jsx)(e.p,{children:\"At the high level, the design is divided into two flows: feed publishing and news feed building.\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Feed publishing: when a user publishes a post, corresponding data is written into cache/database, and the post will be populated into friends\\u2019 news feed.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Newsfeed building: the news feed is built by aggregating friends\\u2019 posts in a reverse chronological order.\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"Figure 1 and Figure 2 present high-level designs for feed publishing and news feed building flows, respectively.\"}),`\n`,(0,t.jsx)(n,{caption:\"Figure 1\",children:(0,t.jsx)(s,{src:l,alt:\"Image represents a system architecture diagram showing the flow of a user request for a news feed.  A user, accessing via either a web browser or mobile app, initiates a request that first resolves through a DNS server. This request, containing parameters like `v1/me/feed?content=Hello&auth_token={auth_token}`, is then directed to a load balancer which distributes the traffic across multiple web servers.  These web servers communicate with three distinct services: a Post Service, a Fanout Service, and a Notification Service. The Post Service retrieves data from a Post Cache, which in turn accesses a Post DB if necessary.  The Fanout Service interacts with a News Feed Cache to provide the news feed content.  The Notification Service is shown but its interaction details are not depicted.  The diagram illustrates a client-server architecture with load balancing and caching mechanisms to improve performance and scalability.  The dashed lines around the web servers and caches suggest these components may be clustered or replicated.\",width:\"500\",height:\"803\"})}),`\n`,(0,t.jsx)(n,{caption:\"Figure 2\",children:(0,t.jsx)(s,{src:L,alt:\"Image represents a system architecture diagram for a news feed service.  A user, accessing via a web browser or mobile app, initiates a request (labeled 'v1/me/feed') which first resolves through a DNS server.  The request then reaches a load balancer, distributing the traffic across multiple web servers. These web servers communicate with a 'News Feed Service,' which in turn retrieves data from a 'News Feed Cache' (represented as three stacked cache units).  The entire flow is unidirectional, starting from the user and ending at the cache, implying a read-only operation to fetch the news feed.  The dashed lines around the web servers suggest a cluster or pool of servers, while the solid lines indicate the data flow direction.\",width:\"400\",height:\"598\"})}),`\n`,(0,t.jsx)(e.h3,{id:\"step-3---design-deep-dive\",children:\"Step 3 - Design deep dive\"}),`\n`,(0,t.jsx)(e.p,{children:\"At this step, you and your interviewer should have already achieved the following objectives:\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Agreed on the overall goals and feature scope\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Sketched out a high-level blueprint for the overall design\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Obtained feedback from your interviewer on the high-level design\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Had some initial ideas about areas to focus on in deep dive based on her feedback\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"You shall work with the interviewer to identify and prioritize components in the architecture. It is worth stressing that every interview is different. Sometimes, the interviewer may give off hints that she likes focusing on high-level design. Sometimes, for a senior candidate interview, the discussion could be on the system performance characteristics, likely focusing on the bottlenecks and resource estimations. In most cases, the interviewer may want you to dig into details of some system components. For URL shortener, it is interesting to dive into the hash function design that converts a long URL to a short one. For a chat system, how to reduce latency and how to support online/offline status are two interesting topics.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Time management is essential as it is easy to get carried away with minute details that do not demonstrate your abilities. You must be armed with signals to show your interviewer. Try not to get into unnecessary details. For example, talking about the EdgeRank algorithm of Facebook feed ranking in detail is not ideal during a system design interview as this takes much precious time and does not prove your ability in designing a scalable system.\"}),`\n`,(0,t.jsx)(e.h4,{id:\"example-2\",children:\"Example\"}),`\n`,(0,t.jsx)(e.p,{children:\"At this point, we have discussed the high-level design for a news feed system, and the interviewer is happy with your proposal. Next, we will investigate two of the most important use cases:\"}),`\n`,(0,t.jsx)(e.p,{children:\"1. Feed publishing\"}),`\n`,(0,t.jsx)(e.p,{children:\"2. News feed retrieval\"}),`\n`,(0,t.jsx)(e.p,{children:'Figure 3 and Figure 4 show the detailed design for the two use cases, which will be explained in detail in the \"Design A News Feed System\" chapter.'}),`\n`,(0,t.jsx)(n,{caption:\"Figure 3\",children:(0,t.jsx)(s,{src:d,alt:\"Image represents a system architecture diagram for a news feed application.  A user, accessing via web browser or mobile app, initiates a request (v1/me/feed?content=Hello&auth_token={auth_token}) that first resolves through a DNS server. The request then hits a load balancer, distributing traffic to multiple web servers.  These servers handle authentication and rate limiting before interacting with a Post Service, which retrieves data from a Post Cache or Post DB.  The web servers also communicate with a Fanout Service, which, labeled with (1), requests friend IDs from a Graph DB.  The Fanout Service then, labeled with (2), retrieves friends' data from the User Cache or User DB. This data is then placed into a Message Queue (3).  Fanout Workers (4) process the messages from the queue, updating the News Feed Cache (5) before the updated feed is sent back to the user.  A Notification Service is also triggered by the web servers.  The entire system utilizes caching mechanisms (Post Cache, User Cache, News Feed Cache) to improve performance.  Numbered labels (1-5) indicate the flow of data and processing steps within the system.\",width:\"750\",height:\"928\"})}),`\n`,(0,t.jsx)(n,{caption:\"Figure 4\",children:(0,t.jsx)(s,{src:g,alt:\"Image represents a system architecture diagram for a news feed service.  A user, accessing via web browser or mobile app, initiates a request (labeled '/v1/me/feed') which first resolves through a DNS server. This request then hits a load balancer (1), distributing the traffic across multiple web servers (2).  The web servers handle authentication and rate limiting before forwarding the request to the News Feed Service (3). The News Feed Service accesses data from a News Feed Cache (4), which in turn may access a database if the data is not cached.  The News Feed Service also sends data to a User Cache (5) and a Post Cache (5), which store user-specific and post-specific information respectively. These caches can access their corresponding User DB and Post DB if necessary.  The entire system is fronted by a CDN (6), improving performance and scalability by caching content closer to the users.  Numbers in parentheses indicate the flow of requests.\",width:\"600\",height:\"603\"})}),`\n`,(0,t.jsx)(e.h3,{id:\"step-4---wrap-up\",children:\"Step 4 - Wrap up\"}),`\n`,(0,t.jsx)(e.p,{children:\"In this final step, the interviewer might ask you a few follow-up questions or give you the freedom to discuss other additional points. Here are a few directions to follow:\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"The interviewer might want you to identify the system bottlenecks and discuss potential improvements. Never say your design is perfect and nothing can be improved. There is always something to improve upon. This is a great opportunity to show your critical thinking and leave a good final impression.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"It could be useful to give the interviewer a recap of your design. This is particularly important if you suggested a few solutions. Refreshing your interviewer\\u2019s memory can be helpful after a long session.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Error cases (server failure, network loss, etc.) are interesting to talk about.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Operation issues are worth mentioning. How do you monitor metrics and error logs? How to roll out the system?\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"How to handle the next scale curve is also an interesting topic. For example, if your current design supports 1 million users, what changes do you need to make to support 10 million users?\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Propose other refinements you need if you had more time.\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"To wrap up, we summarize a list of the Dos and Don\\u2019ts.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Dos\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Always ask for clarification. Do not assume your assumption is correct.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Understand the requirements of the problem.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"There is neither the right answer nor the best answer. A solution designed to solve the problems of a young startup is different from that of an established company with millions of users. Make sure you understand the requirements.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Let the interviewer know what you are thinking. Communicate with your interview.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Suggest multiple approaches if possible.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Once you agree with your interviewer on the blueprint, go into details on each component. Design the most critical components first.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Bounce ideas off the interviewer. A good interviewer works with you as a teammate.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Never give up.\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"Don\\u2019ts\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Don't be unprepared for typical interview questions.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Don\\u2019t jump into a solution without clarifying the requirements and assumptions.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Don\\u2019t go into too much detail on a single component in the beginning. Give the high-level design first then drills down.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"If you get stuck, don't hesitate to ask for hints.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Again, communicate. Don't think in silence.\"}),`\n`]}),`\n`,(0,t.jsxs)(e.li,{children:[`\n`,(0,t.jsx)(e.p,{children:\"Don\\u2019t think your interview is done once you give the design. You are not done until your interviewer says you are done. Ask for feedback early and often.\"}),`\n`]}),`\n`]}),`\n`,(0,t.jsx)(e.h3,{id:\"time-allocation-on-each-step\",children:\"Time allocation on each step\"}),`\n`,(0,t.jsx)(e.p,{children:\"System design interview questions are usually very broad, and 45 minutes or an hour is not enough to cover the entire design. Time management is essential. How much time should you spend on each step? The following is a very rough guide on distributing your time in a 45-minute interview session. Please remember this is a rough estimate, and the actual time distribution depends on the scope of the problem and the requirements from the interviewer.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Step 1 Understand the problem and establish design scope: 3 - 10 minutes\"}),`\n`,(0,t.jsx)(e.p,{children:\"Step 2 Propose high-level design and get buy-in: 10 - 15 minutes\"}),`\n`,(0,t.jsx)(e.p,{children:\"Step 3 Design deep dive: 10 - 25 minutes\"}),`\n`,(0,t.jsx)(e.p,{children:\"Step 4 Wrap: 3 - 5 minutes\"})]})}function c(i={}){let{wrapper:e}=i.components||{};return e?(0,t.jsx)(e,{...i,children:(0,t.jsx)(u,{...i})}):u(i)}function A(i,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return X(j);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "foreword"
+      ],
+      "id": "foreword",
+      "chapter": 0,
+      "title": "Foreword",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "join-discord-community"
+      ],
+      "id": "join-discord-community",
+      "chapter": 1,
+      "title": "Join the Community"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "scale-from-zero-to-millions-of-users"
+      ],
+      "id": "scale-from-zero-to-millions-of-users",
+      "chapter": 2,
+      "title": "Scale From Zero To Millions Of Users",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "back-of-the-envelope-estimation"
+      ],
+      "id": "back-of-the-envelope-estimation",
+      "chapter": 3,
+      "title": "Back-of-the-envelope Estimation",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "a-framework-for-system-design-interviews"
+      ],
+      "id": "a-framework-for-system-design-interviews",
+      "chapter": 4,
+      "title": "A Framework For System Design Interviews",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-rate-limiter"
+      ],
+      "id": "design-a-rate-limiter",
+      "chapter": 5,
+      "title": "Design A Rate Limiter",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-consistent-hashing"
+      ],
+      "id": "design-consistent-hashing",
+      "chapter": 6,
+      "title": "Design Consistent Hashing",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-key-value-store"
+      ],
+      "id": "design-a-key-value-store",
+      "chapter": 7,
+      "title": "Design A Key-value Store",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-unique-id-generator-in-distributed-systems"
+      ],
+      "id": "design-a-unique-id-generator-in-distributed-systems",
+      "chapter": 8,
+      "title": "Design A Unique ID Generator In Distributed Systems"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-url-shortener"
+      ],
+      "id": "design-a-url-shortener",
+      "chapter": 9,
+      "title": "Design A URL Shortener",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-web-crawler"
+      ],
+      "id": "design-a-web-crawler",
+      "chapter": 10,
+      "title": "Design A Web Crawler",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-notification-system"
+      ],
+      "id": "design-a-notification-system",
+      "chapter": 11,
+      "title": "Design A Notification System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-news-feed-system"
+      ],
+      "id": "design-a-news-feed-system",
+      "chapter": 12,
+      "title": "Design A News Feed System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-chat-system"
+      ],
+      "id": "design-a-chat-system",
+      "chapter": 13,
+      "title": "Design A Chat System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-search-autocomplete-system"
+      ],
+      "id": "design-a-search-autocomplete-system",
+      "chapter": 14,
+      "title": "Design A Search Autocomplete System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-youtube"
+      ],
+      "id": "design-youtube",
+      "chapter": 15,
+      "title": "Design YouTube",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-google-drive"
+      ],
+      "id": "design-google-drive",
+      "chapter": 16,
+      "title": "Design Google Drive"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "proximity-service"
+      ],
+      "id": "proximity-service",
+      "chapter": 17,
+      "title": "Proximity Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "nearby-friends"
+      ],
+      "id": "nearby-friends",
+      "chapter": 18,
+      "title": "Nearby Friends"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "google-maps"
+      ],
+      "id": "google-maps",
+      "chapter": 19,
+      "title": "Google Maps"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-message-queue"
+      ],
+      "id": "distributed-message-queue",
+      "chapter": 20,
+      "title": "Distributed Message Queue"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "metrics-monitoring-and-alerting-system"
+      ],
+      "id": "metrics-monitoring-and-alerting-system",
+      "chapter": 21,
+      "title": "Metrics Monitoring and Alerting System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "ad-click-event-aggregation"
+      ],
+      "id": "ad-click-event-aggregation",
+      "chapter": 22,
+      "title": "Ad Click Event Aggregation"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "hotel-reservation-system"
+      ],
+      "id": "hotel-reservation-system",
+      "chapter": 23,
+      "title": "Hotel Reservation System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-email-service"
+      ],
+      "id": "distributed-email-service",
+      "chapter": 24,
+      "title": "Distributed Email Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "s3-like-object-storage"
+      ],
+      "id": "s3-like-object-storage",
+      "chapter": 25,
+      "title": "S3-like Object Storage"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "real-time-gaming-leaderboard"
+      ],
+      "id": "real-time-gaming-leaderboard",
+      "chapter": 26,
+      "title": "Real-time Gaming Leaderboard",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "payment-system"
+      ],
+      "id": "payment-system",
+      "chapter": 27,
+      "title": "Payment System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "digital-wallet"
+      ],
+      "id": "digital-wallet",
+      "chapter": 28,
+      "title": "Digital Wallet"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "stock-exchange"
+      ],
+      "id": "stock-exchange",
+      "chapter": 29,
+      "title": "Stock Exchange"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "the-learning-continues"
+      ],
+      "id": "the-learning-continues",
+      "chapter": 30,
+      "title": "The Learning Continues",
+      "free": true
+    }
+  ],
+  "courseMetadata": {
+    "title": "System Design Interview",
+    "authors": "Alex Xu · Bestselling author",
+    "claimCodes": [
+      "sdi",
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "system-design-interview",
+    "defaultChapter": "/courses/system-design-interview/scale-from-zero-to-millions-of-users",
+    "rootPath": "/courses/system-design-interview",
+    "lessons": 30,
+    "students": 250000,
+    "showChapter": true,
+    "lastModified": "2022.03.01"
+  }
+}

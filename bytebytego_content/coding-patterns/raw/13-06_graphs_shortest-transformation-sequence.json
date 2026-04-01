@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "graphs/shortest-transformation-sequence",
+  "chapter": "13-06",
+  "title": "Shortest Transformation Sequence",
+  "free": false,
+  "code": "var Component=(()=>{var N=Object.create;var i=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var x=Object.getOwnPropertyNames;var j=Object.getPrototypeOf,v=Object.prototype.hasOwnProperty;var F=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),_=(t,e)=>{for(var r in e)i(t,r,{get:e[r],enumerable:!0})},c=(t,e,r,a)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let s of x(e))!v.call(t,s)&&s!==r&&i(t,s,{get:()=>e[s],enumerable:!(a=u(e,s))||a.enumerable});return t};var A=(t,e,r)=>(r=t!=null?N(j(t)):{},c(e||!t||!t.__esModule?i(r,\"default\",{value:t,enumerable:!0}):r,t)),S=t=>c(i({},\"__esModule\",{value:!0}),t);var o=F((X,d)=>{d.exports=_jsx_runtime});var G={};_(G,{default:()=>b,frontmatter:()=>Q});var C=A(o());var V=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-1-BY6SVSN4.svg\";var H=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-2-CEF3HC4I.svg\";var m=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-3-GPIE4P2N.svg\";var p=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-4-Y3JWRJ3D.svg\";var M=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-5-M2Y3KIU7.svg\";var L=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-6-IDAFCHWI.svg\";var k=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-7-HMFW2QE6.svg\";var Z=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-8-VTXZ2DLG.svg\";var w=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-9-Q25F73LQ.svg\";var f=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-10-NEQEBSRX.svg\";var y=\"/images/courses/coding-patterns/graphs/shortest-transformation-sequence/image-13-06-11-5DJG7ABN.svg\";var Q={chapter:\"13-06\",difficulty:\"Medium\",title:\"Shortest Transformation Sequence\"};function g(t){let e={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:r,Figure:a,Image:s,OpenCodeEditor:n,ProblemDescription:h}=e;return r||l(\"CodeTabs\",!0),a||l(\"Figure\",!0),s||l(\"Image\",!0),n||l(\"OpenCodeEditor\",!0),h||l(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsxs)(e.p,{children:[\"Given two words, \",(0,C.jsx)(e.code,{children:\"start\"}),\" and \",(0,C.jsx)(e.code,{children:\"end\"}),\", and a dictionary containing an array of words, return the \",(0,C.jsx)(e.strong,{children:\"length of the shortest transformation sequence\"}),\" to transform start to end. A transformation sequence is a series of words in which:\"]}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Each word differs from the preceding word by exactly one letter.\"}),`\n`,(0,C.jsx)(e.li,{children:\"Each word in the sequence exists in the dictionary.\"}),`\n`]}),(0,C.jsx)(e.p,{children:\"If no such transformation sequence exists, return 0.\"}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: start = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'red'\"}),\", end = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'hit'\"}),`,\n       dictionary = [\n            `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'red'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'bed'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'hat'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'rod'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'rad'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'rat'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'hit'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'bad'\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'bat'\"}),`\n       ]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),`\n`]})}),(0,C.jsx)(e.h3,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"All words are the same length.\"}),`\n`,(0,C.jsx)(e.li,{children:\"All words contain only lowercase English letters.\"}),`\n`,(0,C.jsx)(e.li,{children:\"The dictionary contains no duplicate words.\"}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"In a transformation sequence, each transformation involves changing one letter of a word to get another word. Consider the following example:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:V,alt:\"Image represents a simple data structure used in a coding pattern, likely related to string manipulation or search algorithms.  The image displays two lines of code-like text. The top line defines two variables: `start` which is assigned the string value 'red', and `end` which is assigned the string value 'hit'. The bottom line declares a variable named `dictionary` and assigns it a list or array containing a series of strings: 'red', 'bed', 'hat', 'rod', 'rad', 'rat', 'hit', 'bad', and 'bat'.  There are no visible connections or information flow between the variables; they are simply defined and initialized with their respective values. The arrangement suggests that the `start` and `end` variables might represent the beginning and ending points of a search within the `dictionary`, although this is not explicitly shown.\",width:\"624\",height:\"44\"})}),`\n`,(0,C.jsx)(e.p,{children:\"We know our transformation sequence should start with the word \\u201Cred\\u201D, but how can we identify subsequent words in the sequence? The words that could immediately follow \\u201Cred\\u201D are \\u201Cbed\\u201D, \\u201Crad\\u201D, or \\u201Crod\\u201D, since each differs from \\u201Cred\\u201D by one letter:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:H,alt:\"Image represents a tree-like data structure, likely illustrating a concept in graph theory or a specific coding pattern.  The structure consists of four circular nodes connected by lines. A central node labeled 'red' is connected to three subordinate nodes: 'bed' on the left, 'rad' below, and 'rod' on the right.  The lines represent connections or relationships between the nodes, suggesting a hierarchical or parent-child relationship where 'red' is the parent node and 'bed,' 'rad,' and 'rod' are its children. No other information, such as URLs or parameters, is present within the image. The arrangement visually demonstrates a simple tree structure with a single root node ('red') and three leaf nodes ('bed,' 'rad,' and 'rod').\",width:\"204\",height:\"93\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Similarly, we can make a direct connection between each word and its one-letter-off neighbors:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:m,alt:\"Image represents a directed acyclic graph (DAG) where nodes represent words and edges represent relationships between them.  The topmost node is labeled 'red,' connected to three nodes below: 'bed,' 'rad,' and 'rod.'  'Bed' connects to 'bad,' which in turn connects to 'bat.' 'Rad' connects to both 'bad' and 'rat.' 'Rod' has no outgoing connections. 'Rat' connects to both 'bat' and 'hat,' and 'hat' connects to 'hit.'  The graph visually depicts a hierarchical or tree-like structure, although not strictly a tree due to the connection between 'rad' and 'rat.'  No URLs or parameters are present; the only information conveyed is the textual labels on the nodes and the connections between them, suggesting a potential relationship between the words, perhaps based on phonetic similarity or other linguistic criteria.\",width:\"200\",height:\"251\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This structure resembles a graph, indicating that finding the shortest transformation sequence involves finding the shortest path in this graph from the start node (\\u201Cred\\u201D) to the end node (\\u201Chit\\u201D):\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:p,alt:\"The image represents a directed graph illustrating a word transformation problem.  The graph consists of nodes representing words ('red,' 'bed,' 'bad,' 'bat,' 'rad,' 'rod,' 'rat,' 'hat,' 'hit') and edges representing single-letter changes between words.  Nodes are depicted as circles, with 'red' and 'hit' in light blue, 'rad,' 'rat,' and 'hat' in orange, and the rest in black.  Edges are shown as arrows; grey arrows connect words with one letter difference, while orange arrows highlight the shortest transformation path from 'red' to 'hit'. The path follows the sequence: 'red' \\u2192 'rad' \\u2192 'rat' \\u2192 'hat' \\u2192 'hit'.  To the right of the graph, the text 'shortest path \\u2192 shortest transformation sequence' explains that finding the shortest path in the graph corresponds to finding the shortest sequence of word transformations.\",width:\"446\",height:\"246\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Finding the shortest path\"}),(0,C.jsx)(e.br,{}),`\n`,\"When tasked with a graph problem that involves finding the shortest path between two nodes, BFS should come to mind. From the start node, BFS works by exploring all neighbors at a distance of 1 from the start node, followed by exploring nodes at a distance of 2, and so on. This means that once we find the end node, we\\u2019ve reached it via the shortest possible distance.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"So, let\\u2019s use \",(0,C.jsx)(e.strong,{children:\"level-order traversal\"}),\", a variant of BFS, to find the shortest path in this graph, where each level we traverse represents nodes that are a specific distance from the start node:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:M,alt:\"Image represents a three-stage visualization of a breadth-first search (BFS) algorithm on a graph.  The graph consists of nodes representing words ('red,' 'bed,' 'rad,' 'rod,' 'bad,' 'rat,' 'bat,' 'hat,' 'hit') connected by edges. Stage 1 shows the initial state with the node 'red' (highlighted in orange) at distance 0 from itself.  Stages 2 and 3 depict subsequent iterations of the BFS.  In each stage, nodes are colored orange as they are visited, with an associated 'dist' value indicating their distance from the starting node 'red'.  Grey edges represent existing connections in the graph, while orange arrows show the traversal path during the BFS algorithm.  Stage 2 shows nodes 'bed' and 'rad' (orange) at distance 1 from 'red,' connected by orange arrows labeled 'dist=1'. Stage 3 shows nodes 'bad' and 'rat' (orange) at distance 2 from 'red,' connected by orange arrows labeled 'dist=2'.  The algorithm progresses layer by layer, exploring nodes at increasing distances from the source node 'red'.\",width:\"700\",height:\"279\"})}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:L,alt:\"Image represents two directed acyclic graphs illustrating a shortest path algorithm.  Both graphs share a common upper structure consisting of three levels. The top level contains a single node labeled 'red,' connected to three nodes ('bed,' 'rad,' 'rod') on the second level. The second level nodes are connected to nodes on the third level ('bad,' 'rat').  The difference lies in the lower structure. In graph 4, 'bad' connects to an orange-highlighted node 'bat,' and 'rat' connects to an orange-highlighted node 'hat.'  'bat' and 'hat' are connected to a black-highlighted node 'hit.'  The edges connecting 'bad' to 'bat' and 'rat' to 'hat' are labeled 'dist=3,' indicating a distance of 3. In graph 5, the upper structure remains identical, but the lower structure shows 'bad' and 'rat' connecting to 'bat' and 'hat' respectively, with additional connections between 'bad' and 'bat,' and 'bat' and 'hat.'  'hat' connects to 'hit,' and the edge is labeled 'dist=4,' indicating a distance of 4.  The orange highlighting suggests a path, and the black highlighting indicates a target node. The numbers '4' and '5' above each graph likely represent steps or iterations in the algorithm.\",width:\"460\",height:\"279\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"As we can see, we managed to find the end node via the shortest path. To return the length of this path, we return dist, plus 1, to include the start node. If you\\u2019re unfamiliar with how level-order traversal works, review the \",(0,C.jsx)(e.em,{children:\"Matrix Infection\"}),\" problem in this chapter.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that during traversal, we need to ensure we don\\u2019t revisit previously traversed strings. By storing the visited strings in a \",(0,C.jsx)(e.strong,{children:\"hash set\"}),\", we can quickly check if a string was already visited.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Now, let\\u2019s figure out how to build the above graph.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Building the graph\"}),(0,C.jsx)(e.br,{}),`\n`,\"We can represent the graph as an adjacency list, where each word has a list of all of its neighboring words:\"]}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:k,alt:\"Image represents a graph data structure depicted in a textual format.  The text is labeled 'graph:' and presents a series of key-value pairs. Each key is a string enclosed in double quotes (e.g., 'red'), representing a node in the graph.  The value associated with each key is a list of strings, also enclosed in square brackets, representing the nodes directly connected to the key node (its neighbors). For instance, 'red': [ 'bed', 'rad', 'rod'] indicates that the node 'red' is connected to nodes 'bed', 'rad', and 'rod'.  Similarly, 'bed' connects to 'red' and 'bad', 'hat' connects to 'rat', 'bat', and 'hit', and 'hit' connects only to 'hat'.  The ellipsis (...) suggests that there might be more key-value pairs not shown in the image, implying a larger graph.  The overall structure represents an adjacency list representation of a directed or undirected graph, depending on whether the connections are considered bidirectional.\",width:\"315\",height:\"154\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The challenge here is finding each word\\u2019s neighbors. Consider the word \\u201Cred\\u201D. One way we can identify all words that are one letter different from \\u201Cred\\u201D is to generate all possible words by changing each letter in \\u201Cred\\u201D to every other letter in the alphabet. For each of these generated words, we check if it exists in the dictionary. If it does, it\\u2019s a neighbor of \\u201Cred\\u201D:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:Z,alt:\"Image represents a tree-like data structure, possibly illustrating a coding pattern related to string manipulation or data partitioning.  The root node is labeled 'red'.  Three branches emanate from the root, labeled '_ed', 'r_d', and 're_'. Each branch further subdivides into a series of nodes, indicated by right-pointing arrows.  The '_ed' branch contains nodes 'aed', 'bed', 'ced', and 'zed', suggesting an alphabetical sequence. Similarly, 'r_d' branch shows 'rad', 'rod', and 'rzd', and the 're_' branch displays 'rea', 'reb', 'rec', and 'rez'.  The ellipses (...) indicate potential continuation of the sequence in each branch, implying scalability.  The color coding (orange for some labels) might highlight specific elements or operations within the pattern, though the exact meaning is not explicitly defined in the image. The overall structure suggests a hierarchical breakdown of the root string 'red' into substrings based on a defined pattern.\",width:\"250\",height:\"237\"})}),`\n`,(0,C.jsx)(e.p,{children:\"To make checking the dictionary more efficient, we can store the words from the dictionary in a hash set, enabling us to verify the existence of a word in constant time.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Note that before we build the graph, it\\u2019s important to check if start or end exists in the dictionary. If either is missing, we can immediately return 0, since each word in the sequence needs to be in the dictionary.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space optimization\"}),(0,C.jsx)(e.br,{}),`\n`,\"The purpose of the above adjacency list is to facilitate graph traversal. However, we can avoid building it altogether by leveraging the fact that each word in the dictionary is only visited once during the BFS traversal, indicating we only ever need access to the neighbors of each word once.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"If we had a way to generate each word\\u2019s neighbors when needed during BFS traversal, we could avoid creating the adjacency list, and save some space that would otherwise be taken up by it.\"}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(r,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"start: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\", end: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\", dictionary: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    dictionary_set = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"set\"}),`(dictionary)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" start \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" dictionary_set \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"or\"}),\" end \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` dictionary_set:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` start == end:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    lower_case_alphabet = `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcdefghijklmnopqrstuvwxyz'\"}),`\n    queue = deque([start])\n    visited = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"set\"}),`([start])\n    dist = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Use level-order traversal to find the shortest path from the start word to the\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# end word.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` queue:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" _ \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(queue)):\n            curr_word = queue.popleft()\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If we found the end word, we've reached it via the shortest path.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` curr_word == end:\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" dist + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Generate all possible words that have a one-letter difference to the\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# current word.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(curr_word)):\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` lower_case_alphabet:\n                    next_word = curr_word[:i] + c + curr_word[i+`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`:]\n                    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'next_word' exists in the dictionary, it's a neighbor of the\"}),`\n                    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# current word. If it's unvisited, add it to the queue to be\"}),`\n                    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# processed in the next level.\"}),`\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" next_word \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" dictionary_set \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),\" next_word \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` visited:\n                        visited.add(next_word)\n                        queue.append(next_word)\n        dist += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If there is no way to reach the end node, then no path exists.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"start, end, dictionary\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" dictionarySet = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Set\"}),`(dictionary)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (!dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(start) || !dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(end)) \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (start === end) \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" lowerCaseAlphabet = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcdefghijklmnopqrstuvwxyz'\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` queue = [start]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" visited = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Set\"}),`([start])\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" dist = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use level-order traversal to find the shortest path from the start word to the\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// end word.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (queue.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" > \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" levelSize = queue.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < levelSize; i++) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" currWord = queue.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shift\"}),`()\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If we found the end word, we've reached it via the shortest path.\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (currWord === end) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" dist + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n      }\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Generate all possible words that have a one-letter difference to the\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// current word.\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" j = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"; j < currWord.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`; j++) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" c \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` lowerCaseAlphabet) {\n          `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" nextWord = currWord.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"slice\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", j) + c + currWord.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"slice\"}),\"(j + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n          `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'next_word' exists in the dictionary, it's a neighbor of the\"}),`\n          `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// current word. If it's unvisited, add it to the queue to be\"}),`\n          `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// processed in the next level.\"}),`\n          `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(nextWord) && !visited.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),`(nextWord)) {\n            visited.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"add\"}),`(nextWord)\n            queue.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),`(nextWord)\n          }\n        }\n      }\n    }\n    dist++\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If there is no way to reach the end node, then no path exists.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.HashSet;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.LinkedList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Queue;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Set;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(String start, String end, ArrayList<String> dictionary)\"}),` {\n        Set<String> dictionarySet = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashSet\"}),`<>(dictionary);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (!dictionarySet.contains(start) || !dictionarySet.contains(end)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (start.equals(end)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"lowerCaseAlphabet\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\"abcdefghijklmnopqrstuvwxyz\"'}),`;\n        Queue<String> queue = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LinkedList\"}),`<>();\n        Set<String> visited = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashSet\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"dist\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        queue.offer(start);\n        visited.add(start);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Use level-order traversal to find the shortest path from the start word to the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// end word.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (!queue.isEmpty()) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"size\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` queue.size();\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < size; i++) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"currWord\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` queue.poll();\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If we found the end word, we've reached it via the shortest path.\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (currWord.equals(end)) {\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" dist + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n                }\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Generate all possible words that have a one-letter difference to the\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// current word.\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"j\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; j < currWord.length(); j++) {\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),` c : lowerCaseAlphabet.toCharArray()) {\n                        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"nextWord\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" currWord.substring(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", j) + c + currWord.substring(j + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n\n                        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'next_word' exists in the dictionary, it's a neighbor of the\"}),`\n                        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// current word. If it's unvisited, add it to the queue to be\"}),`\n                        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// processed in the next level.\"}),`\n                        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (dictionarySet.contains(nextWord) && !visited.contains(nextWord)) {\n                            visited.add(nextWord);\n                            queue.offer(nextWord);\n                        }\n                    }\n                }\n            }\n            dist++;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If there is no way to reach the end node, then no path exists.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of shortest_transformation_sequence is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L^2)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the number of words in the dictionary, and \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"L\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"L\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6833em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"})]})})]}),\" denotes the length of a word. Here\\u2019s why:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Creating a hash set containing all the words in the dictionary takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\" time, because hashing each of the \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" words takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(L)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Level-order traversal processes at most \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" words from the dictionary. At each of these words, we generate up to \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mn,{children:\"26\"}),(0,C.jsx)(e.mi,{children:\"L\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"26L\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6833em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"26\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"})]})})]}),\" transformations, and it takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(L)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time to check if a transformation exists in the \",(0,C.jsx)(e.code,{children:\"visited\"}),\" and \",(0,C.jsx)(e.code,{children:\"dictionary_set\"}),\" hash sets, and to enqueue it. This means level-order traversal takes approximately \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mn,{children:\"26\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"=\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot 26L\\\\cdot L)=O(n\\\\cdot L^2)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6833em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"26\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}}),(0,C.jsx)(e.span,{className:\"mrel\",children:\"=\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\" time.\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Therefore, the overall time complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"=\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L)+O(n\\\\cdot L^2)=O(n\\\\cdot L^2)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}}),(0,C.jsx)(e.span,{className:\"mrel\",children:\"=\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\", taken up by the \",(0,C.jsx)(e.code,{children:\"dictionary_set\"}),\" hash set, the \",(0,C.jsx)(e.code,{children:\"visited\"}),\" hash set, and the \",(0,C.jsx)(e.code,{children:\"queue\"}),\".\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"optimization---bidirectional-traversal\",children:\"Optimization - Bidirectional Traversal\"}),`\n`,(0,C.jsx)(e.p,{children:\"An important observation is that we don\\u2019t necessarily need to begin level-order traversal at the start word: we can also start a search at the end word. In fact, we can combine these by performing them simultaneously to find the shortest path. This is known as bidirectional BFS, or in this case, bidirectional level-order traversal.\"}),`\n`,(0,C.jsx)(e.p,{children:\"When we perform two searches, one from start and one from end, the idea is that they will meet in the middle if a path between these two words exists. If a path doesn\\u2019t exist, the searches will never meet, indicating that a transformation sequence does not exist.\"}),`\n`,(0,C.jsx)(e.p,{children:\"This optimization allows us to identify the shortest distance more quickly. We can see in the example below that regular level-order traversal ends up traversing through more nodes than in the bidirectional traversal, while also requiring 4 iterations instead of 2.\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:w,alt:\"Image represents a comparison of two graph traversal methods: level-order traversal and bidirectional level-order traversal.  The left side depicts a level-order traversal, showing a graph structured in levels (1 through 4), with nodes connected by black lines.  An orange curved line highlights the path taken during the traversal, starting from a node labeled 'start' (orange fill) and ending at a node labeled 'end' (light gray fill).  Level numbers are indicated in orange text next to the corresponding level's nodes. The right side illustrates a bidirectional level-order traversal, using the same graph structure but with two traversal paths highlighted: one orange, starting from a 'start' node (light gray fill), and another light blue, starting from the 'end' node (light blue fill). Both paths progress through the levels, with level numbers (in black text) indicating the level of each node.  The traversal paths converge in the middle of the graph, suggesting a meeting point during the bidirectional search.  Both sides include additional gray nodes extending beyond the main graph structure, representing potential further levels or branches not included in the primary traversal paths.\",width:\"624\",height:\"351\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"To simulate this process, we \",(0,C.jsx)(e.strong,{children:\"alternate between the two level-order traversals and progress through each search one level at a time\"}),\":\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Start traversal: progress one level in the traversal that started from the start node\"}),`\n`,(0,C.jsx)(e.li,{children:\"End traversal: progress one level in the traversal that started from the end node\"}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"We alternate between these two steps until a node visited in one search has already been visited in the other search, indicating that the traversals have met. Here\\u2019s what this alternating process looks like:\"}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:f,alt:\"Image represents two diagrams illustrating traversal methods across a layered graph structure.  The left diagram, titled 'start traversal,' shows a graph with a designated 'start' node (orange) and an 'end' node (light blue).  Nodes are arranged in layers, connected by lines. A thick orange curved line visually separates the nodes, indicating a traversal path. Above the diagram, a box displays 'level_start += 1,' indicating an incrementing level counter during traversal.  Below, 'level_start = 1' shows the initial value of this counter. The right diagram, titled 'end traversal,' mirrors the structure but uses a light gray 'start' node and a light blue 'end' node. A thick light blue curved line represents the traversal path in this case.  Similarly, a box above displays 'level_end += 1,' and 'level_end = 1' is shown below, indicating a level counter incrementing from 1 during this traversal. Both diagrams use the same underlying graph structure, but the traversal paths and associated counters differ, highlighting different approaches to traversing the graph.\",width:\"553\",height:\"247\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(a,{children:(0,C.jsx)(s,{src:y,alt:\"Image represents a visual explanation of a graph traversal algorithm.  The image is divided into two parts, 'start traversal' and 'end traversal,' each showing a directed acyclic graph.  Both graphs have a 'start' node (colored orange in the left graph, gray in the right) and an 'end' node (colored cyan).  The 'start traversal' section depicts a traversal from the start node, indicated by an orange curved line incrementing `level_start` from 1 to 2.  Simultaneously, a light-gray line shows a traversal from the end node, incrementing `level_end` from an implied 0 to 1.  The 'end traversal' section shows the continuation of these traversals, with the orange line representing `level_start` (now equal to 2) and the cyan line representing `level_end` (now equal to 2).  These lines intersect, signifying the meeting of the traversals.  A box in the 'end traversal' section states that when traversals meet, the algorithm returns `level_start + level_end + 1`.  Both graphs are structured similarly, with nodes connected to form a hexagonal pattern, and the traversals are visually represented by colored curved lines that pass through multiple nodes.\",width:\"602\",height:\"302\"})}),`\n`,(0,C.jsx)(e.p,{children:\"To check if a node has already been visited by the other traversal, we can query the visited hash set used by the other traversal. If a word exists in the visited hash set of the other traversal, we know the searches have met.\"}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation---bidirectional-traversal\",children:\"Implementation - Bidirectional Traversal\"}),`\n`,(0,C.jsxs)(r,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" collections \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` deque\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence_optimized\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"start: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\", end: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\", dictionary: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"str\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    dictionary_set = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"set\"}),`(dictionary)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" start \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" dictionary_set \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"or\"}),\" end \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` dictionary_set:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` start == end:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    start_queue = deque([start])\n    start_visited = {start}\n    end_queue = deque([end])\n    end_visited = {end}\n    level_start = level_end = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Perform a level-order traversal from the start word and another from the end\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# word.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" start_queue \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),` end_queue:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Explore the next level of the traversal that starts from the start word. If\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# it meets the other traversal, the shortest path between 'start' and 'end'\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# has been found.\"}),`\n        level_start += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` explore_level(start_queue, start_visited, end_visited, dictionary_set):\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" level_start + level_end + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Explore the next level of the traversal that starts from the end word.\"}),`\n        level_end += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` explore_level(end_queue, end_visited, start_visited, dictionary_set):\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" level_start + level_end + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the traversals never met, then no path exists.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# This function explores the next level in the level-order traversal and checks if\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# two searches meet.\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"explore_level\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"queue, visited, other_visited, dictionary_set\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"bool\"}),`:\n    lower_case_alphabet = `,(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcdefghijklmnopqrstuvwxyz'\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" _ \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(queue)):\n        current_word = queue.popleft()\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(current_word)):\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` lower_case_alphabet:\n                next_word = current_word[:i] + c + current_word[i+`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`:]\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'next_word' has been visited during the other traversal, it means\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# both searches have met.\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" next_word \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` other_visited:\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"True\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" next_word \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" dictionary_set \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"and\"}),\" next_word \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` visited:\n                    visited.add(next_word)\n                    queue.append(next_word)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If no word has been visited by the other traversal, the searches have not met\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# yet.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"False\"}),`\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence_optimized\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:`\n  start,\n  end,\n  dictionary\n`}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" dictionarySet = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Set\"}),`(dictionary)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (!dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(start) || !dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(end)) \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (start === end) \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` startQueue = [start]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` endQueue = [end]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" startVisited = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Set\"}),`([start])\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" endVisited = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Set\"}),`([end])\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" levelStart = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" levelEnd = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),\" (startQueue.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" && endQueue.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`) {\n    levelStart++\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"exploreLevel\"}),`(startQueue, startVisited, endVisited, dictionarySet)) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" levelStart + levelEnd + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n    levelEnd++\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"exploreLevel\"}),`(endQueue, endVisited, startVisited, dictionarySet)) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" levelStart + levelEnd + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"exploreLevel\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"queue, visited, otherVisited, dictionarySet\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" lowerCaseAlphabet = \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'abcdefghijklmnopqrstuvwxyz'\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" levelSize = queue.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < levelSize; i++) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" currentWord = queue.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shift\"}),`()\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" j = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"; j < currentWord.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`; j++) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" c \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` lowerCaseAlphabet) {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" nextWord = currentWord.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"slice\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", j) + c + currentWord.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"slice\"}),\"(j + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (otherVisited.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),`(nextWord)) {\n          `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"true\"}),`\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (dictionarySet.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),\"(nextWord) && !visited.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),`(nextWord)) {\n          visited.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"add\"}),`(nextWord)\n          queue.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"push\"}),`(nextWord)\n        }\n      }\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"false\"}),`\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.*;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"shortest_transformation_sequence\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(String start, String end, ArrayList<String> dictionary)\"}),` {\n        Set<String> dictionarySet = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashSet\"}),`<>(dictionary);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (!dictionarySet.contains(start) || !dictionarySet.contains(end)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (start.equals(end)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n        Queue<String> startQueue = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LinkedList\"}),`<>();\n        Set<String> startVisited = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashSet\"}),`<>();\n        startQueue.add(start);\n        startVisited.add(start);\n        Queue<String> endQueue = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LinkedList\"}),`<>();\n        Set<String> endVisited = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashSet\"}),`<>();\n        endQueue.add(end);\n        endVisited.add(end);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"levelStart\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"levelEnd\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Perform a level-order traversal from the start word and another from the end word.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"while\"}),` (!startQueue.isEmpty() && !endQueue.isEmpty()) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Explore the next level of the traversal that starts from the start word.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If it meets the other traversal, the shortest path between 'start' and 'end' has been found.\"}),`\n            levelStart++;\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (exploreLevel(startQueue, startVisited, endVisited, dictionarySet)) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" levelStart + levelEnd + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Explore the next level of the traversal that starts from the end word.\"}),`\n            levelEnd++;\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (exploreLevel(endQueue, endVisited, startVisited, dictionarySet)) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" levelStart + levelEnd + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the traversals never met, then no path exists.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// This function explores the next level in the level-order traversal and checks if two searches meet.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"boolean\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"exploreLevel\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Queue<String> queue, Set<String> visited, Set<String> otherVisited, Set<String> dictionarySet)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"lowerCaseAlphabet\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:'\"abcdefghijklmnopqrstuvwxyz\"'}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"size\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` queue.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < size; i++) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"currentWord\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` queue.poll();\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"j\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; j < currentWord.length(); j++) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"k\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; k < lowerCaseAlphabet.length(); k++) {\n                    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"char\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"c\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` lowerCaseAlphabet.charAt(k);\n                    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"String\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"nextWord\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" currentWord.substring(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", j) + c + currentWord.substring(j + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n                    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'nextWord' has been visited during the other traversal, it means both searches have met.\"}),`\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (otherVisited.contains(nextWord)) {\n                        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"true\"}),`;\n                    }\n                    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (dictionarySet.contains(nextWord) && !visited.contains(nextWord)) {\n                        visited.add(nextWord);\n                        queue.add(nextWord);\n                    }\n                }\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If no word has been visited by the other traversal, the searches have not met yet.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"false\"}),`;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis-1\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"shortest_transformation_sequence_optimized\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L^2)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\", since we\\u2019re performing two level-order traversals. Note that this is more efficient in practice since there are potentially fewer nodes to traverse when using bidirectional traversal.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u22C5\"}),(0,C.jsx)(e.mi,{children:\"L\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot L)\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"L\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})]})]}),\", taken up by the \",(0,C.jsx)(e.code,{children:\"dictionary_set\"}),\" hash set, the visited hash sets, and both queues.\"]})]})}function b(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(g,{...t})}):g(t)}function l(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return S(G);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

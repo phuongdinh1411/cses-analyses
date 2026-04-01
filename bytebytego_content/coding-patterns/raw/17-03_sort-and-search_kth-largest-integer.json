@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "sort-and-search/kth-largest-integer",
+  "chapter": "17-03",
+  "title": "Kth Largest Integer",
+  "free": false,
+  "code": "var Component=(()=>{var j=Object.create;var n=Object.defineProperty;var v=Object.getOwnPropertyDescriptor;var _=Object.getOwnPropertyNames;var F=Object.getPrototypeOf,A=Object.prototype.hasOwnProperty;var T=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),I=(a,e)=>{for(var i in e)n(a,i,{get:e[i],enumerable:!0})},V=(a,e,i,t)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of _(e))!A.call(a,l)&&l!==i&&n(a,l,{get:()=>e[l],enumerable:!(t=v(e,l))||t.enumerable});return a};var D=(a,e,i)=>(i=a!=null?j(F(a)):{},V(e||!a||!a.__esModule?n(i,\"default\",{value:a,enumerable:!0}):i,a)),q=a=>V(n({},\"__esModule\",{value:!0}),a);var H=T((e1,c)=>{c.exports=_jsx_runtime});var $={};I($,{default:()=>x,frontmatter:()=>Y});var C=D(H());var d=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-1-W5X2S4DL.svg\";var m=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-2-CIGPGRXA.svg\";var p=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-3-S2OUF6GH.svg\";var o=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-4-N7T4IER6.svg\";var M=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-5-3O5PSCEO.svg\";var Z=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-6-GBKGFMQ7.svg\";var L=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-7-B534DCET.svg\";var g=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-8-KLZVXDRR.svg\";var f=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-9-YODDUULT.svg\";var u=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-10-PL77Z6CU.svg\";var k=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-11-M56LOTV4.svg\";var w=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-12-BWS4HOFU.svg\";var y=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-13-QUBB3YIC.svg\";var N=\"/images/courses/coding-patterns/sort-and-search/kth-largest-integer/image-17-03-14-J7NUIGVX.svg\";var Y={chapter:\"17-03\",difficulty:\"Medium\",title:\"Kth Largest Integer\"};function b(a){let e={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msub:\"msub\",msup:\"msup\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...a.components},{CodeTabs:i,Figure:t,Image:l,OpenCodeEditor:h,ProblemDescription:r}=e;return i||s(\"CodeTabs\",!0),t||s(\"Figure\",!0),l||s(\"Image\",!0),h||s(\"OpenCodeEditor\",!0),r||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsxs)(e.p,{children:[\"Return the \",(0,C.jsxs)(e.strong,{children:[(0,C.jsx)(e.code,{children:\"kth\"}),\" largest integer\"]}),\" in an array.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\"], k = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),`\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`\n`]})}),(0,C.jsx)(e.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"The array contains no duplicates.\"}),`\n`,(0,C.jsx)(e.li,{children:\"The array contains at least one element.\"}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"1 \\u2264 k \\u2264 n\"}),\", where \",(0,C.jsx)(e.code,{children:\"n\"}),\" denotes the length of the array.\"]}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition---min-heap\",children:\"Intuition - Min-Heap\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"A straightforward solution to this problem is to sort the array in reverse order and return the number at the (\",(0,C.jsx)(e.code,{children:\"k - 1\"}),\")th index:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:d,alt:\"Image represents a visual explanation of finding the k<sup>th</sup> largest element in an array.  The diagram begins with an unsorted array `[5 2 4 3 1 6]` where `k` is defined as 3.  The array's elements are indexed from 0 to 5, shown below each element. A rightward arrow labeled 'sort' indicates a sorting operation transforming the initial array into a sorted array `[6 5 4 3 2 1]`, maintaining the same indexing.  Above the sorted array, an orange arrow points down to the element at index 2 (the third largest element), which is 4, highlighting that the 3<sup>rd</sup> largest element (k=3) is 4.  The element '4' is circled in a peach color to emphasize its selection as the k<sup>th</sup> largest element.\",width:\"518\",height:\"88\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This solution takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" time, but as we only need the kth largest integer, sorting all the elements in the input array might not be necessary. Let\\u2019s explore some solutions which take this into account.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"An interesting thing to realize is that if we know what the top k largest integers are, we\\u2019d know that the smallest of these would be the kth largest integer:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:m,alt:\"Image represents a visual depiction of finding the top k largest elements from a list.  The input is shown as a list `[5 2 4 3 1 6]` enclosed in square brackets, with each number circled in orange.  Arrows in orange indicate the selection of the three largest numbers (5, 4, and 6). These three numbers are then collected into a new list `[5 4 6]`, labeled 'top k largest:', with the number 4 highlighted in a light green circle. A green downward-pointing arrow from the light green circle points to the word 'min', suggesting a subsequent step might involve finding the minimum element within the top k largest elements.  The overall diagram illustrates a process of selecting the top k elements and potentially further processing them.\",width:\"298\",height:\"110\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This leads to the idea that instead of sorting the entire array, we can keep track of the top k largest integers in the array. Is there a way to maintain the top k largest integers, while having access to the smallest of these integers?\"}),`\n`,(0,C.jsx)(e.p,{children:\"A min-heap seems like it should work well for this purpose because it provides efficient access to the smallest element. Let\\u2019s explore how to use it to maintain the top k integers in the array.\"}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Consider the below example with k = 3. Let\\u2019s begin by pushing the first k integers to the heap:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:p,alt:\"Image represents a visual depiction of a min-heap data structure being populated.  A downward-pointing arrow originates from a small square containing the letter 'i', suggesting an input source. This arrow points to a bracketed array `[5 2 4 3 1 6]`, where each number represents an element, and the subscripts (0, 1, 2, 3, 4, 5) indicate their indices within the array.  To the right, a trapezoidal shape labeled 'min_heap' visually represents the min-heap structure.  The number '5' is shown at the top of the min-heap, indicating that it's the root node (the smallest element). The image illustrates the initial step of building a min-heap, where the first element from the input array (5) is placed at the root of the min-heap.  The remaining elements (2, 4, 3, 1, 6) are implicitly implied to be added subsequently to maintain the min-heap property (where the value of each node is less than or equal to the values of its children).\",width:\"317\",height:\"115\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:o,alt:\"Image represents a visual depiction of a min-heap data structure being built.  A downward-pointing arrow labeled 'i' points to an array `[5, 2, 4, 3, 1, 6]`, where each element's index (0-5) is shown below it in gray.  This array represents the input data. To the right, a min-heap is shown, visually represented as a trapezoidal structure with a purple border and labeled 'min_heap'. The top node contains the value '2', and the bottom node contains the value '5'.  The diagram illustrates an intermediate step in the process of constructing a min-heap from the input array; the '2' at the top of the min-heap suggests that the algorithm has already processed at least the first few elements of the array, placing the smallest element found so far at the root of the heap.  The remaining elements in the array are yet to be incorporated into the min-heap structure.\",width:\"317\",height:\"115\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:M,alt:\"Image represents a visual depiction of a data structure transformation.  A small square labeled 'i' points downwards to an array `[5, 2, 4, 3, 1, 6]`, where each element is indexed from 0 to 5 below it.  This array is being transformed into a min-heap data structure, shown as a trapezoidal shape with a purple outline labeled 'min_heap'. The min-heap contains the numbers 2, 4, and 5, arranged such that 2 is at the top, 4 is below and to the left, and 5 is below and to the right.  The arrangement suggests that the value of each node is less than or equal to the values of its children, a defining characteristic of a min-heap.  The arrow from 'i' implies that the array is the input to the process of creating the min-heap.\",width:\"317\",height:\"115\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"We shouldn\\u2019t immediately push the next element, 3, in the heap because the heap already contains k integers. This gives us a choice:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Skip 3, or:\"}),`\n`,(0,C.jsx)(e.li,{children:\"Remove an integer from the heap and push 3 in.\"}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"The smallest integer in the heap is 2. Integer 3 is more likely to belong in the top k integers than 2 is, so let\\u2019s pop 2 from the heap and push 3 in:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a step-by-step illustration of a coding pattern involving a min-heap data structure.  The top left shows an array `nums` with elements [5, 2, 4, 3, 1, 6], indexed from 0 to 5, with an arrow pointing to the element at index 3 (value 3).  To the right, a min-heap is depicted, initially containing elements 4 and 5, with a 2 (crossed out in red) at the top, indicating it's about to be removed. A dashed box next to the heap describes the algorithm: if `nums[i]` (the current element being processed from the array) is greater than the top element of the min-heap, then the top element is popped (in this case, 2), and `nums[i]` (which is 3) is pushed onto the min-heap. The bottom part shows the min-heap after this operation, now containing 3, 4, and 5.  The arrow connecting the top and bottom min-heap diagrams visually represents the transformation resulting from the algorithm described in the dashed box.\",width:\"576\",height:\"244\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The next integer is 1, which is smaller than the smallest integer in the heap. So, we know it\\u2019s not among the top k integers:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:L,alt:\"Image represents a step in an algorithm, likely involving a min-heap data structure.  A numbered array `[5 2 4 3 1 6]` is shown, with an index `i` (represented by a box labeled 'i') pointing to the element '1' at index 4.  A min-heap is depicted visually as a tree structure with elements 3 (at the top), 4, and 5. The label 'min_heap' is below the heap. A downward arrow from 'i' points to the array element '1', indicating the current element being processed. A dashed box contains the condition `nums[i] < min_heap.top`, which checks if the current array element (1) is less than the top element of the min-heap (3).  A right-pointing arrow from this condition indicates that if the condition is true, the algorithm continues.  The overall diagram illustrates a comparison between an element from an input array and the top element of a min-heap, a common operation in heap-based algorithms like heapsort or priority queue management.\",width:\"576\",height:\"114\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"The final integer is 6. It\\u2019s larger than the smallest integer in the heap. So, let\\u2019s pop off the top of the heap and push in 6:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:g,alt:\"Image represents a step-by-step illustration of a coding pattern involving a min-heap data structure.  The top section shows an array `nums` with elements [5, 2, 4, 3, 1, 6] indexed from 0 to 5, and a min-heap represented as a purple triangle containing the values 4 and 5.  A downward arrow points from an index `i` (represented by a small square labeled 'i') to the min-heap, indicating that the element at index `i` (which is 1 in this case) is being processed. A separate box describes the condition `nums[i] > min_heap.top` and the actions taken if the condition is true: popping the top element (3) from the min-heap and pushing `nums[i]` (1) onto the min-heap. The bottom section shows the resulting min-heap after these operations, now containing 4, 5, and 6, illustrating the updated state of the min-heap after processing the element at index `i`.  A horizontal arrow connects the before and after states of the min-heap.\",width:\"576\",height:\"244\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"At this point, the k integers in the heap represent the top k largest integers from the array, with the smallest of these integers located at the top of the heap. This smallest value is the kth largest integer in the entire array, so we can just return this integer from the top of the heap:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(l,{src:f,alt:\"The image represents a data structure visualization illustrating the retrieval of the minimum element from a min-heap.  A rectangular box labeled '4' in light purple, representing the top element of the min-heap, is shown with a green arrow pointing right towards the text 'return min_heap.top' written in green. This arrow indicates the action of returning the top element. Below the top element, a trapezoidal shape labeled 'min_heap' in purple contains the numbers '5' and '6', visually representing the remaining elements of the min-heap. The arrangement shows that the min-heap is structured such that the smallest element (4) is at the top, and the subsequent elements (5 and 6) are arranged below, implicitly suggesting a hierarchical structure where the parent node (4) is smaller than its children (5 and 6). The overall diagram demonstrates the process of accessing the minimum value from a min-heap data structure, where `min_heap.top` refers to accessing the top (minimum) element.\",width:\"306\",height:\"120\"})}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation---min-heap\",children:\"Implementation - Min-Heap\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` heapq\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer_min_heap\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], k: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    min_heap = []\n    heapq.heapify(min_heap)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" num \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` nums:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Ensure the heap has at least 'k' integers.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(min_heap) < k:\n            heapq.heappush(min_heap, num)\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If 'num' is greater than the smallest integer in the heap, pop off this\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# smallest integer from the heap and push in 'num'.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"elif\"}),\" num > min_heap[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]:\n            heapq.heappop(min_heap)\n            heapq.heappush(min_heap, num)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" min_heap[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" { \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"MinPriorityQueue\"}),\" } \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'./helpers/heap/MinPriorityQueue.js'\"}),`\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer_min_heap\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums, k\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Create a min-heap with a simple comparator\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" minHeap = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"MinPriorityQueue\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"n\"}),\") =>\"]}),` n)\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" num \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` nums) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Ensure the heap has at least 'k' integers.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (minHeap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"size\"}),`() < k) {\n      minHeap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"enqueue\"}),`(num)\n    } `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (num > minHeap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"front\"}),`()) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'num' is greater than the smallest integer in the heap,\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// replace the smallest with 'num'.\"}),`\n      minHeap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"dequeue\"}),`()\n      minHeap.`,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"enqueue\"}),`(num)\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// The kth largest element is the smallest in the heap now.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" minHeap.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"front\"}),`()\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.PriorityQueue;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" Integer \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer_min_heap\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" k)\"]}),` {\n        PriorityQueue<Integer> minHeap = `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"PriorityQueue\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` num : nums) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Ensure the heap has at least 'k' integers.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (minHeap.size() < k) {\n                minHeap.add(num);\n            }\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If 'num' is greater than the smallest integer in the heap, pop off this\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// smallest integer from the heap and push in 'num'.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (num > minHeap.peek()) {\n                minHeap.poll();\n                minHeap.add(num);\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` minHeap.peek();\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"kth_largest_integer_min_heap\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"k\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\log(k))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.03148em\"},children:\"k\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" because for each integer, we perform at most one \",(0,C.jsx)(e.code,{children:\"push\"}),\" and \",(0,C.jsx)(e.code,{children:\"pop\"}),\" operation on the min-heap, which has a size no larger than \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"k\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"k\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6944em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.03148em\"},children:\"k\"})]})})]}),\". Each heap operation takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"k\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(k))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.03148em\"},children:\"k\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\" time.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"k\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(k)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.03148em\"},children:\"k\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because the heap can grow to a size of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"k\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"k\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.6944em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.03148em\"},children:\"k\"})]})})]}),\".\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition---quickselect\",children:\"Intuition - Quickselect\"}),`\n`,(0,C.jsx)(e.p,{children:\"The previous approach involved keeping track of the k largest integers to identify the kth largest integer. This effectively required us to keep these k values partially sorted through the use of a heap. But what if there\\u2019s a way to position only the kth largest value in its expected sorted position, without sorting the other numbers?\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:u,alt:\"Image represents a comparison of three different approaches to sorting an array.  The input array `[5 2 4 3 1 6]` is shown at the left.  Three arrows emanate from this array, each representing a different sorting method. The top arrow leads to a fully sorted array `[1 2 3 4 5 6]`, labeled 'sort the whole array:', with a time complexity of O(nlog(n)). The middle arrow points to a partially sorted array `[... 4 5 6]`, labeled 'sort the k largest integers:', showing only the k largest integers sorted, with a time complexity of O(nlog(k)).  The bottom arrow shows a final array `[... 4 ...]`, labeled 'only position the k<sup>th</sup> largest integer in its sorted index:', where only the k<sup>th</sup> largest integer (in this case, 4) is placed in its correct sorted position. This last method is marked with '(faster?)', suggesting it's potentially more efficient than the previous two.  Each array displays indices below its elements for clarity.  The highlighted '4' in each output array emphasizes the focus on the k<sup>th</sup> largest element.\",width:\"624\",height:\"236\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Quickselect\"}),\" can be used to achieve this.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Quickselect is an algorithm that \",(0,C.jsx)(e.strong,{children:\"leverages the partition step of quicksort\"}),\", which positions a value in its sorted position. Quickselect is generally used to find the kth \",(0,C.jsx)(e.em,{children:\"smallest\"}),\" element, whereas, in this problem, we're asked to find the kth \",(0,C.jsx)(e.em,{children:\"largest\"}),\" element. To utilize quickselect for this purpose, we can instead \",(0,C.jsx)(e.strong,{children:\"find the (n - k)th smallest integer\"}),\", which is equivalent to finding the kth largest element:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:k,alt:\"Image represents a visual explanation of finding the kth largest element in an array using the `quickselect` algorithm.  The diagram shows an initial unsorted array `[5 2 4 3 1 6]` with indices 0 through 5 displayed below each element.  Above the array, the equation 'k<sup>th</sup> largest == (n - k)<sup>th</sup> smallest' highlights the relationship between the kth largest and (n-k)th smallest elements, where 'n' is the array's size. A horizontal arrow connects the initial array to a partially sorted array `[2 1 3 4 5 6]`. This arrow is labeled `quickselect(n - k)`, indicating that the `quickselect` function is applied to find the (n-k)th smallest element.  The (n-k)th smallest element (which is also the kth largest) is highlighted in light green within the resulting array, specifically at index `n - k`, which is explicitly labeled with a green upward-pointing arrow.  The diagram visually demonstrates how finding the (n-k)th smallest element using `quickselect` effectively identifies the kth largest element.\",width:\"624\",height:\"97\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now, let\\u2019s dive into how quickselect works. To understand quickselect, we recommend you study the quicksort solution provided in the \",(0,C.jsx)(e.em,{children:\"Sort Array\"}),\" problem.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Quickselect works identically to quicksort in that we:\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"1. Choose a pivot.\",(0,C.jsx)(e.br,{}),`\n`,\"2. Partition the array into two parts by moving elements around the pivot so that:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Numbers less than the pivot are moved to its left.\"}),`\n`,(0,C.jsx)(e.li,{children:\"Numbers greater than the pivot are moved to its right.\"}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"The primary difference between these two algorithms lies in the recursion step:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"In quicksort, we recursively process both the left and right parts.\"}),`\n`,(0,C.jsxs)(e.li,{children:[\"In quickselect, \",(0,C.jsx)(e.strong,{children:\"we only need to recursively process one of these parts\"}),\".\"]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s explore why only one part is chosen.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Deciding which part of a partition to process\"}),(0,C.jsx)(e.br,{}),`\n`,\"Suppose we pick a random number as a pivot. After performing a partition, this pivot will be positioned correctly. From here, there are three possibilities for the position of the (\",(0,C.jsx)(e.code,{children:\"n - k\"}),\")th smallest integer:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"If the pivot is positioned before index \",(0,C.jsx)(e.code,{children:\"n - k\"}),\", it means the (\",(0,C.jsx)(e.code,{children:\"n - k\"}),\")th smallest integer must be somewhere to the right of the pivot. So, perform quickselect on the right part:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:w,alt:\"Image represents a segment of a Quickselect algorithm visualization.  At the top, a conditional statement 'if pivot_index < n - k:' is shown, indicating a decision point in the algorithm. Below this, a visual representation of an array is presented.  The array is shown as `[ . . pivot . . . . ]`, where `pivot` is a gray square representing the pivot element, and the dots represent other elements. A peach-colored rectangle highlights a portion of the array to the right of the pivot. A green upward-pointing arrow labeled 'index n - k' connects to the right side of this peach rectangle, indicating that this section of the array contains `n - k` elements, where `n` is the array's size and `k` is a target rank. Finally, a light gray, dashed-bordered box to the right states 'perform quickselect on the right part,' indicating that if the condition `pivot_index < n - k` is true, the Quickselect algorithm recursively operates on the right sub-array (the peach-colored section) to find the k-th smallest element.\",width:\"576\",height:\"98\"})}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"If the pivot is positioned after index \",(0,C.jsx)(e.code,{children:\"n - k\"}),\", perform quickselect on the left part:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:y,alt:\"Image represents a segment of a Quickselect algorithm flowchart.  The top shows a conditional statement: `if pivot_index > n - k:`. Below this, a peach-colored rectangle represents an array, depicted with ellipses (...) indicating multiple elements, enclosed in square brackets `[ ... ]`.  A single element within the array is highlighted as `pivot` within a grey square. A green upward-pointing arrow labeled `index n - k` connects the array to the `pivot` element, indicating its position within the array. To the right, a dashed-line rectangle contains the text 'perform quickselect on the left part', describing the action taken if the conditional statement is true.  The overall structure illustrates a decision point in the algorithm: if the pivot's index is greater than `n - k`, then the Quickselect algorithm is recursively applied to the left portion of the array.\",width:\"576\",height:\"91\"})}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"If the pivot is positioned exactly at index \",(0,C.jsx)(e.code,{children:\"n - k\"}),\", the pivot itself is the (\",(0,C.jsx)(e.code,{children:\"n - k\"}),\")th smallest integer. So, we just return the pivot:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:N,alt:\"Image represents a code snippet illustrating a conditional return statement within a function.  The top line shows a conditional statement: `if pivot_index == n - k:`. This checks if the variable `pivot_index` is equal to the result of `n - k`, where 'n' and 'k' are presumably pre-defined variables. Below this, a visual representation of an array `[...]` is shown, with ellipses (...) indicating unspecified elements. A light-green square labeled 'pivot' highlights a specific element within the array. An upward arrow points from the text 'index n - k' to the 'pivot' square, indicating that `pivot_index` represents the index `n - k` within the array `nums`. To the right, a dashed-line box contains the code `return nums[pivot_index]`, signifying that if the condition in the first line is true, the function returns the element at the `pivot_index` within the `nums` array.  The overall diagram visually explains how a pivot element's index is calculated and used to return a value from an array based on a specific condition.\",width:\"576\",height:\"91\"})}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(h,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation---quickselect\",children:\"Implementation - Quickselect\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that the partition function in this implementation is identical to the partition function in \",(0,C.jsx)(e.em,{children:\"Sort Array\"}),\". Also, this implementation selects a random pivot, as per the optimization discussed in \",(0,C.jsx)(e.em,{children:\"Sort Array\"}),\".\"]}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` random\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer_quickselect\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], k: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(nums) - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k)\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], left: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", right: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", k: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n    n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(nums)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` left >= right:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums[left]\n    random_index = random.randint(left, right)\n    nums[random_index], nums[right] = nums[right], nums[random_index]\n    pivot_index = partition(nums, left, right)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the pivot comes before 'n - k', the ('n - k')th smallest integer is somewhere\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# to its right. Perform quickselect on the right part.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` pivot_index < n - k:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, pivot_index + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, right, k)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the pivot comes after 'n - k', the ('n - k')th smallest integer is somewhere\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# to its left. Perform quickselect on the left part.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"elif\"}),` pivot_index > n - k:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, left, pivot_index - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the pivot is at index 'n - k', it's the ('n - k')th smallest integer.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums[pivot_index]\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"partition\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], left: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", right: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    pivot = nums[right]\n    lo = left\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),`(left, right):\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` nums[i] < pivot:\n            nums[lo], nums[i] = nums[i], nums[lo]\n            lo += `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    nums[lo], nums[right] = nums[right], nums[lo]\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` lo\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsxs)(e.span,{className:\"hljs-comment\",children:[`/**\n * `,(0,C.jsx)(e.span,{className:\"hljs-doctag\",children:\"@param\"}),\" {\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"number[]\"}),\"} \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"nums\"}),` - Array of integers\n * `,(0,C.jsx)(e.span,{className:\"hljs-doctag\",children:\"@param\"}),\" {\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"number\"}),\"} \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"k\"}),` - The kth largest integer to find\n * `,(0,C.jsx)(e.span,{className:\"hljs-doctag\",children:\"@returns\"}),\" {\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"number\"}),`}\n */`]}),`\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums, k\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),\"(nums, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k)\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums, left, right, k\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (left >= right) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums[left]\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" randomIndex = \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"floor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"random\"}),\"() * (right - left + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)) + left\n  ;[nums[randomIndex], nums[right]] = [nums[right], nums[randomIndex]]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" pivotIndex = \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"partition\"}),`(nums, left, right)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot comes before 'n - k', the ('n - k')th smallest is to the right.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (pivotIndex < n - k) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),\"(nums, pivotIndex + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, right, k)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot comes after 'n - k', it's to the left.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (pivotIndex > n - k) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),\"(nums, left, pivotIndex - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot is at 'n - k', it's the answer.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums[pivotIndex]\n  }\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"partition\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums, left, right\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),` pivot = nums[right]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),` lo = left\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),` i = left; i < right; i++) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (nums[i] < pivot) {\n      ;[nums[i], nums[lo]] = [nums[lo], nums[i]]\n      lo++\n    }\n  }\n  ;[nums[lo], nums[right]] = [nums[right], nums[lo]]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` lo\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Random;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"kth_largest_integer_quickselect\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" k)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\", nums.size() - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"quickselect\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" left, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" right, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" k)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (left >= right) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums.get(left);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"Random\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"rand\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Random\"}),`();\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"randomIndex\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" rand.nextInt(right - left + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`) + left;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"temp\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.get(randomIndex);\n        nums.set(randomIndex, nums.get(right));\n        nums.set(right, temp);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"pivotIndex\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` partition(nums, left, right);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot comes before 'n - k', the ('n - k')th smallest integer is somewhere\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// to its right. Perform quickselect on the right part.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (pivotIndex < n - k) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, pivotIndex + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, right, k);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot comes after 'n - k', the ('n - k')th smallest integer is somewhere\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// to its left. Perform quickselect on the left part.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (pivotIndex > n - k) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" quickselect(nums, left, pivotIndex - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, k);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the pivot is at index 'n - k', it's the ('n - k')th smallest integer.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` nums.get(pivotIndex);\n        }\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"partition\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(ArrayList<Integer> nums, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" left, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" right)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"pivot\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.get(right);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"lo\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` left;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` left; i < right; i++) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (nums.get(i) < pivot) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"temp\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.get(lo);\n                nums.set(lo, nums.get(i));\n                nums.set(i, temp);\n                lo++;\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"temp\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.get(lo);\n        nums.set(lo, nums.get(right));\n        nums.set(right, temp);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` lo;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis-1\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"kth_largest_integer_quickselect\"}),\" can be analyzed in terms of the average and worst cases:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Average case: \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". In the average case, quickselect partitions the array and reduces the problem size by approximately half each time by performing a recursive call on only one part of each partition. A linear partition is performed during each of these recursive calls. This results in a total time complexity of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{mathvariant:\"normal\",children:\"/\"}),(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{mathvariant:\"normal\",children:\"/\"}),(0,C.jsx)(e.mn,{children:\"4\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mi,{mathvariant:\"normal\",children:\"/\"}),(0,C.jsx)(e.mn,{children:\"8\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mo,{children:\"\\u2026\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n) + O(n/2) + O(n/4) + O(n/8) + \\\\dots\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"/2\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"/4\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"/8\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.123em\"}}),(0,C.jsx)(e.span,{className:\"minner\",children:\"\\u2026\"})]})]})]}),\", which is a geometric series that sums to \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Worst case: \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". The worst-case scenario occurs when the pivot selection consistently results in extremely unbalanced partitions. This can result in the problem size only being reduced by one element after each partition, leading to a total time complexity of \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{children:\"\\u2212\"}),(0,C.jsx)(e.mn,{children:\"2\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{children:\"+\"}),(0,C.jsx)(e.mo,{children:\"\\u2026\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)+O(n-1)+O(n-2)+\\u2026\"})]})})}),(0,C.jsxs)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"\\u2212\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(e.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(e.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.123em\"}}),(0,C.jsx)(e.span,{className:\"minner\",children:\"\\u2026\"})]})]})]}),\", which can be simplified to an \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time complexity.\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity can also be analyzed in terms of the average and worst cases:\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Average Case: \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(\\\\log(n))\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\"))\"})]})})]}),\". In the average case, the depth of the recursive call stack is approximately \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsxs)(e.msub,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"log\"}),(0,C.jsx)(e.mo,{children:\"\\u2061\"})]}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\log_2(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(e.span,{className:\"mop\",children:[(0,C.jsxs)(e.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(e.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.207em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-2.4559em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.2441em\"},children:(0,C.jsx)(e.span,{})})})]})})]}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"Worst Case: \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". In the worst case, the depth of the recursive call stack can be as deep as \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\".\"]}),`\n`]}),`\n`]})]})}function x(a={}){let{wrapper:e}=a.components||{};return e?(0,C.jsx)(e,{...a,children:(0,C.jsx)(b,{...a})}):b(a)}function s(a,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+a+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return q($);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

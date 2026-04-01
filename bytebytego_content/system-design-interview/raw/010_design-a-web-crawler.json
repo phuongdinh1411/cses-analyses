@@ -1,0 +1,321 @@
+{
+  "course": "system-design-interview",
+  "id": "design-a-web-crawler",
+  "chapter": 10,
+  "title": "Design A Web Crawler",
+  "free": true,
+  "code": "var Component=(()=>{var z=Object.create;var l=Object.defineProperty;var E=Object.getOwnPropertyDescriptor;var I=Object.getOwnPropertyNames;var k=Object.getPrototypeOf,L=Object.prototype.hasOwnProperty;var C=(i,t)=>()=>(t||i((t={exports:{}}).exports,t),t.exports),R=(i,t)=>{for(var n in t)l(i,n,{get:t[n],enumerable:!0})},s=(i,t,n,r)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let o of I(t))!L.call(i,o)&&o!==n&&l(i,o,{get:()=>t[o],enumerable:!(r=E(t,o))||r.enumerable});return i};var B=(i,t,n)=>(n=i!=null?z(k(i)):{},s(t||!i||!i.__esModule?l(n,\"default\",{value:i,enumerable:!0}):n,i)),Q=i=>s(l({},\"__esModule\",{value:!0}),i);var f=C((W,a)=>{a.exports=_jsx_runtime});var G={};R(G,{default:()=>b,frontmatter:()=>Y});var e=B(f());var A=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-1-SY5VC26X.png\";var d=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-2-U6DZBW26.svg\";var h=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-3-NSRQJPYK.svg\";var p=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-4-OKNDJITV.svg\";var c=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-5-65ZDPY5L.svg\";var g=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-6-4NQUTTWR.svg\";var w=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-7-H7KUNVWF.svg\";var x=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-8-Y4EGITZY.svg\";var v=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-9-TCZ34KRE.svg\";var m=\"/images/courses/system-design-interview/design-a-web-crawler/figure-9-10-5LXJJMYX.svg\";var Y={chapter:10,title:\"Design A Web Crawler\",free:!0};function y(i){let t={a:\"a\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",p:\"p\",pre:\"pre\",strong:\"strong\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",ul:\"ul\",...i.components},{Figure:n,Image:r}=t;return n||u(\"Figure\",!0),r||u(\"Image\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(t.p,{children:\"In this chapter, we focus on web crawler design: an interesting and classic system design interview question.\"}),`\n`,(0,e.jsx)(t.p,{children:\"A web crawler is known as a robot or spider. It is widely used by search engines to discover new or updated content on the web. Content can be a web page, an image, a video, a PDF file, etc. A web crawler starts by collecting a few web pages and then follows links on those pages to collect new content. Figure 1 shows a visual example of the crawl process.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 1\",children:(0,e.jsx)(r,{src:A,alt:\"Image represents a diagram illustrating a website's redirection or linking structure.  A central 'a.com page' box displays the URLs `www.a.com`, `www.b.com`, and `www.c.com`.  Blue arrows emanate from this central box, each pointing to another webpage representation. The first arrow connects to a 'b.com page' displaying `www.banana.com`, which in turn has an arrow pointing to a 'banana.com page'. The second arrow from 'a.com page' connects to a 'c.com page' showing `www.orange.com` and `www.plum.com`, with separate arrows leading to 'orange.com page' and 'plum.com page' respectively.  Finally, a third arrow from 'a.com page' points to an 'a.com page' displaying `www.lime.com`, `www.peach.com`, and `www.mango.com`, with subsequent arrows connecting to individual 'lime.com page', 'peach.com page', and 'mango.com page' representations.  Each webpage representation is a simple browser window icon with three dots in the address bar, suggesting multiple tabs or windows.  The overall structure shows how a single website (`a.com`) can link to and redirect users to multiple other websites.\",width:\"600\",height:\"644\",priority:!0})}),`\n`,(0,e.jsx)(t.p,{children:\"A crawler is used for many purposes:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Search engine indexing: This is the most common use case. A crawler collects web pages to create a local index for search engines. For example, Googlebot is the web crawler behind the Google search engine.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web archiving: This is the process of collecting information from the web to preserve data for future uses. For instance, many national libraries run crawlers to archive web sites. Notable examples are the US Library of Congress [1] and the EU web archive [2].\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web mining: The explosive growth of the web presents an unprecedented opportunity for data mining. Web mining helps to discover useful knowledge from the internet. For example, top financial firms use crawlers to download shareholder meetings and annual reports to learn key company initiatives.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web monitoring. The crawlers help to monitor copyright and trademark infringements over the Internet. For example, Digimarc [3] utilizes crawlers to discover pirated works and reports.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"The complexity of developing a web crawler depends on the scale we intend to support. It could be either a small school project, which takes only a few hours to complete or a gigantic project that requires continuous improvement from a dedicated engineering team. Thus, we will explore the scale and features to support below.\"}),`\n`,(0,e.jsx)(t.h2,{id:\"step-1---understand-the-problem-and-establish-design-scope\",children:\"Step 1 - Understand the problem and establish design scope\"}),`\n`,(0,e.jsx)(t.p,{children:\"The basic algorithm of a web crawler is simple:\"}),`\n`,(0,e.jsx)(t.p,{children:\"1. Given a set of URLs, download all the web pages addressed by the URLs.\"}),`\n`,(0,e.jsx)(t.p,{children:\"2. Extract URLs from these web pages\"}),`\n`,(0,e.jsx)(t.p,{children:\"3. Add new URLs to the list of URLs to be downloaded. Repeat these 3 steps.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Does a web crawler work truly as simple as this basic algorithm? Not exactly. Designing a vastly scalable web crawler is an extremely complex task. It is unlikely for anyone to design a massive web crawler within the interview duration. Before jumping into the design, we must ask questions to understand the requirements and establish design scope:\"}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": What is the main purpose of the crawler? Is it used for search engine indexing, data mining, or something else?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": Search engine indexing.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": How many web pages does the web crawler collect per month?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": 1 billion pages.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": What content types are included? HTML only or other content types such as PDFs and images as well?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": HTML only.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": Shall we consider newly added or edited web pages?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": Yes, we should consider the newly added or edited web pages.\"]}),`\n`,`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": Do we need to store HTML pages crawled from the web?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": Yes, up to 5 years\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": How do we handle web pages with duplicate content?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": Pages with duplicate content should be ignored.\"]}),`\n`,(0,e.jsx)(t.p,{children:\"Above are some of the sample questions that you can ask your interviewer. It is important to understand the requirements and clarify ambiguities. Even if you are asked to design a straightforward product like a web crawler, you and your interviewer might not have the same assumptions.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Beside functionalities to clarify with your interviewer, it is also important to note down the following characteristics of a good web crawler:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Scalability: The web is very large. There are billions of web pages out there. Web crawling should be extremely efficient using parallelization.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Robustness: The web is full of traps. Bad HTML, unresponsive servers, crashes, malicious links, etc. are all common. The crawler must handle all those edge cases.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Politeness: The crawler should not make too many requests to a website within a short time interval.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Extensibility: The system is flexible so that minimal changes are needed to support new content types. For example, if we want to crawl image files in the future, we should not need to redesign the entire system.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"back-of-the-envelope-estimation\",children:\"Back of the envelope estimation\"}),`\n`,(0,e.jsx)(t.p,{children:\"The following estimations are based on many assumptions, and it is important to communicate with the interviewer to be on the same page.\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Assume 1 billion web pages are downloaded every month.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"QPS: 1,000,000,000 / 30 days / 24 hours / 3600 seconds = ~400 pages per second.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Peak QPS = 2 * QPS = 800\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Assume the average web page size is 500k.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:'1-billion-page x 500k = 500 TB storage per month. If you are unclear about digital storage units, go through \\u201CPower of 2\\u201D section in the \"Back-of-the-envelope Estimation\" chapter again.'}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Assuming data are stored for five years, 500 TB * 12 months * 5 years = 30 PB. A 30 PB storage is needed to store five-year content.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h2,{id:\"step-2---propose-high-level-design-and-get-buy-in\",children:\"Step 2 - Propose high-level design and get buy-in\"}),`\n`,(0,e.jsx)(t.p,{children:\"Once the requirements are clear, we move on to the high-level design. Inspired by previous studies on web crawling [4] [5], we propose a high-level design as shown in Figure 2.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 2\",children:(0,e.jsx)(r,{src:d,alt:\"Image represents a web crawler system architecture.  The process begins with a set of `seed URLs`, which are fed into a `URL Frontier`.  The `URL Frontier` passes URLs one by one to an `HTML Downloader`, which retrieves the HTML content of each URL after resolving the domain name via a `DNS Resolver`. The downloaded HTML is then sent to a `Content Parser`.  The parsed content is checked against a `Content Seen?` component, which consults a database labeled `Content St..` (presumably Content Storage).  If the content is new, a `Link Extractor` pulls out all URLs from the parsed content. These extracted URLs are then passed through a `URL Filter` before being checked against a `URL Seen?` component, which interacts with a `URL Storag..` (presumably URL Storage) database.  URLs deemed new are then fed back into the `URL Frontier`, creating a cycle of crawling and processing new web pages.  The entire system is designed to systematically explore and process web pages, storing both visited URLs and content.\",width:\"700\",height:\"509\"})}),`\n`,(0,e.jsx)(t.p,{children:\"First, we explore each design component to understand their functionalities. Then, we examine the crawler workflow step-by-step.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Seed URLs\"})}),`\n`,(0,e.jsx)(t.p,{children:\"A web crawler uses seed URLs as a starting point for the crawl process. For example, to crawl all web pages from a university\\u2019s website, an intuitive way to select seed URLs is to use the university\\u2019s domain name.\"}),`\n`,(0,e.jsx)(t.p,{children:\"To crawl the entire web, we need to be creative in selecting seed URLs. A good seed URL serves as a good starting point that a crawler can utilize to traverse as many links as possible. The general strategy is to divide the entire URL space into smaller ones. The first proposed approach is based on locality as different countries may have different popular websites. Another way is to choose seed URLs based on topics; for example, we can divide URL space into shopping, sports, healthcare, etc. Seed URL selection is an open-ended question. You are not expected to give the perfect answer. Just think out loud.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"URL Frontier\"})}),`\n`,(0,e.jsx)(t.p,{children:\"Most modern web crawlers split the crawl state into two: to be downloaded and already downloaded. The component that stores URLs to be downloaded is called the URL Frontier. You can refer to this as a First-in-First-out (FIFO) queue. For detailed information about the URL Frontier, refer to the deep dive.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"HTML Downloader\"})}),`\n`,(0,e.jsx)(t.p,{children:\"The HTML downloader downloads web pages from the internet. Those URLs are provided by the URL Frontier.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"DNS Resolver\"})}),`\n`,(0,e.jsxs)(t.p,{children:[\"To download a web page, a URL must be translated into an IP address. The HTML Downloader calls the DNS Resolver to get the corresponding IP address for the URL. For instance, URL \",(0,e.jsx)(t.code,{children:\"www.wikipedia.org\"}),\" is converted to IP address 198.35.26.96 as of 3/5/2019.\"]}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Content Parser\"})}),`\n`,(0,e.jsx)(t.p,{children:\"After a web page is downloaded, it must be parsed and validated because malformed web pages could provoke problems and waste storage space. Implementing a content parser in a crawl server will slow down the crawling process. Thus, the content parser is a separate component.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Content Seen?\"})}),`\n`,(0,e.jsx)(t.p,{children:\"Online research [6] reveals that 29% of the web pages are duplicated contents, which may cause the same content to be stored multiple times. We introduce the \\u201CContent Seen?\\u201D data structure to eliminate data redundancy and shorten processing time. It helps to detect new content previously stored in the system. To compare two HTML documents, we can compare them character by character. However, this method is slow and time-consuming, especially when billions of web pages are involved. An efficient way to accomplish this task is to compare the hash values of the two web pages [7].\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Content Storage\"})}),`\n`,(0,e.jsx)(t.p,{children:\"It is a storage system for storing HTML content. The choice of storage system depends on factors such as data type, data size, access frequency, life span, etc. Both disk and memory are used.\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Most of the content is stored on disk because the data set is too big to fit in memory.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Popular content is kept in memory to reduce latency.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"URL Extractor\"})}),`\n`,(0,e.jsxs)(t.p,{children:[\"URL Extractor parses and extracts links from HTML pages. Figure 3 shows an example of a link extraction process. Relative paths are converted to absolute URLs by adding the \",(0,e.jsx)(t.code,{children:\"\\u201Chttps://en.wikipedia.org\\u201D\"}),\" prefix.\"]}),`\n`,(0,e.jsx)(n,{caption:\"Figure 3\",children:(0,e.jsx)(r,{src:h,alt:\"Image represents a simplified illustration of web page link extraction.  The top portion shows a snippet of HTML code defining a webpage's structure.  This code includes a `<head>` section containing metadata like character set and title ('Wikipedia, the free encyclopedia'), and a `<body>` section containing an unordered list (`<ul>`) of four list items (`<li>`). Each list item contains a hyperlink (`<a>`) with an `href` attribute specifying a relative URL (e.g., '/wiki/Cong_Weixi') and a `title` attribute providing descriptive text.  The text within each `<a>` tag represents the displayed link text (e.g., 'Cong Weixi'). A downward arrow indicates a processing step. The bottom portion shows a rectangular box labeled 'Extracted Links:' containing a partially displayed URL ('https://en.wikipedia.org/wiki/Cong_Weixi...') representing the fully qualified URLs generated from the relative URLs in the HTML code by prepending the base URL of the Wikipedia website.  The text 'Viewer does not support full SVG 1.1' suggests the image is a simplified representation of a more complex process, possibly involving SVG elements not fully rendered.\",width:\"700\",height:\"362\"})}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"URL Filter\"})}),`\n`,(0,e.jsx)(t.p,{children:\"The URL filter excludes certain content types, file extensions, error links and URLs in \\u201Cblacklisted\\u201D sites.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"URL Seen?\"})}),`\n`,(0,e.jsx)(t.p,{children:\"\\u201CURL Seen?\\u201D is a data structure that keeps track of URLs that are visited before or already in the Frontier. \\u201CURL Seen?\\u201D helps to avoid adding the same URL multiple times as this can increase server load and cause potential infinite loops.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Bloom filter and hash table are common techniques to implement the \\u201CURL Seen?\\u201D component. We will not cover the detailed implementation of the bloom filter and hash table here. For more information, refer to the reference materials [4] [8].\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"URL Storage\"})}),`\n`,(0,e.jsx)(t.p,{children:\"URL Storage stores already visited URLs.\"}),`\n`,(0,e.jsx)(t.p,{children:\"So far, we have discussed every system component. Next, we put them together to explain the workflow.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Web crawler workflow\"})}),`\n`,(0,e.jsx)(t.p,{children:\"To better explain the workflow step-by-step, sequence numbers are added in the design diagram as shown in Figure 4.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 4\",children:(0,e.jsx)(r,{src:p,alt:\"Image represents a web crawler's architecture.  The process begins with a set of `seed URLs` (1) fed into a `URL Frontier` (2), which then passes them to an `HTML Downloader` (3).  The `HTML Downloader` interacts with a `DNS Resolver` (3) to obtain IP addresses before downloading the HTML content. This content is then sent to a `Content Parser` (4), which processes it and forwards the result to a `Content Seen?` (5) component, checking against a `Content Storage` database (6).  If the content is new, a `Link Extractor` (7) extracts URLs from the parsed content. These URLs are then filtered by a `URL Filter` (8) and checked against a `URL Seen?` (9) component, referencing a `URL Storage` database (10).  Finally, new, valid URLs are fed back into the `URL Frontier` (11) to continue the crawling process.  Numbers in parentheses indicate the flow of data between components.\",width:\"700\",height:\"486\"})}),`\n`,(0,e.jsx)(t.p,{children:\"Step 1: Add seed URLs to the URL Frontier\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 2: HTML Downloader fetches a list of URLs from URL Frontier.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 3: HTML Downloader gets IP addresses of URLs from DNS resolver and starts downloading.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 4: Content Parser parses HTML pages and checks if pages are malformed.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 5: After content is parsed and validated, it is passed to the \\u201CContent Seen?\\u201D component.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 6: \\u201CContent Seen\\u201D component checks if a HTML page is already in the storage.\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"If it is in the storage, this means the same content in a different URL has already been processed. In this case, the HTML page is discarded.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"If it is not in the storage, the system has not processed the same content before. The content is passed to Link Extractor.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Step 7: Link extractor extracts links from HTML pages.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 8: Extracted links are passed to the URL filter.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 9: After links are filtered, they are passed to the \\u201CURL Seen?\\u201D component.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 10: \\u201CURL Seen\\u201D component checks if a URL is already in the storage, if yes, it is processed before, and nothing needs to be done.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Step 11: If a URL has not been processed before, it is added to the URL Frontier.\"}),`\n`,(0,e.jsx)(t.h2,{id:\"step-3---design-deep-dive\",children:\"Step 3 - Design deep dive\"}),`\n`,(0,e.jsx)(t.p,{children:\"Up until now, we have discussed the high-level design. Next, we will discuss the most important building components and techniques in depth:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Depth-first search (DFS) vs Breadth-first search (BFS)\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"URL frontier\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"HTML Downloader\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Robustness\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Extensibility\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Detect and avoid problematic content\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"dfs-vs-bfs\",children:\"DFS vs BFS\"}),`\n`,(0,e.jsx)(t.p,{children:\"You can think of the web as a directed graph where web pages serve as nodes and hyperlinks (URLs) as edges. The crawl process can be seen as traversing a directed graph from one web page to others. Two common graph traversal algorithms are DFS and BFS. However, DFS is usually not a good choice because the depth of DFS can be very deep.\"}),`\n`,(0,e.jsx)(t.p,{children:\"BFS is commonly used by web crawlers and is implemented by a first-in-first-out (FIFO) queue. In a FIFO queue, URLs are dequeued in the order they are enqueued. However, this implementation has two problems:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsx)(t.li,{children:\"Most links from the same web page are linked back to the same host. In Figure 5, all the links in wikipedia.com are internal links, making the crawler busy processing URLs from the same host (wikipedia.com). When the crawler tries to download web pages in parallel, Wikipedia servers will be flooded with requests. This is considered as \\u201Cimpolite\\u201D.\"}),`\n`]}),`\n`,(0,e.jsx)(n,{caption:\"Figure 5\",children:(0,e.jsx)(r,{src:c,alt:\"Image represents a hierarchical structure depicting the organization of web pages within a website, likely Wikipedia.  The root node is 'wikipedia.com,' representing the main website domain.  From this root, several branches extend to represent different main pages, labeled 'wikipedia.com/page1,' 'wikipedia.com/page2,' and 'wikipedia.com/pageN,' indicating a variable number of main pages. Each of these main pages further branches into sub-pages, exemplified by 'wikipedia.com/page1/1,' 'wikipedia.com/page1/2,' 'wikipedia.com/page2/1,' 'wikipedia.com/page2/2,' 'wikipedia.com/pageN/1,' 'wikipedia.com/pageN/2,' and 'wikipedia.com/pageN/N.'  The ellipses (...) indicate that this pattern continues for an unspecified number of main pages and sub-pages under each main page.  The arrows show the directional relationship, indicating that accessing 'wikipedia.com' leads to the main pages, and accessing a main page leads to its respective sub-pages.  The structure visually demonstrates a tree-like organization of web pages within a domain, illustrating how a website can be structured with multiple levels of pages.\",width:\"600\",height:\"480\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsx)(t.li,{children:\"Standard BFS does not take the priority of a URL into consideration. The web is large and not every page has the same level of quality and importance. Therefore, we may want to prioritize URLs according to their page ranks, web traffic, update frequency, etc.\"}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"url-frontier\",children:\"URL frontier\"}),`\n`,(0,e.jsx)(t.p,{children:\"URL frontier helps to address these problems. A URL frontier is a data structure that stores URLs to be downloaded. The URL frontier is an important component to ensure politeness, URL prioritization, and freshness. A few noteworthy papers on URL frontier are mentioned in the reference materials [5] [9]. The findings from these papers are as follows:\"}),`\n`,(0,e.jsx)(t.h4,{id:\"politeness\",children:\"Politeness\"}),`\n`,(0,e.jsx)(t.p,{children:\"Generally, a web crawler should avoid sending too many requests to the same hosting server within a short period. Sending too many requests is considered as \\u201Cimpolite\\u201D or even treated as denial-of-service (DOS) attack. For example, without any constraint, the crawler can send thousands of requests every second to the same website. This can overwhelm the web servers.\"}),`\n`,(0,e.jsx)(t.p,{children:\"The general idea of enforcing politeness is to download one page at a time from the same host. A delay can be added between two download tasks. The politeness constraint is implemented by maintain a mapping from website hostnames to download (worker) threads. Each downloader thread has a separate FIFO queue and only downloads URLs obtained from that queue. Figure 6 shows the design that manages politeness.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 6\",children:(0,e.jsx)(r,{src:g,alt:\"Image represents a system architecture diagram for task distribution.  A 'Queue router' component sits at the top, distributing tasks to multiple queues labeled 'b1', 'b2', and 'bn', representing different task types or priorities.  These queues are depicted as vertical rectangles.  The 'Queue router' also sends information to a 'Mapping Table' (represented as a database icon), suggesting a lookup or mapping function.  Each queue ('b1', 'b2', 'bn') feeds into a 'Queue selector', which in turn distributes tasks to multiple 'Worker threads' (labeled 'Worker thread 1', 'Worker thread 2', and 'Worker thread N'), represented as rectangles with green bars inside, signifying parallel processing.  The ellipses (...) indicate that there are multiple queues and worker threads beyond those explicitly shown.  Arrows depict the flow of tasks or information between components.\",width:\"500\",height:\"478\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Queue router: It ensures that each queue (b1, b2, \\u2026 bn) only contains URLs from the same host.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Mapping table: It maps each host to a queue.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{children:(0,e.jsx)(t.strong,{children:\"Host\"})}),(0,e.jsx)(t.th,{children:(0,e.jsx)(t.strong,{children:\"Queue\"})})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"wikipedia.com\"}),(0,e.jsx)(t.td,{children:\"b1\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"apple.com\"}),(0,e.jsx)(t.td,{children:\"b2\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"...\"}),(0,e.jsx)(t.td,{children:\"...\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"nike.com\"}),(0,e.jsx)(t.td,{children:\"bn\"})]})]})]}),`\n`,(0,e.jsx)(\"p\",{className:\"tableCaption\",children:\"Table 1\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"FIFO queues b1, b2 to bn: Each queue contains URLs from the same host.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Queue selector: Each worker thread is mapped to a FIFO queue, and it only downloads URLs from that queue. The queue selection logic is done by the Queue selector.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Worker thread 1 to N. A worker thread downloads web pages one by one from the same host. A delay can be added between two download tasks.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h4,{id:\"priority\",children:\"Priority\"}),`\n`,(0,e.jsx)(t.p,{children:\"A random post from a discussion forum about Apple products carries very different weight than posts on the Apple home page. Even though they both have the \\u201CApple\\u201D keyword, it is sensible for a crawler to crawl the Apple home page first.\"}),`\n`,(0,e.jsx)(t.p,{children:\"We prioritize URLs based on usefulness, which can be measured by PageRank [10], website traffic, update frequency, etc. \\u201CPrioritizer\\u201D is the component that handles URL prioritization. Refer to the reference materials [5] [10] for in-depth information about this concept.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Figure 7 shows the design that manages URL priority.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 7\",children:(0,e.jsx)(r,{src:w,alt:\"Image represents a system for processing URLs.  A stream of `input URLs` enters a `Prioritizer` component, which then distributes these URLs to multiple queues labeled `f1`, `f2`, ..., `fn`.  These queues are represented as vertically stacked rectangles, suggesting they hold multiple URLs.  The `Prioritizer` determines which queue each incoming URL should be assigned to based on some prioritization logic (not specified in the diagram).  After processing in their respective queues, the URLs from all queues are fed into a `Queue selector` component. This component selects URLs from the various queues, likely based on some selection criteria (again, not detailed), and outputs a stream of `output URLs`.  The ellipsis (...) indicates that there are more queues between `f2` and `fn` than are explicitly shown.  The overall flow is top-down, with URLs entering at the top and exiting at the bottom.\",width:\"500\",height:\"502\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Prioritizer: It takes URLs as input and computes the priorities.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Queue f1 to fn: Each queue has an assigned priority. Queues with high priority are selected with higher probability.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Queue selector: Randomly choose a queue with a bias towards queues with higher priority.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Figure 8 presents the URL frontier design, and it contains two modules:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Front queues: manage prioritization\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Back queues: manage politeness\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(n,{caption:\"Figure 8\",children:(0,e.jsx)(r,{src:x,alt:\"Image represents a system architecture diagram for URL processing.  Input URLs enter the system and are processed by a `Prioritizer`, which distributes them to multiple `Front queues` (f1, f2, ..., fn), represented as vertical rectangles.  These queues feed into a `Front queue selector`, which outputs the URLs.  The `output URLs` are then routed by a `Back queue router` to multiple `Back queues` (b1, b2, ..., bn), also represented as vertical rectangles.  The `Back queue router` also sends information to a `Mapping Table`, depicted as a database icon.  Finally, a `Back queue selector` distributes URLs from the back queues to multiple `Worker threads` (1, 2, 3, ...), shown as green rectangles, for final processing.  The arrows indicate the flow of data between components.  The ellipses (...) indicate that there are more queues and worker threads than explicitly shown.\",width:\"500\",height:\"899\"})}),`\n`,(0,e.jsx)(t.h4,{id:\"freshness\",children:\"Freshness\"}),`\n`,(0,e.jsx)(t.p,{children:\"Web pages are constantly being added, deleted, and edited. A web crawler must periodically recrawl downloaded pages to keep our data set fresh. Recrawl all the URLs is time-consuming and resource intensive. Few strategies to optimize freshness are listed as follows:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Recrawl based on web pages\\u2019 update history.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Prioritize URLs and recrawl important pages first and more frequently.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h4,{id:\"storage-for-url-frontier\",children:\"Storage for URL Frontier\"}),`\n`,(0,e.jsx)(t.p,{children:\"In real-world crawl for search engines, the number of URLs in the frontier could be hundreds of millions [4]. Putting everything in memory is neither durable nor scalable. Keeping everything in the disk is undesirable neither because the disk is slow; and it can easily become a bottleneck for the crawl.\"}),`\n`,(0,e.jsx)(t.p,{children:\"We adopted a hybrid approach. The majority of URLs are stored on disk, so the storage space is not a problem. To reduce the cost of reading from the disk and writing to the disk, we maintain buffers in memory for enqueue/dequeue operations. Data in the buffer is periodically written to the disk.\"}),`\n`,(0,e.jsx)(t.h3,{id:\"html-downloader\",children:\"HTML Downloader\"}),`\n`,(0,e.jsx)(t.p,{children:\"The HTML Downloader downloads web pages from the internet using the HTTP protocol. Before discussing the HTML Downloader, we look at Robots Exclusion Protocol first.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Robots.txt\"}),`\n`,(0,e.jsx)(t.p,{children:\"Robots.txt, called Robots Exclusion Protocol, is a standard used by websites to communicate with crawlers. It specifies what pages crawlers are allowed to download. Before attempting to crawl a web site, a crawler should check its corresponding robots.txt first and follow its rules.\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"To avoid repeat downloads of robots.txt file, we cache the results of the file. The file is downloaded and saved to cache periodically. Here is a piece of robots.txt file taken from \",(0,e.jsx)(t.code,{children:\"https://www.amazon.com/robots.txt\"}),\". Some of the directories like creatorhub are disallowed for Google bot.\"]}),`\n`,(0,e.jsx)(t.pre,{children:(0,e.jsx)(t.code,{children:`User-agent: Googlebot\nDisallow: /creatorhub/\\\\*\nDisallow: /rss/people/\\\\*/reviews\nDisallow: /gp/pdp/rss/\\\\*/reviews\nDisallow: /gp/cdp/member-reviews/\nDisallow: /gp/aw/cr/\n`})}),`\n`,(0,e.jsx)(t.p,{children:\"Besides robots.txt, performance optimization is another important concept we will cover for the HTML downloader.\"}),`\n`,(0,e.jsx)(t.h4,{id:\"performance-optimization\",children:\"Performance optimization\"}),`\n`,(0,e.jsx)(t.p,{children:\"Below is a list of performance optimizations for HTML downloader.\"}),`\n`,(0,e.jsx)(t.p,{children:\"1. Distributed crawl\"}),`\n`,(0,e.jsx)(t.p,{children:\"To achieve high performance, crawl jobs are distributed into multiple servers, and each server runs multiple threads. The URL space is partitioned into smaller pieces; so, each downloader is responsible for a subset of the URLs. Figure 9 shows an example of a distributed crawl.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 9\",children:(0,e.jsx)(r,{src:v,alt:\"Image represents a system architecture diagram showing a central component labeled 'URL Frontier' distributing URLs to multiple 'HTML Downloaders.'  The URL Frontier acts as a dispatcher, sending URLs via directed arrows labeled 'distribute URLs' to three depicted HTML Downloaders (with an ellipsis '...' indicating more such downloaders exist).  Each arrow represents the flow of URLs from the URL Frontier to an individual HTML Downloader, suggesting a parallel processing or load-balancing strategy. The diagram illustrates a one-to-many relationship where a single source distributes tasks (URLs) to multiple worker nodes (HTML Downloaders) for processing.  The bottom of the image contains a note indicating that the viewer does not support full SVG 1.1.\",width:\"500\",height:\"402\"})}),`\n`,(0,e.jsx)(t.p,{children:\"2. Cache DNS Resolver\"}),`\n`,(0,e.jsx)(t.p,{children:\"DNS Resolver is a bottleneck for crawlers because DNS requests might take time due to the synchronous nature of many DNS interfaces. DNS response time ranges from 10ms to 200ms. Once a request to DNS is carried out by a crawler thread, other threads are blocked until the first request is completed. Maintaining our DNS cache to avoid calling DNS frequently is an effective technique for speed optimization. Our DNS cache keeps the domain name to IP address mapping and is updated periodically by cron jobs.\"}),`\n`,(0,e.jsx)(t.p,{children:\"3. Locality\"}),`\n`,(0,e.jsx)(t.p,{children:\"Distribute crawl servers geographically. When crawl servers are closer to website hosts, crawlers experience faster download time. Design locality applies to most of the system components: crawl servers, cache, queue, storage, etc.\"}),`\n`,(0,e.jsx)(t.p,{children:\"4. Short timeout\"}),`\n`,(0,e.jsx)(t.p,{children:\"Some web servers respond slowly or may not respond at all. To avoid long wait time, a maximal wait time is specified. If a host does not respond within a predefined time, the crawler will stop the job and crawl some other pages.\"}),`\n`,(0,e.jsx)(t.h3,{id:\"robustness\",children:\"Robustness\"}),`\n`,(0,e.jsx)(t.p,{children:\"Besides performance optimization, robustness is also an important consideration. We present a few approaches to improve the system robustness:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:'Consistent hashing: This helps to distribute loads among downloaders. A new downloader server can be added or removed using consistent hashing. Refer to the \"Design consistent hashing\" chapter for more details.'}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Save crawl states and data: To guard against failures, crawl states and data are written to a storage system. A disrupted crawl can be restarted easily by loading saved states and data.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Exception handling: Errors are inevitable and common in a large-scale system. The crawler must handle exceptions gracefully without crashing the system.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Data validation: This is an important measure to prevent system errors.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"extensibility\",children:\"Extensibility\"}),`\n`,(0,e.jsx)(t.p,{children:\"As almost every system evolves, one of the design goals is to make the system flexible enough to support new content types. The crawler can be extended by plugging in new modules. Figure 10 shows how to add new modules.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 10\",children:(0,e.jsx)(r,{src:m,alt:\"Image represents a web crawler system architecture.  The process begins with 'seed URLs', which are fed into a 'URL Frontier'.  The 'URL Frontier' passes URLs to an 'HTML Downloader', which in turn uses a 'DNS Resolver' to obtain IP addresses before downloading the HTML content.  The downloaded HTML is then processed by a 'Content Parser', which sends the parsed data to a 'Content Seen?' module for checking against a 'Content St..' (presumably a content storage database).  If the content is new, it's passed to an 'Extension Module', containing components like 'PNG...' (representing various file types), a 'Link Extractor' (for finding new URLs), and a 'Web Monitor' (for monitoring website changes).  The 'Link Extractor' output is filtered by a 'URL Filter' and checked against a 'URL Seen?' module, which consults a 'URL Storag..' (presumably a URL storage database) to determine if the URL has already been processed.  The entire system forms a closed loop, with new URLs identified by the 'Link Extractor' being fed back into the 'URL Frontier' for further processing.\",width:\"700\",height:\"459\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"PNG Downloader module is plugged-in to download PNG files.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web Monitor module is added to monitor the web and prevent copyright and trademark infringements.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"detect-and-avoid-problematic-content\",children:\"Detect and avoid problematic content\"}),`\n`,(0,e.jsx)(t.p,{children:\"This section discusses the detection and prevention of redundant, meaningless, or harmful content.\"}),`\n`,(0,e.jsx)(t.p,{children:\"1. Redundant content\"}),`\n`,(0,e.jsx)(t.p,{children:\"As discussed previously, nearly 30% of the web pages are duplicates. Hashes or checksums help to detect duplication [11].\"}),`\n`,(0,e.jsx)(t.p,{children:\"2. Spider traps\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"A spider trap is a web page that causes a crawler in an infinite loop. For instance, an infinite deep directory structure is listed as follows: \",(0,e.jsx)(t.code,{children:\"http://www.spidertrapexample.com/foo/bar/foo/bar/foo/bar/...\"})]}),`\n`,(0,e.jsx)(t.p,{children:\"Such spider traps can be avoided by setting a maximal length for URLs. However, no one-size-fits-all solution exists to detect spider traps. Websites containing spider traps are easy to identify due to an unusually large number of web pages discovered on such websites. It is hard to develop automatic algorithms to avoid spider traps; however, a user can manually verify and identify a spider trap, and either exclude those websites from the crawler or apply some customized URL filters.\"}),`\n`,(0,e.jsx)(t.p,{children:\"3. Data noise\"}),`\n`,(0,e.jsx)(t.p,{children:\"Some of the contents have little or no value, such as advertisements, code snippets, spam URLs, etc. Those contents are not useful for crawlers and should be excluded if possible.\"}),`\n`,(0,e.jsx)(t.h2,{id:\"step-4---wrap-up\",children:\"Step 4 - Wrap up\"}),`\n`,(0,e.jsx)(t.p,{children:\"In this chapter, we first discussed the characteristics of a good crawler: scalability, politeness, extensibility, and robustness. Then, we proposed a design and discussed key components. Building a scalable web crawler is not a trivial task because the web is enormously large and full of traps. Even though we have covered many topics, we still miss many relevant talking points:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Server-side rendering: Numerous websites use scripts like JavaScript, AJAX, etc to generate links on the fly. If we download and parse web pages directly, we will not be able to retrieve dynamically generated links. To solve this problem, we perform server-side rendering (also called dynamic rendering) first before parsing a page [12].\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Filter out unwanted pages: With finite storage capacity and crawl resources, an anti-spam component is beneficial in filtering out low quality and spam pages [13] [14].\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Database replication and sharding: Techniques like replication and sharding are used to improve the data layer availability, scalability, and reliability.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Horizontal scaling: For large scale crawl, hundreds or even thousands of servers are needed to perform download tasks. The key is to keep servers stateless.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Availability, consistency, and reliability: These concepts are at the core of any large system\\u2019s success.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Analytics: Collecting and analyzing data are important parts of any system because data is key ingredient for fine-tuning.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Congratulations on getting this far! Now give yourself a pat on the back. Good job!\"}),`\n`,(0,e.jsx)(t.h2,{id:\"reference-materials\",children:\"Reference materials\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"[1] US Library of Congress: \",(0,e.jsx)(t.a,{href:\"https://www.loc.gov/websites/\",children:(0,e.jsx)(\"u\",{children:\"https://www.loc.gov/websites/\"})})]}),`\n`,(0,e.jsxs)(t.p,{children:[\"[2] EU Web Archive: \",(0,e.jsx)(t.a,{href:\"http://data.europa.eu/webarchive\",children:(0,e.jsx)(\"u\",{children:\"http://data.europa.eu/webarchive\"})})]}),`\n`,(0,e.jsxs)(t.p,{children:[\"[3] Digimarc: \",(0,e.jsx)(t.a,{href:\"https://www.digimarc.com/products/digimarc-services/piracy-intelligence\",children:(0,e.jsx)(\"u\",{children:\"https://www.digimarc.com/products/digimarc-services/piracy-intelligence\"})})]}),`\n`,(0,e.jsx)(t.p,{children:\"[4] Heydon A., Najork M. Mercator: A scalable, extensible web crawler World Wide Web, 2 (4) (1999), pp. 219-229\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"[5] By Christopher Olston, Marc Najork: Web Crawling.\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.a,{href:\"http://infolab.stanford.edu/~olston/publications/crawling_survey.pdf\",children:(0,e.jsx)(\"u\",{children:\"http://infolab.stanford.edu/~olston/publications/crawling_survey.pdf\"})})]}),`\n`,(0,e.jsxs)(t.p,{children:[\"[6] 29% Of Sites Face Duplicate Content Issues: \",(0,e.jsx)(t.a,{href:\"https://tinyurl.com/y6tmh55y\",children:(0,e.jsx)(\"u\",{children:\"https://tinyurl.com/y6tmh55y\"})})]}),`\n`,(0,e.jsx)(t.p,{children:\"[7] Rabin M.O., et al. Fingerprinting by random polynomials Center for Research in Computing Techn., Aiken Computation Laboratory, Univ. (1981)\"}),`\n`,(0,e.jsx)(t.p,{children:\"[8] B. H. Bloom, \\u201CSpace/time trade-offs in hash coding with allowable errors,\\u201D Communications of the ACM, vol. 13, no. 7, pp. 422\\u2013426, 1970.\"}),`\n`,(0,e.jsx)(t.p,{children:\"[9] Donald J. Patterson, Web Crawling:\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.a,{href:\"https://www.ics.uci.edu/~lopes/teaching/cs221W12/slides/Lecture05.pdf\",children:(0,e.jsx)(\"u\",{children:\"https://www.ics.uci.edu/~lopes/teaching/cs221W12/slides/Lecture05.pdf\"})})}),`\n`,(0,e.jsx)(t.p,{children:\"[10] L. Page, S. Brin, R. Motwani, and T. Winograd, \\u201CThe PageRank citation ranking: Bringing order to the web,\\u201D Technical Report, Stanford University, 1998.\"}),`\n`,(0,e.jsx)(t.p,{children:\"[11] Burton Bloom. Space/time trade-offs in hash coding with allowable errors. Communications of the ACM, 13(7), pages 422--426, July 1970.\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"[12] Google Dynamic Rendering: \",(0,e.jsx)(t.a,{href:\"https://developers.google.com/search/docs/guides/dynamic-rendering\",children:(0,e.jsx)(\"u\",{children:\"https://developers.google.com/search/docs/guides/dynamic-rendering\"})})]}),`\n`,(0,e.jsx)(t.p,{children:\"[13] T. Urvoy, T. Lavergne, and P. Filoche, \\u201CTracking web spam with hidden style similarity,\\u201D in Proceedings of the 2nd International Workshop on Adversarial Information Retrieval on the Web, 2006.\"}),`\n`,(0,e.jsx)(t.p,{children:\"[14] H.-T. Lee, D. Leonard, X. Wang, and D. Loguinov, \\u201CIRLbot: Scaling to 6 billion pages and beyond,\\u201D in Proceedings of the 17th International World Wide Web Conference, 2008.\"})]})}function b(i={}){let{wrapper:t}=i.components||{};return t?(0,e.jsx)(t,{...i,children:(0,e.jsx)(y,{...i})}):y(i)}function u(i,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return Q(G);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "foreword"
+      ],
+      "id": "foreword",
+      "chapter": 0,
+      "title": "Foreword",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "join-discord-community"
+      ],
+      "id": "join-discord-community",
+      "chapter": 1,
+      "title": "Join the Community"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "scale-from-zero-to-millions-of-users"
+      ],
+      "id": "scale-from-zero-to-millions-of-users",
+      "chapter": 2,
+      "title": "Scale From Zero To Millions Of Users",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "back-of-the-envelope-estimation"
+      ],
+      "id": "back-of-the-envelope-estimation",
+      "chapter": 3,
+      "title": "Back-of-the-envelope Estimation",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "a-framework-for-system-design-interviews"
+      ],
+      "id": "a-framework-for-system-design-interviews",
+      "chapter": 4,
+      "title": "A Framework For System Design Interviews",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-rate-limiter"
+      ],
+      "id": "design-a-rate-limiter",
+      "chapter": 5,
+      "title": "Design A Rate Limiter",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-consistent-hashing"
+      ],
+      "id": "design-consistent-hashing",
+      "chapter": 6,
+      "title": "Design Consistent Hashing",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-key-value-store"
+      ],
+      "id": "design-a-key-value-store",
+      "chapter": 7,
+      "title": "Design A Key-value Store",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-unique-id-generator-in-distributed-systems"
+      ],
+      "id": "design-a-unique-id-generator-in-distributed-systems",
+      "chapter": 8,
+      "title": "Design A Unique ID Generator In Distributed Systems"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-url-shortener"
+      ],
+      "id": "design-a-url-shortener",
+      "chapter": 9,
+      "title": "Design A URL Shortener",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-web-crawler"
+      ],
+      "id": "design-a-web-crawler",
+      "chapter": 10,
+      "title": "Design A Web Crawler",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-notification-system"
+      ],
+      "id": "design-a-notification-system",
+      "chapter": 11,
+      "title": "Design A Notification System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-news-feed-system"
+      ],
+      "id": "design-a-news-feed-system",
+      "chapter": 12,
+      "title": "Design A News Feed System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-chat-system"
+      ],
+      "id": "design-a-chat-system",
+      "chapter": 13,
+      "title": "Design A Chat System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-search-autocomplete-system"
+      ],
+      "id": "design-a-search-autocomplete-system",
+      "chapter": 14,
+      "title": "Design A Search Autocomplete System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-youtube"
+      ],
+      "id": "design-youtube",
+      "chapter": 15,
+      "title": "Design YouTube",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-google-drive"
+      ],
+      "id": "design-google-drive",
+      "chapter": 16,
+      "title": "Design Google Drive"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "proximity-service"
+      ],
+      "id": "proximity-service",
+      "chapter": 17,
+      "title": "Proximity Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "nearby-friends"
+      ],
+      "id": "nearby-friends",
+      "chapter": 18,
+      "title": "Nearby Friends"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "google-maps"
+      ],
+      "id": "google-maps",
+      "chapter": 19,
+      "title": "Google Maps"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-message-queue"
+      ],
+      "id": "distributed-message-queue",
+      "chapter": 20,
+      "title": "Distributed Message Queue"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "metrics-monitoring-and-alerting-system"
+      ],
+      "id": "metrics-monitoring-and-alerting-system",
+      "chapter": 21,
+      "title": "Metrics Monitoring and Alerting System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "ad-click-event-aggregation"
+      ],
+      "id": "ad-click-event-aggregation",
+      "chapter": 22,
+      "title": "Ad Click Event Aggregation"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "hotel-reservation-system"
+      ],
+      "id": "hotel-reservation-system",
+      "chapter": 23,
+      "title": "Hotel Reservation System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-email-service"
+      ],
+      "id": "distributed-email-service",
+      "chapter": 24,
+      "title": "Distributed Email Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "s3-like-object-storage"
+      ],
+      "id": "s3-like-object-storage",
+      "chapter": 25,
+      "title": "S3-like Object Storage"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "real-time-gaming-leaderboard"
+      ],
+      "id": "real-time-gaming-leaderboard",
+      "chapter": 26,
+      "title": "Real-time Gaming Leaderboard",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "payment-system"
+      ],
+      "id": "payment-system",
+      "chapter": 27,
+      "title": "Payment System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "digital-wallet"
+      ],
+      "id": "digital-wallet",
+      "chapter": 28,
+      "title": "Digital Wallet"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "stock-exchange"
+      ],
+      "id": "stock-exchange",
+      "chapter": 29,
+      "title": "Stock Exchange"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "the-learning-continues"
+      ],
+      "id": "the-learning-continues",
+      "chapter": 30,
+      "title": "The Learning Continues",
+      "free": true
+    }
+  ],
+  "courseMetadata": {
+    "title": "System Design Interview",
+    "authors": "Alex Xu · Bestselling author",
+    "claimCodes": [
+      "sdi",
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "system-design-interview",
+    "defaultChapter": "/courses/system-design-interview/scale-from-zero-to-millions-of-users",
+    "rootPath": "/courses/system-design-interview",
+    "lessons": 30,
+    "students": 250000,
+    "showChapter": true,
+    "lastModified": "2022.03.01"
+  }
+}

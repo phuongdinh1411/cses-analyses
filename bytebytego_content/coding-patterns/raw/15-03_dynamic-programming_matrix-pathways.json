@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "dynamic-programming/matrix-pathways",
+  "chapter": "15-03",
+  "title": "Matrix Pathways",
+  "free": false,
+  "code": "var Component=(()=>{var L=Object.create;var h=Object.defineProperty;var y=Object.getOwnPropertyDescriptor;var x=Object.getOwnPropertyNames;var M=Object.getPrototypeOf,k=Object.prototype.hasOwnProperty;var _=(t,C)=>()=>(C||t((C={exports:{}}).exports,C),C.exports),Z=(t,C)=>{for(var l in C)h(t,l,{get:C[l],enumerable:!0})},n=(t,C,l,r)=>{if(C&&typeof C==\"object\"||typeof C==\"function\")for(let i of x(C))!k.call(t,i)&&i!==l&&h(t,i,{get:()=>C[i],enumerable:!(r=y(C,i))||r.enumerable});return t};var b=(t,C,l)=>(l=t!=null?L(M(t)):{},n(C||!t||!t.__esModule?h(l,\"default\",{value:t,enumerable:!0}):l,t)),F=t=>n(h({},\"__esModule\",{value:!0}),t);var d=_((U,c)=>{c.exports=_jsx_runtime});var I={};Z(I,{default:()=>g,frontmatter:()=>E});var e=b(d());var f=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/matrix-pathways-UGT7EEGC.svg\";var p=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-1-TAOW5PIC.svg\";var m=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-2-MFWZHEZM.svg\";var w=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-3-6HKXFOFL.svg\";var u=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-4-IJIH5HBU.svg\";var V=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-5-LJYBRPZ2.svg\";var H=\"/images/courses/coding-patterns/dynamic-programming/matrix-pathways/image-15-03-6-EIJMVIJT.svg\";var E={chapter:\"15-03\",difficulty:\"Medium\",title:\"Matrix Pathways\"};function A(t){let C={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",math:\"math\",mi:\"mi\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:l,Figure:r,Image:i,OpenCodeEditor:s,ProblemDescription:o}=C;return l||a(\"CodeTabs\",!0),r||a(\"Figure\",!0),i||a(\"Image\",!0),s||a(\"OpenCodeEditor\",!0),o||a(\"ProblemDescription\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsxs)(o,{children:[(0,e.jsxs)(C.p,{children:[\"You are positioned at the top-left corner of a \",(0,e.jsx)(C.code,{children:\"m \\xD7 n\"}),\" matrix, and can only move \",(0,e.jsx)(C.strong,{children:\"downward\"}),\" or \",(0,e.jsx)(C.strong,{children:\"rightward\"}),\" through the matrix. Determine the \",(0,e.jsx)(C.strong,{children:\"number of unique pathways\"}),\" you can take to reach the bottom-right corner of the matrix.\"]}),(0,e.jsx)(C.h4,{id:\"example\",children:\"Example:\"}),(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:f,width:\"999\",height:\"138\",alt:\"Image represents six distinct diagrams, each enclosed within a black square and overlaid on a 3x3 grid.  Each diagram depicts a path formed by a thick, orange line connecting two orange circles; one circle is located at the top-left corner of the grid in every diagram, representing a starting point, while the other circle, representing an endpoint, is positioned at various locations within the grid in each diagram. The orange line connecting these circles follows a path constrained by the grid lines, forming different right-angled routes across the grid in each of the six diagrams.  The paths vary in length and direction, demonstrating different possible routes from the top-left starting point to various endpoints within the 3x3 grid.  The endpoint circles have a slightly larger, lighter orange ring around them, visually distinguishing them from the starting point circles.\",priority:!0})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-python\",children:[\"Input: m = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"3\"}),\", n = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"3\"}),`\nOutput: `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"6\"}),`\n`]})}),(0,e.jsx)(C.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsx)(C.li,{children:(0,e.jsx)(C.code,{children:\"m, n \\u2265 1\"})}),`\n`]})]}),`\n`,(0,e.jsx)(C.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,e.jsx)(C.p,{children:\"At each cell, we can either move right or move down. No matter which direction we choose at any point, it will always move us closer to the destination. This means we just need to keep moving either right or down until we can no longer do so, at which point we\\u2019ve reached the bottom-right corner.\"}),`\n`,(0,e.jsx)(C.p,{children:\"Let's think about this problem backward. Assume we have already reached the bottom-right corner. How did we get here? We know for certain we came from either the cell directly above, or the cell directly to the left of the current position.\"}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:p,alt:\"Image represents a 3x3 grid, enclosed within a bold black border, with each cell delineated by thin black lines.  A light-blue circle with a slightly darker-blue inner circle is positioned in the bottom-right cell. An orange arrow points horizontally from the cell to the left of the circle, into the circle itself.  Simultaneously, another orange arrow points vertically downwards from the cell above the circle, also into the circle.  No text, URLs, or parameters are present within the grid or on the arrows; the image solely depicts the directional flow of information into a central point within a structured grid system.\",width:\"126\",height:\"126\"})}),`\n`,(0,e.jsx)(C.p,{children:\"This is equally true for any cell on the matrix, which means a generalization can be made: the number of paths to any cell is equal to the sum of the number of paths to the cell above it and the cell to its left.\"}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:m,alt:\"Image represents a diagram illustrating a recursive approach to calculating the number of pathways in a matrix.  The diagram uses a grid to visually represent matrix cells, with coordinates (r, c) denoting row 'r' and column 'c'.  An orange arrow points from cell (r-1, c) vertically downwards to cell (r, c), and another orange arrow points from cell (r, c-1) horizontally to the right towards cell (r, c). This visually demonstrates that the number of pathways to reach cell (r, c) is the sum of the pathways to reach cell (r-1, c) above it and cell (r, c-1) to its left.  Below the diagram, the equation `matrix_pathways(r, c) = matrix_pathways(r - 1, c) + matrix_pathways(r, c - 1)` explicitly defines this recursive relationship, stating that the total number of pathways to reach a cell (r, c) is equal to the sum of pathways to reach the cell above it and the cell to its left.\",width:\"624\",height:\"199\"})}),`\n`,(0,e.jsxs)(C.p,{children:[\"This demonstrates the existence of subproblems, and that this problem has an \",(0,e.jsx)(C.strong,{children:\"optimal substructure\"}),\", where we need to solve two subproblems in order to solve the main problem. This makes this problem well-suited for DP. So, let\\u2019s translate the above \",(0,e.jsx)(C.strong,{children:\"recurrence relation\"}),\" to a DP formula:\"]}),`\n`,(0,e.jsxs)(C.blockquote,{children:[`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.code,{children:\"dp[r][c] = dp[r - 1][c] + dp[r][c - 1]\"}),\", where \",(0,e.jsx)(C.code,{children:\"dp[r][c]\"}),\" represents the total number of paths that lead to cell (\",(0,e.jsx)(C.code,{children:\"r\"}),\", \",(0,e.jsx)(C.code,{children:\"c\"}),\").\"]}),`\n`]}),`\n`,(0,e.jsx)(C.p,{children:\"Before populating the DP table, we need to know our base cases.\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Base cases\"}),(0,e.jsx)(C.br,{}),`\n`,\"We know \",(0,e.jsx)(C.code,{children:\"dp[0][0]\"}),\" should be 1 because there\\u2019s only one path leading to cell (0, 0).\"]}),`\n`,(0,e.jsx)(C.p,{children:\"What else do we know for certain? Since we can only move right or down, once we leave a row or column, we can never return to it because we can't move left or up. This means, for any cell in row 0 or column 0, there\\u2019s only one path to those cells:\"}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:w,alt:\"Image represents two grid diagrams illustrating different data processing approaches.  The left diagram shows a single row of a grid highlighted in peach, containing a light-blue filled circle at the far left and three consecutive orange right-pointing arrows extending from it across the row.  This suggests a horizontal, sequential processing of data.  A light-blue outlined circle is present at the bottom-right corner of the grid, implying a final result or output. The right diagram displays a peach-highlighted column, with a light-blue filled circle at the top and three consecutive orange downward-pointing arrows leading to a light-blue outlined circle at the bottom-right. This depicts a vertical, sequential processing of data, contrasting with the horizontal flow in the left diagram. Both diagrams use the same grid structure, suggesting a comparison between horizontal and vertical data processing methods within a similar context.  The small circles likely represent data points, while the arrows indicate the direction and flow of processing steps.\",width:\"372\",height:\"163\"})}),`\n`,(0,e.jsx)(C.p,{children:\"Therefore, we can set all cells in row 0 and column 0 to 1 as the base cases.\"}),`\n`,(0,e.jsxs)(C.p,{children:[\"Problem-solving tip: another way to identify row 0 and column 0 as base cases is by examining the DP formula. Since we need the values from row \",(0,e.jsx)(C.code,{children:\"r - 1\"}),\" and column \",(0,e.jsx)(C.code,{children:\"c - 1\"}),\" to populate \",(0,e.jsx)(C.code,{children:\"dp[r][c]\"}),\", all values at \",(0,e.jsx)(C.code,{children:\"r = 0\"}),\" and \",(0,e.jsx)(C.code,{children:\"c = 0\"}),\" must be pre-populated before using the formula to avoid index out-of-bound errors.\"]}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Populating the DP table\"}),(0,e.jsx)(C.br,{}),`\n`,\"Once the base cases are set, we can populate the remaining DP table, starting from cell (1, 1), using our DP formula (\",(0,e.jsx)(C.code,{children:\"dp[r][c] = dp[r-1][c] + dp[r][c-1]\"}),\"):\"]}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:u,alt:\"Image represents a transformation of a 4x4 matrix.  The left matrix is initialized with the value '1' in the first column and row, and all other cells are empty.  The top row and leftmost column are labeled with indices 0, 1, 2, and 3.  A thick black arrow points from the left matrix to the right matrix. The right matrix shows the result of a cumulative sum operation.  Specifically, each cell (i, j) in the right matrix contains the sum of all cells (x, y) in the left matrix where x \\u2264 i and y \\u2264 j.  For example, the cell at (1,1) in the right matrix is 2 (1+1 from the left matrix), the cell at (2,3) is 10 (1+1+1+1+1+1+1+1+1+1), and the cell at (3,3) is 20, representing the cumulative sum of all elements in the left matrix.  The values in the right matrix are calculated by iteratively summing the values from the left matrix, demonstrating a cumulative sum pattern.\",width:\"423\",height:\"168\"})}),`\n`,(0,e.jsxs)(C.p,{children:[\"After we fill in the DP table, we can return \",(0,e.jsx)(C.strong,{children:(0,e.jsx)(C.code,{children:\"dp[m - 1][n - 1]\"})}),\", which contains the number of paths to the bottom-right corner.\"]}),`\n`,(0,e.jsx)(s,{}),`\n`,(0,e.jsx)(C.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,e.jsxs)(l,{children:[(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-python\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways\"}),\"(\",(0,e.jsxs)(C.span,{className:\"hljs-params\",children:[\"m: \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"}),\", n: \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Base cases: Set all cells in row 0 and column 0 to 1. We can do this by\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# initializing all cells in the DP table to 1.\"}),`\n    dp = [[`,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"] * n \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" _ \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),`(m)]\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Fill in the rest of the DP table.\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" r \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`, m):\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Paths to current cell = paths from above + paths from left.\"}),`\n            dp[r][c] = dp[r - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][c] + dp[r][c - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[m - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-javascript\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-params\",children:\"m, n\"}),`) {\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Base cases: Set all cells in row 0 and column 0 to 1.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"const\"}),\" dp = \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Array\"}),\".\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"from\"}),\"({ \",(0,e.jsx)(C.span,{className:\"hljs-attr\",children:\"length\"}),\": m }, \",(0,e.jsx)(C.span,{className:\"hljs-function\",children:\"() =>\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(n).\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`))\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Fill in the rest of the DP table.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" r = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; r < m; r++) {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" c = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; c < n; c++) {\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Paths to current cell = paths from above + paths from left.\"}),`\n      dp[r][c] = dp[r - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][c] + dp[r][c - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n    }\n  }\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[m - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n}\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-java\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways\"}),(0,e.jsxs)(C.span,{className:\"hljs-params\",children:[\"(\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" m, \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Base cases: Set all cells in row 0 and column 0 to 1. We can do this by\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// initializing all cells in the DP table to 1.\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\"[][] dp = \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"int\"}),`[m][n];\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"r\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`; r < m; r++) {\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"c\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`; c < n; c++) {\n                `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"if\"}),\" (r == \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),\" || c == \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`) {\n                    dp[r][c] = `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`;\n                } `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Paths to current cell = paths from above + paths from left.\"}),`\n                    dp[r][c] = dp[r - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][c] + dp[r][c - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`];\n                }\n            }\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[m - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),\"][n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`];\n    }\n}\n`]})})]}),`\n`,(0,e.jsx)(C.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,e.jsx)(C.code,{children:\"matrix_pathways\"}),\" is \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"O\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\"(\"}),(0,e.jsx)(C.mi,{children:\"m\"}),(0,e.jsx)(C.mo,{children:\"\\u22C5\"}),(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\")\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"O(m\\\\cdot n)\"})]})})}),(0,e.jsxs)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,e.jsx)(C.span,{className:\"mopen\",children:\"(\"}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"m\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,e.jsx)(C.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mclose\",children:\")\"})]})]})]}),\" because each cell in the DP table is populated once.\"]}),`\n`,(0,e.jsxs)(C.p,{children:[(0,e.jsx)(C.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"O\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\"(\"}),(0,e.jsx)(C.mi,{children:\"m\"}),(0,e.jsx)(C.mo,{children:\"\\u22C5\"}),(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\")\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"O(m\\\\cdot n)\"})]})})}),(0,e.jsxs)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,e.jsx)(C.span,{className:\"mopen\",children:\"(\"}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"m\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,e.jsx)(C.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mclose\",children:\")\"})]})]})]}),\" due to the DP table, which contains \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"m\"}),(0,e.jsx)(C.mo,{children:\"\\u22C5\"}),(0,e.jsx)(C.mi,{children:\"n\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"m\\\\cdot n\"})]})})}),(0,e.jsxs)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"0.4445em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"m\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,e.jsx)(C.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,e.jsx)(C.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"})]})]})]}),\" elements.\"]}),`\n`,(0,e.jsx)(C.h2,{id:\"optimization\",children:\"Optimization\"}),`\n`,(0,e.jsx)(C.p,{children:\"We can optimize our solution by understanding that, for each cell in the DP table, we only need to access the cells directly above it and to its left.\"}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:V,alt:\"Image represents a 2x2 grid illustrating a dynamic programming approach, likely for a problem involving a 2D array or matrix.  The grid is divided into four quadrants, each representing a cell in the DP table. The top-right quadrant is labeled `dp[r-1][c]`, representing the value at row `r-1` and column `c`. The bottom-left quadrant is labeled `dp[r][c-1]`, representing the value at row `r` and column `c-1`. The bottom-right quadrant is labeled `dp[r][c]`, representing the value at row `r` and column `c`. A downward-pointing arrow connects `dp[r-1][c]` to `dp[r][c]`, indicating a dependency; the value of `dp[r][c]` is calculated using the value of `dp[r-1][c]`. A rightward-pointing arrow connects `dp[r][c-1]` to `dp[r][c]`, indicating another dependency; the value of `dp[r][c]` also depends on the value of `dp[r][c-1]`.  This suggests a recursive or iterative approach where the value of each cell is computed based on the values of its top and left neighbors.\",width:\"208\",height:\"208\"})}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsxs)(C.li,{children:[\"To get the cell above it (\",(0,e.jsx)(C.code,{children:\"dp[r-1][c]\"}),\"), we only need access to the previous row.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[\"To get the cell to its left (\",(0,e.jsx)(C.code,{children:\"dp[r][c-1]\"}),\"), we just need to look at the cell to the left of the current cell, which is in the same row we're currently populating.\"]}),`\n`]}),`\n`,(0,e.jsx)(C.p,{children:\"Therefore, we only need to maintain two rows:\"}),`\n`,(0,e.jsxs)(C.ul,{children:[`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.code,{children:\"prev_row\"}),\": the previous row.\"]}),`\n`,(0,e.jsxs)(C.li,{children:[(0,e.jsx)(C.code,{children:\"curr_row\"}),\": the current row being populated.\"]}),`\n`]}),`\n`,(0,e.jsx)(r,{children:(0,e.jsx)(i,{src:H,alt:\"Image represents a 4x4 grid illustrating a coding pattern, possibly related to dynamic programming or matrix calculations.  The grid is labeled with row and column indices (0-3 for both).  The grid's cells contain numerical values; the top two rows (rows 0 and 1) show light gray numbers (1, 1, 1, 1; 1, 2, 3, 4 respectively). Row 2 displays bold black numbers (1, 3, 6, 10). Row 3 begins with a bold black '1'.  Downward-pointing gray arrows connect each element in row 2 to the corresponding element below in row 3, indicating a calculation dependency.  A horizontal gray arrow connects the initial '1' in row 3 to the next cell, suggesting a cumulative or iterative process.  To the right, an explanatory text states: 'to calculate row 3, the only other row we need is row 2,' clarifying the dependency between rows 2 and 3 in the calculation.  The labels 'prev_row: 2' and 'curr_row: 3' explicitly identify rows 2 and 3 as the previous and current rows in the computation, respectively.\",width:\"456\",height:\"167\"})}),`\n`,(0,e.jsxs)(C.p,{children:[\"This effectively reduces the space complexity to \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsxs)(C.mrow,{children:[(0,e.jsx)(C.mi,{children:\"O\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\"(\"}),(0,e.jsx)(C.mi,{children:\"n\"}),(0,e.jsx)(C.mo,{stretchy:\"false\",children:\")\"})]}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,e.jsx)(C.span,{className:\"mopen\",children:\"(\"}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"}),(0,e.jsx)(C.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we now only need to maintain two arrays of size \",(0,e.jsxs)(C.span,{className:\"katex\",children:[(0,e.jsx)(C.span,{className:\"katex-mathml\",children:(0,e.jsx)(C.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,e.jsxs)(C.semantics,{children:[(0,e.jsx)(C.mrow,{children:(0,e.jsx)(C.mi,{children:\"n\"})}),(0,e.jsx)(C.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,e.jsx)(C.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,e.jsxs)(C.span,{className:\"base\",children:[(0,e.jsx)(C.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,e.jsx)(C.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\". After populating the DP values for the current row, we\\u2019ll need to make sure to update \",(0,e.jsx)(C.code,{children:\"prev_row\"}),\" with the values from \",(0,e.jsx)(C.code,{children:\"curr_row\"}),\" to prepare for the next iteration since the next row\\u2019s previous row is the current row. Below is the optimized code:\"]}),`\n`,(0,e.jsxs)(l,{children:[(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-python\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways_optimized\"}),\"(\",(0,e.jsxs)(C.span,{className:\"hljs-params\",children:[\"m: \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"}),\", n: \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Initialize 'prev_row' as the DP values of row 0, which are all 1s.\"}),`\n    prev_row = [`,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`] * n\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Iterate through the matrix starting from row 1.\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" r \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`, m):\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Set the first cell of 'curr_row' to 1. This is done by\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# setting the entire row to 1.\"}),`\n        curr_row = [`,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`] * n\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# The number of unique paths to the current cell is the sum\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# of the paths from the cell above it ('prev_row[c]') and\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# the cell to the left ('curr_row[c - 1]').\"}),`\n            curr_row[c] = prev_row[c] + curr_row[c - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# Update 'prev_row' with 'curr_row' values for the next\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# iteration.\"}),`\n        prev_row = curr_row\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# The last element in 'prev_row' stores the result for the\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"# bottom-right cell.\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" prev_row[n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-javascript\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways_optimized\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-params\",children:\"m, n\"}),`) {\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Initialize 'prevRow' as the DP values of row 0, which are all 1s.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" prevRow = \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(n).\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`)\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Iterate through the matrix starting from row 1.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" r = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; r < m; r++) {\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Set the first cell of 'currRow' to 1.\"}),`\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" currRow = \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(n).\",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`)\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"let\"}),\" c = \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; c < n; c++) {\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// The number of unique paths to the current cell is the sum\"}),`\n      `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// of the paths from the cell above and the cell to the left.\"}),`\n      currRow[c] = prevRow[c] + currRow[c - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n    }\n    `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Update 'prevRow' with 'currRow' for the next iteration.\"}),`\n    prevRow = currRow\n  }\n  `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// The last element in 'prevRow' stores the result for the bottom-right cell.\"}),`\n  `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" prevRow[n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`]\n}\n`]})}),(0,e.jsx)(C.pre,{children:(0,e.jsxs)(C.code,{className:\"hljs language-java\",children:[(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.List;\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title function_\",children:\"matrix_pathways_optimized\"}),(0,e.jsxs)(C.span,{className:\"hljs-params\",children:[\"(\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" m, \",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Initialize 'prev_row' as the DP values of row 0, which are all 1s.\"}),`\n        List<Integer> prevRow = `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            prevRow.add(`,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`);\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Iterate through the matrix starting from row 1.\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"r\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; r < m; r++) {\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Set the first cell of 'curr_row' to 1. This is done by\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// setting the entire row to 1.\"}),`\n            List<Integer> currRow = `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n                currRow.add(`,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`);\n            }\n            `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,e.jsx)(C.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-variable\",children:\"c\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`; c < n; c++) {\n                `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// The number of unique paths to the current cell is the sum\"}),`\n                `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// of the paths from the cell above it ('prev_row[c]') and\"}),`\n                `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// the cell to the left ('curr_row[c - 1]').\"}),`\n                currRow.set(c, prevRow.get(c) + currRow.get(c - `,(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`));\n            }\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// Update 'prev_row' with 'curr_row' values for the next\"}),`\n            `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// iteration.\"}),`\n            prevRow = currRow;\n        }\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// The last element in 'prev_row' stores the result for the\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-comment\",children:\"// bottom-right cell.\"}),`\n        `,(0,e.jsx)(C.span,{className:\"hljs-keyword\",children:\"return\"}),\" prevRow.get(n - \",(0,e.jsx)(C.span,{className:\"hljs-number\",children:\"1\"}),`);\n    }\n}\n`]})})]})]})}function g(t={}){let{wrapper:C}=t.components||{};return C?(0,e.jsx)(C,{...t,children:(0,e.jsx)(A,{...t})}):A(t)}function a(t,C){throw new Error(\"Expected \"+(C?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return F(I);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "course": "system-design-interview",
+  "id": "foreword",
+  "chapter": 0,
+  "title": "Foreword",
+  "free": true,
+  "code": "var Component=(()=>{var u=Object.create;var o=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var w=Object.getPrototypeOf,g=Object.prototype.hasOwnProperty;var y=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),v=(t,e)=>{for(var i in e)o(t,i,{get:e[i],enumerable:!0})},a=(t,e,i,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of p(e))!g.call(t,n)&&n!==i&&o(t,n,{get:()=>e[n],enumerable:!(r=m(e,n))||r.enumerable});return t};var f=(t,e,i)=>(i=t!=null?u(w(t)):{},a(e||!t||!t.__esModule?o(i,\"default\",{value:t,enumerable:!0}):i,t)),b=t=>a(o({},\"__esModule\",{value:!0}),t);var d=y((x,h)=>{h.exports=_jsx_runtime});var q={};v(q,{default:()=>c,frontmatter:()=>T});var s=f(d()),T={chapter:0,title:\"Foreword\",free:!0};function l(t){let e={p:\"p\",...t.components};return(0,s.jsxs)(s.Fragment,{children:[(0,s.jsx)(e.p,{children:\"We are delighted that you have decided to join us in learning the system design interviews. System design interview questions are the most difficult to tackle among all the technical interviews. The questions require the interviewees to design an architecture for a software system, which could be a news feed, Google search, chat system, etc. These questions are intimidating, and there is no certain pattern to follow. The questions are usually very big scoped and vague. The processes are open-ended and unclear without a standard or correct answer.\"}),`\n`,(0,s.jsx)(e.p,{children:`Companies widely adopt system design interviews because the communication and problem-solving skills tested in these interviews are similar to those required by a software engineer's daily work. An interviewee is evaluated based on how she analyzes a vague problem and how she solves the problem step by step. The abilities tested also involve how she explains the idea, discusses with others, and evaluates and optimizes the system. In English, using \"she\" flows better than \"he or she\" or jumping between the two. To make reading easier, we use the feminine pronoun throughout this course. No disrespect is intended for male engineers.`}),`\n`,(0,s.jsx)(e.p,{children:\"The system design questions are open-ended. Just like in the real world, there are many differences and variations in the system. The desired outcome is to come up with an architecture to achieve system design goals. The discussions could go in different ways depending on the interviewer. Some interviewers may choose high-level architecture to cover all aspects; whereas some might choose one or more areas to focus on. Typically, system requirements, constraints and bottlenecks should be well understood to shape the direction of both the interviewer and interviewee.\"}),`\n`,(0,s.jsx)(e.p,{children:\"The objective of this course is to provide a reliable strategy to approach the system design questions. The right strategy and knowledge are vital to the success of an interview.\"}),`\n`,(0,s.jsx)(e.p,{children:\"This course provides solid knowledge in building a scalable system. The more knowledge gained from reading this course, the better you are equipped in solving the system design questions.\"}),`\n`,(0,s.jsx)(e.p,{children:\"This course also provides a step by step framework on how to tackle a system design question. It provides many examples to illustrate the systematic approach with detailed steps that you can follow. With constant practice, you will be well-equipped to tackle system design interview questions.\"})]})}function c(t={}){let{wrapper:e}=t.components||{};return e?(0,s.jsx)(e,{...t,children:(0,s.jsx)(l,{...t})}):l(t)}return b(q);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "foreword"
+      ],
+      "id": "foreword",
+      "chapter": 0,
+      "title": "Foreword",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "join-discord-community"
+      ],
+      "id": "join-discord-community",
+      "chapter": 1,
+      "title": "Join the Community"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "scale-from-zero-to-millions-of-users"
+      ],
+      "id": "scale-from-zero-to-millions-of-users",
+      "chapter": 2,
+      "title": "Scale From Zero To Millions Of Users",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "back-of-the-envelope-estimation"
+      ],
+      "id": "back-of-the-envelope-estimation",
+      "chapter": 3,
+      "title": "Back-of-the-envelope Estimation",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "a-framework-for-system-design-interviews"
+      ],
+      "id": "a-framework-for-system-design-interviews",
+      "chapter": 4,
+      "title": "A Framework For System Design Interviews",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-rate-limiter"
+      ],
+      "id": "design-a-rate-limiter",
+      "chapter": 5,
+      "title": "Design A Rate Limiter",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-consistent-hashing"
+      ],
+      "id": "design-consistent-hashing",
+      "chapter": 6,
+      "title": "Design Consistent Hashing",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-key-value-store"
+      ],
+      "id": "design-a-key-value-store",
+      "chapter": 7,
+      "title": "Design A Key-value Store",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-unique-id-generator-in-distributed-systems"
+      ],
+      "id": "design-a-unique-id-generator-in-distributed-systems",
+      "chapter": 8,
+      "title": "Design A Unique ID Generator In Distributed Systems"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-url-shortener"
+      ],
+      "id": "design-a-url-shortener",
+      "chapter": 9,
+      "title": "Design A URL Shortener",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-web-crawler"
+      ],
+      "id": "design-a-web-crawler",
+      "chapter": 10,
+      "title": "Design A Web Crawler",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-notification-system"
+      ],
+      "id": "design-a-notification-system",
+      "chapter": 11,
+      "title": "Design A Notification System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-news-feed-system"
+      ],
+      "id": "design-a-news-feed-system",
+      "chapter": 12,
+      "title": "Design A News Feed System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-chat-system"
+      ],
+      "id": "design-a-chat-system",
+      "chapter": 13,
+      "title": "Design A Chat System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-search-autocomplete-system"
+      ],
+      "id": "design-a-search-autocomplete-system",
+      "chapter": 14,
+      "title": "Design A Search Autocomplete System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-youtube"
+      ],
+      "id": "design-youtube",
+      "chapter": 15,
+      "title": "Design YouTube",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-google-drive"
+      ],
+      "id": "design-google-drive",
+      "chapter": 16,
+      "title": "Design Google Drive"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "proximity-service"
+      ],
+      "id": "proximity-service",
+      "chapter": 17,
+      "title": "Proximity Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "nearby-friends"
+      ],
+      "id": "nearby-friends",
+      "chapter": 18,
+      "title": "Nearby Friends"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "google-maps"
+      ],
+      "id": "google-maps",
+      "chapter": 19,
+      "title": "Google Maps"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-message-queue"
+      ],
+      "id": "distributed-message-queue",
+      "chapter": 20,
+      "title": "Distributed Message Queue"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "metrics-monitoring-and-alerting-system"
+      ],
+      "id": "metrics-monitoring-and-alerting-system",
+      "chapter": 21,
+      "title": "Metrics Monitoring and Alerting System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "ad-click-event-aggregation"
+      ],
+      "id": "ad-click-event-aggregation",
+      "chapter": 22,
+      "title": "Ad Click Event Aggregation"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "hotel-reservation-system"
+      ],
+      "id": "hotel-reservation-system",
+      "chapter": 23,
+      "title": "Hotel Reservation System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-email-service"
+      ],
+      "id": "distributed-email-service",
+      "chapter": 24,
+      "title": "Distributed Email Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "s3-like-object-storage"
+      ],
+      "id": "s3-like-object-storage",
+      "chapter": 25,
+      "title": "S3-like Object Storage"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "real-time-gaming-leaderboard"
+      ],
+      "id": "real-time-gaming-leaderboard",
+      "chapter": 26,
+      "title": "Real-time Gaming Leaderboard",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "payment-system"
+      ],
+      "id": "payment-system",
+      "chapter": 27,
+      "title": "Payment System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "digital-wallet"
+      ],
+      "id": "digital-wallet",
+      "chapter": 28,
+      "title": "Digital Wallet"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "stock-exchange"
+      ],
+      "id": "stock-exchange",
+      "chapter": 29,
+      "title": "Stock Exchange"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "the-learning-continues"
+      ],
+      "id": "the-learning-continues",
+      "chapter": 30,
+      "title": "The Learning Continues",
+      "free": true
+    }
+  ],
+  "courseMetadata": {
+    "title": "System Design Interview",
+    "authors": "Alex Xu · Bestselling author",
+    "claimCodes": [
+      "sdi",
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "system-design-interview",
+    "defaultChapter": "/courses/system-design-interview/scale-from-zero-to-millions-of-users",
+    "rootPath": "/courses/system-design-interview",
+    "lessons": 30,
+    "students": 250000,
+    "showChapter": true,
+    "lastModified": "2022.03.01"
+  }
+}

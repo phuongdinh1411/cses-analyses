@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "linked-lists/lru-cache",
+  "chapter": "03-04",
+  "title": "LRU Cache",
+  "free": false,
+  "code": "var Component=(()=>{var D=Object.create;var n=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var E=Object.getOwnPropertyNames;var F=Object.getPrototypeOf,B=Object.prototype.hasOwnProperty;var T=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),A=(a,e)=>{for(var i in e)n(a,i,{get:e[i],enumerable:!0})},L=(a,e,i,t)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let l of E(e))!B.call(a,l)&&l!==i&&n(a,l,{get:()=>e[l],enumerable:!(t=_(e,l))||t.enumerable});return a};var I=(a,e,i)=>(i=a!=null?D(F(a)):{},L(e||!a||!a.__esModule?n(i,\"default\",{value:a,enumerable:!0}):i,a)),R=a=>L(n({},\"__esModule\",{value:!0}),a);var H=T((i1,r)=>{r.exports=_jsx_runtime});var l1={};A(l1,{default:()=>j,frontmatter:()=>a1});var C=I(H());var c=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-1-GMOZULLA.svg\";var M=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-2-VQZAWSTR.svg\";var d=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-3-WLLKZGPU.svg\";var Z=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-4-I7NJ6HY4.svg\";var o=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-6-MM3JLOLO.svg\";var p=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-7-DR3PAU4U.svg\";var m=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-8-DI56NK2I.svg\";var k=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-9-YK7ZYMTH.svg\";var f=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-10-5EYBATD4.svg\";var y=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-11-T6RVMV3O.svg\";var g=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-12-JETT4CZS.svg\";var w=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-13-DZG6JFMW.svg\";var u=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-14-2NH4CUVR.svg\";var b=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-15-AI5TBBGV.svg\";var N=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-16-25JXONYX.svg\";var x=\"/images/courses/coding-patterns/linked-lists/lru-cache/image-03-04-17-UZXSMIJC.svg\";var a1={chapter:\"03-04\",difficulty:\"Medium\",title:\"LRU Cache\"};function v(a){let e={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",mtext:\"mtext\",munder:\"munder\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...a.components},{CodeTabs:i,Figure:t,Image:l,OpenCodeEditor:V,ProblemDescription:h}=e;return i||s(\"CodeTabs\",!0),t||s(\"Figure\",!0),l||s(\"Image\",!0),V||s(\"OpenCodeEditor\",!0),h||s(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsx)(e.p,{children:\"Design and implement a data structure for the Least Recently Used (LRU) cache that supports the following operations:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"LRUCache(capacity: int)\"}),\": Initialize an LRU cache with the specified capacity.\"]}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"get(key: int) -> int\"}),\": Return the value associated with a key. Return -1 if the key doesn't exist.\"]}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.code,{children:\"put(key: int, value: int) -> None\"}),\": Add a key and its value to the cache. If adding the key would result in the cache exceeding its size capacity, \",(0,C.jsx)(e.strong,{children:\"evict the least recently used element\"}),\". If the key already exists in the cache, update its value.\"]}),`\n`]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[`Input: [\n  put(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"100\"}),`),\n  put(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"250\"}),`),\n  get(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),`),\n  put(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"300\"}),`),\n  put(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"200\"}),`),\n  get(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`),\n  get(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`),\n],\n  capacity = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),`\nOutput: [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"250\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"300\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]\n`]})}),(0,C.jsx)(e.p,{children:\"Explanation:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"put(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"100\"}),\")  \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# cache is[1: 100]\"}),`\nput(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"250\"}),\")  \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# cache is[1: 100, 2: 250]\"}),`\nget(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\")       \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# return 250\"}),`\nput(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"300\"}),\")  \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# cache is[1: 100, 2: 250, 4: 300]t\"}),`\nput(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"200\"}),\")  \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# cache is[2: 250, 4: 300, 3: 200]\"}),`\nget(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\")       \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# return 300\"}),`\nget(`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\")       \",(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# key 1 was evicted when adding key 3 due to the capacity\"}),`\n             `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# limit: return -1\"}),`\n`]})}),(0,C.jsx)(e.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"All keys and values are positive integers.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"The cache capacity is positive.\"}),`\n`]}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"When presented with a design problem, the first steps usually involve understanding the problem and deciding which data structures to use. Let's start by understanding how an LRU cache works at a high level.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Consider the LRU cache described below. It currently holds 3 elements and has reached full capacity. Assume that in this representation, the key-value pairs are ordered from the least recently used (left) to the most recently used (right):\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:c,alt:\"Image represents a visual depiction of a Least Recently Used (LRU) cache with a capacity of 3.  The main component is a rectangular box representing the cache, divided into three smaller rectangular cells. Each cell contains a pair of numbers; the first represents a key (1, 2, or 4), and the second represents an associated value (100, 250, or 300).  The cells are arranged horizontally within the larger cache box, with the cell containing '1 | 100' on the left, representing the least recently used item, and the cell containing '4 | 300' on the right, representing the most recently used item.  An arrow extends from the left edge of the cache box to the right, labeled 'least recently used' on the left and 'most recently used' on the right, explicitly indicating the order of usage within the cache.  The text 'capacity = 3' above the cache box specifies the maximum number of key-value pairs the cache can hold.\",width:\"311\",height:\"105\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Let's try putting a new key-value pair into the cache:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:M,alt:\"The image represents a data structure, likely a fixed-size array or buffer, with a capacity of 3.  On the left, an input element, depicted as an orange rectangle labeled 'put (3 | 200)', shows a key-value pair where '3' is the key and '200' is the value. A rightward arrow indicates the insertion of this key-value pair into the data structure. The data structure itself is represented by a light gray rectangle labeled 'capacity = 3' at the top. Inside this rectangle are three smaller, similarly styled rectangles, each representing an element within the structure. These elements contain key-value pairs: the first is '1 | 100', the second is '2 | 250', and the third is '4 | 300'.  A horizontal arrow beneath the data structure suggests the possibility of further operations or data flow from the structure. The overall diagram illustrates the process of adding a new key-value pair to a pre-existing data structure with a limited capacity.\",width:\"394\",height:\"84\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This new pair would effectively be the most recent in the cache, so we know it should be added at the most-recently-used end of the cache. Since the cache is currently at maximum capacity, we need to make room for the new pair by first evicting the least recently used pair:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:d,alt:\"Image represents a visual depiction of a cache eviction and insertion process.  A light gray rectangular box, representing a cache, contains three key-value pairs: '2 | 250', '4 | 300', and '3 | 200', each enclosed in a smaller rectangle.  The pair '3 | 200' is highlighted with an orange border, indicating it's a newly added element. To the left, a gray rectangle containing '1 | 100' is marked with a large red 'X', signifying its removal from the cache. A curved gray arrow connects the text '1. evict the least recently used pair' to the '1 | 100' pair, illustrating the eviction process.  A similar curved gray arrow connects the text '2. add new pair' to the '3 | 200' pair, showing the addition of a new element. A horizontal arrow beneath the cache box indicates the potential for further operations or a continuous cycle of eviction and insertion.\",width:\"462\",height:\"110\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"From this high-level overview, we can summarize operations we need to implement the \",(0,C.jsx)(e.code,{children:\"put\"}),\" function:\"]}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Remove a key-value pair from the least recently used end of the cache.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Add a key-value pair to the most recently used end of the cache.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now, let's try retrieving a value from this example cache. If we perform \",(0,C.jsx)(e.code,{children:\"get(2)\"}),\", we expect it to return 250. Accessing this pair would effectively make it the most recently used pair. So, we should move it to the most recently used end of the cache:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:Z,alt:\"Image represents a data structure, likely a Least Recently Used (LRU) cache, illustrating a `get(2)` operation.  A light gray rectangular box encloses three smaller boxes, each representing a cache entry.  These entries contain key-value pairs; the first box, highlighted in orange, shows '2 | 250,' indicating key '2' and value '250'. The other boxes show '4 | 300' and '3 | 200'. An arrow labeled 'get(2)' points to the cache.  A downward arrow from the right side of the container indicates retrieval.  A line connects the top of the orange box to a label above reading 'move to most recently used end,' illustrating that after retrieving the entry with key '2', it's moved to the end of the cache, maintaining the LRU order. A horizontal arrow at the bottom of the container shows the data structure after the operation, with the '2 | 250' entry now at the right end.\",width:\"354\",height:\"97\"})}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:o,alt:\"Image represents a data structure, possibly an array or list, containing three key-value pairs.  Each pair is depicted as a rectangular box with a number (key) separated by a vertical line from a larger number (value). The boxes are arranged horizontally within a larger, light-grey container, indicated by a dashed border.  The first box shows '4 | 300', the second '3 | 200', and the third, highlighted with an orange border, shows '2 | 250'. A solid arrow extends from the right side of the container to a dashed-bordered box labeled 'return 250', indicating that the value associated with the key '2' (250) is being returned as the output of some operation or function.  The visual suggests a process of selecting or accessing a specific element (the one with key '2') from the data structure.\",width:\"462\",height:\"63\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"From this example, we identified two key operations for the \",(0,C.jsx)(e.code,{children:\"get\"}),\" function:\"]}),`\n`,(0,C.jsxs)(e.ol,{start:\"3\",children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Move a key-value pair to the most recent end of the cache.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Access a value using its key.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"We\\u2019ve now narrowed the design down to the four main operations listed above. These will help us identify which data structures we can employ to design the LRU cache.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Choosing data structures\"}),(0,C.jsx)(e.br,{}),`\n`,(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Operations\\xA01\\xA0and\\xA02\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Operations 1 and 2}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0889em\",verticalAlign:\"-0.3944em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6944em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.6456em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Operations\\xA01\\xA0and\\xA02\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.3944em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})]}),`\n`,(0,C.jsx)(e.p,{children:\"The first two operations involve adding and removing key-value pairs. Specifically, we need the ability to remove a key-value pair from one end of a data structure (representing the least recently used end) and add a key-value pair to the other.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Which data structure allows us to efficiently add or remove an element from it? A suitable data structure for these operations is a linked list, particularly because we can add and remove a node in constant time if we have a reference to that node. But should we use a singly or doubly linked list?\"}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Singly\\xA0vs.\\xA0doubly\\xA0linked\\xA0list\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Singly vs. doubly linked list}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0889em\",verticalAlign:\"-0.3944em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6944em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.6456em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Singly\\xA0vs.\\xA0doubly\\xA0linked\\xA0list\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.3944em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Adding or removing a node from the head of a linked list takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, whether it\\u2019s a singly or doubly linked list. However, removing the tail node from a singly linked list takes \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, even with a reference to the tail, because we need to traverse the list to access the node before the tail. In contrast, a doubly linked list allows \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" removal of the tail because each node has a reference to its previous node, enabling direct access without traversal. So, let\\u2019s choose the \",(0,C.jsx)(e.strong,{children:\"doubly linked list\"}),\".\"]}),`\n`,(0,C.jsx)(e.p,{children:\"An important feature we need is the ability to access both ends of the doubly linked list when adding or removing nodes. With this in mind, let's establish some definitions:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"The tail of the linked list signifies the most frequently used node.\"}),`\n`,(0,C.jsx)(e.li,{children:\"The head of the linked list signifies the least recently used node.\"}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"To reference the ends of the linked list, we can establish head and tail nodes, where head points to the least recently used node, and tail points to the most recently used node:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:p,alt:\"The image represents a circular buffer data structure with a capacity of 3.  The structure is depicted as a sequence of three rectangular boxes connected by curved arrows, representing the buffer's elements. Each box contains two numbers separated by a vertical bar; the first number represents the index of the element within the buffer (starting from 1), and the second number represents the data value stored at that index.  Specifically, the boxes show elements at indices 1 (containing data value 100), 2 (containing data value 250), and 4 (containing data value 300).  To the leftmost box is a rectangular box labeled 'head', indicating the beginning of the buffer, and to the rightmost box is a rectangular box labeled 'tail', indicating the end of the buffer.  Gray curved arrows connect the 'head' to the first element, each element to the next, and the last element to the 'tail', illustrating the circular nature of the buffer; data would wrap around from the 'tail' back to the 'head' if the buffer were full.  Above the structure, the text 'capacity = 3' explicitly states the buffer's maximum size.\",width:\"426\",height:\"43\"})}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsxs)(e.munder,{accentunder:\"true\",children:[(0,C.jsx)(e.mtext,{children:\"Operations\\xA03\\xA0and\\xA04\"}),(0,C.jsx)(e.mo,{stretchy:\"true\",children:\"\\u203E\"})]})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"\\\\underline{\\\\text{Operations 3 and 4}}\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0889em\",verticalAlign:\"-0.3944em\"}}),(0,C.jsx)(e.span,{className:\"mord underline\",children:(0,C.jsxs)(e.span,{className:\"vlist-t vlist-t2\",children:[(0,C.jsxs)(e.span,{className:\"vlist-r\",children:[(0,C.jsxs)(e.span,{className:\"vlist\",style:{height:\"0.6944em\"},children:[(0,C.jsxs)(e.span,{style:{top:\"-2.6456em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"underline-line\",style:{borderBottomWidth:\"0.04em\"}})]}),(0,C.jsxs)(e.span,{style:{top:\"-3em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"3em\"}}),(0,C.jsx)(e.span,{className:\"mord\",children:(0,C.jsx)(e.span,{className:\"mord text\",children:(0,C.jsx)(e.span,{className:\"mord\",children:\"Operations\\xA03\\xA0and\\xA04\"})})})]})]}),(0,C.jsx)(e.span,{className:\"vlist-s\",children:\"\\u200B\"})]}),(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.3944em\"},children:(0,C.jsx)(e.span,{})})})]})})]})})]})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Operation 3 indicates that we\\u2019ll need to be able to move a node to the most recently-used end of the cache, and that this node doesn\\u2019t necessarily need to be at the head or tail of the linked list. If this node was somewhere in the middle, we\\u2019d need to traverse the linked list to find it. Is there a way we could access this node in \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time? Since this node is associated with a key, we could use a \",(0,C.jsx)(e.strong,{children:\"hash map\"}),\" to store key-node pairs. This allows us to access a node by its key in constant time. The diagram below illustrates how the hash map's values are references to nodes in the linked list:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:m,alt:\"Image represents a doubly linked list visualized alongside a hashmap.  The linked list consists of rectangular nodes connected by bidirectional arrows.  The nodes are labeled sequentially: 'head', then three data nodes containing key-value pairs (1|100, 2|250, 4|300), and finally 'tail'.  Each data node shows a key and a value separated by a vertical bar.  The 'head' and 'tail' nodes represent the beginning and end of the list, respectively.  Below the linked list, a hashmap is depicted, showing three key-value pairs: (key: 4, value: \\u25CF), (key: 1, value: \\u25CB), and (key: 2, value: \\u25CF).  The values are represented by colored dots (magenta, cyan, and magenta respectively). Dotted lines connect each node in the linked list to its corresponding key-value pair in the hashmap, illustrating a potential mapping between the list's data and the hashmap's entries.  The lines are colored to match the values in the hashmap.  The magenta dashed lines connect the nodes with magenta dots, and the cyan dotted line connects the node with the cyan dot.\",width:\"624\",height:\"96\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Using a hash map also addresses operation 4 regarding efficient access to values from their keys.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now we\\u2019ve decided on using a doubly linked list and a hash map to represent the LRU cache, let\\u2019s examine how the \",(0,C.jsx)(e.code,{children:\"put\"}),\" and \",(0,C.jsx)(e.code,{children:\"get\"}),\" functions would be implemented.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"put(key: int, val: int) -> None:\"}),(0,C.jsx)(e.br,{}),`\n`,\"Below is the flow for adding a new key-value pair to the cache. This involves correctly updating the linked list and the hash map, while ensuring the cache does not exceed its capacity:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:k,alt:\"Image represents a flowchart depicting the logic for adding a key-value pair to a cache implemented using a hash map and a linked list (likely an LRU cache).  The process begins by checking if the key already exists in the cache via a hash map query. If 'yes,' the existing node is removed from the linked list and then re-added as the most recently used node at the head of the linked list.  If 'no,' the flowchart checks if adding a new node would exceed the cache's capacity. If 'yes,' the least recently used node is removed from both the linked list and the hash map. If 'no,' the new node is added as the most recently used node to the linked list and also added to the hash map.  The flowchart uses orange arrows to indicate the flow of control based on the 'yes' or 'no' answers to the conditional checks.  Each box contains a description of the action to be performed at that step.\",width:\"624\",height:\"443\"})}),`\n`,(0,C.jsx)(e.p,{children:\"To better understand how to add a new node to a doubly linked list that\\u2019s at maximum capacity, check out the following example:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:f,alt:\"Image represents a visualization of a cache replacement algorithm, specifically illustrating a Least Recently Used (LRU) strategy.  The top section shows an initial state where a doubly linked list represents the cache.  Nodes labeled `1 | 00`, `2 | 250`, and `4 | 300` are linked together, with `head` pointing to the beginning and `tail` pointing to the end.  The input `put (3 | 200)` is given, and since the cache is full, the `remove_node(head.next)` function is called, removing node `1 | 00` (indicated by a red cross).  A dotted line shows the connection between `remove_node` and the removed node. The middle section shows the cache after the removal, with only `2 | 250` and `4 | 300` remaining. The bottom section depicts the `add_to_tail(3 | 200)` function adding the new node `3 | 200` to the end of the list, updating the `tail` pointer.  The entire process demonstrates how the LRU algorithm maintains a fixed-size cache by removing the least recently used element when a new element needs to be added.  The numbers within the nodes likely represent keys and values, respectively.\",width:\"446\",height:\"302\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"As you can see, we\\u2019ll need a function to remove a node (\",(0,C.jsx)(e.code,{children:\"remove_node\"}),\"), as well as a function to add a node to the tail of the linked list (\",(0,C.jsx)(e.code,{children:\"add_to_tail\"}),\"). We discuss these functions in more detail in the implementation section.\"]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"get(key: int) -> int:\"}),(0,C.jsx)(e.br,{}),`\n`,\"Below is the process for retrieving a key's value from the cache:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:y,alt:\"Image represents a flowchart depicting a cache lookup algorithm.  The process begins with a decision box asking 'Is the key in the cache? Check by querying the hash map.'  An orange arrow branches from this box, leading to two rectangular boxes representing the possible outcomes: 'yes' and 'no'. If the key is found ('yes'), the algorithm proceeds to a larger rectangular box detailing the steps to update the cache:  1. Remove the node associated with the key; 2. Add the node back as the most recently used node in a linked list.  From this box, another orange arrow points to a final rectangular box that states 'Return the value associated with this node.'  If the key is not found ('no'), an orange arrow leads to a smaller rectangular box that simply states 'Return -1', indicating a cache miss.  The overall structure illustrates a Least Recently Used (LRU) cache implementation, using a hash map for efficient key lookups and a linked list to maintain the order of recently used items.\",width:\"441\",height:\"302\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now let\\u2019s take a look at an example of how the doubly linked list is updated during a \",(0,C.jsx)(e.code,{children:\"get\"}),\" function call:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:g,alt:\"Image represents a visual depiction of a `get(2)` operation on a doubly linked list, implemented using a hashmap for efficient node access.  The top section shows the initial state: a doubly linked list with nodes labeled '2 | 250', '4 | 300', and '3 | 200', connected by bidirectional arrows indicating `next` and `prev` pointers.  'head' and 'tail' labels point to the beginning and end of the list, respectively.  A dashed arrow points from `remove_node(hashmap[2])` to node '2 | 250', which is marked with a red 'X', signifying its removal. The middle section illustrates the removal of node '2 | 250'. The bottom section shows the node '2 | 250' re-added to the tail of the list via `add_to_tail(2 | 250)`, indicated by a dashed arrow. Finally, a thick black arrow at the bottom points to 'return 250', indicating the value returned by the `get(2)` operation after the node has been temporarily removed and then re-added to the tail.  Each node displays a key-value pair (e.g., '2 | 250'), representing the key used in the hashmap and the associated value. The overall diagram demonstrates the process of retrieving a node's value, removing it, and then re-inserting it at the tail to maintain the list's structure.\",width:\"477\",height:\"283\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now that we understand how the doubly linked list and hash map are used to design the LRU cache, let's dive into its implementation details, including the details of the helper methods \",(0,C.jsx)(e.code,{children:\"remove_node\"}),\" and \",(0,C.jsx)(e.code,{children:\"add_to_tail\"}),\".\"]}),`\n`,(0,C.jsx)(V,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsx)(e.p,{children:\"We can use the custom class below to represent a node in a doubly linked list:\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),`:\n   `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, key: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", val: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),`):\n       `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.key = key\n       `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.val = val\n       `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".prev = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),` {\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"key, val\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"key\"}),` = key\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),` = val\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`\n  }\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` key;\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` val;\n    DoublyLinkedListNode next;\n    DoublyLinkedListNode prev;\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"DoublyLinkedListNode\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" key, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" val)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.key = key;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.val = val;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".next = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".prev = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n    }\n}\n`]})})]}),`\n`,(0,C.jsxs)(e.p,{children:[\"The example below illustrates how to add a node to the tail of the linked list. Let's refer to the node before the tail as \",(0,C.jsx)(e.code,{children:\"prev_node\"}),\".\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:w,alt:\"Image represents a doubly linked list data structure undergoing an addition operation.  The list visually shows three nodes, each represented by a light gray rectangle containing a number pair. The first node, labeled 'head,' contains no number pair. The second node shows '2 | 250,' indicating a value of 250 associated with the node 2. The third node, labeled 'prev_node,' displays '4 | 300,' representing a value of 300 associated with node 4.  These nodes are interconnected by bidirectional curved arrows, signifying the links between nodes in a doubly linked list. A fourth node, represented by an orange rectangle with rounded corners, shows '3 | 200' and is labeled `add_to_tail(3 | 200)`. A dashed arrow points from this node to the current 'tail' node, indicating that this node (3 | 200) is about to be appended to the end of the list. The 'tail' node is a light gray rectangle labeled 'tail,' representing the current end of the list.  The overall diagram illustrates the process of adding a new node to the tail of a doubly linked list.\",width:\"320\",height:\"98\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"The new node should appear after \",(0,C.jsx)(e.code,{children:\"prev_node\"}),\" and before the tail node. Let\\u2019s set the new node\\u2019s \",(0,C.jsx)(e.code,{children:\"prev\"}),\" and \",(0,C.jsx)(e.code,{children:\"next\"}),\" pointers to reflect this:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:u,alt:\"Image represents a doubly linked list data structure.  The list is composed of rectangular nodes, each containing two values separated by a vertical bar '|'.  The first value represents a node's identifier (an integer), and the second represents its data (also an integer).  The nodes are labeled sequentially: 'head' (a light gray node with no identifier or data), '2 | 250', '4 | 300', and 'tail' (a light gray node with no identifier or data).  Node '3 | 200' is highlighted with an orange border, suggesting a special status or selection.  Curved bidirectional arrows connect adjacent nodes, indicating that each node points to both its predecessor and successor.  The arrow below node '4 | 300' is labeled 'prev_node', explicitly showing the backward pointer.  The overall structure demonstrates the interconnectedness of nodes in a doubly linked list, allowing traversal in both directions.\",width:\"320\",height:\"98\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Now connect prev_node and tail to the new node:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:b,alt:\"Image represents a doubly linked list data structure.  The list is composed of rectangular nodes, each containing two values separated by a vertical bar '|'.  The first value represents a node's identifier (e.g., '2', '3', '4'), and the second represents data associated with that node (e.g., '250', '200', '300').  The nodes are connected by bidirectional arrows indicating the `prev_node` and `next_node` relationships.  The leftmost node is labeled 'head', representing the beginning of the list, and the rightmost node is labeled 'tail', representing the end.  A node with identifier '3' and data '200' is highlighted with an orange border, suggesting it might be a currently focused or selected node.  The arrows show that node '2' points to node '3' and node '4' points to node '3', while node '3' points to node '4' and node '2'.  The 'head' node points to node '2', and the 'tail' node points to node '3', completing the doubly linked structure.\",width:\"320\",height:\"97\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Below is the implementation of this function:\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"add_to_tail\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"self, node: DoublyLinkedListNode\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n    prev_node = `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail.prev\n    node.prev = prev_node\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail\n    prev_node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),` = node\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail.prev = node\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" prevNode = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),`;\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),` = prevNode;\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),`;\n    prevNode.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),` = node;\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),` = node;\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(DoublyLinkedListNode node)\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"DoublyLinkedListNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"prevNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` tail.prev;\n    node.prev = prevNode;\n    node.next = tail;\n    prevNode.next = node;\n    tail.prev = node;\n}\n`]})})]}),`\n`,(0,C.jsx)(e.p,{children:\"The example below illustrates how to remove a node from the doubly linked list:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:N,alt:\"The image represents a doubly linked list data structure before and after a node removal operation.  The list is visualized horizontally, with rectangular nodes representing data elements. Each node contains two values separated by a vertical bar: a key (integer) and a value (integer).  The nodes are connected by bidirectional arrows indicating the links between them.  The leftmost node is labeled 'head,' and the rightmost node is labeled 'tail,' representing the beginning and end of the list.  Initially, the list contains nodes with values (2 | 250), (4 | 300), and (3 | 200). A separate, unattached node (4 | 300) is shown above the list, labeled 'remove_node('. A dashed arrow points from this node to the node (4 | 300) within the list, indicating the node to be removed. The diagram illustrates the `remove_node` operation, implying that after the operation, the node (4 | 300) will be deleted from the linked list, leaving only the nodes (2 | 250) and (3 | 200) connected.\",width:\"410\",height:\"93\"})}),`\n`,(0,C.jsx)(e.p,{children:\"To remove a node, we make its two adjacent nodes point at each other, effectively excluding the node to be removed from the linked list:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(l,{src:x,alt:\"Image represents a doubly linked list data structure with three nodes.  The leftmost node is labeled 'head,' indicating the beginning of the list.  Next is a node containing '2 | 250,' where '2' likely represents a key or identifier and '250' represents data associated with that key. This node is connected to the 'head' node via a bidirectional grey arrow, signifying that traversal is possible in both directions.  A central node, '4 | 00,' is crossed out in red, indicating it's been removed or is invalid.  This node is connected to the previous node with a light grey arrow pointing to the left and to the next node with a light grey arrow pointing to the right. The rightmost node is labeled 'tail,' marking the end of the list and is connected to the previous node via a bidirectional grey arrow.  The 'head' and 'tail' nodes are represented as rounded rectangles, while the data nodes are represented as rectangular boxes.  The central node's removal is highlighted by a large red 'X' over it, suggesting a deletion operation within the linked list.  The overall structure illustrates the connections and flow of information within a doubly linked list, emphasizing the removal of a node.\",width:\"410\",height:\"55\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Below is the implementation of this function:\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"remove_node\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"self, node: DoublyLinkedListNode\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n    node.prev.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`.prev = node.prev\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node\"}),`) {\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`;\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),`;\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(DoublyLinkedListNode node)\"}),` {\n    node.prev.next = node.next;\n    node.next.prev = node.prev;\n}\n`]})})]}),`\n`,(0,C.jsx)(e.p,{children:\"With the help of the above two functions, we can complete the full implementation of the LRU cache.\"}),`\n`,(0,C.jsx)(e.p,{children:(0,C.jsx)(e.strong,{children:\"LRU Cache\"})}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, key: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", val: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.key = key\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.val = val\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".prev = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LRUCache\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, capacity: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.capacity = capacity\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# A hash map that maps keys to nodes.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap = {}\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Initialize the head and tail dummy nodes and connect them to \"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# each other to establish a basic two-node doubly linked list.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".head = DoublyLinkedListNode(-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".tail = DoublyLinkedListNode(-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".head.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".tail.prev = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.head\n\\u200A\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, key: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" key \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap:\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# To make this key the most recently used, remove its node and\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# re-add it to the tail of the linked list.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".remove_node(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap[key])\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".add_to_tail(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap[key])\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap[key].val\n\\u200A\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"put\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"self, key: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\", value: \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"})]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If a node with this key already exists, remove it from the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# linked list.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" key \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap:\n            `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".remove_node(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap[key])\n        node = DoublyLinkedListNode(key, value)\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.hashmap[key] = node\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Remove the least recently used node from the cache if adding\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# this new node will result in an overflow.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".hashmap) > \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.capacity:\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"del\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".hashmap[\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".head.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`.key]\n            `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".remove_node(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),\".head.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`)\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.add_to_tail(node)\n\\u200A\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"add_to_tail\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"self, node: DoublyLinkedListNode\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        prev_node = `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail.prev\n        node.prev = prev_node\n        node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail\n        prev_node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),` = node\n        `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"self\"}),`.tail.prev = node\n\\u200A\\u200A\\u200A\\u200A\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"remove_node\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"self, node: DoublyLinkedListNode\"}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"None\"}),`:\n        node.prev.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`\n        node.`,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"next\"}),`.prev = node.prev\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),` {\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"key, val\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"key\"}),` = key\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),` = val\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`\n  }\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LRUCache\"}),` {\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"capacity\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"capacity\"}),` = capacity\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// A hash map that maps keys to nodes.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Map\"}),`()\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Initialize the head and tail dummy nodes and connect them to each other to\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// establish a basic two-node doubly linked list.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"head\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),\"(-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"head\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"head\"}),`\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"key\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (!\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),`(key)) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// To make this key the most recently used, remove its node and re-add it to\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// the tail of the linked list.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" node = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),`(key)\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),`(node)\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),`(node)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"val\"}),`\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"put\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"key, value\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If a node with this key already exists, remove it from the linked list.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"has\"}),`(key)) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),`(key))\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" node = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),`(key, value)\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"set\"}),`(key, node)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Remove the least recently used node from the cache if adding this new node\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// will result in an overflow.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"size\"}),\" > \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"capacity\"}),`) {\n      `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" lru = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"head\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n      `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),`(lru)\n      `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"hashmap\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"delete\"}),\"(lru.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"key\"}),`)\n    }\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),`(node)\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Removes a node from the doubly linked list.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node\"}),`) {\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),`\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),\" = node.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),`\n  }\n\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Adds a node to the end (tail) of the doubly linked list.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"node\"}),`) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" prevNode = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),`\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),` = prevNode\n    node.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),\" = \",(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),`\n    prevNode.`,(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"next\"}),` = node\n    `,(0,C.jsx)(e.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"tail\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"prev\"}),` = node\n  }\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.HashMap;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` key;\n    `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` val;\n    DoublyLinkedListNode prev;\n    DoublyLinkedListNode next;\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"DoublyLinkedListNode\"}),(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" key, \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" val)\"]}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.key = key;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.val = val;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".prev = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".next = \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),`;\n    }\n}\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"LRUCache\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` capacity;\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// A hash map that maps keys to nodes.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),` HashMap<Integer, DoublyLinkedListNode> hashmap;\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Initialize the head and tail dummy nodes and connect them to\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// each other to establish a basic two-node doubly linked list.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),` DoublyLinkedListNode head;\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),` DoublyLinkedListNode tail;\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"LRUCache\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Integer capacity)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.capacity = capacity;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".hashmap = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"HashMap\"}),`<>();\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".head = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),\"(-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".tail = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),\"(-\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".head.next = \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.tail;\n        `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),\".tail.prev = \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"this\"}),`.head;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" Integer \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"get\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Integer key)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (!hashmap.containsKey(key)) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// To make this key the most recently used, remove its node and\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// re-add it to the tail of the linked list.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"DoublyLinkedListNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"node\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` hashmap.get(key);\n        removeNode(node);\n        addToTail(node);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` node.val;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"put\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(Integer key, Integer value)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If a node with this key already exists, remove it from the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// linked list.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (hashmap.containsKey(key)) {\n            removeNode(hashmap.get(key));\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"DoublyLinkedListNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"node\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"DoublyLinkedListNode\"}),`(key, value);\n        hashmap.put(key, node);\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Remove the least recently used node from the cache if adding\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// this new node will result in an overflow.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (hashmap.size() > capacity) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"DoublyLinkedListNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"lru\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` head.next;\n            hashmap.remove(lru.key);\n            removeNode(lru);\n        }\n        addToTail(node);\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"addToTail\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(DoublyLinkedListNode node)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"DoublyLinkedListNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"prevNode\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` tail.prev;\n        node.prev = prevNode;\n        node.next = tail;\n        prevNode.next = node;\n        tail.prev = node;\n    }\n\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"void\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"removeNode\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(DoublyLinkedListNode node)\"}),` {\n        node.prev.next = node.next;\n        node.next.prev = node.prev;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity for the helper functions \",(0,C.jsx)(e.code,{children:\"remove_node\"}),\" and \",(0,C.jsx)(e.code,{children:\"add_tail_node\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because they perform constant-time operations on a doubly linked list. The \",(0,C.jsx)(e.code,{children:\"put\"}),\" and \",(0,C.jsx)(e.code,{children:\"get\"}),\" functions utilize these helper functions, while also performing constant-time hash map operations. Consequently, they also have an \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time complexity.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The overall space complexity of this solution is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" is the capacity of the cache. This is because both the doubly linked list and hash map can each occupy \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" space.\"]}),`\n`,(0,C.jsx)(e.h3,{id:\"interview-tip\",children:\"Interview Tip\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.em,{children:\"Tip: Explore how combining data structures can help achieve certain functionality.\"}),(0,C.jsx)(e.br,{}),`\n`,\"It\\u2019s possible to encounter situations where no single data structure provides the functionality required for your solution. In such cases, try to work out if this functionality can be achieved using a combination of data structures. For instance, in this problem we combined a doubly-linked list and a hash map to achieve the functionality required for the LRU cache.\"]})]})}function j(a={}){let{wrapper:e}=a.components||{};return e?(0,C.jsx)(e,{...a,children:(0,C.jsx)(v,{...a})}):v(a)}function s(a,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+a+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return R(l1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

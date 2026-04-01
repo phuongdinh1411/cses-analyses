@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "dynamic-programming/01-knapsack",
+  "chapter": "15-08",
+  "title": "0/1 Knapsack",
+  "free": false,
+  "code": "var Component=(()=>{var y=Object.create;var s=Object.defineProperty;var N=Object.getOwnPropertyDescriptor;var V=Object.getOwnPropertyNames;var H=Object.getPrototypeOf,x=Object.prototype.hasOwnProperty;var j=(e,L)=>()=>(L||e((L={exports:{}}).exports,L),L.exports),A=(e,L)=>{for(var i in L)s(e,i,{get:L[i],enumerable:!0})},r=(e,L,i,t)=>{if(L&&typeof L==\"object\"||typeof L==\"function\")for(let a of V(L))!x.call(e,a)&&a!==i&&s(e,a,{get:()=>L[a],enumerable:!(t=N(L,a))||t.enumerable});return e};var v=(e,L,i)=>(i=e!=null?y(H(e)):{},r(L||!e||!e.__esModule?s(i,\"default\",{value:e,enumerable:!0}):i,e)),_=e=>r(s({},\"__esModule\",{value:!0}),e);var o=j((G,c)=>{c.exports=_jsx_runtime});var z={};A(z,{default:()=>b,frontmatter:()=>$});var C=v(o());var d=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/knapsack-2K6DLQLB.svg\";var m=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-1-66CAUJXB.svg\";var p=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-2-FVPHQULT.svg\";var M=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-3-JWMJRZIU.svg\";var Z=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-4-YYQJCHDV.svg\";var w=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-5-6YRZWV7C.svg\";var k=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-6-I2KRSCAN.svg\";var f=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-7-NLJA222F.svg\";var u=\"/images/courses/coding-patterns/dynamic-programming/01-knapsack/image-15-08-8-JBRU3ZVL.svg\";var $={chapter:\"15-08\",difficulty:\"Medium\",title:\"0/1 Knapsack\"};function g(e){let L={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...e.components},{CodeTabs:i,Figure:t,Image:a,OpenCodeEditor:n,ProblemDescription:h}=L;return i||l(\"CodeTabs\",!0),t||l(\"Figure\",!0),a||l(\"Image\",!0),n||l(\"OpenCodeEditor\",!0),h||l(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsxs)(L.p,{children:[\"You are a thief planning to rob a store. However, you can only carry a knapsack with a maximum capacity of \",(0,C.jsx)(L.code,{children:\"cap\"}),\" units. Each item (\",(0,C.jsx)(L.code,{children:\"i\"}),\") in the store has a weight (\",(0,C.jsx)(L.code,{children:\"weights[i]\"}),\") and a value (\",(0,C.jsx)(L.code,{children:\"values[i]\"}),\").\"]}),(0,C.jsx)(L.p,{children:\"Find the maximum total value of items you can carry in your knapsack.\"}),(0,C.jsx)(L.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:d,width:\"369\",height:\"228\",alt:\"Image represents a visual depiction of a knapsack problem, a classic optimization problem in computer science.  Four items are shown, each labeled 'item 0,' 'item 1,' 'item 2,' and 'item 3,' respectively. Each item has an associated value (price) represented by a dollar amount ($70, $50, $40, $0) displayed in a gray rectangle, and a weight (w) indicated numerically (5, 3, 4, 1). A larger, brown rectangular box labeled 'cap = 7' represents the knapsack with a weight capacity of 7. Inside the knapsack are items 1 and 2, indicating that these items have been selected.  The arrangement shows that items 1 and 2, with a combined weight of 7 (3 + 4), fill the knapsack to its capacity.  The other items are not included, suggesting they were not selected due to weight constraints or to optimize the value within the capacity limit.  The image illustrates a solution to the knapsack problem where the goal is to maximize the total value of items within the knapsack's weight constraint.\",priority:!0})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[\"Input: cap = \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"7\"}),\", weights = [\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"], values = [\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"70\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"50\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"40\"}),\", \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"10\"}),`]\nOutput: `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"90\"}),`\n`]})}),(0,C.jsx)(L.p,{children:\"Explanation: The most valuable combination of items that can fit in the knapsack together are items 1 and 2 . These items have a combined value of 50 + 40 = 90 and a total weight of 3 + 4 = 7 , which fits within the knapsack's capacity.\"})]}),`\n`,(0,C.jsx)(L.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(L.p,{children:\"For each item, we have two choices: include it in the knapsack, or exclude it. This binary decision is why this classic problem is called \\u201C0/1 Knapsack.\\u201D\"}),`\n`,(0,C.jsxs)(L.p,{children:[\"The brute force approach involves making this decision for every item. Since two choices can be made for each item, this results in \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mn,{children:\"2\"}),(0,C.jsx)(L.mo,{children:\"\\u22C5\"}),(0,C.jsx)(L.mn,{children:\"2\"}),(0,C.jsx)(L.mo,{children:\"\\u22C5\"}),(0,C.jsx)(L.mn,{children:\"2\"}),(0,C.jsx)(L.mo,{children:\"\\u2026\"}),(0,C.jsx)(L.mn,{children:\"2\"}),(0,C.jsx)(L.mo,{children:\"=\"}),(0,C.jsx)(L.mn,{children:\"2\"}),(0,C.jsx)(L.mi,{children:\"n\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"2\\\\cdot 2\\\\cdot 2\\u20262=2n\"})]})})}),(0,C.jsxs)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsx)(L.span,{className:\"minner\",children:\"\\u2026\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}}),(0,C.jsx)(L.span,{className:\"mrel\",children:\"=\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"0.6444em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"2\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"})]})]})]}),\" possible combinations of choices. As we can see, generating all possible combinations is inefficient.\"]}),`\n`,(0,C.jsx)(L.p,{children:\"A greedy solution that involves picking the most valuable items first isn\\u2019t a good choice either, as it doesn\\u2019t always lead to the optimal outcome, which we can see in the example below:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:m,alt:\"Image represents four rectangular boxes arranged horizontally, each representing an item with an associated price and weight.  The boxes are labeled 'item 0,' 'item 1,' 'item 2,' and 'item 3' above each respective box. Inside each box is a dollar amount representing the price: $70, $50, $40, and $10 respectively. Below each box, the weight (w) of the item is specified: w = 5, w = 3, w = 4, and w = 1 respectively.  There are no connections or information flow visually depicted between the boxes; they are presented independently as individual data points.\",width:\"427\",height:\"64\"})}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:p,alt:\"Image represents two knapsack problem solutions.  The top section displays 'option 1: take the most valuable item first' and 'option 2: optimal solution' as headings for two distinct approaches.  Each option is visually represented by a rounded-rectangle container labeled 'cap = 7,' indicating a knapsack capacity of 7 units. Inside each container, multiple smaller rectangles represent items. Each item rectangle shows an 'item' number, its value (in dollars), and its weight ('w'). Option 1 (brown container) shows item 3 ($10, w=1) and item 0 ($70, w=5), resulting in a total value of $80. Option 2 (green container), labeled as the optimal solution, contains item 1 ($50, w=3) and item 2 ($40, w=4), achieving a total value of $90.  The arrangement highlights the difference between a greedy approach (Option 1) and an optimal solution (Option 2) for the same knapsack problem.\",width:\"517\",height:\"240\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"So, let's approach this problem from a different angle. Consider the first item from the above item list (\",(0,C.jsx)(L.code,{children:\"i = 0\"}),\"). What\\u2019s the most value we can attain with a knapsack of capacity 7, if we include this item? What about if we exclude this item? Let\\u2019s define the function \",(0,C.jsx)(L.code,{children:\"knapsack(i, cap)\"}),\" to represent the maximum value achievable with items starting from index \",(0,C.jsx)(L.code,{children:\"i\"}),\" and a knapsack capacity of \",(0,C.jsx)(L.code,{children:\"cap\"}),\":\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:M,alt:\"Image represents a visual depiction of the 0/1 knapsack problem.  The top section shows four items, labeled `item 0`, `item 1`, `item 2`, and `item 3`, each with an associated value (in dollars: $70, $50, $40, $10 respectively) and weight (`w`: 5, 3, 4, 1 respectively).  An arrow points from a labeled box containing 'i' downwards to `item 0`, suggesting an index or iterator variable. Below this, a brown rectangular shape represents a knapsack with a capacity (`cap`) of 7. To the right, the text `knapsack(i = 0, cap = 7) = ?` indicates the problem being posed: finding the maximum value that can be put into the knapsack of capacity 7, starting with item 0.  The arrangement implies that the algorithm will iterate through the items, considering their values and weights to determine the optimal combination fitting within the knapsack's capacity.\",width:\"449\",height:\"268\"})}),`\n`,(0,C.jsx)(L.p,{children:\"We explore the implications of including or excluding this item, separately.\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Including item i\"}),(0,C.jsx)(L.br,{}),`\n`,\"Picking the first item gives a value of 70. This item weighs 5, so our knapsack now has a remaining capacity of 7 - 5 = 2. With an updated capacity of 2, what\\u2019s the optimal combination possible with the remaining items in our selection?\"]}),`\n`,(0,C.jsx)(L.p,{children:\"This question leads us to realize that if we determine the maximum value that can be obtained from the remaining items (starting from index 1) with a knapsack capacity of 2, we can find the solution:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:Z,alt:\"Image represents a visual depiction of a knapsack problem's recursive solution.  At the top, a rectangular box displays four items labeled 'item 0,' 'item 1,' 'item 2,' and 'item 3,' each with an associated value (in dollars) and weight (w).  Item 0 has a value of $70 and weight 5; item 1 has $50 and weight 3; item 2 has $40 and weight 4; and item 3 has $10 and weight 1.  Below, a brown rectangular box represents the knapsack with a 'cap' of 7 (representing the maximum weight capacity).  Inside this knapsack, item 0 ($70, w=5) is already included, indicated by the green 'include' label and an arrow pointing from item 0 to the knapsack. A grey curved arrow originates from the knapsack and points to item 1, indicating consideration of this item.  Another grey curved arrow connects the knapsack to a rounded rectangle containing the expression '70 + knapsack(i = 1, cap = 7 - 5 = 2),' showing the recursive call to the knapsack function with the remaining capacity (2) after including item 0, and starting from item 1 (i=1).  A small square labeled 'i' above the items suggests an input or index.  The overall diagram illustrates the step-by-step process of the recursive algorithm, showing how the algorithm considers each item and its impact on the knapsack's capacity and total value.\",width:\"516\",height:\"278\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"We\\u2019ve identified that this case can be solved by solving a subproblem, which means we\\u2019re dealing with a problem that has an \",(0,C.jsx)(L.strong,{children:\"optimal substructure\"}),\".\"]}),`\n`,(0,C.jsxs)(L.p,{children:[\"Therefore, we can generalize a recurrence relation for this case. Below, c denotes the remaining knapsack capacity we want to solve for (we give it a different name because it can be different to the initial value of \",(0,C.jsx)(L.code,{children:\"cap\"}),\"):\"]}),`\n`,(0,C.jsxs)(L.p,{children:[\"If we include item \",(0,C.jsx)(L.code,{children:\"i\"}),\", the most value we can get is \",(0,C.jsx)(L.code,{children:\"values[i] + knapsack(i + 1, c - weights[i])\"})]}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsxs)(L.strong,{children:[\"Excluding item \",(0,C.jsx)(L.code,{children:\"i\"})]}),(0,C.jsx)(L.br,{}),`\n`,\"Now, let\\u2019s say we exclude item 0. This means our knapsack will maintain a capacity of 7. Here, the most value we can get is just from the maximum value from the rest of the items, with a knapsack of capacity 7:\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:w,alt:\"Image represents a visual depiction of a knapsack problem's recursive step.  A rectangular box contains four items, each labeled 'item 0,' 'item 1,' 'item 2,' and 'item 3,' respectively.  Each item displays its value (in dollars: $70, $50, $40, $10) and weight (w: 5, 3, 4, 1). Item 0 is marked 'exclude' in red, indicating it's not considered in this step.  A brown rectangular shape representing a knapsack with a 'cap = 7' label signifies a weight capacity of 7 units. A grey rounded rectangle labeled 'knapsack(i = 1, cap = 7)' represents a recursive call to the knapsack function, starting from item 1 (index i=1) with the same capacity. A grey arrow points from this function call to item 2, indicating that the algorithm is currently evaluating whether to include item 2 in the knapsack given the remaining capacity.  Above the items, a downward-pointing arrow from a small square labeled 'i' points to item 0, suggesting an iterative approach where items are processed sequentially.\",width:\"438\",height:\"275\"})}),`\n`,(0,C.jsx)(L.p,{children:\"Again, this case can be solved by solving a subproblem:\"}),`\n`,(0,C.jsxs)(L.p,{children:[\"If we exclude item \",(0,C.jsx)(L.code,{children:\"i\"}),\", the most value we can get is \",(0,C.jsx)(L.code,{children:\"knapsack(i + 1, c)\"}),\".\"]}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsxs)(L.p,{children:[\"Now that we\\u2019ve established the recurrence relations for both cases (including and excluding item \",(0,C.jsx)(L.code,{children:\"i\"}),\"), we can combine them: the maximum value we can get from any selection of items is the larger value obtained from these two cases:\"]}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.code,{children:\"knapsack(i, c)\"}),\" = max(include item \",(0,C.jsx)(L.code,{children:\"i\"}),\", exclude item \",(0,C.jsx)(L.code,{children:\"i\"}),\") = \",(0,C.jsx)(L.code,{children:\"max(values[i] + knapsack(i + 1, c - weights[i]), knapsack(i + 1, c))\"})]}),`\n`,(0,C.jsxs)(L.p,{children:[\"One case we haven\\u2019t covered yet is the possibility the item does not fit in the knapsack. In this case, we have no choice but to exclude the item, resulting in a maximum value of \",(0,C.jsx)(L.code,{children:\"knapsack(i + 1, c)\"}),\", as discussed earlier.\"]}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Dynamic programming\"}),(0,C.jsx)(L.br,{}),`\n`,\"Given this problem has an \",(0,C.jsx)(L.strong,{children:\"optimal substructure\"}),\", we can translate our recurrence relations directly into DP formulas:\"]}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),\" weights[i] <= c: \\\\\",(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If item i fits in a knapsack of capacity c.\"}),`\n    dp[i][c] = `,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"max\"}),\"(values[i] + dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights[i]], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c])\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),\": \\\\\",(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If item i doesn't fit.\"}),`\n    dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` (weights[i] <= c) {\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item i fits in a knapsack of capacity c.\"}),`\n  dp[i][c] = `,(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"max\"}),\"(values[i] + dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights[i]], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c])\n} `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item i doesn't fit.\"}),`\n  dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]\n}\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-java\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),\" (weights[i] <= c) { \",(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item i fits in a knapsack of capacity c\"}),`\n    dp[i][c] = Math.max(values[i] + dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights[i]], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]);\n} `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),\" { \",(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item i doesn't fit\"}),`\n    dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c];\n}\n`]})})]}),`\n`,(0,C.jsx)(L.p,{children:\"For clarity, there are two dimensions in our DP table:\"}),`\n`,(0,C.jsxs)(L.ul,{children:[`\n`,(0,C.jsxs)(L.li,{children:[\"One for the current item, \",(0,C.jsx)(L.code,{children:\"i\"}),\", represented by the rows of the DP table.\"]}),`\n`,(0,C.jsxs)(L.li,{children:[\"One for the current knapsack capacity, \",(0,C.jsx)(L.code,{children:\"c\"}),\", represented by the columns on the DP table.\"]}),`\n`]}),`\n`,(0,C.jsx)(L.p,{children:\"With this in mind, let\\u2019s think about what the base cases should be.\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Base cases\"}),(0,C.jsx)(L.br,{}),`\n`,\"The simplest version of this problem is when there are no items in our selection, meaning the maximum value we can attain is 0. But which cells of the DP table represent this base case?\"]}),`\n`,(0,C.jsxs)(L.p,{children:[\"We know that when \",(0,C.jsx)(L.code,{children:\"i = n - 1\"}),\", only one item from the selection is being considered (where \",(0,C.jsx)(L.code,{children:\"n\"}),\" denotes the total number of items):\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:k,alt:\"Image represents a diagram illustrating a data structure, possibly an array or list, containing four items with associated values and weights.  Each item is labeled 'item 0,' 'item 1,' 'item 2,' and 'item 3,' respectively, positioned horizontally.  Each item displays a monetary value ($70, $50, $40, $10) within a light gray rectangular box. Below each monetary value, a weight ('w') is assigned (5, 3, 4, 1). A separate box above the structure shows the equation 'i = n - 1,' indicating a relationship between an index 'i' and the total number of items 'n'.  A downward arrow connects this box to 'item 3,' suggesting that 'i' points to the last item in the structure when 'n' represents the total number of items. The overall arrangement suggests a sequential access pattern, possibly related to an algorithm processing the items from the end.\",width:\"444\",height:\"107\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"This implies that when \",(0,C.jsx)(L.code,{children:\"i = n\"}),\", no items are being considered. Therefore, we can populate the DP table using \",(0,C.jsx)(L.code,{children:\"dp[n][c] = 0\"}),\" for all c. The reason \",(0,C.jsx)(L.code,{children:\"i = 0\"}),\" isn\\u2019t the base case is because \",(0,C.jsx)(L.code,{children:\"i = 0\"}),\" encapsulates all items starting from index 0.\"]}),`\n`,(0,C.jsxs)(L.p,{children:[\"Another subproblem we know the answer to is \",(0,C.jsx)(L.code,{children:\"c = 0\"}),\", since no items can fit in a knapsack of capacity 0. For this, we can populate the DP table using \",(0,C.jsx)(L.code,{children:\"dp[i][0] = 0\"}),\" for all \",(0,C.jsx)(L.code,{children:\"i\"}),\".\"]}),`\n`,(0,C.jsx)(L.p,{children:\"Let\\u2019s draw the DP table with just the base case values, to get a better idea of what this looks like:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:f,alt:\"Image represents a table or matrix labeled 'C', with rows indexed by 'i' (0 to 4) and columns indexed by 'c' (0 to 7).  The matrix is primarily empty, containing only zeros ('0') in the first column for rows 0 through 3, and in the last row (row 4) from column 0 to 7.  A thick black border surrounds the matrix. An arrow points from the label '(n) 4' to the right, indicating data flow. Another arrow points from the label 'base cases' upwards to the bottom row of the matrix (row 4), suggesting that the values in this row are initialized or provided as base cases for some computation.  The overall structure suggests a dynamic programming approach where the matrix is populated iteratively, starting from the base cases in the last row and potentially filling the rest of the matrix based on calculations involving previous rows and columns.\",width:\"385\",height:\"268\"})}),`\n`,(0,C.jsx)(L.p,{children:\"As shown, the first column and last row are set to 0 for the base cases.\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Populating the DP table\"}),(0,C.jsx)(L.br,{}),`\n`,\"We populate the DP table starting from the smallest subproblems (excluding base cases). Specifically, this means starting from row \",(0,C.jsx)(L.code,{children:\"i = n - 1\"}),\", where only the last item is considered, and ending at \",(0,C.jsx)(L.code,{children:\"i = 0\"}),\", where we consider all items. For each of these rows, we iterate through each possible knapsack capacity from \",(0,C.jsx)(L.code,{children:\"c = 1\"}),\" to \",(0,C.jsx)(L.code,{children:\"c = cap\"}),\".\"]}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(a,{src:u,alt:\"Image represents a grid illustrating a coding pattern, possibly related to array manipulation or memory allocation.  The grid is labeled with 'i' along the vertical axis (rows 0-4) and 'c' along the horizontal axis (columns 0-7). Each cell contains a numerical value, predominantly '0'.  Three horizontal orange arrows, originating from cells (3,1), (2,1), and (1,1) respectively, extend across the grid to the 'end' label in column 7.  The arrow starting at (3,1) is additionally labeled 'start'.  The arrangement suggests a sequential process where data, represented by the arrows, flows from a 'start' point across the 'c' axis to an 'end' point. The '0' values in the cells might represent an initial state or default values before the process begins. The bottom row (i=4) shows only '0' values, suggesting it's either unused or represents a different state.\",width:\"355\",height:\"230\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"Once the DP table is populated, we return \",(0,C.jsx)(L.code,{children:\"dp[0][cap]\"}),\", which stores the maximum value after all items and knapsack capacities are considered.\"]}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(L.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack\"}),\"(\",(0,C.jsxs)(L.span,{className:\"hljs-params\",children:[\"cap: \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\", weights: \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\"], values: \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"len\"}),`(values)\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# Base case: Set the first column and last row to 0 by initializing the entire DP\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# table to 0.\"}),`\n    dp = [[`,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" x \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\")] \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" x \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(n + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`)]\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# Populate the DP table.\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`):\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`):\n           `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If the item 'i' fits in the current knapsack capacity, the maximum\"}),`\n           `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# value at 'dp[i][c]' is the largest of either:\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# 1. The maximum value if we include item 'i'.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# 2. The maximum value if we exclude item 'i'.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` weights[i] <= c:\n                dp[i][c] = `,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"max\"}),\"(values[i] + dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights[i]], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c])\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If it doesn't fit, we have to exclude it.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n                dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`][cap]\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-params\",children:\"cap, weights, values\"}),`) {\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = values.\",(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Base case: Initialize the DP table with 0s.\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"const\"}),\" dp = \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Array\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"from\"}),\"({ \",(0,C.jsx)(L.span,{className:\"hljs-attr\",children:\"length\"}),\": n + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\" }, \",(0,C.jsx)(L.span,{className:\"hljs-function\",children:\"() =>\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\").\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`))\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Populate the DP table.\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" c = \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`; c <= cap; c++) {\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If the item 'i' fits in the current knapsack capacity, the maximum\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// value at 'dp[i][c]' is the largest of either:\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 1. The maximum value if we include item 'i'.\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 2. The maximum value if we exclude item 'i'.\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` (weights[i] <= c) {\n        dp[i][c] = `,(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"max\"}),\"(values[i] + dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights[i]], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c])\n      } `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If it doesn't fit, we have to exclude it.\"}),`\n        dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]\n      }\n    }\n  }\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`][cap]\n}\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-java\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack\"}),(0,C.jsxs)(L.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" cap, ArrayList<Integer> weights, ArrayList<Integer> values)\"]}),` {\n        `,(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),` values.size();\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Base case: Set the first column and last row to 0 by initializing the entire DP\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// table to 0.\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\"[][] dp = \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"int\"}),\"[n + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`];\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Populate the DP table.\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),\" n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"c\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`; c <= cap; c++) {\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If the item 'i' fits in the current knapsack capacity, the maximum\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// value at 'dp[i][c]' is the largest of either:\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 1. The maximum value if we include item 'i'.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 2. The maximum value if we exclude item 'i'.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` (weights.get(i) <= c) {\n                    dp[i][c] = Math.max(values.get(i) + dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"][c - weights.get(i)], dp[i + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c]);\n                }\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If it doesn't fit, we have to exclude it.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                    dp[i][c] = dp[i + `,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`][c];\n                }\n            }\n        }\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),\" dp[\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`][cap];\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(L.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(L.code,{children:\"knapsack\"}),\" is \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"n\"}),(0,C.jsx)(L.mo,{children:\"\\u22C5\"}),(0,C.jsx)(L.mi,{children:\"c\"}),(0,C.jsx)(L.mi,{children:\"a\"}),(0,C.jsx)(L.mi,{children:\"p\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot cap)\"})]})})}),(0,C.jsxs)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"c\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"a\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"p\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})]})]}),\" because each cell of the DP table is populated once.\"]}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"n\"}),(0,C.jsx)(L.mo,{children:\"\\u22C5\"}),(0,C.jsx)(L.mi,{children:\"c\"}),(0,C.jsx)(L.mi,{children:\"a\"}),(0,C.jsx)(L.mi,{children:\"p\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(n\\\\cdot cap)\"})]})})}),(0,C.jsxs)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"c\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"a\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"p\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})]})]}),\" because we're maintaining a DP table that stores \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"n\"}),(0,C.jsx)(L.mo,{children:\"+\"}),(0,C.jsx)(L.mn,{children:\"1\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(L.mo,{children:\"\\u22C5\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"c\"}),(0,C.jsx)(L.mi,{children:\"a\"}),(0,C.jsx)(L.mi,{children:\"p\"}),(0,C.jsx)(L.mo,{children:\"+\"}),(0,C.jsx)(L.mn,{children:\"1\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"(n+1)\\\\cdot (cap+1)\"})]})})}),(0,C.jsxs)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"\\u22C5\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"c\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"a\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"p\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(L.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(L.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})]})]}),\" elements.\"]}),`\n`,(0,C.jsx)(L.h2,{id:\"optimization\",children:\"Optimization\"}),`\n`,(0,C.jsx)(L.p,{children:\"We can optimize the solution by recognizing that, for each cell in the DP table, we only need access cells from the row below it.\"}),`\n`,(0,C.jsx)(L.p,{children:\"Therefore, we only need to maintain two rows:\"}),`\n`,(0,C.jsxs)(L.ul,{children:[`\n`,(0,C.jsxs)(L.li,{children:[(0,C.jsx)(L.code,{children:\"curr_row\"}),\": the current row being populated.\"]}),`\n`,(0,C.jsxs)(L.li,{children:[(0,C.jsx)(L.code,{children:\"prev_row\"}),\": the row below the current row.\"]}),`\n`]}),`\n`,(0,C.jsxs)(L.p,{children:[\"This effectively reduces the space complexity to \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"c\"}),(0,C.jsx)(L.mi,{children:\"a\"}),(0,C.jsx)(L.mi,{children:\"p\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(cap)\"})]})})}),(0,C.jsx)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"c\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"a\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"p\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})})]}),\". Below is the optimized code:\"]}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack_optimized\"}),\"(\",(0,C.jsxs)(L.span,{className:\"hljs-params\",children:[\"cap: \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\", weights: \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\"], values: \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"len\"}),`(values)\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# Initialize 'prev_row' as the DP values of the row below the\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# current row.\"}),`\n    prev_row = [`,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),\"] * (cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`)\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`):\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# Set the first cell of the 'curr_row' to 0 to set the base\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# case for this row. This is done by initializing the entire\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# row to 0.\"}),`\n        curr_row = [`,(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),\"] * (cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`)\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" c \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\", cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`):\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If item 'i' fits in the current knapsack capacity, the\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# maximum value at 'curr_row[c]' is the largest of either:\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# 1. The maximum value if we include item 'i'.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# 2. The maximum value if we exclude item 'i'.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` weights[i] <= c:\n                curr_row[c] = `,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"max\"}),`(values[i] + prev_row[c - weights[i]],prev_row[c])\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# If item 'i' doesn't fit, we exclude it.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n                curr_row[c] = prev_row[c]\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# Set 'prev_row' to 'curr_row' values for the next iteration.\"}),`\n        prev_row = curr_row\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` prev_row[cap]\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack_optimized\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-params\",children:\"cap, weights, values\"}),`) {\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = values.\",(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Initialize 'prevRow' as the DP values of the row below the current row.\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" prevRow = \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\").\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`)\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Set the first cell of the 'currRow' to 0 to set the base case for this row.\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" currRow = \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\").\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`)\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),\" c = \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`; c <= cap; c++) {\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item 'i' fits in the current knapsack capacity, the maximum value\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// at 'currRow[c]' is the largest of either:\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 1. The maximum value if we include item 'i'.\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 2. The maximum value if we exclude item 'i'.\"}),`\n      `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` (weights[i] <= c) {\n        currRow[c] = `,(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"max\"}),`(values[i] + prevRow[c - weights[i]], prevRow[c])\n      } `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item 'i' doesn't fit, we exclude it.\"}),`\n        currRow[c] = prevRow[c]\n      }\n    }\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Set 'prevRow' to 'currRow' values for the next iteration.\"}),`\n    prevRow = currRow\n  }\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` prevRow[cap]\n}\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-java\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"knapsack_optimized\"}),(0,C.jsxs)(L.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" cap, ArrayList<Integer> weights, ArrayList<Integer> values)\"]}),` {\n        `,(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),` values.size();\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Initialize 'prev_row' as the DP values of the row below the\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// current row.\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\"[] prevRow = \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"int\"}),\"[cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`];\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),\" n - \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),\"; i >= \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Set the first cell of the 'curr_row' to 0 to set the base\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// case for this row. This is done by initializing the entire\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// row to 0.\"}),`\n            `,(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\"[] currRow = \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"int\"}),\"[cap + \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`];\n            `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(L.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-variable\",children:\"c\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"1\"}),`; c <= cap; c++) {\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item 'i' fits in the current knapsack capacity, the\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// maximum value at 'curr_row[c]' is the largest of either:\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 1. The maximum value if we include item 'i'.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// 2. The maximum value if we exclude item 'i'.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"if\"}),` (weights.get(i) <= c) {\n                    currRow[c] = Math.max(values.get(i) + prevRow[c - weights.get(i)], prevRow[c]);\n                }\n                `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// If item 'i' doesn't fit, we exclude it.\"}),`\n                `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                    currRow[c] = prevRow[c];\n                }\n            }\n            `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// Set 'prev_row' to 'curr_row' values for the next iteration.\"}),`\n            prevRow = currRow;\n        }\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` prevRow[cap];\n    }\n}\n`]})})]})]})}function b(e={}){let{wrapper:L}=e.components||{};return L?(0,C.jsx)(L,{...e,children:(0,C.jsx)(g,{...e})}):g(e)}function l(e,L){throw new Error(\"Expected \"+(L?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return _(z);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

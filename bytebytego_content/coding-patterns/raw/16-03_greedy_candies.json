@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "greedy/candies",
+  "chapter": "16-03",
+  "title": "Candies",
+  "free": false,
+  "code": "var Component=(()=>{var j=Object.create;var H=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var T=Object.getOwnPropertyNames;var q=Object.getPrototypeOf,P=Object.prototype.hasOwnProperty;var A=(i,e)=>()=>(e||i((e={exports:{}}).exports,e),e.exports),I=(i,e)=>{for(var l in e)H(i,l,{get:e[l],enumerable:!0})},r=(i,e,l,t)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of T(e))!P.call(i,a)&&a!==l&&H(i,a,{get:()=>e[a],enumerable:!(t=_(e,a))||t.enumerable});return i};var z=(i,e,l)=>(l=i!=null?j(q(i)):{},r(e||!i||!i.__esModule?H(l,\"default\",{value:i,enumerable:!0}):l,i)),B=i=>r(H({},\"__esModule\",{value:!0}),i);var c=A((l1,h)=>{h.exports=_jsx_runtime});var a1={};I(a1,{default:()=>N,frontmatter:()=>i1});var C=z(c());var o=\"/images/courses/coding-patterns/greedy/candies/image-16-03-1-CUUS4R74.svg\";var d=\"/images/courses/coding-patterns/greedy/candies/image-16-03-2-M47GPRH4.svg\";var L=\"/images/courses/coding-patterns/greedy/candies/image-16-03-3-5MMXY2FL.svg\";var p=\"/images/courses/coding-patterns/greedy/candies/image-16-03-4-SPPJ7K4P.svg\";var M=\"/images/courses/coding-patterns/greedy/candies/image-16-03-5-GPCFYJQ4.svg\";var Z=\"/images/courses/coding-patterns/greedy/candies/image-16-03-6-AK2IIHIQ.svg\";var g=\"/images/courses/coding-patterns/greedy/candies/image-16-03-7-B47RWBXQ.svg\";var f=\"/images/courses/coding-patterns/greedy/candies/image-16-03-8-ZTYJOUNN.svg\";var m=\"/images/courses/coding-patterns/greedy/candies/image-16-03-9-KXDIKBMF.svg\";var b=\"/images/courses/coding-patterns/greedy/candies/image-16-03-10-PORF3QPT.svg\";var w=\"/images/courses/coding-patterns/greedy/candies/image-16-03-11-3QK4HUBS.svg\";var k=\"/images/courses/coding-patterns/greedy/candies/image-16-03-12-WGFCSUXE.svg\";var u=\"/images/courses/coding-patterns/greedy/candies/image-16-03-13-KPR35GNF.svg\";var y=\"/images/courses/coding-patterns/greedy/candies/image-16-03-14-G3ZGQPBP.svg\";var F=\"/images/courses/coding-patterns/greedy/candies/image-16-03-15-MWMWMHIZ.svg\";var x=\"/images/courses/coding-patterns/greedy/candies/image-16-03-16-SLSLWGZB.svg\";var i1={chapter:\"16-03\",difficulty:\"Medium\",title:\"Candies\"};function v(i){let e={annotation:\"annotation\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...i.components},{CodeTabs:l,Figure:t,Image:a,OpenCodeEditor:n,ProblemDescription:s}=e;return l||V(\"CodeTabs\",!0),t||V(\"Figure\",!0),a||V(\"Image\",!0),n||V(\"OpenCodeEditor\",!0),s||V(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(s,{children:[(0,C.jsxs)(e.p,{children:[\"You teach a class of children sitting in a row, each of whom has a rating based on their performance. You want to \",(0,C.jsx)(e.strong,{children:\"distribute candies\"}),\" to the children while abiding by the following rules:\"]}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"Each child must receive at least one candy.\"}),`\n`,(0,C.jsx)(e.li,{children:\"If two children sit next to each other, the child with the higher rating must receive more candies.\"}),`\n`]}),(0,C.jsxs)(e.p,{children:[\"Determine the \",(0,C.jsx)(e.strong,{children:\"minimum number of candies\"}),\" you need to distribute to satisfy these conditions.\"]}),(0,C.jsx)(e.h4,{id:\"example-1\",children:\"Example 1:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: ratings = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"12\"}),`\n`]})}),(0,C.jsxs)(e.p,{children:[\"Explanation: You can distribute candies to each child as follows: \",(0,C.jsx)(e.code,{children:\"[3, 2, 1, 2, 3, 1]\"}),\".\"]}),(0,C.jsx)(e.h4,{id:\"example-2\",children:\"Example 2:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: ratings = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),`]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`\n`]})}),(0,C.jsxs)(e.p,{children:[\"Explanation: You can distribute candies to each child as follows: \",(0,C.jsx)(e.code,{children:\"[1, 2, 1]\"}),\".\"]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"For starters, we know we need to give at least 1 candy to each of the n children to satisfy the first requirement of this problem. As for the other requirement, let's start off by considering a few specific cases.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Uniform ratings\"}),(0,C.jsx)(e.br,{}),`\n`,\"Consider the situation where all children have the same rating. Since no child has a higher rating than another, we can give each child one candy to meet both requirements.\"]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:o,alt:\"Image represents a simple data structure example showing two parallel arrays, likely in a programming context.  The top array, labeled 'ratings,' contains five elements, each with a value of '2,' separated by the '==' operator, suggesting comparison or equality checks.  The bottom array, labeled 'candies,' also contains five elements, each with a value of '1' (displayed in orange).  The arrays are arranged vertically, with 'ratings' above 'candies,' implying a potential relationship between the two datasets.  The numbers within the square brackets indicate array elements, and the overall structure suggests a one-to-one correspondence between the elements of the 'ratings' and 'candies' arrays, where each rating of 2 is associated with one candy.\",width:\"499\",height:\"42\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Increasing ratings\"}),(0,C.jsx)(e.br,{}),`\n`,\"Now, consider the case where the children\\u2019s ratings are in strictly increasing order. Here, \",(0,C.jsx)(e.strong,{children:\"each child should receive one more candy than their left-side neighbor\"}),\".\"]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:d,alt:\"Image represents two horizontal, one-dimensional arrays of numerical data. The top array, labeled 'ratings = [1 < 3 < 4 < 6 < 8]', contains the numbers 1, 3, 4, 6, and 8, arranged sequentially within square brackets.  The numbers are separated by the 'less than' symbol (<), indicating a sorted ascending order. The bottom array, labeled 'candies = [1 2 3 4 5]', displays the numbers 1, 2, 3, 4, and 5, also within square brackets, but without any separating symbols, suggesting a simple sequence.  The numbers in the 'candies' array are rendered in orange, while those in the 'ratings' array are in black, except for the '<' symbols which are in a lighter orange.  There is no explicit connection or information flow visually depicted between the two arrays; they are presented independently, implying a potential relationship or comparison between the two datasets that is not directly shown in the image itself.\",width:\"499\",height:\"42\"})}),`\n`,(0,C.jsx)(e.p,{children:\"The first child gets one candy because they have no left-side neighbor, and a smaller rating than their right-side neighbor. Each subsequent child has a higher rating than their left-side neighbor, so gets one more candy than that neighbor.\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:L,alt:\"Image represents a diagram illustrating an algorithm or code snippet.  At the top, a Python-like list named `ratings` is defined and initialized with the integer values [1, 3, 4, 6, 8]. Below it, another list named `candies` is initialized with [1, 2, 3, 4, 5]. A horizontal arrow connects the second element of `candies` to its last element, indicating an iterative process. Below the arrow, a condition `rating[i] > ratings[i - 1]` is shown, suggesting that the algorithm iterates through the `ratings` list, comparing each element to its preceding element. If the condition is true (the current rating is greater than the previous rating), the subsequent line `candies[i] = candies[i - 1] + 1` indicates that the corresponding element in the `candies` list is incremented by 1.  This implies that the number of candies increases only when the rating increases compared to the previous rating. The overall diagram visualizes a conditional update of the `candies` list based on the values in the `ratings` list.\",width:\"499\",height:\"93\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Decreasing ratings\"}),(0,C.jsx)(e.br,{}),`\n`,\"Here, \",(0,C.jsx)(e.strong,{children:\"each child needs to receive one more candy than their right-side neighbor\"}),\".\"]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:p,alt:\"Image represents two horizontal arrays of numerical data, presented as Python-style lists. The top array, labeled 'ratings = ', contains the integer sequence [7, 6, 4, 3, 2], with each number separated by a right-pointing arrow symbol ('>'), suggesting a descending order or a comparison between consecutive elements.  The bottom array, labeled 'candies = ', displays the integer sequence [5, 4, 3, 2, 1], also in descending order, with the numbers rendered in orange, while the numbers in the 'ratings' array are in black, except for the orange arrows.  The two arrays are vertically aligned, implying a potential relationship or correlation between the corresponding elements in each list, possibly illustrating a data structure or a pattern in a coding context.\",width:\"499\",height:\"42\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This is the same as the previous case, but in reverse. To populate the \",(0,C.jsx)(e.code,{children:\"candies\"}),\" array in reverse, we start with the child furthest to the right, giving them one candy. Moving leftward, we give each child one more candy than their right-side neighbor:\"]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:M,alt:\"The image represents a visual explanation of an algorithm or code snippet that manipulates two arrays, `ratings` and `candies`.  The `ratings` array, displayed at the top, contains the integer values [7, 6, 4, 3, 2]. Below it is the `candies` array, initially holding the values [5, 4, 3, 2, 1]. A light-orange horizontal arrow connects the `candies` array, indicating a flow of information or processing from right to left.  Below the arrow, the condition `rating[i] > ratings[i + 1]` is shown in orange text, signifying that the algorithm compares consecutive elements in the `ratings` array. If this condition is true (meaning a rating is greater than the next one), the subsequent line, `candies[i] = candies[i + 1] + 1`, in orange text, shows that the corresponding element in the `candies` array is updated by adding 1 to the value of the next element in the `candies` array.  This suggests a process where the number of candies assigned is dependent on the relative ranking of ratings, with higher ratings potentially receiving more candies than their lower-rated neighbors.\",width:\"499\",height:\"93\"})}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Non-uniform ratings\"}),(0,C.jsx)(e.br,{}),`\n`,\"Unlike previous cases, in a non-uniform distribution of ratings, children can have higher ratings than their left-side neighbor, right-side neighbor, both neighbors, or neither. This makes handling non-uniform ratings more complex.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"What if we can handle these cases separately? Specifically, we could use:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"One pass to ensure children with a higher rating than their left-side neighbor get more candy (handle increasing ratings).\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"A second pass to ensure children with a higher rating than their right-side neighbor get more candy (handle decreasing ratings).\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"This allows us to apply the logic we used for increasing and decreasing ratings in two separate passes. Let\\u2019s see if this strategy works over the following example, starting with an initial distribution of 1 candy for each child to ensure we meet the first requirement of this problem:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:Z,alt:\"Image represents a line graph illustrating a relationship between 'ratings' and 'candies'. The horizontal axis (x-axis) is labeled 'ratings' and displays a sequence of numbers within square brackets: [4, 3, 2, 4, 5, 1], representing different rating values. The vertical axis (y-axis) is labeled 'candies' and shows a scale from 0 to 3, indicating the quantity of candies.  A horizontal line at 'candies = 1' connects six orange data points, each corresponding to a rating value on the x-axis.  This visual representation suggests a constant number of candies (one) regardless of the rating value.  The graph's structure is simple, with clear axis labels and a straightforward linear relationship between the variables, showing no correlation between the number of candies and the ratings.\",width:\"336\",height:\"206\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"First pass: handle increasing ratings\",(0,C.jsx)(e.br,{}),`\n`,\"Iterate through the \",(0,C.jsx)(e.code,{children:\"ratings\"}),\" array and, for each child, check if they have a higher rating than their left-side neighbor (\",(0,C.jsx)(e.code,{children:\"if ratings[i] > ratings[i - 1]\"}),\"). Start from index 1 since the child at index 0 doesn\\u2019t have a left-side neighbor.\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"If a child's rating is higher than their left-side neighbor's rating, make sure they have at least one more candy than their left-side neighbor \",(0,C.jsx)(e.code,{children:\"(candies[i] = candies[i - 1] + 1\"}),\").\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Otherwise, just continue to the next child\\u2019s rating.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"We can see how this process updates the candy distribution below:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:g,alt:\"Image represents a Cartesian coordinate system illustrating a simple data relationship. The horizontal axis, labeled 'ratings,' displays a sequence of numerical ratings: 4, 3, 2, 4, 5, 1,  represented along the x-axis with corresponding numerical markers (0, 1, 2, 3, 4, 5) below. The vertical axis, labeled 'candies,' represents a quantity, with values 0, 1, 2, and 3 marked along the y-axis.  A horizontal line at y=1 connects six orange dots, each positioned above a rating value on the x-axis.  This visually indicates that regardless of the rating (4, 3, 2, 4, 5, or 1), the number of candies remains constant at one. A small black square containing an 'i' is positioned above the data line, with a downward-pointing arrow suggesting it provides additional information or context about the data presented.  The x-axis values are enclosed in square brackets, '[ ]', and a right-pointing arrow symbol '>' is placed between the first two rating values (4 and 3).\",width:\"336\",height:\"206\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:f,alt:\"Image represents a line graph illustrating a data set. The horizontal axis is labeled 'ratings' and shows a sequence of numbers from 4 to 1, representing rating values.  The vertical axis is labeled 'candies' and shows a scale from 0 to 3, likely representing the quantity or count of candies. A horizontal line at 'candies = 1' connects six data points, each corresponding to a rating value. The data points are represented by orange circles.  The x-coordinates of these points are [4, 3, 2, 4, 5, 1] respectively, and their y-coordinate is consistently 1. A small black square containing the letter 'i' is positioned above the data point at rating 2, possibly indicating an information point or annotation related to that specific data point.  The x-axis values are presented within square brackets `[ ]`, suggesting a list or array of rating values.  A small right-pointing arrow is placed between the rating values 3 and 2, possibly indicating the direction of data flow or sequence.\",width:\"336\",height:\"206\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:m,alt:\"Image represents a line graph illustrating a relationship between 'ratings' and 'candies'. The horizontal axis displays 'ratings', showing values from 4 to 1,  represented as [4, 3, 2, 4, 5, 1] within square brackets. The vertical axis represents 'candies', ranging from 0 to 3.  An orange line connects data points, showing the number of candies corresponding to each rating. The line starts at (4,1), remains at a value of 1 for ratings 3 and 2, peaks at (4,2) for the third rating, drops to (5,1) for the fourth rating, and remains at 1 for the final rating of 1. A small black square labeled 'i' is positioned above the peak of the line, with a downward-pointing arrow indicating a possible annotation or additional information related to the highest point on the graph (rating 4, candies 2).\",width:\"336\",height:\"206\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:b,alt:\"Image represents a line graph illustrating the relationship between 'ratings' and 'candies'. The horizontal axis (x-axis) is labeled 'ratings' and displays numerical values [4, 3, 2, 4, 5, 1] enclosed in square brackets.  The vertical axis (y-axis) is labeled 'candies' and shows values from 0 to 3.  An orange line connects data points representing the number of candies corresponding to each rating. The points show that the number of candies starts at 1 for a rating of 4, remains at 1 for ratings of 3 and 2, increases to 2 for a rating of 4, peaks at 3 for a rating of 5, and finally drops to 1 for a rating of 1. A small square box labeled 'i' is positioned above the highest point on the graph, with an arrow pointing downwards to that point, possibly indicating additional information or a key data point.\",width:\"336\",height:\"233\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:w,alt:\"Image represents a line graph illustrating the relationship between 'ratings' (x-axis) and 'candies' (y-axis).  The x-axis shows ratings values ranging from 4 to 1, with corresponding numerical indices [0, 1, 2, 3, 4, 5] displayed below. The y-axis represents the number of candies, ranging from 0 to 3.  An orange line connects data points, showing the number of candies associated with each rating. The points indicate that at ratings 4 (index 0) and 3 (index 1), there is 1 candy; at rating 2 (index 2), there is also 1 candy; at rating 4 (index 3), there are 2 candies; at rating 5 (index 4), there are 3 candies; and finally, at rating 1 (index 5), there is 1 candy. A small black square with an 'i' inside is positioned to the upper right, with a downward-pointing arrow connecting it to the last data point on the graph, suggesting additional information or context related to that specific data point might be available.\",width:\"336\",height:\"208\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Second pass: handle decreasing ratings\",(0,C.jsx)(e.br,{}),`\n`,\"Iterate through the \",(0,C.jsx)(e.code,{children:\"ratings\"}),\" array in reverse and, for each child, check if they have a higher rating than their right-side neighbor (\",(0,C.jsx)(e.code,{children:\"if ratings[i] > ratings[i + 1]\"}),\"). Start at index 4 since the child at index 5 (the last child) doesn\\u2019t have a right-side neighbor.\"]}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[\"If a child's rating is higher than their right-side neighbor's rating, make sure they have one more candy than that neighbor. Note that because we already did one pass through the \",(0,C.jsx)(e.code,{children:\"candies\"}),\" array, they might already have more candies than their right-side neighbor, in which case the current amount of candy they have is sufficient.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"Otherwise, continue to the next child\\u2019s rating.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"We can see how this process updates the candy distribution below:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:k,alt:\"Image represents a line graph illustrating the relationship between 'ratings' and 'candies'. The horizontal axis (x-axis) represents 'ratings', with values ranging from 0 to 5, shown as [4 3 2 4 5 > 1]. The vertical axis (y-axis) represents 'candies', with values ranging from 0 to 3.  An orange line connects data points, showing the number of candies corresponding to each rating. The points are (0,1), (1,1), (2,1), (3,2), (4,3), and (5,1).  A small black square labeled 'i' is positioned above the graph, with an arrow pointing downwards towards the data point at (4,3), possibly indicating additional information or a highlight. The graph visually depicts a non-linear relationship, where the number of candies increases initially with ratings, peaks at a rating of 4, and then decreases.\",width:\"336\",height:\"233\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:u,alt:\"Image represents a line graph illustrating a relationship between 'ratings' and 'candies'. The horizontal axis (x-axis) displays 'ratings', with values ranging from 4 to 1, represented numerically and with corresponding indices [4<sub>0</sub>, 3<sub>1</sub>, 2<sub>2</sub>, 4<sub>3</sub>, 5<sub>4</sub>, 1<sub>5</sub>] suggesting a possible array or list structure. The vertical axis (y-axis) represents 'candies', with values ranging from 0 to 3.  An orange line connects data points, showing the number of candies corresponding to each rating. The points show that the number of candies remains constant at 1 for ratings 4, 3, and 2, then increases to 2 for rating 4, peaks at 3 for rating 5, and finally drops to 1 for rating 1. A small information icon ('i' in a square) points to the data point (4<sub>3</sub>, 2), possibly highlighting a specific data point of interest or an anomaly.\",width:\"336\",height:\"207\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:y,alt:\"Image represents a line graph illustrating a relationship between 'ratings' and 'candies'. The horizontal axis (x-axis) displays 'ratings', with values ranging from 4 to 1, represented numerically and indexed below the axis as [4<sub>0</sub> 3<sub>1</sub> 2<sub>2</sub> < 4<sub>3</sub> 5<sub>4</sub> 1<sub>5</sub>]. The vertical axis (y-axis) represents 'candies', with values from 0 to 3.  An orange line connects data points, showing the number of candies corresponding to each rating. The line starts at (4,1), remains at a constant value of 1 until (2,1), then increases sharply to (4,2), peaks at (5,3), and finally drops to (1,1). A small black square labeled 'i' points down to the point (2,1) on the graph, possibly indicating a specific data point of interest or a change in trend.\",width:\"336\",height:\"207\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:F,alt:\"Image represents a line graph illustrating the relationship between candy ratings and the number of candies.  The horizontal axis, labeled 'ratings,' displays a sequence of ratings represented as a list `[4, 3, 2, 4, 5, 1]`, with each number corresponding to a data point. The vertical axis, labeled 'candies,' represents the quantity of candies, ranging from 0 to 3.  An orange line connects data points, showing the number of candies associated with each rating.  The points are (4,1), (3,2), (2,1), (4,2), (5,3), and (1,1). A small downward-pointing arrow with an 'i' inside a box is positioned above the point (3,2), possibly indicating additional information or a key data point. The graph visually demonstrates a non-linear relationship between ratings and the number of candies, with the number of candies fluctuating across different rating values.\",width:\"336\",height:\"207\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(a,{src:x,alt:\"Image represents a line graph illustrating a relationship between 'ratings' and 'candies'.  The horizontal axis displays 'ratings', with values [4, 3, 2, 4, 5, 1] marked below, each value having a corresponding subscript index [0, 1, 2, 3, 4, 5] indicating the position in the sequence. The vertical axis represents 'candies', ranging from 0 to 3. An orange line connects data points, showing the number of candies corresponding to each rating. The points are (0,3), (1,2), (2,1), (3,2), (4,3), and (5,1). A small square with an 'i' inside is positioned above the first data point (0,3), suggesting additional information might be available.  The overall graph depicts a non-linear relationship, where the number of candies fluctuates with changes in ratings.\",width:\"336\",height:\"221\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"At the end of the second pass, each child should have the correct number of candies. Now, we just need to return the sum of all the candies in the \",(0,C.jsx)(e.code,{children:\"candies\"}),\" array.\"]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"The solution we came up with is a \",(0,C.jsx)(e.strong,{children:\"greedy solution\"}),\" because it satisfies the greedy choice property: we make a locally optimal choice for the current child by only considering the ratings of their immediate neighbors, without worrying about the ratings of other children.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"How can we be sure this strategy works? Over our two passes, we ensure both the left-side and right-side neighbors of each child are considered when distributing candies. This guarantees that the solution meets the problem's requirements.\"}),`\n`,(0,C.jsx)(n,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"candies\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"ratings: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(ratings)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Ensure each child starts with 1 candy.\"}),`\n    candies = [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] * n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# First pass: for each child, ensure the child has more candies than their\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# left-side neighbor if the current child's rating is higher.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" ratings[i] > ratings[i - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]:\n            candies[i] = candies[i - `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Second pass: for each child, ensure the child has more candies than their\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# right-side neighbor if the current child's rating is higher.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(n - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`):\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" ratings[i] > ratings[i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]:\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the current child already has more candies than their right-side\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# neighbor, keep the higher amount.\"}),`\n            candies[i] = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),\"(candies[i], candies[i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"sum\"}),`(candies)\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"candies\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"ratings\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = ratings.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" candies = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(n).\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// First pass: left to right\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (ratings[i] > ratings[i - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]) {\n      candies[i] = candies[i - `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Second pass: right to left\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = n - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\"; i >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (ratings[i] > ratings[i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`]) {\n      candies[i] = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),\"(candies[i], candies[i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" candies.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reduce\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"sum, c\"}),\") =>\"]}),\" sum + c, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"candies\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> ratings)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` ratings.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Ensure each child starts with 1 candy.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\"[] candies = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            candies[i] = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// First pass: for each child, ensure the child has more candies than their\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// left-side neighbor if the current child's rating is higher.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (ratings.get(i) > ratings.get(i - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)) {\n                candies[i] = candies[i - `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Second pass: for each child, ensure the child has more candies than their\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// right-side neighbor if the current child's rating is higher.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" n - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\"; i >= \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i--) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (ratings.get(i) > ratings.get(i + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`)) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the current child already has more candies than their right-side\"}),`\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// neighbor, keep the higher amount.\"}),`\n                candies[i] = Math.max(candies[i], candies[i + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\"] + \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`);\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"total\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` c : candies) {\n            total += c;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` total;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of candies is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we perform two passes over the \",(0,C.jsx)(e.code,{children:\"nums\"}),\" array.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the \",(0,C.jsx)(e.code,{children:\"candies\"}),\" array.\"]})]})}function N(i={}){let{wrapper:e}=i.components||{};return e?(0,C.jsx)(e,{...i,children:(0,C.jsx)(v,{...i})}):v(i)}function V(i,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return B(a1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

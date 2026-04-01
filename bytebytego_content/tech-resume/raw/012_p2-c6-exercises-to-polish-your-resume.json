@@ -1,0 +1,201 @@
+{
+  "course": "tech-resume",
+  "id": "p2-c6-exercises-to-polish-your-resume",
+  "chapter": 12,
+  "title": "Chapter 8: Exercises to Polish Your Resume",
+  "free": false,
+  "code": "var Component=(()=>{var r=Object.create;var m=Object.defineProperty;var k=Object.getOwnPropertyDescriptor;var G=Object.getOwnPropertyNames;var i=Object.getPrototypeOf,w=Object.prototype.hasOwnProperty;var O=(o,c)=>()=>(c||o((c={exports:{}}).exports,c),c.exports),t=(o,c)=>{for(var s in c)m(o,s,{get:c[s],enumerable:!0})},y=(o,c,s,l)=>{if(c&&typeof c==\"object\"||typeof c==\"function\")for(let D of G(c))!w.call(o,D)&&D!==s&&m(o,D,{get:()=>c[D],enumerable:!(l=k(c,D))||l.enumerable});return o};var a=(o,c,s)=>(s=o!=null?r(i(o)):{},y(c||!o||!o.__esModule?m(s,\"default\",{value:o,enumerable:!0}):s,o)),d=o=>y(m({},\"__esModule\",{value:!0}),o);var B=O((I,_)=>{_.exports=_jsx_runtime});var X={};t(X,{default:()=>u,frontmatter:()=>q});var e=a(B());var v=\"/images/courses/tech-resume/p2-c6-exercises-to-polish-your-resume/33-LKP2NT7M.png\";var n=\"/images/courses/tech-resume/p2-c6-exercises-to-polish-your-resume/34-XAACG2XH.png\";var q={chapter:12,title:\"Chapter 8: Exercises to Polish Your Resume\"};function g(o){let c={a:\"a\",em:\"em\",h2:\"h2\",li:\"li\",ol:\"ol\",p:\"p\",strong:\"strong\",ul:\"ul\",...o.components},{Figure:s,Image:l}=c;return s||$(\"Figure\",!0),l||$(\"Image\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(c.p,{children:\"Once you have created your \\u201Cmaster\\u201D resume, here are a few exercises to tweak it\"}),`\n`,(0,e.jsx)(c.h2,{id:\"write-two-different-resumes\",children:\"Write Two Different Resumes\"}),`\n`,(0,e.jsx)(c.p,{children:\"The people who write great resumes have written several of them. The people whose resumes are not fantastic usually keep tweaking and tweaking the same one. Do this challenge to have a significantly better resume.\"}),`\n`,(0,e.jsx)(c.p,{children:\"First, write a resume using your preferred template. You have probably already done this. Then, start fresh, using a completely different template. It can be a template you\\u2019re not in love with; but it should be different. Put away your existing resume; you\\u2019re not allowed to cheat.\"}),`\n`,(0,e.jsx)(c.p,{children:\"Write a brand new resume, aiming to write a completely different one. Don\\u2019t repeat the achievements that you have written on your previous one; come up with different ones. Change the structure. Be bold with using colors. Come up with something very different.\"}),`\n`,(0,e.jsx)(c.p,{children:\"Now, compare the two. What are things you could use from this second one that seem pretty good? With two very different resumes, come up with a third, where you take the things that you like from both resumes. You\\u2019ll not only have a better resume\\u2014but you now have a lot more details to choose from when you customize your resume for the specific job listings.\"}),`\n`,(0,e.jsx)(c.h2,{id:\"find-out-the-impact-of-your-past-projects\",children:\"Find Out the Impact of Your Past Projects\"}),`\n`,(0,e.jsx)(c.p,{children:\"Many resumes list out responsibilities, but they don\\u2019t mention impact or specifics. They might say \\u201CBuilt and shipped the website rewrite for MyCompany\\u201D, but they don\\u2019t talk about how many people viewed the website, how much incremental revenue it generated, by what percentage did the loading times improve, by what percentage did the codebase shrink, and so on. In many cases, this is because the person writing the resume is also unaware of the actual impact.\"}),`\n`,(0,e.jsx)(c.p,{children:\"So find it out. For your current position, ask around on your team and through your manager. What is the expected impact of the project? Or what was the impact of the launch? For past positions, reach out to your old team or previous managers and ask about the impact. They might have better pointers on what this was.\"}),`\n`,(0,e.jsx)(c.p,{children:\"Finally, if you don\\u2019t have an exact impact, estimate to a good approximation. Can you give a rough percentage on the improvement made? A rough estimate on from what number to what number things changed? With impact, you don\\u2019t need to be exact. \\u201CClose enough\\u201D is better than nothing.\"}),`\n`,(0,e.jsx)(c.h2,{id:\"do-a-grammar-check-not-just-a-spellcheck\",children:\"Do a Grammar Check, Not Just a Spellcheck\"}),`\n`,(0,e.jsxs)(c.p,{children:[\"Your resume should read naturally: no typos, and clear grammar. The sentences should be short and easy to read. For grammar check, you can use the free version of \",(0,e.jsx)(c.a,{href:\"https://www.grammarly.com/grammar-check\",children:\"Grammarly spell checker\"}),\". For easy to read text and sentences, use the free \",(0,e.jsx)(c.a,{href:\"http://www.hemingwayapp.com/\",children:\"Hemingway Editor\"}),\". Don\\u2019t only rely on these tools, though: re-read, re-read, re-read your resume.\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(l,{src:v,alt:\"Image represents a screenshot of the Hemingway Editor app's interface.  The left side displays instructional text explaining the app's functionality: it highlights lengthy/complex sentences in yellow and overly dense sentences in red, suggesting edits;  it highlights adverbs and weakening phrases in blue, and passive voice phrases in green, offering suggestions for improvement.  The text also explains how to use the toolbar for formatting and how to input and edit text.  The right side shows a 'Readability' section, displaying a Grade 6 readability score, labeled 'Good,' and a word count of 133. Below this, color-coded boxes summarize the text's analysis: two boxes (light blue) indicate two adverbs, meeting a goal of two or fewer; one box (light green) shows one instance of passive voice, also meeting a goal of two or fewer; one box (light purple) indicates one phrase with a simpler alternative; and two boxes (light orange) show one sentence each categorized as hard and very hard to read, respectively.  The numbers preceding each description in the boxes indicate the count of each issue identified.  The overall layout is a simple two-column arrangement, with the instructions on the left and the analysis results on the right, clearly showing the app's feedback based on the input text.\",width:\"695\",height:\"449\"})}),`\n`,(0,e.jsx)(c.p,{children:(0,e.jsx)(c.em,{children:\"The Hemingway Editor\\u2014an excellent tool to make your resume easy to read.\"})}),`\n`,(0,e.jsx)(c.h2,{id:\"ask-for-friends-or-family-to-proofread\",children:\"Ask for Friends or Family to Proofread\"}),`\n`,(0,e.jsx)(c.p,{children:\"As you write your resume, you will develop tunnel vision and ignore obvious inconsistencies or mistakes. Get a fresh pair of eyes to read through your resume, someone who can catch things that don\\u2019t look or sound right.\"}),`\n`,(0,e.jsx)(c.p,{children:\"Ask a friend or a family member to read through your resume thoroughly and give you feedback. You\\u2019ll get feedback on things\\u2014grammatical issues, typos, logical mistakes\\u2014that you would have otherwise missed.\"}),`\n`,(0,e.jsx)(c.h2,{id:\"get-feedback-on-the-internet\",children:\"Get Feedback on the Internet\"}),`\n`,(0,e.jsx)(c.p,{children:\"There are several forums where you can get feedback on your tech resume\\u2014for free. As with most things free, don\\u2019t get your hopes up too high. These are forums where members do a favor for giving any feedback. My suggestion is to join these communities well ahead of time, read feedback on other resumes, and treat the advice with a grain of salt.\"}),`\n`,(0,e.jsxs)(c.p,{children:[(0,e.jsx)(c.strong,{children:\"Remove personal information from resumes\"}),\" you submit to forums like this, as the resume might be circulated well beyond your control.\"]}),`\n`,(0,e.jsxs)(c.ul,{children:[`\n`,(0,e.jsxs)(c.li,{children:[\"Reddit has regular \",(0,e.jsx)(c.a,{href:\"https://www.reddit.com/r/cscareerquestions/search?q=Resume+Advice+Thread&restrict_sr=on&sort=new&t=all\",children:\"resume advice threads on CS Career questions\"}),\". This forum is meant for new grads.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[\"Reddit has a general \",(0,e.jsx)(c.a,{href:\"https://www.reddit.com/r/resumes/\",children:\"resume review sub\"}),\" where you can get feedback on your CV/resume.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[\"If you are an engineering manager, you can get resume feedback \",(0,e.jsx)(c.a,{href:\"https://randsinrepose.com/welcome-to-rands-leadership-slack/\",children:\"within the Rands Slack channel\"}),\".\"]}),`\n`,(0,e.jsxs)(c.li,{children:[\"Search for resume review offers from fellow members of the tech community. Dev.to had a \",(0,e.jsx)(c.a,{href:\"https://dev.to/kaydacode/resume-review-1oei\",children:\"resume review thread\"}),\" and people occasionally offer to give feedback on Twitter and on LinkedIn.\"]}),`\n`]}),`\n`,(0,e.jsx)(c.h2,{id:\"keyword-check-for-that-position\",children:\"Keyword Check for That Position\"}),`\n`,(0,e.jsx)(c.p,{children:\"When submitting a resume for a specific position, if your resume mentions things that are considered keywords in a job, you\\u2019ll be more likely to stand out. For example, for a Java backend position, you\\u2019ll want Java and backend mentioned\\u2014assuming you have experience with both.\"}),`\n`,(0,e.jsx)(c.p,{children:\"A possible way to do this review is for you to compare the job description and your resume. There are services that offer a more detailed scan. Most of this scan is guesswork, but it can give you a sense of how much words overlap your resume and the job posting has.\"}),`\n`,(0,e.jsxs)(c.p,{children:[(0,e.jsx)(c.strong,{children:\"I hesitate to wholeheartedly recommend ATS scan services\"}),\", as most of these scans are based on ATS fallacies, and optimize to make you pay up for ATS optimization, that will not be particularly helpful. See the \",(0,e.jsx)(c.a,{href:\"/courses/tech-resume/p1-c2-the-hiring-pipeline#ats-myths-busted\",children:\"ATS Myths Busted section\"}),\" on more details on why most of the claims made by these sites do not apply to tech positions.\"]}),`\n`,(0,e.jsxs)(c.p,{children:[\"Still, doing a quick check with JobScan ATS scan can give you some pointers on the overlap between your resume and the position. Keep in mind that most of the ATS scores are guesswork, and ATSes will not reject your resume. And I do \",(0,e.jsx)(c.em,{children:\"not\"}),\" recommend upgrading to JobScan Premium for tech roles, as much as the site tries to upsell to do this. For example, you will always see a lower than 100% \\u201Cmatch rate\\u201D in this scan that incentivizes opening your wallet and pay for advice that will likely be irrelevant with tech roles.\"]}),`\n`,(0,e.jsx)(s,{children:(0,e.jsx)(l,{src:n,alt:\"Image represents a tech resume analysis report.  The top section displays an 'OVERVIEW' with a prominent circular gauge indicating a '<20%' 'LOW MATCH RATE,' accompanied by advice to add missing skills to improve the match rate (aiming for 80% or above). Below, a detailed 'ATS FINDINGS' section presents horizontal progress bars for 'ATS FINDINGS' (4/7), 'RECRUITER FINDINGS' (4/4), 'SKILLS MATCH' (6/61), 'PREMIUM FORMAT CHECKS' (1/2), and 'COVER LETTER CHECKS' (0/0). Each bar shows a green portion representing completed items and a grey portion for incomplete items, with numerical indicators (e.g., 4/7) specifying completed versus total items.  Red 'X' and orange '\\u0394' symbols highlight failed and warning items respectively.  Further down, individual sections analyze 'SKILLS AND KEYWORDS,' 'JOB TITLE MATCH,' 'EDUCATION MATCH,' 'ATS TIP,' and 'SECTION HEADINGS,' each with a checkmark (\\u2713) or cross (\\u2717) indicating success or failure, along with detailed explanations and suggestions for improvement.  For example, 'SKILLS AND KEYWORDS' highlights missing high-value skills, while 'JOB TITLE MATCH' points out a mismatch between the resume and job description, providing specific recommendations.  The 'ATS TIP' section suggests adding company name and web address for better ATS-specific tips.  The overall structure shows a hierarchical breakdown of resume analysis, starting with an overall match rate and drilling down into specific areas for improvement.\",width:\"695\",height:\"407\"})}),`\n`,(0,e.jsx)(c.p,{children:`The JobScan ATS Check. Much of it won\\u2019t apply to how tech companies use ATSes. It\ncould give you ideas on how to tailor your resume for the job description, though.`}),`\n`,(0,e.jsx)(c.h2,{id:\"recap-actions-to-improve-your-resume\",children:\"Recap: Actions to Improve Your Resume\"}),`\n`,(0,e.jsx)(c.p,{children:\"In this chapter, we\\u2019ve covered additional exercises to make your resume better. Consider doing multiple or all of these to make your resume even better.\"}),`\n`,(0,e.jsxs)(c.ol,{children:[`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Write two very different resumes\"}),\", then come up with a third one, combining the best parts from each one.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Find out the impact of your past projects and add them to your resume\"}),\". Reach out to past colleagues, or do a rough estimation. A close enough estimation is better than no specifics.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Do a grammar check, not just a spell check\"}),\". Use tools like \",(0,e.jsx)(c.a,{href:\"https://www.grammarly.com/grammar-check\",children:\"Grammarly\"}),\" or the \",(0,e.jsx)(c.a,{href:\"http://www.hemingwayapp.com/\",children:\"Hemingway Editor\"}),\" to do so.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Ask friends and family for proofreading\"}),\". You\\u2019ll get a fresh pair of eyes, and valuable feedback on things that you might have missed.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Seek out feedback on the internet from community forums\"}),\". Don\\u2019t forget to anonymize your resume first. Treat this feedback with a grain of salt, though.\"]}),`\n`,(0,e.jsxs)(c.li,{children:[(0,e.jsx)(c.strong,{children:\"Do a keyword check for your resume\"}),\". Use either an automated tool or just \\u201Cpretend\\u201D to be the screening software, looking for keywords that you pick up from the job description.\"]}),`\n`]})]})}function u(o={}){let{wrapper:c}=o.components||{};return c?(0,e.jsx)(c,{...o,children:(0,e.jsx)(g,{...o})}):g(o)}function $(o,c){throw new Error(\"Expected \"+(c?\"component\":\"object\")+\" `\"+o+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return d(X);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c1-acknowledgements"
+      ],
+      "id": "p0-c1-acknowledgements",
+      "chapter": 1,
+      "title": "Acknowledgements"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c2-introduction"
+      ],
+      "id": "p0-c2-introduction",
+      "chapter": 2,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c0-resumes-and-the-hiring-process"
+      ],
+      "id": "p1-c0-resumes-and-the-hiring-process",
+      "chapter": 3,
+      "free": true,
+      "title": "PART 1: RESUMES AND THE HIRING PROCESS"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c1-why-resumes-and-cvs-are-important"
+      ],
+      "id": "p1-c1-why-resumes-and-cvs-are-important",
+      "chapter": 4,
+      "free": true,
+      "title": "Chapter 1: Why Resumes and CVs are Important"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c2-the-hiring-pipeline"
+      ],
+      "id": "p1-c2-the-hiring-pipeline",
+      "chapter": 5,
+      "free": true,
+      "title": "Chapter 2: The Hiring Pipeline"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c0-writing-the-resume"
+      ],
+      "id": "p2-c0-writing-the-resume",
+      "chapter": 6,
+      "title": "PART 2: WRITING THE RESUME"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c1-tech-resume-basics"
+      ],
+      "id": "p2-c1-tech-resume-basics",
+      "chapter": 7,
+      "title": "Chapter 3: Tech Resume Basics"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c2-resume-structure"
+      ],
+      "id": "p2-c2-resume-structure",
+      "chapter": 8,
+      "title": "Chapter 4: Resume Structure"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c3-standing-out"
+      ],
+      "id": "p2-c3-standing-out",
+      "chapter": 9,
+      "title": "Chapter 5: Standing Out"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c4-common-mistakes"
+      ],
+      "id": "p2-c4-common-mistakes",
+      "chapter": 10,
+      "title": "Chapter 6: Common Mistakes"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c5-different-experience-levels-different-career-paths"
+      ],
+      "id": "p2-c5-different-experience-levels-different-career-paths",
+      "chapter": 11,
+      "title": "Chapter 7: Different Experience Levels, Different Career Paths"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c6-exercises-to-polish-your-resume"
+      ],
+      "id": "p2-c6-exercises-to-polish-your-resume",
+      "chapter": 12,
+      "title": "Chapter 8: Exercises to Polish Your Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c7-beyond-the-resume"
+      ],
+      "id": "p2-c7-beyond-the-resume",
+      "chapter": 13,
+      "title": "Chapter 9: Beyond the Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c0-examples-and-inspiration"
+      ],
+      "id": "p3-c0-examples-and-inspiration",
+      "chapter": 14,
+      "title": "PART 3: EXAMPLES AND INSPIRATION"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c1-good-resume-template-principles"
+      ],
+      "id": "p3-c1-good-resume-template-principles",
+      "chapter": 15,
+      "title": "Chapter 10: Good Resume Template Principles"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c2-resume-templates"
+      ],
+      "id": "p3-c2-resume-templates",
+      "chapter": 16,
+      "title": "Chapter 11: Resume Templates"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c3-resume-improvement-examples"
+      ],
+      "id": "p3-c3-resume-improvement-examples",
+      "chapter": 17,
+      "title": "Chapter 12: Resume Improvement Examples"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process"
+      ],
+      "id": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+      "chapter": 18,
+      "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p4-c0-conclusion"
+      ],
+      "id": "p4-c0-conclusion",
+      "chapter": 19,
+      "title": "Conclusion"
+    }
+  ],
+  "courseMetadata": {
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "tech-resume",
+    "defaultChapter": "/courses/tech-resume/p0-c2-introduction",
+    "rootPath": "/courses/tech-resume",
+    "lessons": 13,
+    "students": 5000,
+    "showChapter": false,
+    "lastModified": "2025.02.11"
+  }
+}

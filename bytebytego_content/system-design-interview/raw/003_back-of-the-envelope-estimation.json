@@ -1,0 +1,321 @@
+{
+  "course": "system-design-interview",
+  "id": "back-of-the-envelope-estimation",
+  "chapter": 3,
+  "title": "Back-of-the-envelope Estimation",
+  "free": true,
+  "code": "var Component=(()=>{var X=Object.create;var f=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var E=Object.getOwnPropertyNames;var s=Object.getPrototypeOf,z=Object.prototype.hasOwnProperty;var p=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),q=(e,t)=>{for(var i in t)f(e,i,{get:t[i],enumerable:!0})},r=(e,t,i,R)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let n of E(t))!z.call(e,n)&&n!==i&&f(e,n,{get:()=>t[n],enumerable:!(R=u(t,n))||R.enumerable});return e};var c=(e,t,i)=>(i=e!=null?X(s(e)):{},r(t||!e||!e.__esModule?f(i,\"default\",{value:e,enumerable:!0}):i,e)),L=e=>r(f({},\"__esModule\",{value:!0}),e);var v=p((N,b)=>{b.exports=_jsx_runtime});var T={};q(T,{default:()=>P,frontmatter:()=>o});var A=c(v());var d=\"/images/courses/system-design-interview/back-of-the-envelope-estimation/figure-2-1-E4JWSLDE.svg\";var o={chapter:3,title:\"Back-of-the-envelope Estimation\",free:!0};function l(e){let t={a:\"a\",br:\"br\",h2:\"h2\",hr:\"hr\",li:\"li\",p:\"p\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",ul:\"ul\",...e.components},{Figure:i,Image:R}=t;return i||a(\"Figure\",!0),R||a(\"Image\",!0),(0,A.jsxs)(A.Fragment,{children:[(0,A.jsx)(t.p,{children:\"In a system design interview, sometimes you are asked to estimate system capacity or performance requirements using a back-of-the-envelope estimation. According to Jeff Dean, Google Senior Fellow, \\u201Cback-of-the-envelope calculations are estimates you create using a combination of thought experiments and common performance numbers to get a good feel for which designs will meet your requirements\\u201D [1].\"}),`\n`,(0,A.jsx)(t.p,{children:\"You need to have a good sense of scalability basics to effectively carry out back-of-the-envelope estimation. The following concepts should be well understood: power of two [2], latency numbers every programmer should know, and availability numbers.\"}),`\n`,(0,A.jsx)(t.h2,{id:\"power-of-two\",children:\"Power of two\"}),`\n`,(0,A.jsx)(t.p,{children:\"Although data volume can become enormous when dealing with distributed systems, calculation all boils down to the basics. To obtain correct calculations, it is critical to know the data volume unit using the power of 2. A byte is a sequence of 8 bits. An ASCII character uses one byte of memory (8 bits). Below is a table explaining the data volume unit (Table 1).\"}),`\n`,(0,A.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"500px\"},children:(0,A.jsxs)(t.table,{children:[(0,A.jsx)(t.thead,{children:(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.th,{children:\"Power\"}),(0,A.jsx)(t.th,{children:\"Approximate value\"}),(0,A.jsx)(t.th,{children:\"Full name\"}),(0,A.jsx)(t.th,{children:\"Short name\"})]})}),(0,A.jsxs)(t.tbody,{children:[(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"10\"}),(0,A.jsx)(t.td,{children:\"1 Thousand\"}),(0,A.jsx)(t.td,{children:\"1 Kilobyte\"}),(0,A.jsx)(t.td,{children:\"1 KB\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"20\"}),(0,A.jsx)(t.td,{children:\"1 Million\"}),(0,A.jsx)(t.td,{children:\"1 Megabyte\"}),(0,A.jsx)(t.td,{children:\"1 MB\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"30\"}),(0,A.jsx)(t.td,{children:\"1 Billion\"}),(0,A.jsx)(t.td,{children:\"1 Gigabyte\"}),(0,A.jsx)(t.td,{children:\"1 GB\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"40\"}),(0,A.jsx)(t.td,{children:\"1 Trillion\"}),(0,A.jsx)(t.td,{children:\"1 Terabyte\"}),(0,A.jsx)(t.td,{children:\"1 TB\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"50\"}),(0,A.jsx)(t.td,{children:\"1 Quadrillion\"}),(0,A.jsx)(t.td,{children:\"1 Petabyte\"}),(0,A.jsx)(t.td,{children:\"1 PB\"})]})]})]})}),`\n`,(0,A.jsx)(\"p\",{className:\"tableCaption\",children:\"Table 1\"}),`\n`,(0,A.jsx)(t.h2,{id:\"latency-numbers-every-programmer-should-know\",children:\"Latency numbers every programmer should know\"}),`\n`,(0,A.jsx)(t.p,{children:\"Dr. Dean from Google reveals the length of typical computer operations in 2010 [1]. Some numbers are outdated as computers become faster and more powerful. However, those numbers should still be able to give us an idea of the fastness and slowness of different computer operations.\"}),`\n`,(0,A.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"600px\"},children:(0,A.jsxs)(t.table,{children:[(0,A.jsx)(t.thead,{children:(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.th,{children:\"Operation name\"}),(0,A.jsx)(t.th,{children:\"Time\"})]})}),(0,A.jsxs)(t.tbody,{children:[(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"L1 cache reference\"}),(0,A.jsx)(t.td,{children:\"0.5 ns\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Branch mispredict\"}),(0,A.jsx)(t.td,{children:\"5 ns\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"L2 cache reference\"}),(0,A.jsx)(t.td,{children:\"7 ns\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Mutex lock/unlock\"}),(0,A.jsx)(t.td,{children:\"100 ns\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Main memory reference\"}),(0,A.jsx)(t.td,{children:\"100 ns\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Compress 1K bytes with Zippy\"}),(0,A.jsx)(t.td,{children:\"10,000 ns = 10 \\xB5s\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Send 2K bytes over 1 Gbps network\"}),(0,A.jsx)(t.td,{children:\"20,000 ns = 20 \\xB5s\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Read 1 MB sequentially from memory\"}),(0,A.jsx)(t.td,{children:\"250,000 ns = 250 \\xB5s\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Round trip within the same datacenter\"}),(0,A.jsx)(t.td,{children:\"500,000 ns = 500 \\xB5s\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Disk seek\"}),(0,A.jsx)(t.td,{children:\"10,000,000 ns = 10 ms\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Read 1 MB sequentially from the network\"}),(0,A.jsx)(t.td,{children:\"10,000,000 ns = 10 ms\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Read 1 MB sequentially from disk\"}),(0,A.jsx)(t.td,{children:\"30,000,000 ns = 30 ms\"})]}),(0,A.jsxs)(t.tr,{children:[(0,A.jsx)(t.td,{children:\"Send packet CA (California) ->Netherlands->CA\"}),(0,A.jsx)(t.td,{children:\"150,000,000 ns = 150 ms\"})]})]})]})}),`\n`,(0,A.jsx)(\"p\",{className:\"tableCaption\",children:\"Table 2\"}),`\n`,(0,A.jsx)(t.p,{children:\"Notes\"}),`\n`,(0,A.jsx)(t.hr,{}),`\n`,(0,A.jsx)(t.p,{children:\"ns = nanosecond, \\xB5s = microsecond, ms = millisecond\"}),`\n`,(0,A.jsx)(t.p,{children:\"1 ns = 10^-9 seconds\"}),`\n`,(0,A.jsx)(t.p,{children:\"1 \\xB5s= 10^-6 seconds = 1,000 ns\"}),`\n`,(0,A.jsx)(t.p,{children:\"1 ms = 10^-3 seconds = 1,000 \\xB5s = 1,000,000 ns\"}),`\n`,(0,A.jsx)(t.p,{children:\"A Google software engineer built a tool to visualize Dr. Dean\\u2019s numbers. The tool also takes the time factor into consideration. Figures 2-1 shows the visualized latency numbers as of 2020 (source of figures: reference material [3]).\"}),`\n`,(0,A.jsx)(i,{caption:\"Figure 1\",children:(0,A.jsx)(R,{src:d,alt:\"Image represents a comparison of various operation times in a computer system and network, visualized using colored squares whose sizes are proportional to the duration of each operation.  On the left, a vertical column shows different operations with their corresponding times in nanoseconds (ns):  L1 cache reference (1ns), branch mispredict (3ns), L2 cache reference (4ns), mutex lock/unlock (17ns), sending 2000 bytes over a commodity network (44ns), an SSD random read (16,000ns), and reading 1,000,000 bytes sequentially from memory (3,000ns).  These are represented by progressively larger black squares.  Below, green squares represent a round trip within a datacenter (500,000ns) and another operation (1,000,000ns). On the right, blue squares represent main memory reference (100ns),  compressing 1KB with Zippy (2,000ns), and another operation (10,000ns). Red squares represent an SSD sequential read (49,000ns), a disk seek (2,000,000ns), a disk sequential read (825,000ns), and a packet roundtrip between California and the Netherlands (150,000,000ns).  Each square's size visually corresponds to the time taken, with conversions to microseconds (\\xB5s) and milliseconds (ms) provided for context.  The image effectively illustrates the relative performance differences between various operations, from very fast cache accesses to significantly slower network and disk operations.\",width:\"646\",height:\"590\"})}),`\n`,`\n`,(0,A.jsx)(t.p,{children:\"By analyzing the numbers in Figure 1, we get the following conclusions:\"}),`\n`,(0,A.jsxs)(t.ul,{children:[`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Memory is fast but the disk is slow.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Avoid disk seeks if possible.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Simple compression algorithms are fast.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Compress data before sending it over the internet if possible.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Data centers are usually in different regions, and it takes time to send data between them.\"}),`\n`]}),`\n`]}),`\n`,(0,A.jsx)(t.h2,{id:\"availability-numbers\",children:\"Availability numbers\"}),`\n`,(0,A.jsx)(t.p,{children:\"High availability is the ability of a system to be continuously operational for a desirably long period of time. High availability is measured as a percentage, with 100% means a service that has 0 downtime. Most services fall between 99% and 100%.\"}),`\n`,(0,A.jsx)(t.p,{children:\"A service level agreement (SLA) is a commonly used term for service providers. This is an agreement between you (the service provider) and your customer, and this agreement formally defines the level of uptime your service will deliver. Cloud providers Amazon [4], Google [5] and Microsoft [6] set their SLAs at 99.9% or above. Uptime is traditionally measured in nines. The more the nines, the better. As shown in Table 3, the number of nines correlate to the expected system downtime.\"}),`\n`,(0,A.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"800px\"},children:(0,A.jsxs)(\"table\",{children:[(0,A.jsx)(\"thead\",{children:(0,A.jsxs)(\"tr\",{children:[(0,A.jsx)(\"td\",{children:(0,A.jsx)(\"strong\",{children:\"Availability %\"})}),(0,A.jsx)(\"td\",{children:(0,A.jsx)(\"strong\",{children:\"Downtime per day\"})}),(0,A.jsx)(\"td\",{children:(0,A.jsx)(\"strong\",{children:\"Downtime per week\"})}),(0,A.jsx)(\"td\",{children:(0,A.jsx)(\"strong\",{children:\"Downtime per month\"})}),(0,A.jsx)(\"td\",{children:(0,A.jsx)(\"strong\",{children:\"Downtime per year\"})})]})}),(0,A.jsxs)(\"tbody\",{children:[(0,A.jsxs)(\"tr\",{children:[(0,A.jsx)(\"td\",{children:\"99%\"}),(0,A.jsx)(\"td\",{children:\"14.40 minutes\"}),(0,A.jsx)(\"td\",{children:\"1.68 hours\"}),(0,A.jsx)(\"td\",{children:\"7.31 hours\"}),(0,A.jsx)(\"td\",{children:\"3.65 days\"})]}),(0,A.jsxs)(\"tr\",{children:[(0,A.jsx)(\"td\",{children:\"99.99%\"}),(0,A.jsx)(\"td\",{children:\"8.64 seconds\"}),(0,A.jsx)(\"td\",{children:\"1.01 minutes\"}),(0,A.jsx)(\"td\",{children:\"4.38 minutes\"}),(0,A.jsx)(\"td\",{children:\"52.60 minutes\"})]}),(0,A.jsxs)(\"tr\",{children:[(0,A.jsx)(\"td\",{children:\"99.999%\"}),(0,A.jsx)(\"td\",{children:\"864.00 milliseconds\"}),(0,A.jsx)(\"td\",{children:\"6.05 seconds\"}),(0,A.jsx)(\"td\",{children:\"26.30 seconds\"}),(0,A.jsx)(\"td\",{children:\"5.26 minutes\"})]}),(0,A.jsxs)(\"tr\",{children:[(0,A.jsx)(\"td\",{children:\"99.9999%\"}),(0,A.jsx)(\"td\",{children:\"86.40 milliseconds\"}),(0,A.jsx)(\"td\",{children:\"604.80\"}),(0,A.jsx)(\"td\",{children:\"2.63 seconds\"}),(0,A.jsx)(\"td\",{children:\"31.56 seconds\"})]})]})]})}),`\n`,(0,A.jsx)(\"p\",{className:\"tableCaption\",children:\"Table 3\"}),`\n`,(0,A.jsx)(t.h2,{id:\"example-estimate-twitter-qps-and-storage-requirements\",children:\"Example: Estimate Twitter QPS and storage requirements\"}),`\n`,(0,A.jsx)(t.p,{children:\"Please note the following numbers are for this exercise only as they are not real numbers from Twitter.\"}),`\n`,(0,A.jsx)(t.p,{children:\"Assumptions:\"}),`\n`,(0,A.jsxs)(t.ul,{children:[`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"300 million monthly active users.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"50% of users use Twitter daily.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Users post 2 tweets per day on average.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"10% of tweets contain media.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Data is stored for 5 years.\"}),`\n`]}),`\n`]}),`\n`,(0,A.jsx)(t.p,{children:\"Estimations:\"}),`\n`,(0,A.jsx)(t.p,{children:\"Query per second (QPS) estimate:\"}),`\n`,(0,A.jsxs)(t.ul,{children:[`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Daily active users (DAU) = 300 million * 50% = 150 million\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Tweets QPS = 150 million * 2 tweets / 24 hour / 3600 seconds = ~3500\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Peek QPS = 2 * QPS = ~7000\"}),`\n`]}),`\n`]}),`\n`,(0,A.jsx)(t.p,{children:\"We will only estimate media storage here.\"}),`\n`,(0,A.jsxs)(t.ul,{children:[`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Average tweet size:\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"tweet_id 64 bytes\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"text 140 bytes\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"media 1 MB\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Media storage: 150 million * 2 * 10% * 1 MB = 30 TB per day\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"5-year media storage: 30 TB * 365 * 5 = ~55 PB\"}),`\n`]}),`\n`]}),`\n`,(0,A.jsx)(t.h2,{id:\"tips\",children:\"Tips\"}),`\n`,(0,A.jsx)(t.p,{children:\"Back-of-the-envelope estimation is all about the process. Solving the problem is more important than obtaining results. Interviewers may test your problem-solving skills. Here are a few tips to follow:\"}),`\n`,(0,A.jsxs)(t.ul,{children:[`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Rounding and Approximation. It is difficult to perform complicated math operations during the interview. For example, what is the result of \\u201C99987 / 9.1\\u201D? There is no need to spend valuable time to solve complicated math problems. Precision is not expected. Use round numbers and approximation to your advantage. The division question can be simplified as follows: \\u201C100,000 / 10\\u201D.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Write down your assumptions. It is a good idea to write down your assumptions to be referenced later.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Label your units. When you write down \\u201C5\\u201D, does it mean 5 KB or 5 MB? You might confuse yourself with this. Write down the units because \\u201C5 MB\\u201D helps to remove ambiguity.\"}),`\n`]}),`\n`,(0,A.jsxs)(t.li,{children:[`\n`,(0,A.jsx)(t.p,{children:\"Commonly asked back-of-the-envelope estimations: QPS, peak QPS, storage, cache, number of servers, etc. You can practice these calculations when preparing for an interview. Practice makes perfect.\"}),`\n`]}),`\n`]}),`\n`,(0,A.jsx)(t.p,{children:\"Congratulations on getting this far! Now give yourself a pat on the back. Good job!\"}),`\n`,(0,A.jsx)(t.h2,{id:\"reference-materials\",children:\"Reference materials\"}),`\n`,(0,A.jsxs)(t.p,{children:[\"[1] J. Dean.Google Pro Tip: Use Back-Of-The-Envelope-Calculations To Choose The Best Design:\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html\",children:(0,A.jsx)(\"u\",{children:\"http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html\"})})]}),`\n`,(0,A.jsxs)(t.p,{children:[\"[2] System design primer:\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"https://github.com/donnemartin/system-design-primer\",children:(0,A.jsx)(\"u\",{children:\"https://github.com/donnemartin/system-design-primer\"})})]}),`\n`,(0,A.jsxs)(t.p,{children:[\"[3] Latency Numbers Every Programmer Should Know:\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"https://colin-scott.github.io/personal_website/research/interactive_latency.html\",children:(0,A.jsx)(\"u\",{children:\"https://colin-scott.github.io/personal_website/research/interactive_latency.html\"})})]}),`\n`,(0,A.jsxs)(t.p,{children:[\"[4] Amazon Compute Service Level Agreement:\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"https://aws.amazon.com/compute/sla/\",children:(0,A.jsx)(\"u\",{children:\"https://aws.amazon.com/compute/sla/\"})})]}),`\n`,(0,A.jsxs)(t.p,{children:[\"[5] Compute Engine Service Level Agreement (SLA):\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"https://cloud.google.com/compute/sla\",children:(0,A.jsx)(\"u\",{children:\"https://cloud.google.com/compute/sla\"})})]}),`\n`,(0,A.jsxs)(t.p,{children:[\"[6] SLA summary for Azure services:\",(0,A.jsx)(t.br,{}),`\n`,(0,A.jsx)(t.a,{href:\"https://azure.microsoft.com/en-us/support/legal/sla/summary/\",children:(0,A.jsx)(\"u\",{children:\"https://azure.microsoft.com/en-us/support/legal/sla/summary/\"})})]})]})}function P(e={}){let{wrapper:t}=e.components||{};return t?(0,A.jsx)(t,{...e,children:(0,A.jsx)(l,{...e})}):l(e)}function a(e,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return L(T);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "foreword"
+      ],
+      "id": "foreword",
+      "chapter": 0,
+      "title": "Foreword",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "join-discord-community"
+      ],
+      "id": "join-discord-community",
+      "chapter": 1,
+      "title": "Join the Community"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "scale-from-zero-to-millions-of-users"
+      ],
+      "id": "scale-from-zero-to-millions-of-users",
+      "chapter": 2,
+      "title": "Scale From Zero To Millions Of Users",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "back-of-the-envelope-estimation"
+      ],
+      "id": "back-of-the-envelope-estimation",
+      "chapter": 3,
+      "title": "Back-of-the-envelope Estimation",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "a-framework-for-system-design-interviews"
+      ],
+      "id": "a-framework-for-system-design-interviews",
+      "chapter": 4,
+      "title": "A Framework For System Design Interviews",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-rate-limiter"
+      ],
+      "id": "design-a-rate-limiter",
+      "chapter": 5,
+      "title": "Design A Rate Limiter",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-consistent-hashing"
+      ],
+      "id": "design-consistent-hashing",
+      "chapter": 6,
+      "title": "Design Consistent Hashing",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-key-value-store"
+      ],
+      "id": "design-a-key-value-store",
+      "chapter": 7,
+      "title": "Design A Key-value Store",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-unique-id-generator-in-distributed-systems"
+      ],
+      "id": "design-a-unique-id-generator-in-distributed-systems",
+      "chapter": 8,
+      "title": "Design A Unique ID Generator In Distributed Systems"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-url-shortener"
+      ],
+      "id": "design-a-url-shortener",
+      "chapter": 9,
+      "title": "Design A URL Shortener",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-web-crawler"
+      ],
+      "id": "design-a-web-crawler",
+      "chapter": 10,
+      "title": "Design A Web Crawler",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-notification-system"
+      ],
+      "id": "design-a-notification-system",
+      "chapter": 11,
+      "title": "Design A Notification System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-news-feed-system"
+      ],
+      "id": "design-a-news-feed-system",
+      "chapter": 12,
+      "title": "Design A News Feed System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-chat-system"
+      ],
+      "id": "design-a-chat-system",
+      "chapter": 13,
+      "title": "Design A Chat System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-search-autocomplete-system"
+      ],
+      "id": "design-a-search-autocomplete-system",
+      "chapter": 14,
+      "title": "Design A Search Autocomplete System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-youtube"
+      ],
+      "id": "design-youtube",
+      "chapter": 15,
+      "title": "Design YouTube",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-google-drive"
+      ],
+      "id": "design-google-drive",
+      "chapter": 16,
+      "title": "Design Google Drive"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "proximity-service"
+      ],
+      "id": "proximity-service",
+      "chapter": 17,
+      "title": "Proximity Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "nearby-friends"
+      ],
+      "id": "nearby-friends",
+      "chapter": 18,
+      "title": "Nearby Friends"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "google-maps"
+      ],
+      "id": "google-maps",
+      "chapter": 19,
+      "title": "Google Maps"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-message-queue"
+      ],
+      "id": "distributed-message-queue",
+      "chapter": 20,
+      "title": "Distributed Message Queue"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "metrics-monitoring-and-alerting-system"
+      ],
+      "id": "metrics-monitoring-and-alerting-system",
+      "chapter": 21,
+      "title": "Metrics Monitoring and Alerting System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "ad-click-event-aggregation"
+      ],
+      "id": "ad-click-event-aggregation",
+      "chapter": 22,
+      "title": "Ad Click Event Aggregation"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "hotel-reservation-system"
+      ],
+      "id": "hotel-reservation-system",
+      "chapter": 23,
+      "title": "Hotel Reservation System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-email-service"
+      ],
+      "id": "distributed-email-service",
+      "chapter": 24,
+      "title": "Distributed Email Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "s3-like-object-storage"
+      ],
+      "id": "s3-like-object-storage",
+      "chapter": 25,
+      "title": "S3-like Object Storage"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "real-time-gaming-leaderboard"
+      ],
+      "id": "real-time-gaming-leaderboard",
+      "chapter": 26,
+      "title": "Real-time Gaming Leaderboard",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "payment-system"
+      ],
+      "id": "payment-system",
+      "chapter": 27,
+      "title": "Payment System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "digital-wallet"
+      ],
+      "id": "digital-wallet",
+      "chapter": 28,
+      "title": "Digital Wallet"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "stock-exchange"
+      ],
+      "id": "stock-exchange",
+      "chapter": 29,
+      "title": "Stock Exchange"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "the-learning-continues"
+      ],
+      "id": "the-learning-continues",
+      "chapter": 30,
+      "title": "The Learning Continues",
+      "free": true
+    }
+  ],
+  "courseMetadata": {
+    "title": "System Design Interview",
+    "authors": "Alex Xu · Bestselling author",
+    "claimCodes": [
+      "sdi",
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "system-design-interview",
+    "defaultChapter": "/courses/system-design-interview/scale-from-zero-to-millions-of-users",
+    "rootPath": "/courses/system-design-interview",
+    "lessons": 30,
+    "students": 250000,
+    "showChapter": true,
+    "lastModified": "2022.03.01"
+  }
+}

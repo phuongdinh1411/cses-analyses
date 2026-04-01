@@ -1,0 +1,128 @@
+{
+  "course": "mobile-system-design-interview",
+  "id": "quick-reference-cheat-sheet-for-msd-interview",
+  "chapter": 11,
+  "title": "Quick Reference Cheat Sheet for MSD Interview",
+  "free": false,
+  "code": "var Component=(()=>{var g=Object.create;var l=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var f=Object.getOwnPropertyNames;var y=Object.getPrototypeOf,m=Object.prototype.hasOwnProperty;var u=(n,t)=>()=>(t||n((t={exports:{}}).exports,t),t.exports),b=(n,t)=>{for(var i in t)l(n,i,{get:t[i],enumerable:!0})},c=(n,t,i,s)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let r of f(t))!m.call(n,r)&&r!==i&&l(n,r,{get:()=>t[r],enumerable:!(s=p(t,r))||s.enumerable});return n};var x=(n,t,i)=>(i=n!=null?g(y(n)):{},c(t||!n||!n.__esModule?l(i,\"default\",{value:n,enumerable:!0}):i,n)),v=n=>c(l({},\"__esModule\",{value:!0}),n);var a=u((z,o)=>{o.exports=_jsx_runtime});var w={};b(w,{default:()=>h,frontmatter:()=>A});var e=x(a()),A={chapter:11,title:\"Quick Reference Cheat Sheet for MSD Interview\"};function d(n){let t={h2:\"h2\",p:\"p\",strong:\"strong\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",...n.components};return(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(t.p,{children:\"This appendix provides a helpful reference list of topics to consider during your MSD interviews. They're organized by domain, making them easier to navigate.\"}),`\n`,(0,e.jsx)(t.h2,{id:\"network\",children:\"Network\"}),`\n`,(0,e.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Category\"}),(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Key considerations\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Core protocols\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Communication protocols\"}),\": REST, GraphQL, protocol buffers, or gRPC. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Real-time updates\"}),\": HTTP polling, SSE, WebSockets. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Request management\"}),\": idempotency keys, priority queuing, rate limiting, request throttling.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Data flow patterns\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Pagination\"}),\": offset vs. cursor-based. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Offline capabilities\"}),\": offline-first design, optimistic UI updates, conflict resolution. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Network resilience\"}),\": connectivity handling, exponential backoff.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Security\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Authentication and authorization\"}),\": token lifecycle, biometric auth, recovery flows. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Security infrastructure\"}),\": encryption in transit and at rest, certificate pinning, compliance requirements.\"]})]})]})]})}),`\n`,(0,e.jsx)(t.h2,{id:\"data-management\",children:\"Data management\"}),`\n`,(0,e.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Category\"}),(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Key considerations\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Architecture\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Core data flow\"}),\": patterns for data flow, layer responsibilities, error handling, error propagation.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Storage and caching\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Storage options\"}),\": key-value, relational/non-relational DB, custom/binary stores, secure storage. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Caching\"}),\": in-memory vs. disk trade-offs. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Eviction policies\"}),\": TTL, size-based eviction, priority-based eviction. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Privacy\"}),\": PII handling, GDPR compliance, data retention policies. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Synchronization\"}),\": sync strategies, conflict resolution, delta sync.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Data performance\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Pre-fetching\"}),\": predictive fetching, resource usage trade-offs, prioritize critical paths. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Background processing\"}),\": task efficiency, battery impact, OS background execution limits.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"UI & Interactions\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"UI states\"}),\": loading, empty, error, content. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Input handling\"}),\": validation on client and server side, sanitization, feedback for errors. \",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Search\"}),\": local vs. server-side search, indexing, typo tolerance.\"]})]})]})]})}),`\n`,(0,e.jsx)(t.h2,{id:\"feature-development\",children:\"Feature development\"}),`\n`,(0,e.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Category\"}),(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Key considerations\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Version management\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Force upgrading\"}),\": soft vs. hard upgrades, when to require updates, graceful prompts, version compatibility policies.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Safe rollout\"}),\": phased rollouts, feature flags, rollback procedures.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"CI/CD\"}),\": automate build, test and deployments, code quality and security checks, ensure reproducible builds.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Dynamic configuration\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Remote config\"}),\": feature control without app updates, default values for offline scenarios.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"A/B testing\"}),\": experiments with clear metrics, user segmentation.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Analytics\"}),\": performance and business metrics, crash monitoring, logging.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Code architecture\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Modularization\"}),\": separation of concerns, clear interfaces, balance granularity with practical maintenance.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Dependency injection\"}),\": testability, object lifecycle management, minimize global state and singletons.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Third-party libraries\"}),\": security and maintenance evaluation, size impact.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"User experience\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Localization\"}),\": text expansion/contraction, cultural and regional differences.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Accessibility\"}),\": screen readers, contrast, touch targets, test with accessibility tools.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Crash reporting\"}),\": automated collection, issue prioritization by impact and frequency, ensure right PII handling.\"]})]})]})]})}),`\n`,(0,e.jsx)(t.h2,{id:\"performance\",children:\"Performance\"}),`\n`,(0,e.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Category\"}),(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Key considerations\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"User experience\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Pre-fetching\"}),\": predictive fetching, resource usage trade-offs, prioritize critical paths.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"App startup\"}),\": optimize initialization, defer non-critical tasks, measure cold/warm start times.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Stability\"}),\": prevent crashes, implement error boundaries.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Resource management\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Battery & CPU\"}),\": minimize background processing, batch operations.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Network efficiency\"}),\": compress payloads, minimize requests, adapt quality on connection type.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"App size\"}),\": optimize assets, use app bundles, remove unused code.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Technical optimizations\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Caching strategy\"}),\": cache appropriate responses, invalidation policies, multi-level caching.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Lazy loading\"}),\": on-demand components and data loading, defer heavy processing until needed, prioritize visible content first.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Concurrency\"}),\": proper threading models, avoid blocking main thread, manage thread contention and race conditions.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Hardware acceleration\"}),\": GPU usage for animations and rendering, specific hardware optimizations.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Monitoring\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Observability\"}),\": performance metrics, proactive alerting, traces for complex operations.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Business metrics\"}),\": connect performance to business outcomes, track user engagement, user funnels, identify bottlenecks affecting revenue.\"]})]})]})]})}),`\n`,(0,e.jsx)(t.h2,{id:\"team--organization\",children:\"Team & Organization\"}),`\n`,(0,e.jsx)(\"div\",{className:\"table-wrap\",style:{\"--table-min-width\":\"640px\"},children:(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Category\"}),(0,e.jsx)(t.th,{style:{textAlign:\"left\"},children:\"Key considerations\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Technical infrastructure\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Design system\"}),\": consistent visual language, reusable components.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Development efficiency\"}),\": optimized builds, coding standards, effective code review processes.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Process & quality\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Code quality\"}),\": static analysis, automated testing, technical debt.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Risk management\"}),\": early identification, contingency plans.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Team & culture\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Developer experience\"}),\": efficient workflows, documentation.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Team growth\"}),\": onboarding, knowledge sharing, continuous learning.\"]})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{style:{textAlign:\"left\"},children:\"Company context\"}),(0,e.jsxs)(t.td,{style:{textAlign:\"left\"},children:[\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Available resources\"}),\": infra constraints, team size and expertise, budget, in-house development vs. 3rd party investments.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Business priorities\"}),\": objectives alignment, target markets, monetization strategies, short-term needs vs. long-term platform health.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Outage handling\"}),\": escalation procedures, recovery playbooks, appropriate redundancies.\",(0,e.jsx)(\"br\",{}),\"\\u2022 \",(0,e.jsx)(t.strong,{children:\"Tech stack\"}),\": integration with existing systems, platform consistency, future ecosystem evolution, standardization vs. specialized tools.\"]})]})]})]})}),`\n`,(0,e.jsx)(\"div\",{className:\"note-block\",children:(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"\\u{1F4CC} Remember:\"}),\" This list isn't meant to be a checkbox exercise where you cover everything. Strategic selection is key! Focus on the considerations most relevant to your specific design challenge, and be ready to explain why those topics are important. Your ability to make thoughtful trade-offs based on the system's unique requirements demonstrates stronger design thinking than attempting to cover every possible topic.\"]})})]})}function h(n={}){let{wrapper:t}=n.components||{};return t?(0,e.jsx)(t,{...n,children:(0,e.jsx)(d,{...n})}):d(n)}return v(w);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "introduction"
+      ],
+      "id": "introduction",
+      "chapter": 1,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "a-framework-for-mobile-sd-interviews"
+      ],
+      "id": "a-framework-for-mobile-sd-interviews",
+      "chapter": 2,
+      "free": true,
+      "title": "A framework for Mobile SD interviews"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "news-feed-app"
+      ],
+      "id": "news-feed-app",
+      "chapter": 3,
+      "free": true,
+      "title": "News feed app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "chat-app"
+      ],
+      "id": "chat-app",
+      "chapter": 4,
+      "title": "Chat app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "stock-trading-app"
+      ],
+      "id": "stock-trading-app",
+      "chapter": 5,
+      "title": "Stock trading app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "pagination-library"
+      ],
+      "id": "pagination-library",
+      "chapter": 6,
+      "title": "Pagination library"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "hotel-reservation-app"
+      ],
+      "id": "hotel-reservation-app",
+      "chapter": 7,
+      "title": "Hotel reservation app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "google-drive-app"
+      ],
+      "id": "google-drive-app",
+      "chapter": 8,
+      "title": "Google Drive app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "youtube-app"
+      ],
+      "id": "youtube-app",
+      "chapter": 9,
+      "title": "YouTube app"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "mobile-system-design-building-blocks"
+      ],
+      "id": "mobile-system-design-building-blocks",
+      "chapter": 10,
+      "title": "Mobile System Design Building Blocks"
+    },
+    {
+      "course": "mobile-system-design-interview",
+      "slug": [
+        "quick-reference-cheat-sheet-for-msd-interview"
+      ],
+      "id": "quick-reference-cheat-sheet-for-msd-interview",
+      "chapter": 11,
+      "title": "Quick Reference Cheat Sheet for MSD Interview"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Mobile System Design Interview",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "mobile-system-design-interview",
+    "defaultChapter": "/courses/mobile-system-design-interview/introduction",
+    "rootPath": "/courses/mobile-system-design-interview",
+    "lessons": 11,
+    "students": 1000,
+    "showChapter": true,
+    "lastModified": "2025.02.11"
+  }
+}

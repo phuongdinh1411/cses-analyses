@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "fast-and-slow-pointers/linked-list-midpoint",
+  "chapter": "04-02",
+  "title": "Linked List Midpoint",
+  "free": false,
+  "code": "var Component=(()=>{var u=Object.create;var n=Object.defineProperty;var y=Object.getOwnPropertyDescriptor;var F=Object.getOwnPropertyNames;var x=Object.getPrototypeOf,v=Object.prototype.hasOwnProperty;var N=(e,L)=>()=>(L||e((L={exports:{}}).exports,L),L.exports),j=(e,L)=>{for(var i in L)n(e,i,{get:L[i],enumerable:!0})},h=(e,L,i,l)=>{if(L&&typeof L==\"object\"||typeof L==\"function\")for(let t of F(L))!v.call(e,t)&&t!==i&&n(e,t,{get:()=>L[t],enumerable:!(l=y(L,t))||l.enumerable});return e};var _=(e,L,i)=>(i=e!=null?u(x(e)):{},h(L||!e||!e.__esModule?n(i,\"default\",{value:e,enumerable:!0}):i,e)),B=e=>h(n({},\"__esModule\",{value:!0}),e);var c=N((X,o)=>{o.exports=_jsx_runtime});var S={};j(S,{default:()=>b,frontmatter:()=>R});var C=_(c());var d=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/linked-list-midpoint1-OA3ZOR56.svg\";var M=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/linked-list-midpoint2-KMBTFC6P.svg\";var Z=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-1-SLUOFRKR.svg\";var V=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-2-GRGSZRF6.svg\";var p=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-3-AOHIZ43H.svg\";var H=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-4-HKQ4G4QB.svg\";var f=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-5-TG2XJNN2.svg\";var w=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-6-D3Y5Q5KS.svg\";var g=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-7-5M43WYAH.svg\";var k=\"/images/courses/coding-patterns/fast-and-slow-pointers/linked-list-midpoint/image-04-02-8-VE7AXOMZ.svg\";var R={chapter:\"04-02\",difficulty:\"Medium\",title:\"Linked List Midpoint\"};function m(e){let L={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...e.components},{CodeTabs:i,Figure:l,Image:t,OpenCodeEditor:s,ProblemDescription:r}=L;return i||a(\"CodeTabs\",!0),l||a(\"Figure\",!0),t||a(\"Image\",!0),s||a(\"OpenCodeEditor\",!0),r||a(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsxs)(L.p,{children:[\"Given a singly linked list, find and return its \",(0,C.jsx)(L.strong,{children:\"middle node\"}),\". If there are two middle nodes, return the second one.\"]}),(0,C.jsx)(L.h4,{id:\"example-1\",children:\"Example 1:\"}),(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:d,width:\"322\",height:\"48\",alt:\"Image represents a directed graph illustrating a sequence of steps or a process flow.  The graph consists of five nodes, represented as circles, labeled sequentially with the numbers 1, 2, 4, 7, and 3.  Arrows indicate the direction of flow, showing a progression from node 1 to node 2, then to node 4, then to node 7, and finally to node 3. Node 4 is visually distinct, highlighted with a green fill and labeled 'mid' in green text above it, suggesting it represents a midpoint or a crucial step in the overall process. The arrangement of the nodes and arrows clearly depicts a linear sequence with a highlighted central element.\",priority:!0})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[\"Output: Node \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"4\"}),`\n`]})}),(0,C.jsx)(L.h4,{id:\"example-2\",children:\"Example 2:\"}),(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:M,width:\"250\",height:\"48\",alt:\"Image represents a directed acyclic graph (DAG) illustrating a sequence of data flow.  The graph consists of four circular nodes, each containing a numerical value: 1, 2, 4, and 7.  These nodes are connected by directed edges (arrows) indicating the direction of data flow.  The data flows sequentially from node 1 to node 2, then from node 2 to node 4, and finally from node 4 to node 7. Node 4 is highlighted with a light green fill and the word 'mid' is written above it in green, suggesting that node 4 represents a midpoint or intermediate stage in the process.  The absence of cycles and the unidirectional nature of the edges confirm the acyclic nature of the graph.\"})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[\"Output: Node \",(0,C.jsx)(L.span,{className:\"hljs-number\",children:\"4\"}),`\n`]})}),(0,C.jsx)(L.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(L.ul,{children:[`\n`,(0,C.jsx)(L.li,{children:\"The linked list contains at least one node.\"}),`\n`,(0,C.jsx)(L.li,{children:\"The linked list contains unique values.\"}),`\n`]})]}),`\n`,(0,C.jsx)(L.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(L.p,{children:\"The most intuitive approach to solve this problem is to traverse the linked list to find its length (n), and then traverse the linked list a second time to find the middle node (n / 2):\"}),`\n`,(0,C.jsx)(l,{children:(0,C.jsx)(t,{src:Z,alt:\"Image represents two parallel sequences of nodes (circles) connected by directed edges (arrows).  The top sequence, labeled 'n', shows nodes containing the numbers 1, 2, 4, 7, and 3, sequentially connected with solid black arrows indicating the flow of information.  Additionally, grey dashed curved arrows connect the first node to the third, the second to the fourth, and the fourth to the fifth, suggesting a non-sequential, potentially parallel or skip-ahead processing step. The bottom sequence, labeled 'n/2', mirrors the node values and sequential connections of the top sequence using solid black arrows. However, it features orange dashed curved arrows connecting the first node to the third, indicating a different, potentially more efficient or reduced processing path compared to the top sequence.  The difference in the arrows' styles and colors highlights the distinction between the two processing methods, suggesting a comparison of computational complexity or efficiency.  The 'n' and 'n/2' labels likely represent the input size or number of operations involved in each processing path.\",width:\"332\",height:\"150\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"This approach solves the problem in \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"n\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, but requires two iterations to find the midpoint. However, there\\u2019s a cleaner approach that uses only a single iteration.\"]}),`\n`,(0,C.jsx)(L.p,{children:\"When iterating through the linked list, our exact position is unclear. We only know where we are when we reach the final node. Is it possible to create a scenario where, as soon as one pointer reaches the end of the linked list, the other pointer is positioned at the middle node?\"}),`\n`,(0,C.jsxs)(L.blockquote,{children:[`\n`,(0,C.jsx)(L.p,{children:\"If we had one pointer move at half the speed of the other, by the time the faster pointer reaches the end of the list, the slower one will be at the middle of the linked list.\"}),`\n`]}),`\n`,(0,C.jsxs)(L.p,{children:[\"We can achieve this by using the \",(0,C.jsx)(L.strong,{children:\"fast and slow pointer technique\"}),\":\"]}),`\n`,(0,C.jsxs)(L.ul,{children:[`\n`,(0,C.jsx)(L.li,{children:\"Move a slow pointer one node at a time.\"}),`\n`,(0,C.jsx)(L.li,{children:\"Move a fast pointer two nodes at a time.\"}),`\n`]}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:V,alt:\"Image represents a directed acyclic graph illustrating a workflow or process.  The graph consists of five circular nodes labeled sequentially with the numbers 1, 2, 4, 7, and 3.  Arrows indicate the direction of flow between these nodes, starting from node 1 and proceeding through nodes 2, 4, 7, and finally to node 3.  Above the first node (1), two rectangular boxes are positioned; one labeled 'slow' in light blue and the other labeled 'fast' in orange.  Arrows point from these boxes to node 1, indicating that the 'slow' path leads to node 1, and the 'fast' path also leads to node 1. This suggests two different input paths or processes that converge at node 1 before continuing through the rest of the sequence. The overall structure depicts a linear sequence of operations or steps, with two distinct initial inputs merging into a single workflow.\",width:\"344\",height:\"70\"})}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:p,alt:\"Image represents a directed graph illustrating a workflow or process.  The graph consists of five numbered nodes (1, 2, 4, 7, 3) connected by solid arrows indicating the sequential flow. Node 1 connects to node 2, node 2 connects to node 4, node 4 connects to node 7, and node 7 connects to node 3.  Additionally, there are two dashed arrows: a light-blue dashed arrow loops from node 1 back to node 2, labeled 'slow' in a light-blue box above it, indicating a feedback or iterative process; and an orange dashed arrow loops from node 1 to node 2 and then to node 4, labeled 'fast' in an orange box above the arrow pointing to node 4, suggesting a faster alternative path or shortcut.  The overall diagram depicts two distinct paths through the process: a slower, iterative path (indicated by the light-blue arrow) and a faster, more direct path (indicated by the orange arrow).\",width:\"343\",height:\"91\"})}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:H,alt:\"Image represents a diagram illustrating a linked list traversal with two pointers, 'slow' and 'fast.'  The linked list is depicted as a sequence of numbered circles (nodes) 1, 2, 4, 7, and 3, connected by solid arrows indicating the direction of traversal.  A light gray node (4) is visually distinguished. A light blue rectangle labeled 'slow' points down to node 4, and an orange rectangle labeled 'fast' points down to node 3.  Dashed blue arrows show a secondary connection from node 2 to node 4, representing the 'slow' pointer's movement. Dashed orange arrows show a secondary connection from node 7 to node 3, representing the 'fast' pointer's movement. A gray rounded rectangle to the right displays the condition 'fast.next == null \\u2192 break,' indicating that the traversal stops when the 'fast' pointer reaches the end of the list (null).  The overall diagram visualizes a process where two pointers move through a linked list at different speeds, with the condition checking for the end of the list to terminate the process.\",width:\"624\",height:\"91\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"One thing we must be careful about is when we should stop advancing the fast pointer. We need to stop when the slow pointer reaches the middle node. When the list length is odd, this happens when \",(0,C.jsx)(L.code,{children:\"fast.next\"}),\" equals null, as we can see above.\"]}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsx)(L.p,{children:\"What about when the length of the linked list is even? Consider the below example:\"}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:f,alt:\"Image represents a directed acyclic graph illustrating a coding pattern, possibly related to task scheduling or pipeline processing.  The graph consists of four circular nodes labeled sequentially as 1, 2, 4, and 7, connected by unidirectional arrows indicating the flow of information or execution order.  Node 1 acts as the starting point, receiving input from two rectangular boxes positioned above it. The top box is light blue and labeled 'slow,' while the other is orange and labeled 'fast,' suggesting two different input streams or processing speeds.  Arrows from these boxes point to node 1, indicating that both 'slow' and 'fast' inputs feed into the initial processing step (node 1).  Subsequently, node 1's output flows to node 2, then to node 4, and finally to node 7, representing a linear progression of tasks or stages. The overall structure suggests a sequential process where the initial step (node 1) combines inputs from different sources before proceeding through subsequent stages.\",width:\"281\",height:\"72\"})}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:w,alt:\"Image represents a directed acyclic graph illustrating a workflow with two distinct paths.  The graph consists of five nodes (circles) numbered 1, 2, 4, and 7, representing sequential steps in a process.  Nodes 1, 2, 4, and 7 are connected by solid arrows indicating the primary flow. Node 1 connects to node 2, node 2 connects to node 4, and node 4 connects to node 7.  Above the graph, two rectangular boxes labeled 'slow' (in light blue) and 'fast' (in orange) indicate alternative paths. A light blue dashed arrow connects node 1 to node 2, representing a 'slow' path, while an orange dashed arrow connects node 1 to node 2 and another connects node 4 to node 2, representing a 'fast' path. The 'slow' path implies a direct progression from node 1 to node 2, while the 'fast' path suggests a faster route potentially skipping some steps or utilizing parallel processing, indicated by the feedback loop from node 4 to node 2.  The overall diagram visualizes a process where data or tasks flow through different stages, with the possibility of choosing between a slower, linear path and a faster, potentially more complex path.\",width:\"279\",height:\"91\"})}),`\n`,(0,C.jsx)(L.hr,{}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:g,alt:\"Image represents a diagram illustrating a coding pattern, likely related to linked lists or similar data structures.  The diagram shows a sequence of numbered nodes (1, 2, 4, 7) connected by solid arrows representing a forward traversal. Node 4 is shaded gray, suggesting a different state or significance. A light-blue box labeled 'slow' points to node 4 with a downward-pointing arrow, indicating a pointer or iterator moving slowly through the sequence. An orange box labeled 'fast' points to the word 'null' with a downward-pointing arrow, representing a faster pointer. Dashed arrows, blue and orange respectively, show the movement of the slow and fast pointers. The orange dashed arrow loops from node 7 back to node 4, and the blue dashed arrow loops from node 2 back to node 4. A dashed-line box contains the code snippet 'fast == null \\u2192 break', indicating a conditional statement where the algorithm terminates when the fast pointer reaches a null value.  The overall structure depicts a process where two pointers traverse a data structure at different speeds, with the termination condition based on the fast pointer's position.\",width:\"624\",height:\"92\"})}),`\n`,(0,C.jsxs)(L.p,{children:[\"As you can see, to have slow point at the \",(0,C.jsx)(L.strong,{children:\"second\"}),\" middle node, we'd need to stop fast when it reaches a null node.\"]}),`\n`,(0,C.jsx)(s,{}),`\n`,(0,C.jsx)(L.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(i,{children:[(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-python\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"from\"}),\" ds \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),` ListNode\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"linked_list_midpoint\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-params\",children:\"head: ListNode\"}),`) -> ListNode:\n    slow = fast = head\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# When the fast pointer reaches the end of the list, the slow pointer will be at\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"# the midpoint of the linked list.\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"while\"}),\" fast \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"and\"}),\" fast.\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"next\"}),`:\n        slow = slow.`,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"next\"}),`\n        fast = fast.`,(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"next\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-built_in\",children:\"next\"}),`\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` slow\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),\" { \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"ListNode\"}),\" } \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"from\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-string\",children:\"'./ds.js'\"}),`\n\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"linked_list_midpoint\"}),\"(\",(0,C.jsx)(L.span,{className:\"hljs-params\",children:\"head\"}),`) {\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),` slow = head\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"let\"}),` fast = head\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// When the fast pointer reaches the end of the list, the slow pointer will be at\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// the midpoint of the linked list.\"}),`\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"while\"}),\" (fast && fast.\",(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"next\"}),`) {\n    slow = slow.`,(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"next\"}),`\n    fast = fast.`,(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"next\"}),\".\",(0,C.jsx)(L.span,{className:\"hljs-property\",children:\"next\"}),`\n  }\n  `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` slow\n}\n`]})}),(0,C.jsx)(L.pre,{children:(0,C.jsxs)(L.code,{className:\"hljs language-java\",children:[(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"import\"}),` core.LinkedList.ListNode;\n\n`,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-title class_\",children:\"UserCode\"}),` {\n    `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"static\"}),\" ListNode<Integer> \",(0,C.jsx)(L.span,{className:\"hljs-title function_\",children:\"linked_list_midpoint\"}),(0,C.jsx)(L.span,{className:\"hljs-params\",children:\"(ListNode<Integer> head)\"}),` {\n        ListNode<Integer> slow = head;\n        ListNode<Integer> fast = head;\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// When the fast pointer reaches the end of the list, the slow pointer will be at\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-comment\",children:\"// the midpoint of the linked list.\"}),`\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"while\"}),\" (fast != \",(0,C.jsx)(L.span,{className:\"hljs-literal\",children:\"null\"}),\" && fast.next != \",(0,C.jsx)(L.span,{className:\"hljs-literal\",children:\"null\"}),`) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        `,(0,C.jsx)(L.span,{className:\"hljs-keyword\",children:\"return\"}),` slow;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(L.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(L.code,{children:\"linked_list_midpoint\"}),\" is \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mi,{children:\"n\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we traverse the linked list linearly using two pointers.\"]}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(L.span,{className:\"katex\",children:[(0,C.jsx)(L.span,{className:\"katex-mathml\",children:(0,C.jsx)(L.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(L.semantics,{children:[(0,C.jsxs)(L.mrow,{children:[(0,C.jsx)(L.mi,{children:\"O\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(L.mn,{children:\"1\"}),(0,C.jsx)(L.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(L.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(L.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(L.span,{className:\"base\",children:[(0,C.jsx)(L.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(L.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(L.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(L.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(L.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`,(0,C.jsx)(L.h3,{id:\"stop-and-think\",children:\"Stop and Think\"}),`\n`,(0,C.jsx)(L.p,{children:\"What if you were asked to modify your algorithm to return the first middle node when the linked list is of even length?\"}),`\n`,(0,C.jsxs)(L.p,{children:[\"Answer: Following the same method, we should stop advancing the fast pointer when \",(0,C.jsx)(L.code,{children:\"fast.next.next\"}),\" is null. This way, slow will end up pointing to the first middle node:\"]}),`\n`,(0,C.jsx)(l,{align:\"left\",children:(0,C.jsx)(t,{src:k,alt:\"Image represents a diagram illustrating a linked list traversal using two pointers, 'slow' and 'fast'.  Four nodes, numbered 1, 2, 4, and 7, are depicted as circles, connected by solid arrows indicating the direction of traversal. Node 2 is shaded gray. A light-blue rectangular box labeled 'slow' points to node 2 with a light-blue arrow, and an orange rectangular box labeled 'fast' points to node 4 with an orange arrow.  Dashed orange and light-blue curved arrows connect node 1 to node 2, suggesting the movement of the 'slow' and 'fast' pointers.  A separate, light-gray, dashed-bordered rectangle contains the code snippet 'fast.next.next == null \\u2192 break', indicating a conditional check within the algorithm: if the node two steps ahead of the 'fast' pointer is null (end of the list), the loop breaks.\",width:\"624\",height:\"95\"})}),`\n`,(0,C.jsx)(L.h2,{id:\"interview-tip\",children:\"Interview Tip\"}),`\n`,(0,C.jsxs)(L.p,{children:[(0,C.jsx)(L.em,{children:\"Tip: Be prepared to address potential gaps in the information provided.\"}),(0,C.jsx)(L.br,{}),`\n`,\"During an interview, it\\u2019s possible the interviewer won't specify which middle node should be returned for linked lists of even length, leaving it up to you to recognize and address this special scenario. You might be expected to identify ambiguities like this and actively engage with the interviewer to discuss a suitable resolution.\"]})]})}function b(e={}){let{wrapper:L}=e.components||{};return L?(0,C.jsx)(L,{...e,children:(0,C.jsx)(m,{...e})}):m(e)}function a(e,L){throw new Error(\"Expected \"+(L?\"component\":\"object\")+\" `\"+e+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return B(S);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

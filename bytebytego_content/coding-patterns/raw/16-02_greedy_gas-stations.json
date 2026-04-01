@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "greedy/gas-stations",
+  "chapter": "16-02",
+  "title": "Gas Stations",
+  "free": false,
+  "code": "var Component=(()=>{var _=Object.create;var V=Object.defineProperty;var F=Object.getOwnPropertyDescriptor;var T=Object.getOwnPropertyNames;var P=Object.getPrototypeOf,q=Object.prototype.hasOwnProperty;var D=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),E=(t,e)=>{for(var l in e)V(t,l,{get:e[l],enumerable:!0})},h=(t,e,l,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of T(e))!q.call(t,a)&&a!==l&&V(t,a,{get:()=>e[a],enumerable:!(i=F(e,a))||i.enumerable});return t};var I=(t,e,l)=>(l=t!=null?_(P(t)):{},h(e||!t||!t.__esModule?V(l,\"default\",{value:t,enumerable:!0}):l,t)),A=t=>h(V({},\"__esModule\",{value:!0}),t);var c=D((l1,H)=>{H.exports=_jsx_runtime});var a1={};E(a1,{default:()=>j,frontmatter:()=>t1});var C=I(c());var o=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-1-H74FE5KS.svg\";var d=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-2-3EN47UB4.svg\";var L=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-3-JNGQARUY.svg\";var p=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-4-KVR3ROPW.svg\";var M=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-5-L3IZORIJ.svg\";var Z=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-6-EFKJUEU7.svg\";var g=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-7-XX3RAZ26.svg\";var m=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-8-HBX75POP.svg\";var f=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-9-V6S3SJ5B.svg\";var u=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-10-FJVR3HUR.svg\";var w=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-11-SVXNEO5Y.svg\";var b=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-12-C3MRDCCB.svg\";var k=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-13-OMSDNGWN.svg\";var y=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-14-STGTVW4K.svg\";var x=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-15-6IZJAGWT.svg\";var v=\"/images/courses/coding-patterns/greedy/gas-stations/image-16-02-16-CI3HTQ4U.svg\";var t1={chapter:\"16-02\",difficulty:\"Medium\",title:\"Gas Stations\"};function N(t){let e={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...t.components},{CodeTabs:l,Figure:i,Image:a,OpenCodeEditor:s,ProblemDescription:r}=e;return l||n(\"CodeTabs\",!0),i||n(\"Figure\",!0),a||n(\"Image\",!0),s||n(\"OpenCodeEditor\",!0),r||n(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(r,{children:[(0,C.jsx)(e.p,{children:\"There's a circular route which contains gas stations. At each station, you can fill your car with a certain amount of gas, and moving from that station to the next one consumes some fuel.\"}),(0,C.jsxs)(e.p,{children:[\"Find the \",(0,C.jsx)(e.strong,{children:\"index of the gas station you would need to start at\"}),\", in order to complete the circuit \",(0,C.jsx)(e.strong,{children:\"without running out of gas\"}),\". Assume your car starts with an empty tank. If it's not possible to complete the circuit, return -1. If it's possible, assume only one solution exists.\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: gas = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\"], cost = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),`]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n`]})}),(0,C.jsx)(e.p,{children:\"Explanation:\"}),(0,C.jsxs)(e.p,{children:[\"Start at station 1: gain 5 gas (tank = 5), costs 2 gas to go to station 2 (tank = 3).\",(0,C.jsx)(\"br\",{}),`\nAt station 2: gain 1 gas (tank = 4), costs 1 gas to go to station 3 (tank = 3).`,(0,C.jsx)(\"br\",{}),`\nAt station 3: gain 3 gas (tank = 6), costs 4 gas to go to station 0 (tank = 2).`,(0,C.jsx)(\"br\",{}),`\nAt station 0: gain 2 gas (tank = 4), costs 3 gas to go to station 1 (tank = 1).`,(0,C.jsx)(\"br\",{}),`\nWe started and finished the circuit at station 1 without running out of gas.`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(e.p,{children:\"Before deciding which gas station to start with, let's first determine if it's even possible to complete the circuit with the total amount of gas available.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Total gas vs total cost\"}),(0,C.jsx)(e.br,{}),`\n`,\"Case 1: \",(0,C.jsx)(e.code,{children:\"sum(gas) < sum(cost)\"}),\":\",(0,C.jsx)(e.br,{}),`\n`,\"The first thing to realize is if the total gas is less than the total cost, \",(0,C.jsx)(e.strong,{children:\"it's impossible to complete the circuit\"}),\". No matter where we start, we'll run out of gas before completing the circuit. So, in this situation, we should return -1.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"Case 2: \",(0,C.jsx)(e.code,{children:\"sum(gas) \\u2265 sum(cost)\"}),\":\",(0,C.jsx)(e.br,{}),`\n`,\"Now, let's consider the more interesting case where the total travel cost is less than or equal to the total amount of gas available.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Here's a potential hypothesis:\"}),`\n`,(0,C.jsx)(e.p,{children:\"Since there's enough total gas to cover the total cost of travel, there must be a start point in the circuit that allows us to complete it without ever running out of gas.\"}),`\n`,(0,C.jsx)(e.p,{children:\"It's tough to confirm this hypothesis without examining an example, so let's dive into one.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Finding a start point\"}),(0,C.jsx)(e.br,{}),`\n`,\"Consider the following example where \",(0,C.jsx)(e.code,{children:\"sum(gas) > sum(cost)\"}),\":\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:o,alt:\"Image represents two horizontal, one-dimensional arrays of numerical data.  The top array is labeled 'gas' and contains the integer values [3, 2, 1, 3, 3, 2, 3, 4] enclosed within square brackets.  The bottom array is labeled 'cost' and contains the integer values [2, 1, 4, 1, 2, 6, 0, 3], also enclosed within square brackets. Both arrays have the same length (8 elements).  The arrays are positioned vertically one above the other, implying a potential relationship or correspondence between the elements at the same index in each array.  There are no explicit connections or arrows drawn between the arrays; the relationship is implied by their parallel structure and identical lengths.\",width:\"382\",height:\"46\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"We don't necessarily need to consider the gas and cost separately. At any station \",(0,C.jsx)(e.code,{children:\"i\"}),\", we collect \",(0,C.jsx)(e.code,{children:\"gas[i]\"}),\" and consume \",(0,C.jsx)(e.code,{children:\"cost[i]\"}),\" to move to the next station. We can consider both at the same time by getting the difference between these values, which provides the net gas gained or lost at each station:\"]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:d,alt:\"Image represents a simple calculation demonstrating element-wise subtraction between two arrays.  The top row shows an array labeled 'gas' containing the integer values [3, 2, 1, 3, 3, 2, 3, 4]. The second row displays an array labeled 'cost' with the integer values [2, 1, 4, 1, 2, 6, 0, 3].  Vertical grey arrows connect each corresponding element in the 'gas' and 'cost' arrays, indicating a subtraction operation. The bottom row, labeled 'net gas:', shows the results of this element-wise subtraction.  Each element in this resulting array is the difference between the corresponding elements in the 'gas' and 'cost' arrays; for example, 3-2=1, 2-1=1, 1-4=-3, and so on. The resulting 'net gas' array contains the values [1, 1, -3, 2, 1, -4, 3, 1], with positive values shown in green and negative values in red.\",width:\"394\",height:\"108\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"Let's start at station 0 with an empty gas tank and see how far we can go. The net gas at this station is positive (1), which means we have enough gas to reach the next station. Let's add 1 to our tank:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:L,alt:\"The image represents a visual depiction of a simple iterative process, possibly illustrating a coding pattern.  A small square containing the letter 'i' (likely indicating information or an instruction) has a downward arrow pointing to a sequence of numbers: 1, 1, -3, 2, 1, -4, 3, 1.  These numbers are indexed from 0 to 7 beneath them, labeled 'start' in orange text to the left, suggesting an initial state or starting point.  To the right, a dashed-line box shows a variable named 'tank' being updated. The expression 'tank += 1' indicates that 1 is added to the current value of 'tank,' and '= 1' shows the resulting value of 'tank' after the addition.  The implication is that each number in the sequence is processed sequentially, and in this specific example, the 'tank' variable is incremented by 1 for each iteration, regardless of the value in the sequence.\",width:\"422\",height:\"90\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Note that index \",(0,C.jsx)(e.code,{children:\"i\"}),\" refers to the current gas station, whereas start refers to the gas station we started from.\"]}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"At station 1, we encounter the same situation:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:p,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to array processing or accumulation.  The diagram shows a sequence of numbers: 1, 1, -3, 2, 1, -4, 3, 1, each positioned above a corresponding index (0 through 7) indicating its position within the sequence.  The word 'start' is written in orange below the index 0, suggesting the beginning of the process. A downward-pointing arrow originates from a small square containing the letter 'i', likely representing an iterator or index variable, pointing to the first element of the sequence (the number 1). To the right, a dashed-line box displays the operation 'tank += 1' and below it '= 2', indicating a variable named 'tank' is being incremented by 1, resulting in a value of 2.  The overall implication is that the sequence of numbers is being processed sequentially, and each number is potentially contributing to the accumulation within the 'tank' variable.\",width:\"422\",height:\"90\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"At station 2, our tank falls below 0, indicating we don't have enough gas to make it to the next station:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:M,alt:\"Image represents a flowchart illustrating a coding pattern, possibly related to fuel consumption or resource management.  A square box labeled 'i' at the top points downwards with an arrow to a sequence of numbers: 1, 1, -3, 2, 1, -4, 3, 1.  These numbers are indexed from 0 to 7, with 'start' labeled in orange below index 0.  To the right, a light gray, dashed-line box contains a code snippet: `tank += (-3)`, followed by `= -1 < 0`, and a right-pointing arrow leading to the text 'cannot make it to the next station'.  The diagram shows a process where a variable 'tank' is decremented by 3 in each step, and the condition `-1 < 0` evaluates to true, resulting in the message indicating an inability to proceed to the next stage.  The numbers likely represent changes in the 'tank' value over time or across different stages.\",width:\"686\",height:\"94\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"This means we cannot start our journey at station 0. Should we go back and try station 1? The key observation here is that if we didn't have enough gas to get from station 0 to station 3, we also wouldn't have enough if we started at any other station before station 3:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:Z,alt:\"Image represents a visual depiction of an iterative process, possibly demonstrating a coding pattern like accumulating values.  A sequence of numbers (1, 1, -3, 2, 1, -4, 3, 1) is displayed, each number positioned above a corresponding index (0, 1, 2, 3, 4, 5, 6, 7) indicating its position.  The word 'start' is written in orange below the index 3, suggesting the starting point of the iteration. To the right, a gray box with a dashed border shows a variable named 'tank' initialized to 0.  The implication is that the numbers in the sequence are sequentially processed, and their values are added to or subtracted from the 'tank' variable.  The arrangement suggests a step-by-step accumulation where the final value of 'tank' would be the sum of all the numbers in the sequence.\",width:\"436\",height:\"56\"})}),`\n`,(0,C.jsx)(e.p,{children:\"This is a general rule:\"}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:\"If we cannot make it to station b from station a, we cannot make it to station b from any of the stations in between, either:\"}),`\n`]}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:g,alt:\"Image represents two analogous illustrations explaining a coding pattern concept.  Both illustrations feature a horizontal orange line representing a journey from point 'a' to point 'b', marked by labels at each end.  A small orange car icon is positioned at the start of the line, at point 'a'.  The line terminates at point 'b' with a red 'X' indicating failure.  The first illustration uses the analogy of driving from 'a' to 'b' without running out of gas, stating 'if we cannot drive from a to b without running out of gas,' above the diagram.  The second illustration expands this, showing that if the journey from 'a' to 'b' fails, then starting anywhere between 'a' and 'b' will also fail, stating 'we cannot start anywhere between a and b without running out of gas.'  Both diagrams include dots along the line to represent intermediate points between 'a' and 'b', visually reinforcing the concept that failure at the end implies failure at any intermediate starting point.\",width:\"686\",height:\"92\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Let's try to understand why. If we only just ran out of gas right before reaching station b, this means our tank maintained a non-negative amount of gas until station b:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:m,alt:\"The image represents a graphical depiction of fuel consumption.  The upper portion shows a line graph where the vertical axis labeled 'tank' represents the fuel level, ranging from zero at the bottom to a maximum at the top. The horizontal axis represents the distance traveled, labeled 'station' at the far right.  A green line plots the fuel level over distance, starting at point 'a' with a full tank and decreasing gradually, showing fluctuations in fuel consumption.  The line reaches a minimum at point 'b', where it sharply drops to zero, indicated by a red line segment.  The lower portion of the image shows a horizontal orange arrow representing the car's journey from point 'a' to point 'b', marked by a red 'x' indicating the point of fuel depletion.  Small dots along the orange arrow represent intermediate points along the journey.  The labels 'a' and 'b' on both the upper and lower parts of the image correspond to the same locations on the journey and fuel level.  The car icon at the beginning of the orange arrow visually reinforces the representation of the car's travel.\",width:\"504\",height:\"252\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Consequently, starting anywhere else before station b will result in us missing a non-negative amount of gas from the previous stations. Therefore, starting at any of these in-between stations doesn't allow us to progress to station b.\"}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Back to our example. Let's now try resetting our tank to 0 and restarting at station 3 (at \",(0,C.jsx)(e.code,{children:\"i + 1\"}),\"), since we just discussed how starting at stations 0 to \",(0,C.jsx)(e.code,{children:\"i\"}),\" doesn't work:\"]}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:f,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to array processing or a similar concept.  A small square labeled 'i' with an arrow pointing downwards indicates an input or starting point.  Below this, a sequence of numbers (1, 1, -3, 2, 1, -4, 3, 1) is presented, each number positioned above a greyed-out index (0, 1, 2, 3, 4, 5, 6, 7) indicating their position within a data structure. The word 'start' is written in orange below the index numbers. To the right, a dashed-line box displays 'tank = 0', suggesting an initial value or state of a variable named 'tank'. The arrow from 'i' implies that the sequence of numbers is processed sequentially, potentially accumulating values into the 'tank' variable.  The negative numbers suggest a subtraction operation might be involved in the processing.\",width:\"422\",height:\"94\"})}),`\n`,(0,C.jsx)(e.p,{children:\"We continue until we reach a point where we cannot proceed to the next station:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:u,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to array manipulation or a simple accumulator.  A small square containing the letter 'i' (likely indicating information or input) points downwards with an arrow towards a sequence of numbers: 1, 1, -3, 2, 1, -4, 3, 1. These numbers are indexed from 0 to 7, shown in light gray below the numbers. The word 'start' is written in orange below the numbers, suggesting this is the starting point of the process.  To the right, a dashed-line box shows a variable named 'tank' being updated. The equation 'tank += 2' indicates that 2 is added to the current value of 'tank,' resulting in a new value of '2' (shown as ' = 2').  The overall diagram suggests a process where the numbers in the sequence are processed sequentially, and the 'tank' variable accumulates a value based on this processing, in this case, starting with an initial value of 0 and adding 2.\",width:\"433\",height:\"94\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:w,alt:\"Image represents a diagram illustrating a coding pattern, possibly related to array processing or iterative summation.  The diagram shows a sequence of numbers: 1, 1, -3, 2, 1, -4, 3, 1, indexed from 0 to 7.  These numbers are displayed horizontally, with indices shown in light gray below each number.  A downward-pointing arrow originates from a small square containing the letter 'i', suggesting an iterator or index variable. This arrow points to the number 1 at index 4, indicating a starting point. The word 'start' is written in orange below the numbers, reinforcing this starting position. To the right, a dashed-line box displays the equation 'tank += 1' and ' = 3', suggesting that a variable named 'tank' is being incremented by 1, resulting in a final value of 3.  The overall structure implies that the numbers are being processed sequentially, and the 'i' likely represents the index used to iterate through the sequence, with the 'tank' variable accumulating values from the sequence.\",width:\"433\",height:\"95\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:b,alt:\"Image represents a sequence of numbers (1, 1, -3, 2, 1, -4, 3, 1) indexed from 0 to 7, with the number at index 3 labeled 'start' in orange.  A downward-pointing arrow from a small square containing the letter 'i' points to the number -4 in the sequence. To the right, a dashed-line box displays the code snippet 'tank += (-4)', indicating that -4 is added to a variable named 'tank'. Below this, ' = -1 < 0' shows the result of the operation, which is less than 0. Finally, an arrow points to the text 'cannot make it to the next station', indicating a conditional outcome based on the value of 'tank' being less than 0.  The overall diagram illustrates a scenario where a process (indicated by the 'i' and arrow) leads to a condition check (tank < 0) resulting in a specific outcome.\",width:\"686\",height:\"96\"})}),`\n`,(0,C.jsx)(e.p,{children:\"As we can see, we ran out of gas at station 5, which means we can't start from stations 3 to 5, either. So, let's try restarting at station 6.\"}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"After resetting the tank to 0, let's continue traveling through the stations:\"}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:k,alt:\"Image represents a diagram illustrating a simple coding pattern, possibly related to variable assignment and accumulation.  A sequence of numbers (1, 1, -3, 2, 1, -4) is shown in light gray, indexed from 0 to 5, representing an input array or data stream.  A downward-pointing arrow from a small square containing the letter 'i' points to the number '3', indicating an initial value or input trigger.  This '3' is positioned at index 6, suggesting a starting point for processing.  Next to the '3' at index 6 is the number '1', which might represent the next element in the sequence to be processed. To the right, a dashed-line box displays an assignment operation: 'tank += 3', followed by ' = 3', indicating that a variable named 'tank' is initialized to 0 and then incremented by 3, resulting in a final value of 3. The word 'start' is written in orange below the number 3 at index 6, clearly marking the beginning of the operation. The overall diagram suggests a process where an initial value is used, and subsequent operations (not explicitly shown) might involve iterating through the input sequence and updating the 'tank' variable.\",width:\"433\",height:\"96\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(i,{align:\"left\",children:(0,C.jsx)(a,{src:y,alt:\"Image represents a visual depiction of a coding pattern, likely illustrating a cumulative sum or accumulator.  A sequence of numbers (1, 1, -3, 2, 1, -4, 3) is shown, each number indexed from 0 to 6.  These numbers are presented in light gray except for the number 3 at index 6, which is in black and has a downward-pointing arrow originating from a small square containing the letter 'i', suggesting an input or initial value. This '3' at index 6 is then added to a variable named 'tank', which initially holds a value of 1 (as indicated by 'tank += 1'). The result of this addition, 4, is displayed next to an equals sign ('= 4') within a dashed-line box representing the 'tank' variable's updated state. The word 'start' is written in orange below the number sequence, indicating the starting point of the process.  The overall diagram demonstrates how a running total is calculated by iteratively adding each element of the number sequence to an accumulator variable.\",width:\"433\",height:\"96\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"We've reached the end of the array. Should we go back to the start of the array to check if starting from station 6 allows us to complete the circuit? Or is reaching the end from station 6 enough to finish the circuit? Let's look into this.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Proving we have enough gas to complete the circuit after reaching the end of the array\"}),(0,C.jsx)(e.br,{}),`\n`,\"We can determine this via a proof by contradiction. If the gas we have by the end of the array is not enough, that means no solution exists: no station at which we could start in order to complete the circuit. This implies that no matter where we start, we will hit a deficit (i.e., a point where our tank falls below 0) before completing the circuit.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Consider a segment of the circuit where we run into a deficit:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:x,alt:\"Image represents a diagram illustrating a traversal or journey.  A small orange car icon is positioned at the left, labeled implicitly as point 'a' with ellipses suggesting further points preceding it.  An orange arrow originates from a short perpendicular line extending downwards from the car, indicating the starting point of the journey. This arrow stretches horizontally across the diagram, passing over several evenly spaced black dots representing intermediate points along a path. The arrow terminates at a red 'x' mark, implicitly labeled as point 'b' with ellipses suggesting further points following it. The overall visual suggests a linear progression from point 'a' to point 'b', with the 'x' possibly indicating an endpoint or a point of failure or interruption in the journey.\",width:\"354\",height:\"63\"})}),`\n`,(0,C.jsx)(e.p,{children:`We learned earlier that we cannot start at any station between a and b (inclusive)\nwithout running into a deficit. So, we can characterize this entire segment as having\nless total gas than the total cost required to travel through it.`}),`\n`,(0,C.jsx)(e.p,{children:\"After concluding that we cannot start anywhere from stations a to b, we decide to restart at the next station after b, which represents the start of the next segment. Keep in mind that since there is no solution in this proof, every segment in the circuit will end with a deficit:\"}),`\n`,(0,C.jsx)(i,{children:(0,C.jsx)(a,{src:v,alt:\"Image represents a circular diagram illustrating a cyclical process or pattern.  A large, solid black circle forms the central element, representing the core of the cycle.  Surrounding this circle is a smaller, orange circle formed by a series of interconnected orange arrows, indicating a continuous flow or progression.  Four red crosses are positioned equidistantly along the outer orange circle, each connected to a small orange dot.  The arrows point in a clockwise direction, suggesting a sequential process where each red cross represents a stage or step within the cycle. The absence of labels or text within the diagram leaves the specific nature of the cycle undefined, allowing for broad interpretation within the context of coding patterns.\",width:\"205\",height:\"198\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"This means each of these segments has less total gas than total cost. Therefore, for there to be no starting point, \",(0,C.jsx)(e.code,{children:\"sum(gas)\"}),\" would have to be less than \",(0,C.jsx)(e.code,{children:\"sum(cost)\"}),\".\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"However, we know that \",(0,C.jsx)(e.code,{children:\"sum(gas) \\u2265 sum(cost)\"}),\", confirming \",(0,C.jsx)(e.strong,{children:\"there must be a valid start point that allows us to complete the circuit\"}),\".\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Therefore, in our example, we can confirm that station 6 is the answer for the following reasons.\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.code,{children:\"sum(gas) \\u2265 sum(cost)\"}),\" implies that a solution must exist.\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"We confirmed that starting anywhere before station 6 will result in us running into a deficit.\"}),`\n`]}),`\n`,(0,C.jsxs)(e.li,{children:[`\n`,(0,C.jsx)(e.p,{children:\"We didn't encounter any deficit from station 6 to the last station in the array.\"}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"So, we just need to return start, which is station 6 in our example.\"}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"This is considered a \",(0,C.jsx)(e.strong,{children:\"greedy solution\"}),\" because we assume the first station we encounter that doesn't run into a deficit by the end of our array, is the start point that allows us to complete the circuit without testing every possible station in the array as the start point. The locally optimal choices (moving forward when possible, resetting when encountering a deficit) lead to the globally optimal solution (finding the correct starting point).\"]}),`\n`,(0,C.jsx)(s,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"gas_stations\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"gas: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"], cost: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If the total gas is less than the total cost, completing the circuit is\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# impossible.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"sum\"}),\"(gas) < \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"sum\"}),`(cost):\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n    start = tank = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(gas)):\n        tank += gas[i] - cost[i]\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# If our tank has negative gas, we cannot continue through the circuit from\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# the current start point, nor from any station before or including the\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# current station 'i'.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" tank < \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`:\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Set the next station as the new start point and reset the tank.\"}),`\n            start, tank = i + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` start\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"gas_stations\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"gas, cost\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If total gas is less than total cost, we can't complete the circuit\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (gas.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reduce\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"a, b\"}),\") =>\"]}),\" a + b, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") < cost.\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"reduce\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"a, b\"}),\") =>\"]}),\" a + b, \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" start = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" tank = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"; i < gas.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`; i++) {\n    tank += gas[i] - cost[i]\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If tank is negative, we can't reach the next station\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (tank < \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n      start = i + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`\n      tank = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    }\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` start\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"gas_stations\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> gas, ArrayList<Integer> cost)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If the total gas is less than the total cost, completing the circuit is\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// impossible.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"totalGas\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"totalCost\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < gas.size(); i++) {\n            totalGas += gas.get(i);\n            totalCost += cost.get(i);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),` (totalGas < totalCost) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"start\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"tank\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`; i < gas.size(); i++) {\n            tank += gas.get(i) - cost.get(i);\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// If our tank has negative gas, we cannot continue through the circuit from\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// the current start point, nor from any station before or including the\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// current station 'i'.\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (tank < \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n                `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Set the next station as the new start point and reset the tank.\"}),`\n                start = i + `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`;\n                tank = `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n            }\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` start;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"gas_stations\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\", where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the input arrays. This is because we iterate through each element in the gas and cost arrays.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"interview-tip\",children:\"Interview Tip\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.em,{children:\"Tip: Demonstrate your greedy solution with examples if proving it formally is too difficult\"}),(0,C.jsx)(e.br,{}),`\n`,\"In some problems, such as this one, proving that a greedy solution works might be complicated, especially in an interview setting. If you and the interviewer are on the same page about this, a good compromise is to demonstrate the solution's correctness with a few diverse examples. This approach allows both you and the interviewer to have confidence in your solution in the absence of a thorough proof.\"]})]})}function j(t={}){let{wrapper:e}=t.components||{};return e?(0,C.jsx)(e,{...t,children:(0,C.jsx)(N,{...t})}):N(t)}function n(t,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+t+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return A(a1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "course": "tech-resume",
+  "id": "p2-c0-writing-the-resume",
+  "chapter": 6,
+  "title": "PART 2: WRITING THE RESUME",
+  "free": false,
+  "code": "var Component=(()=>{var d=Object.create;var o=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var w=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),y=(t,e)=>{for(var s in e)o(t,s,{get:e[s],enumerable:!0})},a=(t,e,s,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of p(e))!f.call(t,n)&&n!==s&&o(t,n,{get:()=>e[n],enumerable:!(i=m(e,n))||i.enumerable});return t};var v=(t,e,s)=>(s=t!=null?d(g(t)):{},a(e||!t||!t.__esModule?o(s,\"default\",{value:t,enumerable:!0}):s,t)),x=t=>a(o({},\"__esModule\",{value:!0}),t);var c=w((T,h)=>{h.exports=_jsx_runtime});var k={};y(k,{default:()=>l,frontmatter:()=>b});var r=v(c()),b={chapter:6,title:\"PART 2: WRITING THE RESUME\"};function u(t){let e={a:\"a\",p:\"p\",strong:\"strong\",...t.components};return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(e.p,{children:\"Now that we understand better how your resume will go through systems and people like the Application Tracking System (ATS), recruiters or inbound sourcers, all the way to the hiring manager, it\\u2019s time to get writing that CV.\"}),`\n`,(0,r.jsx)(e.p,{children:\"How do you write a good developer resume? There are a few areas you want to get right, and the chapters cover these one by one.\"}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c1-tech-resume-basics\",children:(0,r.jsx)(e.strong,{children:\"In Chapter 3: Tech Resume Basics\"})}),\", we go through what recruiters and hiring managers look for in their first resume scan. We also go through several unwritten rules of resume writing.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c2-resume-structure\",children:(0,r.jsx)(e.strong,{children:\"Chapter 4: Resume Structure\"})}),\" gives suggestions on how to structure your resume based on your work experience. Depending on whether you are out of school, have work experience, or when you are at a senior or above level, different resume structures can help you write a more relevant resume.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c3-standing-out\",children:(0,r.jsx)(e.strong,{children:\"Chapter 5: Standing Out\"})}),\" covers how your resume can stand out from the crowd of similar applications. We will go through examples of why being specific on your results and impact is a big differentiator, how tailoring your resume for the position is important, and we\\u2019ll also touch on keyword stuffing.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c4-common-mistakes\",children:(0,r.jsx)(e.strong,{children:\"In Chapter 6: Common Mistakes\"})}),\", we go through the most frequent issues with developer resumes. These improvement areas almost always result in stronger resumes\\u2014without changing the content of the resume. You\\u2019ll want to steer clear of all of the mistakes we discuss in this chapter.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c5-different-experience-levels-different-career-paths\",children:(0,r.jsx)(e.strong,{children:\"Chapter 7: Different Experience Levels, Different Career Paths\"})}),\" gives tailored advice for bootcamp grads, career changers, senior engineers, tech leads and engineering managers.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c6-exercises-to-polish-your-resume\",children:(0,r.jsx)(e.strong,{children:\"Chapter 8: Exercises to Polish Your Resume\"})}),\" is a list of activities that can help you craft an even better resume. Do these exercises to write an even more relevant one.\"]}),`\n`,(0,r.jsxs)(e.p,{children:[(0,r.jsx)(e.a,{href:\"/courses/tech-resume/p2-c7-beyond-the-resume\",children:(0,r.jsx)(e.strong,{children:\"In Chapter 9: Beyond the Resume\"})}),\", we go through how to make your LinkedIn, GitHub and technical blogs stand out and share advice on cover letters.\"]}),`\n`,(0,r.jsx)(e.p,{children:\"Let\\u2019s start off with the basics and talk about many of the unwritten rules of developer resumes.\"})]})}function l(t={}){let{wrapper:e}=t.components||{};return e?(0,r.jsx)(e,{...t,children:(0,r.jsx)(u,{...t})}):u(t)}return x(k);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c1-acknowledgements"
+      ],
+      "id": "p0-c1-acknowledgements",
+      "chapter": 1,
+      "title": "Acknowledgements"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c2-introduction"
+      ],
+      "id": "p0-c2-introduction",
+      "chapter": 2,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c0-resumes-and-the-hiring-process"
+      ],
+      "id": "p1-c0-resumes-and-the-hiring-process",
+      "chapter": 3,
+      "free": true,
+      "title": "PART 1: RESUMES AND THE HIRING PROCESS"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c1-why-resumes-and-cvs-are-important"
+      ],
+      "id": "p1-c1-why-resumes-and-cvs-are-important",
+      "chapter": 4,
+      "free": true,
+      "title": "Chapter 1: Why Resumes and CVs are Important"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c2-the-hiring-pipeline"
+      ],
+      "id": "p1-c2-the-hiring-pipeline",
+      "chapter": 5,
+      "free": true,
+      "title": "Chapter 2: The Hiring Pipeline"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c0-writing-the-resume"
+      ],
+      "id": "p2-c0-writing-the-resume",
+      "chapter": 6,
+      "title": "PART 2: WRITING THE RESUME"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c1-tech-resume-basics"
+      ],
+      "id": "p2-c1-tech-resume-basics",
+      "chapter": 7,
+      "title": "Chapter 3: Tech Resume Basics"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c2-resume-structure"
+      ],
+      "id": "p2-c2-resume-structure",
+      "chapter": 8,
+      "title": "Chapter 4: Resume Structure"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c3-standing-out"
+      ],
+      "id": "p2-c3-standing-out",
+      "chapter": 9,
+      "title": "Chapter 5: Standing Out"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c4-common-mistakes"
+      ],
+      "id": "p2-c4-common-mistakes",
+      "chapter": 10,
+      "title": "Chapter 6: Common Mistakes"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c5-different-experience-levels-different-career-paths"
+      ],
+      "id": "p2-c5-different-experience-levels-different-career-paths",
+      "chapter": 11,
+      "title": "Chapter 7: Different Experience Levels, Different Career Paths"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c6-exercises-to-polish-your-resume"
+      ],
+      "id": "p2-c6-exercises-to-polish-your-resume",
+      "chapter": 12,
+      "title": "Chapter 8: Exercises to Polish Your Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c7-beyond-the-resume"
+      ],
+      "id": "p2-c7-beyond-the-resume",
+      "chapter": 13,
+      "title": "Chapter 9: Beyond the Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c0-examples-and-inspiration"
+      ],
+      "id": "p3-c0-examples-and-inspiration",
+      "chapter": 14,
+      "title": "PART 3: EXAMPLES AND INSPIRATION"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c1-good-resume-template-principles"
+      ],
+      "id": "p3-c1-good-resume-template-principles",
+      "chapter": 15,
+      "title": "Chapter 10: Good Resume Template Principles"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c2-resume-templates"
+      ],
+      "id": "p3-c2-resume-templates",
+      "chapter": 16,
+      "title": "Chapter 11: Resume Templates"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c3-resume-improvement-examples"
+      ],
+      "id": "p3-c3-resume-improvement-examples",
+      "chapter": 17,
+      "title": "Chapter 12: Resume Improvement Examples"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process"
+      ],
+      "id": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+      "chapter": 18,
+      "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p4-c0-conclusion"
+      ],
+      "id": "p4-c0-conclusion",
+      "chapter": 19,
+      "title": "Conclusion"
+    }
+  ],
+  "courseMetadata": {
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "tech-resume",
+    "defaultChapter": "/courses/tech-resume/p0-c2-introduction",
+    "rootPath": "/courses/tech-resume",
+    "lessons": 13,
+    "students": 5000,
+    "showChapter": false,
+    "lastModified": "2025.02.11"
+  }
+}

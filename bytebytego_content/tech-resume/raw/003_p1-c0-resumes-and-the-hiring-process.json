@@ -1,0 +1,201 @@
+{
+  "course": "tech-resume",
+  "id": "p1-c0-resumes-and-the-hiring-process",
+  "chapter": 3,
+  "title": "PART 1: RESUMES AND THE HIRING PROCESS",
+  "free": true,
+  "code": "var Component=(()=>{var u=Object.create;var a=Object.defineProperty;var d=Object.getOwnPropertyDescriptor;var m=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,w=Object.prototype.hasOwnProperty;var y=(r,e)=>()=>(e||r((e={exports:{}}).exports,e),e.exports),f=(r,e)=>{for(var n in e)a(r,n,{get:e[n],enumerable:!0})},i=(r,e,n,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let o of m(e))!w.call(r,o)&&o!==n&&a(r,o,{get:()=>e[o],enumerable:!(s=d(e,o))||s.enumerable});return r};var k=(r,e,n)=>(n=r!=null?u(g(r)):{},i(e||!r||!r.__esModule?a(n,\"default\",{value:r,enumerable:!0}):n,r)),x=r=>i(a({},\"__esModule\",{value:!0}),r);var c=y((I,h)=>{h.exports=_jsx_runtime});var j={};f(j,{default:()=>p,frontmatter:()=>b});var t=k(c()),b={chapter:3,free:!0,title:\"PART 1: RESUMES AND THE HIRING PROCESS\"};function l(r){let e={a:\"a\",p:\"p\",strong:\"strong\",...r.components};return(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(e.p,{children:\"Before jumping into the specifics on how to write a good developer resume, we need to take a pause. Why do you need to write a resume? What does a good developer resume look like, anyway? And why not just use your LinkedIn profile?\"}),`\n`,(0,t.jsx)(e.p,{children:\"Once you submit a resume, what will happen to it? Will a recruiter look at it? Or a hiring manager? Or someone else\\u2014perhaps an automated process making a decision?\"}),`\n`,(0,t.jsx)(e.p,{children:\"This part shares the context that recruiters and hiring managers would call trivial. However, if you are not a technical recruiter or a hiring manager, much of the details in this part will be eye-opening. Like what hiring managers see as good resumes, or what happens to your resume behind the scene.\"}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsxs)(e.strong,{children:[\"In \",(0,t.jsx)(e.a,{href:\"/courses/tech-resume/p1-c1-why-resumes-and-cvs-are-important\",children:\"Chapter 1: Why Resumes and CVs are Important\"})]}),\", we discuss what the goal of a resume really is. Spoiler it\\u2019s not to showcase all of your past experience. We cover what a good resume is like, and why LinkedIn might not be sufficient to get a job when you directly apply.\"]}),`\n`,(0,t.jsxs)(e.p,{children:[(0,t.jsxs)(e.strong,{children:[\"In \",(0,t.jsx)(e.a,{href:\"/courses/tech-resume/p1-c2-the-hiring-pipeline\",children:\"Chapter 2: The Hiring Pipeline\"}),\",\"]}),\" we share the bigger picture of how the interview process looks\\u2014so you can better understand why resumes are important.\"]}),`\n`,(0,t.jsx)(e.p,{children:\"Let\\u2019s start by diving into why resumes are important at all, at times when LinkedIn is such a popular way to represent yourself professionally.\"})]})}function p(r={}){let{wrapper:e}=r.components||{};return e?(0,t.jsx)(e,{...r,children:(0,t.jsx)(l,{...r})}):l(r)}return x(j);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c1-acknowledgements"
+      ],
+      "id": "p0-c1-acknowledgements",
+      "chapter": 1,
+      "title": "Acknowledgements"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p0-c2-introduction"
+      ],
+      "id": "p0-c2-introduction",
+      "chapter": 2,
+      "free": true,
+      "title": "Introduction"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c0-resumes-and-the-hiring-process"
+      ],
+      "id": "p1-c0-resumes-and-the-hiring-process",
+      "chapter": 3,
+      "free": true,
+      "title": "PART 1: RESUMES AND THE HIRING PROCESS"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c1-why-resumes-and-cvs-are-important"
+      ],
+      "id": "p1-c1-why-resumes-and-cvs-are-important",
+      "chapter": 4,
+      "free": true,
+      "title": "Chapter 1: Why Resumes and CVs are Important"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p1-c2-the-hiring-pipeline"
+      ],
+      "id": "p1-c2-the-hiring-pipeline",
+      "chapter": 5,
+      "free": true,
+      "title": "Chapter 2: The Hiring Pipeline"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c0-writing-the-resume"
+      ],
+      "id": "p2-c0-writing-the-resume",
+      "chapter": 6,
+      "title": "PART 2: WRITING THE RESUME"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c1-tech-resume-basics"
+      ],
+      "id": "p2-c1-tech-resume-basics",
+      "chapter": 7,
+      "title": "Chapter 3: Tech Resume Basics"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c2-resume-structure"
+      ],
+      "id": "p2-c2-resume-structure",
+      "chapter": 8,
+      "title": "Chapter 4: Resume Structure"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c3-standing-out"
+      ],
+      "id": "p2-c3-standing-out",
+      "chapter": 9,
+      "title": "Chapter 5: Standing Out"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c4-common-mistakes"
+      ],
+      "id": "p2-c4-common-mistakes",
+      "chapter": 10,
+      "title": "Chapter 6: Common Mistakes"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c5-different-experience-levels-different-career-paths"
+      ],
+      "id": "p2-c5-different-experience-levels-different-career-paths",
+      "chapter": 11,
+      "title": "Chapter 7: Different Experience Levels, Different Career Paths"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c6-exercises-to-polish-your-resume"
+      ],
+      "id": "p2-c6-exercises-to-polish-your-resume",
+      "chapter": 12,
+      "title": "Chapter 8: Exercises to Polish Your Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p2-c7-beyond-the-resume"
+      ],
+      "id": "p2-c7-beyond-the-resume",
+      "chapter": 13,
+      "title": "Chapter 9: Beyond the Resume"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c0-examples-and-inspiration"
+      ],
+      "id": "p3-c0-examples-and-inspiration",
+      "chapter": 14,
+      "title": "PART 3: EXAMPLES AND INSPIRATION"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c1-good-resume-template-principles"
+      ],
+      "id": "p3-c1-good-resume-template-principles",
+      "chapter": 15,
+      "title": "Chapter 10: Good Resume Template Principles"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c2-resume-templates"
+      ],
+      "id": "p3-c2-resume-templates",
+      "chapter": 16,
+      "title": "Chapter 11: Resume Templates"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c3-resume-improvement-examples"
+      ],
+      "id": "p3-c3-resume-improvement-examples",
+      "chapter": 17,
+      "title": "Chapter 12: Resume Improvement Examples"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process"
+      ],
+      "id": "p3-c4-advice-for-hiring-managers-on-running-a-good-screening-process",
+      "chapter": 18,
+      "title": "Chapter 13: Advice for Hiring Managers on Running a Good Screening Process"
+    },
+    {
+      "course": "tech-resume",
+      "slug": [
+        "p4-c0-conclusion"
+      ],
+      "id": "p4-c0-conclusion",
+      "chapter": 19,
+      "title": "Conclusion"
+    }
+  ],
+  "courseMetadata": {
+    "title": "How to Write a Good Resume",
+    "authors": "Gergely Orosz",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "tech-resume",
+    "defaultChapter": "/courses/tech-resume/p0-c2-introduction",
+    "rootPath": "/courses/tech-resume",
+    "lessons": 13,
+    "students": 5000,
+    "showChapter": false,
+    "lastModified": "2025.02.11"
+  }
+}

@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "dynamic-programming/maximum-subarray-sum",
+  "chapter": "15-07",
+  "title": "Maximum Subarray Sum",
+  "free": false,
+  "code": "var Component=(()=>{var v=Object.create;var s=Object.defineProperty;var F=Object.getOwnPropertyDescriptor;var T=Object.getOwnPropertyNames;var P=Object.getPrototypeOf,D=Object.prototype.hasOwnProperty;var A=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),S=(a,e)=>{for(var l in e)s(a,l,{get:e[l],enumerable:!0})},c=(a,e,l,t)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of T(e))!D.call(a,i)&&i!==l&&s(a,i,{get:()=>e[i],enumerable:!(t=F(e,i))||t.enumerable});return a};var I=(a,e,l)=>(l=a!=null?v(P(a)):{},c(e||!a||!a.__esModule?s(l,\"default\",{value:a,enumerable:!0}):l,a)),E=a=>c(s({},\"__esModule\",{value:!0}),a);var H=A((l1,V)=>{V.exports=_jsx_runtime});var i1={};S(i1,{default:()=>_,frontmatter:()=>a1});var C=I(H());var d=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-1-OU2UX27V.svg\";var m=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-2-AMVJUYR4.svg\";var o=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-3-FJATVILZ.svg\";var p=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-4-KANCXBFZ.svg\";var u=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-5-4FNLU4YM.svg\";var M=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-6-HRFTNZNS.svg\";var L=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-7-MFKNTZ7Y.svg\";var Z=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-8-PDS2UJ72.svg\";var g=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-9-72F6N7XU.svg\";var f=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-10-MMNTAAEM.svg\";var y=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-11-QPFHZSTE.svg\";var w=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-12-PR5VCKBS.svg\";var b=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-13-TBVMDD3I.svg\";var x=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-14-M7S7SNQL.svg\";var k=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-15-6OR2T5ZD.svg\";var N=\"/images/courses/coding-patterns/dynamic-programming/maximum-subarray-sum/image-15-07-16-4MN7YOW6.svg\";var a1={chapter:\"15-07\",difficulty:\"Medium\",title:\"Maximum Subarray Sum\"};function j(a){let e={annotation:\"annotation\",blockquote:\"blockquote\",br:\"br\",code:\"code\",h2:\"h2\",h3:\"h3\",h4:\"h4\",hr:\"hr\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",ol:\"ol\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...a.components},{CodeTabs:l,Figure:t,Image:i,OpenCodeEditor:r,ProblemDescription:h}=e;return l||n(\"CodeTabs\",!0),t||n(\"Figure\",!0),i||n(\"Image\",!0),r||n(\"OpenCodeEditor\",!0),h||n(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsxs)(e.p,{children:[\"Given an array of integers, return the \",(0,C.jsx)(e.code,{children:\"sum\"}),\" of the subarray with the \",(0,C.jsx)(e.strong,{children:\"largest sum\"}),\".\"]}),(0,C.jsx)(e.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[\"Input: nums = [\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"6\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"2\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"4\"}),\", -\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"9\"}),`]\nOutput: `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"5\"}),`\n`]})}),(0,C.jsxs)(e.p,{children:[\"Explanation: subarray \",(0,C.jsx)(e.code,{children:\"[2, -1, 4]\"}),\" has the largest sum of 5.\"]}),(0,C.jsx)(e.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"The input array contains at least one element.\"}),`\n`]})]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"Brute force approaches to this problem involve calculating the sum of every possible subarray. This would take at least \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(e.msup,{children:[(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mn,{children:\"2\"})]}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(e.span,{className:\"mord\",children:[(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"msupsub\",children:(0,C.jsx)(e.span,{className:\"vlist-t\",children:(0,C.jsx)(e.span,{className:\"vlist-r\",children:(0,C.jsx)(e.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(e.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(e.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(e.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(e.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, where \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the array. So, let\\u2019s consider alternative methods.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"The challenge with this problem lies in the presence of negative numbers. If the array consisted entirely of non-negative numbers, the answer would simply be the sum of the entire array.\"}),`\n`,(0,C.jsx)(e.p,{children:\"To find the maximum sum given the presence of negative numbers, let\\u2019s try keeping track of the sum of a contiguous subarray, starting at index 0.\"}),`\n`,(0,C.jsx)(e.p,{children:\"As this subarray expands and we add each number to the running sum, we\\u2019ll need to decide whether to continue with the current subarray\\u2019s sum, or start a new subarray beginning with the current element. To understand how we might make such a decision, let\\u2019s dive into an example.\"}),`\n`,(0,C.jsx)(e.p,{children:\"Consider the following input array:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:d,alt:\"Image represents a one-dimensional array or list of integers.  The array is enclosed in square brackets `[` and `]`.  The integers within the array are `3`, `1`, `-6`, `2`, `-1`, `4`, and `-9`, each separated by a space.  Below each integer, in a lighter gray font, are the corresponding indices of the array, starting from 0 and incrementing sequentially: `0`, `1`, `2`, `3`, `4`, `5`, and `6`.  There are no visible connections or information flow between the elements other than their sequential arrangement within the array structure, implicitly indicating that each integer is accessible via its index.\",width:\"278\",height:\"31\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"The first two values of the array are positive, so we can continue expanding the current subarray by adding these to our sum (\",(0,C.jsx)(e.code,{children:\"curr_sum\"}),\"), initialized at 0:\"]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:m,alt:\"Image represents a visual depiction of an array and a variable update.  An array `num` is shown, containing the integer elements [3, 1, -6, 2, -1, 4, -9], with each element's index displayed below it (0 through 6).  A downward-pointing orange arrow labeled 'num' points to the first element of the array, the number 3, which is highlighted in a peach-colored circle.  To the right, a dashed-line box shows the variable `curr_sum` being updated. The expression `curr_sum += 3` indicates that 3 is added to the current value of `curr_sum`, resulting in a new value of 3, as shown by `curr_sum = 3`.  The diagram illustrates the process of accessing and using a specific element (the first element) from an array within a calculation.\",width:\"418\",height:\"73\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:o,alt:\"Image represents a visual depiction of an array and an operation performed on it.  A numerical array `[3, 1, -6, 2, -1, 4, -9]` is shown, with each element indexed from 0 to 6 below it.  An orange arrow labeled 'num' points downwards to the element at index 1, which is the number 1, highlighting it as the current element being processed.  To the right, a dashed-line box shows the operation being performed: `curr_sum += 1`, indicating that 1 is being added to a variable named `curr_sum`. Below this, `= 4` shows the resulting value of `curr_sum` after the addition.  The diagram illustrates a step in an iterative process, likely summing the elements of the array, with the highlighted element contributing to the running sum.\",width:\"418\",height:\"73\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"When we reach index 2, we land on the first negative number (-6). Adding it to the current sum gives us a negative sum of -2.\"}),`\n`,(0,C.jsx)(e.p,{children:\"What should we do now? If we restart the subarray at this point, the new subarray will start with a sum of -6, which is less than the current sum of -2.\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:p,alt:\"Image represents a visual depiction of a step in an algorithm, likely involving array processing and sum calculation.  A peach-colored highlighted section of an array `[3 1 -6 2 -1 4 -9]` is shown, with the element `-6` at index 2 indicated by an orange downward-pointing arrow labeled 'num'. This suggests that the algorithm is currently processing the element at index 2. To the right, a light gray box represents a variable named `curr_sum`.  Inside this box, the calculation `curr_sum += -6` is shown, indicating that -6 is being added to the current value of `curr_sum`. Below this, `= -2` shows the resulting value of `curr_sum` after the addition. A rightward-pointing arrow labeled 'larger' connects to the `-2`, suggesting that this value is being compared or used to determine a 'larger' value in a subsequent step of the algorithm.  The array indices are displayed below the array elements, ranging from 0 to 6.\",width:\"509\",height:\"73\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:u,alt:\"Image represents a step-by-step illustration of a coding pattern, likely related to finding the minimum value in an array.  The top shows the word 'num' in orange, with a downward arrow pointing to a peach-colored circle containing '-6'. This circle is positioned within a larger array representation: `[3, 1, -6, 2, -1, 4, -9]`, with each element's index (0-6) displayed below it. The '-6' in the circle is highlighted, indicating the current element being processed. To the right, a dashed-line box displays 'curr_sum = -6', representing the current minimum sum found so far. An arrow labeled 'smaller' points from the right to the 'curr_sum' box, indicating that the value '-6' is being compared and potentially updated as the minimum.  The overall diagram visually demonstrates the iterative process of comparing each element of the array to the current minimum, updating the minimum if a smaller value is encountered.\",width:\"509\",height:\"64\"})}),`\n`,(0,C.jsx)(e.p,{children:\"Therefore, it is better to continue with the current subarray for now.\"}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsx)(e.p,{children:\"At index 3, we reach another important decision point:\"}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"If we include 2 in the current subarray, its sum increases to 0:\"}),`\n`]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:M,alt:\"Image represents a visual depiction of a coding pattern, likely illustrating a step within an algorithm.  A peach-colored rectangular segment highlights a portion of a numerical array: `[3 1 -6 2 -1 4 -9]`, with indices 0 through 6 displayed below each element. An orange arrow labeled 'num' points downwards onto the highlighted segment, indicating that the variable 'num' is referencing or operating on this section of the array (specifically elements at indices 0, 1, 2, and 3).  To the right, a dashed-line box represents a variable named 'curr_sum'. Inside this box, the expression 'curr_sum += 2' indicates that 2 is being added to the current value of 'curr_sum'. Below this, '= 0' shows the current value of 'curr_sum' is 0. A grey arrow points from the right to the 'curr_sum' box, labeled 'smaller', suggesting that the value of 'smaller' (not shown) is influencing or updating 'curr_sum'. The overall diagram suggests a process where a section of an array is being processed, potentially to find a minimum or maximum value, and a running sum ('curr_sum') is being updated based on this processing.\",width:\"499\",height:\"72\"})}),`\n`,(0,C.jsxs)(e.ul,{children:[`\n`,(0,C.jsx)(e.li,{children:\"If we restart the subarray at this index, we begin a new subarray of sum 2:\"}),`\n`]}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:L,alt:\"Image represents a snapshot of an algorithm's execution, likely demonstrating a coding pattern related to array traversal and sum calculation.  A numerical array `[3, 1, -6, 2, -1, 4, -9]` is displayed, with each element indexed from 0 to 6.  A light peach-colored circle highlights the element '2' at index 3, with an orange arrow labeled 'num' pointing to it, indicating the current element being processed.  To the right, a dashed-line box displays 'curr_sum = 2', representing the current sum calculated so far.  A rightward arrow connects this box to the word 'larger', suggesting that the algorithm is comparing the current sum with a larger value (not explicitly shown) as part of a larger process, possibly finding the largest contiguous subarray sum.  The overall arrangement visually depicts a step-by-step process where the algorithm iterates through the array, updating the `curr_sum` and comparing it to find a larger value.\",width:\"499\",height:\"72\"})}),`\n`,(0,C.jsx)(e.p,{children:\"It\\u2019s evident here that the better choice is to start tracking the sum of a new subarray, beginning at index 3.\"}),`\n`,(0,C.jsx)(e.p,{children:\"As observed, for each number in the array during this process, there are two choices:\"}),`\n`,(0,C.jsxs)(e.ol,{children:[`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.strong,{children:\"Continue:\"}),\" Add the current number to the ongoing subarray sum (\",(0,C.jsx)(e.code,{children:\"curr_sum + num\"}),\").\"]}),`\n`,(0,C.jsxs)(e.li,{children:[(0,C.jsx)(e.strong,{children:\"Restart:\"}),\" Begin keeping track of a new subarray starting with the current number, with an initial sum of \",(0,C.jsx)(e.code,{children:\"num\"}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"The best choice is the larger of the two: \",(0,C.jsx)(e.strong,{children:(0,C.jsx)(e.code,{children:\"max(curr_sum + num, num)\"})}),\".\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s apply this logic to the rest of the array:\"}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:Z,alt:\"Image represents a step-by-step illustration of a coding pattern, likely for finding the maximum contiguous subarray sum.  The left side shows an array `[3, 1, -6, 2, -1, 4, -9]` with indices 0 through 6 displayed below each element.  An orange arrow labeled 'num' points to the element '2' at index 3 and '-1' at index 4, indicating the current element being processed. A peach-colored rectangle highlights these two elements. The right side shows a calculation box detailing the algorithm's logic.  A curved arrow points from the text '(previous curr_sum value)' to the calculation box. Inside the box, the equation `curr_sum = max(curr_sum + num, num)` is shown, representing the update of the maximum sum so far.  Below, a substitution with `curr_sum = 2` and `num = -1` is shown, resulting in `max(2 + (-1), -1)`, which simplifies to `max(1, -1) = 1`. This demonstrates how the algorithm updates the maximum sum based on the current element and the previous maximum sum.\",width:\"576\",height:\"95\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:g,alt:\"Image represents a visual explanation of a maximum subarray sum calculation.  A numerical array `[3, 1, -6, 2, -1, 4, -9]` is shown, with indices 0 through 6 displayed below each element.  A peach-colored rectangle highlights the element '2', '-1', and '4' within the array. An orange arrow labeled 'num' points downwards, indicating that the value '4' is currently being processed. To the right, a light gray box details the calculation: `curr_sum = max(curr_sum + num, num)`, where `curr_sum` represents the current maximum sum and `num` represents the current element (4). The calculation is broken down in subsequent lines: `= max(1 + 4, 4)` showing the substitution of values, and finally `= 5`, indicating that the current maximum sum is updated to 5.  The diagram illustrates a step in an algorithm that iterates through the array, updating the maximum sum based on the current element and the running sum.\",width:\"576\",height:\"79\"})}),`\n`,(0,C.jsx)(t,{align:\"left\",children:(0,C.jsx)(i,{src:f,alt:\"Image represents a visual explanation of a maximum subarray sum calculation.  A numerical array `[3, 1, -6, 2, -1, 4, -9]` is shown, with each element indexed from 0 to 6.  A peach-colored rectangle highlights the element at index 3, the number `2`, which is labeled with an orange arrow pointing to it as 'num'.  To the right, a calculation is displayed showing the running maximum sum (`curr_sum`). The formula `curr_sum = max(curr_sum + num, num)` is presented, demonstrating how the current maximum sum is updated by taking the maximum between the current sum plus the current element (`num`) and the current element itself.  The calculation is then shown step-by-step:  `max(5 + (-9), -9)` which simplifies to `-4`, indicating that at this step, the maximum subarray sum is -4.  The indices below the array visually correspond to the array elements.\",width:\"576\",height:\"79\"})}),`\n`,(0,C.jsx)(e.hr,{}),`\n`,(0,C.jsxs)(e.p,{children:[\"Now that we have a strategy to linearly track subarray sums, the only other thing to do is keep track of the largest value of curr_sum encountered. To do this, we can update a variable \",(0,C.jsx)(e.code,{children:\"max_sum\"}),\" whenever we encounter a larger \",(0,C.jsx)(e.code,{children:\"curr_sum\"}),\" value. Then, \",(0,C.jsx)(e.code,{children:\"max_sum\"}),\" will be the answer to the problem.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Kadane\\u2019s algorithm\"}),(0,C.jsx)(e.br,{}),`\n`,`The algorithm described above is formally known as \"Kadane's algorithm\". Although it may not seem like it, Kadane's algorithm is actually a `,(0,C.jsx)(e.strong,{children:\"DP\"}),\" algorithm. What\\u2019s interesting is that we didn\\u2019t explicitly detect and solve subproblems to come up with this algorithm, like we typically do in DP. Instead, we solved it by linearly keeping track of a subarray sum and making decisions along the way.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"So, to fully understand why this is a DP problem, let's explore how we would solve it using the traditional DP approach of breaking the problem into smaller subproblems, and solving them step-by-step. This is demonstrated in the next section of this explanation.\"}),`\n`,(0,C.jsx)(r,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"not\"}),` nums:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Set the sum variables to negative infinity to ensure negative sums can be\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# considered.\"}),`\n    max_sum = current_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"float\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-string\",children:\"'-inf'\"}),`)\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Iterate through the array to find the maximum subarray sum.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" num \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),` nums:\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Either add the current number to the existing running sum, or start a new\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# subarray at the current number.\"}),`\n        current_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(current_sum + num, num)\n        max_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_sum, current_sum)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_sum\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),\" === \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxSum = -\",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Infinity\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" currentSum = -\",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Infinity\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" num \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"of\"}),` nums) {\n    currentSum = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(currentSum + num, num)\n    maxSum = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(maxSum, currentSum)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> nums)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (nums == \",(0,C.jsx)(e.span,{className:\"hljs-literal\",children:\"null\"}),` || nums.isEmpty()) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Set the sum variables to negative infinity to ensure negative sums can be\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// considered.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"maxSum\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Integer.MIN_VALUE;\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"currentSum\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` Integer.MIN_VALUE;\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Iterate through the array to find the maximum subarray sum.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),` num : nums) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Either add the current number to the existing running sum, or start a new\"}),`\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// subarray at the current number.\"}),`\n            currentSum = Math.max(currentSum + num, num);\n            maxSum = Math.max(maxSum, currentSum);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"maximum_subarray_sum\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we iterate through each element of the input array once.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\".\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"intuition---dp\",children:\"Intuition - DP\"}),`\n`,(0,C.jsx)(e.p,{children:\"Let\\u2019s discuss how we would approach this problem as we did with other DP problems in this chapter.\"}),`\n`,(0,C.jsx)(e.p,{children:\"An important observation is that every possible subarray ends at a certain index. This inversely means each index signifies the end of several subarrays, one of which will have the maximum subarray sum (shortened to \\u201Cmax subarray\\u201D moving forward) ending at that index.\"}),`\n`,(0,C.jsx)(e.p,{children:\"For example, we can see the max subarray that ends at index 3 below by considering all subarrays ending at index 3:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:y,alt:\"Image represents a numerical array depicted as `[3 1 -6 2 -1 4 -9]`, enclosed in square brackets.  A peach-colored rectangle highlights the first four elements (3, 1, -6, 2) of this array.  Beneath the array, numbers 0 through 6 are displayed, acting as indices corresponding to each element's position within the array.  To the right of the array, the text 'sum = 0' is shown in orange, indicating that the sum of all elements within the array equals zero.  There are no URLs or parameters present in the image; the image solely illustrates an array and its sum.\",width:\"408\",height:\"38\"})}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:w,alt:\"Image represents a numerical array depicted within square brackets `[]`, showing a sequence of numbers: 3, 1, -6, 2, -1, 4, -9.  A light peach-colored rectangle highlights the sub-array [1, -6, 2].  Beneath the array, numbers 0 through 6 are displayed, acting as indices corresponding to each element's position within the array. To the right of the array, the text 'sum = -3' is shown in orange, indicating the sum of all the numbers in the array is -3.  There is no explicit connection shown between the highlighted sub-array and the sum calculation; the highlighting simply draws attention to a specific portion of the array.\",width:\"408\",height:\"39\"})}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:b,alt:\"Image represents a numerical array depicted within square brackets `[]`, containing the elements 3, 1, -6, 2, -1, 4, and -9.  Each element is positioned sequentially, with indices 0 through 6 displayed below them in gray.  A peach-colored oval highlights the elements -6 and 2, suggesting a focus or operation on these specific values. To the right of the array, the text 'Sum = -4' is displayed in orange, indicating the sum of all elements within the array is -4.  The arrangement visually demonstrates the calculation of the sum of the elements in the array, with the highlighted section possibly representing a sub-calculation or a specific part of the summation process.\",width:\"408\",height:\"37\"})}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:x,alt:\"Image represents a visual depiction of a maximum subarray sum algorithm.  A numerical array `[3, 1, -6, 2, -1, 4, -9]` is shown, with each element's index displayed below it (0 through 6).  The element at index 3, the number '2', is highlighted with a peach-colored circle.  To the right, a green rectangular box displays the result 'sum = 2', indicating that the maximum contiguous subarray sum within the given array is 2. The word 'max' is written in green above the result box, clarifying that the displayed value represents the maximum sum.  The highlighted '2' visually suggests that this element is part of, or possibly the maximum subarray itself, although the algorithm's exact steps aren't explicitly shown. The diagram focuses on presenting the input array and the final result of the maximum subarray sum calculation.\",width:\"408\",height:\"48\"})}),`\n`,(0,C.jsx)(e.p,{children:\"So, how can we find the max subarray that ends at each index? Consider the last index of the array:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:k,alt:\"Image represents a visual depiction of a subproblem within a dynamic programming approach, likely to find the maximum subarray sum.  A rectangular box contains a numerical array `[3, 1, -6, 2, -1, 4, -9]` with indices 0 through 6 displayed below each element.  A small square labeled 'i' is positioned above the array, with a downward arrow indicating input to the array. To the right of the array, the text 'max_subarray(i) = ?' is displayed, posing a question about the maximum subarray sum up to index 'i'. The overall structure suggests an illustration of a single step in an algorithm where the input 'i' (likely representing an index) determines a subarray, and the question mark indicates the algorithm's goal of finding the maximum sum within that subarray.\",width:\"504\",height:\"97\"})}),`\n`,(0,C.jsx)(e.p,{children:\"One thing we know for sure is the max subarray ending at this index will definitely include the value at this index. We just need to determine if there are any elements to the left that also contribute to this max subarray. In other words, we need to find the max subarray that ends right before the last index:\"}),`\n`,(0,C.jsx)(t,{children:(0,C.jsx)(i,{src:N,alt:\"Image represents a visual depiction of a step in a dynamic programming algorithm, likely for finding the maximum sum subarray.  A rectangular box displays an array of integers: [3, 1, -6, 2, -1, 4, -9], with indices 0 through 6 displayed below each element.  A small square labeled 'i' points down to the element -9 at index 6, indicating the current index being processed. To the right, the expression `max_subarray(i - 1) + (-9)` is shown, illustrating the recursive or iterative step of the algorithm. This formula suggests that the maximum subarray sum ending at index `i` is calculated by adding the maximum subarray sum ending at the previous index (`i - 1`) to the value at the current index (`-9`).  The arrow from 'i' to -9 visually connects the index to the element used in the calculation, demonstrating the flow of information within the algorithm. The peach-colored highlighting of -9 emphasizes its role in the current calculation step.\",width:\"570\",height:\"97\"})}),`\n`,(0,C.jsxs)(e.p,{children:[\"Another thing to consider is the possibility that \",(0,C.jsx)(e.code,{children:\"max_subarray(i - 1)\"}),\" is negative. This would mean the max subarray should only consist of -9, as a further negative contribution will only decrease the sum. Therefore, the formula becomes:\"]}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:(0,C.jsx)(e.code,{children:\"max_subarray(i) = max(max_subarray(i - 1) + nums[i], nums[i])\"})}),`\n`]}),`\n`,(0,C.jsxs)(e.p,{children:[\"As we see, this is a \",(0,C.jsx)(e.strong,{children:\"recurrence relation\"}),\" that takes advantage of an \",(0,C.jsx)(e.strong,{children:\"optimal substructure\"}),\", where the max subarray at the current index depends on the max subarray at the previous index.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"This indicates we can solve this problem using DP. Translating the above recurrence relation to a DP formula gives us:\"}),`\n`,(0,C.jsxs)(e.blockquote,{children:[`\n`,(0,C.jsx)(e.p,{children:(0,C.jsx)(e.code,{children:\"dp[i] = max(dp[i - 1] + nums[i], nums[i])\"})}),`\n`]}),`\n`,(0,C.jsx)(e.p,{children:\"Now, let\\u2019s consider what the base case for this problem is.\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Base case\"}),(0,C.jsx)(e.br,{}),`\n`,\"The simplest subproblem occurs when we consider only the first element of the array (i.e., when \",(0,C.jsx)(e.code,{children:\"i = 0\"}),\"). When there\\u2019s only one element, there\\u2019s only one subarray. Therefore, we can set \",(0,C.jsx)(e.code,{children:\"dp[0]\"}),\" to \",(0,C.jsx)(e.code,{children:\"nums[0]\"}),\" as our base case.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Populating the DP array\"}),(0,C.jsx)(e.br,{}),`\n`,\"With the base case established, we can populate the rest of the DP array. Starting from index 1 and going up to index \",(0,C.jsx)(e.code,{children:\"n - 1\"}),\", we calculate the maximum subarray sum ending at each index using the aforementioned recurrence relation.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[\"As we populate the DP array, we need to keep track of the maximum value in the DP array, \",(0,C.jsx)(e.code,{children:\"max_sum\"}),\", representing the largest sum of any subarray within the entire array. By the time we finish populating the DP array, we can just return \",(0,C.jsx)(e.code,{children:\"max_sum\"}),\".\"]}),`\n`,(0,C.jsx)(r,{}),`\n`,(0,C.jsx)(e.h2,{id:\"implementation---dp\",children:\"Implementation - DP\"}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(nums)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" n == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    dp = [`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`] * n\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Base case: the maximum subarray sum of an array with just one element is that\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# element.\"}),`\n    dp[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] = nums[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n    max_sum = dp[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Populate the rest of the DP array.\"}),`\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"# Determine the maximum subarray sum ending at the current index.\"}),`\n        dp[i] = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),\"(dp[i - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] + nums[i], nums[i])\n        max_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_sum, dp[i])\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_sum\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (n === \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" dp = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(n).\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`)\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: the maximum subarray sum of an array with one element is that element.\"}),`\n  dp[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] = nums[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxSum = dp[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n  `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Populate the rest of the DP array.\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n    `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Determine the maximum subarray sum ending at the current index.\"}),`\n    dp[i] = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),\"(dp[i - \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] + nums[i], nums[i])\n    maxSum = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(maxSum, dp[i])\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.List;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(List<Integer> nums)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (n == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\"[] dp = \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Base case: the maximum subarray sum of an array with just one element is that\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// element.\"}),`\n        dp[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\"] = nums.get(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"maxSum\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" dp[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`];\n        `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Populate the rest of the DP array.\"}),`\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-comment\",children:\"// Determine the maximum subarray sum ending at the current index.\"}),`\n            dp[i] = Math.max(dp[i - `,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`] + nums.get(i), nums.get(i));\n            maxSum = Math.max(maxSum, dp[i]);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.h3,{id:\"complexity-analysis-1\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Time complexity:\"}),\" The time complexity of \",(0,C.jsx)(e.code,{children:\"maximum_subarray_sum_dp\"}),\" is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" since we iterate through \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" elements of the DP array.\"]}),`\n`,(0,C.jsxs)(e.p,{children:[(0,C.jsx)(e.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mi,{children:\"n\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\" because we\\u2019re maintaining a DP array that contains \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsx)(e.mrow,{children:(0,C.jsx)(e.mi,{children:\"n\"})}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" elements.\"]}),`\n`,(0,C.jsx)(e.h2,{id:\"optimization\",children:\"Optimization\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"An important thing to note is that in the DP solution, we only ever need to access the previous value of the DP array (at \",(0,C.jsx)(e.code,{children:\"i - 1\"}),\") to calculate the current value (at \",(0,C.jsx)(e.code,{children:\"i\"}),\"). This means we don\\u2019t need to store the entire DP array.\"]}),`\n`,(0,C.jsx)(e.p,{children:\"Instead, we can use a single variable to keep track of the current subarray sum and update this value to calculate the next subarray sum.\"}),`\n`,(0,C.jsxs)(e.p,{children:[\"This approach reduces the space complexity to \",(0,C.jsxs)(e.span,{className:\"katex\",children:[(0,C.jsx)(e.span,{className:\"katex-mathml\",children:(0,C.jsx)(e.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(e.semantics,{children:[(0,C.jsxs)(e.mrow,{children:[(0,C.jsx)(e.mi,{children:\"O\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(e.mn,{children:\"1\"}),(0,C.jsx)(e.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(e.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(e.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(e.span,{className:\"base\",children:[(0,C.jsx)(e.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(e.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(e.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(e.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(e.span,{className:\"mclose\",children:\")\"})]})})]}),\". The adjusted implementation of this can be seen below:\"]}),`\n`,(0,C.jsxs)(l,{children:[(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-python\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp_optimized\"}),\"(\",(0,C.jsxs)(e.span,{className:\"hljs-params\",children:[\"nums: \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),\"]\"]}),\") -> \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"len\"}),`(nums)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" n == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`:\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n    current_sum = nums[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n    max_sum = nums[`,(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"range\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n        current_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(nums[i], current_sum + nums[i])\n        max_sum = `,(0,C.jsx)(e.span,{className:\"hljs-built_in\",children:\"max\"}),`(max_sum, current_sum)\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` max_sum\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp_optimized\"}),\"(\",(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"nums\"}),`) {\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = nums.\",(0,C.jsx)(e.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (n === \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),\") \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" currentSum = nums[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" maxSum = nums[\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`]\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n    currentSum = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(nums[i], currentSum + nums[i])\n    maxSum = `,(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"max\"}),`(maxSum, currentSum)\n  }\n  `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum\n}\n`]})}),(0,C.jsx)(e.pre,{children:(0,C.jsxs)(e.code,{className:\"hljs language-java\",children:[(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n\n`,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-title function_\",children:\"maximum_subarray_sum_dp_optimized\"}),(0,C.jsx)(e.span,{className:\"hljs-params\",children:\"(ArrayList<Integer> nums)\"}),` {\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),` nums.size();\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"if\"}),\" (n == \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`) {\n            `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`;\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"currentSum\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" nums.get(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"maxSum\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" nums.get(\",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"0\"}),`);\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(e.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(e.span,{className:\"hljs-number\",children:\"1\"}),`; i < n; i++) {\n            currentSum = Math.max(nums.get(i), currentSum + nums.get(i));\n            maxSum = Math.max(maxSum, currentSum);\n        }\n        `,(0,C.jsx)(e.span,{className:\"hljs-keyword\",children:\"return\"}),` maxSum;\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(e.p,{children:\"As we can see, we\\u2019ve ended up with an optimized DP solution that\\u2019s nearly identical to the solution we came up with in the first approach: Kadane\\u2019s algorithm.\"})]})}function _(a={}){let{wrapper:e}=a.components||{};return e?(0,C.jsx)(e,{...a,children:(0,C.jsx)(j,{...a})}):j(a)}function n(a,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+a+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return E(i1);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}

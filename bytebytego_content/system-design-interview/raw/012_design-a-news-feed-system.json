@@ -1,0 +1,321 @@
+{
+  "course": "system-design-interview",
+  "id": "design-a-news-feed-system",
+  "chapter": 12,
+  "title": "Design A News Feed System",
+  "free": true,
+  "code": "var Component=(()=>{var m=Object.create;var o=Object.defineProperty;var w=Object.getOwnPropertyDescriptor;var P=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,N=Object.prototype.hasOwnProperty;var y=(i,t)=>()=>(t||i((t={exports:{}}).exports,t),t.exports),j=(i,t)=>{for(var n in t)o(i,n,{get:t[n],enumerable:!0})},r=(i,t,n,s)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let f of P(t))!N.call(i,f)&&f!==n&&o(i,f,{get:()=>t[f],enumerable:!(s=w(t,f))||s.enumerable});return i};var X=(i,t,n)=>(n=i!=null?m(g(i)):{},r(t||!i||!i.__esModule?o(n,\"default\",{value:i,enumerable:!0}):n,i)),T=i=>r(o({},\"__esModule\",{value:!0}),i);var a=y((I,l)=>{l.exports=_jsx_runtime});var F={};j(F,{default:()=>u,frontmatter:()=>M});var e=X(a());var h=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-1-UFCYN5DT.svg\";var d=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-2-DHBRUF3G.png\";var x=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-3-DJSVC462.png\";var v=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-4-XQVJN6AJ.png\";var L=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-5-RFHWCGXD.svg\";var c=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-7-VBGEYZ3E.png\";var p=\"/images/courses/system-design-interview/design-a-news-feed-system/figure-11-8-XPCIBE53.svg\";var M={chapter:12,title:\"Design A News Feed System\",free:!0};function z(i){let t={a:\"a\",br:\"br\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",p:\"p\",strong:\"strong\",table:\"table\",tbody:\"tbody\",td:\"td\",th:\"th\",thead:\"thead\",tr:\"tr\",ul:\"ul\",...i.components},{Figure:n,Image:s}=t;return n||b(\"Figure\",!0),s||b(\"Image\",!0),(0,e.jsxs)(e.Fragment,{children:[(0,e.jsx)(t.p,{children:\"In this chapter, you are asked to design a news feed system. What is news feed? According to the Facebook help page, \\u201CNews feed is the constantly updating list of stories in the middle of your home page. News Feed includes status updates, photos, videos, links, app activity, and likes from people, pages, and groups that you follow on Facebook\\u201D [1]. This is a popular interview question. Similar questions commonly asked are to: design Facebook news feed, Instagram feed, Twitter timeline, etc.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 1\",children:(0,e.jsx)(s,{src:h,alt:\"Image represents a mobile phone screen displaying a news feed or similar content aggregator.  The screen shows three distinct news items, each vertically stacked and separated by dashed lines. Each item consists of a light-blue square (likely representing an app icon or source logo), a short headline in dark gray text, and a body of text in dark gray.  The second news item uniquely includes a light-green rectangular video player with a central white play button icon, suggesting multimedia content integration.  No URLs or specific parameters are visible; the information flow is implied as a unidirectional presentation of data from the application to the user, with no user interaction depicted in the image itself. The overall layout is clean and simple, suggesting a focus on content readability within a mobile context.\",width:\"164\",height:\"321\",priority:!0})}),`\n`,(0,e.jsx)(t.h2,{id:\"step-1---understand-the-problem-and-establish-design-scope\",children:\"Step 1 - Understand the problem and establish design scope\"}),`\n`,(0,e.jsx)(t.p,{children:\"The first set of clarification questions are to understand what the interviewer has in mind when she asks you to design a news feed system. At the very least, you should figure out what features to support. Here is an example of candidate-interviewer interaction:\"}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": Is this a mobile app? Or a web app? Or both?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": Both\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": What are the important features?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interview:\"}),\" A user can publish a post and see her friends\\u2019 posts on the news feed page.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": Is the news feed sorted by reverse chronological order or any particular order such as topic scores? For instance, posts from your close friends have higher scores.\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": To keep things simple, let us assume the feed is sorted by reverse chronological order.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": How many friends can a user have?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": 5000\"]}),`\n`,`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": What is the traffic volume?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": 10 million DAU\"]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Candidate\"}),\": Can feed contain images, videos, or just text?\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.strong,{children:\"Interviewer\"}),\": It can contain media files, including both images and videos.\"]}),`\n`,(0,e.jsx)(t.p,{children:\"Now you have gathered the requirements, we focus on designing the system.\"}),`\n`,(0,e.jsx)(t.h2,{id:\"step-2---propose-high-level-design-and-get-buy-in\",children:\"Step 2 - Propose high-level design and get buy-in\"}),`\n`,(0,e.jsx)(t.p,{children:\"The design is divided into two flows: feed publishing and news feed building.\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Feed publishing: when a user publishes a post, corresponding data is written into cache and database. A post is populated to her friends\\u2019 news feed.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Newsfeed building: for simplicity, let us assume the news feed is built by aggregating friends\\u2019 posts in reverse chronological order.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"newsfeed-apis\",children:\"Newsfeed APIs\"}),`\n`,(0,e.jsx)(t.p,{children:\"The news feed APIs are the primary ways for clients to communicate with servers. Those APIs are HTTP based that allow clients to perform actions, which include posting a status, retrieving news feed, adding friends, etc. We discuss two most important APIs: feed publishing API and news feed retrieval API.\"}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Feed publishing API\"})}),`\n`,(0,e.jsx)(t.p,{children:\"To publish a post, a HTTP POST request will be sent to the server. The API is shown below:\"}),`\n`,(0,e.jsx)(t.p,{children:\"POST /v1/me/feed\"}),`\n`,(0,e.jsx)(t.p,{children:\"Params:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"content: content is the text of the post.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"auth_token: it is used to authenticate API requests.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:(0,e.jsx)(t.strong,{children:\"Newsfeed retrieval API\"})}),`\n`,(0,e.jsx)(t.p,{children:\"The API to retrieve news feed is shown below:\"}),`\n`,(0,e.jsx)(t.p,{children:\"GET /v1/me/feed\"}),`\n`,(0,e.jsx)(t.p,{children:\"Params:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsx)(t.li,{children:\"auth_token: it is used to authenticate API requests.\"}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"feed-publishing\",children:\"Feed publishing\"}),`\n`,(0,e.jsx)(t.p,{children:\"Figure 2 shows the high-level design of the feed publishing flow.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 2\",children:(0,e.jsx)(s,{src:d,alt:\"Image represents a system architecture diagram illustrating the flow of a user request for a news feed.  A user, accessing via either a web browser or mobile app, initiates a request that first resolves through a DNS server. This request, containing parameters like `v1/me/feed?content=Hello&auth_token={auth_token}`, is then directed to a load balancer which distributes the traffic across multiple web servers.  These web servers communicate with three distinct services: a Post Service, a Fanout Service, and a Notification Service. The Post Service retrieves data from a Post Cache, which in turn accesses a Post DB if necessary.  The Fanout Service interacts with a News Feed Cache to provide the news feed content.  The Notification Service is shown but its interaction with other components isn't explicitly detailed.  The diagram highlights the use of caching mechanisms (Post Cache and News Feed Cache) to improve performance by storing frequently accessed data closer to the web servers.  The overall architecture demonstrates a client-server model with load balancing and caching strategies for efficient request handling.\",width:\"500\",height:\"803\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"User: a user can view news feeds on a browser or mobile app. A user makes a post with content \\u201CHello\\u201D through API:\"}),`\n`,(0,e.jsx)(t.p,{children:\"/v1/me/feed?content=Hello&auth_token={auth_token}\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Load balancer: distribute traffic to web servers.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web servers: web servers redirect traffic to different internal services.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Post service: persist post in the database and cache.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Fanout service: push new content to friends\\u2019 news feed. Newsfeed data is stored in the cache for fast retrieval.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Notification service: inform friends that new content is available and send out push notifications.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h3,{id:\"newsfeed-building\",children:\"Newsfeed building\"}),`\n`,(0,e.jsx)(t.p,{children:\"In this section, we discuss how news feed is built behind the scenes. Figure 3 shows the high-level design:\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 3\",children:(0,e.jsx)(s,{src:x,alt:\"Image represents a system architecture diagram for a news feed service.  The diagram starts with a 'User' block containing icons for a web browser and a mobile app, which connects to a DNS server.  From the User block, a request labeled 'v1/me/feed' is sent to a 'Load balancer,' which distributes the request to a cluster of 'Web servers.' These web servers then communicate with a 'News Feed Service,' which in turn accesses a 'News Feed Cache' composed of multiple cache instances (labeled 'CACHE'). The data flow is unidirectional, starting from the user's request and ending at the retrieval of data from the cache.  The web servers are depicted within a dashed-line box, suggesting a cluster or pool of servers. The News Feed Cache is also highlighted with a rounded rectangle, indicating a distinct component.  The overall architecture shows a client-server model with load balancing and caching implemented for improved performance and scalability.\",width:\"350\",height:\"518\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"User: a user sends a request to retrieve her news feed. The request looks like this: /v1/me/feed.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Load balancer: load balancer redirects traffic to web servers.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Web servers: web servers route requests to newsfeed service.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Newsfeed service: news feed service fetches news feed from the cache.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Newsfeed cache: store news feed IDs needed to render the news feed.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h2,{id:\"step-3---design-deep-dive\",children:\"Step 3 - Design deep dive\"}),`\n`,(0,e.jsx)(t.p,{children:\"The high-level design briefly covered two flows: feed publishing and news feed building. Here, we discuss those topics in more depth.\"}),`\n`,(0,e.jsx)(t.h3,{id:\"feed-publishing-deep-dive\",children:\"Feed publishing deep dive\"}),`\n`,(0,e.jsx)(t.p,{children:\"Figure 4 outlines the detailed design for feed publishing. We have discussed most of components in high-level design, and we will focus on two components: web servers and fanout service.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 4\",children:(0,e.jsx)(s,{src:v,alt:\"Image represents a system architecture diagram for a social media feed.  A user, accessing via web browser or mobile app (sending a request like `/v1/me/feed?content=Hello&auth_token={auth_token}`), initiates the process. This request is routed through a DNS server to a load balancer, which distributes the traffic to multiple web servers.  The web servers handle authentication and rate limiting before interacting with a Post Service. The Post Service retrieves data from a Post Cache, falling back to a Post DB if necessary.  Concurrently, the Fanout Service, receiving friend IDs (1) from the web servers, queries a Graph DB for friends' data (2). This data is then placed in a Message Queue (3). Fanout Workers (4) process these messages, updating a News Feed Cache (5).  The Notification Service is also triggered by the web servers.  The system utilizes caching extensively: Post Cache for post data, User Cache for user data, and News Feed Cache for the final feed.  Data flows are numbered for clarity, showing the sequence of operations.\",width:\"700\",height:\"793\"})}),`\n`,(0,e.jsx)(t.h4,{id:\"web-servers\",children:\"Web servers\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"Besides communicating with clients, web servers enforce authentication and rate-limiting. Only users signed in with valid \",(0,e.jsx)(t.em,{children:\"auth_token\"}),\" are allowed to make posts. The system limits the number of posts a user can make within a certain period, vital to prevent spam and abusive content.\"]}),`\n`,(0,e.jsx)(t.h4,{id:\"fanout-service\",children:\"Fanout service\"}),`\n`,(0,e.jsx)(t.p,{children:\"Fanout is the process of delivering a post to all friends. Two types of fanout models are: fanout on write (also called push model) and fanout on read (also called pull model). Both models have pros and cons. We explain their workflows and explore the best approach to support our system.\"}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Fanout on write.\"}),\" With this approach, news feed is pre-computed during write time. A new post is delivered to friends\\u2019 cache immediately after it is published.\"]}),`\n`,(0,e.jsx)(t.p,{children:\"Pros:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"The news feed is generated in real-time and can be pushed to friends immediately.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Fetching news feed is fast because the news feed is pre-computed during write time.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Cons:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"If a user has many friends, fetching the friend list and generating news feeds for all of them are slow and time consuming. It is called hotkey problem.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"For inactive users or those rarely log in, pre-computing news feeds waste computing resources.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsxs)(t.p,{children:[(0,e.jsx)(t.strong,{children:\"Fanout on read\"}),\". The news feed is generated during read time. This is an on-demand model. Recent posts are pulled when a user loads her home page.\"]}),`\n`,(0,e.jsx)(t.p,{children:\"Pros:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"For inactive users or those who rarely log in, fanout on read works better because it will not waste computing resources on them.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Data is not pushed to friends so there is no hotkey problem.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Cons:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsx)(t.li,{children:\"Fetching the news feed is slow as the news feed is not pre-computed.\"}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"We adopt a hybrid approach to get benefits of both approaches and avoid pitfalls in them. Since fetching the news feed fast is crucial, we use a push model for the majority of users. For celebrities or users who have many friends/followers, we let followers pull news content on-demand to avoid system overload. Consistent hashing is a useful technique to mitigate the hotkey problem as it helps to distribute requests/data more evenly.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Let us take a close look at the fanout service as shown in Figure 5.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 5\",children:(0,e.jsx)(s,{src:L,alt:\"Image represents a system architecture diagram for a news feed fanout service.  The process begins with a `Fanout Service` which first retrieves a list of `friend ids` (step 1) from a `Graph DB` (a graph database storing user relationships).  Next, it retrieves the `friends data` (step 2) from a `User Cache`, which in turn pulls data from a `User DB` (a relational database storing user information) if a cache miss occurs.  The `Fanout Service` then places messages (step 3) into a `Message Queue`, which are subsequently processed by `Fanout Workers` (step 4). These workers update the user's `News Feed` (step 5), which also utilizes a cache for performance optimization.  The numbered steps indicate the sequential flow of data and operations within the system.  The diagram clearly shows the interaction between different components, highlighting the use of caching mechanisms to improve efficiency and the use of a message queue for asynchronous processing.\",width:\"561\",height:\"513\"})}),`\n`,(0,e.jsx)(t.p,{children:\"The fanout service works as follows:\"}),`\n`,(0,e.jsx)(t.p,{children:\"1. Fetch friend IDs from the graph database. Graph databases are suited for managing friend relationship and friend recommendations. Interested readers wishing to learn more about this concept should refer to the reference material [2].\"}),`\n`,(0,e.jsx)(t.p,{children:\"2. Get friends info from the user cache. The system then filters out friends based on user settings. For example, if you mute someone, her posts will not show up on your news feed even though you are still friends. Another reason why posts may not show is that a user could selectively share information with specific friends or hide it from other people.\"}),`\n`,(0,e.jsx)(t.p,{children:\"3. Send friends list and new post ID to the message queue.\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"4. Fanout workers fetch data from the message queue and store news feed data in the news feed cache. You can think of the news feed cache as a \",(0,e.jsx)(t.em,{children:\"<post_id, user_id>\"}),\" mapping table. Whenever a new post is made, it will be appended to the news feed table as shown in Figure 6. The memory consumption can become very large if we store the entire user and post objects in the cache. Thus, only IDs are stored. To keep the memory size small, we set a configurable limit. The chance of a user scrolling through thousands of posts in news feed is slim. Most users are only interested in the latest content, so the cache miss rate is low.\"]}),`\n`,(0,e.jsxs)(t.p,{children:[\"5. Store \",(0,e.jsx)(t.em,{children:\"<post_id, user_id >\"}),\" in news feed cache. Figure 6 shows an example of what the news feed looks like in cache.\"]}),`\n`,(0,e.jsxs)(t.table,{children:[(0,e.jsx)(t.thead,{children:(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.th,{children:\"post_id\"}),(0,e.jsx)(t.th,{children:\"user_id\"})]})}),(0,e.jsxs)(t.tbody,{children:[(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]}),(0,e.jsxs)(t.tr,{children:[(0,e.jsx)(t.td,{children:\"post_id\"}),(0,e.jsx)(t.td,{children:\"user_id\"})]})]})]}),`\n`,(0,e.jsx)(\"p\",{className:\"tableCaption\",children:\"Figure 6\"}),`\n`,(0,e.jsx)(t.h3,{id:\"newsfeed-retrieval-deep-dive\",children:\"Newsfeed retrieval deep dive\"}),`\n`,(0,e.jsx)(t.p,{children:\"Figure 7 illustrates the detailed design for news feed retrieval.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 7\",children:(0,e.jsx)(s,{src:c,alt:\"Image represents a system architecture diagram for a news feed service.  A user, accessing via web browser or mobile app, initiates a request (labeled '/v1/me/feed') which first resolves through a DNS server. This request then hits a load balancer (1), distributing the traffic across multiple web servers (2).  The web servers handle authentication and rate limiting before forwarding the request to the 'News Feed Service' (3). This service then accesses a 'News Feed Cache' (4) for data. If the data is not present in the cache, the service fetches it from the 'User DB' via the 'User Cache' (5) and 'Post DB' via the 'Post Cache' (5).  The responses are cached for future requests.  The entire system is fronted by a CDN (6) for faster content delivery, with the load balancer distributing traffic to the web servers and the mobile app connecting directly to the CDN (6).  Numbered arrows indicate the flow of requests and responses between components.\",width:\"550\",height:\"553\"})}),`\n`,(0,e.jsx)(t.p,{children:\"As shown in Figure 7, media content (images, videos, etc.) are stored in CDN for fast retrieval. Let us look at how a client retrieves news feed.\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"1. A user sends a request to retrieve her news feed. The request looks like this: \",(0,e.jsx)(t.em,{children:\"/v1/me/feed\"})]}),`\n`,(0,e.jsx)(t.p,{children:\"2. The load balancer redistributes requests to web servers.\"}),`\n`,(0,e.jsx)(t.p,{children:\"3. Web servers call the news feed service to fetch news feeds.\"}),`\n`,(0,e.jsx)(t.p,{children:\"4. News feed service gets a list post IDs from the news feed cache.\"}),`\n`,(0,e.jsx)(t.p,{children:\"5. A user\\u2019s news feed is more than just a list of feed IDs. It contains username, profile picture, post content, post image, etc. Thus, the news feed service fetches the complete user and post objects from caches (user cache and post cache) to construct the fully hydrated news feed.\"}),`\n`,(0,e.jsx)(t.p,{children:\"6. The fully hydrated news feed is returned in JSON format back to the client for rendering.\"}),`\n`,(0,e.jsx)(t.h3,{id:\"cache-architecture\",children:\"Cache architecture\"}),`\n`,(0,e.jsx)(t.p,{children:\"Cache is extremely important for a news feed system. We divide the cache tier into 5 layers as shown in Figure 8.\"}),`\n`,(0,e.jsx)(n,{caption:\"Figure 8\",children:(0,e.jsx)(s,{src:p,alt:\"Image represents a system design for a news feed, structured as a table with five rows and three columns.  The first column labels the rows: 'News Feed,' 'Content,' 'Social Graph,' 'Action,' and 'Counters.' The remaining two columns represent data categories. The 'News Feed' row contains a single box labeled 'news feed.' The 'Content' row contains boxes labeled 'hot cache' and 'normal,' suggesting different caching strategies for content. The 'Social Graph' row shows boxes labeled 'follower' and 'following,' representing relationships between users. The 'Action' row displays boxes for 'liked,' 'replied,' and 'others,' indicating different user interactions. Finally, the 'Counters' row shows corresponding counters for each action: 'like counter,' 'reply counter,' and 'other counters.'  The dashed lines delineate logical groupings of related data within the system.  No explicit connections or data flow are shown between the boxes, but the arrangement implies a relationship between the data in each row, suggesting that the system tracks news feed content, user relationships, user actions, and associated counts.\",width:\"500\",height:\"264\"})}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"News Feed: It stores IDs of news feeds.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Content: It stores every post data. Popular content is stored in hot cache.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Social Graph: It stores user relationship data.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Action: It stores info about whether a user liked a post, replied a post, or took other actions on a post.\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Counters: It stores counters for like, reply, follower, following, etc.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.h2,{id:\"step-4---wrap-up\",children:\"Step 4 - Wrap up\"}),`\n`,(0,e.jsx)(t.p,{children:\"In this chapter, we designed a news feed system. Our design contains two flows: feed publishing and news feed retrieval.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Like any system design interview questions, there is no perfect way to design a system. Every company has its unique constraints, and you must design a system to fit those constraints. Understanding the tradeoffs of your design and technology choices are important. If there are a few minutes left, you can talk about scalability issues. To avoid duplicated discussion, only high-level talking points are listed below.\"}),`\n`,(0,e.jsx)(t.p,{children:\"Scaling the database:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Vertical scaling vs Horizontal scaling\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"SQL vs NoSQL\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Master-slave replication\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Read replicas\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Consistency models\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Database sharding\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Other talking points:\"}),`\n`,(0,e.jsxs)(t.ul,{children:[`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Keep web tier stateless\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Cache data as much as you can\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Support multiple data centers\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Loosely coupled components with message queues\"}),`\n`]}),`\n`,(0,e.jsxs)(t.li,{children:[`\n`,(0,e.jsx)(t.p,{children:\"Monitor key metrics. For instance, QPS during peak hours and latency while users refreshing their news feed are interesting to monitor.\"}),`\n`]}),`\n`]}),`\n`,(0,e.jsx)(t.p,{children:\"Congratulations on getting this far! Now give yourself a pat on the back. Good job!\"}),`\n`,(0,e.jsx)(t.h2,{id:\"reference-materials\",children:\"Reference materials\"}),`\n`,(0,e.jsxs)(t.p,{children:[\"[1] How News Feed Works:\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.a,{href:\"https://www.facebook.com/help/327131014036297/\",children:(0,e.jsx)(\"u\",{children:\"https://www.facebook.com/help/327131014036297/\"})})]}),`\n`,(0,e.jsxs)(t.p,{children:[\"[2] Friend of Friend recommendations Neo4j and SQL Sever:\",(0,e.jsx)(t.br,{}),`\n`,(0,e.jsx)(t.a,{href:\"http://geekswithblogs.net/brendonpage/archive/2015/10/26/friend-of-friend-recommendations-with-neo4j.aspx\",children:(0,e.jsx)(\"u\",{children:\"http://geekswithblogs.net/brendonpage/archive/2015/10/26/friend-of-friend-recommendations-with-neo4j.aspx\"})})]})]})}function u(i={}){let{wrapper:t}=i.components||{};return t?(0,e.jsx)(t,{...i,children:(0,e.jsx)(z,{...i})}):z(i)}function b(i,t){throw new Error(\"Expected \"+(t?\"component\":\"object\")+\" `\"+i+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return T(F);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "foreword"
+      ],
+      "id": "foreword",
+      "chapter": 0,
+      "title": "Foreword",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "join-discord-community"
+      ],
+      "id": "join-discord-community",
+      "chapter": 1,
+      "title": "Join the Community"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "scale-from-zero-to-millions-of-users"
+      ],
+      "id": "scale-from-zero-to-millions-of-users",
+      "chapter": 2,
+      "title": "Scale From Zero To Millions Of Users",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "back-of-the-envelope-estimation"
+      ],
+      "id": "back-of-the-envelope-estimation",
+      "chapter": 3,
+      "title": "Back-of-the-envelope Estimation",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "a-framework-for-system-design-interviews"
+      ],
+      "id": "a-framework-for-system-design-interviews",
+      "chapter": 4,
+      "title": "A Framework For System Design Interviews",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-rate-limiter"
+      ],
+      "id": "design-a-rate-limiter",
+      "chapter": 5,
+      "title": "Design A Rate Limiter",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-consistent-hashing"
+      ],
+      "id": "design-consistent-hashing",
+      "chapter": 6,
+      "title": "Design Consistent Hashing",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-key-value-store"
+      ],
+      "id": "design-a-key-value-store",
+      "chapter": 7,
+      "title": "Design A Key-value Store",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-unique-id-generator-in-distributed-systems"
+      ],
+      "id": "design-a-unique-id-generator-in-distributed-systems",
+      "chapter": 8,
+      "title": "Design A Unique ID Generator In Distributed Systems"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-url-shortener"
+      ],
+      "id": "design-a-url-shortener",
+      "chapter": 9,
+      "title": "Design A URL Shortener",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-web-crawler"
+      ],
+      "id": "design-a-web-crawler",
+      "chapter": 10,
+      "title": "Design A Web Crawler",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-notification-system"
+      ],
+      "id": "design-a-notification-system",
+      "chapter": 11,
+      "title": "Design A Notification System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-news-feed-system"
+      ],
+      "id": "design-a-news-feed-system",
+      "chapter": 12,
+      "title": "Design A News Feed System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-chat-system"
+      ],
+      "id": "design-a-chat-system",
+      "chapter": 13,
+      "title": "Design A Chat System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-a-search-autocomplete-system"
+      ],
+      "id": "design-a-search-autocomplete-system",
+      "chapter": 14,
+      "title": "Design A Search Autocomplete System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-youtube"
+      ],
+      "id": "design-youtube",
+      "chapter": 15,
+      "title": "Design YouTube",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "design-google-drive"
+      ],
+      "id": "design-google-drive",
+      "chapter": 16,
+      "title": "Design Google Drive"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "proximity-service"
+      ],
+      "id": "proximity-service",
+      "chapter": 17,
+      "title": "Proximity Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "nearby-friends"
+      ],
+      "id": "nearby-friends",
+      "chapter": 18,
+      "title": "Nearby Friends"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "google-maps"
+      ],
+      "id": "google-maps",
+      "chapter": 19,
+      "title": "Google Maps"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-message-queue"
+      ],
+      "id": "distributed-message-queue",
+      "chapter": 20,
+      "title": "Distributed Message Queue"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "metrics-monitoring-and-alerting-system"
+      ],
+      "id": "metrics-monitoring-and-alerting-system",
+      "chapter": 21,
+      "title": "Metrics Monitoring and Alerting System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "ad-click-event-aggregation"
+      ],
+      "id": "ad-click-event-aggregation",
+      "chapter": 22,
+      "title": "Ad Click Event Aggregation"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "hotel-reservation-system"
+      ],
+      "id": "hotel-reservation-system",
+      "chapter": 23,
+      "title": "Hotel Reservation System",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "distributed-email-service"
+      ],
+      "id": "distributed-email-service",
+      "chapter": 24,
+      "title": "Distributed Email Service"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "s3-like-object-storage"
+      ],
+      "id": "s3-like-object-storage",
+      "chapter": 25,
+      "title": "S3-like Object Storage"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "real-time-gaming-leaderboard"
+      ],
+      "id": "real-time-gaming-leaderboard",
+      "chapter": 26,
+      "title": "Real-time Gaming Leaderboard",
+      "free": true
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "payment-system"
+      ],
+      "id": "payment-system",
+      "chapter": 27,
+      "title": "Payment System"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "digital-wallet"
+      ],
+      "id": "digital-wallet",
+      "chapter": 28,
+      "title": "Digital Wallet"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "stock-exchange"
+      ],
+      "id": "stock-exchange",
+      "chapter": 29,
+      "title": "Stock Exchange"
+    },
+    {
+      "course": "system-design-interview",
+      "slug": [
+        "the-learning-continues"
+      ],
+      "id": "the-learning-continues",
+      "chapter": 30,
+      "title": "The Learning Continues",
+      "free": true
+    }
+  ],
+  "courseMetadata": {
+    "title": "System Design Interview",
+    "authors": "Alex Xu · Bestselling author",
+    "claimCodes": [
+      "sdi",
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "system-design-interview",
+    "defaultChapter": "/courses/system-design-interview/scale-from-zero-to-millions-of-users",
+    "rootPath": "/courses/system-design-interview",
+    "lessons": 30,
+    "students": 250000,
+    "showChapter": true,
+    "lastModified": "2022.03.01"
+  }
+}

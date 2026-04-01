@@ -1,0 +1,1471 @@
+{
+  "course": "coding-patterns",
+  "id": "graphs/connect-the-dots",
+  "chapter": "13-10",
+  "title": "Connect the Dots",
+  "free": false,
+  "code": "var Component=(()=>{var k=Object.create;var t=Object.defineProperty;var N=Object.getOwnPropertyDescriptor;var y=Object.getOwnPropertyNames;var w=Object.getPrototypeOf,u=Object.prototype.hasOwnProperty;var j=(l,a)=>()=>(a||l((a={exports:{}}).exports,a),a.exports),x=(l,a)=>{for(var s in a)t(l,s,{get:a[s],enumerable:!0})},r=(l,a,s,n)=>{if(a&&typeof a==\"object\"||typeof a==\"function\")for(let e of y(a))!u.call(l,e)&&e!==s&&t(l,e,{get:()=>a[e],enumerable:!(n=N(a,e))||n.enumerable});return l};var v=(l,a,s)=>(s=l!=null?k(w(l)):{},r(a||!l||!l.__esModule?t(s,\"default\",{value:l,enumerable:!0}):s,l)),_=l=>r(t({},\"__esModule\",{value:!0}),l);var d=j((X,L)=>{L.exports=_jsx_runtime});var B={};x(B,{default:()=>b,frontmatter:()=>P});var C=v(d());var p=\"/images/courses/coding-patterns/graphs/connect-the-dots/connect-the-dots-54G3HZID.svg\";var V=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-1-7FC2A62P.svg\";var H=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-2-6R7WDGR2.svg\";var o=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-3-XTWLZA2R.svg\";var M=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-4-FPX52OEA.svg\";var m=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-5-GNJMTXIG.svg\";var Z=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-6-MLLQKBLY.svg\";var f=\"/images/courses/coding-patterns/graphs/connect-the-dots/image-13-10-7-WGQVNMYI.svg\";var P={chapter:\"13-10\",difficulty:\"Medium\",title:\"Connect the Dots\"};function g(l){let a={annotation:\"annotation\",br:\"br\",code:\"code\",em:\"em\",h2:\"h2\",h3:\"h3\",h4:\"h4\",li:\"li\",math:\"math\",mi:\"mi\",mn:\"mn\",mo:\"mo\",mrow:\"mrow\",msup:\"msup\",p:\"p\",pre:\"pre\",semantics:\"semantics\",span:\"span\",strong:\"strong\",ul:\"ul\",...l.components},{CodeTabs:s,Figure:n,Image:e,OpenCodeEditor:c,ProblemDescription:h}=a;return s||i(\"CodeTabs\",!0),n||i(\"Figure\",!0),e||i(\"Image\",!0),c||i(\"OpenCodeEditor\",!0),h||i(\"ProblemDescription\",!0),(0,C.jsxs)(C.Fragment,{children:[(0,C.jsxs)(h,{children:[(0,C.jsxs)(a.p,{children:[\"Given a set of points on a plane, determine the \",(0,C.jsx)(a.strong,{children:\"minimum cost to connect all these points\"}),\".\"]}),(0,C.jsxs)(a.p,{children:[\"The cost of connecting two points is equal to the \",(0,C.jsx)(a.strong,{children:\"Manhattan distance\"}),\" between them, which is calculated as \",(0,C.jsx)(a.code,{children:\"|x1 - x2| + |y1 - y2|\"}),\" for two points \",(0,C.jsx)(a.code,{children:\"(x1, y1)\"}),\" and \",(0,C.jsx)(a.code,{children:\"(x2, y2)\"}),\".\"]}),(0,C.jsx)(a.h4,{id:\"example\",children:\"Example:\"}),(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:p,width:\"559\",height:\"229\",alt:\"Image represents a transformation of a set of points in a Cartesian coordinate system.  The left side shows a scatter plot with five points located at approximately (1,1), (3,2), (4,3), (2,6), and (7,1).  These points are unconnected. A large, bold arrow points to the right, indicating a transformation. The right side displays the same five points, but now connected to a central point located at approximately (3,2).  The lengths of the lines connecting the central point to each of the other points are labeled with numerical values: 3, 5, 2, and 5.  The x and y axes are labeled on both sides, ranging from 0 to 7. The transformation visually demonstrates a change from an unorganized set of points to a structured arrangement radiating from a central node, with the connecting lines representing distances or weights between the points.\",priority:!0})}),(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-python\",children:[\"Input: points = [[\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),\", \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),\"], [\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"2\"}),\", \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"6\"}),\"], [\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"3\"}),\", \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"2\"}),\"], [\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"4\"}),\", \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"3\"}),\"], [\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"7\"}),\", \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`]]\nOutput: `,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"15\"}),`\n`]})}),(0,C.jsx)(a.h4,{id:\"constraints\",children:\"Constraints:\"}),(0,C.jsxs)(a.ul,{children:[`\n`,(0,C.jsx)(a.li,{children:\"There will be at least 2 points on the plane.\"}),`\n`]})]}),`\n`,(0,C.jsx)(a.h2,{id:\"intuition\",children:\"Intuition\"}),`\n`,(0,C.jsx)(a.p,{children:\"Let's treat this problem as a graph problem, imagining each point as a node, and the cost of connecting any two points as the weight of an edge between those nodes.\"}),`\n`,(0,C.jsxs)(a.p,{children:[\"The goal is to connect all nodes (points) in such a way that the total cost is minimized. This is essentially the \",(0,C.jsx)(a.strong,{children:\"minimum spanning tree\"}),\" (MST) problem:\"]}),`\n`,(0,C.jsx)(a.p,{children:\"The MST of a weighted graph is a way to connect all points in the graph, ensuring each point is reachable from any other point while minimizing the total weight of the connections.\"}),`\n`,(0,C.jsx)(a.p,{children:\"There are two main algorithms that are used to find the MST of a graph:\"}),`\n`,(0,C.jsxs)(a.ul,{children:[`\n`,(0,C.jsx)(a.li,{children:\"Kruskal's algorithm\"}),`\n`,(0,C.jsx)(a.li,{children:\"Prim's algorithm\"}),`\n`]}),`\n`,(0,C.jsxs)(a.p,{children:[\"In this explanation, we'll break down Kruskal's algorithm since it uses a data structure we've already discussed in this chapter: \",(0,C.jsx)(a.strong,{children:\"Union-Find\"}),\".\"]}),`\n`,(0,C.jsxs)(a.p,{children:[(0,C.jsx)(a.strong,{children:\"Kruskal's algorithm\"}),(0,C.jsx)(a.br,{}),`\n`,\"Kruskal's algorithm is a greedy method for finding the MST. It essentially builds the MST by connecting nodes with the lowest-weighted edges first while skipping any edges that could cause a cycle.\"]}),`\n`,(0,C.jsx)(a.p,{children:\"To do this, we first need to identify all the possible edges and sort them by their Manhattan distance:\"}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:V,alt:\"Image represents a weighted, undirected graph visualized on a Cartesian coordinate system with x and y axes ranging from 0 to 7.  Four nodes are plotted at coordinates (1,1), (2,6), (3,2), and (7,1).  A fifth node is located at approximately (3.5, 2.5).  Edges connect these nodes, with each edge labeled with a numerical weight representing the distance or cost between the connected nodes. For instance, the edge between (1,1) and (2,6) has a weight of 6.  The edge between (1,1) and (3,2) has a weight of 3. The edge between (3,2) and (7,1) has a weight of 5.  The edge between (1,1) and (7,1) has a weight of 6. The edge between (2,6) and (7,1) has a weight of 10.  To the right of the graph, a list of node pairs is presented, each pair connected by an arrow indicating the direction of traversal, and followed by the weight of the edge connecting those nodes.  This list essentially reiterates the edge weights and connections shown graphically in the main diagram.\",width:\"573\",height:\"239\"})}),`\n`,(0,C.jsx)(a.p,{children:\"Now, let's implement Kruskal's algorithm. Start by including the lowest weighted edge in the MST, which is the edge from (3, 2) to (4, 3):\"}),`\n`,\" \",`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:H,alt:\"Image represents a Cartesian coordinate system with x and y axes ranging from 0 to 7.  Several points are plotted on this plane: (1,1), (1,6), (3,2), (4,3), and (7,1). A green line connects points (3,2) and (4,3).  To the right of the graph, a list of coordinate pairs is presented, each pair representing a starting and ending point.  An arrow points from each pair to a numerical value, seemingly representing a calculated distance or weight between the corresponding points on the graph. For example, the pair (3,2) to (4,3) maps to the value '2', which might correspond to the length of the green line segment.  Other pairs, such as (1,1) to (3,2), map to different numerical values (in this case, '3'), suggesting a different calculation method or metric is used for each pair.  The numerical values appear to be associated with the distances or relationships between the points, possibly representing edge weights in a graph data structure.\",width:\"572\",height:\"239\"})}),`\n`,(0,C.jsx)(a.p,{children:\"Next, add the next lowest weighted edge, which is the edge from (1, 1) to (3, 2):\"}),`\n`,\" \",`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:o,alt:\"Image represents a Cartesian coordinate system with x and y axes ranging from 0 to 7.  Several points are plotted on this plane: (1,1), (2,6), (3,2), (4,3), and (7,1).  Two line segments are drawn: a green line connecting (1,1) and (3,2), labeled '3', and a grey line connecting (3,2) and (4,3), labeled '2'.  To the right of the graph, a list of point pairs is presented, each pair representing a connection between two points on the graph.  An arrow follows each pair, pointing to a numerical value.  These values seem to represent a calculated distance or weight associated with the connection between the respective points.  For instance, the pair (1,1) to (3,2) is followed by an arrow pointing to '3', corresponding to the green line's label.  The point (1,1) is highlighted with a light green circle.  The numerical values following the arrows appear to be the result of a calculation or function applied to the coordinates of the connected points.\",width:\"572\",height:\"238\"})}),`\n`,(0,C.jsx)(a.p,{children:\"Notice that adding the next edge from (1, 1) to (4, 3) will cause a cycle. Edges that cause cycles are avoided in an MST because doing so implies we're connecting two points that are already connected. So, let's skip this edge:\"}),`\n`,\" \",`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:M,alt:\"Image represents a Cartesian coordinate system with x and y axes ranging from 0 to 7.  Several points are plotted on this plane: (1,1), (3,2), (4,3), (2,6), and (7,1).  These points are connected by grey lines forming a polygon.  Additionally, a dashed red line connects (1,1) and (4,3), with the value '5' written in red along this line.  To the right of the graph, a list shows pairs of points from the graph, indicating the coordinates of the starting and ending points of each line segment.  An arrow points from each pair to a numerical value representing the distance or weight associated with that segment.  The value '5' is highlighted in pink and labeled as 'forms a cycle,' suggesting a closed loop or cycle is formed by some of the connections.  The numbers next to the points on the graph (1, 2, 3) seem to be labels or annotations, not coordinates.\",width:\"572\",height:\"239\"})}),`\n`,(0,C.jsx)(a.p,{children:\"Continuing this process until all points are connected gives us the MST:\"}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:m,alt:\"Image represents a graph overlaid on a Cartesian coordinate system with x and y axes ranging from 0 to 7.  Four points are plotted: (1,1), (3,2), (4,3), and (7,1).  Lines connect these points, forming a network.  Each line is labeled with a numerical weight representing the distance or cost between the connected points. For instance, the line between (1,1) and (3,2) is labeled '3'.  To the right of the graph, a list details the connections between the points using coordinate pairs, indicating the 'from' and 'to' points of each connection.  An arrow follows each pair, pointing to the corresponding weight from the graph.  The weights are represented by numbers, with some connections having darker arrows (indicating stronger or more significant connections) and others lighter (suggesting weaker or less significant connections).  The coordinate pairs and their associated weights illustrate a weighted graph, likely representing a distance matrix or a cost function between nodes in a network.\",width:\"572\",height:\"238\"})}),`\n`,(0,C.jsx)(a.p,{children:\"We'll know that all points are connected once we've added a total of n - 1 edges to the MST, because this is the least number of edges needed to connect n points without any cycles. To attain the cost of this MST, we just need to keep track of the Manhattan cost of each edge we add to the MST.\"}),`\n`,(0,C.jsx)(a.p,{children:\"Now that we have a strategy to find the MST of a set of points, we just need a way to determine when connecting two points leads to a cycle.\"}),`\n`,(0,C.jsxs)(a.p,{children:[(0,C.jsx)(a.strong,{children:\"Avoiding cycles\"}),(0,C.jsx)(a.br,{}),`\n`,\"A cycle is formed when we add an edge to nodes that are already connected in some way. Consider the following set of points, where the group of points to the left are connected, and the group of points to the right are connected:\"]}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:Z,alt:\"Image represents a Cartesian coordinate system graph displaying two distinct, unconnected line segments.  The x-axis ranges from 0 to approximately 8, and the y-axis ranges from 0 to 6. The first line segment connects the points (1, 5), (2, 2), and (3, 1). The second line segment connects the points (7.5, 1), (8.5, 2), and (9.5, 5). Both segments are composed of straight lines connecting the specified points, represented by solid black dots.  The x and y axes are labeled, indicating the independent and dependent variables, respectively.  No other labels, text, URLs, or parameters are present within the image.\",width:\"332\",height:\"211\"})}),`\n`,(0,C.jsx)(a.p,{children:\"Connecting any two points in the same group causes a cycle, and connecting two points from two separate groups will result in both groups merging into one:\"}),`\n`,(0,C.jsx)(n,{children:(0,C.jsx)(e,{src:f,alt:\"Image represents two Cartesian coordinate graphs side-by-side.  Both graphs share the same x-axis ranging from 0 to 10 and a y-axis ranging from 0 to 6.  The left graph displays a series of connected black points forming a jagged line, primarily gray, with coordinates approximately (1,5), (2,2), (3,1), (8,1), and (9,2), (10,5). A dashed red line connects (1,5) to (2,2), labeled 'connect (1,5) to (2,2) \\u2192 cycle' indicating a cyclical connection between these two points. The right graph shows a similar set of black points connected by a gray line with coordinates approximately (1,5), (2,2), (3,1), (8,1), and (9,2), (10,5). However, in this graph, a solid green line connects (3,1) to (8,1), labeled 'connect (3,1) to (8,1),' illustrating a direct connection between these points.  Both graphs visually represent different ways to connect points, highlighting the concepts of cycles and direct connections within a data structure or network.\",width:\"686\",height:\"210\"})}),`\n`,(0,C.jsxs)(a.p,{children:[\"What would be useful here is a way to determine if two points belong to the same group, and a way to merge two groups together. The \",(0,C.jsx)(a.strong,{children:\"Union-Find\"}),\" data structure is perfect for this.\"]}),`\n`,(0,C.jsxs)(a.p,{children:[\"We can use the \",(0,C.jsx)(a.code,{children:\"union\"}),\" function to connect two points together.\"]}),`\n`,(0,C.jsxs)(a.ul,{children:[`\n`,(0,C.jsxs)(a.li,{children:[`\n`,(0,C.jsxs)(a.p,{children:[\"If the two points belong to two separate groups, \",(0,C.jsx)(a.code,{children:\"union\"}),\" should merge those groups and return true.\"]}),`\n`]}),`\n`,(0,C.jsxs)(a.li,{children:[`\n`,(0,C.jsxs)(a.p,{children:[\"Otherwise, if they belong to the same group, \",(0,C.jsx)(a.code,{children:\"union\"}),\" should return false.\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsx)(a.p,{children:\"This way, we can use this boolean return value as a way to determine if attempting to connect two points causes a cycle.\"}),`\n`,(0,C.jsxs)(a.p,{children:[\"If you're not familiar with Union-Find, study the solution to the \",(0,C.jsx)(a.em,{children:\"Merging Communities\"}),\" problem.\"]}),`\n`,(0,C.jsx)(c,{}),`\n`,(0,C.jsx)(a.h2,{id:\"implementation\",children:\"Implementation\"}),`\n`,(0,C.jsxs)(a.p,{children:[\"In this implementation, we'll identify each point using their index in the points array. This means that for \",(0,C.jsx)(a.code,{children:\"n\"}),\" points, each point is represented by an index from 0 to \",(0,C.jsx)(a.code,{children:\"n - 1\"}),\". By doing this, we can set up a Union-Find data structure with a capacity of \",(0,C.jsx)(a.code,{children:\"n\"}),\" so that there are \",(0,C.jsx)(a.code,{children:\"n\"}),\" groups initially, with each group containing one of the \",(0,C.jsx)(a.code,{children:\"n\"}),\" points.\"]}),`\n`,(0,C.jsxs)(s,{children:[(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-python\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"from\"}),\" typing \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"import\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"List\"}),`\n\\u200A\\u200A\\u200A\\u200A\n`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"connect_the_dots\"}),\"(\",(0,C.jsxs)(a.span,{className:\"hljs-params\",children:[\"points: \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"List\"}),\"[\",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"int\"}),\"]]\"]}),\") -> \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n    n = `,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"len\"}),`(points)\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Create and populate a list of all possible edges.\"}),`\n    edges = []\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"range\"}),`(n):\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" j \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"range\"}),\"(i + \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`, n):\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Manhattan distance.\"}),`\n            cost = (`,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"abs\"}),\"(points[i][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),\"] - points[j][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`]) +\n                    `,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"abs\"}),\"(points[i][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),\"] - points[j][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`]))\n            edges.append((cost, i, j))\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Sort the edges by their cost in ascending order.\"}),`\n    edges.sort()\n    uf = UnionFind(n)\n    total_cost = edges_added = `,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Use Kruskal's algorithm to create the MST and identify its minimum cost.\"}),`\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" cost, p1, p2 \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"in\"}),` edges:\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# If the points are not already connected (i.e. their representatives are\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# not the same), connect them, and add the cost to the total cost.\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` uf.union(p1, p2):\n            total_cost += cost\n            edges_added += `,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# If n - 1 edges have been added to the MST, the MST is complete.\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" edges_added == n - \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`:\n                `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` total_cost\n`]})}),(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"export\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"function\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"connect_the_dots\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"points\"}),`) {\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),\" n = points.\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"length\"}),`\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),` edges = []\n  `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Generate all edges and their Manhattan distances\"}),`\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"let\"}),\" i = \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"let\"}),\" j = i + \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`; j < n; j++) {\n      `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),` cost =\n        `,(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"abs\"}),\"(points[i][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),\"] - points[j][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`]) +\n        `,(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Math\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"abs\"}),\"(points[i][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),\"] - points[j][\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`])\n      edges.`,(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"push\"}),`([cost, i, j])\n    }\n  }\n  `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Sort edges by their cost in ascending order\"}),`\n  edges.`,(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"sort\"}),\"(\",(0,C.jsxs)(a.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"a, b\"}),\") =>\"]}),\" a[\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),\"] - b[\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`])\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),\" uf = \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`(n)\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"let\"}),\" totalCost = \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"let\"}),\" edgesAdded = \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),\" [cost, p1, p2] \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"of\"}),` edges) {\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// If the points are not already connected (i.e. their representatives are\"}),`\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// not the same), connect them, and add the cost to the total cost.\"}),`\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (uf.\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"union\"}),`(p1, p2)) {\n      totalCost += cost\n      edgesAdded++\n      `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// If n - 1 edges have been added to the MST, the MST is complete.\"}),`\n      `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (edgesAdded === n - \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`) {\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` totalCost\n      }\n    }\n  }\n  `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` totalCost\n}\n`]})}),(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-java\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.ArrayList;\n`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Collections;\n`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"import\"}),` java.util.Comparator;\n\n`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Pair\"}),` {\n    `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),` cost, point1, point2;\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"Pair\"}),(0,C.jsxs)(a.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" cost, \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" point1, \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" point2)\"]}),` {\n        `,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"this\"}),`.cost = cost;\n        `,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"this\"}),`.point1 = point1;\n        `,(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"this\"}),`.point2 = point2;\n    }\n}\n\n`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Main\"}),` {\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"static\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"connect_the_dots\"}),(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"(ArrayList<ArrayList<Integer>> points)\"}),` {\n        `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"n\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),` points.size();\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Create and populate a list of all possible edges.\"}),`\n        ArrayList<Pair> edges = `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"ArrayList\"}),`<>();\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"j\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" i + \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`; j < n; j++) {\n                `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Manhattan distance.\"}),`\n                `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"cost\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" Math.abs(points.get(i).get(\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),\") - points.get(j).get(\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`)) +\n                           Math.abs(points.get(i).get(`,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),\") - points.get(j).get(\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`));\n                edges.add(`,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Pair\"}),`(cost, i, j));\n            }\n        }\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Sort the edges by their cost in ascending order.\"}),`\n        Collections.sort(edges, Comparator.comparingInt(a -> a.cost));\n        `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"UnionFind\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"uf\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`(n);\n        `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"total_cost\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),\", edges_added = \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`;\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Use Kruskal's algorithm to create the MST and identify its minimum cost.\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),` (Pair edge : edges) {\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// If the points are not already connected (i.e. their representatives are\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// not the same), connect them, and add the cost to the total cost.\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` (uf.union(edge.point1, edge.point2)) {\n                total_cost += edge.cost;\n                edges_added += `,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`;\n                `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// If n - 1 edges have been added to the MST, the MST is complete.\"}),`\n                `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (edges_added == n - \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`) {\n                    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` total_cost;\n                }\n            }\n        }\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` total_cost;\n    }\n}\n`]})})]}),`\n`,(0,C.jsxs)(a.p,{children:[\"The Union-Find data structure remains the same as the implementation provided in \",(0,C.jsx)(a.em,{children:\"Merging Communities\"}),\", with a slight modification made to the \",(0,C.jsx)(a.code,{children:\"union\"}),\" function, adding a boolean return value to it.\"]}),`\n`,(0,C.jsxs)(s,{children:[(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-python\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),`:\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"__init__\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"self, size\"}),`):\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".parent = [i \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" i \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"in\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"range\"}),`(size)]\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size = [\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`] * size\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"self, x, y\"}),\") -> \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"bool\"}),`:\n        rep_x, rep_y = `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".find(x), \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.find(y)\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` rep_x != rep_y:\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_x] > \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_y]:\n                `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[rep_y] = rep_x\n                `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_x] += \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_y]\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"else\"}),`:\n                `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[rep_x] = rep_y\n                `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".size[rep_y] += \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.size[rep_x]\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Return True if both groups were merged.\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"True\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"# Return False if the points belong to the same group.\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"False\"}),`\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"def\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"self, x\"}),\") -> \",(0,C.jsx)(a.span,{className:\"hljs-built_in\",children:\"int\"}),`:\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" x == \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[x]:\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".parent[x] = \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),\".find(\",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[x])\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"self\"}),`.parent[x]\n`]})}),(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-javascript\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),` {\n  `,(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"constructor\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"size\"}),`) {\n    `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),\" = \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Array\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"from\"}),\"({ \",(0,C.jsx)(a.span,{className:\"hljs-attr\",children:\"length\"}),\": size }, \",(0,C.jsxs)(a.span,{className:\"hljs-function\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"_, i\"}),\") =>\"]}),` i)\n    `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),\" = \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"Array\"}),\"(size).\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"fill\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`)\n  }\n  `,(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"x\"}),`) {\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (x === \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),\"[x]) \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` x\n    `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),\"[x] = \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),`[x])\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),`[x]\n  }\n  `,(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"union\"}),\"(\",(0,C.jsx)(a.span,{className:\"hljs-params\",children:\"x, y\"}),`) {\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),\" repX = \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),`(x)\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"const\"}),\" repY = \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),`(y)\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX !== repY) {\n      `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),\"[repX] > \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),`[repY]) {\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),`[repY] = repX\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),\"[repX] += \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),`[repY]\n      } `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"parent\"}),`[repX] = repY\n        `,(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),\"[repY] += \",(0,C.jsx)(a.span,{className:\"hljs-variable language_\",children:\"this\"}),\".\",(0,C.jsx)(a.span,{className:\"hljs-property\",children:\"size\"}),`[repX]\n      }\n      `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Return True if both groups were merged.\"}),`\n      `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"true\"}),`\n    }\n    `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Return False if the points belong to the same group.\"}),`\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"false\"}),`\n  }\n}\n`]})}),(0,C.jsx)(a.pre,{children:(0,C.jsxs)(a.code,{className:\"hljs language-java\",children:[(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"class\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"UnionFind\"}),` {\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),`[] parent;\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"private\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),`[] size;\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"UnionFind\"}),(0,C.jsxs)(a.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" n)\"]}),` {\n        parent = `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        size = `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"new\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title class_\",children:\"int\"}),`[n];\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"for\"}),\" (\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"i\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"0\"}),`; i < n; i++) {\n            parent[i] = i;\n            size[i] = `,(0,C.jsx)(a.span,{className:\"hljs-number\",children:\"1\"}),`;\n        }\n    }\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"boolean\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"union\"}),(0,C.jsxs)(a.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" x, \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" y)\"]}),` {\n        `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"repX\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),` find(x);\n        `,(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-variable\",children:\"repY\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-operator\",children:\"=\"}),` find(y);\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` (repX != repY) {\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),` (size[repX] > size[repY]) {\n                parent[repY] = repX;\n                size[repX] += size[repY];\n            } `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"else\"}),` {\n                parent[repX] = repY;\n                size[repY] += size[repX];\n            }\n            `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Return True if both groups were merged.\"}),`\n            `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"true\"}),`;\n        }\n        `,(0,C.jsx)(a.span,{className:\"hljs-comment\",children:\"// Return False if the points belong to the same group.\"}),`\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-literal\",children:\"false\"}),`;\n    }\n\n    `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"public\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" \",(0,C.jsx)(a.span,{className:\"hljs-title function_\",children:\"find\"}),(0,C.jsxs)(a.span,{className:\"hljs-params\",children:[\"(\",(0,C.jsx)(a.span,{className:\"hljs-type\",children:\"int\"}),\" x)\"]}),` {\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"if\"}),\" (x == parent[x]) \",(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` x;\n        parent[x] = find(parent[x]);\n        `,(0,C.jsx)(a.span,{className:\"hljs-keyword\",children:\"return\"}),` parent[x];\n    }\n}\n`]})})]}),`\n`,(0,C.jsx)(a.h3,{id:\"complexity-analysis\",children:\"Complexity Analysis\"}),`\n`,(0,C.jsxs)(a.p,{children:[(0,C.jsx)(a.strong,{children:\"Time complexity:\"}),\" The time complexity of the \",(0,C.jsx)(a.code,{children:\"connect_the_dots\"}),\" is \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mi,{children:\"log\"}),(0,C.jsx)(a.mo,{children:\"\\u2061\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2\\\\log(n))\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(a.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(a.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\"))\"})]})})]}),\", where \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsx)(a.mrow,{children:(0,C.jsx)(a.mi,{children:\"n\"})}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"n\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"0.4306em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"})]})})]}),\" denotes the length of the points array, and \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsx)(a.mrow,{children:(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]})}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"n^2\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"0.8141em\"}}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]})]})})]}),\" is the number of edges in the \",(0,C.jsx)(a.code,{children:\"edges\"}),\" array, since we consider all possible pairs of points to form edges. Here's why:\"]}),`\n`,(0,C.jsxs)(a.ul,{children:[`\n`,(0,C.jsxs)(a.li,{children:[`\n`,(0,C.jsxs)(a.p,{children:[\"Sorting \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsx)(a.mrow,{children:(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]})}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"n^2\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"0.8141em\"}}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]})]})})]}),\" edges takes \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mi,{children:\"log\"}),(0,C.jsx)(a.mo,{children:\"\\u2061\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2\\\\log(n^2))\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(a.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(a.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mclose\",children:\"))\"})]})})]}),\" time, which can be simplified to \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mi,{children:\"log\"}),(0,C.jsx)(a.mo,{children:\"\\u2061\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2\\\\log(n))\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(a.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(a.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\"))\"})]})})]}),\".\"]}),`\n`]}),`\n`,(0,C.jsxs)(a.li,{children:[`\n`,(0,C.jsxs)(a.p,{children:[\"We perform up to one \",(0,C.jsx)(a.code,{children:\"union\"}),\" operation for each edge, with each \",(0,C.jsx)(a.code,{children:\"union\"}),\" taking amortized \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mn,{children:\"1\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(1)\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord\",children:\"1\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\")\"})]})})]}),\" time, resulting in the \",(0,C.jsx)(a.code,{children:\"union\"}),\" operations contributing amortized \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mclose\",children:\")\"})]})})]}),\" time.\"]}),`\n`]}),`\n`]}),`\n`,(0,C.jsxs)(a.p,{children:[\"Therefore, the overall time complexity is \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mo,{children:\"+\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mi,{children:\"log\"}),(0,C.jsx)(a.mo,{children:\"\\u2061\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{children:\"=\"}),(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mi,{children:\"log\"}),(0,C.jsx)(a.mo,{children:\"\\u2061\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2+n^2\\\\log(n))=O(n^2\\\\log(n))\"})]})})}),(0,C.jsxs)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:[(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}}),(0,C.jsx)(a.span,{className:\"mbin\",children:\"+\"}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.2222em\"}})]}),(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(a.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(a.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\"))\"}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}}),(0,C.jsx)(a.span,{className:\"mrel\",children:\"=\"}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.2778em\"}})]}),(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mspace\",style:{marginRight:\"0.1667em\"}}),(0,C.jsxs)(a.span,{className:\"mop\",children:[\"lo\",(0,C.jsx)(a.span,{style:{marginRight:\"0.01389em\"},children:\"g\"})]}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\"))\"})]})]})]}),\".\"]}),`\n`,(0,C.jsxs)(a.p,{children:[(0,C.jsx)(a.strong,{children:\"Space complexity:\"}),\" The space complexity is \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsxs)(a.msup,{children:[(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mn,{children:\"2\"})]}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n^2)\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1.0641em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsxs)(a.span,{className:\"mord\",children:[(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"msupsub\",children:(0,C.jsx)(a.span,{className:\"vlist-t\",children:(0,C.jsx)(a.span,{className:\"vlist-r\",children:(0,C.jsx)(a.span,{className:\"vlist\",style:{height:\"0.8141em\"},children:(0,C.jsxs)(a.span,{style:{top:\"-3.063em\",marginRight:\"0.05em\"},children:[(0,C.jsx)(a.span,{className:\"pstrut\",style:{height:\"2.7em\"}}),(0,C.jsx)(a.span,{className:\"sizing reset-size6 size3 mtight\",children:(0,C.jsx)(a.span,{className:\"mord mtight\",children:\"2\"})})]})})})})})]}),(0,C.jsx)(a.span,{className:\"mclose\",children:\")\"})]})})]}),\" due to the space taken up by the \",(0,C.jsx)(a.code,{children:\"edges\"}),\" list. In addition, the \",(0,C.jsx)(a.code,{children:\"UnionFind\"}),\" data structure takes up \",(0,C.jsxs)(a.span,{className:\"katex\",children:[(0,C.jsx)(a.span,{className:\"katex-mathml\",children:(0,C.jsx)(a.math,{xmlns:\"http://www.w3.org/1998/Math/MathML\",children:(0,C.jsxs)(a.semantics,{children:[(0,C.jsxs)(a.mrow,{children:[(0,C.jsx)(a.mi,{children:\"O\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\"(\"}),(0,C.jsx)(a.mi,{children:\"n\"}),(0,C.jsx)(a.mo,{stretchy:\"false\",children:\")\"})]}),(0,C.jsx)(a.annotation,{encoding:\"application/x-tex\",children:\"O(n)\"})]})})}),(0,C.jsx)(a.span,{className:\"katex-html\",\"aria-hidden\":\"true\",children:(0,C.jsxs)(a.span,{className:\"base\",children:[(0,C.jsx)(a.span,{className:\"strut\",style:{height:\"1em\",verticalAlign:\"-0.25em\"}}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",style:{marginRight:\"0.02778em\"},children:\"O\"}),(0,C.jsx)(a.span,{className:\"mopen\",children:\"(\"}),(0,C.jsx)(a.span,{className:\"mord mathnormal\",children:\"n\"}),(0,C.jsx)(a.span,{className:\"mclose\",children:\")\"})]})})]}),\" space.\"]})]})}function b(l={}){let{wrapper:a}=l.components||{};return a?(0,C.jsx)(a,{...l,children:(0,C.jsx)(g,{...l})}):g(l)}function i(l,a){throw new Error(\"Expected \"+(a?\"component\":\"object\")+\" `\"+l+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return _(B);})();\n;return Component;",
+  "toc": [
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "introduction-to-two-pointers"
+      ],
+      "id": "two-pointers/introduction-to-two-pointers",
+      "chapter": "01-00",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Introduction to Two Pointers",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "pair-sum-sorted"
+      ],
+      "id": "two-pointers/pair-sum-sorted",
+      "chapter": "01-01",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Pair Sum - Sorted",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "triplet-sum"
+      ],
+      "id": "two-pointers/triplet-sum",
+      "chapter": "01-02",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Triplet Sum",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "is-palindrome-valid"
+      ],
+      "id": "two-pointers/is-palindrome-valid",
+      "chapter": "01-03",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Is Palindrome Valid",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "largest-container"
+      ],
+      "id": "two-pointers/largest-container",
+      "chapter": "01-04",
+      "difficulty": "Medium",
+      "free": true,
+      "title": "Largest Container",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "shift-zeros-to-the-end"
+      ],
+      "id": "two-pointers/shift-zeros-to-the-end",
+      "chapter": "01-05",
+      "difficulty": "Medium",
+      "title": "Shift Zeros to the End",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "two-pointers",
+        "next-lexicographical-sequence"
+      ],
+      "id": "two-pointers/next-lexicographical-sequence",
+      "chapter": "01-06",
+      "difficulty": "Medium",
+      "title": "Next Lexicographical Sequence",
+      "subsection": "Two Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "introduction-to-hash-maps-and-sets"
+      ],
+      "id": "hash-maps-and-sets/introduction-to-hash-maps-and-sets",
+      "chapter": "02-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Hash Maps and Sets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "pair-sum-unsorted"
+      ],
+      "id": "hash-maps-and-sets/pair-sum-unsorted",
+      "chapter": "02-01",
+      "difficulty": "Medium",
+      "title": "Pair Sum - Unsorted",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "verify-sudoku-board"
+      ],
+      "id": "hash-maps-and-sets/verify-sudoku-board",
+      "chapter": "02-02",
+      "difficulty": "Medium",
+      "title": "Verify Sudoku Board",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "zero-striping"
+      ],
+      "id": "hash-maps-and-sets/zero-striping",
+      "chapter": "02-03",
+      "difficulty": "Medium",
+      "title": "Zero Striping",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "longest-chain-of-consecutive-numbers"
+      ],
+      "id": "hash-maps-and-sets/longest-chain-of-consecutive-numbers",
+      "chapter": "02-04",
+      "difficulty": "Medium",
+      "title": "Longest Chain of Consecutive Numbers",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "hash-maps-and-sets",
+        "geometric-sequence-triplets"
+      ],
+      "id": "hash-maps-and-sets/geometric-sequence-triplets",
+      "chapter": "02-05",
+      "difficulty": "Medium",
+      "title": "Geometric Sequence Triplets",
+      "subsection": "Hash Maps And Sets"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "introduction-to-linked-lists"
+      ],
+      "id": "linked-lists/introduction-to-linked-lists",
+      "chapter": "03-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Linked Lists",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-reversal"
+      ],
+      "id": "linked-lists/linked-list-reversal",
+      "chapter": "03-01",
+      "difficulty": "Medium",
+      "title": "Linked List Reversal",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "remove-the-kth-last-node-from-a-linked-list"
+      ],
+      "id": "linked-lists/remove-the-kth-last-node-from-a-linked-list",
+      "chapter": "03-02",
+      "difficulty": "Medium",
+      "title": "Remove the Kth Last Node From a Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "linked-list-intersection"
+      ],
+      "id": "linked-lists/linked-list-intersection",
+      "chapter": "03-03",
+      "difficulty": "Medium",
+      "title": "Linked List Intersection",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "lru-cache"
+      ],
+      "id": "linked-lists/lru-cache",
+      "chapter": "03-04",
+      "difficulty": "Medium",
+      "title": "LRU Cache",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "palindromic-linked-list"
+      ],
+      "id": "linked-lists/palindromic-linked-list",
+      "chapter": "03-05",
+      "difficulty": "Medium",
+      "title": "Palindromic Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "linked-lists",
+        "flatten-a-multi-level-linked-list"
+      ],
+      "id": "linked-lists/flatten-a-multi-level-linked-list",
+      "chapter": "03-06",
+      "difficulty": "Medium",
+      "title": "Flatten a Multi-Level Linked List",
+      "subsection": "Linked Lists"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "introduction-to-fast-and-slow-pointers"
+      ],
+      "id": "fast-and-slow-pointers/introduction-to-fast-and-slow-pointers",
+      "chapter": "04-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Fast and Slow Pointers",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-loop"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-loop",
+      "chapter": "04-01",
+      "difficulty": "Medium",
+      "title": "Linked List Loop",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "linked-list-midpoint"
+      ],
+      "id": "fast-and-slow-pointers/linked-list-midpoint",
+      "chapter": "04-02",
+      "difficulty": "Medium",
+      "title": "Linked List Midpoint",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "fast-and-slow-pointers",
+        "happy-number"
+      ],
+      "id": "fast-and-slow-pointers/happy-number",
+      "chapter": "04-03",
+      "difficulty": "Medium",
+      "title": "Happy Number",
+      "subsection": "Fast And Slow Pointers"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "introduction-to-sliding-windows"
+      ],
+      "id": "sliding-windows/introduction-to-sliding-windows",
+      "chapter": "05-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sliding Windows",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "substring-anagrams"
+      ],
+      "id": "sliding-windows/substring-anagrams",
+      "chapter": "05-01",
+      "difficulty": "Medium",
+      "title": "Substring Anagrams",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-substring-with-unique-characters"
+      ],
+      "id": "sliding-windows/longest-substring-with-unique-characters",
+      "chapter": "05-02",
+      "difficulty": "Medium",
+      "title": "Longest Substring With Unique Characters",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sliding-windows",
+        "longest-uniform-substring-after-replacements"
+      ],
+      "id": "sliding-windows/longest-uniform-substring-after-replacements",
+      "chapter": "05-03",
+      "difficulty": "Medium",
+      "title": "Longest Uniform Substring After Replacements",
+      "subsection": "Sliding Windows"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "introduction-to-binary-search"
+      ],
+      "id": "binary-search/introduction-to-binary-search",
+      "chapter": "06-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Binary Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-insertion-index"
+      ],
+      "id": "binary-search/find-the-insertion-index",
+      "chapter": "06-01",
+      "difficulty": "Medium",
+      "title": "Find the Insertion Index",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "first-and-last-occurrences-of-a-number"
+      ],
+      "id": "binary-search/first-and-last-occurrences-of-a-number",
+      "chapter": "06-02",
+      "difficulty": "Medium",
+      "title": "First and Last Occurrences of a Number",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "cutting-wood"
+      ],
+      "id": "binary-search/cutting-wood",
+      "chapter": "06-03",
+      "difficulty": "Medium",
+      "title": "Cutting Wood",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-target-in-a-rotated-sorted-array"
+      ],
+      "id": "binary-search/find-the-target-in-a-rotated-sorted-array",
+      "chapter": "06-04",
+      "difficulty": "Medium",
+      "title": "Find the Target in a Rotated Sorted Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "find-the-median-from-two-sorted-arrays"
+      ],
+      "id": "binary-search/find-the-median-from-two-sorted-arrays",
+      "chapter": "06-05",
+      "difficulty": "Medium",
+      "title": "Find the Median From Two Sorted Arrays",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "matrix-search"
+      ],
+      "id": "binary-search/matrix-search",
+      "chapter": "06-06",
+      "difficulty": "Medium",
+      "title": "Matrix Search",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "local-maxima-in-array"
+      ],
+      "id": "binary-search/local-maxima-in-array",
+      "chapter": "06-07",
+      "difficulty": "Medium",
+      "title": "Local Maxima in Array",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "binary-search",
+        "weighted-random-selection"
+      ],
+      "id": "binary-search/weighted-random-selection",
+      "chapter": "06-08",
+      "difficulty": "Medium",
+      "title": "Weighted Random Selection",
+      "subsection": "Binary Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "introduction-to-stacks"
+      ],
+      "id": "stacks/introduction-to-stacks",
+      "chapter": "07-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "valid-parenthesis-expression"
+      ],
+      "id": "stacks/valid-parenthesis-expression",
+      "chapter": "07-01",
+      "difficulty": "Medium",
+      "title": "Valid Parenthesis Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "next-largest-number-to-the-right"
+      ],
+      "id": "stacks/next-largest-number-to-the-right",
+      "chapter": "07-02",
+      "difficulty": "Medium",
+      "title": "Next Largest Number to the Right",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "evaluate-expression"
+      ],
+      "id": "stacks/evaluate-expression",
+      "chapter": "07-03",
+      "difficulty": "Medium",
+      "title": "Evaluate Expression",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "repeated-removal-of-adjacent-duplicates"
+      ],
+      "id": "stacks/repeated-removal-of-adjacent-duplicates",
+      "chapter": "07-04",
+      "difficulty": "Medium",
+      "title": "Repeated Removal of Adjacent Duplicates",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "implement-a-queue-using-stacks"
+      ],
+      "id": "stacks/implement-a-queue-using-stacks",
+      "chapter": "07-05",
+      "difficulty": "Medium",
+      "title": "Implement a Queue using Stacks",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "stacks",
+        "maximums-of-sliding-window"
+      ],
+      "id": "stacks/maximums-of-sliding-window",
+      "chapter": "07-06",
+      "difficulty": "Medium",
+      "title": "Maximums of Sliding Window",
+      "subsection": "Stacks"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "introduction-to-heaps"
+      ],
+      "id": "heaps/introduction-to-heaps",
+      "chapter": "08-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Heaps",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "k-most-frequent-strings"
+      ],
+      "id": "heaps/k-most-frequent-strings",
+      "chapter": "08-01",
+      "difficulty": "Medium",
+      "title": "K Most Frequent Strings",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "combine-sorted-linked-lists"
+      ],
+      "id": "heaps/combine-sorted-linked-lists",
+      "chapter": "08-02",
+      "difficulty": "Medium",
+      "title": "Combine Sorted Linked Lists",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "median-of-an-integer-stream"
+      ],
+      "id": "heaps/median-of-an-integer-stream",
+      "chapter": "08-03",
+      "difficulty": "Medium",
+      "title": "Median of an Integer Stream",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "heaps",
+        "sort-a-k-sorted-array"
+      ],
+      "id": "heaps/sort-a-k-sorted-array",
+      "chapter": "08-04",
+      "difficulty": "Medium",
+      "title": "Sort a K-Sorted Array",
+      "subsection": "Heaps"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "introduction-to-intervals"
+      ],
+      "id": "intervals/introduction-to-intervals",
+      "chapter": "09-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "merge-overlapping-intervals"
+      ],
+      "id": "intervals/merge-overlapping-intervals",
+      "chapter": "09-01",
+      "difficulty": "Medium",
+      "title": "Merge Overlapping Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "identify-all-interval-overlaps"
+      ],
+      "id": "intervals/identify-all-interval-overlaps",
+      "chapter": "09-02",
+      "difficulty": "Medium",
+      "title": "Identify All Interval Overlaps",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "intervals",
+        "largest-overlap-of-intervals"
+      ],
+      "id": "intervals/largest-overlap-of-intervals",
+      "chapter": "09-03",
+      "difficulty": "Medium",
+      "title": "Largest Overlap of Intervals",
+      "subsection": "Intervals"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "introduction-to-prefix-sums"
+      ],
+      "id": "prefix-sums/introduction-to-prefix-sums",
+      "chapter": "10-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Prefix Sums",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "sum-between-range"
+      ],
+      "id": "prefix-sums/sum-between-range",
+      "chapter": "10-01",
+      "difficulty": "Medium",
+      "title": "Sum Between Range",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "k-sum-subarrays"
+      ],
+      "id": "prefix-sums/k-sum-subarrays",
+      "chapter": "10-02",
+      "difficulty": "Medium",
+      "title": "K-Sum Subarrays",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "prefix-sums",
+        "product-array-without-current-element"
+      ],
+      "id": "prefix-sums/product-array-without-current-element",
+      "chapter": "10-03",
+      "difficulty": "Medium",
+      "title": "Product Array Without Current Element",
+      "subsection": "Prefix Sums"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "introduction-to-trees"
+      ],
+      "id": "trees/introduction-to-trees",
+      "chapter": "11-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Trees",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "invert-binary-tree"
+      ],
+      "id": "trees/invert-binary-tree",
+      "chapter": "11-01",
+      "difficulty": "Medium",
+      "title": "Invert Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "balanced-binary-tree-validation"
+      ],
+      "id": "trees/balanced-binary-tree-validation",
+      "chapter": "11-02",
+      "difficulty": "Medium",
+      "title": "Balanced Binary Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "rightmost-nodes-of-a-binary-tree"
+      ],
+      "id": "trees/rightmost-nodes-of-a-binary-tree",
+      "chapter": "11-03",
+      "difficulty": "Medium",
+      "title": "Rightmost Nodes of a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "widest-binary-tree-level"
+      ],
+      "id": "trees/widest-binary-tree-level",
+      "chapter": "11-04",
+      "difficulty": "Medium",
+      "title": "Widest Binary Tree Level",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-search-tree-validation"
+      ],
+      "id": "trees/binary-search-tree-validation",
+      "chapter": "11-05",
+      "difficulty": "Medium",
+      "title": "Binary Search Tree Validation",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "lowest-common-ancestor"
+      ],
+      "id": "trees/lowest-common-ancestor",
+      "chapter": "11-06",
+      "difficulty": "Medium",
+      "title": "Lowest Common Ancestor",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "build-binary-tree-from-preorder-and-inorder-traversals"
+      ],
+      "id": "trees/build-binary-tree-from-preorder-and-inorder-traversals",
+      "chapter": "11-07",
+      "difficulty": "Medium",
+      "title": "Build Binary Tree From Preorder and Inorder Traversals",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "maximum-sum-of-a-continuous-path-in-a-binary-tree"
+      ],
+      "id": "trees/maximum-sum-of-a-continuous-path-in-a-binary-tree",
+      "chapter": "11-08",
+      "difficulty": "Medium",
+      "title": "Maximum Sum of a Continuous Path in a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-symmetry"
+      ],
+      "id": "trees/binary-tree-symmetry",
+      "chapter": "11-09",
+      "difficulty": "Medium",
+      "title": "Binary Tree Symmetry",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "binary-tree-columns"
+      ],
+      "id": "trees/binary-tree-columns",
+      "chapter": "11-10",
+      "difficulty": "Medium",
+      "title": "Binary Tree Columns",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "kth-smallest-number-in-a-binary-search-tree"
+      ],
+      "id": "trees/kth-smallest-number-in-a-binary-search-tree",
+      "chapter": "11-11",
+      "difficulty": "Medium",
+      "title": "Kth Smallest Number in a Binary Search Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "trees",
+        "serialize-and-deserialize-a-binary-tree"
+      ],
+      "id": "trees/serialize-and-deserialize-a-binary-tree",
+      "chapter": "11-12",
+      "difficulty": "Medium",
+      "title": "Serialize and Deserialize a Binary Tree",
+      "subsection": "Trees"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "introduction-to-tries"
+      ],
+      "id": "tries/introduction-to-tries",
+      "chapter": "12-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Tries",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "design-a-trie"
+      ],
+      "id": "tries/design-a-trie",
+      "chapter": "12-01",
+      "difficulty": "Medium",
+      "title": "Design a Trie",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "insert-and-search-words-with-wildcards"
+      ],
+      "id": "tries/insert-and-search-words-with-wildcards",
+      "chapter": "12-02",
+      "difficulty": "Medium",
+      "title": "Insert and Search Words with Wildcards",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "tries",
+        "find-all-words-on-a-board"
+      ],
+      "id": "tries/find-all-words-on-a-board",
+      "chapter": "12-03",
+      "difficulty": "Medium",
+      "title": "Find All Words on a Board",
+      "subsection": "Tries"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "introduction-to-graphs"
+      ],
+      "id": "graphs/introduction-to-graphs",
+      "chapter": "13-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Graphs",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "graph-deep-copy"
+      ],
+      "id": "graphs/graph-deep-copy",
+      "chapter": "13-01",
+      "difficulty": "Medium",
+      "title": "Graph Deep Copy",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "count-islands"
+      ],
+      "id": "graphs/count-islands",
+      "chapter": "13-02",
+      "difficulty": "Medium",
+      "title": "Count Islands",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "matrix-infection"
+      ],
+      "id": "graphs/matrix-infection",
+      "chapter": "13-03",
+      "difficulty": "Medium",
+      "title": "Matrix Infection",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "bipartite-graph-validation"
+      ],
+      "id": "graphs/bipartite-graph-validation",
+      "chapter": "13-04",
+      "difficulty": "Medium",
+      "title": "Bipartite Graph Validation",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "longest-increasing-path"
+      ],
+      "id": "graphs/longest-increasing-path",
+      "chapter": "13-05",
+      "difficulty": "Medium",
+      "title": "Longest Increasing Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-transformation-sequence"
+      ],
+      "id": "graphs/shortest-transformation-sequence",
+      "chapter": "13-06",
+      "difficulty": "Medium",
+      "title": "Shortest Transformation Sequence",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "merging-communities"
+      ],
+      "id": "graphs/merging-communities",
+      "chapter": "13-07",
+      "difficulty": "Medium",
+      "title": "Merging Communities",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "prerequisites"
+      ],
+      "id": "graphs/prerequisites",
+      "chapter": "13-08",
+      "difficulty": "Medium",
+      "title": "Prerequisites",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "shortest-path"
+      ],
+      "id": "graphs/shortest-path",
+      "chapter": "13-09",
+      "difficulty": "Medium",
+      "title": "Shortest Path",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "graphs",
+        "connect-the-dots"
+      ],
+      "id": "graphs/connect-the-dots",
+      "chapter": "13-10",
+      "difficulty": "Medium",
+      "title": "Connect the Dots",
+      "subsection": "Graphs"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "introduction-to-backtracking"
+      ],
+      "id": "backtracking/introduction-to-backtracking",
+      "chapter": "14-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Backtracking",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-permutations"
+      ],
+      "id": "backtracking/find-all-permutations",
+      "chapter": "14-01",
+      "difficulty": "Medium",
+      "title": "Find All Permutations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "find-all-subsets"
+      ],
+      "id": "backtracking/find-all-subsets",
+      "chapter": "14-02",
+      "difficulty": "Medium",
+      "title": "Find All Subsets",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "n-queens"
+      ],
+      "id": "backtracking/n-queens",
+      "chapter": "14-03",
+      "difficulty": "Medium",
+      "title": "N Queens",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "combinations-of-a-sum"
+      ],
+      "id": "backtracking/combinations-of-a-sum",
+      "chapter": "14-04",
+      "difficulty": "Medium",
+      "title": "Combinations of a Sum",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "backtracking",
+        "phone-keypad-combinations"
+      ],
+      "id": "backtracking/phone-keypad-combinations",
+      "chapter": "14-05",
+      "difficulty": "Medium",
+      "title": "Phone Keypad Combinations",
+      "subsection": "Backtracking"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "introduction-to-dynamic-programming"
+      ],
+      "id": "dynamic-programming/introduction-to-dynamic-programming",
+      "chapter": "15-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Dynamic Programming",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "climbing-stairs"
+      ],
+      "id": "dynamic-programming/climbing-stairs",
+      "chapter": "15-01",
+      "difficulty": "Medium",
+      "title": "Climbing Stairs",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "minimum-coin-combination"
+      ],
+      "id": "dynamic-programming/minimum-coin-combination",
+      "chapter": "15-02",
+      "difficulty": "Medium",
+      "title": "Minimum Coin Combination",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "matrix-pathways"
+      ],
+      "id": "dynamic-programming/matrix-pathways",
+      "chapter": "15-03",
+      "difficulty": "Medium",
+      "title": "Matrix Pathways",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "neighborhood-burglary"
+      ],
+      "id": "dynamic-programming/neighborhood-burglary",
+      "chapter": "15-04",
+      "difficulty": "Medium",
+      "title": "Neighborhood Burglary",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-common-subsequence"
+      ],
+      "id": "dynamic-programming/longest-common-subsequence",
+      "chapter": "15-05",
+      "difficulty": "Medium",
+      "title": "Longest Common Subsequence",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "longest-palindrome-in-a-string"
+      ],
+      "id": "dynamic-programming/longest-palindrome-in-a-string",
+      "chapter": "15-06",
+      "difficulty": "Medium",
+      "title": "Longest Palindrome in a String",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "maximum-subarray-sum"
+      ],
+      "id": "dynamic-programming/maximum-subarray-sum",
+      "chapter": "15-07",
+      "difficulty": "Medium",
+      "title": "Maximum Subarray Sum",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "01-knapsack"
+      ],
+      "id": "dynamic-programming/01-knapsack",
+      "chapter": "15-08",
+      "difficulty": "Medium",
+      "title": "0/1 Knapsack",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "dynamic-programming",
+        "largest-square-in-a-matrix"
+      ],
+      "id": "dynamic-programming/largest-square-in-a-matrix",
+      "chapter": "15-09",
+      "difficulty": "Medium",
+      "title": "Largest Square in a Matrix",
+      "subsection": "Dynamic Programming"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "introduction-to-greedy-algorithms"
+      ],
+      "id": "greedy/introduction-to-greedy-algorithms",
+      "chapter": "16-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Greedy Algorithms",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "jump-to-the-end"
+      ],
+      "id": "greedy/jump-to-the-end",
+      "chapter": "16-01",
+      "difficulty": "Medium",
+      "title": "Jump to the End",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "gas-stations"
+      ],
+      "id": "greedy/gas-stations",
+      "chapter": "16-02",
+      "difficulty": "Medium",
+      "title": "Gas Stations",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "greedy",
+        "candies"
+      ],
+      "id": "greedy/candies",
+      "chapter": "16-03",
+      "difficulty": "Medium",
+      "title": "Candies",
+      "subsection": "Greedy"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "introduction-to-sort-and-search"
+      ],
+      "id": "sort-and-search/introduction-to-sort-and-search",
+      "chapter": "17-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Sort and Search",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-linked-list"
+      ],
+      "id": "sort-and-search/sort-linked-list",
+      "chapter": "17-01",
+      "difficulty": "Medium",
+      "title": "Sort Linked List",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "sort-array"
+      ],
+      "id": "sort-and-search/sort-array",
+      "chapter": "17-02",
+      "difficulty": "Medium",
+      "title": "Sort Array",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "kth-largest-integer"
+      ],
+      "id": "sort-and-search/kth-largest-integer",
+      "chapter": "17-03",
+      "difficulty": "Medium",
+      "title": "Kth Largest Integer",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "sort-and-search",
+        "dutch-national-flag"
+      ],
+      "id": "sort-and-search/dutch-national-flag",
+      "chapter": "17-04",
+      "difficulty": "Medium",
+      "title": "Dutch National Flag",
+      "subsection": "Sort And Search"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "introduction-to-bit-manipulation"
+      ],
+      "id": "bit-manipulation/introduction-to-bit-manipulation",
+      "chapter": "18-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Bit Manipulation",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "hamming-weights-of-integers"
+      ],
+      "id": "bit-manipulation/hamming-weights-of-integers",
+      "chapter": "18-01",
+      "difficulty": "Medium",
+      "title": "Hamming Weights of Integers",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "lonely-integer"
+      ],
+      "id": "bit-manipulation/lonely-integer",
+      "chapter": "18-02",
+      "difficulty": "Medium",
+      "title": "Lonely Integer",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "bit-manipulation",
+        "swap-odd-and-even-bits"
+      ],
+      "id": "bit-manipulation/swap-odd-and-even-bits",
+      "chapter": "18-03",
+      "difficulty": "Medium",
+      "title": "Swap Odd and Even Bits",
+      "subsection": "Bit Manipulation"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "introduction-to-math-and-geometry"
+      ],
+      "id": "math-and-geometry/introduction-to-math-and-geometry",
+      "chapter": "19-00",
+      "difficulty": "Medium",
+      "title": "Introduction to Math and Geometry",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "spiral-traversal"
+      ],
+      "id": "math-and-geometry/spiral-traversal",
+      "chapter": "19-01",
+      "difficulty": "Medium",
+      "title": "Spiral Traversal",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "reverse-32-bit-integer"
+      ],
+      "id": "math-and-geometry/reverse-32-bit-integer",
+      "chapter": "19-02",
+      "difficulty": "Medium",
+      "title": "Reverse 32-Bit Integer",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "maximum-collinear-points"
+      ],
+      "id": "math-and-geometry/maximum-collinear-points",
+      "chapter": "19-03",
+      "difficulty": "Medium",
+      "title": "Maximum Collinear Points",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "the-josephus-problem"
+      ],
+      "id": "math-and-geometry/the-josephus-problem",
+      "chapter": "19-04",
+      "difficulty": "Medium",
+      "title": "The Josephus Problem",
+      "subsection": "Math And Geometry"
+    },
+    {
+      "course": "coding-patterns",
+      "slug": [
+        "math-and-geometry",
+        "triangle-numbers"
+      ],
+      "id": "math-and-geometry/triangle-numbers",
+      "chapter": "19-05",
+      "difficulty": "Medium",
+      "title": "Triangle Numbers",
+      "subsection": "Math And Geometry"
+    }
+  ],
+  "courseMetadata": {
+    "title": "Coding Interview Patterns",
+    "authors": "Alex Xu",
+    "claimCodes": [
+      "annual",
+      "lifetime",
+      "promo"
+    ],
+    "key": "coding-patterns",
+    "defaultChapter": "/courses/coding-patterns/two-pointers/introduction-to-two-pointers",
+    "rootPath": "/courses/coding-patterns",
+    "lessons": 101,
+    "students": 10000,
+    "showChapter": false,
+    "lastModified": "2024.01.28"
+  }
+}
