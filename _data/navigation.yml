@@ -776,6 +776,86 @@ main:
     url: /cses-analyses/system_design/design-ad-click-aggregation
   - title: S3 Object Storage
     url: /cses-analyses/system_design/design-s3-object-storage
+- title: Low Level Design
+  url: /cses-analyses/low_level_design
+  children:
+  - title: Overview
+    url: /cses-analyses/low_level_design
+  - title: Easy
+    url: /cses-analyses/low_level_design#easy-7-problems
+    children:
+    - title: Parking Lot
+      url: /cses-analyses/low_level_design/parking-lot
+    - title: Stack Overflow
+      url: /cses-analyses/low_level_design/stack-overflow
+    - title: Vending Machine
+      url: /cses-analyses/low_level_design/vending-machine
+    - title: Logging Framework
+      url: /cses-analyses/low_level_design/logging-framework
+    - title: Traffic Signal
+      url: /cses-analyses/low_level_design/traffic-signal
+    - title: Coffee Vending Machine
+      url: /cses-analyses/low_level_design/coffee-vending-machine
+    - title: Task Management
+      url: /cses-analyses/low_level_design/task-management-system
+  - title: Medium
+    url: /cses-analyses/low_level_design#medium-15-problems
+    children:
+    - title: ATM
+      url: /cses-analyses/low_level_design/atm
+    - title: LinkedIn
+      url: /cses-analyses/low_level_design/linkedin
+    - title: LRU Cache
+      url: /cses-analyses/low_level_design/lru-cache
+    - title: Tic Tac Toe
+      url: /cses-analyses/low_level_design/tic-tac-toe
+    - title: Pub Sub System
+      url: /cses-analyses/low_level_design/pub-sub-system
+    - title: Elevator System
+      url: /cses-analyses/low_level_design/elevator-system
+    - title: Car Rental System
+      url: /cses-analyses/low_level_design/car-rental-system
+    - title: Online Auction
+      url: /cses-analyses/low_level_design/online-auction-system
+    - title: Hotel Management
+      url: /cses-analyses/low_level_design/hotel-management-system
+    - title: Digital Wallet
+      url: /cses-analyses/low_level_design/digital-wallet-service
+    - title: Airline Management
+      url: /cses-analyses/low_level_design/airline-management-system
+    - title: Library Management
+      url: /cses-analyses/low_level_design/library-management-system
+    - title: Social Network
+      url: /cses-analyses/low_level_design/social-networking-service
+    - title: Restaurant Management
+      url: /cses-analyses/low_level_design/restaurant-management-system
+    - title: Concert Booking
+      url: /cses-analyses/low_level_design/concert-ticket-booking-system
+  - title: Hard
+    url: /cses-analyses/low_level_design#hard-11-problems
+    children:
+    - title: CricInfo
+      url: /cses-analyses/low_level_design/cricinfo
+    - title: Splitwise
+      url: /cses-analyses/low_level_design/splitwise
+    - title: Chess Game
+      url: /cses-analyses/low_level_design/chess-game
+    - title: Snake & Ladder
+      url: /cses-analyses/low_level_design/snake-and-ladder
+    - title: Ride-Sharing (Uber)
+      url: /cses-analyses/low_level_design/ride-sharing-service
+    - title: Course Registration
+      url: /cses-analyses/low_level_design/course-registration-system
+    - title: Movie Ticket Booking
+      url: /cses-analyses/low_level_design/movie-ticket-booking-system
+    - title: Online Shopping
+      url: /cses-analyses/low_level_design/online-shopping-service
+    - title: Stock Brokerage
+      url: /cses-analyses/low_level_design/online-stock-brokerage-system
+    - title: Music Streaming
+      url: /cses-analyses/low_level_design/music-streaming-service
+    - title: Food Delivery
+      url: /cses-analyses/low_level_design/food-delivery-service
 - title: Quick Reference
   url: /cses-analyses/quick_reference
   children:
