@@ -105,19 +105,52 @@ export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: Side
     return normalized === currentPath
   }
 
-  const renderLevel3 = (items: NavItem[]) => (
-    <ul className={`nav__sub-sub-items expanded`}>
-      {items.map(grandchild => (
-        <li key={grandchild.url} className="nav__sub-sub-item">
+  const renderLevel4 = (items: NavItem[]) => (
+    <ul className="nav__level4 expanded">
+      {items.map(item => (
+        <li key={item.url} className="nav__level4-item">
           <Link
-            to={grandchild.url}
-            className={isActive(grandchild.url) ? 'active' : ''}
+            to={item.url}
+            className={isActive(item.url) ? 'active' : ''}
             onClick={onLinkClick}
           >
-            {grandchild.title}
+            {item.title}
           </Link>
         </li>
       ))}
+    </ul>
+  )
+
+  const renderLevel3 = (items: NavItem[]) => (
+    <ul className={`nav__sub-sub-items expanded`}>
+      {items.map(grandchild => {
+        const hasChildren = grandchild.children && grandchild.children.length > 0
+        const isExpanded = expandedItems.has(grandchild.url)
+
+        return (
+          <li key={grandchild.url} className="nav__sub-sub-item">
+            {hasChildren ? (
+              <a
+                onClick={(e) => { e.preventDefault(); toggleExpand(grandchild.url) }}
+                className={isActive(grandchild.url) ? 'active' : ''}
+                role="button"
+                tabIndex={0}
+              >
+                {grandchild.title}
+              </a>
+            ) : (
+              <Link
+                to={grandchild.url}
+                className={isActive(grandchild.url) ? 'active' : ''}
+                onClick={onLinkClick}
+              >
+                {grandchild.title}
+              </Link>
+            )}
+            {hasChildren && (isExpanded || isSearching) && renderLevel4(grandchild.children!)}
+          </li>
+        )
+      })}
     </ul>
   )
 

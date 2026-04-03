@@ -60,7 +60,7 @@ export default function ContentPage() {
         {navContext.breadcrumbs.length > 1 && (
           <nav className="breadcrumbs" aria-label="Breadcrumb">
             {navContext.breadcrumbs.map((crumb, i) => (
-              <span key={crumb.url} className="breadcrumbs__item">
+              <span key={i} className="breadcrumbs__item">
                 {i > 0 && <span className="breadcrumbs__sep">/</span>}
                 {i < navContext.breadcrumbs.length - 1 ? (
                   <Link to={crumb.url} className="breadcrumbs__link">

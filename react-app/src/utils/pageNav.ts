@@ -24,6 +24,14 @@ function flattenLeaves(items: NavItem[]): NavItem[] {
   return result
 }
 
+// Get the first leaf URL from a nav item (for parent nodes without content)
+function firstLeafUrl(item: NavItem): string {
+  if (item.children && item.children.length > 0) {
+    return firstLeafUrl(item.children[0])
+  }
+  return item.url
+}
+
 // Find breadcrumb trail to a path in the nav tree
 function findBreadcrumbs(
   items: NavItem[],
@@ -46,11 +54,38 @@ function findBreadcrumbs(
   return null
 }
 
+// Resolve breadcrumb URLs: parent nodes without content get their first leaf URL
+function resolveBreadcrumbUrls(
+  breadcrumbs: BreadcrumbItem[],
+  navItems: NavItem[]
+): BreadcrumbItem[] {
+  return breadcrumbs.map(crumb => {
+    const navItem = findNavItem(navItems, crumb.url)
+    if (navItem && navItem.children && navItem.children.length > 0) {
+      return { ...crumb, url: firstLeafUrl(navItem) }
+    }
+    return crumb
+  })
+}
+
+// Find a NavItem by its URL in the tree
+function findNavItem(items: NavItem[], url: string): NavItem | null {
+  for (const item of items) {
+    if (item.url === url) return item
+    if (item.children) {
+      const found = findNavItem(item.children, url)
+      if (found) return found
+    }
+  }
+  return null
+}
+
 export function getPageNavContext(pathname: string): PageNavContext {
   const normalized = decodeURIComponent(pathname).replace(/\/$/, '') || '/'
 
-  // Breadcrumbs
-  const breadcrumbs = findBreadcrumbs(navigationData, normalized, []) ?? []
+  // Breadcrumbs — find trail then resolve parent URLs to first leaf
+  const rawBreadcrumbs = findBreadcrumbs(navigationData, normalized, []) ?? []
+  const breadcrumbs = resolveBreadcrumbUrls(rawBreadcrumbs, navigationData)
 
   // Prev/Next from flattened leaf list
   const leaves = flattenLeaves(navigationData)
