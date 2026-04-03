@@ -1,3 +1,5 @@
+import { bytebytegNavigationData } from './bytebytego-navigation'
+
 export interface NavItem {
   title: string;
   url: string;
@@ -560,6 +562,7 @@ export const navigationData: NavItem[] = [
       { title: "Contribution Counting", url: "/pattern/contribution-counting" },
     ],
   },
+  ...bytebytegNavigationData,
   {
     title: "About",
     url: "/about",

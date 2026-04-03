@@ -54,3 +54,4 @@ yarn-error.log*
 # ByteByteGo local viewer
 .bytebytego_cookies
 __pycache__/
+.vercel

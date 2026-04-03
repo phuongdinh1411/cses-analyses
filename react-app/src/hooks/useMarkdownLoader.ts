@@ -13,6 +13,7 @@ const markdownModules = import.meta.glob<string>(
     '../../../low_level_design/**/*.md',
     '../../../quick_reference/**/*.md',
     '../../../pattern/**/*.md',
+    '../../../bytebytego_content/*/*.md',
     '../../content_index.md',
     '../../content_about.md',
   ],
@@ -34,6 +35,30 @@ function extractPermalink(raw: string): string | null {
   return permalink || null
 }
 
+// Convert a ByteByteGo file path to a URL
+// e.g. "bytebytego_content/system-design-interview/005_design-a-rate-limiter" → "/bytebytego/system-design-interview/design-a-rate-limiter"
+// e.g. "bytebytego_content/coding-patterns/01-01_two-pointers_pair-sum-sorted" → "/bytebytego/coding-patterns/two-pointers/pair-sum-sorted"
+function bytebytegUrlFromPath(filePath: string): string | null {
+  const match = filePath.match(/bytebytego_content\/([^/]+)\/(.+)$/)
+  if (!match) return null
+  const courseKey = match[1]
+  const filename = match[2] // e.g. "005_design-a-rate-limiter" or "01-01_two-pointers_pair-sum-sorted"
+
+  // Sectioned course (coding-patterns): chapter is "NN-NN", slug has section/lesson
+  const sectionedMatch = filename.match(/^\d+-\d+_(.+)_(.+)$/)
+  if (sectionedMatch) {
+    return `/bytebytego/${courseKey}/${sectionedMatch[1]}/${sectionedMatch[2]}`
+  }
+
+  // Flat course: chapter is "NNN", slug is the rest
+  const flatMatch = filename.match(/^\d+_(.+)$/)
+  if (flatMatch) {
+    return `/bytebytego/${courseKey}/${flatMatch[1]}`
+  }
+
+  return `/bytebytego/${courseKey}/${filename}`
+}
+
 // Build a lookup map from URL path → glob key
 // Registers both the file-path-based URL and the front matter permalink (if different).
 function buildPathMap(): Map<string, string> {
@@ -43,7 +68,17 @@ function buildPathMap(): Map<string, string> {
     // Keys look like:
     //   "../../../problem_soulutions/introductory_problems/summary.md" (from parent dir)
     //   "../../content_index.md" or "../../content_about.md" (local files)
+    //   "../../../bytebytego_content/system-design-interview/005_design-a-rate-limiter.md"
     let urlPath = key.replace(/^(\.\.\/)+/, '').replace(/\.md$/, '')
+
+    // ByteByteGo content: use special path mapping
+    if (urlPath.startsWith('bytebytego_content/')) {
+      const bbgUrl = bytebytegUrlFromPath(urlPath)
+      if (bbgUrl) {
+        pathMap.set(bbgUrl, key)
+      }
+      continue
+    }
 
     // Strip the "content_" prefix for local files
     urlPath = urlPath.replace(/^content_/, '')
@@ -114,7 +149,14 @@ export function useMarkdownLoader(routePath: string): UseMarkdownResult {
       return
     }
 
-    setData(parseFrontMatter(markdownModules[globKey]))
+    // Rewrite ByteByteGo image URLs from absolute to local paths
+    let raw = markdownModules[globKey]
+    if (globKey.includes('bytebytego_content/')) {
+      const baseUrl = import.meta.env.BASE_URL
+      raw = raw.replaceAll('https://bytebytego.com/images/', baseUrl + 'images/')
+    }
+
+    setData(parseFrontMatter(raw))
     setLoading(false)
   }, [routePath])
 

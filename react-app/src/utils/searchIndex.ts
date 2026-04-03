@@ -9,6 +9,7 @@ const markdownModules = import.meta.glob<string>(
     '../../../low_level_design/**/*.md',
     '../../../quick_reference/**/*.md',
     '../../../pattern/**/*.md',
+    '../../../bytebytego_content/*/*.md',
     '../../content_index.md',
     '../../content_about.md',
   ],
@@ -42,6 +43,27 @@ function extractTitle(raw: string): string {
 }
 
 function extractUrl(key: string, raw: string): string {
+  // ByteByteGo content: derive URL from filename
+  const stripped = key.replace(/^(\.\.\/)+/, '').replace(/\.md$/, '')
+  if (stripped.startsWith('bytebytego_content/')) {
+    const match = stripped.match(/bytebytego_content\/([^/]+)\/(.+)$/)
+    if (match) {
+      const courseKey = match[1]
+      const filename = match[2]
+      // Sectioned course (coding-patterns)
+      const sectionedMatch = filename.match(/^\d+-\d+_(.+)_(.+)$/)
+      if (sectionedMatch) {
+        return `/bytebytego/${courseKey}/${sectionedMatch[1]}/${sectionedMatch[2]}`
+      }
+      // Flat course
+      const flatMatch = filename.match(/^\d+_(.+)$/)
+      if (flatMatch) {
+        return `/bytebytego/${courseKey}/${flatMatch[1]}`
+      }
+      return `/bytebytego/${courseKey}/${filename}`
+    }
+  }
+
   // Try permalink
   const fmMatch = raw.match(/^---\r?\n[\s\S]*?\r?\n---/)
   if (fmMatch) {

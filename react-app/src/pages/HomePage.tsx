@@ -49,6 +49,14 @@ const categories = [
     url: '/pattern/DP',
     color: '#10b981',
   },
+  {
+    icon: '📚',
+    title: 'ByteByteGo',
+    description: 'System design, coding patterns, ML/GenAI, OOD, mobile from ByteByteGo',
+    count: '217',
+    url: '/bytebytego',
+    color: '#f97316',
+  },
 ]
 
 const quickLinks = [
