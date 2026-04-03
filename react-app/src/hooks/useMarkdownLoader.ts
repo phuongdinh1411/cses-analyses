@@ -8,11 +8,11 @@ import { parseFrontMatter, type ParsedMarkdown } from '../utils/frontmatter'
 // 2. Serve content instantly without async loading
 const markdownModules = import.meta.glob<string>(
   [
-    '../../content_problem_soulutions/**/*.md',
-    '../../content_system_design/**/*.md',
-    '../../content_low_level_design/**/*.md',
-    '../../content_quick_reference/**/*.md',
-    '../../content_pattern/**/*.md',
+    '../../../problem_soulutions/**/*.md',
+    '../../../system_design/**/*.md',
+    '../../../low_level_design/**/*.md',
+    '../../../quick_reference/**/*.md',
+    '../../../pattern/**/*.md',
     '../../content_index.md',
     '../../content_about.md',
   ],
@@ -37,10 +37,12 @@ function buildPathMap(): Map<string, string> {
   const pathMap = new Map<string, string>()
 
   for (const key of Object.keys(markdownModules)) {
-    // key looks like "../../content_problem_soulutions/introductory_problems/summary.md"
-    let urlPath = key.replace(/^\.\.\/\.\.\//, '').replace(/\.md$/, '')
+    // Keys look like:
+    //   "../../../problem_soulutions/introductory_problems/summary.md" (from parent dir)
+    //   "../../content_index.md" or "../../content_about.md" (local files)
+    let urlPath = key.replace(/^(\.\.\/)+/, '').replace(/\.md$/, '')
 
-    // Strip the "content_" prefix
+    // Strip the "content_" prefix for local files
     urlPath = urlPath.replace(/^content_/, '')
 
     // Handle index files

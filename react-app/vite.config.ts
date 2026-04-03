@@ -9,6 +9,8 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+    // Keep symlink paths as-is so import.meta.glob patterns match content_* symlinks
+    preserveSymlinks: true,
   },
   server: {
     fs: {

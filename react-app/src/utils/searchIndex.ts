@@ -4,11 +4,11 @@
 
 const markdownModules = import.meta.glob<string>(
   [
-    '../../content_problem_soulutions/**/*.md',
-    '../../content_system_design/**/*.md',
-    '../../content_low_level_design/**/*.md',
-    '../../content_quick_reference/**/*.md',
-    '../../content_pattern/**/*.md',
+    '../../../problem_soulutions/**/*.md',
+    '../../../system_design/**/*.md',
+    '../../../low_level_design/**/*.md',
+    '../../../quick_reference/**/*.md',
+    '../../../pattern/**/*.md',
     '../../content_index.md',
     '../../content_about.md',
   ],
@@ -53,7 +53,7 @@ function extractUrl(key: string, raw: string): string {
     }
   }
   // Derive from file path
-  let urlPath = key.replace(/^\.\.\/\.\.\//, '').replace(/\.md$/, '')
+  let urlPath = key.replace(/^(\.\.\/)+/, '').replace(/\.md$/, '')
   urlPath = urlPath.replace(/^content_/, '')
   if (urlPath.endsWith('/index')) urlPath = urlPath.slice(0, -5)
   if (urlPath === 'index') return '/'
