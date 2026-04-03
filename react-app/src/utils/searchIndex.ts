@@ -48,7 +48,10 @@ function extractUrl(key: string, raw: string): string {
     const pmatch = fmMatch[0].match(/^permalink:\s*(.+)$/m)
     if (pmatch) {
       let permalink = pmatch[1].trim().replace(/^['"]|['"]$/g, '')
-      permalink = permalink.replace(/^\/cses-analyses/, '')
+      const basePrefix = import.meta.env.BASE_URL.replace(/\/$/, '')
+      if (basePrefix) {
+        permalink = permalink.replace(new RegExp(`^${basePrefix}`), '')
+      }
       if (permalink) return permalink.replace(/\/$/, '') || '/'
     }
   }

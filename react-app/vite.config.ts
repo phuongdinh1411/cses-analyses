@@ -4,7 +4,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/cses-analyses/',
+  base: process.env.VITE_BASE_PATH || '/cses-analyses/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

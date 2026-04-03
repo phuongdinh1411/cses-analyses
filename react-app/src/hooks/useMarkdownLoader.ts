@@ -26,8 +26,11 @@ function extractPermalink(raw: string): string | null {
   const pmatch = match[0].match(/^permalink:\s*(.+)$/m)
   if (!pmatch) return null
   let permalink = pmatch[1].trim().replace(/^['"]|['"]$/g, '')
-  // Strip Jekyll baseurl prefix
-  permalink = permalink.replace(/^\/cses-analyses/, '')
+  // Strip the Vite base path prefix (e.g. /cses-analyses on GitHub Pages, / on Vercel)
+  const basePrefix = import.meta.env.BASE_URL.replace(/\/$/, '')
+  if (basePrefix) {
+    permalink = permalink.replace(new RegExp(`^${basePrefix}`), '')
+  }
   return permalink || null
 }
 
