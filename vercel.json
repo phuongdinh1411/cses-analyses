@@ -1,11 +1,8 @@
 {
-  "buildCommand": "cd react-app && npm install && npm run build",
+  "buildCommand": "cd react-app && npm install && VITE_BASE_PATH=/ npm run build",
   "outputDirectory": "react-app/dist",
   "framework": null,
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "env": {
-    "VITE_BASE_PATH": "/"
-  }
+  ]
 }
