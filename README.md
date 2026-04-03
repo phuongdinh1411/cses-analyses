@@ -2,8 +2,6 @@
 
 A comprehensive learning resource for **competitive programming** and **system design interviews**.
 
-**Live Site: [https://phuongdinh1411.github.io/cses-analyses/](https://phuongdinh1411.github.io/cses-analyses/)**
-
 ---
 
 ## Table of Contents
