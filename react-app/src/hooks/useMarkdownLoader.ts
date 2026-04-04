@@ -61,16 +61,23 @@ function bytebytegUrlFromPath(filePath: string): string | null {
 
 // Clean ByteByteGo export artifacts:
 // 1. Rewrite image URLs from bytebytego.com to local paths
-// 2. Remove duplicate consecutive images (export includes light+dark mode duplicates)
+// 2. Remove duplicate images (export includes light+dark mode duplicates, sometimes non-adjacent)
 // 3. Fix triple-rendered math: "O(n2)O(n^2)O(n2)" → "O(n²)" (keep first/plain version)
 //    and standalone letter triples like "nnn" → "n"
 export function cleanByteBytGoContent(raw: string): string {
   const baseUrl = import.meta.env.BASE_URL
   raw = raw.replaceAll('https://bytebytego.com/images/', baseUrl + 'images/')
 
-  // Remove duplicate consecutive images (light+dark mode duplicates from export).
-  // Match by URL: if two image lines share the same URL separated only by blank lines, keep the first.
+  // Remove duplicate images (export includes light+dark mode duplicates).
+  // Pass 1: consecutive duplicates separated only by blank lines.
   raw = raw.replace(/(!\[[\s\S]*?\]\(([^)]+)\))\s*\n\s*!\[[\s\S]*?\]\(\2\)/g, '$1')
+  // Pass 2: non-consecutive duplicates — keep first occurrence of each image URL.
+  const seenImageUrls = new Set<string>()
+  raw = raw.replace(/!\[[\s\S]*?\]\(([^)]+)\)/g, (match, url) => {
+    if (seenImageUrls.has(url)) return ''
+    seenImageUrls.add(url)
+    return match
+  })
 
   // Fix triple math: X(expr1)X(expr2)X(expr1) → X(expr1)
   // The export repeats each expression 3 times: plain, LaTeX, plain
