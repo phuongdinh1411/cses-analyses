@@ -68,8 +68,9 @@ export function cleanByteBytGoContent(raw: string): string {
   const baseUrl = import.meta.env.BASE_URL
   raw = raw.replaceAll('https://bytebytego.com/images/', baseUrl + 'images/')
 
-  // Remove duplicate consecutive images: ![alt](url)\n\n![same alt](same url)
-  raw = raw.replace(/(!\[[^\]]*\]\([^)]+\))\n\n+\1/g, '$1')
+  // Remove duplicate consecutive images (light+dark mode duplicates from export).
+  // Match by URL: if two image lines share the same URL separated only by blank lines, keep the first.
+  raw = raw.replace(/(!\[[\s\S]*?\]\(([^)]+)\))\s*\n\s*!\[[\s\S]*?\]\(\2\)/g, '$1')
 
   // Fix triple math: X(expr1)X(expr2)X(expr1) → X(expr1)
   // The export repeats each expression 3 times: plain, LaTeX, plain

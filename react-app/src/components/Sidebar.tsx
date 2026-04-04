@@ -132,7 +132,7 @@ export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: Side
             {hasChildren ? (
               <a
                 onClick={(e) => { e.preventDefault(); toggleExpand(grandchild.url) }}
-                className={isActive(grandchild.url) ? 'active' : ''}
+                className={`${isActive(grandchild.url) ? 'active' : ''}${isExpanded ? ' expanded' : ''}`}
                 role="button"
                 tabIndex={0}
               >
@@ -165,7 +165,7 @@ export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: Side
             {hasChildren ? (
               <a
                 onClick={(e) => { e.preventDefault(); toggleExpand(child.url) }}
-                className={isActive(child.url) ? 'active' : ''}
+                className={`${isActive(child.url) ? 'active' : ''}${isExpanded ? ' expanded' : ''}`}
                 role="button"
                 tabIndex={0}
               >
@@ -221,13 +221,14 @@ export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: Side
       <ul className="nav__items">
         {filteredNav.map(item => {
           const hasChildren = item.children && item.children.length > 0
+          const isExpanded = expandedItems.has(item.url)
 
           return (
             <li key={item.url} className="nav__item">
               {hasChildren ? (
                 <a
                   onClick={(e) => { e.preventDefault(); toggleExpand(item.url) }}
-                  className={isActive(item.url) ? 'active' : ''}
+                  className={`${isActive(item.url) ? 'active' : ''}${isExpanded ? ' expanded' : ''}`}
                   role="button"
                   tabIndex={0}
                 >

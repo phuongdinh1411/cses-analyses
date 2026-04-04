@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
@@ -75,6 +75,77 @@ function CopyButton({ text }: { text: string }) {
   )
 }
 
+// Extract plain text from a React element tree (handles rehype-highlight spans)
+function extractTextFromChildren(node: React.ReactNode): string {
+  if (typeof node === 'string') return node
+  if (typeof node === 'number') return String(node)
+  if (!node) return ''
+  if (Array.isArray(node)) return node.map(extractTextFromChildren).join('')
+  if (typeof node === 'object' && 'props' in node) {
+    return extractTextFromChildren((node as React.ReactElement<{ children?: React.ReactNode }>).props.children)
+  }
+  return ''
+}
+
+// Tabbed code group: renders code blocks as tabs.
+// Languages are passed via data-languages on the marker div (set by groupCodeBlocks).
+function CodeTabGroup({ languages, children }: { languages: string[]; children: React.ReactNode }) {
+  const [activeTab, setActiveTab] = useState(0)
+
+  // Convert children to an array of React nodes (one per code-block-wrapper)
+  const blocks = useMemo(() => {
+    const arr: React.ReactNode[] = []
+    React.Children.forEach(children, (child) => {
+      if (React.isValidElement(child)) arr.push(child)
+    })
+    return arr
+  }, [children])
+
+  if (blocks.length <= 1) {
+    return <>{children}</>
+  }
+
+  // Build tab data from hardcoded languages + block elements
+  const tabs = languages.slice(0, blocks.length).map((lang, i) => ({
+    lang,
+    displayLang: LANG_NAMES[lang] || lang || 'Code',
+    element: blocks[i],
+  }))
+
+  // Extract code text from the active tab's block for copy button
+  const activeCodeText = useMemo(() => {
+    const block = blocks[activeTab]
+    if (!block || !React.isValidElement(block)) return ''
+    // block is <div class="code-block-wrapper"><div class="code-block-header">...</div><pre><code>...</code></pre></div>
+    // Walk into pre > code to get text
+    return extractTextFromChildren(block).replace(/\n$/, '')
+  }, [blocks, activeTab])
+
+  return (
+    <div className="code-tab-group">
+      <div className="code-tab-bar">
+        {tabs.map((tab, i) => (
+          <button
+            key={tab.lang + i}
+            className={`code-tab-btn${i === activeTab ? ' code-tab-btn--active' : ''}`}
+            onClick={() => setActiveTab(i)}
+          >
+            {tab.displayLang}
+          </button>
+        ))}
+        {activeCodeText && (
+          <div className="code-tab-copy">
+            <CopyButton text={activeCodeText} />
+          </div>
+        )}
+      </div>
+      <div className="code-tab-panel">
+        {tabs[activeTab]?.element}
+      </div>
+    </div>
+  )
+}
+
 // Custom components for react-markdown
 const components: Components = {
   // Wrap <pre> blocks with language label + copy button
@@ -125,6 +196,14 @@ const components: Components = {
       </code>
     )
   },
+  // Render tabbed code groups from our preprocessing markers
+  div({ className, children, ...props }) {
+    if (className === 'code-tab-group-marker') {
+      const languages = ((props as Record<string, unknown>)['data-languages'] as string || '').split(',').filter(Boolean)
+      return <CodeTabGroup languages={languages}>{children}</CodeTabGroup>
+    }
+    return <div className={className} {...props}>{children}</div>
+  },
   // Make links open in new tab for external URLs
   a({ href, children, ...props }) {
     const isExternal = href?.startsWith('http')
@@ -140,14 +219,74 @@ const components: Components = {
   },
 }
 
+// Preprocess markdown to wrap consecutive code blocks in tab group markers.
+// Detects 2+ fenced code blocks in different languages separated only by blank lines.
+function groupCodeBlocks(md: string): string {
+  // Match fenced code blocks: ```lang\n...\n```
+  const codeBlockRe = /```(\w+)\n[\s\S]*?\n```/g
+  const blocks: { start: number; end: number; lang: string }[] = []
+  let match
+  while ((match = codeBlockRe.exec(md)) !== null) {
+    blocks.push({ start: match.index, end: match.index + match[0].length, lang: match[1] })
+  }
+
+  if (blocks.length < 2) return md
+
+  // Find groups of consecutive code blocks separated by only whitespace
+  const groups: { start: number; end: number; blockIndices: number[] }[] = []
+  let i = 0
+  while (i < blocks.length) {
+    const group = [i]
+    let j = i + 1
+    while (j < blocks.length) {
+      const between = md.slice(blocks[j - 1].end, blocks[j].start)
+      // Only group if separated by blank lines (no other content) and different languages
+      if (between.trim() === '') {
+        // Check the group would have distinct languages
+        const langs = new Set(group.map(idx => blocks[idx].lang))
+        if (!langs.has(blocks[j].lang)) {
+          group.push(j)
+          j++
+          continue
+        }
+      }
+      break
+    }
+    if (group.length >= 2) {
+      groups.push({
+        start: blocks[group[0]].start,
+        end: blocks[group[group.length - 1]].end,
+        blockIndices: group,
+      })
+    }
+    i = group.length >= 2 ? j : i + 1
+  }
+
+  if (groups.length === 0) return md
+
+  // Build result by replacing groups with wrapped versions (process from end to preserve offsets)
+  let result = md
+  for (let g = groups.length - 1; g >= 0; g--) {
+    const group = groups[g]
+    const content = result.slice(group.start, group.end)
+    const langs = group.blockIndices.map(idx => blocks[idx].lang).join(',')
+    const wrapped = `<div class="code-tab-group-marker" data-languages="${langs}">\n\n${content}\n\n</div>`
+    result = result.slice(0, group.start) + wrapped + result.slice(group.end)
+  }
+
+  return result
+}
+
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+  const processed = useMemo(() => groupCodeBlocks(content), [content])
+
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeSlug, rehypeHighlight]}
       components={components}
     >
-      {content}
+      {processed}
     </ReactMarkdown>
   )
 }
