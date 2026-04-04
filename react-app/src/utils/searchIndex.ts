@@ -2,6 +2,8 @@
 // Reuses the same glob as useMarkdownLoader — since both are eager imports,
 // Vite deduplicates them into a single bundle chunk.
 
+import { cleanByteBytGoContent } from '../hooks/useMarkdownLoader'
+
 const markdownModules = import.meta.glob<string>(
   [
     '../../../problem_soulutions/**/*.md',
@@ -102,11 +104,14 @@ function stripMarkdown(raw: string): string {
 }
 
 // Build index once at module load
-const searchIndex: SearchEntry[] = Object.entries(markdownModules).map(([key, raw]) => ({
-  title: extractTitle(raw),
-  url: extractUrl(key, raw),
-  content: stripMarkdown(raw),
-}))
+const searchIndex: SearchEntry[] = Object.entries(markdownModules).map(([key, raw]) => {
+  const cleaned = key.includes('bytebytego_content/') ? cleanByteBytGoContent(raw) : raw
+  return {
+    title: extractTitle(cleaned),
+    url: extractUrl(key, cleaned),
+    content: stripMarkdown(cleaned),
+  }
+})
 
 export function search(query: string, maxResults = 15): SearchResult[] {
   if (!query || query.length < 2) return []

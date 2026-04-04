@@ -59,6 +59,29 @@ function bytebytegUrlFromPath(filePath: string): string | null {
   return `/bytebytego/${courseKey}/${filename}`
 }
 
+// Clean ByteByteGo export artifacts:
+// 1. Rewrite image URLs from bytebytego.com to local paths
+// 2. Remove duplicate consecutive images (export includes light+dark mode duplicates)
+// 3. Fix triple-rendered math: "O(n2)O(n^2)O(n2)" → "O(n²)" (keep first/plain version)
+//    and standalone letter triples like "nnn" → "n"
+export function cleanByteBytGoContent(raw: string): string {
+  const baseUrl = import.meta.env.BASE_URL
+  raw = raw.replaceAll('https://bytebytego.com/images/', baseUrl + 'images/')
+
+  // Remove duplicate consecutive images: ![alt](url)\n\n![same alt](same url)
+  raw = raw.replace(/(!\[[^\]]*\]\([^)]+\))\n\n+\1/g, '$1')
+
+  // Fix triple math: X(expr1)X(expr2)X(expr1) → X(expr1)
+  // The export repeats each expression 3 times: plain, LaTeX, plain
+  // We keep the first (plain/Unicode) version which renders well without KaTeX
+  raw = raw.replace(/([A-Za-z])\(([^)]+)\)\1\([^)]+\)\1\(\2\)/g, '$1($2)')
+
+  // Fix standalone letter triples: "nnn" → "n", "mmm" → "m"
+  raw = raw.replace(/(?<![a-zA-Z])([a-z])\1\1(?![a-zA-Z])/g, '$1')
+
+  return raw
+}
+
 // Build a lookup map from URL path → glob key
 // Registers both the file-path-based URL and the front matter permalink (if different).
 function buildPathMap(): Map<string, string> {
@@ -149,11 +172,11 @@ export function useMarkdownLoader(routePath: string): UseMarkdownResult {
       return
     }
 
-    // Rewrite ByteByteGo image URLs from absolute to local paths
+    // Clean up ByteByteGo content: rewrite image URLs, remove duplicate images,
+    // and fix triple-rendered math expressions from the export format
     let raw = markdownModules[globKey]
     if (globKey.includes('bytebytego_content/')) {
-      const baseUrl = import.meta.env.BASE_URL
-      raw = raw.replaceAll('https://bytebytego.com/images/', baseUrl + 'images/')
+      raw = cleanByteBytGoContent(raw)
     }
 
     setData(parseFrontMatter(raw))
