@@ -884,6 +884,10 @@ main:
     url: /cses-analyses/pattern/binary-search
   - title: Prefix Sum
     url: /cses-analyses/pattern/prefix-sum
+  - title: Segment Tree
+    url: /cses-analyses/pattern/segment-tree
+  - title: Fenwick Tree (BIT)
+    url: /cses-analyses/pattern/fenwick-tree
   - title: Backtracking
     url: /cses-analyses/pattern/backtracking
   - title: Bitmask Techniques
