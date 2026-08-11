@@ -42,11 +42,17 @@ problem_soulutions/              # CP problems by category (note: intentional ty
     ├── fetch_leetcode_contests.py  # Crawler script (needs .leetcode_cookies)
     └── LEETCODE_CONTEST_TEMPLATE.md
 
-pattern/                         # Algorithm pattern guides (not served via nav, standalone references)
+pattern/                         # Algorithm pattern guides (served in BOTH the Jekyll and React SPA sidebars)
 ├── DP.md, Graph.md, Tree.md     # Comprehensive technique guides with examples
 ├── BinarySearch.md, LCA.md      # Each covers patterns, templates, and practice problems
 ├── PrefixSum.md, StackQueue.md
+├── SegmentTree.md, FenwickTree.md
 └── Backtracking.md
+
+react-app/                       # React SPA frontend (deployed to Vercel; separate from Jekyll/GitHub Pages)
+├── src/data/navigation.ts       # SPA sidebar nav (MUST edit for new pages — parallel to _data/navigation.yml)
+├── src/hooks/useMarkdownLoader.ts  # Loads pattern/**/*.md; auto-maps URL from front-matter permalink
+└── src/pages/HomePage.tsx       # Landing cards (hardcoded pattern/design counts)
 
 system_design/                   # System design interview guides
 ├── TEMPLATE.md                  # Template for new system designs
@@ -68,14 +74,14 @@ _config.yml                      # Jekyll config (baseurl: /cses-analyses, markd
 1. Create `problem_soulutions/{category}/{problem_name}_analysis.md`
 2. Front matter: `layout: simple`, `title`, `permalink: /problem_soulutions/{category}/{problem_name}`
 3. Structure: Problem Overview table → Problem Statement → Brute Force → Key Insight → Optimal Solution → Complexity → Edge Cases
-4. **Add entry to `_data/navigation.yml`** under the appropriate category
+4. **Add entry to BOTH `_data/navigation.yml` and `react-app/src/data/navigation.ts`** under the appropriate category (see [Navigation](#navigation) — the two frontends have separate nav files)
 
 ### Adding LeetCode Contest Solutions
 
 1. Run crawler or copy from `LEETCODE_CONTEST_TEMPLATE.md`
 2. Each problem gets a collapsible `<details markdown="1">` section with hints, approach, and Python solution
 3. Use 2-space indentation in Python code blocks
-4. Update both `_data/navigation.yml` and `problem_soulutions/leetcode_contests/index.md`
+4. Update `_data/navigation.yml`, `react-app/src/data/navigation.ts`, and `problem_soulutions/leetcode_contests/index.md`
 
 ### Adding System Design Guides
 
@@ -106,4 +112,9 @@ graph TD
 
 ## Navigation
 
-All content requires an entry in `_data/navigation.yml` to appear in the sidebar. Structure is 3 levels deep: main → children → children. All URLs must include `/cses-analyses/` prefix (the baseurl).
+The site has **two independent frontends** over the same markdown content:
+
+1. **Jekyll** (GitHub Pages) — sidebar built from `_data/navigation.yml`. 3 levels deep: main → children → children. All URLs include the `/cses-analyses/` baseurl prefix.
+2. **React SPA** (Vercel, `react-app/`) — sidebar built from `react-app/src/data/navigation.ts`. URLs use NO baseurl prefix (base is `/`). Content routing is automatic: `useMarkdownLoader` globs `pattern/**/*.md` and maps each page by its front-matter `permalink`, so no loader edit is needed — but the nav list is hardcoded and MUST be edited by hand.
+
+**When adding any page, edit BOTH nav files.** Editing only `_data/navigation.yml` leaves the Vercel SPA sidebar stale (the page still 404s there until `react-app` is rebuilt). A Vercel rebuild is triggered by a push to `main` (same as GitHub Pages). If a card count on `react-app/src/pages/HomePage.tsx` references the number of patterns/designs, bump it too.
