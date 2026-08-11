@@ -554,6 +554,8 @@ export const navigationData: NavItem[] = [
       { title: "Stack & Queue", url: "/pattern/stack-queue" },
       { title: "Binary Search", url: "/pattern/binary-search" },
       { title: "Prefix Sum", url: "/pattern/prefix-sum" },
+      { title: "Segment Tree", url: "/pattern/segment-tree" },
+      { title: "Fenwick Tree (BIT)", url: "/pattern/fenwick-tree" },
       { title: "Backtracking", url: "/pattern/backtracking" },
       { title: "Bitmask Techniques", url: "/pattern/bitmask" },
       { title: "Bitmask DP \u2014 Subset Partition", url: "/pattern/bitmask-dp-subset-partition" },

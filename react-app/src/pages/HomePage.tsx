@@ -45,7 +45,7 @@ const categories = [
     icon: '🔄',
     title: 'Patterns',
     description: 'Algorithm patterns: DP, graphs, trees, binary search, backtracking',
-    count: '13',
+    count: '15',
     url: '/pattern/DP',
     color: '#10b981',
   },
