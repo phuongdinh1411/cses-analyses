@@ -567,7 +567,7 @@ Problem asks for aggregate over ALL subarrays?
 | # | Problem | Key Technique |
 |---|---------|---------------|
 | 1 | **LC 1588** --- Sum of All Odd Length Subarrays | `nums[i] × count_of_odd_length_subarrays_containing_i` |
-| 2 | **LC 1748** --- Sum of Unique Elements | Basic contribution warm-up |
+| 2 | **LC 1748** --- Sum of Unique Elements | Degenerate warm-up: each element's "contribution" is itself iff it occurs once (no span/count math) |
 
 ### Tier 2 --- Monotonic Stack + Contribution
 

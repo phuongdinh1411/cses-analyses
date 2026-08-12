@@ -203,30 +203,49 @@ def max_subarray(arr):
     return best
 ```
 
-### Example: Coin Combinations (Count Ways)
+### Example: Coin Counting — Ordered vs Unordered (loop order matters!)
 
 **Problem**: Given coins `[1, 3, 5]`, how many ways to make sum `n`?
 
-```
-State:  dp[s] = number of ways to form sum s
+There are **two** different questions hiding here, and the *only* difference in
+code is which loop is on the outside:
 
-Transition:
-  dp[s] = sum(dp[s - coin] for coin in coins if s >= coin)
-
-Base: dp[0] = 1 (one way to make sum 0: use no coins)
-Answer: dp[n]
 ```
+dp[s] = number of ways to form sum s,   dp[0] = 1
+```
+
+**A) Count ordered sequences** (1+3 and 3+1 are different) — outer loop `s`:
 
 ```python
-def coin_ways(coins, n):
+def count_ordered(coins, n):
     dp = [0] * (n + 1)
     dp[0] = 1
-    for s in range(1, n + 1):
-        for coin in coins:
+    for s in range(1, n + 1):        # for each target sum...
+        for coin in coins:           # ...try every coin as the LAST one added
             if s >= coin:
                 dp[s] += dp[s - coin]
     return dp[n]
 ```
+
+**B) Count unordered combinations** (1+3 same as 3+1) — outer loop `coin`:
+
+```python
+def count_combinations(coins, n):
+    dp = [0] * (n + 1)
+    dp[0] = 1
+    for coin in coins:               # fix a coin order once...
+        for s in range(coin, n + 1): # ...only extend sums using coins seen so far
+            dp[s] += dp[s - coin]
+    return dp[n]
+```
+
+`★ The rule ──────────────────────────────────────`
+Outer = sum → each coin can be the "last" one at every step → **permutations**
+(ordered, CSES "Coin Combinations I").
+Outer = coin → each coin is introduced once, globally → **combinations**
+(unordered, CSES "Coin Combinations II" / classic "Coin Change 2").
+Same three lines; the outer loop decides the meaning.
+──────────────────────────────────────────────────`
 
 ### Example: House Robber
 

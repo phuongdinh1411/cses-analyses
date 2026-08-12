@@ -93,22 +93,20 @@ Generate all 3-bit binary strings:
             / \    / \   / \    / \
          000 001 010 011 100 101 110 111  ← choose bit 2
 
-Without pruning: visits all 2^3 = 8 leaves
-With constraint "no two consecutive 1s":
+Without pruning: visits all 2^3 = 8 leaves.
+With constraint "no two consecutive 1s", we prune the "11" prefix
+at level 2 — its whole subtree (110, 111) is never generated:
+
                        ""
                    /        \
                  "0"        "1"
                /    \      /    ╲
-            "00"   "01"  "10"   "11" ← PRUNE (consecutive 1s)
-            / \    / \   / \
-         000 001 010 011 100 101      ← only 5 leaves!
-                      ↑
-                     PRUNE (011→0110/0111 both have "11")
-Wait — 011 is 3 bits, it's a leaf. Let me redo:
+            "00"   "01"  "10"   "11"  ← PRUNE here (prefix has "11")
+            / \    / \   / \      ✗   (110, 111 never expanded)
+         000 001 010 011 100 101
 
-Actually for 3-bit, leaves ARE the 3-bit strings.
-Pruning "11" prefix means we skip "110" and "111".
-Result: 000, 001, 010, 100, 101 — 5 valid strings.
+Valid results: 000, 001, 010, 100, 101 — 5 strings.
+The prune at the "11" prefix saved exploring 2 leaves.
 ```
 
 ### Recursion vs State Space

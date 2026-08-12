@@ -586,7 +586,7 @@ Pair (3, 5), distance = 4:
 
 | Problem | DFS Computes | Per-Edge Formula | Combine | Rerooting? | Time |
 |---------|-------------|------------------|---------|------------|------|
-| **834** Distances | `sub[v]` | `sub[v] × (n - sub[v])` | sum | Yes: `ans[v] = ans[u] - sub[v] + (n-sub[v])` | O(n) |
+| **834** Distances | `sub[v]` | root sum `+= sub[v]` per edge | sum | Yes: `ans[v] = ans[u] - sub[v] + (n-sub[v])` | O(n) |
 | **979** Coins | `excess[v]` | `\|excess[v]\|` | sum | No (single answer) | O(n) |
 | **2049** Score | `sub[v]` | `Π(sub[child]) × (n-sub[v])` | product | No (compute per node) | O(n) |
 | **2858** Reversals | `cost[v]` | `w` (0 or 1 per edge) | sum | Yes: `ans[v] = ans[u] - 2w + 1` | O(n) |

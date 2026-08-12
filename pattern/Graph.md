@@ -416,6 +416,12 @@ def prim(adj, n, start=0):
             if not visited[v]:
                 heapq.heappush(pq, (weight, v))
 
+    # If we couldn't reach every vertex, the graph is disconnected:
+    # no spanning tree exists. Returning mst_weight here would be a
+    # misleading partial sum, so signal it instead.
+    if edges_used < n:
+        return None  # or: raise ValueError("graph is disconnected")
+
     return mst_weight
 ```
 
@@ -1226,9 +1232,10 @@ def solve_2sat(n, clauses):
         if comp[i] == comp[i + n]:
             return None  # x and NOT x in same SCC -> unsatisfiable
 
-    # assign values: if comp[i] > comp[i+n], x_i = True
-    # (Tarjan returns SCCs in reverse topological order)
-    values = [comp[i] > comp[i + n] for i in range(n)]
+    # Assign values. Tarjan returns SCCs in REVERSE topological order,
+    # so a smaller comp id = later in topological order. Pick the literal
+    # that comes later in topo order: x_i = True when comp[i] < comp[i+n].
+    values = [comp[i] < comp[i + n] for i in range(n)]
     return values
 ```
 

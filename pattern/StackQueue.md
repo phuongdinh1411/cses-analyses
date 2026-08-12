@@ -507,14 +507,15 @@ Sliding window max, window size k=3:
 
 arr: [1, 3, -1, -3, 5, 3, 6, 7]
 
-Window [1,3,-1]:
-  deque maintains DECREASING order of values
-  deque (indices): [1]  (index of 3 -- 1 and -1 are smaller, irrelevant)
-  max = arr[deque[0]] = 3
+The deque holds INDICES whose values are in decreasing order,
+so the front is always the current window's max.
 
-Window [3,-1,-3]:
-  deque: [1, 2]  wait... let me trace properly
+Window [1, 3, -1]:
+  3 evicts 1 from the back (1 < 3); -1 is smaller than 3, kept behind it.
+  deque (indices): [1, 2]   ->   max = arr[deque[0]] = arr[1] = 3
 ```
+
+(Full step-by-step trace over the whole array is in the [Trace](#trace) below.)
 
 ### Sliding Window Maximum
 

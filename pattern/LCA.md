@@ -140,7 +140,7 @@ LCA(4, 2):
 import sys
 sys.setrecursionlimit(200_000)
 
-LOG = 20  # enough for N up to 10^6
+LOG = 20  # binary-lifting table depth: 2^20 > 10^6, so it covers N up to ~10^6
 
 class BinaryLifting:
     def __init__(self, n, adj, root=0):
@@ -198,6 +198,24 @@ class BinaryLifting:
         # now u and v are children of the LCA
         return self.up[0][u]
 ```
+
+> **Recursion-depth caveat.** The `LOG = 20` table handles the *ancestor jumps*
+> for N up to ~10⁶, but the recursive `_dfs` above does **not** — a skewed tree
+> (a long path) has depth up to N, which overflows Python's C stack far below
+> 10⁶ (and even the raised `setrecursionlimit`). For large or adversarial inputs
+> convert `_dfs` to an explicit stack:
+>
+> ```python
+> def _dfs_iter(self, root):
+>     stack = [(root, -1)]
+>     while stack:
+>         node, par = stack.pop()
+>         self.up[0][node] = par
+>         for nb in self.adj[node]:
+>             if nb != par:
+>                 self.depth[nb] = self.depth[node] + 1
+>                 stack.append((nb, node))
+> ```
 
 ### Why Step 3 Works
 

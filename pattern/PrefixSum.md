@@ -300,16 +300,35 @@ def longest_subarray_sum_k(a, k):
 
 ```python
 def count_sum_in_range(a, lo, hi):
-    """Count subarrays with sum in [lo, hi]."""
-    # count(sum ≤ hi) - count(sum ≤ lo - 1)
+    """Count subarrays with sum in [lo, hi]. Assumes non-negative values."""
+    # count(sum <= hi) - count(sum <= lo - 1)
     return _count_at_most(a, hi) - _count_at_most(a, lo - 1)
 
 def _count_at_most(a, target):
-    """Count subarrays with sum ≤ target. Uses sorted container or merge sort."""
-    # For general arrays (with negatives), this requires more advanced DS
-    # For non-negative arrays, sliding window works
-    pass
+    """Count subarrays with sum <= target (non-negative array).
+
+    Sliding window: since all values >= 0, the window sum is monotonic,
+    so we shrink from the left whenever it exceeds target. Every valid
+    subarray ending at `right` has length (right - left + 1).
+    """
+    if target < 0:
+        return 0
+    total = 0
+    left = 0
+    window = 0
+    for right, x in enumerate(a):
+        window += x
+        while window > target:
+            window -= a[left]
+            left += 1
+        total += right - left + 1
+    return total
 ```
+
+> **Negatives break the window.** With negative values the running sum is no
+> longer monotonic, so shrinking from the left is invalid. Use a balanced BST /
+> Fenwick tree over prefix sums (count prefixes in a value range) instead —
+> see the [Fenwick Tree guide](/pattern/fenwick-tree).
 
 ### Complexity
 

@@ -810,10 +810,12 @@ def max_xor_subset(nums):
             basis.append(cur)
             basis.sort(reverse=True)
 
-    # Maximum XOR is XOR of all basis vectors
+    # Greedily build the max XOR: take a basis vector only if it
+    # turns ON a bit that is still off (i.e. increases the result).
+    # basis is sorted high-bit-first, so this locks in every high bit.
     result = 0
     for b in basis:
-        result ^= b
+        result = max(result, result ^ b)
 
     return result
 ```

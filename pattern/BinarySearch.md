@@ -265,13 +265,16 @@ def min_days_bouquets(bloom_day, m, k):
 ```
 arr = [7, 2, 5, 10, 8], k = 2
 
-If max_sum = 18: [7,2,5] and [10,8] -> sums 14, 18 -> works (2 splits)
-If max_sum = 17: can't split into <= 2 parts with each <= 17?
-  [7,2,5] and [10,8=18] > 17 -> need 3 parts -> doesn't work
-  Actually [7,2,5,10=24] > 17 too... let's trace properly
-  [7,2,5]=14 ok, [10]=10 ok, [8]=8 ok -> 3 parts > 2 -> doesn't work
+We binary-search the answer = the largest subarray sum we allow (the "cap").
+For a given cap, greedily fill parts left to right, starting a new part
+whenever adding the next element would exceed the cap; count the parts.
 
-If max_sum = 18: [7,2,5]=14, [10,8]=18 -> 2 parts -> works!
+cap = 17: [7,2,5]=14, next +10=24 > 17 -> new part [10]=10,
+          next +8=18 > 17 -> new part [8]=8  =>  3 parts > 2  -> too small
+cap = 18: [7,2,5]=14, next +10=24 > 18 -> new part [10,8]=18  =>  2 parts <= 2  -> works
+
+Feasible caps form a monotonic suffix (works for 18 and up, fails below),
+so binary search finds the smallest feasible cap = 18.
 ```
 
 ```python
@@ -683,20 +686,20 @@ def find_median(nums1, nums2):
 ### How It Works
 
 ```
-nums1: [1, 3, | 8, 9]      i = 2 (take 2 from nums1)
-nums2: [2, | 5, 6, 7, 10]   j = 3 (take 3 from nums2)
+nums1: [1, 3, | 8, 9]       i = 2 (take 2 from nums1)
+nums2: [2, 5, 6, | 7, 10]    j = 3 (take 3 from nums2)
 
-Left half:  {1, 3, 2, 5, 6}   max = 6
-Right half: {8, 9, 7, 10}     min = 7
+Total = 9 (odd), half = (4 + 5 + 1) // 2 = 5 elements in the left half.
+i = 2 from nums1 + j = 3 from nums2 = 5 ✓
 
-Check: left1=3 <= right2=7 ✓  and  left2=6 <= right1=8 ✓
+Left half:  {1, 3} ∪ {2, 5, 6}   left1 = 3, left2 = 6
+Right half: {8, 9} ∪ {7, 10}     right1 = 8, right2 = 7
+
+Check: left1 = 3 <= right2 = 7 ✓  and  left2 = 6 <= right1 = 8 ✓
        -> correct partition!
 
-Wait, we need half = (4+5+1)//2 = 5 elements in left half.
-i=2 from nums1, j=3 from nums2 -> 5 total ✓
-
-Median (odd total) = max(left1, left2) = max(3, 6) = 6...
-Actually let me recalculate. Sorted: [1,2,3,5,6,7,8,9,10], median = 6. ✓
+Median (odd total) = max(left1, left2) = max(3, 6) = 6
+Sanity check on the merged sort [1,2,3,5,6,7,8,9,10]: median = 6 ✓
 ```
 
 ---

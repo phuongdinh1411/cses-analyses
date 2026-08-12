@@ -77,6 +77,9 @@ def count(num):
         return result
 
     ans = dp(0, initial_state, True, False)
+    # dp is a fresh closure per call, so its cache can't leak into other
+    # bounds. This clear only frees memory early (optional) — it is NOT
+    # required for correctness with this nested-function layout.
     dp.cache_clear()
     return ans
 
@@ -607,7 +610,7 @@ See "count numbers in [L, R]"?
 | Forgetting leading zeros | Use `started` parameter |
 | Off-by-one in range | `count(high) - count(low - 1)` |
 | State too large | Use diff instead of two sums, remainder instead of full value |
-| Not clearing cache | Call `dp.cache_clear()` between `count(high)` and `count(low-1)` |
+| Sharing one cache across bounds | Define `@lru_cache` on a **nested** `dp` inside `count()` so each call gets a fresh cache (as in the template). A module/class-level cache reused across different `digits` gives wrong answers — clear it or key on the digits. |
 | String inputs (2719) | Use `count(num2) - count(num1) + valid(num1)` |
 
 ---

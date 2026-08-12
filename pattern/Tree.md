@@ -637,8 +637,8 @@ Centroid of {4,5,6} = 5 (or 4)
 ```python
 def find_centroid(node, par, adj, subtree_size, tree_size):
     for child in adj[node]:
-        if child == par and subtree_size[child] > tree_size // 2:
-            # this subtree is too big, centroid is in there
+        if child != par and subtree_size[child] > tree_size // 2:
+            # this subtree is too big, centroid lies inside it
             return find_centroid(child, node, adj, subtree_size, tree_size)
     return node
 ```
@@ -1155,19 +1155,14 @@ Subtree at 6: hash of (hash(8)) = H_chain2  (same structure!)
 ### Implementation
 
 ```python
-from collections import defaultdict
-
 def tree_hash(n, adj, root=0):
-    """Compute a canonical hash for each subtree."""
-    memo = {}  # tuple -> unique id
-    counter = [0]
-    node_hash = [0] * n
+    """Compute a canonical hash for each subtree.
 
-    def get_id(signature):
-        if signature not in memo:
-            memo[signature] = counter[0]
-            counter[0] += 1
-        return memo[signature]
+    The hash is a *structural* string built from the sorted child hashes,
+    so identical shapes map to identical strings across DIFFERENT trees
+    (no per-call id counter — that would make two trees incomparable).
+    """
+    node_hash = [""] * n
 
     def dfs(node, par):
         child_hashes = []
@@ -1176,12 +1171,21 @@ def tree_hash(n, adj, root=0):
                 continue
             dfs(child, node)
             child_hashes.append(node_hash[child])
-        child_hashes.sort()  # canonical ordering
-        node_hash[node] = get_id(tuple(child_hashes))
+        child_hashes.sort()  # canonical ordering: child order must not matter
+        # A leaf becomes "()"; internal nodes wrap their sorted children.
+        node_hash[node] = "(" + "".join(child_hashes) + ")"
 
     dfs(root, -1)
     return node_hash
 ```
+
+> **Why a string, not an integer id?** A canonical hash must give the same
+> symbol to the same shape *across every tree you compare*. Interning shapes to
+> integers with a counter that restarts each call breaks that — id `3` in one
+> tree and id `3` in another are unrelated shapes. The nested-parenthesis string
+> is self-contained and comparable anywhere. For large trees, replace the raw
+> string with a rolling hash of it (or intern strings into a *shared* dict) to
+> keep comparisons O(1).
 
 ### Rooted vs Unrooted Isomorphism
 

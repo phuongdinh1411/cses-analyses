@@ -274,7 +274,7 @@ class SegTree:
 | GCD | `math.gcd(a, b)` | `0` |
 | Product | `a * b` | `1` |
 | Bitwise AND | `a & b` | `~0` (all ones) |
-| Bitwise OR | `a | b` | `0` |
+| Bitwise OR | `a \| b` | `0` |
 
 ### Why Two Accumulators (`resl`, `resr`)?
 
