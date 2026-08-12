@@ -884,6 +884,12 @@ main:
     url: /cses-analyses/pattern/binary-search
   - title: Prefix Sum
     url: /cses-analyses/pattern/prefix-sum
+  - title: Sliding Window
+    url: /cses-analyses/pattern/sliding-window
+  - title: Two Pointers
+    url: /cses-analyses/pattern/two-pointers
+  - title: Heap / Priority Queue
+    url: /cses-analyses/pattern/heap
   - title: Segment Tree
     url: /cses-analyses/pattern/segment-tree
   - title: Fenwick Tree (BIT)

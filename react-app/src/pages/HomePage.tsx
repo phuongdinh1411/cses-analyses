@@ -45,7 +45,7 @@ const categories = [
     icon: '🔄',
     title: 'Patterns',
     description: 'Algorithm patterns: DP, graphs, trees, binary search, backtracking',
-    count: '15',
+    count: '18',
     url: '/pattern/DP',
     color: '#10b981',
   },
@@ -108,7 +108,7 @@ export default function HomePage() {
             <span className="hero__stat-label">System Designs</span>
           </div>
           <div className="hero__stat">
-            <span className="hero__stat-number">15</span>
+            <span className="hero__stat-number">18</span>
             <span className="hero__stat-label">Patterns</span>
           </div>
         </div>
