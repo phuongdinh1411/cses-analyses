@@ -37,7 +37,8 @@ The core skill of a strong problem-solver is not memorizing algorithms — it is
 7. [Subset / Small-n Family](#7-subset--small-n-family)
 8. [Tie-Breakers: The Confusable Pairs](#8-tie-breakers-the-confusable-pairs)
 9. [Constraint-Size Cheat Sheet](#9-constraint-size-cheat-sheet)
-10. [Full Technique Index](#10-full-technique-index)
+10. [Worked Routing Examples](#10-worked-routing-examples)
+11. [Full Technique Index](#11-full-technique-index)
 
 ---
 
@@ -54,6 +55,7 @@ graph TD
     START --> GRAPH["Graph:<br/>nodes + edges"]
     START --> CHOICE["Sequence of choices /<br/>count or optimize ways"]
     START --> RANGE["Static-ish array +<br/>many range queries"]
+    START --> GRID["2-D grid / matrix"]
     START --> SMALL["Set of items,<br/>n very small (n ≤ 20)"]
 
     ARR --> AFAM["→ §2 Array / String family"]
@@ -61,6 +63,7 @@ graph TD
     GRAPH --> GFAM["→ §4 Graph family"]
     CHOICE --> DFAM["→ §5 DP family"]
     RANGE --> RFAM["→ §6 Range-query structures"]
+    GRID --> GRFAM["→ Grid = implicit graph (§4)<br/>or grid DP (§5)"]
     SMALL --> SFAM["→ §7 Subset / small-n family"]
 ```
 
@@ -71,6 +74,8 @@ graph TD
 | Explicit nodes + edges, reachability / shortest path / connectivity | [§4 Graph](#4-graph-family) |
 | "How many ways", "min/max cost of a sequence of decisions" | [§5 DP](#5-dp-family) |
 | Fixed array, then thousands of `query(l,r)` and/or `update(i)` | [§6 Range structures](#6-range-query-structures) |
+| 2-D grid: flood fill / shortest path in maze / connected regions | [§4 Graph](#4-graph-family) (grid is an implicit graph — each cell a node, neighbors = up/down/left/right) |
+| 2-D grid: count paths / min path cost with movement rules | [§5 DP](#5-dp-family) (grid DP: `dp[r][c]` from top/left) |
 | Pick a subset / assign items, `n ≤ 20` | [§7 Subset / small-n](#7-subset--small-n-family) |
 
 ---
@@ -287,7 +292,38 @@ The `n` bound in the problem statement quietly announces the intended complexity
 
 ---
 
-## 10. Full Technique Index
+## 10. Worked Routing Examples
+
+The router only pays off if you can *run it* on a cold problem. Here are five, each showing the cue-spotting walk — shape, then the ask, then constraint size — from problem text to a landed technique. Practice narrating this out loud; that inner monologue *is* the skill.
+
+**Example 1** — *"Given a sorted array, find two numbers that add up to a target."*
+- Shape: array. Ask: find a **pair**. Extra cue: **sorted**.
+- Router → §2 Array/String → "find a PAIR?" → **Two Pointers** (opposite ends; sortedness makes the sum respond monotonically).
+
+**Example 2** — *"Longest substring with at most 2 distinct characters."*
+- Shape: string. Ask: **longest contiguous region** under a constraint ("at most 2 distinct").
+- Router → §2 → "longest/shortest REGION?" → **Sliding Window** (grow right, shrink left when the distinct-count breaks).
+
+**Example 3** — *"Count islands in a grid of land/water cells."*
+- Shape: **2-D grid**. Ask: connected regions.
+- Router → grid branch → "connected regions" → **§4 Graph**, grid-as-implicit-graph → flood fill with BFS/DFS (each cell a node, 4 neighbors).
+
+**Example 4** — *"Number of ways to make amount N from given coin denominations."*
+- Shape: set of choices (which coins). Ask: **count ways**. Greedy fails (denominations arbitrary).
+- Router → §5 DP → "count ways / overlapping subproblems" → **Dynamic Programming** (`dp[amount]`, unbounded-knapsack shape).
+
+**Example 5** — *"Assign N tasks to N workers minimizing total cost, N ≤ 18."*
+- Shape: assignment over a small set. Loud cue: **N ≤ 18** → `2ⁿ` intended.
+- Router → §7 Subset/small-n → "optimize over subsets, overlapping subproblems" → **Bitmask DP** (`dp[mask]` = min cost to assign the tasks in `mask`).
+
+`★ Insight ─────────────────────────────────────`
+- Notice the order every time: **shape → ask → size**. Shape picks the family, the ask picks the branch, and the constraint (Example 5's `N ≤ 18`) confirms or overrides. When size and ask disagree, size usually wins — it's the hardest cue to fake.
+- Example 3 is the payoff of the grid reframing: there is no "island algorithm," only "grid is a graph, run flood fill." Reframers beat memorizers.
+`─────────────────────────────────────────────────`
+
+---
+
+## 11. Full Technique Index
 
 All 18 guides, with the one-line cue that should make you reach for each.
 
