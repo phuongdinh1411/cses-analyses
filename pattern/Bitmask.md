@@ -51,6 +51,24 @@ All subsets of {0, 1, 2}:
 
 ---
 
+## Why This Pattern Exists
+
+When `n ≤ ~20` and you must track **which** subset of items is chosen/visited — not just *how many* — a bitmask encodes the subset as the bits of a single integer. Then `2^n` possible subsets become plain array indices, and set operations (union, intersection, membership) become one machine instruction.
+
+Concrete examples:
+
+- **TSP**: `mask` = set of cities already visited, so `dp[mask][i]` is "cheapest tour visiting exactly those cities, ending at `i`."
+- **Assignment**: `mask` = set of workers already assigned, so `dp[mask]` is "cheapest way to assign those workers to the first `popcount(mask)` jobs."
+
+The size limit is the whole point: `2^20 ≈ 1,000,000` states is fine, but `2^25` (≈ 33M) starts to hurt and factorial enumeration (`20! ≈ 2.4×10^18`) is hopeless. A bitmask turns an exponential *enumeration* into an exponential *table* you fill once.
+
+`★ Insight ─────────────────────────────────────`
+- The bitmask is not the algorithm — it is the **state key**. You still need a DP recurrence (or search) over those keys. Bitmask just makes "the set of used elements" a cheap, hashable index.
+- Reach for it only when the *identity* of the chosen elements matters. If you only need a count or a sum, a cheaper 1-D DP usually beats `2^n`.
+`─────────────────────────────────────────────────`
+
+---
+
 ## 1. Fundamental Bit Operations
 
 ### Basic Operations
@@ -433,8 +451,37 @@ cost = [
     [5, 8, 1]   # Worker 2's cost
 ]
 print(f"Minimum assignment cost: {min_cost_assignment(cost, 3)}")
-# Optimal: Worker 0→Job 1 (2), Worker 1→Job 2 (3), Worker 2→Job 0 (5) = 10
+# Optimal: Worker 0→Job 1 (2), Worker 1→Job 0 (6), Worker 2→Job 2 (1) = 9
 ```
+
+**Trace on the 3×3 matrix above.** `dp[mask]` = min cost to assign the workers in `mask`, where `jobs_assigned = popcount(mask)` is the *next* job index to fill. Bit `w` set = worker `w` used.
+
+```
+cost = [[9,2,7],    # worker 0 → jobs 0,1,2
+        [6,4,3],    # worker 1
+        [5,8,1]]    # worker 2
+
+dp[000] = 0                          (nothing assigned, next job = 0)
+
+# popcount 0 → fill job 0
+dp[001] = cost[0][0] = 9              (worker 0 → job 0)
+dp[010] = cost[1][0] = 6              (worker 1 → job 0)
+dp[100] = cost[2][0] = 5              (worker 2 → job 0)
+
+# popcount 1 → fill job 1
+dp[011] = min(9+cost[1][1]=13, 6+cost[0][1]=8) = 8    (w0,w1 used)
+dp[101] = min(9+cost[2][1]=17, 5+cost[0][1]=7) = 7    (w0,w2 used)
+dp[110] = min(6+cost[2][1]=14, 5+cost[1][1]=9) = 9    (w1,w2 used)
+
+# popcount 2 → fill job 2
+dp[111] = min(dp[011]+cost[2][2]=8+1=9,
+              dp[101]+cost[1][2]=7+3=10,
+              dp[110]+cost[0][2]=9+7=16) = 9
+
+answer = dp[111] = 9
+```
+
+The winning path is `dp[010]=6` (w1→job0) → `dp[011]=8` (w0→job1, +2) → `dp[111]=9` (w2→job2, +1), i.e. worker 1→job 0, worker 0→job 1, worker 2→job 2 — exactly the optimum in the comment.
 
 ### Pattern 3: Partition DP
 
@@ -993,6 +1040,33 @@ def fill_column(rows, col, cur_profile, row, next_profile, ways, next_dp):
 - n ≤ 22: Feasible with optimization (2^22 ≈ 4M)
 - n ≤ 24: Cutting edge (2^24 ≈ 16M, need good constants)
 - n > 24: Consider meet-in-the-middle or other techniques
+
+---
+
+## Which Bitmask Pattern Do I Need?
+
+| The task is... | Pattern | State / loop | Cost |
+|----------------|---------|--------------|------|
+| List every subset of `n` items | **Subset enumeration** | `for mask in range(1<<n)` | O(2^n) |
+| Pick a best subset under per-item values/constraints | **Subset-sum / value DP** | `dp[mask]`, add one bit at a time | O(2^n · n) |
+| Order all items (visit/assign in sequence), cost depends on last | **TSP / permutation-over-mask** | `dp[mask][last]` | O(2^n · n²) |
+| Split a set into two groups and recurse on each | **Submask enumeration** | `sub = (sub-1) & mask` | O(3^n) total |
+| Aggregate a value over all submasks of every mask | **SOS DP** | bit-by-bit sweep | O(n · 2^n) |
+
+Quick tell: if only *which items* matters → `dp[mask]`; if *the order/last item* matters → `dp[mask][last]`; if you must *partition* a set → submask loop.
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Symptom | Fix |
+|---------|---------|-----|
+| `1 << n` vs `1 << (n-1)` off-by-one | full mask wrong / last item dropped | full set is `(1 << n) - 1`; there are `1 << n` masks (`0 .. 2^n-1`) |
+| Missing parentheses in `mask >> i & 1` | wrong bit tested — `&` binds *looser* than `>>` here, but relational/`in` mixes bite you | always write `(mask >> i) & 1` |
+| Iterating submasks with `while sub > 0` | the empty submask `0` is skipped | use the `while True: ... if sub==0: break; sub=(sub-1)&mask` form when `0` matters |
+| Wrong submask step (e.g. `sub-1` alone) | visits masks that aren't submasks | the step is exactly `sub = (sub - 1) & mask` |
+| Integer vs set confusion | `mask + (1<<i)` when bit `i` may already be set corrupts state | add with OR: `mask | (1 << i)`; test with `(mask >> i) & 1` |
+| Forgetting the base case | `dp[full]` stays `INF` | set `dp[0]=0` (subset DP) or `dp[1<<start][start]=0` (TSP) |
 
 ---
 

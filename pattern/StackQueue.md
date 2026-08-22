@@ -126,6 +126,8 @@ The single most important stack pattern. Solves a family of "nearest" problems i
 
 ### The Core Idea
 
+Concrete motivation: for each day's temperature, find how many days until a warmer day (LC 739). The naive approach scans right from every day → O(N^2). A monotonic stack lets each element be pushed and popped **at most once**, so the whole thing runs in O(N).
+
 A **monotonic stack** maintains elements in sorted order (either increasing or decreasing). When a new element violates the order, pop elements until the invariant is restored. The popped elements have found their "answer."
 
 ```
@@ -237,6 +239,37 @@ def previous_smaller(arr):
 
     return result
 ```
+
+### Strict vs Non-Strict (`<` vs `<=`)
+
+The comparison operator in the `while` condition decides how **ties** (equal values) are handled — and getting it wrong is the #1 beginner monotonic-stack bug.
+
+Look at `next_greater`: it pops while `arr[stack[-1]] < arr[i]` (**strict** `<`). Because the comparison is strict, an equal element does **not** trigger a pop, so equal elements never resolve each other.
+
+```
+arr = [2, 2, 3]   (next greater, strict '<')
+
+i=0: push 0                          stack: [0]
+i=1: arr[0]=2 < arr[1]=2 ? No        push 1, stack: [0, 1]
+i=2: arr[1]=2 < 3 ? Yes -> result[1]=3
+     arr[0]=2 < 3 ? Yes -> result[0]=3
+     push 2                          stack: [2]
+
+Result: [3, 3, -1]   (each 2's "next greater" is the 3, not the other 2)
+```
+
+Now change the operator to `<=` (**non-strict**):
+
+```
+arr = [2, 2, 3]   (with '<=')
+
+i=1: arr[0]=2 <= arr[1]=2 ? Yes -> pop 0, result[0]=2   (the second 2 answers the first)
+...
+
+Result: [2, 3, -1]
+```
+
+The strict version answers "next **strictly greater**"; the non-strict version answers "next **greater-or-equal**". Same code, one operator, two different problems. Pick the operator that matches the tie semantics you actually want (and mirror the choice for the smaller-element and previous-element variants).
 
 ### The Complete Monotonic Stack Family
 
@@ -515,7 +548,7 @@ Window [1, 3, -1]:
   deque (indices): [1, 2]   ->   max = arr[deque[0]] = arr[1] = 3
 ```
 
-(Full step-by-step trace over the whole array is in the [Trace](#trace) below.)
+(Full step-by-step trace over the whole array is in the [Sliding Window Trace](#sliding-window-trace) below.)
 
 ### Sliding Window Maximum
 
@@ -545,7 +578,7 @@ def max_sliding_window(arr, k):
     return result
 ```
 
-### Trace
+### Sliding Window Trace
 
 ```
 arr = [1, 3, -1, -3, 5, 3, 6, 7],  k = 3
@@ -726,8 +759,14 @@ Answer: 6 (3x2 block in row 3)
 ```
 Prices:  [100, 80, 60, 70, 60, 75, 85]
 Spans:   [  1,  1,  1,  2,  1,  4,  6]
-                          ^        ^
-                        60,70    60,70,60,75,80,85? No...
+
+Day 0 (100): only itself                            -> span 1
+Day 1 (80):  80; 100>80 stop                         -> span 1
+Day 2 (60):  60; 80>60 stop                          -> span 1
+Day 3 (70):  70,60; 80>70 stop                       -> span 2
+Day 4 (60):  60; 70>60 stop                          -> span 1
+Day 5 (75):  75,60,70,60; 80>75 stop                 -> span 4
+Day 6 (85):  85,75,60,70,60,80; 100>85 stop          -> span 6
 ```
 
 This is **previous greater** in disguise: span = distance to the previous day with a strictly higher price.
@@ -1086,3 +1125,37 @@ for each element:
 ```
 
 The "invariant" is either increasing or decreasing order. The "answer computation" varies by problem (next greater, rectangle area, trapped water, etc.), but the structure is always the same.
+
+### Common Pitfalls
+
+| Pitfall | Fix |
+|---------|-----|
+| Storing **values** on the stack when you need distances/widths | Store **indices** — you can always read `arr[idx]`, but you can't recover the index from a value (§7, §6) |
+| Off-by-one when **evicting** the expired element from the deque | Front is out of window when `dq[0] < i - k + 1`; evict *before* recording the answer (§5) |
+| Forgetting the histogram **sentinel** | Iterate to `n` with a virtual height `0` so every real bar gets popped and measured (§6) |
+| Wrong comparison operator for **ties** (`<` vs `<=`) | Strict `<` keeps equal elements from resolving each other (next strictly-greater); `<=` gives next greater-or-equal (§2) |
+| `mid`/window pointer advanced at the wrong time | Advance only after the current element is fully classified — trace one tie by hand |
+
+### Practice Order
+
+```
+Start here
+    │
+    ▼
+  20  (Easy)    ──── Valid Parentheses: plain stack matching, no monotonic invariant
+    │
+    ▼
+  739 (Medium) ──── Daily Temperatures: monotonic stack returning distances
+    │
+    ▼
+  503 (Medium) ──── Next Greater Element II: same stack, iterate 2N for circular
+    │
+    ▼
+  84  (Hard)   ──── Largest Rectangle in Histogram: pop = fix a bar's width via prev/next smaller
+    │
+    ▼
+  85  (Hard)   ──── Maximal Rectangle: stack row-histograms on top of LC 84
+    │
+    ▼
+  42  (Hard)   ──── Trapping Rain Water: stack (layers) or two pointers — the capstone
+```

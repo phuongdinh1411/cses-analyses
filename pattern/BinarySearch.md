@@ -460,6 +460,8 @@ def find_peak(arr):
 
 **Why it works**: If `arr[mid] < arr[mid+1]`, the slope is going up, so there must be a peak to the right (even if the array goes up then wraps around, the right boundary or the end of the array guarantees a peak). If `arr[mid] >= arr[mid+1]`, the slope is going down, so there's a peak at mid or to the left.
 
+> **Assumption:** this relies on adjacent elements never being equal (`arr[i] != arr[i+1]`, as LC 162 guarantees). With flat plateaus the `<` vs `>=` comparison is no longer a clean monotonic predicate on each half, and a single comparison can point the wrong way.
+
 ### Mountain Array (Bitonic)
 
 Find peak in a strictly increasing then strictly decreasing array. Same algorithm.
@@ -1045,3 +1047,29 @@ def maximize(lo, hi, condition):
 | Rotated array search | O(log N) | O(1) |
 | 2D matrix search | O(M + N) or O(log(MN)) | O(1) |
 | Ternary search | O(log(range) * 2 evals) | O(1) |
+
+---
+
+## Practice Order
+
+```
+Start here
+    │
+    ▼
+  704  (Easy)   ──── Classic BS: exact match on a sorted array (lo <= hi)
+    │
+    ▼
+  278  (Easy)   ──── First Bad Version: find the F→T boundary (lo < hi)
+    │
+    ▼
+   33  (Medium) ──── Search in Rotated Sorted Array: pick the sorted half first
+    │
+    ▼
+  153  (Medium) ──── Find Minimum in Rotated Sorted Array: compare mid with arr[hi]
+    │
+    ▼
+  875  (Medium) ──── Koko Eating Bananas: binary-search-on-ANSWER, not on the array
+    │
+    ▼
+    4  (Hard)   ──── Median of Two Sorted Arrays: binary search the partition point
+```

@@ -372,6 +372,8 @@ Every lazy segment tree is these three functions. Get them right, the rest is bo
 
 Assignment overwrites rather than accumulates, so you need a sentinel meaning "no pending assign" (assign of `0` is a real value, so a separate flag or `None` is required).
 
+> **Note — this is a patch on top of `LazySegTree` above, not standalone code.** It replaces `_apply`/`_push_down` and additionally requires a `self.has_lazy = [False] * (4 * self.n)` array added in `__init__` (the assign-marker). Pasting these two methods alone will `AttributeError` on `self.has_lazy`.
+
 ```python
     def _apply_assign(self, node, lo, hi, val):
         self.tree[node] = val * (hi - lo + 1)
@@ -428,17 +430,19 @@ Build the tree indexed by **value** (or value-rank), not array position. Leaf `v
 
 ### Count Inversions
 
+> **Which tree / assign vs add:** this uses `SegTreeIterative` from Section 3, whose `update(i, val)` **assigns** (overwrites) leaf `i`. Because it has no "+=" operation, we emulate an increment by reading the current count and assigning `count + 1` (`st.update(r, st.query(r, r) + 1)`). If you swap in a tree whose `update` *adds* a delta, drop the read and just do `st.update(r, 1)`.
+
 ```python
 def count_inversions(arr):
     # compress values to ranks 0..m-1
     ranks = {v: i for i, v in enumerate(sorted(set(arr)))}
     m = len(ranks)
-    st = SegTreeIterative([0] * m)    # counts per value
+    st = SegTreeIterative([0] * m)    # counts per value; update() ASSIGNS, not adds
     inversions = 0
     for x in reversed(arr):
         r = ranks[x]
         inversions += st.query(0, r - 1) if r > 0 else 0  # already-seen smaller values
-        st.update(r, st.query(r, r) + 1)                  # record this value
+        st.update(r, st.query(r, r) + 1)                  # assign count+1 (emulated increment)
     return inversions
 ```
 
@@ -666,3 +670,29 @@ The only things that change between variants:
 | Tree descent (find first) | O(log N) | — |
 | Persistent update | O(log N) time, O(log N) new nodes | O(N log N) total |
 | K-th in range (persistent) | O(log N) per query | O(N log N) |
+
+---
+
+## Practice Order
+
+```
+Start here
+    │
+    ▼
+  307  (Easy)   ──── Range Sum Query Mutable: the basic point-update + range-sum tree (§2)
+    │
+    ▼
+  RMQ  build/query ── Range Minimum Query: same skeleton, combine=min, identity=+inf (§4)
+    │
+    ▼
+  315  (Hard*)  ──── Count of Smaller After Self: value-indexed tree, sweep right→left (§7)
+    │              (*Hard-tagged but a gentle intro to the value-domain reframe)
+    ▼
+  Range-add lazy ──── Range Sum with range update: lazy propagation, add flavor (§5)
+    │
+    ▼
+  732  (Hard)   ──── My Calendar III: lazy range-add + coordinate compression (§5, §7)
+    │
+    ▼
+  699  (Hard)   ──── Falling Squares: lazy range-ASSIGN + compression, max query (§5, §7)
+```

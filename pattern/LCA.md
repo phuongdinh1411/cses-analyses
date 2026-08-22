@@ -149,8 +149,8 @@ class BinaryLifting:
         self.depth = [0] * n
         self.up = [[-1] * n for _ in range(LOG)]  # up[k][node]
 
-        self._dfs(root, -1)
-        self._build()
+        self._dfs(root, -1)   # MUST run first: fills up[0] (parents) and depth[]
+        self._build()         # then this fills up[1..LOG-1] FROM up[0]; order is not optional
 
     def _dfs(self, node, par):
         self.up[0][node] = par  # parent = 2^0 ancestor
@@ -161,7 +161,12 @@ class BinaryLifting:
             self._dfs(nb, node)
 
     def _build(self):
-        """Fill the binary lifting table bottom-up."""
+        """Fill the binary lifting table bottom-up.
+
+        Precondition: _dfs (or _dfs_iter) has already filled up[0][*] (parents)
+        and depth[*]. This reads up[0] to derive every higher level, so calling
+        it before the DFS produces an all -1 table.
+        """
         for k in range(1, LOG):
             for v in range(self.n):
                 mid = self.up[k - 1][v]
@@ -316,6 +321,10 @@ class SparseTable:
         for i in range(2, n + 1):
             self.log[i] = self.log[i // 2] + 1
         k = self.log[n] + 1
+        # Each row starts as the identity [0,1,...,n-1]. For j>0 the build loop
+        # below only fills i in [0, n-2^j], so tail cells i > n-2^j keep this
+        # stale value — but query() never reads them (its two windows are always
+        # fully in-range), so they are harmless. (Init to [0]*n if it bothers you.)
         self.table = [list(range(n)) for _ in range(k)]
         # table[j][i] = index of minimum in arr[i..i+2^j-1]
         self.arr = arr
@@ -679,3 +688,42 @@ When you have Q queries on specific nodes, build a **virtual tree** containing o
 | Path max/sum | Binary Lifting with weights | O(log N) |
 | Path query with updates | HLD + Segment Tree | O(log^2 N) |
 | LCA of K nodes | Sort by tin + pairwise LCA | O(K log N) |
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Why it bites | Fix |
+|---------|--------------|-----|
+| Confusing **depth** with **height** | Binary lifting climbs by `depth[u] - depth[v]`; height (distance to deepest leaf) is a different quantity and gives wrong jumps. | Root has depth 0, children depth+1. Only depth is used for equalizing. |
+| Not equalizing depths before lifting both | Step 3 assumes `u` and `v` sit at the **same depth**; skip step 1 and the parallel climb compares mismatched levels. | Always bring the deeper node up first (`_lift(u, depth[u]-depth[v])`), then climb both. |
+| Off-by-one in the `LOG` bound | `LOG` must satisfy `2^LOG > N` (or `>= max depth`). Too small and a far ancestor is unreachable; the highest jump silently caps out. | Pick `LOG = ceil(log2(N)) + 1`; here `LOG=20` covers N up to ~10⁶. |
+| Building the table before the DFS | `_build` reads `up[0]` (parents); running it first yields an all `-1` table and every LCA returns garbage. | Run `_dfs`/`_dfs_iter` first, then `_build`. |
+| 0- vs 1-indexed nodes | Mixing an input that is 1-indexed with a 0-indexed `up`/`depth` array reads the wrong rows or overruns by one. | Decide once; if input is 1-indexed either shift to 0 or size arrays `n+1`. |
+| Not handling `u == v` or ancestor-of case | If `v` is already an ancestor of `u`, after step 1 `u == v` and step 3 must be skipped. | Return early: `if u == v: return u` before the parallel climb. |
+
+---
+
+## Practice Order
+
+```
+Start here
+    │
+    ▼
+  236  (Easy)   ──── LCA of a Binary Tree: recursive "found u/v below me?" — no preprocessing
+    │
+    ▼
+  235  (Easy)   ──── LCA of a BST: exploit ordering — walk down until u,v split
+    │
+    ▼
+  build up[][] ──── Binary-lifting table: DFS for parent/depth, then double each level
+    │
+    ▼
+  1483 (Hard*) ──── Kth Ancestor of a Tree Node: pure lifting, jump by set bits of k
+    │              (*builds directly on the table above)
+    ▼
+  dist(u,v)    ──── Distance via LCA: depth[u]+depth[v]-2*depth[LCA]
+    │
+    ▼
+  path queries (Hard) ── Path max/sum, updates: lift with weights, or HLD + segtree
+```

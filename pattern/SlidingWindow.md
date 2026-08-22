@@ -189,10 +189,11 @@ target = 7, nums = [2,3,1,2,4,3]
 right=0 win=2
 right=1 win=5
 right=2 win=6
-right=3 win=8 ≥7 → record len 4, shrink: win=6,left=1
-right=4 win=10≥7 → record len 4, shrink win=7 len? [3,1,2,4] len4;
-                    win=7≥7 record len 4 shrink win=4,left=3
-right=5 win=7 ≥7 → record len 3 [2,4,3]? shrink win=3,left=4
+right=3 win=8 ≥7 → record len 4 [2,3,1,2], shrink win=6 left=1
+right=4 win=10≥7 → record len 4 [3,1,2,4], shrink win=7 left=2
+                   win=7 ≥7 → record len 3 [1,2,4],   shrink win=6 left=3
+right=5 win=9 ≥7 → record len 3 [2,4,3],   shrink win=7 left=4
+                   win=7 ≥7 → record len 2 [4,3],     shrink win=3 left=5
 
 best = 2  (subarray [4,3])
 ```
@@ -231,12 +232,13 @@ def find_anagrams(s, p):
 
 ```
 s = "cbaebabacd", p = "abc"  (need = {a:1,b:1,c:1}), k=3
+index:  c0 b1 a2 e3 b4 a5 b6 a7 c8 d9
 
-right=2 window {c,b,a}         == need → index 0
-right=3 add e, drop c          {b,a,e} ✗
-right=4 add b, drop b          {a,e,b} ✗
+right=2 window {c,b,a}  == need → append 2-3+1 = 0
+right=3 add e, drop c   {b,a,e} ✗
+right=4 add b, drop b   {a,e,b} ✗
 ...
-right=7 window {a,b,a}? no...  {b,a,c} == need → index 6
+right=8 add c, drop a   {b,a,c} == need → append 8-3+1 = 6
 
 result = [0, 6]
 ```
@@ -366,10 +368,10 @@ s = "AABABBA", k = 1
 right=0 A count{A:1} maxf=1 win"A"    best=1
 right=1 A {A:2} maxf=2 win"AA"        best=2
 right=2 B {A:2,B:1} maxf=2 need 1 ok  best=3 "AAB"
-right=3 A {A:3,B:1} maxf=3 win"AABA"  best=4
-right=4 B {A:3,B:2} maxf=3 need 2>1 → shrink left→1  win"ABAB"
-right=5 B {A:2,B:3} maxf=3 need 1 ok  best=4 "ABAB"→"BABB"? win len4
-right=6 A ...                          best stays 4
+right=3 A {A:3,B:1} maxf=3 win"AABA"  need 4-3=1 ok  best=4
+right=4 B {A:3,B:2} maxf=3 need 5-3=2>1 → shrink left→1  win"ABAB"
+right=5 B {A:2,B:3} maxf=3 need 5-3=2>1 → shrink left→2  win"BABB"
+right=6 A stale maxf=3 need 5-3=2>1 → shrink left→3       best stays 4
 
 best = 4
 ```

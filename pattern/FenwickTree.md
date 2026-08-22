@@ -46,6 +46,8 @@ A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix 
 
 You need prefix sums **and** updates, interleaved:
 
+Concretely: you have an array and must process 10^5 interleaved `update(i, x)` and `sumRange(l, r)` operations. A prefix-sum array answers each query in O(1) but every update forces an O(N) rebuild; a plain array updates in O(1) but each sum is O(N) — both are O(N·Q) overall and blow up. The BIT makes **both** operations O(log N), so the whole workload is O(Q log N).
+
 | Approach | Point update | Prefix query |
 |----------|--------------|--------------|
 | Plain array | O(1) | O(N) |
@@ -79,6 +81,8 @@ Responsibility ranges (1-indexed, n=8):
 ## 2. Basic Fenwick Tree
 
 Point update, prefix sum, range sum. 1-indexed internally; the API below takes 0-indexed positions.
+
+> **Reading the examples:** the diagrams and walks in this guide show the internal **1-indexed** `tree[]`; the code's public methods take **0-indexed** positions and do `i += 1` at the boundary. So a 0-indexed position `p` in the API maps to internal index `p + 1`.
 
 ```python
 class BIT:
@@ -130,6 +134,30 @@ Naive build is N updates = O(N log N). Linear build: add each value to its paren
 | Prefix / range query | O(log N) |
 | Space | O(N) |
 
+### Worked Trace on Real Values
+
+Take `a = [3, 2, -1, 5]` (0-indexed). After building, the internal 1-indexed `tree[]` holds each index's responsibility range:
+
+```
+ internal idx:  1   2   3   4
+ covers:       a[0] a[0..1] a[2] a[0..3]
+ tree[]:        3    5     -1    9
+
+ tree[1] = a[0]              = 3
+ tree[2] = a[0] + a[1]       = 3 + 2       = 5
+ tree[3] = a[2]              = -1
+ tree[4] = a[0]+a[1]+a[2]+a[3] = 3+2-1+5   = 9
+```
+
+Now `prefix(2)` (0-indexed → sum of `a[0..2]` = 3 + 2 + (-1) = **4**). The code does `i += 1`, so it descends from internal index 3:
+
+```
+i = 3 (011): add tree[3] = -1      strip lowbit(1) -> i = 2
+i = 2 (010): add tree[2] =  5      strip lowbit(2) -> i = 0  stop
+
+sum = tree[3] + tree[2] = -1 + 5 = 4  ✓  (matches a[0]+a[1]+a[2])
+```
+
 ---
 
 ## 3. The lowbit Trick
@@ -146,8 +174,8 @@ Naive build is N updates = O(N log N). Linear build: add each value to its paren
 
 ```
 UPDATE (climb): i += lowbit(i)
-  a[6] changes -> touch indices covering position 6
-  7 -> 8 -> (past n, stop)     [1-indexed pos 7]
+  a[6] changes (0-indexed) -> internal index 7 (a[6] maps to i = 6 + 1 = 7)
+  7 -> 8 -> (past n, stop)
 
 QUERY (descend): i -= lowbit(i)
   prefix up to index 7:
@@ -247,9 +275,6 @@ class RangeRangeBIT:
         self.n = n
         self.b1 = BIT(n)               # tracks d[k]
         self.b2 = BIT(n)               # tracks k * d[k]
-
-    def _add(self, bit, i, x):
-        bit.update(i, x)
 
     def range_add(self, l, r, x):      # a[l..r] += x  (0-indexed inclusive)
         self.b1.update(l, x)
@@ -439,6 +464,29 @@ i -= i & (-i)   # QUERY:  descend to the previous disjoint chunk
 | Range update (difference / two-BIT) | O(log N) | — |
 | k-th descent | O(log N) | — |
 | 2D update / query | O(log M · log N) | O(M·N) |
+
+---
+
+## Practice Order
+
+```
+Start here
+    │
+    ▼
+  Dynamic Range Sum (CSES, Easy)  ──── Basic BIT: point update + range query (§2)
+    │
+    ▼
+  Range Update Queries (CSES)     ──── Two-BIT trick: range add + range sum (§6)
+    │
+    ▼
+  Count Inversions (LC 493 / CSES) ─── Value-indexed BIT: count smaller-so-far (§9)
+    │
+    ▼
+  K-th / order-statistic descent  ──── find_kth: one O(log N) bit walk (§7)
+    │
+    ▼
+  2D BIT (Hard)                   ──── Nest the walk in both dims + inclusion-exclusion (§8)
+```
 
 ---
 

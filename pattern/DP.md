@@ -28,8 +28,10 @@ fib(3) fib(2) fib(2) fib(1)  fib(3) fib(2) <- cached!
  ...    ...    ...              /    \
                             fib(2) fib(1) <- cached!
 
-Calls: 15 (exponential)        Calls: 5 (linear)
+Calls: 15 (exponential)        6 distinct subproblems, cached
 ```
+
+The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, instead of re-computing them exponentially — naive `fib(5)` makes 15 total calls, and that blows up to `~2^n` as `n` grows.
 
 ---
 
@@ -266,6 +268,8 @@ Answer: dp[n-1]
 
 ```python
 def rob(nums):
+    if not nums:
+        return 0
     if len(nums) == 1:
         return nums[0]
     a, b = nums[0], max(nums[0], nums[1])
@@ -370,6 +374,8 @@ def min_path_sum_optimized(grid):
 ## 5. Knapsack Family
 
 The most important DP family. Three major variants.
+
+**Intuition**: you face a sequence of items and for each one make a yes/no (or how-many) choice under a shared budget (capacity, target sum). Brute force tries every subset — `2^N` combinations — which explodes past ~30 items. DP collapses this: instead of tracking *which* items were chosen, track only the *capacity used so far*, since two different subsets reaching the same capacity are interchangeable going forward. That merges the exponential tree into an `N × W` table.
 
 ### 5.1 0/1 Knapsack
 
@@ -694,6 +700,8 @@ def lcs_single_row(s1, s2):
 
 Problems where the answer for a range `[i, j]` depends on sub-ranges.
 
+**Intuition**: the shape is "combine adjacent pieces, and the *order* of combining changes the cost" — matrix-chain products, bursting balloons, merging stones. Brute force tries every order of combining (`~N!` / Catalan-many parenthesizations), which explodes fast. The key realization: any final combination has a *last* split point `k` that cuts `[i, j]` into `[i, k]` and `[k+1, j]`; try all `k` and reuse the already-solved sub-ranges. That turns `N!` into an `O(N^3)` table.
+
 ```
 State:  dp[i][j] = answer for the subarray/substring from i to j
 
@@ -997,6 +1005,8 @@ This is called **rerooting technique** and avoids O(N^2) recomputation.
 
 When you have a **small set** (N <= 20) and need to track which elements are used. Represent the set as a bitmask.
 
+**Intuition**: the problem asks for the best way to *order* or *assign* a small set — visit all cities, match all workers to tasks. Brute force enumerates every permutation (`N!`), hopeless past ~11 items. The insight: for what comes next, the only thing that matters is *which* elements are already used (a subset), not the order they were used in. Encode that subset as the bits of an integer `mask`, and two paths reaching the same `mask` share the same future — so cache by `mask`. `N!` permutations collapse into `2^N` subsets.
+
 ```
 State:  dp[mask] = answer when the elements in `mask` have been used/visited
         mask is an integer where bit i = 1 means element i is included
@@ -1044,6 +1054,37 @@ def tsp(dist):
     full = (1 << n) - 1
     return min(dp[full][i] + dist[i][0] for i in range(n))
 ```
+
+**Trace on 3 cities** (symmetric distance matrix, start/end at city 0):
+
+```
+       0   1   2
+  0 [  0  10  15 ]
+  1 [ 10   0  20 ]
+  2 [ 15  20   0 ]
+
+Masks written as bits [city2 city1 city0].
+
+Base:   dp[001][0] = 0                     (only city 0 visited, at 0)
+
+From dp[001][0]=0:
+  → visit 1: dp[011][1] = 0 + dist[0][1] = 10
+  → visit 2: dp[101][2] = 0 + dist[0][2] = 15
+
+From dp[011][1]=10:  (0,1 visited, at 1)
+  → visit 2: dp[111][2] = 10 + dist[1][2] = 10 + 20 = 30
+
+From dp[101][2]=15:  (0,2 visited, at 2)
+  → visit 1: dp[111][1] = 15 + dist[2][1] = 15 + 20 = 35
+
+Close the tour (add dist[i][0], full mask = 111):
+  i=2: dp[111][2] + dist[2][0] = 30 + 15 = 45
+  i=1: dp[111][1] + dist[1][0] = 35 + 10 = 45
+
+Answer = min(45, 45) = 45
+```
+
+Check by hand: the only distinct cycle is `0→1→2→0` = 10+20+15 = **45** (its reverse `0→2→1→0` = 15+20+10 = 45 too). The dp reaches exactly 45.
 
 ### Example: Assignment Problem
 
@@ -1106,6 +1147,8 @@ Only feasible for N <= ~20.
 ### Pattern
 
 Count numbers in range [L, R] with some digit property. Use the trick: `count(R) - count(L-1)`.
+
+**Intuition**: you must count integers up to `10^18` satisfying some digit rule — far too many to iterate one by one. Instead, *build the number digit by digit* left to right and count valid completions. Two partial numbers that have the same "position, property-so-far, and whether they're still hugging the upper bound" have the same number of valid completions, so memoize on that small state. Iterating `10^18` numbers becomes filling a tiny `positions × states` table.
 
 ```
 State:  dp[pos][tight][...extra state...]
@@ -1277,6 +1320,10 @@ def longest_path_dag(adj, n):
 def count_paths_dag(adj, n, src, dst):
     # topological sort then accumulate
     # dp[v] = number of paths from src to v
+    # Precondition: nodes are processed in topological order (Kahn's below
+    # guarantees this). dp[src]=1 seeds the source; every other dp[v] is
+    # finalized only after all its predecessors are processed. Requires a
+    # DAG — a cycle would loop forever (Kahn's would never enqueue those nodes).
     in_deg = [0] * n
     for u in range(n):
         for v in adj[u]:
@@ -1533,3 +1580,32 @@ def fib_matrix(n):
 | Bitmask DP | O(2^N * N) | O(2^N) |
 | Digit DP | O(D * S * 10) | O(D * S) |
 | Matrix Exponent. | O(K^3 log N) | O(K^2) |
+
+---
+
+## 17. Practice Order
+
+Climb this ladder — each rung introduces one new DP shape built on the last.
+
+```
+Start here
+    │
+    ▼
+  LC 70   Climbing Stairs            (Easy)   ── the "hello world" of DP: dp[i]=dp[i-1]+dp[i-2]
+    │
+    ▼
+  LC 198  House Robber               (Medium) ── add a choice: take-or-skip with an adjacency constraint
+    │
+    ▼
+  LC 322  Coin Change                (Medium) ── unbounded knapsack: minimize count over a target sum
+    │
+    ▼
+  LC 300  Longest Increasing Subseq. (Medium) ── dp[i] over subsequences; then the O(N log N) tails trick
+    │
+    ▼
+  LC 72   Edit Distance              (Medium) ── 2D table: transition over two-string prefixes
+    │
+    ▼
+  LC 188  Best Time Buy/Sell Stock IV (Hard)  ── state-machine DP with a transaction-count dimension
+```
+

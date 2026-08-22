@@ -24,6 +24,7 @@ All problems share:
 
 ## Table of Contents
 
+0. [Why This Pattern Exists](#0-why-this-pattern-exists)
 1. [Core Template](#1-core-template)
 2. [Understanding Each Parameter](#2-understanding-each-parameter)
 3. [Common State Choices](#3-common-state-choices)
@@ -36,6 +37,41 @@ All problems share:
 10. [Problem 2827 — Number of Beautiful Integers](#10-problem-2827--number-of-beautiful-integers)
 11. [Master Comparison Table](#11-master-comparison-table)
 12. [How to Identify This Pattern](#12-how-to-identify-this-pattern)
+
+---
+
+## 0. Why This Pattern Exists
+
+**The problem**: "How many integers in `[1, 10^18]` have digit sum exactly 30?"
+
+Your first instinct is a loop:
+
+```python
+count = 0
+for x in range(1, 10**18 + 1):   # 10^18 iterations — never finishes
+    if digit_sum(x) == 30:
+        count += 1
+```
+
+At a billion iterations/second this takes **~30 years**. The range is too big to enumerate. Yet the *answer* isn't astronomically large, and most numbers are boring — we're wasting time re-examining digits we've already reasoned about.
+
+**The key realization**: we don't care about each number individually. We care about **choices, digit by digit**. Build the number left to right, one digit at a time. There are only 18 positions, and at each position only 10 possible digits — that's a tiny decision tree, not 10^18 leaves.
+
+```
+Counting numbers ≤ 316 with some property:
+
+        first digit d0
+       /     |      \
+     0..2    3       (d0 can't exceed 3, the leading digit of 316)
+    (free)  (still "tight" — bounded by 316)
+```
+
+Two numbers that reach position `pos` with the **same running digit-sum** and the **same freedom** (are we still hugging the upper bound `316`, or free to use 0–9?) have the **identical count of completions**. That's the overlapping-subproblem signal — memoize on `(pos, digit_sum_so_far, tight)` and the 10^18 problem collapses to a few thousand states.
+
+`★ Insight ─────────────────────────────────────`
+- Digit DP trades "iterate over **numbers**" for "iterate over **prefixes of digits**". 10^18 numbers, but only `18 positions × ~small state × 2 tight-flags` distinct subproblems.
+- The whole pattern is: **fix the digits left-to-right, remember just enough about the prefix to finish counting, and cache**. Everything below is variations on *what* "just enough" means (a sum, a mask, a remainder…).
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -91,6 +127,21 @@ The only thing that changes between problems:
 - **`state`**: what you track (sum, diff, mask, remainder...)
 - **`transition`**: how state updates when placing digit `d`
 - **`check`**: what condition to verify at the end
+
+### A Tiny Recursion Trace
+
+Count integers in `[0, 13]` with **no digit 4**. Digits of 13 = `[1, 3]`, so `n = 2`. Nodes are `(pos, tight)`:
+
+```
+(pos0, tight)                      d ∈ 0..1  (limit = digits[0] = 1)
+ ├─ d=0 → (pos1, free)             d ∈ 0..9, skip 4  → 9 completions (0..9 minus 4)
+ ├─ d=1 → (pos1, tight)            d ∈ 0..3, skip nothing → 4 completions (10,11,12,13)
+ │
+ └─ but d=0 branches into (pos1, free); ANY later prefix that reaches (pos1, free)
+    reuses the SAME memoized node — no digit 4 free-count is computed once.
+```
+
+`(pos1, free)` = 9 and `(pos1, tight)` = 4, so the root returns 9 + 4 = 13 (every value 0..13 except 4). The `free` node is where memo hits pay off: on larger bounds many distinct tight-prefixes drop into the identical `(pos, free, state)` subtree and collapse to one cached value.
 
 ---
 
@@ -617,14 +668,19 @@ See "count numbers in [L, R]"?
 
 ## Practice Order
 
+Start on an easier on-ramp before the all-Hard core. The first two need little or no `state` (or none at all), so you learn the `pos/tight/started` skeleton in isolation, then layer state on.
+
 ```
 Start here
     │
     ▼
-  902 (Hard)  ──── Simplest: restricted digit set, minimal state
+  357 (Medium) ──── Count Numbers with Unique Digits: warm-up, closed-form or trivial
+    │               mask DP — meet the pos/tight skeleton with the lightest state
+    ▼
+  902 (Hard)   ──── Simplest full template: restricted digit set, minimal state
     │
     ▼
-  233 (Hard)  ──── Count occurrences instead of numbers
+  233 (Hard)   ──── Count occurrences instead of numbers
     │
     ▼
  2376 (Hard)  ──── Bitmask state for unique digits

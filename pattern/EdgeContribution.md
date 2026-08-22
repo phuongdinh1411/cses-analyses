@@ -569,6 +569,19 @@ def sumOfGroupDistances(n, edges, groups):
 
 Each edge is processed exactly once. A pair that crosses 4 edges gets counted once at each of those 4 edges, contributing 4 total — which equals its distance.
 
+Concretely, take this tree (rooted at 0):
+
+```
+          0
+         / \
+        1   2
+        |   |
+        3   5
+
+edges: 0-1, 0-2, 1-3, 2-5
+path 3 → 1 → 0 → 2 → 5  spans 4 edges
+```
+
 ```
 Pair (3, 5), distance = 4:
   Counted at edge 1→3: +1
@@ -664,13 +677,13 @@ See "tree" + any of these?
 Start here
     │
     ▼
-  834 (Hard)  ──── Core pattern: edge contribution + rerooting
-    │
-    ▼
-  979 (Medium) ─── Edge contribution with "excess" flow
+  979 (Medium) ─── Edge contribution with "excess" flow (single answer, no reroot)
     │
     ▼
   2049 (Medium) ── Subtree sizes → per-node product
+    │
+    ▼
+  834 (Hard)  ──── Core pattern: edge contribution + rerooting
     │
     ▼
   2858 (Hard)  ─── Directed edges + rerooting with cost

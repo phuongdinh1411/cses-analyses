@@ -8,6 +8,9 @@ permalink: /pattern/tree
 
 Trees are everywhere in competitive programming. This guide covers **every major technique** for solving tree problems, organized by what kind of query or operation you need to perform.
 
+> **Prerequisites & scope**
+> Sections 1–2 (traversals, Euler tour) and the basic Tree DP patterns in Section 9 are beginner-friendly and assume only that you can write a recursive DFS. Everything else — **HLD** (§3), **Binary Lifting LCA** (§4), **Centroid Decomposition** (§7), **DSU-on-Tree / small-to-large** (§8), **Virtual Tree** (§10), and **Prufer sequences** (§11) — is intermediate→advanced and assumes you are already comfortable with DFS, recursion, and basic tree DP. If those aren't solid yet, master Sections 1–2 and 9 first, then come back.
+
 ---
 
 ## Quick Navigation: "I need to..."
@@ -376,6 +379,58 @@ class LCA:
         return self.depth[u] + self.depth[v] - 2 * self.depth[self.lca(u, v)]
 ```
 
+### Worked Trace (Binary Lifting)
+
+```
+Tree (rooted at 0):
+
+        0
+       / \
+      1   2
+     / \   \
+    3   4   5
+         \
+          6
+
+depth: 0->0  1->1  2->1  3->2  4->2  5->2  6->3
+```
+
+Build the sparse table. `up[k][v]` = the 2^k-th ancestor of `v` (-1 if it runs off the root).
+
+```
+up[0][v] (parent):
+  v:      0   1   2   3   4   5   6
+  up[0]: -1   0   0   1   1   2   4
+
+up[1][v] (grandparent = up[0][up[0][v]]):
+  up[1][3] = up[0][1] = 0
+  up[1][4] = up[0][1] = 0
+  up[1][5] = up[0][2] = 0
+  up[1][6] = up[0][4] = 1
+  (0,1,2 have no grandparent -> -1)
+  v:      0   1   2   3   4   5   6
+  up[1]: -1  -1  -1   0   0   0   1
+
+up[2][v] (4th ancestor = up[1][up[1][v]]):
+  up[2][6] = up[1][1] = -1   (nothing is 4 levels above depth-3 node 6)
+  everything else -1 too (all depths < 4)
+```
+
+Query **LCA(3, 6)**:
+
+```
+depth[3]=2, depth[6]=3  ->  6 is deeper, so lift 6 up first.
+diff = 3 - 2 = 1 = binary 1  ->  bit k=0 set:  6 -> up[0][6] = 4
+Now u=4, v=3, both at depth 2, but 4 != 3.
+
+Lift both together, high bit to low, only when ancestors DIFFER:
+  k=1: up[1][4]=0, up[1][3]=0  equal -> skip
+  k=0: up[0][4]=1, up[0][3]=1  equal -> skip
+
+Return up[0][4] = 1.   LCA(3, 6) = 1  ✓
+(ancestors of 3 = {3,1,0}; of 6 = {6,4,1,0}; deepest shared = 1)
+```
+
 ### Technique Comparison
 
 | Method | Preprocess | Query | Best for |
@@ -586,7 +641,6 @@ def tree_center(n, adj):
         return list(range(n))
 
     degree = [len(adj[i]) for i in range(n)]
-    # for trees: adjust for undirected adjacency
     leaves = deque(i for i in range(n) if degree[i] <= 1)
     remaining = n
 
@@ -1045,18 +1099,20 @@ A way to **encode** a labeled tree of N nodes as a sequence of N-2 numbers.
 ### Tree to Prufer Sequence
 
 ```
-Tree:  1 - 3 - 2 - 4
-              |
-              5
+Tree (0-indexed, to match the code below):
+
+  0 - 2 - 1 - 3
+          |
+          4
 
 Repeatedly remove the leaf with the smallest label, record its neighbor:
 
-Remove 1 (leaf), neighbor = 3  -> sequence: [3]
-Remove 4 (leaf), neighbor = 2  -> sequence: [3, 2]
-Remove 5 (leaf), neighbor = 3  -> sequence: [3, 2, 3]
-Remaining: {2, 3}              -> stop (N-2 = 3 elements)
+Remove 0 (leaf), neighbor = 2  -> sequence: [2]
+Remove 2 (now leaf), neighbor = 1  -> sequence: [2, 1]
+Remove 3 (leaf), neighbor = 1  -> sequence: [2, 1, 1]
+Remaining: {1, 4}              -> stop (N-2 = 3 elements)
 
-Prufer sequence: [3, 2, 3]
+Prufer sequence: [2, 1, 1]
 ```
 
 ```python
@@ -1283,4 +1339,38 @@ What do you need to query?
     +-- Subtree DP value? --> Tree DP (select/skip or aggregate)
     |
     +-- Only K << N nodes matter? --> Virtual Tree
+```
+
+### Common Pitfalls
+
+| Pitfall | Fix |
+|---------|-----|
+| Python **recursion-depth limit** blows up on deep/chain-like trees (default ~1000) | `sys.setrecursionlimit(300000)` **and** raise the thread stack, or rewrite the DFS iteratively (see §1 Iterative DFS) |
+| **1-based vs 0-based** node labels mixed together | Pick one convention for the whole solution; if input is 1-based, subtract 1 on read (the code here is 0-based) |
+| Forgetting to **skip the `parent`** when iterating undirected adjacency | Always guard `if child == parent: continue` — otherwise you recurse straight back and loop forever |
+| Using `depth[par] + 1` when `par == -1` (root) | Special-case the root's depth to 0 before the recursion touches `par` |
+| Recomputing per-root DP from scratch (O(N^2)) | Use **rerooting** (§5): two passes give every root in O(N) |
+
+### Practice Order
+
+```
+Start here
+    │
+    ▼
+  Traversal / height      ──── DFS enter/leave; height = 1 + max(child heights)
+    │
+    ▼
+  Subtree sizes (tree DP) ──── first real post-order aggregation: size[node]=1+Σ size[child]
+    │
+    ▼
+  Tree diameter           ──── track two longest downward paths per node (§6)
+    │
+    ▼
+  LCA (binary lifting)    ──── sparse table of 2^k ancestors; lift-then-together (§4)
+    │
+    ▼
+  Path queries (HLD)      ──── decompose into heavy chains, query each chain range (§3)
+    │
+    ▼
+  Count pairs at dist k   ──── centroid decomposition: count paths through each centroid (§7)
 ```

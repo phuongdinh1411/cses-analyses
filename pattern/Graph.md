@@ -105,6 +105,8 @@ edges.sort()
 
 Explores level by level. Finds **shortest path in unweighted graphs**.
 
+**Intuition**: you want the fewest hops from a start node. BFS explores in expanding rings — all nodes 1 hop away, then all 2 hops away, and so on — so the first time you reach a node is guaranteed to be along a shortest path. The naive alternative (try every path with DFS and keep the shortest) revisits nodes through longer routes; BFS visits each node exactly once because rings never overlap.
+
 ```python
 from collections import deque
 
@@ -123,6 +125,24 @@ def bfs(start, adj, n):
                 queue.append(nb)
 
     return dist, parent
+```
+
+**Trace** on this graph (start = 0):
+
+```
+    0 --- 1
+    |     |
+    2 --- 3 --- 4
+
+adj: 0:[1,2]  1:[0,3]  2:[0,3]  3:[1,2,4]  4:[3]
+
+pop 0 (d0)  → set dist[1]=1, dist[2]=1     queue=[1,2]
+pop 1 (d1)  → set dist[3]=2                queue=[2,3]
+pop 2 (d1)  → 0,3 already seen             queue=[3]
+pop 3 (d2)  → set dist[4]=3                queue=[4]
+pop 4 (d3)  → done
+
+dist = [0, 1, 1, 2, 3]   (layers: {0} | {1,2} | {3} | {4})
 ```
 
 ### DFS (Depth-First Search)
@@ -203,6 +223,8 @@ What kind of graph?
 
 **When**: Non-negative edge weights, single source.
 
+**Intuition**: with weighted edges, "fewest hops" is no longer "shortest" — a 1-hop edge of weight 100 loses to a 3-hop path of weight 6. Dijkstra greedily finalizes the *closest unfinalized* node: because every edge weight is `≥ 0`, no future path can sneak back and beat a node once it's the global minimum (any detour only adds non-negative weight). That "closest first" guarantee is exactly what breaks with negative edges — a later negative edge could undercut an already-finalized node.
+
 ```python
 import heapq
 
@@ -225,11 +247,30 @@ def dijkstra(start, adj, n):
 
 **Why it works**: Always processes the unvisited node with the smallest distance. Since all weights are non-negative, once a node is processed, its distance is final.
 
+**Trace** (start = 0; edges directed):
+
+```
+0 →4→ 1     0 →1→ 2     2 →2→ 1     1 →1→ 3     2 →5→ 3
+
+pop (0,node0)  relax 1: dist[1]=4 push(4,1);  relax 2: dist[2]=1 push(1,2)
+pop (1,node2)  relax 1: 1+2=3 < 4 → dist[1]=3 push(3,1);  relax 3: dist[3]=6 push(6,3)
+pop (3,node1)  relax 3: 3+1=4 < 6 → dist[3]=4 push(4,3)
+pop (4,node1)  outdated (4 > dist[1]=3) → skip
+pop (4,node3)  no outgoing improvements
+pop (6,node3)  outdated → skip
+
+dist = [0, 3, 1, 4]
+```
+
+Check: `dist[1]` via 0→2→1 = 1+2 = 3 ✓;  `dist[3]` via 0→2→1→3 = 1+2+1 = 4 ✓. The stale `(4,node1)` entry is why the `if d > dist[u]: continue` guard exists.
+
 **Common mistake**: Using Dijkstra with negative weights. It fails because a "processed" node might get a shorter path later through a negative edge.
 
 ### 2.2 Bellman-Ford
 
 **When**: Negative edge weights allowed. Detects negative cycles.
+
+**Intuition**: Dijkstra's greed breaks with negative edges, so drop the greed and brute-force it. A shortest path uses at most `V-1` edges, so if you *relax every edge* `V-1` times, distances are guaranteed to have propagated all the way. Each full pass lets every shortest path grow by one more edge. If a `V`-th pass *still* improves something, a negative cycle exists (you can loop it forever to keep lowering the cost).
 
 ```python
 def bellman_ford(start, edges, n):
@@ -254,9 +295,31 @@ def bellman_ford(start, edges, n):
 
 **Why N-1 iterations?** The shortest path has at most N-1 edges. Each iteration relaxes paths of one more edge. If the Nth iteration still improves something, there's a negative cycle.
 
+**Trace** (4 nodes, start = 0; note the negative edge 2→1):
+
+```
+edges (relaxed in this order): (0,1,4)  (0,2,5)  (1,3,-3)  (2,1,-2)
+init  dist = [0, ∞, ∞, ∞]
+
+Round 1:
+  (0,1,4):  dist[1] = 0+4 = 4
+  (0,2,5):  dist[2] = 0+5 = 5
+  (1,3,-3): dist[3] = 4-3 = 1
+  (2,1,-2): 5-2 = 3 < 4 → dist[1] = 3
+  → [0, 3, 5, 1]
+
+Round 2:
+  (1,3,-3): 3-3 = 0 < 1 → dist[3] = 0    (others no improvement)
+  → [0, 3, 5, 0]
+```
+
+Round 2 improved `dist[3]` because round 1 had lowered `dist[1]` to 3 only *after* the (1,3) edge was relaxed — the improvement needed a second pass to propagate. Final: 0→2→1 = 3, 0→2→1→3 = 0. ✓
+
 ### 2.3 Floyd-Warshall
 
 **When**: All-pairs shortest paths. Small graph (V <= 500).
+
+**Intuition**: instead of running a single-source algorithm from every node, ask one question repeatedly: "does routing through node `k` shortcut any pair `(i, j)`?" Sweep `k` over every node; after allowing `0..k` as intermediates, `dist[i][j]` is optimal using only those waypoints. When `k` has covered all nodes, every pair is optimal. Three tiny loops replace `V` separate shortest-path runs.
 
 ```python
 def floyd_warshall(n, dist):
@@ -270,6 +333,23 @@ def floyd_warshall(n, dist):
 ```
 
 **Why it works**: `dp[i][j][k]` = shortest path from i to j using only nodes 0..k as intermediates. The three nested loops consider each possible intermediate node.
+
+**Trace** one intermediate (`k = 1`) on 3 nodes:
+
+```
+edges: 0→1 = 8, 1→2 = 1, 0→2 = 10 (direct, but slow)
+
+        0   1   2                      0   1   2
+   0 [  0   8  10 ]              0 [  0   8   9 ]   ← updated
+   1 [  ∞   0   1 ]    ─k=1→     1 [  ∞   0   1 ]
+   2 [  ∞   ∞   0 ]              2 [  ∞   ∞   0 ]
+
+k=1 asks "is i→1→j cheaper?":
+  (0,2): dist[0][1] + dist[1][2] = 8 + 1 = 9 < 10 → dist[0][2] = 9 ✓
+  (all other pairs: routing through 1 is ∞ or no gain)
+```
+
+Verify: 0→1→2 = 8+1 = 9 beats the direct 0→2 = 10. ✓
 
 **Bonus**: Detect negative cycles by checking if `dist[i][i] < 0` for any i.
 
@@ -451,6 +531,8 @@ def prim(adj, n, start=0):
 
 ### 4.1 Kahn's Algorithm (BFS-based)
 
+**Intuition**: a node is safe to output only once everything that must come before it is already out. "Must come before" = incoming edges, so a node with **in-degree 0** has no unmet prerequisites — emit it, then delete it (decrement its neighbors' in-degrees, which may free them up next). Repeat until empty. If nodes remain but none has in-degree 0, they're tangled in a cycle — no valid order exists.
+
 ```python
 from collections import deque
 
@@ -474,6 +556,24 @@ def topo_sort_kahn(adj, n):
     if len(order) != n:
         return None  # cycle detected!
     return order
+```
+
+**Trace** on this DAG:
+
+```
+0 ─┐
+   ├─→ 2 ─→ 3
+1 ─┘   └──→ 4
+
+in_deg = [0, 0, 2, 1, 1]      queue = [0, 1]     order = []
+
+pop 0 → order=[0];        in_deg[2]: 2→1        queue=[1]
+pop 1 → order=[0,1];      in_deg[2]: 1→0 enq 2  queue=[2]
+pop 2 → order=[0,1,2];    in_deg[3]:1→0 enq 3, in_deg[4]:1→0 enq 4  queue=[3,4]
+pop 3 → order=[0,1,2,3]                          queue=[4]
+pop 4 → order=[0,1,2,3,4]                         queue=[]
+
+order = [0, 1, 2, 3, 4]   (every edge points left→right ✓)
 ```
 
 ### 4.2 DFS-based
@@ -1341,6 +1441,9 @@ def longest_path(adj, n):
 
 ```python
 def count_paths(adj, n, src, dst):
+    # Assumes topological processing order (Kahn's below guarantees it);
+    # dp[src]=1 seeds the source. Counts paths in a DAG — a cycle would
+    # loop forever (its nodes never reach in-degree 0, so Kahn's skips them).
     in_deg = [0] * n
     for u in range(n):
         for v in adj[u]:
@@ -1487,3 +1590,44 @@ What is the problem about?
             +-- Has cycles? --> Condense SCCs to DAG, then DP
             +-- DAG? --> DP in topological order
 ```
+
+---
+
+## 17. Common Mistakes
+
+| Mistake | Why it breaks | Fix |
+|---------|---------------|-----|
+| Dijkstra with negative-weight edges | A finalized node can be undercut later by a negative edge — the greedy "closest first" invariant no longer holds | Use Bellman-Ford (negative edges) or Floyd-Warshall (all pairs) |
+| Forgetting to mark nodes visited in BFS | The same node gets enqueued once per incoming edge → queue explodes, distances get overwritten, O(V·E) or worse | Set `dist[nb]` / `visited[nb]` at enqueue time, not dequeue time |
+| Mixing 0-indexed and 1-indexed node labels | Off-by-one: array of size `n` indexed at `n`, or node 0 left unprocessed | Pick one convention; size arrays `n+1` if the input is 1-indexed |
+| Ignoring disconnected components | A single BFS/DFS from one start visits only its component; the rest stay unvisited | Loop `for i in range(n): if not visited[i]: traverse(i)` |
+| Recursion-depth overflow on deep graphs (Python) | Recursive DFS hits `RecursionError` on long chains (~10^4+) | Use the iterative stack-based DFS, or raise `sys.setrecursionlimit` |
+
+---
+
+## 18. Practice Order
+
+Work these in order — each adds exactly one new idea on top of the last.
+
+```
+Start here
+    │
+    ▼
+  LC 200  Number of Islands        (Easy)   ── plain BFS/DFS flood fill over a grid
+    │
+    ▼
+  LC 994  Rotting Oranges          (Medium) ── multi-source BFS: seed the queue with ALL sources
+    │
+    ▼
+  LC 207  Course Schedule          (Medium) ── topo sort / cycle detection via in-degrees
+    │
+    ▼
+  LC 743  Network Delay Time       (Medium) ── first weighted graph → Dijkstra
+    │
+    ▼
+  LC 787  Cheapest Flights ≤K Stops (Medium)── Bellman-Ford: relax edges a bounded number of rounds
+    │
+    ▼
+  LC 127  Word Ladder              (Hard)   ── model words as nodes, BFS for shortest transform
+```
+

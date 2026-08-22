@@ -17,7 +17,18 @@ bundle exec jekyll build
 
 # Fetch LeetCode contest problems (requires .leetcode_cookies)
 python3 problem_soulutions/leetcode_contests/fetch_leetcode_contests.py
+
+# React SPA (deployed to Vercel, separate from Jekyll)
+cd react-app && npm install && npm run dev   # local dev
+cd react-app && npm run build                # production build (Vercel runs this)
+
+# ByteByteGo content pipeline (requires .bytebytego_cookies)
+python3 crawl_bytebytego.py --cookies-file .bytebytego_cookies  # crawl lessons → bytebytego_content/
+python3 download_bytebytego_images.py                            # fetch referenced images
+python3 serve_bytebytego.py                                      # local viewer at http://localhost:8080
 ```
+
+No test suite or linter is configured. Verification is via `jekyll build` / `npm run build` succeeding.
 
 ## Deployment
 
@@ -50,21 +61,43 @@ pattern/                         # Algorithm pattern guides (served in BOTH the 
 └── Backtracking.md
 
 react-app/                       # React SPA frontend (deployed to Vercel; separate from Jekyll/GitHub Pages)
-├── src/data/navigation.ts       # SPA sidebar nav (MUST edit for new pages — parallel to _data/navigation.yml)
+├── src/data/navigation.ts       # Main SPA sidebar nav (MUST edit for new pages — parallel to _data/navigation.yml)
+├── src/data/bytebytego-navigation.ts  # Separate nav tree for ByteByteGo course pages
 ├── src/hooks/useMarkdownLoader.ts  # Loads pattern/**/*.md; auto-maps URL from front-matter permalink
+├── src/pages/ContentPage.tsx    # Renders a markdown page by permalink
+├── src/pages/ByteByteGoIndex.tsx, ByteBytegoCourseIndex.tsx  # ByteByteGo browsing pages
 └── src/pages/HomePage.tsx       # Landing cards (hardcoded pattern/design counts)
 
-system_design/                   # System design interview guides
+system_design/                   # High-level system design (HLD) interview guides
 ├── TEMPLATE.md                  # Template for new system designs
 └── design-*.md                  # Individual designs (YouTube, Chat, Payment, etc.)
+
+low_level_design/                # Low-level / object-oriented design (LLD) guides
+├── index.md                     # LLD index
+└── *.md                         # One per problem (parking-lot, elevator-system, lru-cache, ...)
+                                 # permalink: /low_level_design/{name}
 
 quick_reference/                 # Cheatsheets and study aids
 ├── study_guide.md, code_templates.md
 ├── advanced_algorithms.md, common_mistakes.md
 
-_data/navigation.yml             # Sidebar navigation structure (MUST edit for new pages)
+bytebytego_content/              # Crawled ByteByteGo courses (gitignored inputs: .bytebytego_cookies)
+crawl_bytebytego.py              # Crawler: MDX lessons → bytebytego_content/ (resumable, rate-limited)
+download_bytebytego_images.py    # Downloads images referenced by crawled lessons
+serve_bytebytego.py              # Standalone local HTTP viewer for crawled content
+render_bytebytego.py             # Markdown → styled HTML rendering helpers
+fetch_codeforces_examples.py     # Fetches Codeforces sample test cases
+
+raw/                             # IMMUTABLE raw sources for the LLM wiki — never modify
+wiki/                            # LLM-generated knowledge wiki (Karpathy llm-wiki pattern)
+├── CLAUDE.md                    # Wiki's OWN schema/instructions — read it before touching wiki/
+├── index.md, log.md, overview.md
+└── dsa/ hld/ lld/ career/ cross-cutting/
+
+_data/navigation.yml             # Jekyll sidebar navigation (MUST edit for new pages)
 _layouts/simple.html             # Custom layout with all CSS/JS inline (sidebar + Mermaid)
 _config.yml                      # Jekyll config (baseurl: /cses-analyses, markdown: kramdown/GFM)
+vercel.json                      # Vercel SPA config (SPA rewrites, VITE_BASE_PATH=/)
 ```
 
 ## Content Patterns
@@ -88,6 +121,18 @@ _config.yml                      # Jekyll config (baseurl: /cses-analyses, markd
 1. Copy `system_design/TEMPLATE.md` to `system_design/design-{name}.md`
 2. Follow interview-style format: "Interview context" transitions, "Why not X?" sections, trade-off tables, "Interviewer might ask" follow-ups
 3. Add to navigation under System Design section
+
+### Adding Low-Level Design (LLD) Guides
+
+1. Create `low_level_design/{name}.md` with `permalink: /low_level_design/{name}`
+2. Structure: Requirements → Class diagram (Mermaid/ASCII) → Key classes → Design patterns used → Code skeleton → Extensions
+3. Add to BOTH nav files under the LLD section
+
+### The `raw/` + `wiki/` LLM Wiki (separate subsystem)
+
+`raw/` and `wiki/` implement a self-contained Karpathy-style LLM wiki, independent of the Jekyll/React site.
+- **`raw/` is immutable** — read-only source material; never modify it.
+- **`wiki/` is LLM-owned** and has its OWN `wiki/CLAUDE.md` schema defining page conventions, front matter, linking, and the ingest/query/lint/study operations. **Read `wiki/CLAUDE.md` before doing any wiki work** — the conventions there (not this file) govern `wiki/`.
 
 ### Front Matter Required
 
@@ -117,4 +162,4 @@ The site has **two independent frontends** over the same markdown content:
 1. **Jekyll** (GitHub Pages) — sidebar built from `_data/navigation.yml`. 3 levels deep: main → children → children. All URLs include the `/cses-analyses/` baseurl prefix.
 2. **React SPA** (Vercel, `react-app/`) — sidebar built from `react-app/src/data/navigation.ts`. URLs use NO baseurl prefix (base is `/`). Content routing is automatic: `useMarkdownLoader` globs `pattern/**/*.md` and maps each page by its front-matter `permalink`, so no loader edit is needed — but the nav list is hardcoded and MUST be edited by hand.
 
-**When adding any page, edit BOTH nav files.** Editing only `_data/navigation.yml` leaves the Vercel SPA sidebar stale (the page still 404s there until `react-app` is rebuilt). A Vercel rebuild is triggered by a push to `main` (same as GitHub Pages). If a card count on `react-app/src/pages/HomePage.tsx` references the number of patterns/designs, bump it too.
+**When adding any page, edit BOTH nav files.** Editing only `_data/navigation.yml` leaves the Vercel SPA sidebar stale (the page still 404s there until `react-app` is rebuilt). A Vercel rebuild is triggered by a push to `main` (same as GitHub Pages). If a card count on `react-app/src/pages/HomePage.tsx` references the number of patterns/designs, bump it too. ByteByteGo course pages use a separate SPA nav tree (`react-app/src/data/bytebytego-navigation.ts`).

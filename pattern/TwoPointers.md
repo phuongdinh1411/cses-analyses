@@ -18,11 +18,11 @@ There are three distinct flavors, and confusing them is the main source of bugs.
 |--------------|--------|---------|
 | Find a **pair** in a sorted array (sum = target) | Opposite ends | [3](#3-opposite-ends--converging) |
 | **Container / trapping** area problems | Opposite ends | [7](#7-problem-11--container-with-most-water) |
-| Remove duplicates / move zeros **in place** | Fast–slow (same direction) | [4](#4-fast-slow--same-direction) |
+| Remove duplicates / move zeros **in place** | Fast–slow (same direction) | [4](#4-fastslow--same-direction) |
 | Detect a **cycle** in a linked list | Fast–slow (Floyd) | [8](#8-problem-141--linked-list-cycle-floyds) |
 | **Partition** an array (Dutch flag, quicksort) | Three pointers | [5](#5-partition--three-way) |
 | **k-sum** (3Sum, 4Sum) | Sort + opposite ends | [6](#6-problem-15--3sum) |
-| Merge two sorted arrays | Parallel pointers | [9](#9-problem-977--squares-of-a-sorted-array) |
+| Merge two sorted arrays | Opposite ends | [9](#9-problem-977--squares-of-a-sorted-array) |
 
 ---
 

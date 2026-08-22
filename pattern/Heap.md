@@ -70,6 +70,51 @@ What a heap is **not**:
 - **Not sorted.** Only the root is guaranteed extreme. `heap[1]` vs `heap[2]` have no defined order. Never index into a heap expecting sorted order.
 - **Not searchable.** Finding an arbitrary element is O(n). Heaps are for extremes, not lookups — use a hash set/BST for membership.
 
+### Sift-up (push) and sift-down (pop), swap by swap
+
+Push and pop both restore the heap property by walking **one element** along a single root-to-leaf path — that's the O(log n).
+
+Start with this valid min-heap and `heappush(0)`. The new value is appended at the end (index 5), then **sifts up** while it's smaller than its parent (`parent(i) = (i-1)//2`):
+
+```
+[1, 3, 2, 7, 4]            1
+ append 0 at idx 5:      /   \
+                       3      2
+                      / \    /
+                     7   4  0(5)     0 < parent 2 → swap
+
+[1, 3, 0, 7, 4, 2]         1
+ 0 now at idx 2:         /   \
+                       3      0(2)   0 < parent 1 → swap
+                      / \    /
+                     7   4  2
+
+[0, 3, 1, 7, 4, 2]         0          0 is root → stop
+                         /   \
+                       3      1
+                      / \    /
+                     7   4  2
+```
+
+Now `heappop()`: return the root `0`, move the **last** element (`2`) into the root slot, then **sift down**, swapping with the *smaller* child while it's larger (`left(i)=2i+1`, `right(i)=2i+2`):
+
+```
+pop 0, move 2 to root:
+[2, 3, 1, 7, 4]            2          children 3, 1 → smaller is 1
+                         /   \        2 > 1 → swap
+                       3      1
+                      / \
+                     7   4
+
+[1, 3, 2, 7, 4]            1          2 now at idx 2, no children → stop
+                         /   \
+                       3      2
+                      / \
+                     7   4
+```
+
+We're back to the original array — one path down, O(log n).
+
 `★ Insight ─────────────────────────────────────`
 - The "complete tree in an array" layout is why heaps are cache-friendly and pointer-free: children live at `2i+1`, `2i+2`. That arithmetic *is* the data structure.
 - If you need the *full* order, sorting is O(n log n) once. Heaps win when the set **changes over time** (push/pop interleaved) or you only need the **top few** of a large stream — cases where re-sorting repeatedly would be wasteful.
@@ -412,8 +457,6 @@ stones=[2,7,4,1,8,1]  max-heap tops: 8,7 → 1 back
 | **295** Median stream | Max + Min (two heaps) | lower / upper halves | route through, rebalance sizes |
 | **253** Meeting rooms | Min | end times | reuse earliest-ending room |
 | **1046** Last stone | Max | stone weights | smash top two, push diff |
-| **621** Task scheduler | Max | task counts | run most-frequent, cooldown queue |
-| **373** K smallest pairs | Min | `(sum, i, j)` | pop, push neighbors |
 
 ### What stays the same
 
@@ -471,7 +514,7 @@ See any of these?
 Start here
     │
     ▼
- 1046 (Easy)   ──── Max-heap basics: grab the top two
+ 1046 (Easy)   ──── heappush/heappop warm-up: build a max-heap, grab the top two
     │
     ▼
   215 (Medium) ──── Fixed-size-k min-heap (the core trick)

@@ -6,7 +6,34 @@ permalink: /pattern/bitmask-dp-subset-partition
 
 # Bitmask DP — Subset Partition & TSP Patterns
 
-A comprehensive walkthrough of 6 LeetCode problems that share the same bitmask DP engine, organized from the core pattern to its variants.
+A comprehensive walkthrough of 7 LeetCode problems that share the same bitmask DP engine, organized from the core pattern to its variants.
+
+---
+
+## From Scratch: Why a Bitmask?
+
+Suppose you must assign **16 tasks to workers** and want the best split. The naive idea is to try every ordering or every way of grouping tasks — but 16! = 20,922,789,888,000 (about 2×10¹³) arrangements is hopeless.
+
+The insight: for most of these problems the **order inside a group doesn't matter** — only *which set of tasks you've already handled* matters. And a set of up to 16 items has only 2¹⁶ = 65,536 possible values. That's tiny.
+
+So we represent "the set of tasks already done" as a 16-bit integer, one bit per task:
+
+```
+task index:   5 4 3 2 1 0
+bit:          1 0 1 0 0 1   →  mask = 0b101001 = 41
+                                 (tasks 0, 3, 5 are done)
+```
+
+- **Bit i set (1)** = task i is chosen / done.
+- **Bit i clear (0)** = task i not yet handled.
+
+Now `dp[mask]` is "the best answer for exactly the set of tasks in `mask`". There are only 2ⁿ masks, and each transition looks at subsets of a mask, so the work is bounded by a small power (2ⁿ or 3ⁿ) instead of a factorial. That collapse from 16! to 2¹⁶ is the whole reason this pattern exists — and it only works because **n ≤ 16**.
+
+`★ Insight ─────────────────────────────────────`
+- A bitmask turns "which subset?" into a single integer, so a subset becomes an **array index**. That's what lets DP memoize over sets.
+- 2ⁿ is tractable up to ~20; n! is not tractable past ~11. The bit trick works precisely because we throw away *order within a group* and keep only *membership*.
+- The moment a problem cares about order between items (e.g. "which word comes after which"), you add a second dimension `dp[mask][last]` — that's the TSP flavor below.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -71,6 +98,47 @@ while sub > 0:
 - Not in `mask` at all
 → 3 choices per element → 3^n total work
 
+### Bit-by-bit: enumerating submasks of `0b101`
+
+Take `mask = 0b101 = 5` (items 0 and 2 present). Watch `sub = (sub - 1) & mask` walk every submask:
+
+| step | `sub` (binary) | decimal | `sub - 1` | `(sub-1) & mask` → next |
+|------|----------------|---------|-----------|-------------------------|
+| start | `101` | 5 | — | (process 101) |
+| 1 | `100` | 4 | `100 & 101` | 4 → process 100 |
+| 2 | `001` | 1 | `011 & 101` | 1 → process 001 |
+| 3 | `000` | 0 | `000 & 101` | 0 → **loop stops** (`while sub > 0`) |
+
+Trace: `5 → 4 → 1 → 0`, i.e. submasks `101, 100, 001` visited by the loop, then `000` ends it. Notice how `& mask` skips the "missing" bit (bit 1 is never set), so we only ever see valid submasks of `101`.
+
+### A `dp[mask]` fill on a tiny input (LC 1986, 3 tasks)
+
+Let `tasks = [1, 2, 3]`, `sessionTime = 3`. First `total[mask]` (sum of chosen task times) and `fits = total ≤ 3`:
+
+| mask | items | total | fits? |
+|------|-------|-------|-------|
+| `001` | {0} | 1 | ✓ |
+| `010` | {1} | 2 | ✓ |
+| `011` | {0,1} | 3 | ✓ |
+| `100` | {2} | 3 | ✓ |
+| `101` | {0,2} | 4 | ✗ |
+| `110` | {1,2} | 5 | ✗ |
+| `111` | {0,1,2} | 6 | ✗ |
+
+Now `dp[0] = 0` and each `dp[mask]` peels off one *fitting* subset:
+
+| mask | best transition | `dp[mask]` |
+|------|-----------------|-----------|
+| `001` | `dp[000] + 1` | 1 |
+| `010` | `dp[000] + 1` | 1 |
+| `011` | fits whole → `dp[000] + 1` | 1 |
+| `100` | `dp[000] + 1` | 1 |
+| `101` | can't fit whole; `dp[001] + 1` via sub `100` | 2 |
+| `110` | can't fit whole; `dp[010] + 1` via sub `100` | 2 |
+| `111` | can't fit whole; `dp[011] + 1` via sub `100` | 2 |
+
+`dp[111] = 2` — matching the obvious split `{3}` + `{1,2}` = 2 sessions. Watch how `dp[111]` reuses the already-computed `dp[011]`: that reuse of smaller masks is the DP.
+
 ### Dedup trick: `sub < comp`
 
 When splitting a mask into two halves, (sub, comp) and (comp, sub) are the same split:
@@ -110,6 +178,8 @@ for mask in range(1, 1 << n):
         lb = mask & -mask
         total[mask] = total[lb] + total[mask ^ lb]
 ```
+
+> ⚠️ **Caveat — zero-value items:** the `if not total[mask]` guard treats "sum is 0" as "not yet computed", so it silently recomputes (and can misbehave) when items can be **0 or negative**, since a real subset sum of 0 is indistinguishable from an unfilled cell. For the readable simple-loop version above (which always fills every mask) this is a non-issue. If any `items[i]` can be 0/negative, prefer the simple loop, or track a separate "computed" flag instead of testing the value.
 
 ---
 
@@ -389,7 +459,12 @@ class Solution:
         return dp[full]
 ```
 
-**Complexity**: O(3^n · n · log V) time, O(2^n) space
+**Complexity**: **O(3^n + 2^n · n · log V)** time, O(2^n) space.
+
+- The **DP** (submask enumeration over all masks) is O(3^n).
+- The **median precompute** is a separate phase: 2^n masks × log V binary-search steps × n bits per step ≈ O(2^n · n · log V).
+
+These are *additive phases*, not nested, so the tight bound is their **sum**, not their product. (The earlier `O(3^n · n · log V)` overstated it by multiplying independent phases.) For large n the O(3^n) DP term dominates.
 
 ---
 
@@ -562,7 +637,7 @@ class Solution:
 | **2305** (alt) | Medium | ≤8 | `dp[mask]` | `sum ≤ threshold` | Binary search + 1986 check | Binary search answer | O(3^n·log S) |
 | **698** Equal Partition | Medium | ≤16 | `dp[mask]` | `sum == target` | Peel off 1 exact subset | `dp[full] == k` | O(3^n) |
 | **1723** Jobs | Hard | ≤12 | `dp[j][mask]` | Any subset | Same as 2305 | `dp[k][full]` | O(k·3^n) |
-| **3801** Merge Lists | Hard | ≤14 | `dp[mask]` | Split into 2 halves | `sub < comp` dedup | `dp[full]` | O(3^n·n·log V) |
+| **3801** Merge Lists | Hard | ≤14 | `dp[mask]` | Split into 2 halves | `sub < comp` dedup | `dp[full]` | O(3^n + 2^n·n·log V) |
 | **943** Superstring | Hard | ≤12 | `dp[mask][last]` | N/A (TSP) | Extend by 1 word | `min(dp[full][i])` | O(n²·2^n) |
 | **1494** Par. Courses | Hard | ≤15 | `dp[mask]` | Available + `popcount ≤ k` | Extend by available subset | `dp[full]` | O(3^n·n) |
 
@@ -617,6 +692,16 @@ The only thing that changes between problems is:
 - **How you score the transition** (+1, max(), custom cost)
 
 Master this skeleton, and all 7 problems become the same problem with different pluggable parts.
+
+### Common Pitfalls
+
+| Pitfall | Why it bites | Fix |
+|---------|--------------|-----|
+| Forgetting the `dp[0] = 0` base case | Every transition reads `dp[mask ^ sub]`; the empty mask is the recursion's floor. Leaving it `INF` poisons everything. | Set `dp[0] = 0` (or `dp[1<<i] = base` for single-item bases like 3801/943). |
+| Submask loop misses the empty subset | `while sub > 0` **never processes `sub = 0`**. That's correct for peel-off DPs (you never "peel nothing"), but wrong if your transition legitimately needs the empty submask. | Know which you want. If you must include `sub = 0`, use a `do…while`-style loop: process, then `if sub == 0: break; sub = (sub-1) & mask`. |
+| Off-by-one in `n` bits / full mask | `full = (1 << n) - 1` for **n** items; using `1 << (n-1)` or `1 << n` sets the wrong number of bits. | Full mask is always `(1 << n) - 1`; there are `1 << n` masks total (indices `0 .. (1<<n)-1`). |
+| Iterating `range(1 << n)` but indexing item `n` | Bit i corresponds to item i for `i in range(n)`; a stray `1 << n` bit means an item that doesn't exist. | Loop items with `for i in range(n)` and test `mask & (1 << i)`. |
+| Recomputing precompute inside the DP | Sums/medians per mask are O(2^n) or more; folding them into the O(3^n) DP loop blows up complexity. | Precompute `total`/`fits`/`med` once *before* the DP. |
 
 ---
 

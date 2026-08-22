@@ -235,16 +235,6 @@ Array:  [1, 2, 3, -2, 5]    k = 3
 Index:   0  1  2   3  4
 pre:  [0, 1, 3, 6,  4, 9]
 
-Step by step:
-j=0: pre=0, need pre[i]=0-3=-3, count[−3]=0.  Store count[0]=1
-j=1: pre=1, need pre[i]=1-3=-2, count[−2]=0.  Store count[1]=1
-j=2: pre=3, need pre[i]=3-3=0,  count[0]=1 → found 1!  (subarray [1,2])
-j=3: pre=6, need pre[i]=6-3=3,  count[3]=1 → found 1!  (subarray [-2,5]? No, [3])
-j=4: pre=4, need pre[i]=4-3=1,  count[1]=1 → found 1!  (subarray [3,-2,5]? No, [2,3,-2])
-j=5: pre=9, need pre[i]=9-3=6,  count[6]=1 → found 1!  (subarray [-2,5])
-
-Wait, let me re-trace more carefully:
-
 j=0: current_sum=0. Initialize count={0: 1}
 After a[0]=1: current_sum=1, need 1-3=-2, count[-2]=0. count={0:1, 1:1}
 After a[1]=2: current_sum=3, need 3-3=0,  count[0]=1 → +1. count={0:1, 1:1, 3:1}
@@ -754,11 +744,13 @@ def gcd_except_self(a):
 
     result = [0] * n
     for i in range(n):
-        left = prefix_gcd[i-1] if i > 0 else 0
-        right = suffix_gcd[i+1] if i < n-1 else 0
-        if left == 0:
+        # Use None (not 0) as "no neighbor" — a real element can be 0,
+        # and gcd(0, x) == x would silently corrupt the answer.
+        left = prefix_gcd[i-1] if i > 0 else None
+        right = suffix_gcd[i+1] if i < n-1 else None
+        if left is None:
             result[i] = right
-        elif right == 0:
+        elif right is None:
             result[i] = left
         else:
             result[i] = gcd(left, right)
@@ -779,15 +771,25 @@ Flatten the tree with Euler tour, then use 1D prefix sums for **subtree** querie
 
 ```
 Tree:        0
-           / | \
-          1  2  3
-         / \
-        4   5
+            / \
+           1   2
+          / \
+         3   4
 
-Euler tour (tin order): [0, 1, 4, 5, 2, 3]
-tin:  [0, 1, 4, 2, 3, 5]  (index in euler order... simplified)
+DFS visit order: 0, 1, 3, 4, 2
 
-Subtree of node 1 = contiguous range in euler array
+Assign tin on enter, tout = last tin used inside the subtree:
+
+  node:   0    1    2    3    4
+  tin:    0    1    4    2    3
+  tout:   4    3    4    2    3
+
+Subtree of v = the contiguous index range [tin[v], tout[v]].
+  Subtree of 1 = [tin[1], tout[1]] = [1, 3]
+               = euler indices {1, 2, 3}
+               = nodes {1, 3, 4}   ✓  (node 1 and its descendants)
+
+A subtree query then becomes a range prefix-sum query over [tin[v], tout[v]].
 ```
 
 ### Approach 2: Path Prefix Sum with LCA
@@ -1351,6 +1353,34 @@ def subarray_with_sum(a, target):
 | Prefix + HashMap | O(N) | inline | — |
 | SOS DP | O(N·2^N) | O(1) | ✗ (static) |
 | BIT/Fenwick | O(N) | O(log N) | O(log N) |
+
+---
+
+---
+
+## Practice Order
+
+```
+Start here
+    │
+    ▼
+  Running Sum (LC 1480, Easy)          ──── Build a cumulative sum in one pass
+    │
+    ▼
+  Subarray Sum Equals K (LC 560)       ──── Prefix sum + hash map counting (§3)
+    │
+    ▼
+  Range Sum Query 2D Immutable (LC 304) ─── 2D prefix + inclusion-exclusion (§2)
+    │
+    ▼
+  Product of Array Except Self (LC 238) ─── Prefix × suffix, no division (§8)
+    │
+    ▼
+  Continuous Subarray Sum (LC 523)     ──── Prefix mod k, equal remainders (§4)
+    │
+    ▼
+  Count of Range Sum (LC 327, Hard)    ──── Prefix sums + BIT / merge on values (§10)
+```
 
 ---
 

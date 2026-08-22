@@ -430,6 +430,37 @@ def sum_xor_all_subarrays(nums):
     return total
 ```
 
+> **Bit-width assumption:** `range(30)` assumes every value fits in 30 bits (0 ≤ nums[i] < 2^30 ≈ 1.07e9). For larger values (e.g. up to 2^63) widen the loop to `range(64)`.
+
+### Trace on `[1, 2, 3]`
+
+A subarray's XOR is odd-count-per-bit. Enumerate to get the target, then rebuild it bit by bit.
+
+```
+Subarrays: [1]=1, [2]=2, [3]=3, [1,2]=3, [2,3]=1, [1,2,3]=0
+Total XOR sum = 1 + 2 + 3 + 3 + 1 + 0 = 10
+```
+
+Per-bit via prefix XOR (`count[v]` = how many prefixes have this bit = v; empty prefix seeds `count[0]=1`). A subarray `[l..r]` has an **odd** bit count iff prefix[l] and prefix[r+1] differ, so its contribution count is `count[0] × count[1]`:
+
+```
+bit 0 (value 1): nums bit0 = [1, 0, 1]
+  start count=[1,0], prefix=0
+  1 → prefix=1  count=[1,1]
+  2 → prefix=1  count=[1,2]   (bit0 of 2 is 0, no flip)
+  3 → prefix=0  count=[2,2]
+  pairs = count[0]×count[1] = 2×2 = 4  → contributes 4 × 1 = 4
+
+bit 1 (value 2): nums bit1 = [0, 1, 1]
+  start count=[1,0], prefix=0
+  1 → prefix=0  count=[2,0]   (bit1 of 1 is 0)
+  2 → prefix=1  count=[2,1]
+  3 → prefix=0  count=[3,1]
+  pairs = 3×1 = 3  → contributes 3 × 2 = 6
+
+Total = 4 + 6 = 10 ✓   (matches the brute-force sum)
+```
+
 ---
 
 ## 7. Pair Contribution
@@ -445,24 +476,11 @@ Count of subarrays containing pair (i, j) = (i + 1) × (n - j)
 ```python
 def total_equal_pairs(nums):
     n = len(nums)
-    # Group indices by value
     from collections import defaultdict
-    positions = defaultdict(list)
-    for i, v in enumerate(nums):
-        positions[v].append(i)
 
-    total = 0
-    for indices in positions.values():
-        for k in range(len(indices)):
-            j = indices[k]
-            # For each pair (i, j) where i < j and nums[i] == nums[j]
-            # Contribution: (i+1) × (n-j)
-            # Optimize: for fixed j, sum over all i < j with same value
-            #   = (n - j) × Σ(i + 1) for all previous i
-            # Track running sum of (i+1)
-            pass
-
-    # Cleaner O(n) approach:
+    # For fixed j, sum the contribution (i+1) × (n-j) over all previous i
+    # with nums[i] == nums[j]. Track a running sum of (i+1) per value so each
+    # j is O(1): total += (running sum of (i+1) for this value) × (n - j).
     total = 0
     prefix_sum = defaultdict(int)  # value → running sum of (i+1)
     for j in range(n):
@@ -598,8 +616,7 @@ Problem asks for aggregate over ALL subarrays?
 |---|---------|---------------|
 | 11 | **LC 891** --- Sum of Subsequence Widths | Sort + contribution via powers of 2 |
 | 12 | **LC 2681** --- Power of Heroes | Sorted contribution with prefix sums |
-| 13 | **LC 2262** --- Total Appeal of a String | One-pass elegance |
-| 14 | **LC 1498** --- Number of Subsequences That Satisfy the Given Sum | Sort + two pointers + power contribution |
+| 13 | **LC 1498** --- Number of Subsequences That Satisfy the Given Sum | Sort + two pointers + power contribution |
 
 ---
 
