@@ -547,6 +547,7 @@ export const navigationData: NavItem[] = [
     title: "Patterns",
     url: "/pattern",
     children: [
+      { title: "Decision Map", url: "/pattern/decision-map" },
       { title: "LCA", url: "/pattern/lca" },
       { title: "Dynamic Programming", url: "/pattern/dp" },
       { title: "Tree Patterns", url: "/pattern/tree" },

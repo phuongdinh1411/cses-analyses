@@ -870,6 +870,8 @@ main:
 - title: Patterns
   url: /cses-analyses/pattern
   children:
+  - title: Decision Map
+    url: /cses-analyses/pattern/decision-map
   - title: LCA
     url: /cses-analyses/pattern/lca
   - title: Dynamic Programming
