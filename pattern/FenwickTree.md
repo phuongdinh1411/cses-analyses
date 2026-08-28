@@ -22,6 +22,7 @@ A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix 
 | Prefix **xor** with updates | BIT with xor | [4](#4-the-invertibility-requirement) |
 | 2D grid point-update + submatrix sum | 2D BIT | [8](#8-2d-fenwick-tree) |
 | Count inversions / smaller-after-self | Value-indexed BIT | [9](#9-common-patterns-collection) |
+| See a full LeetCode problem worked (307/315/493) | Walkthroughs | [9.5](#95-worked-leetcode-problems) |
 | Decide BIT vs segment tree | Comparison | [10](#10-fenwick-vs-segment-tree) |
 
 ---
@@ -37,8 +38,9 @@ A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix 
 7. [Binary Search on a BIT](#7-binary-search-on-a-bit)
 8. [2D Fenwick Tree](#8-2d-fenwick-tree)
 9. [Common Patterns Collection](#9-common-patterns-collection)
-10. [Fenwick vs Segment Tree](#10-fenwick-vs-segment-tree)
-11. [Pattern Recognition Cheat Sheet](#11-pattern-recognition-cheat-sheet)
+10. [Worked LeetCode Problems](#95-worked-leetcode-problems)
+11. [Fenwick vs Segment Tree](#10-fenwick-vs-segment-tree)
+12. [Pattern Recognition Cheat Sheet](#11-pattern-recognition-cheat-sheet)
 
 ---
 
@@ -75,6 +77,20 @@ Responsibility ranges (1-indexed, n=8):
  tree[6] covers a[5..6]
  tree[8] covers a[1..8]
 ```
+
+### Master LeetCode Comparison Table
+
+The BIT shows up on LeetCode whenever you need **updates interleaved with prefix/range queries**, or the classic "count elements with property X seen so far" sweep. The worked problems in [§9.5](#95-worked-leetcode-problems) map to these:
+
+| LC # | Problem | Difficulty | BIT is indexed by... | What `prefix()` answers | Template |
+|------|---------|-----------|----------------------|-------------------------|----------|
+| **307** | Range Sum Query - Mutable | Medium | array position | running sum of `a[0..i]` | Basic BIT (§2) |
+| **315** | Count of Smaller Numbers After Self | Hard | **value rank** | how many smaller values seen so far | Value-indexed BIT (§9) |
+| **493** | Reverse Pairs | Hard | **value rank** | how many inserted values ≤ x | Value-indexed BIT (§9) |
+| **327** | Count of Range Sum | Hard | **prefix-sum rank** | how many prefix sums in a window | Value-indexed BIT (§9) |
+| **1649** | Create Sorted Array through Instructions | Hard | **value rank** | count strictly-less / strictly-greater | Value-indexed BIT (§9) |
+
+The split is stark: **307 indexes by position** (the array *is* the data); **everything else indexes by value** (the BIT counts *occurrences* along a value axis you compress first). Spotting which axis you're on is the whole battle.
 
 ---
 
@@ -390,6 +406,126 @@ Value/position BIT of 1s + `find_kth` descent (Section 7); set leaf to 0 on remo
 
 ---
 
+## 9.5 Worked LeetCode Problems
+
+Three problems, worked end to end: one position-indexed, two value-indexed. Every solution below was executed against the LeetCode sample cases before publishing.
+
+### Problem 307 — Range Sum Query - Mutable
+
+**Difficulty**: Medium
+
+> Given an integer array `nums`, support two operations, interleaved and many times: `update(index, val)` sets `nums[index] = val`, and `sumRange(left, right)` returns the sum of `nums[left..right]` inclusive.
+
+This is the BIT's *reason to exist* stated as a LeetCode problem: a prefix-sum array would answer `sumRange` in O(1) but every `update` costs O(N) to rebuild; a plain array flips the costs. The BIT makes both O(log N).
+
+The only wrinkle over the §2 template: `update` on LeetCode is an **assignment** (`nums[index] = val`), but a BIT stores **deltas**. So convert: the delta to apply is `val - nums[index]`, and you must keep a plain copy of `nums` to know the old value.
+
+```python
+class NumArray:
+    def __init__(self, nums):
+        self.nums = nums[:]                 # keep current values to compute deltas
+        self.bit = BIT(len(nums))
+        for i, v in enumerate(nums):
+            self.bit.update(i, v)
+
+    def update(self, index, val):
+        delta = val - self.nums[index]      # assignment → delta
+        self.nums[index] = val
+        self.bit.update(index, delta)
+
+    def sumRange(self, left, right):
+        return self.bit.range_sum(left, right)
+```
+
+Trace on `nums = [1, 3, 5]`:
+
+```
+sumRange(0, 2) = prefix(2) - prefix(-1) = 9 - 0 = 9   ✓
+update(1, 2):  delta = 2 - 3 = -1  → bit.update(1, -1)   (nums now [1,2,5])
+sumRange(0, 2) = 8                                     ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- The assignment-vs-delta gap is the single most common 307 bug: calling `bit.update(index, val)` instead of `bit.update(index, val - old)` silently corrupts every later sum. A BIT never stores absolute values — always feed it the *change*.
+- The shadow `self.nums` copy is O(N) extra space but unavoidable with a delta structure: the BIT alone cannot tell you the current value at a point in O(1) (that would be a `range_sum(i, i)`, still O(log N)), and you need the old value *before* overwriting it.
+`─────────────────────────────────────────────────`
+
+### Problem 315 — Count of Smaller Numbers After Self
+
+**Difficulty**: Hard
+
+> Given an integer array `nums`, return a new array `counts` where `counts[i]` is the number of elements to the **right** of `nums[i]` that are **smaller** than `nums[i]`.
+
+Nothing about this says "prefix sum" — but "how many smaller elements to the right" is exactly a value-axis count if you sweep **right to left**. Process elements from the end; before inserting each value, ask the BIT "how many already-inserted values are strictly smaller than me?" Everything already inserted is, by construction, to the right.
+
+The BIT is indexed by **value rank**, not array position. Compress values to ranks `0..m-1` first so the value axis is dense.
+
+```python
+def countSmaller(nums):
+    order = sorted(set(nums))
+    rank = {v: i for i, v in enumerate(order)}
+    bit = BIT(len(order))
+    res = [0] * len(nums)
+    for i in range(len(nums) - 1, -1, -1):     # right to left
+        r = rank[nums[i]]
+        res[i] = bit.prefix(r - 1) if r > 0 else 0   # count of strictly-smaller seen
+        bit.update(r, 1)                              # register this value
+    return res
+```
+
+Trace on `nums = [5, 2, 6, 1]` (ranks: 1→0, 2→1, 5→2, 6→3):
+
+```
+i=3 val=1 (r=0): prefix(-1)=0 → res[3]=0; insert rank 0
+i=2 val=6 (r=3): prefix(2)=1  → res[2]=1; insert rank 3   (only 1 seen, it's smaller)
+i=1 val=2 (r=1): prefix(0)=1  → res[1]=1; insert rank 1   (1 is smaller; 6 is not)
+i=0 val=5 (r=2): prefix(1)=2  → res[0]=2; insert rank 2   (1 and 2 are smaller)
+
+res = [2, 1, 1, 0]  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- The right-to-left sweep is what makes "to the right" free: at the moment you process index `i`, the BIT contains **exactly** the elements to its right. Direction of the sweep encodes the "after self" constraint — no explicit position check needed.
+- `prefix(r - 1)` counts values with rank strictly less than `nums[i]`. Use `r - 1`, not `r`, or you'd count equal values as smaller. This ±1 on the query bound is where "smaller" vs "smaller-or-equal" problems diverge.
+- Coordinate compression (`sorted(set(...))`) keeps the BIT size at O(distinct values) instead of O(max value) — essential when values are large or negative (as `-1` here).
+`─────────────────────────────────────────────────`
+
+### Problem 493 — Reverse Pairs
+
+**Difficulty**: Hard
+
+> Count pairs `(i, j)` with `i < j` and `nums[i] > 2 · nums[j]`.
+
+Same value-indexed BIT, but with a twist that trips people up: the comparison value (`2·nums[j]`) is **different** from the value you insert (`nums[j]`). Sweep left to right; for each `j`, the BIT holds all earlier elements, and you ask "how many of them exceed `2·nums[j]`?"
+
+Because `2·nums[j]` may not be one of the array's values, you can't look it up by rank directly — use `bisect` to find where it *would* sit in the compressed order.
+
+```python
+from bisect import bisect_left, bisect_right
+
+def reversePairs(nums):
+    order = sorted(set(nums))
+    bit = BIT(len(order))
+    count = 0
+    inserted = 0
+    for j in range(len(nums)):
+        x = 2 * nums[j]
+        idx = bisect_right(order, x)                    # ranks [0..idx-1] hold values ≤ x
+        le_count = bit.prefix(idx - 1) if idx > 0 else 0
+        count += inserted - le_count                    # the rest are strictly greater
+        rj = bisect_left(order, nums[j])
+        bit.update(rj, 1)                               # insert nums[j] at its own rank
+        inserted += 1
+    return count
+```
+
+`★ Insight ─────────────────────────────────────`
+- The query value and the insert value live on the **same compressed axis** but need not be the same number. `bisect_right(order, 2·nums[j])` maps an arbitrary threshold onto that axis without requiring it to be a real element — the reusable trick for any "count elements past a scaled/shifted threshold" problem.
+- "Strictly greater than x" is computed as `inserted - (count ≤ x)`. Complementing against the running insert count is cleaner than a suffix query and avoids a second prefix call — the same complement trick that turns "at least k" into "total minus fewer than k" everywhere.
+`─────────────────────────────────────────────────`
+
+---
+
 ## 10. Fenwick vs Segment Tree
 
 The core decision this guide exists to answer.
@@ -494,3 +630,7 @@ Start here
 
 - [Segment Tree Patterns](/cses-analyses/pattern/segment-tree) — when you need min/max/gcd, range assign, lazy propagation, or persistence.
 - [Prefix Sum Patterns](/cses-analyses/pattern/prefix-sum) — static (no-update) range queries in O(1).
+
+---
+
+*Pattern mastered — two lines (`i += i & -i` to climb, `i -= i & -i` to descend) plus one question: am I indexing by position or by value?*
