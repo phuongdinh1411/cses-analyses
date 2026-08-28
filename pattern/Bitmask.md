@@ -39,6 +39,36 @@ All subsets of {0, 1, 2}:
 
 ---
 
+## Quick Navigation: I need to...
+
+| I need to... | Technique | Numbered LC | Jump to |
+|--------------|-----------|-------------|---------|
+| List every subset of `n` items | Subset enumeration | **78** Subsets | [§2](#2-subset-enumeration-techniques) · [walkthrough](#problem-78--subsets) |
+| Split items into `k` fair groups / buckets | Subset DP over groups | **2305** Fair Distribution, **698** Partition to K | [§3](#3-bitmask-dp-patterns) · [walkthrough](#problem-2305--fair-distribution-of-cookies) |
+| Assign `n` workers to `n` jobs, min cost | Assignment DP `dp[mask]` | **698** (disguise) | [§3 Pattern 2](#pattern-2-assignment-problem) |
+| Visit ALL nodes, cost depends on where I am now | TSP `dp[mask][last]` | **847** Shortest Path Visiting All Nodes | [§3 Pattern 1](#pattern-1-traveling-salesman-problem-tsp) · [walkthrough](#problem-847--shortest-path-visiting-all-nodes) |
+| Aggregate a value over all submasks of every mask | SOS DP | **1178** Valid Words for Puzzles | [§5](#5-sos-sum-over-subsets-dp) · [walkthrough](#problem-1178--number-of-valid-words-for-each-puzzle) |
+| Find max XOR of a subset | XOR (linear) basis | **1707** Max XOR With Element | [§5 max_xor_subset](#5-sos-sum-over-subsets-dp) |
+| Tile a grid / narrow board | Profile DP `dp[col][profile]` | **1349** Max Students | [§6 Template 3](#template-3-profile-dp-grid-problems) |
+
+**The one split that matters**: are you manipulating **the bits of ONE number** (bit tricks — §1, §4) or is **the set of chosen items itself the DP state key** (bitmask DP — §3, §5)? Different skill, same syntax.
+
+---
+
+## Master LeetCode Comparison Table
+
+| LC # | Title | Diff | State | Transition (one-liner) | Cost |
+|------|-------|------|-------|------------------------|------|
+| **78** | Subsets | Easy | `mask ∈ [0, 2^n)` | bit `i` set → include `nums[i]` | O(2^n · n) |
+| **698** | Partition to K Equal Sum Subsets | Medium | `dp[mask]` = filled amount of current bucket (mod target) | add unused item if it fits current bucket | O(2^n · n) |
+| **2305** | Fair Distribution of Cookies | Medium | `dp[j][mask]` = min unfairness giving `mask` to first `j` kids | give kid `j` some submask `s` of `mask` | O(k · 3^n) |
+| **847** | Shortest Path Visiting All Nodes | Hard | `(node, mask)` = at `node`, visited set `mask` | BFS to neighbor, `mask │ (1<<nb)` | O(2^n · n²) |
+| **1178** | Number of Valid Words for Each Puzzle | Hard | `cnt[wordmask]` frequency | sum `cnt[sub]` over submasks of puzzle containing first letter | O(W·7 + P·2^7) |
+
+Read the **State** column top to bottom: `mask` alone (78, 698) → `dp[j][mask]` splitting a set (2305) → `(node, mask)` position + set (847) → precomputed masks queried by submask (1178). That progression *is* the learning ladder — each row adds one dimension to what the mask tracks.
+
+---
+
 ## Table of Contents
 
 1. [Fundamental Bit Operations](#1-fundamental-bit-operations)
@@ -183,6 +213,11 @@ print(is_power_of_2(6))  # False
 print(are_disjoint(0b1100, 0b0011))  # True
 print(is_subset(0b0101, 0b1101))  # True
 ```
+
+`★ Insight ─────────────────────────────────────`
+- `x & -x` isolates the **lowest set bit** because two's-complement negation flips-then-adds-1, so `-x` matches `x` above the lowest 1 (all flipped) and the lowest 1 aligns. This one identity powers popcount (Kernighan), trailing-zero count, and Fenwick tree index stepping — learn it once, reuse everywhere.
+- `x & (x-1)` clears the lowest set bit; `x & (x+1)`-style tricks turn bits on. The `is_subset(a, b) == ((a & b) == a)` test is the membership check bitmask DP leans on constantly — "is this smaller set contained in that one" in one AND.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -347,6 +382,44 @@ for mask in enumerate_k_subsets(5, 3):
 #   ... (total of C(5,3) = 10 subsets)
 ```
 
+### Problem 78 — Subsets
+
+**Difficulty**: Easy · **This template solves**: the [Iterate All Subsets](#2-subset-enumeration-techniques) template.
+
+> Given an integer array `nums` of **unique** elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.
+
+The bitmask insight: there are exactly `2^n` subsets, and the integers `0 .. 2^n - 1` are in **bijection** with them. Integer `mask` encodes the subset "take `nums[i]` iff bit `i` is set." So a single `for mask in range(1 << n)` loop enumerates the entire power set — no recursion, no backtracking bookkeeping.
+
+```python
+class Solution:
+    def subsets(self, nums: list[int]) -> list[list[int]]:
+        n = len(nums)
+        out = []
+        for mask in range(1 << n):
+            out.append([nums[i] for i in range(n) if mask & (1 << i)])
+        return out
+```
+
+**Trace** on `nums = [1, 2, 3]` (bit 0 → 1, bit 1 → 2, bit 2 → 3):
+
+```
+mask  binary   bits set        subset
+ 0    000      —               []
+ 1    001      0               [1]
+ 2    010      1               [2]
+ 3    011      0,1             [1, 2]
+ 4    100      2               [3]
+ 5    101      0,2             [1, 3]
+ 6    110      1,2             [2, 3]
+ 7    111      0,1,2           [1, 2, 3]
+                                → 2^3 = 8 subsets
+```
+
+`★ Insight ─────────────────────────────────────`
+- The mask-as-subset bijection is why bitmask beats recursion here: the loop counter `mask` *is* the subset. Bit order gives a free, deterministic ordering — no visited set, no dedup.
+- This only works because elements are **unique**. If `nums` has duplicates, two different masks can yield the same multiset — then you sort + skip, or count occurrences, because the bijection breaks.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 3. Bitmask DP Patterns
@@ -404,6 +477,65 @@ dist = [
 ]
 print(f"Minimum TSP cost: {tsp(dist, 4)}")
 ```
+
+### Problem 847 — Shortest Path Visiting All Nodes
+
+**Difficulty**: Hard · **This template solves**: the [TSP `dp[mask][last]`](#pattern-1-traveling-salesman-problem-tsp) state, in BFS form.
+
+> Undirected connected graph of `n` nodes. Return the length of the shortest path that visits **every** node. You may start and stop at any node, revisit nodes, and reuse edges.
+
+This is TSP's cousin: the state is still `(mask, last)` = "visited set `mask`, currently standing on `last`." But because every edge has weight 1 and you may **revisit**, the shortest path is a plain BFS over that state space — the first time BFS reaches any `(full_mask, *)` is the answer. Revisiting means `mask` can stay the same while `node` changes, so this isn't a Hamiltonian path (each node once); it's "cover all nodes, steps minimized."
+
+```python
+from collections import deque
+
+class Solution:
+    def shortestPathLength(self, graph: list[list[int]]) -> int:
+        n = len(graph)
+        if n == 1:
+            return 0
+        full = (1 << n) - 1
+        # Start BFS from EVERY node simultaneously (multi-source).
+        seen = set()
+        q = deque()
+        for i in range(n):
+            q.append((i, 1 << i, 0))   # (node, visited mask, dist)
+            seen.add((i, 1 << i))
+
+        while q:
+            node, mask, dist = q.popleft()
+            if mask == full:
+                return dist
+            for nb in graph[node]:
+                nm = mask | (1 << nb)
+                if (nb, nm) not in seen:
+                    seen.add((nb, nm))
+                    q.append((nb, nm, dist + 1))
+        return -1
+```
+
+**Trace** on `graph = [[1,2,3],[0],[0],[0]]` — a star with hub 0 and leaves 1, 2, 3. `full = 1111`.
+
+```
+Start (dist 0): (0,0001) (1,0010) (2,0100) (3,1000)   all seeded
+
+dist 1: from 0 → 1,2,3   gives (1,0011)(2,0101)(3,1001)
+        from 1 → 0       gives (0,0011)
+        from 2 → 0       gives (0,0101)
+        from 3 → 0       gives (0,1001)
+dist 2: (0,0011)→2,3: (2,0111)(3,1011);  (0,0101)→…(3,1101); (0,1001)→…(2,1101)
+        also leaves push back to hub, growing masks
+dist 3: reach (0,0111)→3 = (3,1111) ✓  → return 3?  No — hub must be re-entered.
+
+Path 1→0→2→0→3 visits {1,0,2,3}=full in 4 steps → answer 4.
+```
+
+Running the code returns **4**: to cover all leaves you must bounce through the hub between each, so the state `(0, 0111)` is reached at dist 3, then step to `(3, 1111)` at dist 4.
+
+`★ Insight ─────────────────────────────────────`
+- Two encodings of the SAME state. Weighted TSP fills a `dp[mask][last]` table (Pattern 1). Unit-weight "visit all" uses BFS over `(mask, last)` — BFS *is* the DP, dequeue order guarantees the first full-mask hit is shortest.
+- **Multi-source start** is the trick that makes "start anywhere" free: seed all `n` start states at dist 0 instead of running `n` separate BFS runs. The `2^n · n` state count is the ceiling, so BFS is O(2^n · n²) with the neighbor loop.
+`─────────────────────────────────────────────────`
 
 ### Pattern 2: Assignment Problem
 
@@ -551,6 +683,102 @@ def merge_data(data1, data2):
     # Merge sorted lists, concatenate, etc.
     return sorted(data1 + data2)
 ```
+
+### Problem 698 — Partition to K Equal Sum Subsets
+
+**Difficulty**: Medium · **This template solves**: the [Assignment `dp[mask]`](#pattern-2-assignment-problem) state (which items used) with a "fill one bucket at a time" transition.
+
+> Given `nums` and integer `k`, return `true` if you can divide `nums` into `k` **non-empty** subsets whose sums are all equal.
+
+If a valid split exists, every bucket sums to `target = sum(nums) / k`. The state `dp[mask]` answers "using exactly the items in `mask`, what is the fill level of the bucket currently being built, taken mod `target`?" Adding items greedily fills bucket 1 to `target`, then `mod target` resets to 0 and the next item starts bucket 2 — so `k` separate buckets are tracked implicitly by the running total, never as `k` explicit sets.
+
+```python
+class Solution:
+    def canPartitionKSubsets(self, nums: list[int], k: int) -> bool:
+        total = sum(nums)
+        if total % k:
+            return False
+        target = total // k
+        n = len(nums)
+        nums.sort(reverse=True)
+        if nums[0] > target:
+            return False
+
+        full = (1 << n) - 1
+        # dp[mask] = fill level of current bucket (mod target) using items in mask; -1 = unreachable
+        dp = [-1] * (1 << n)
+        dp[0] = 0
+        for mask in range(1 << n):
+            if dp[mask] == -1:
+                continue
+            for i in range(n):
+                if mask & (1 << i):
+                    continue
+                if dp[mask] + nums[i] <= target:          # item fits current bucket
+                    nxt = mask | (1 << i)
+                    if dp[nxt] == -1:
+                        dp[nxt] = (dp[mask] + nums[i]) % target
+        return dp[full] == 0
+```
+
+**Trace** on `nums = [4,3,2,3,5,2,1]`, `k = 4` → `total = 20`, `target = 5`. A bucket closes each time the running sum hits 5 (mod 5 → 0). Reaching `dp[full] == 0` means all items placed with the last bucket exactly closed:
+
+```
+5            = {5}
+4+1          = {4,1}
+3+2          = {3,2}
+3+2          = {3,2}          four buckets, each sums to 5 → dp[1111111] = 0 → True
+```
+
+`canPartitionKSubsets([1,2,3,4], 3)` → `total = 10`, not divisible by 3 → `False` immediately.
+
+`★ Insight ─────────────────────────────────────`
+- The `% target` is the whole trick: one scalar tracks *which bucket* you're filling AND *how full* it is. When the running total crosses a multiple of `target`, the modulo silently "starts the next bucket" — so `dp[mask]` needs only `2^n` entries, not `2^n · k`.
+- Sort descending + prune `nums[0] > target` kills the exponential early: the biggest item must fit in a bucket, and large-first packing fails fast. Same idea powers the backtracking solution, but here it just trims the DP.
+`─────────────────────────────────────────────────`
+
+### Problem 2305 — Fair Distribution of Cookies
+
+**Difficulty**: Medium · **This template solves**: the [Partition DP](#pattern-3-partition-dp) submask enumeration — split a set among `k` recipients.
+
+> You have `n` bags of cookies (`cookies[i]`). Distribute **all** bags to `k` children; each bag goes to one child. A child's *unfairness* is the total cookies they get. Minimize the **maximum** unfairness across the `k` children.
+
+Now the mask is "the set of bags still to hand out," and we hand child `j` some **submask** `s` of what's left. State `dp[j][mask]` = min possible max-unfairness after giving bags `mask` to the first `j` children. For each child, enumerate every submask `s` of `mask` as that child's haul.
+
+```python
+class Solution:
+    def distributeCookies(self, cookies: list[int], k: int) -> int:
+        n = len(cookies)
+        full = (1 << n) - 1
+
+        # Precompute sum of every submask in O(2^n) via lowest-bit recurrence.
+        tot = [0] * (1 << n)
+        for mask in range(1, 1 << n):
+            low = mask & -mask
+            i = low.bit_length() - 1
+            tot[mask] = tot[mask ^ low] + cookies[i]
+
+        INF = float('inf')
+        dp = [[INF] * (1 << n) for _ in range(k + 1)]
+        dp[0][0] = 0
+        for j in range(1, k + 1):
+            for mask in range(1 << n):
+                s = mask
+                while True:                     # every submask s of mask = child j's haul
+                    if dp[j - 1][mask ^ s] != INF:
+                        dp[j][mask] = min(dp[j][mask], max(dp[j - 1][mask ^ s], tot[s]))
+                    if s == 0:
+                        break
+                    s = (s - 1) & mask
+        return dp[k][full]
+```
+
+**Trace** on `cookies = [8,15,10,20,8]`, `k = 2`. Total = 61. Best split hands one child three bags summing to 30 and the other two summing to 31 → max = **31** (returned). With `k = 3` on `[6,1,3,2,2,4,1,2]` the optimum max is **7**.
+
+`★ Insight ─────────────────────────────────────`
+- 698 fixed each group's target and asked feasibility; 2305 has no target and **minimizes the max** — so the objective is `max(previous_children, this_child)`, not a sum. Same submask machinery, different combine operator.
+- The `tot[mask] = tot[mask ^ lowbit] + cookies[i]` precompute is the reusable idiom: subset sums for all `2^n` masks in O(2^n), by peeling the lowest set bit off an already-computed smaller mask. The submask loop then costs O(3^n) overall (each mask visits its submasks).
+`─────────────────────────────────────────────────`
 
 ### Pattern 4: Maximum Independent Set
 
@@ -768,6 +996,52 @@ for mask in range(1 << n):
     expected = 1 << bin(mask).count('1')  # 2^k where k = popcount
     assert result[mask] == expected
 ```
+
+### Problem 1178 — Number of Valid Words for Each Puzzle
+
+**Difficulty**: Hard · **This template solves**: [submask enumeration](#iterate-all-submasks) as a "sum over submasks" query (the problem SOS DP generalizes).
+
+> A word is **valid** for a puzzle if (1) it contains the puzzle's **first** letter, and (2) every letter of the word appears in the puzzle. For each puzzle, return how many words are valid. (Only lowercase a–z; a puzzle has 7 distinct letters.)
+
+Represent each word by a 26-bit mask of its distinct letters (order/count irrelevant). A word is valid for puzzle `P` iff `wordmask` is a **submask** of `puzzlemask` **and** contains the first-letter bit. Since a puzzle has only 7 letters, it has just `2^7 = 128` submasks — so for each puzzle, enumerate its submasks and sum the precomputed word-frequency of each.
+
+```python
+from collections import Counter
+
+class Solution:
+    def findNumOfValidWords(self, words: list[str], puzzles: list[str]) -> list[int]:
+        cnt = Counter()
+        for w in words:
+            m = 0
+            for c in w:
+                m |= 1 << (ord(c) - 97)   # distinct-letter mask
+            cnt[m] += 1
+
+        res = []
+        for p in puzzles:
+            first = 1 << (ord(p[0]) - 97)
+            pmask = 0
+            for c in p:
+                pmask |= 1 << (ord(c) - 97)
+
+            total = 0
+            sub = pmask                    # enumerate submasks of the 7-letter puzzle
+            while True:
+                if sub & first:            # must contain first letter
+                    total += cnt.get(sub, 0)
+                if sub == 0:
+                    break
+                sub = (sub - 1) & pmask
+            res.append(total)
+        return res
+```
+
+**Trace** the counting idea on puzzle `"aboveyz"` (first letter `a`). Its letter set is `{a,b,e,o,v,y,z}`. Word `"aaaa"` → mask `{a}`, which is a submask containing `a` → counts. Word `"asas"` → mask `{a,s}`; `s` ∉ puzzle → not a submask → excluded. Over the sample the result is `[1, 1, 3, 2, 4, 0]`.
+
+`★ Insight ─────────────────────────────────────`
+- Flip the naive "for each word, test each puzzle" (O(W·P)) into "for each puzzle, look up submasks" (O(P · 2^7)). The bound comes from the *puzzle* side being fixed at 7 letters — the submask count is constant, independent of word count.
+- The `if sub & first` guard replaces condition (1). Every submask of `pmask` automatically satisfies condition (2), so the two rules collapse to one submask walk plus a single bit test — the same shape SOS DP would compute in bulk if puzzles shared masks.
+`─────────────────────────────────────────────────`
 
 ### Inverse SOS (Sum Over Supersets)
 
@@ -996,30 +1270,32 @@ def fill_column(rows, col, cur_profile, row, next_profile, ways, next_dp):
 
 ### Beginner Level
 
-| Problem | Pattern | Key Technique |
-|---------|---------|---------------|
-| **Subset Sum** | Basic DP | Bitmask as DP state |
-| **Hamming Distance** | Bit counting | Process bit-by-bit |
-| **Single Number** | XOR properties | a ^ a = 0 |
-| **Power of Two** | Bit check | n & (n-1) == 0 |
+| LC # | Problem | Technique | Key move |
+|------|---------|-----------|----------|
+| **78** | Subsets | Subset enumeration | `for mask in range(1<<n)` |
+| **461** | Hamming Distance | Bit counting | `popcount(a ^ b)` |
+| **136** | Single Number | XOR properties | `a ^ a = 0`, XOR all |
+| **231** | Power of Two | Bit check | `n & (n-1) == 0` |
+| **338** | Counting Bits | DP on bits | `dp[i] = dp[i>>1] + (i&1)` |
 
 ### Intermediate Level
 
-| Problem | Pattern | Key Technique |
-|---------|---------|---------------|
-| **Assignment Problem** | Bitmask DP | dp[mask] with popcount |
-| **Subset XOR** | XOR basis | Gaussian elimination |
-| **Minimum Cost to Connect** | TSP variant | dp[mask][pos] |
-| **Maximum Independent Set** | Graph + bitmask | Check adjacency |
+| LC # | Problem | Technique | Key move |
+|------|---------|-----------|----------|
+| **698** | Partition to K Equal Sum Subsets | Bitmask DP | `dp[mask]` = bucket fill mod target |
+| **2305** | Fair Distribution of Cookies | Submask partition DP | split `mask` among `k`, min-max |
+| **1125** | Smallest Sufficient Team | Subset-cover DP | `dp[skillmask]` = min team |
+| **473** | Matchsticks to Square | Bitmask DP (k=4) | 698 with fixed `k=4` |
 
 ### Advanced Level
 
-| Problem | Pattern | Key Technique |
-|---------|---------|---------------|
-| **TSP** | Position DP | dp[mask][city] |
-| **SOS DP Problems** | Subset sums | O(n * 2^n) optimization |
-| **Partition DP** | Merge lists | Enumerate submask pairs |
-| **Tiling Problems** | Profile DP | Column-by-column state |
+| LC # | Problem | Technique | Key move |
+|------|---------|-----------|----------|
+| **847** | Shortest Path Visiting All Nodes | TSP `dp[mask][last]` | multi-source BFS over `(mask,node)` |
+| **943** | Find the Shortest Superstring | TSP + overlap weights | `dp[mask][last]` on overlaps |
+| **1178** | Number of Valid Words for Each Puzzle | Submask / SOS query | submasks of 7-letter puzzle |
+| **1349** | Maximum Students Taking Exam | Profile DP | `dp[row][seatmask]`, check adjacency |
+| **1707** | Maximum XOR With an Element From Array | XOR (linear) basis / trie | greedy high-bit basis |
 
 ---
 
@@ -1104,4 +1380,25 @@ Quick tell: if only *which items* matters → `dp[mask]`; if *the order/last ite
 
 ---
 
-*Happy Coding! Master these techniques and unlock efficient solutions to subset problems.* 🚀
+## THREE MOVES BEHIND EVERY BITMASK PROBLEM
+
+```
+1. ENCODE   — make the mask the state key
+              "which items are chosen/visited" = the bits of one integer.
+              n ≤ ~20, and identity (not just count) must matter.
+
+2. TRANSITION — add one bit, or split into submasks
+              dp[mask]        : add an unused item      mask | (1 << i)
+              dp[mask][last]  : move to a new position   (order matters)
+              submask loop    : hand a group away        s = (s-1) & mask
+
+3. AGGREGATE — sum / min / max / count over masks
+              feasibility (698), min-max (2305), shortest (847),
+              count-over-submasks (1178, SOS).
+```
+
+**Decision in one line**: only *which items* matters → `dp[mask]`; *order or current position* matters → `dp[mask][last]`; must *partition* a set → submask loop; *aggregate over all submasks* → SOS DP.
+
+---
+
+*Pattern mastered — stop enumerating permutations; let the bits of one integer be the set, and fill the table once.* 🚀
