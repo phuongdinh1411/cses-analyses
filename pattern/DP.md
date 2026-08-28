@@ -35,6 +35,104 @@ The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, 
 
 ---
 
+## Quick Navigation: "I need to..."
+
+| I need to... | Family | Section |
+|--------------|--------|---------|
+| Choose take-or-skip along a **line** (rob houses, climb stairs) | Linear | [3](#3-linear-dp) |
+| Walk a **grid** moving only right/down; count paths or min cost | Grid | [4](#4-grid-dp) |
+| Fill a **capacity/target** with items (subset sum, coin change) | Knapsack | [5](#5-knapsack-family) |
+| Find **longest increasing** subsequence | LIS | [6](#6-longest-increasing-subsequence) |
+| Match / align **two strings** | LCS | [7](#7-longest-common-subsequence) |
+| Combine a **range `[i,j]`** where the split order matters | Interval | [8](#8-interval-dp) |
+| Track a **mode you're in** (holding/selling stock) that transitions | State Machine | [9](#9-state-machine-dp) |
+| Compute a subtree value from its **children** | Tree | [10](#10-tree-dp) |
+| Track **which of ≤20 items** are used (visit-all, assign) | Bitmask | [11](#11-bitmask-dp) |
+| Count numbers in **`[L,R]`** with a **digit** property | Digit | [12](#12-digit-dp) |
+| Compute a **probability / expected count** over random steps | Probability | [13](#13-probability-expected-value-dp) |
+| DP where dependencies form a **directed acyclic graph** | DP on DAG | [14](#14-dp-on-dags) |
+| A correct DP that is **too slow** and needs speeding up | Optimizations | [15](#15-dp-optimizations) |
+
+---
+
+## How to Identify a DP Problem
+
+Before picking a family, confirm it's DP at all. Two questions:
+
+```
+(1) Can I phrase the answer as a sequence of CHOICES, where each choice
+    leads to a smaller version of the SAME problem?
+        (take/skip an item, go right/down, split at k, pick next city...)
+
+(2) Do those smaller problems OVERLAP — i.e. the same subproblem is
+    reached by many different choice-paths?
+
+Both YES  → Dynamic Programming.
+Only (1)  → plain recursion / divide & conquer (subproblems don't repeat).
+Neither   → greedy, simulation, or a different paradigm.
+```
+
+The third tell is the **ask**: DP answers *"count the ways"*, *"minimum/maximum cost"*, or *"is it possible?"* — never *"give me any one valid answer"* (that's usually greedy/backtracking).
+
+`★ Insight ─────────────────────────────────────`
+- **Optimal substructure + overlapping subproblems** are the two license conditions. If subproblems don't overlap, memoization buys nothing and it's just recursion. If there's no optimal substructure (a locally-best choice can't be trusted), DP's whole "build from smaller answers" premise collapses.
+- The *state* is whatever you must remember to make the next choice correctly — and nothing more. Too little state → subproblems aren't actually independent (wrong answer). Too much state → the table explodes (TLE/MLE). Finding the minimal sufficient state IS the problem.
+`─────────────────────────────────────────────────`
+
+### Which family? — a symptom → family router
+
+```
+What does a subproblem look like?
+
+ a 1-D position along a line/array ............... Linear DP        (§3)
+   └ with a running "mode" that flips ............ State Machine    (§9)
+ a cell (i,j) in a grid, move right/down ......... Grid DP          (§4)
+ "used capacity so far" toward a target/budget ... Knapsack         (§5)
+ a prefix of ONE sequence, order matters ......... LIS              (§6)
+ a pair of prefixes of TWO sequences ............. LCS / Edit Dist  (§7)
+ a contiguous range [i,j], you pick a split k .... Interval DP      (§8)
+ a node whose value = f(its children) ............ Tree DP          (§10)
+ a SUBSET of ≤ ~20 elements (which are used) ..... Bitmask DP       (§11)
+ a position while building a number digit-by-digit Digit DP         (§12)
+ a state + a probability/expected value .......... Probability DP   (§13)
+ a node in a dependency graph (topo order) ....... DP on DAG        (§14)
+```
+
+Many problems are a family **in disguise** — the input *is* the DP structure once you rename it:
+
+| Problem smells like... | Really is... |
+|------------------------|--------------|
+| "reach sum ≥ N", "make change", "partition into equal halves" | Knapsack over a target (§5) |
+| grid of cells with only right/down moves | Grid DP (§4) |
+| "two strings", "edit / align / common" | LCS family (§7) |
+| "≤ 20 cities/workers, visit-all / assign-all" | Bitmask DP (§11) |
+| "longest path where each step must increase" | LIS (§6) or DP-on-DAG (§14) |
+| a rooted tree, answer per subtree | Tree DP (§10) |
+
+---
+
+## Master LeetCode Comparison Table
+
+One canonical LeetCode problem per family — the walkthrough for each lives in its section below.
+
+| LC # | Problem | Family | Difficulty | State `dp[...]` = | Transition (the one line) |
+|------|---------|--------|-----------|-------------------|---------------------------|
+| **198** | House Robber | Linear | Medium | max loot from houses `0..i` | `max(dp[i-1], dp[i-2]+a[i])` |
+| **64** | Minimum Path Sum | Grid | Medium | min cost to reach cell `(i,j)` | `grid[i][j] + min(up, left)` |
+| **416** | Partition Equal Subset Sum | Knapsack | Medium | can we hit sum `s`? | `dp[s] or dp[s-a[i]]` (reverse s) |
+| **300** | Longest Increasing Subsequence | LIS | Medium | smallest tail of an LIS of length `k+1` | binary-search replace in `tails` |
+| **1143** | Longest Common Subsequence | LCS | Medium | LCS of prefixes `s1[:i], s2[:j]` | match→`diag+1`, else `max(up,left)` |
+| **312** | Burst Balloons | Interval | Hard | max coins bursting all inside `(i,j)` | try each `k` as **last** to burst |
+| **309** | Buy/Sell w/ Cooldown | State Machine | Medium | best profit in `rest/hold/cool` at day `i` | 3 coupled state updates |
+| **337** | House Robber III | Tree | Medium | `(rob_node, skip_node)` per subtree | `rob=val+Σskip_child; skip=Σmax(child)` |
+| **847** | Shortest Path Visiting All Nodes | Bitmask | Hard | BFS layer of `(mask, node)` | flip a bit when stepping to a neighbor |
+| **233** | Number of Digit One | Digit | Hard | count of 1s while building `≤ N` | per position, `tight` + count-so-far |
+| **688** | Knight Probability in Chessboard | Probability | Medium | prob still on board after `k` moves | `Σ dp[k-1][prev]/8` |
+| **329** | Longest Increasing Path in Matrix | DP on DAG | Hard | longest strictly-increasing path from `(i,j)` | `1 + max(neighbors greater)` (memo) |
+| **1137** | N-th Tribonacci | Optimizations | Easy | linear recurrence, huge `n` | rolling window / matrix power (§15.5) |
+
+---
+
 ## Table of Contents
 
 1. [How to Approach DP Problems](#1-how-to-approach-dp-problems)
@@ -49,10 +147,11 @@ The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, 
 10. [Tree DP](#10-tree-dp)
 11. [Bitmask DP](#11-bitmask-dp)
 12. [Digit DP](#12-digit-dp)
-13. [Probability / Expected Value DP](#13-probability--expected-value-dp)
+13. [Probability / Expected Value DP](#13-probability-expected-value-dp)
 14. [DP on DAGs](#14-dp-on-dags)
 15. [DP Optimizations](#15-dp-optimizations)
 16. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
+17. [Practice Order](#17-practice-order)
 
 ---
 
@@ -104,6 +203,10 @@ Step 5: OPTIMIZE SPACE (optional)
 | Off-by-one in base cases | Trace through smallest examples manually |
 | Not considering "do nothing" | Often dp[i] = dp[i-1] is a valid transition |
 | Forgetting modular arithmetic | Apply MOD at every addition/multiplication |
+| 0/1 knapsack inner loop iterated **forward** | Iterate the capacity/sum **reverse** so each item is used once (§5, LC 416) |
+| Tree DP returning one number | Return a **pair** `(use_node, skip_node)` so the parent can choose (§10, LC 337) |
+| Rolling variables committed in wrong order | Compute all next-states from *old* values, then assign together — `a, b = b, max(...)` not two lines (§3, LC 198; §9 states) |
+| Reaching for matrix-expo on the Easy version | Only when `n` is astronomically large; rolling window otherwise (§15.5, LC 1137) |
 
 ---
 
@@ -241,13 +344,10 @@ def count_combinations(coins, n):
     return dp[n]
 ```
 
-`★ The rule ──────────────────────────────────────`
-Outer = sum → each coin can be the "last" one at every step → **permutations**
-(ordered, CSES "Coin Combinations I").
-Outer = coin → each coin is introduced once, globally → **combinations**
-(unordered, CSES "Coin Combinations II" / classic "Coin Change 2").
-Same three lines; the outer loop decides the meaning.
-──────────────────────────────────────────────────`
+`★ Insight ─────────────────────────────────────`
+- **Outer loop = sum** → each coin can be the "last" one at every step → counts **permutations** (ordered; CSES "Coin Combinations I"). **Outer loop = coin** → each coin is introduced once, globally → counts **combinations** (unordered; CSES "Coin Combinations II" / classic "Coin Change 2").
+- Same three lines of code; the outer loop alone decides the meaning. This loop-order sensitivity is unique to *counting* — for *minimum coins* either order gives the same answer, because `min` doesn't care how many orderings reach a value, only the cheapest.
+`─────────────────────────────────────────────────`
 
 ### Example: House Robber
 
@@ -277,6 +377,37 @@ def rob(nums):
         a, b = b, max(b, a + nums[i])
     return b
 ```
+
+#### Walkthrough — LC 198 House Robber
+
+**This template solves: LC 198 (House Robber), LC 213 (House Robber II — circular), LC 740 (Delete and Earn — bucket by value then rob).**
+
+> You are a robber planning to rob houses along a street. Each house `nums[i]` holds some money. Adjacent houses have connected alarms — robbing two adjacent houses on the same night triggers the police. Return the maximum money you can rob without alerting police.
+
+The whole family reduces to one binary choice **at each position**: take `nums[i]` (then you *cannot* have taken `i-1`), or skip it (keep whatever the best was through `i-1`). That's the take/skip archetype — the ancestor of every linear DP.
+
+```
+State   dp[i] = best loot considering houses 0..i
+Choice  rob i  → nums[i] + dp[i-2]   (i-1 is off-limits)
+        skip i → dp[i-1]
+        dp[i] = max(skip, rob)
+```
+
+Only `dp[i-1]` and `dp[i-2]` are ever read, so we collapse the whole table into two rolling scalars: `b = dp[i-1]` (best so far) and `a = dp[i-2]` (best two back). Trace on `[2, 7, 9, 3, 1]`:
+
+```
+init          a=2   b=max(2,7)=7            (dp[0]=2, dp[1]=7)
+i=2 (9)  rob=a+9=11, skip=b=7  → a=7,  b=11
+i=3 (3)  rob=a+3=10, skip=b=11 → a=11, b=11   (skipping wins)
+i=4 (1)  rob=a+1=12, skip=b=11 → a=11, b=12
+
+answer b = 12   (rob houses 0, 2, 4:  2 + 9 + 1 = 12)
+```
+
+`★ Insight ─────────────────────────────────────`
+- The rolling `a, b = b, max(b, a + nums[i])` line does the table swap *in place*: after the tuple-assignment, the old `b` (which was `dp[i-1]`) becomes the new `a` (`dp[i-2]` for the next step). Writing it as two separate lines is the classic bug — updating `b` first would clobber the value `a` still needs.
+- **House Robber II (LC 213)** is the same code run twice: a circular street means house `0` and house `n-1` are adjacent, so the max is `max(rob(nums[:-1]), rob(nums[1:]))` — you forbid one endpoint or the other. Recognizing "this is just Robber with one house excluded" is the whole trick.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -368,6 +499,32 @@ def min_path_sum_optimized(grid):
             #                       ^ old row  ^ current row
     return dp[n-1]
 ```
+
+#### Walkthrough — LC 64 Minimum Path Sum
+
+**This template solves: LC 64 (Minimum Path Sum), LC 62 (Unique Paths — count instead of min), LC 63 (Unique Paths II — obstacles zero out a cell), LC 931 (Minimum Falling Path Sum — three parents instead of two).**
+
+> Given an `m × n` grid of non-negative numbers, find a path from the **top-left** to the **bottom-right** that minimizes the sum of numbers along the path. You can only move **right** or **down**.
+
+The move restriction is the whole reason this is DP: since you only ever arrive at `(i,j)` from **above** `(i-1,j)` or from the **left** `(i,j-1)`, the best way to reach `(i,j)` is `grid[i][j]` plus the cheaper of those two already-solved cells. No cell depends on one below or to its right, so filling top-to-bottom, left-to-right guarantees both parents are ready.
+
+```
+grid            dp = min cost to reach each cell
+1  3  1         1 →4 →5      row 0: only-left prefix sums
+1  5  1         ↓            col 0: only-up prefix sums
+4  2  1         2  7  6
+                6  8  7      dp[2][2] = 1 + min(dp[1][2]=6, dp[2][1]=8) = 7
+
+dp[1][1] = grid 5 + min(up 4, left 2) = 5 + 2 = 7
+answer  dp[2][2] = 7   (path 1→3→1→1→1)
+```
+
+The first row and first column are special: a top-row cell has no cell above it, a left-column cell has none to its left — so each is just the running sum along the only path that reaches it. That's why the code seeds them in two separate loops before the main double loop.
+
+`★ Insight ─────────────────────────────────────`
+- Swapping `min` for `+` (sum) and the base cases for `1` turns this into **LC 62 Unique Paths** (count the paths) — the *shape* of the recurrence, "combine the cell above and the cell to the left," is identical across the whole grid family; only the combiner changes (`min`, `max`, `+`).
+- The space optimization works because row `i` reads only row `i-1`. Rolling to a 1-D array, `dp[j]` still holds row `i-1`'s value at the moment you read it (as "up") and `dp[j-1]` already holds row `i`'s value (as "left") — the single line `dp[j] = grid[i][j] + min(dp[j], dp[j-1])` is both parents at once. Getting the read order wrong (updating `dp[j-1]` after `dp[j]`) silently corrupts the "left" term.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -481,6 +638,46 @@ def knapsack_bounded(weights, values, counts, W):
 | Coin Change (count ways) | Unbounded, count instead of max |
 | Target Sum (+/-) | 0/1 knapsack, target = (sum + target) / 2 |
 
+#### Walkthrough — LC 416 Partition Equal Subset Sum
+
+**This template solves: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum — assign +/- signs), LC 698 (Partition to K Equal Subsets), LC 1049 (Last Stone Weight II — minimize |two-group difference|).**
+
+> Given an array of positive integers, determine whether it can be split into **two subsets with equal sum**.
+
+The disguise: two equal halves means each half sums to `total/2`. So the question collapses to **"is there a subset summing to exactly `total/2`?"** — a boolean 0/1 knapsack where each number's *weight* and *value* are the number itself, capacity is `total/2`, and we only care whether we can *hit* the capacity exactly. (If `total` is odd, answer is instantly `False` — you can't halve an odd integer.)
+
+```python
+def can_partition(nums):
+    total = sum(nums)
+    if total % 2:
+        return False
+    target = total // 2
+    dp = [False] * (target + 1)   # dp[s] = can we form sum s?
+    dp[0] = True                  # empty subset makes 0
+    for x in nums:
+        for s in range(target, x - 1, -1):   # REVERSE — each item once
+            dp[s] = dp[s] or dp[s - x]
+    return dp[target]
+```
+
+Trace on `[1, 5, 11, 5]`, `total = 22`, `target = 11`. `dp` starts with only sum `0` reachable; each item unlocks new reachable sums:
+
+```
+reachable sums after processing each item
+start        {0}
+after 1      {0, 1}
+after 5      {0, 1, 5, 6}
+after 11     {0, 1, 5, 6, 11}      ← 11 reachable! ({11})
+after 5      {0, 1, 5, 6, 10, 11}
+
+dp[11] = True   → {11} and {1,5,5} both sum to 11 → partitionable
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The reverse inner loop `range(target, x-1, -1)` is what makes it 0/1.** Iterating `s` downward means when we read `dp[s-x]` it still reflects the table *before* `x` was added — so `x` contributes to each sum at most once. Iterating *forward* would let `dp[s-x]` already include `x`, effectively reusing the item unlimited times — that's the **unbounded** knapsack (correct for Coin Change, wrong here). One loop direction is the entire difference between the two most common knapsack disguises.
+- Booleans instead of a value-maximizing `max` is the tell for **feasibility** questions ("can we hit target?") versus **optimization** ("best value ≤ capacity"). LC 494 Target Sum wears an even better disguise: choosing `+`/`−` signs to reach `T` is the same as choosing a positive subset `P` with `P = (total + T)/2`, then it's *this exact code* counting subsets instead of testing one.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 6. Longest Increasing Subsequence
@@ -563,6 +760,38 @@ Note: `tails` is NOT the actual LIS. It's a working structure. To reconstruct th
 | Longest Decreasing | Reverse the array, find LIS |
 | Count of LIS | Additional array tracking count per length |
 | Minimum deletions for sorted | n - LIS length |
+
+#### Walkthrough — LC 300 Longest Increasing Subsequence
+
+**This template solves: LC 300 (Longest Increasing Subsequence), LC 673 (Number of LIS — carry a count per length), LC 354 (Russian Doll Envelopes — sort by width then LIS on height), LC 646 (Maximum Length of Pair Chain).**
+
+> Given an integer array `nums`, return the length of the longest **strictly increasing subsequence** (elements need not be contiguous, but must keep their original order).
+
+Two solutions, two mental models:
+
+- **O(N²)** — `dp[i]` = length of the best increasing subsequence *ending exactly at* `i`. To extend, look back at every earlier `j` with a smaller value and take the longest chain you can append to. This is the honest, direct DP.
+- **O(N log N)** — the patience-sorting trick. Keep `tails`, where `tails[k]` is the *smallest possible tail* of any increasing subsequence of length `k+1`. Each new `x` either extends the longest run (if it's bigger than every tail) or overwrites the first tail `≥ x`, keeping that length reachable with a smaller, more future-proof ending.
+
+```python
+from bisect import bisect_left
+
+def lis_nlogn(arr):
+    tails = []
+    for x in arr:
+        pos = bisect_left(tails, x)
+        if pos == len(tails):
+            tails.append(x)     # x is bigger than all tails → new longest run
+        else:
+            tails[pos] = x      # x is a smaller ending for length pos+1
+    return len(tails)
+```
+
+Trace on `[10, 9, 2, 5, 3, 7, 101, 18]` (same array as §Trace above): `tails` ends `[2, 3, 7, 18]`, length **4** — the LIS is `[2, 3, 7, 101]` or `[2, 3, 7, 18]`.
+
+`★ Insight ─────────────────────────────────────`
+- **`tails` is not the LIS itself** — its *length* is the answer, but its contents can be a mix of elements that never coexist in one subsequence (here `18` overwrote `101`, yet both give length-4 runs). Reading `tails` as the actual subsequence is the classic misconception. To recover the real LIS you track, for each `x`, the length it landed at, then stitch backward.
+- **Why "smallest tail" is the right greedy invariant:** a shorter tail can be extended by strictly more future elements, so keeping tails minimal never forecloses a longer subsequence. `bisect_left` (strictly increasing) vs `bisect_right` (non-decreasing) is the single knob that toggles whether equal elements may chain — the same one-character swap that appears across the whole LIS variant family.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -692,6 +921,36 @@ def lcs_single_row(s1, s2):
 | Longest Palindromic Subsequence | LCS of string and its reverse |
 | Diff (version control) | LCS = unchanged lines |
 
+#### Walkthrough — LC 1143 Longest Common Subsequence
+
+**This template solves: LC 1143 (Longest Common Subsequence), LC 72 (Edit Distance — same grid, insert/delete/replace transitions), LC 583 (Delete Operation for Two Strings — `m+n-2·LCS`), LC 516 (Longest Palindromic Subsequence — LCS of `s` with `reverse(s)`).**
+
+> Given two strings `text1` and `text2`, return the length of their longest **common subsequence** (characters appearing in both, left-to-right, not necessarily contiguous). Return `0` if there is none.
+
+Two-string alignment is the archetype for the whole 2-D grid-of-prefixes family. `dp[i][j]` answers one question: *"what's the LCS of the first `i` characters of `text1` and the first `j` of `text2`?"* At each cell you compare the two *current* characters:
+
+- **They match** → that character joins the LCS; add `1` to the answer for the prefixes *without* it: `dp[i-1][j-1] + 1` (the diagonal).
+- **They differ** → one of them can't be in the LCS ending here; drop a character from one string and take the better result: `max(dp[i-1][j], dp[i][j-1])` (up vs left).
+
+Trace on `text1 = "abcde"`, `text2 = "ace"` — LC 1143's own example. Rows = prefixes of `abcde`, columns = prefixes of `ace`:
+
+```
+        ""  a   c   e
+   ""    0  0   0   0
+   a     0  1   1   1     'a'='a' → diag(0)+1 = 1
+   b     0  1   1   1     no match → carry max
+   c     0  1   2   2     'c'='c' → diag(1)+1 = 2
+   d     0  1   2   2
+   e     0  1   2   3     'e'='e' → diag(2)+1 = 3
+
+answer dp[5][3] = 3   (LCS = "ace")
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The diagonal is "both strings advance"; up/left is "one string advances."** Every string-pair DP (edit distance, shortest common supersequence, regex/wildcard matching) is this same three-neighbor grid — only the transition formula in the match/no-match branches changes. Recognizing the `dp[i][j]` = *pair-of-prefixes* state is what lets you port the template between them.
+- **Length is O(N) space, but reconstruction is not.** Because each row needs only the row above, you can shrink to two rows (or one row + a saved diagonal, as in `lcs_single_row`). But the *actual* subsequence string requires the full 2-D table to backtrack through, or Hirschberg's divide-and-conquer to get it in O(N) space at the cost of O(MN) time. Deciding "do I need the value or the witness?" up front picks your space budget.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 8. Interval DP
@@ -765,6 +1024,32 @@ def max_coins(nums):
 
     return dp[0][n-1]
 ```
+
+#### Walkthrough — LC 312 Burst Balloons
+
+**This template solves: LC 312 (Burst Balloons), LC 1000 (Minimum Cost to Merge Stones), LC 1039 (Minimum Score Triangulation), LC 375 (Guess Number Higher or Lower II).**
+
+> You have `n` balloons, each with a number `nums[i]`. Bursting balloon `i` earns `nums[i-1] * nums[i] * nums[i+1]` coins (treat out-of-range neighbors as `1`). After bursting, its neighbors become adjacent. Burst all balloons in some order to **maximize** total coins.
+
+The trap: if you define `dp[i][j]` = best coins from *first* balloon burst in `(i,j)`, the recurrence breaks — bursting the first balloon changes who's adjacent to whom, so the two sides aren't independent. **The fix that defines interval DP: think about the balloon burst *last*.**
+
+If balloon `k` is the **last** to burst inside the open interval `(i, j)`, then by the time it pops, everything strictly between `i..k` and `k..j` is already gone, so `k`'s neighbors are exactly the boundaries `i` and `j` — fixed and known. That makes the two sub-intervals `(i,k)` and `(k,j)` fully independent:
+
+```
+dp[i][j] = max coins from bursting all balloons strictly between i and j
+         = max over k in (i,j) of
+             dp[i][k]  +  dp[k][j]  +  nums[i]*nums[k]*nums[j]
+               ↑ left       ↑ right      ↑ k bursts last, neighbors are the
+               already      already        untouched boundaries i and j
+               solved       solved
+```
+
+Pad the array with sentinel `1`s at both ends so every real balloon has a defined neighbor. Fill by **increasing interval length** so both sub-intervals are ready before the combining interval. On `[3,1,5,8]` this yields **167** (one optimal order: burst 1, then 5, then 3, then 8).
+
+`★ Insight ─────────────────────────────────────`
+- **"First to act" vs "last to act" is the pivot of interval DP.** Choosing the *last* operation makes the boundaries of each subproblem stable — the reason `nums[i] * nums[k] * nums[j]` uses the interval endpoints and not `k`'s original neighbors. Whenever an operation *mutates adjacency* (merging, bursting, removing), reframe around the final one.
+- **Loop by length, not by `i,j` directly.** `dp[i][j]` reads strictly-smaller intervals `dp[i][k]` and `dp[k][j]`, so every shorter interval must be computed first — iterating `length = 2..n` guarantees that ordering. This length-outer / left-inner / split-innermost triple loop is the O(N³) skeleton shared by the entire family.
+`─────────────────────────────────────────────────`
 
 ### Space Optimization for Interval DP
 
@@ -851,6 +1136,43 @@ def max_profit_cooldown(prices):
 
     return max(rest[n-1], cool[n-1])
 ```
+
+#### Walkthrough — LC 309 Best Time to Buy and Sell Stock with Cooldown
+
+**This template solves: LC 309 (with Cooldown), LC 122 (unlimited transactions — drop the cool state), LC 714 (with Transaction Fee — subtract fee on sell), LC 123 / LC 188 (at most 2 / k transactions — add a transaction-count dimension, see `max_profit_k`).**
+
+> Given daily `prices`, maximize profit with unlimited transactions, but with one rule: **after you sell, you must skip one day** before buying again (a one-day cooldown). You can hold at most one share at a time.
+
+State-machine DP applies when *"what you're allowed to do next depends on a mode you're currently in."* Here there are exactly three modes each day, and the answer is the best profit achievable while ending the day in each:
+
+```
+      buy (−price)         sell (+price)
+REST ───────────────► HOLD ───────────────► COOL
+ ▲   do nothing / cooldown done          │  must wait
+ └─────────────────────────────────────  one day
+```
+
+- `rest` — not holding, free to buy. Reached by staying rest, or by finishing a cooldown: `max(rest, cool_prev)`.
+- `hold` — holding a share. Reached by keeping it, or buying today *from rest* (never from cool — that's the cooldown): `max(hold, rest_prev - price)`.
+- `cool` — just sold today: `hold_prev + price`.
+
+Trace on `[1, 2, 3, 0, 2]`:
+
+```
+day  price  rest  hold  cool
+ 0     1      0    -1     0
+ 1     2      0    -1     1     (sell the day-0 share: -1+2 = 1)
+ 2     3      1    -1     2
+ 3     0      2     1    -1     (buy from rest(1): 1-0 = 1 held)
+ 4     2      2     1     3     (sell: hold(1)+2 = 3)
+
+answer max(rest=2, cool=3) = 3   (buy@1 sell@2, cooldown, buy@0 sell@2)
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The whole family is one skeleton with different edges.** Remove the `cool` state and let `rest` follow `sell` immediately → LC 122 (unlimited). Subtract a fee inside the sell edge → LC 714. Add a "transactions used" axis → LC 123/188. Drawing the state diagram first, *then* transcribing one update per node, is far more reliable than reverse-engineering the recurrence.
+- **All three states must update from the previous day's values simultaneously.** The array version reads `rest[i-1]/hold[i-1]/cool[i-1]` so it's naturally safe; the O(1) version *must* stage `new_rest/new_hold/new_cool` before committing — assigning `rest` first would feed a same-day value into `hold`'s update and quietly corrupt the answer. This "compute-then-commit" is the recurring state-machine footgun.
+`─────────────────────────────────────────────────`
 
 ### Space Optimization for State Machine DP
 
@@ -954,6 +1276,50 @@ def max_independent_set(adj, weight, root=0):
     dfs(root, -1)
     return max(dp[root][0], dp[root][1])
 ```
+
+#### Walkthrough — LC 337 House Robber III
+
+**This template solves: LC 337 (House Robber III), LC 124 (Binary Tree Maximum Path Sum — same two-value-per-node idea), LC 968 (Binary Tree Cameras — 3 states per node), and general weighted Maximum Independent Set on trees.**
+
+> Houses form a **binary tree**. The robber can't rob two **directly-linked** houses (a parent and its child). Given the root, return the maximum money without alerting the police.
+
+This is House Robber (§3) with the line bent into a tree. The take/skip choice is unchanged — but "adjacent" now means parent↔child, so the DP flows **bottom-up**: a node's answer needs its children's answers first. Each node returns a **pair**, not a scalar:
+
+```
+dfs(node) → (rob_node, skip_node)
+   rob_node  = node.val + skip_left + skip_right   # rob here → children must be skipped
+   skip_node = max(left) + max(right)              # skip here → each child free to choose its best
+```
+
+```python
+def rob(root):
+    def dfs(node):
+        if not node:
+            return (0, 0)                    # (rob_this, skip_this)
+        lr, ls = dfs(node.left)
+        rr, rs = dfs(node.right)
+        rob_this  = node.val + ls + rs        # rob node → skip both children
+        skip_this = max(lr, ls) + max(rr, rs) # skip node → children pick their best
+        return (rob_this, skip_this)
+    return max(dfs(root))
+```
+
+Trace on `[3,2,3,null,3,null,1]` (root 3, left-subtree {2→right 3}, right-subtree {3→right 1}):
+
+```
+leaf 3 (under 2)   → (3, 0)
+node 2             → rob=2+0=2, skip=max(3,0)=3  → (2, 3)
+leaf 1 (under 3)   → (1, 0)
+node 3 (right)     → rob=3+0=3, skip=max(1,0)=1  → (3, 1)
+root 3             → rob=3 + skip_left(3) + skip_right(1) = 7
+                     skip=max(2,3) + max(3,1)  = 3 + 3 = 6
+answer max(7, 6) = 7
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Returning a pair `(rob, skip)` is the crux.** A single "best for this subtree" number loses the information the parent needs — the parent must know the child's value *conditioned on the child being skipped* to decide whether robbing itself is legal. The #1 tree-DP bug is collapsing the state to one number too early; the fix is almost always "return a tuple of the answer under each local choice."
+- **Tree DP is post-order recursion** — you compute children, then combine at the parent. That's the tree analogue of "fill the table in dependency order." The same shape powers LC 124 (each node returns best *downward* path, updates a global best through-node path) and rerooting DPs (a second top-down pass reuses the bottom-up values). Once you see "answer of a node = f(answers of its children)," you're in this family.
+`─────────────────────────────────────────────────`
 
 ### Example: Tree Diameter
 
@@ -1112,6 +1478,46 @@ def min_assignment(cost):
     return dp[(1 << n) - 1]
 ```
 
+#### Walkthrough — LC 847 Shortest Path Visiting All Nodes
+
+**This template solves: LC 847 (Shortest Path Visiting All Nodes), LC 943 (Find the Shortest Superstring — overlap-cost TSP), LC 1494 (Parallel Courses II), LC 526 (Beautiful Arrangement — count over used-mask).**
+
+> An undirected connected graph of `n` nodes (`0..n-1`) is given as an adjacency list. Return the length of the **shortest walk that visits every node**. You may start and end anywhere, and revisit nodes and edges.
+
+The state that makes this tractable is `(mask, node)`: *"I've visited the set of nodes in `mask` and I'm currently standing on `node`."* With `n ≤ 12`, that's only `2ⁿ · n` states. Because every edge costs `1`, the shortest walk is a **BFS over the state graph** — each step moves to a neighbor and turns on that neighbor's bit. The first time any state reaches the full mask `2ⁿ−1`, its BFS depth is the answer.
+
+```python
+from collections import deque
+
+def shortestPathLength(graph):
+    n = len(graph)
+    if n == 1:
+        return 0
+    full = (1 << n) - 1
+    q = deque()
+    seen = set()
+    for i in range(n):                 # a walk may start at ANY node
+        q.append((i, 1 << i, 0))       # (node, visited-mask, dist)
+        seen.add((i, 1 << i))
+    while q:
+        node, mask, d = q.popleft()
+        if mask == full:
+            return d
+        for nb in graph[node]:
+            nm = mask | (1 << nb)      # mark neighbor visited
+            if (nb, nm) not in seen:
+                seen.add((nb, nm))
+                q.append((nb, nm, d + 1))
+    return -1
+```
+
+On `graph = [[1,2,3],[0],[0],[0]]` (a star: node 0 joined to 1, 2, 3) the answer is **4** — e.g. `1→0→2→0→3` visits all four nodes in 4 steps, and no shorter walk covers the three leaves that all hang off 0.
+
+`★ Insight ─────────────────────────────────────`
+- **The bitmask *is* the DP dimension; BFS supplies the ordering.** Because visiting-all can revisit nodes, this isn't a permutation search (`n!`) — it's a shortest-path over `2ⁿ·n` states, so BFS layers deliver optimal distance directly. Seeding the queue with *every* start node encodes "start anywhere" for free. Deduping on `(node, mask)` (not just `mask`) is essential — the same visited-set reached at a different current node is a genuinely different state.
+- **`mask` shines exactly when a subproblem is "which of ≤ ~20 items are used."** TSP (each city once), assignment (each worker↔task), and this walk all share the "subset-of-used + where-am-I" state. The bit operations (`1<<i` test, `mask|(1<<j)` set) are the vocabulary; recognizing that the *set of used elements* — not their order — is the memoizable state is the pattern.
+`─────────────────────────────────────────────────`
+
 ### Bitmask Tricks
 
 ```python
@@ -1231,6 +1637,58 @@ def digit_dp(N):
 | Count numbers divisible by K | current_remainder |
 | Count numbers with digit d appearing exactly k times | count_of_d |
 
+**This template solves: LC 233 (Number of Digit One), LC 357 (Count Numbers with Unique Digits), LC 902 (Numbers At Most N Given Digit Set), LC 600 (Non-negative Integers without Consecutive Ones).**
+
+#### Walkthrough — LC 233 Number of Digit One
+
+> Given integer `n`, count total number of digit `1` appearing in all numbers from `0` to `n`. Example: `n = 13` → `1,10,11,12,13` contribute the digit `1` a total of **6** times (11 alone has two).
+
+Note the target: not *how many numbers contain a 1*, but *how many `1`s appear* — 11 counts twice. So the accumulator carries the running count of 1s placed in the prefix, and the base case returns that count (not a boolean).
+
+```python
+from functools import lru_cache
+
+def countDigitOne(n):
+    if n < 0:
+        return 0
+    digits = [int(c) for c in str(n)]
+    L = len(digits)
+
+    @lru_cache(None)
+    def solve(pos, cnt, tight):
+        # cnt = number of 1s already placed in the prefix
+        if pos == L:
+            return cnt
+        limit = digits[pos] if tight else 9
+        total = 0
+        for d in range(limit + 1):
+            total += solve(pos + 1, cnt + (1 if d == 1 else 0), tight and d == limit)
+        return total
+
+    return solve(0, 0, True)
+```
+
+Trace on `n = 13` (`digits = [1, 3]`, `L = 2`):
+
+```
+solve(0, 0, tight=True)  limit = digits[0] = 1
+  d=0  solve(1, 0, tight=False)   ← d<limit releases tight: any second digit 0..9
+         d=0..9, cnt stays 0 except d=1 adds 1 → contributes 1   (the "1" in 01)
+  d=1  solve(1, 1, tight=True)    limit = digits[1] = 3
+         d=0 solve(2,1,..)=1   d=1 solve(2,2,..)=2   d=2 solve(2,1,..)=1
+         d=3 solve(2,1,tight)=1                       → contributes 5
+                                                (10,11×2,12,13 = 1+2+1+1)
+total = 1 + 5 = 6
+```
+
+The `tight` flag is the whole engine of digit DP. While `tight` is true, you are still hugging the upper bound `n`, so this digit may not exceed `digits[pos]`. The instant you pick a digit *strictly below* the limit (`d < limit`), every later position is free to run `0..9` — `tight` drops to false and the `@lru_cache` result for `(pos, cnt, False)` is shared across all such prefixes. That shared subtree is where the exponential blowup collapses into `O(L · 10 · states)`.
+
+`★ Insight ─────────────────────────────────────`
+- **`tight` is the bound-hugging bit.** True = prefix equals `n`'s prefix so far (digit capped at `digits[pos]`); false = prefix already went below, so the tail is unconstrained and memoizable. Only the `tight=False` states get cache hits — that's why the cache key *must* include `tight`.
+- **Range `[L, R]` via prefix subtraction.** Digit DP naturally counts `[0, n]`. For a query on `[L, R]` (e.g. LC 902, LC 600), compute `f(R) - f(L-1)`. Same trick as prefix sums, one dimension up.
+- **Accumulate vs. decide.** Here the base case returns the accumulated `cnt` (a sum of occurrences). Contrast the boolean/counting digit-DP variants above where the base case returns `1` for "this number qualifies" — the skeleton is identical; only what the leaf returns changes.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 13. Probability / Expected Value DP
@@ -1269,6 +1727,55 @@ def expected_rolls(n):
 **Problem**: N plates with sushi. Each step, pick random plate. If it has sushi, eat one piece. Expected steps to eat all sushi?
 
 This is a classic expected value DP where states are grouped by count of plates with 1, 2, 3 pieces.
+
+**This template solves: LC 688 (Knight Probability in Chessboard), LC 837 (New 21 Game), LC 808 (Soup Servings), LC 1223 (Dice Roll Simulation).**
+
+#### Walkthrough — LC 688 Knight Probability in Chessboard
+
+> An `n × n` board. A knight starts at `(row, col)` and makes exactly `k` moves, each move chosen **uniformly at random** from the 8 knight moves — even ones that fly off the board. Once it leaves the board it stops. Return the probability the knight is still **on the board** after `k` moves.
+
+State: `solve(r, c, steps)` = probability of surviving `steps` more moves starting from `(r, c)`. Each move splits the current probability mass into 8 equal eighths, one per knight jump; jumps that land off-board contribute 0.
+
+```python
+from functools import lru_cache
+
+def knightProbability(n, k, row, col):
+    moves = [(1, 2), (1, -2), (-1, 2), (-1, -2),
+             (2, 1), (2, -1), (-2, 1), (-2, -1)]
+
+    @lru_cache(None)
+    def solve(r, c, steps):
+        if not (0 <= r < n and 0 <= c < n):
+            return 0.0            # fell off — this branch contributes nothing
+        if steps == 0:
+            return 1.0            # survived all k moves
+        return sum(solve(r + dr, c + dc, steps - 1)
+                   for dr, dc in moves) / 8.0
+
+    return solve(row, col, k)
+```
+
+Trace on `n = 3, k = 2, start = (0, 0)`:
+
+```
+solve(0,0,2): try all 8 jumps from corner (0,0)
+  on-board landings: (1,2) and (2,1)   ← only 2 of 8 stay on a 3×3 board
+  each recurses one more step:
+
+  solve(1,2,1): jumps from (1,2), count on-board landings = 2  → 2/8 = 0.25
+  solve(2,1,1): jumps from (2,1), count on-board landings = 2  → 2/8 = 0.25
+  other 6 jumps → off-board → 0.0
+
+  solve(0,0,2) = (0.25 + 0.25 + 0 + 0 + 0 + 0 + 0 + 0) / 8 = 0.5 / 8 = 0.0625
+```
+
+The recurrence works *forward* in probability: dividing by 8 at each level spreads the mass, and summing 8 children re-collects it. Equivalently you can push forward a full `dp[r][c]` probability grid `k` times — same math, iterative form. The memo key `(r, c, steps)` is essential: many jump sequences revisit the same square with the same moves left, and without the cache the branching is `8^k`.
+
+`★ Insight ─────────────────────────────────────`
+- **Probability DP = weighted counting.** Instead of *counting* paths and dividing at the end, you carry the `/8` at every transition so each `dp` value is already a probability. The two views are identical; the per-step division just keeps numbers bounded in `[0, 1]`.
+- **Off-board = absorbing 0 state.** You don't prune the 8 moves to "legal" ones — you let all 8 fire and let out-of-bounds return `0.0`. That keeps the `/8` denominator honest (the knight *chooses* among 8, some are fatal), which is exactly what the problem states.
+- **Forward vs. backward.** This memoized recursion pulls from children (top-down). The dice/sushi examples above push *backward from the goal* for expected steps. Prefer forward-probability when the horizon `k` is fixed; backward-expectation when you want "expected number of steps until an event."
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1346,6 +1853,57 @@ def count_paths_dag(adj, n, src, dst):
 
     return dp[dst]
 ```
+
+**This template solves: LC 329 (Longest Increasing Path in a Matrix), LC 1494 (Parallel Courses II), LC 2050 (Parallel Courses III), LC 851 (Loud and Rich).**
+
+#### Walkthrough — LC 329 Longest Increasing Path in a Matrix
+
+> Given an `m × n` integer matrix, return the length of the **longest strictly increasing path**. From a cell you may move up/down/left/right (no diagonals, no wrap). Example: `[[9,9,4],[6,6,8],[2,1,1]]` → `4`, the path `1 → 2 → 6 → 9`.
+
+The DAG is *implicit*: draw a directed edge `u → v` whenever `v` is an orthogonal neighbor with a strictly larger value. Strictly-increasing guarantees no cycles, so it's a genuine DAG — no explicit topo sort needed, because **memoized DFS visits nodes in an order that respects the edges automatically** (a cell's answer is only finalized after all its larger-neighbor answers are).
+
+```python
+from functools import lru_cache
+
+def longestIncreasingPath(matrix):
+    if not matrix or not matrix[0]:
+        return 0
+    R, C = len(matrix), len(matrix[0])
+
+    @lru_cache(None)
+    def dfs(r, c):
+        best = 1                          # the cell itself, length 1
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < R and 0 <= nc < C and matrix[nr][nc] > matrix[r][c]:
+                best = max(best, 1 + dfs(nr, nc))   # only climb to larger cells
+        return best
+
+    return max(dfs(r, c) for r in range(R) for c in range(C))
+```
+
+Trace on `[[9,9,4],[6,6,8],[2,1,1]]` (rows top→bottom):
+
+```
+dfs at each cell = longest increasing path STARTING there:
+
+  9  9  4        1  1  1
+  6  6  8   →    2  2  1        dfs(2,1)=1 (value 1, no larger neighbor up=2? 2>1 yes)
+  2  1  1        3  4  1
+
+follow the max: 1(2,1) → 2(1,0/1)? actual best chain:
+  1 → 2 → 6 → 9   lengths  1 → 2 → 3 → 4
+
+answer = max over all cells = 4
+```
+
+The memo is what turns exponential path enumeration into `O(R·C)`: each cell's longest-path-from-here is computed once and reused by every neighbor that flows into it. Because the guard `matrix[nr][nc] > matrix[r][c]` only ever recurses "uphill," the recursion depth is bounded and no visited-set is needed — the strict inequality *is* the acyclicity certificate.
+
+`★ Insight ─────────────────────────────────────`
+- **Memoized DFS = implicit topological order.** You never build in-degrees or a Kahn queue. Recursion bottoms out at local maxima (sinks of the DAG) and unwinds; each `dfs(u)` finalizes only after all `dfs(v)` for its out-edges return. That post-order unwind *is* reverse-topological processing.
+- **The edge rule encodes the DAG.** No adjacency list is stored — "strictly larger orthogonal neighbor" generates edges on the fly. Whenever a grid problem says "move only if the next cell is bigger/smaller/valid," suspect DP-on-implicit-DAG.
+- **No `visited` set, deliberately.** Ordinary grid DFS needs one to avoid revisiting; here the strict-increase constraint makes revisiting impossible, so the cache alone suffices. Add a visited set only if the relation can tie or cycle.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1523,6 +2081,39 @@ def fib_matrix(n):
     return result[0][1]
 ```
 
+**This template solves: LC 1137 (N-th Tribonacci), LC 70 (Climbing Stairs, huge-N variant), LC 509 (Fibonacci Number), and any "linear recurrence, `n` up to 10^18" problem.**
+
+#### Note — LC 1137 N-th Tribonacci
+
+> `T(0)=0, T(1)=1, T(2)=1`, and `T(n) = T(n-1)+T(n-2)+T(n-3)`. Return `T(n)`.
+
+At LeetCode's constraint (`n ≤ 37`) a two-line rolling window is the intended answer — this is an *Easy*:
+
+```python
+def tribonacci(n):
+    a, b, c = 0, 1, 1
+    if n == 0: return 0
+    for _ in range(n - 2):
+        a, b, c = b, c, a + b + c
+    return c
+```
+
+The reason it lives under Optimizations is the **"huge N" hook**: the moment the same recurrence is asked for `n` up to `10^18` (a common interview escalation, or Codeforces/Project-Euler framing), the O(N) loop dies and you switch to matrix exponentiation. Tribonacci's transition matrix is the 3×3 companion matrix:
+
+```
+| T(n+1) |   | 1 1 1 |   | T(n)   |
+| T(n)   | = | 1 0 0 | · | T(n-1) |
+| T(n-1) |   | 0 1 0 |   | T(n-2) |
+```
+
+Raise that matrix to the `n`-th power with the same `mat_pow` binary-exponentiation skeleton shown above (swap the 2×2 for this 3×3) → `O(3³ log n)`.
+
+`★ Insight ─────────────────────────────────────`
+- **The recurrence *is* the matrix.** Any constant-coefficient linear recurrence of order `k` becomes a `k×k` companion matrix; the top-left row holds the coefficients, a sub-diagonal of `1`s shifts the window. Fibonacci is `k=2`, Tribonacci `k=3` — same machine.
+- **The trigger is `n`, not the recurrence.** Rolling variables are correct and simpler until `n` is astronomically large. Recognize the escalation ("`n ≤ 10^18`") as the *only* signal to pay the matrix-power complexity — don't reach for it on the Easy version.
+- **This is the DP cousin of fast exponentiation.** Same `while p: if p&1 ... M=M·M; p>>=1` loop as integer `pow(a, n)` — you're just multiplying matrices instead of scalars.
+`─────────────────────────────────────────────────`
+
 ### Optimization Summary
 
 | Optimization | Original | Optimized | Condition |
@@ -1608,4 +2199,39 @@ Start here
     ▼
   LC 188  Best Time Buy/Sell Stock IV (Hard)  ── state-machine DP with a transaction-count dimension
 ```
+
+Once the main ladder feels solid, branch into the remaining families — each maps to one worked walkthrough above:
+
+```
+  LC 416  Partition Equal Subset Sum   (Medium) ── 0/1 knapsack disguise; reverse-loop feasibility   (§5)
+  LC 1143 Longest Common Subsequence   (Medium) ── the 2D two-string namesake                        (§7)
+  LC 312  Burst Balloons               (Hard)   ── interval DP, "last to burst" reframing            (§8)
+  LC 337  House Robber III             (Medium) ── tree DP; return (rob, skip) pair — callback to 198 (§10)
+  LC 847  Shortest Path Visiting Nodes (Hard)   ── bitmask state + BFS ordering                       (§11)
+  LC 233  Number of Digit One          (Hard)   ── digit DP; tight flag, count(R)-count(L-1)          (§12)
+  LC 688  Knight Probability           (Medium) ── probability DP; mass /8 per move                   (§13)
+  LC 329  Longest Increasing Path      (Hard)   ── DP on implicit DAG; memo = topo order              (§14)
+```
+
+---
+
+## The 13 Families at a Glance
+
+```
+LINEAR        1-D chain, dp[i] from dp[i-1..i-k]        LC 198  House Robber
+GRID          2-D board, dp[i][j] from up/left          LC 64   Minimum Path Sum
+KNAPSACK      pick items under a capacity/target         LC 416  Partition Equal Subset Sum
+LIS           best subsequence, dp[i] or tails+bisect    LC 300  Longest Increasing Subsequence
+LCS           two sequences, dp[i][j] on prefixes        LC 1143 Longest Common Subsequence
+INTERVAL      range [i,j], split on last/first action    LC 312  Burst Balloons
+STATE MACHINE fixed states + transitions each step       LC 309  Buy/Sell w/ Cooldown
+TREE          post-order, child answers → parent (pair)  LC 337  House Robber III
+BITMASK       subset in an int, N ≤ ~20                   LC 847  Shortest Path Visiting All Nodes
+DIGIT         build number digit-by-digit, tight flag    LC 233  Number of Digit One
+PROBABILITY   carry probability / expected value         LC 688  Knight Probability in Chessboard
+DP ON DAG     topological / memoized order over a DAG    LC 329  Longest Increasing Path in a Matrix
+OPTIMIZATION  CHT / Knuth / SOS / matrix-power speedups   LC 1137 N-th Tribonacci (huge-N → matrix expo)
+```
+
+*Pattern mastered — every DP is a choice at each step whose subproblems repeat. Name the state, name the transition, and the family names itself.*
 
