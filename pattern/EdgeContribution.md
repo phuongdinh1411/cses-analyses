@@ -33,6 +33,24 @@ answer = Σ f(sub[v])         answer[v] = adjust(u→v)    answer = Σ_g left[g]
 
 ---
 
+## Quick Navigation: I need to...
+
+| I need to... | Flavor | Jump to |
+|--------------|--------|---------|
+| Sum of distances from **every** node to all others | Edge contribution + rerooting | [Problem 834](#5-problem-834--sum-of-distances-in-tree) |
+| **Balance** items across a tree with min moves | Excess flow (single answer) | [Problem 979](#6-problem-979--distribute-coins-in-binary-tree) |
+| Score = **product of parts** after removing a node | Subtree sizes, per-node | [Problem 2049](#7-problem-2049--count-nodes-with-the-highest-score) |
+| Min edge **reversals** so all reach node i | Directed cost + rerooting | [Problem 2858](#8-problem-2858--minimum-edge-reversals) |
+| Sum of distances between **same-color** pairs | Grouped edge contribution | [Problem 9](#9-grouped-edge-contribution--same-color-distances) |
+| Understand *why* per-edge beats per-pair | The core flip | [Core Insight](#1-core-insight-think-per-edge-not-per-pair) |
+| Know which flavor a new problem is | Identify router | [How to Identify](#11-how-to-identify-this-pattern) |
+
+`★ Insight ─────────────────────────────────────`
+Every problem in this guide is one DFS with a different *payload*. The universal skeleton — root the tree, post-order DFS to compute a subtree quantity `sub[v]`, then read each edge's contribution as `f(sub[v], n - sub[v])` — never changes. What changes is only **what `sub[v]` measures** (count / excess / per-group tally / cost) and **how you combine** (sum / product / abs). Master the skeleton once and five "different" problems collapse into parameter swaps.
+`─────────────────────────────────────────────────`
+
+---
+
 ## Table of Contents
 
 1. [Core Insight: Think Per Edge, Not Per Pair](#1-core-insight-think-per-edge-not-per-pair)
@@ -71,6 +89,10 @@ Swap summation order:
 ```
 
 Every edge in a tree is a **bridge** — removing it splits the tree into exactly two parts. A pair crosses an edge if and only if the two nodes are in different parts.
+
+`★ Insight ─────────────────────────────────────`
+The whole technique is **one algebraic move: swap the order of a double summation.** `Σ_pairs dist(u,v)` is O(n²) to evaluate directly, but `dist(u,v) = Σ_edges [edge on path u→v]`, so swapping the two sums turns it into `Σ_edges (pairs crossing e)` — and "pairs crossing edge e" is trivial because a tree edge is a bridge: it's exactly `sub[v] × (n − sub[v])`. This "count the contribution of each *part* instead of each *whole*" reframing is the same trick behind counting inversions per-element, subarray-sum per-boundary, and "sum over all subarrays" problems. When a pairwise sum looks quadratic, ask what each *edge / element / boundary* contributes across all pairs.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -332,6 +354,10 @@ For internal:     val + left_coins + right_coins - (1 + left_nodes + right_nodes
 
 No need to track coins and nodes separately — just propagate excess.
 
+`★ Insight ─────────────────────────────────────`
+979 is edge contribution in disguise. The edge above subtree `v` must carry `|excess[v]|` coins in whichever direction fixes the imbalance — and `excess[v] = coins − nodes` in that subtree is exactly a per-edge quantity. So the total answer is `Σ_edges |excess[subtree below edge]|`, the same "read one number per edge" move as 834, but the payload is *net coin flow* and the combine is `abs`. The `abs` matters: coins move both up and down across an edge, and either direction costs one move per coin, so magnitude — not sign — is the toll.
+`─────────────────────────────────────────────────`
+
 **Complexity**: O(n) time, O(h) space (h = tree height)
 
 ---
@@ -414,6 +440,10 @@ Scores:
 
 Max = 4, count = 3
 ```
+
+`★ Insight ─────────────────────────────────────`
+2049 is the odd one out: it multiplies instead of sums. Deleting a node shatters the tree into pieces, and the pieces are exactly the child subtrees plus the "rest" part `n - sub[v]` — the same bridge decomposition, but now every incident edge of `v` cuts off one piece at once. The trick is that you never enumerate the pieces by walking edges; `sub[]` from a single DFS already sizes each child piece, and one subtraction gives the up-part. Same `sub[]` array, read differently: 834 sums `sub × (n−sub)` over edges, 2049 multiplies the pieces around a *node*.
+`─────────────────────────────────────────────────`
 
 **Complexity**: O(n) time, O(n) space
 
@@ -510,6 +540,10 @@ Pass 2:
 answer = [2, 2, 3, 1]
 ```
 
+`★ Insight ─────────────────────────────────────`
+The reroot formula `answer[v] = answer[u] - 2w + 1` is a single-edge accounting trick, not magic. When the root hops across one edge, only that one edge changes orientation relative to the root — every other edge keeps its cost. If it cost `w` for `u`, flipping makes it cost `1 - w`, a delta of `(1 - w) - w = 1 - 2w`. That is the *entire* difference between the two answers, which is why rerooting is O(1) per node instead of a fresh O(n) DFS from each root. The directed-weight adjacency (`(v,1)` forward, `(u,0)` reverse) is what lets one traversal see both a "traverse this way" cost and its flip for free.
+`─────────────────────────────────────────────────`
+
 **Complexity**: O(n) time, O(n) space
 
 ---
@@ -590,6 +624,10 @@ Pair (3, 5), distance = 4:
   Counted at edge 2→5: +1
   Total contribution = 4 = dist(3, 5) ✓
 ```
+
+`★ Insight ─────────────────────────────────────`
+The thing that *looks* like a bug — counting one pair at every edge on its path — is precisely what makes the algorithm correct. `dist(u,v)` **is** the number of edges on the u→v path, so a same-color pair separated by 4 edges *should* add 4 to the total, and it does: `+1` at each of those 4 edges. You never form the pair explicitly. The one discipline that keeps it exact: count `sub[v][g] × (total[g] − sub[v][g])` **before** merging child `v`'s tallies into parent `u`, so each edge sees the split as it was, once.
+`─────────────────────────────────────────────────`
 
 **Complexity**: O(n × G) time where G = distinct groups, O(n × G) space
 
@@ -691,6 +729,40 @@ Start here
     ▼
   Grouped      ─── Per-group edge contribution with merge
   Distances
+```
+
+---
+
+## Toolbox at a Glance
+
+```
+Tree + "distance / cost / balance across pairs"?
+    │
+    ├── One aggregate number over ALL pairs?
+    │       ├── counting pairs      → Σ sub[v]×(n-sub[v])         (834-core, Grouped per g)
+    │       ├── balancing items     → Σ |excess[v]|               (979)
+    │       └── same-color / groups → Σ_g L[g]×R[g] per edge      (Grouped)
+    │
+    ├── Answer for EVERY node?
+    │       ├── distances           → reroot ans[v]=ans[u]-sub[v]+(n-sub[v])   (834)
+    │       └── directed reversals  → reroot ans[v]=ans[u]-2w+1                (2858)
+    │
+    └── Remove a node, combine the pieces?
+            └── product of parts    → Π(sub[child]) × (n-sub[v])  (2049)
+```
+
+### THREE MOVES BEHIND EVERY EDGE-CONTRIBUTION PROBLEM
+
+```
+1. FLIP THE SUM      Σ over pairs  →  Σ over edges. A tree edge is a bridge, so
+                     "pairs crossing edge e" = sub[v] × (n - sub[v]). No pair loop.
+
+2. ONE POST-ORDER    A single DFS fills sub[v] (size / excess / cost / per-group
+                     tally). Every per-edge formula reads sub[v] and n - sub[v].
+
+3. REROOT FOR FREE   Need every node's answer? Hopping the root across one edge
+                     changes only that edge's term, so ans[v] = adjust(ans[u]) is
+                     O(1). Skip it when one aggregate number is all you need.
 ```
 
 ---
