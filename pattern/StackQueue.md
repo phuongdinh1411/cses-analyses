@@ -29,6 +29,83 @@ Stacks and queues are deceptively powerful. Beyond basic LIFO/FIFO operations, t
 
 ---
 
+## From-Scratch Idea: What Makes a Problem Stack or Queue
+
+Before memorizing eleven sections, internalize the one question that routes *every* problem here:
+
+> **"When I process element `i`, do I need to react to earlier elements that are still 'waiting for an answer' — and does the *most recent* unanswered one matter first (stack), or the *oldest* (queue)?"**
+
+That single ordering choice — LIFO vs FIFO — is the whole pattern. Everything else is what you *do* at the moment of popping.
+
+### The Two-Question Identify Test
+
+1. **Is there a "pending until resolved" relationship?** Each element sits around unanswered until some *later* element resolves it. "Next greater", "matching close-bracket", "bar's right wall", "warmer day" — all are *"this waits for its trigger"*.
+2. **Which pending element resolves first — newest or oldest?**
+   - **Newest first → Stack.** The bracket you opened *last* must close first. The bar just to your left is the first wall you hit. Nesting, nearest-neighbor, innermost-first ⇒ LIFO.
+   - **Oldest first → Queue.** The request that arrived *first* expires first. Level `d` must finish before level `d+1`. Time-order, level-order, arrival-order ⇒ FIFO.
+
+If neither holds — no pending relationship, no LIFO/FIFO ordering — it is *not* a stack/queue problem (reach for a heap, hash map, or sort instead).
+
+### The Mental Shift
+
+| Symptom in the problem | The waiting element | Trick |
+|------------------------|---------------------|-------|
+| "next / previous greater or smaller" | element awaiting its first taller/shorter neighbor | **monotonic stack**, pop when the wait ends |
+| "sliding window max/min" | dominated elements awaiting eviction | **monotonic deque**, pop both ends |
+| "valid / matching / balanced" | open bracket awaiting its close | **stack match**, pop on close |
+| "evaluate expression" | operand/operator awaiting its operator's turn | **stack parser**, pop by precedence |
+| "largest rectangle / max area" | bar awaiting its shorter right wall | **monotonic stack**, pop = fix a width |
+| "trapped water between walls" | valley awaiting a taller right wall | **monotonic stack** (layers) or two pointers |
+| "level by level / shortest hops" | frontier node awaiting its turn | **BFS queue**, drain one level at a time |
+| "min/max alongside push/pop" | the running extremum | **augmented stack**, carry `(val, min_so_far)` |
+
+### The One Template Behind Almost All of It
+
+```
+for each element x (index i):
+    # (stack) pop everyone whose wait x just ended:
+    while stack not empty AND x violates the monotonic invariant:
+        popped = stack.pop()
+        COMPUTE popped's answer   # x is popped's next-greater / right-wall / ...
+    stack.append(i)              # x now waits for ITS trigger
+```
+
+Swap the invariant (`<` vs `>`, strict vs non-strict) and swap what `COMPUTE` does — that's the difference between "next greater", "largest rectangle", and "trapping rain water". They are **one algorithm** wearing three costumes.
+
+`★ Insight ─────────────────────────────────────`
+- **Store indices, not values.** `arr[idx]` recovers the value any time, but a bare value can't recover *where* it was — and widths, distances, and window-eviction all need the position. Every monotonic-stack solution below pushes `i`, never `arr[i]`.
+- **The pop is where the answer is born.** You never learn an element's answer while pushing it; you learn it the moment a *later* element forces it off the stack. That "resolved-on-eviction" event is the single unifying idea across §2, §6, §7, and §10.
+- **Amortized O(N), not O(N²), because each index is pushed once and popped once.** The inner `while` looks nested, but its total work across the whole outer loop is bounded by 2N — the reason this pattern *exists*.
+`─────────────────────────────────────────────────`
+
+### LeetCode ↔ Classic (CSES/CP) Translation
+
+| LeetCode framing | Classic / CP framing | Shared engine |
+|------------------|----------------------|---------------|
+| Daily Temperatures (739) | "days until warmer" / next-greater distance | monotonic decreasing stack |
+| Next Greater Element (496/503) | next-greater array | monotonic stack (2N for circular) |
+| Largest Rectangle (84) | histogram max area | prev-smaller + next-smaller |
+| Sliding Window Maximum (239) | window max in O(N) | monotonic deque |
+| Trapping Rain Water (42) | water between walls | stack layers / two pointers |
+| Min Stack (155) | O(1) min with push/pop | augmented stack |
+
+### Master LeetCode Comparison Table
+
+| LC # | Problem | Technique (§) | Difficulty | Structure | Pop / resolve rule |
+|------|---------|---------------|-----------|-----------|--------------------|
+| **20** | Valid Parentheses | Stack match ([§3](#3-parentheses-and-bracket-matching)) | Easy | stack of opens | close must match top open |
+| **155** | Min Stack | Augmented stack ([§9](#9-augmented-stacks-and-queues)) | Medium | stack of `(val, min)` | min carried on each frame |
+| **739** | Daily Temperatures | Monotonic stack ([§7](#7-stock-span-and-daily-temperatures)) | Medium | decreasing stack of indices | pop when today is warmer; answer = distance |
+| **496** | Next Greater Element I | Monotonic stack ([§2](#2-monotonic-stack)) | Easy | decreasing stack + hash map | pop when `x` bigger; `x` is its next greater |
+| **227** | Basic Calculator II | Stack parser ([§4](#4-expression-evaluation)) | Medium | stack of signed terms | resolve `*`/`/` eagerly, sum at end |
+| **239** | Sliding Window Maximum | Monotonic deque ([§5](#5-monotonic-deque-sliding-window-minmax)) | Hard | decreasing deque of indices | pop back (dominated) + front (expired) |
+| **84** | Largest Rectangle in Histogram | Monotonic stack ([§6](#6-histogram-problems)) | Hard | increasing stack of indices | pop when shorter; width = `i - stack[-1] - 1` |
+| **42** | Trapping Rain Water | Monotonic stack / two ptr ([§10](#10-trapping-rain-water)) | Hard | decreasing stack of indices | pop valley; add layer between walls |
+
+Each row below gets a full walkthrough — statement, the exact template it plugs into, an executed trace, and an `★ Insight`.
+
+---
+
 ## Table of Contents
 
 1. [Stack & Queue Fundamentals](#1-stack--queue-fundamentals)
@@ -315,6 +392,47 @@ arr:    [1, 2, 1]
 result: [2,-1, 2]  (circular: after arr[2]=1, next is arr[0]=1, then arr[1]=2)
 ```
 
+### Walkthrough — LC 496: Next Greater Element I
+
+**This template solves: LC 496, 503 (circular), 739, 1019.**
+
+**Full statement.** You are given two arrays `nums1` and `nums2` where `nums1` is a *subset* of `nums2` (all values distinct). For each `x` in `nums1`, find the first element to the **right of `x` in `nums2`** that is greater than `x`. If none exists, answer `-1`. Return the answers in `nums1`'s order.
+
+Example: `nums1 = [4,1,2]`, `nums2 = [1,3,4,2]` → `[-1, 3, -1]`. (In `nums2`: right of 4 nothing bigger; right of 1 is 3; right of 2 nothing bigger.)
+
+**Pattern-focused solution.** Ignore the `nums1`-is-a-subset dressing — that is just a lookup at the end. The engine is *next-greater over `nums2`*, the exact `next_greater` from §2.1. Precompute every element's next-greater into a hash map in one monotonic-stack pass, then answer each `nums1` query in O(1).
+
+```python
+def nextGreaterElement(nums1, nums2):
+    nge = {}            # value -> its next greater
+    stack = []          # decreasing stack of VALUES (safe here: distinct)
+    for x in nums2:
+        while stack and stack[-1] < x:
+            nge[stack.pop()] = x     # x is the answer for everyone it evicts
+        stack.append(x)
+    # leftovers in stack never found a greater -> default -1
+    return [nge.get(x, -1) for x in nums1]
+```
+
+**Trace** over `nums2 = [1, 3, 4, 2]`:
+
+```
+x=1: stack empty            push 1        stack: [1]
+x=3: 1<3  pop 1, nge[1]=3   push 3        stack: [3]
+x=4: 3<4  pop 3, nge[3]=4   push 4        stack: [4]
+x=2: 4<2? no                push 2        stack: [4, 2]
+end: 4 and 2 unresolved -> nge.get = -1
+
+nge = {1:3, 3:4}
+nums1=[4,1,2] -> [nge.get(4,-1), nge.get(1,-1), nge.get(2,-1)] = [-1, 3, -1]  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **This is the *only* place values-on-the-stack is safe** — the problem guarantees distinct elements, so a value uniquely identifies its slot. The instant duplicates are possible (LC 503) revert to storing indices; two equal values would otherwise overwrite each other in `nge`.
+- **The "subset" wrapper is a decoy.** Newcomers try to walk `nums1` and search `nums2` per query → O(n·m). Recognizing that the real work is *one* next-greater sweep over `nums2` collapses it to O(n+m). Identify the engine, discard the framing.
+- **LC 503 (circular) is the *same loop* run over `2n` indices with `i % n`** — the only structural change in the whole family. Master this one and the circular variant is a one-line diff.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 3. Parentheses and Bracket Matching
@@ -410,6 +528,52 @@ def score_of_parentheses(s):
 
     return stack[0]
 ```
+
+### Walkthrough — LC 20: Valid Parentheses
+
+**This template solves: LC 20, 921 (min add to make valid), 1249 (min removals), 32 (longest valid).**
+
+**Full statement.** Given a string `s` of only `()[]{}`, decide if it is valid: every open bracket is closed by the *same type*, and brackets close in the *correct order* (innermost first). `"()[]{}"` → true; `"(]"` → false; `"([)]"` → false (wrong order); `"{[]}"` → true.
+
+**Pattern-focused solution.** This is the purest LIFO problem in the guide — no monotonic invariant, just *matching*. An open bracket is a promise you must later fulfil; the *most recent* promise must be fulfilled first (nesting = LIFO). Push opens; on a close, the top **must** be its partner or the string is invalid.
+
+```python
+def is_valid(s):
+    stack = []
+    pairs = {')': '(', ']': '[', '}': '{'}   # close -> required open
+    for ch in s:
+        if ch in '([{':
+            stack.append(ch)
+        elif ch in ')]}':
+            if not stack or stack[-1] != pairs[ch]:
+                return False            # nothing to match, or wrong type/order
+            stack.pop()
+    return not stack                     # leftover opens = unbalanced
+```
+
+**Trace** over `"([)]"` (the tricky wrong-order case):
+
+```
+'(' : push               stack: ['(']
+'[' : push               stack: ['(', '[']
+')' : top is '[', but ')' needs '('  ->  MISMATCH, return False   ✓
+```
+
+versus `"{[]}"` (valid nesting):
+
+```
+'{' : push               stack: ['{']
+'[' : push               stack: ['{', '[']
+']' : top '[' matches    pop     stack: ['{']
+'}' : top '{' matches    pop     stack: []
+end: stack empty -> True   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Order-correctness is *free* from the stack.** `"([)]"` has balanced *counts* of every bracket yet is invalid — a counter can't catch it. The LIFO discipline enforces "innermost closes first" automatically: that is exactly why a stack, not a frequency map, is the right tool.
+- **Two ways to fail, one to succeed.** Reject on a close with an empty stack (`)` with nothing open) *or* a type mismatch; accept only if the stack ends empty (no dangling opens). Beginners forget the final `not stack` check and wrongly pass `"((("`.
+- **The whole family is this skeleton with a richer payload.** LC 1249 pushes *indices* of unmatched brackets to know what to delete; LC 32 pushes a sentinel index to measure valid-run *length*. Same push-open / pop-on-match spine (see the two variants above this walkthrough).
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -525,6 +689,49 @@ def eval_postfix(tokens):
     return stack[0]
 ```
 
+### Walkthrough — LC 227: Basic Calculator II
+
+**This template solves: LC 227, 224 (with parens), 772 (full), 150 (postfix / RPN).**
+
+**Full statement.** Evaluate a string arithmetic expression with `+ - * /`, non-negative integers, and spaces — **no parentheses**. Integer division truncates toward zero. `"3+2*2"` → 7; `"3/2"` → 1; `"3+5 / 2"` → 5.
+
+**Pattern-focused solution.** The two-stack shunting-yard evaluator in §4 handles full precedence *with* parentheses — but for the no-paren case it is overkill. The lean idiom is a **single stack of signed terms**: buffer the current number with the *pending* operator. `+`/`-` push the number (negated for `-`) as a deferred term; `*`/`/` are higher precedence so resolve them *immediately* against the stack top. The answer is the sum of the stack at the end — addition is order-free, so no second stack is needed.
+
+```python
+def calculate(s):
+    stack = []
+    num, op = 0, '+'                    # op = operator PENDING before num
+    for i, ch in enumerate(s):
+        if ch.isdigit():
+            num = num * 10 + int(ch)
+        if ch in '+-*/' or i == len(s) - 1:   # flush at each op and at the end
+            if op == '+':   stack.append(num)
+            elif op == '-': stack.append(-num)
+            elif op == '*': stack.append(stack.pop() * num)
+            elif op == '/': stack.append(int(stack.pop() / num))
+            op, num = ch, 0
+    return sum(stack)
+```
+
+**Trace** over `"3+5 / 2"` (spaces skipped, `int(5/2)=2`):
+
+```
+read 3            num=3
+'+' : flush op='+' -> push 3           stack: [3]      op='+' num=0
+read 5            num=5
+'/' : flush op='+' -> push 5           stack: [3, 5]   op='/' num=0
+read 2            num=2
+end : flush op='/' -> pop 5, push 5/2=2  stack: [3, 2]
+
+sum([3, 2]) = 5   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Precedence becomes a "resolve now vs defer" decision.** `*`/`/` bind tighter than `+`/`-`, so they *must* consume the stack top before the next term forms; `+`/`-` can wait as signed terms and be summed at the very end. That reframing dissolves precedence into a one-pass rule — no operator stack.
+- **`op` lags one token behind `num`.** You act on the *previous* operator when you hit the *current* one (or the string's end) — the number is only complete once its terminator appears. Missing the `i == len(s)-1` flush is the classic off-by-one that drops the last term.
+- **When parens enter (LC 224), fall back to the two-stack parser in §4** — the single-stack trick can't express arbitrary nesting. Knowing *which* tool the constraints demand is the skill; both live in this section on purpose.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 5. Monotonic Deque (Sliding Window Min/Max)
@@ -632,6 +839,50 @@ Each element is pushed into the deque **once** and popped **at most once**. Tota
 | Remove from | Back only | Front (expired) + Back (dominated) |
 | Finds | Next/previous greater/smaller | Sliding window min/max |
 | Time | O(N) total | O(N) total |
+
+### Walkthrough — LC 239: Sliding Window Maximum
+
+**This template solves: LC 239, 1425 (constrained subseq sum), 862 (shortest subarray ≥ K), 1438 (abs-diff window).**
+
+**Full statement.** Given `nums` and window size `k`, return the maximum of every contiguous window of size `k` as the window slides left to right by one each step. `nums=[1,3,-1,-3,5,3,6,7]`, `k=3` → `[3,3,5,5,6,7]`.
+
+**Pattern-focused solution.** A max-heap gives O(n log k); the deque gives **O(n)**. Maintain indices in a deque whose *values are strictly decreasing*, so the front is always the window's max. Two evictions per step: from the **back**, drop any index whose value `≤ nums[i]` (a smaller-or-equal element behind a newer bigger one can never be the max again — *dominated*); from the **front**, drop the index if it has slid out of the window (`< i-k+1`). This is the exact `max_sliding_window` from §5 — the walkthrough just narrates *why* each pop is safe.
+
+```python
+from collections import deque
+
+def max_sliding_window(nums, k):
+    dq = deque()            # indices, nums[...] strictly DECREASING
+    result = []
+    for i in range(len(nums)):
+        while dq and dq[0] < i - k + 1:      # front expired?
+            dq.popleft()
+        while dq and nums[dq[-1]] <= nums[i]: # back dominated?
+            dq.pop()
+        dq.append(i)
+        if i >= k - 1:                        # first full window
+            result.append(nums[dq[0]])        # front = current max
+    return result
+```
+
+**Trace** over `nums=[1,3,-1,-3,5,3,6,7]`, `k=3`:
+
+```
+i=0 v=1 : dq=[0]                                   (window not full)
+i=1 v=3 : pop 0 (1<=3), dq=[1]                      (not full)
+i=2 v=-1: dq=[1,2]                    result:[3]    max=nums[1]=3
+i=3 v=-3: dq=[1,2,3]                  result:[3,3]  max=nums[1]=3
+i=4 v=5 : pop 3,2,1 (all<=5), dq=[4]  result:[3,3,5]
+i=5 v=3 : dq=[4,5]                    result:[3,3,5,5]
+i=6 v=6 : pop 5,4 (all<=6), dq=[6]    result:[3,3,5,5,6]
+i=7 v=7 : pop 6 (6<=7), dq=[7]        result:[3,3,5,5,6,7]   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **A smaller element that arrives *later* makes every smaller-or-equal earlier element dead weight.** While the new, bigger element is in the window, none of them can ever be the max — so evict them permanently. That "dominated ⇒ never relevant again" is what lets each index be popped at most once (the O(N) guarantee).
+- **Order the two evictions front-then-back, and evict *before* reading the answer.** If you read `dq[0]` before dropping the expired front, you report a max from *outside* the window — the single most common bug (called out in §5's pitfalls). The window is only valid once both pops are done.
+- **A stack answers "unbounded history" (all earlier elements); a deque answers "last k".** The moment a problem *bounds* how far back you may look, you need the extra front-eviction — hence the deque. This is the litmus test for deque-vs-stack.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -748,6 +999,53 @@ Matrix:         Heights row by row:
 Answer: 6 (3x2 block in row 3)
 ```
 
+### Walkthrough — LC 84: Largest Rectangle in Histogram
+
+**This template solves: LC 84, 85 (maximal rectangle), 1504 (submatrices with all ones), 42 (rain water — the mirror).**
+
+**Full statement.** Given `heights[]` where `heights[i]` is the height of the `i`-th bar (width 1), find the area of the largest axis-aligned rectangle that fits inside the histogram. `heights=[2,1,5,6,2,3]` → `10` (bars 5 and 6 give height 2 over width... no — bars of height 5,6 span width 2 at height 5 = 10).
+
+**Pattern-focused solution.** For a bar of height `h` to be the *limiting* height of a rectangle, extend left and right until you hit a **strictly shorter** bar on each side. So every bar needs its *previous-smaller* and *next-smaller* — two monotonic-stack facts. The elegant single-pass version fuses them: keep an **increasing** stack of indices; when bar `i` is shorter than the top, that top has just found its next-smaller (`i`), and the new stack top *is* its previous-smaller — enough to fix the width instantly. A trailing sentinel height `0` flushes every remaining bar. This is `largest_rectangle_histogram` from §6.
+
+```python
+def largest_rectangle_histogram(heights):
+    n = len(heights)
+    stack = []            # increasing stack of indices
+    max_area = 0
+    for i in range(n + 1):
+        h = heights[i] if i < n else 0        # sentinel forces full flush
+        while stack and heights[stack[-1]] > h:
+            height = heights[stack.pop()]
+            width = i if not stack else i - stack[-1] - 1
+            max_area = max(max_area, height * width)
+        stack.append(i)
+    return max_area
+```
+
+**Trace** over `heights=[2,1,5,6,2,3]`:
+
+```
+i=0 h=2: push               stack:[0]
+i=1 h=1: 2>1 pop 0, w=1, area=2*1=2   stack:[]  push 1  stack:[1]
+i=2 h=5: push               stack:[1,2]
+i=3 h=6: push               stack:[1,2,3]
+i=4 h=2: 6>2 pop 3, w=4-2-1=1, area=6*1=6
+         5>2 pop 2, w=4-1-1=2, area=5*2=10   <- winner
+         push 4             stack:[1,4]
+i=5 h=3: push               stack:[1,4,5]
+i=6 h=0: 3>0 pop 5, w=6-4-1=1, area=3*1=3
+         2>0 pop 4, w=6-1-1=4, area=2*4=8
+         1>0 pop 1, w=6,       area=1*6=6
+
+max_area = 10   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The width formula `i - stack[-1] - 1` *is* "next-smaller minus previous-smaller minus one".** When you pop bar `j`: `i` is its next-smaller (right wall), and the *new* top after popping is its previous-smaller (left wall). The whole gap between the two walls is where bar `j`'s height fits — no separate prev/next arrays needed.
+- **The sentinel `0` at index `n` is not a hack — it's the clean way to guarantee every bar is measured.** Without it, bars still on the stack at the end (a non-decreasing tail) never get popped and their rectangles are missed. A virtual shorter-than-everything bar forces the final flush.
+- **LC 85 (maximal rectangle in a 0/1 matrix) is this function called once per row**, feeding running column-heights (reset to 0 on a `0`). One Hard problem becomes "build heights + reuse §6" — the payoff of isolating the histogram engine.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 7. Stock Span and Daily Temperatures
@@ -811,6 +1109,53 @@ def daily_temperatures(temps):
 temps:  [73, 74, 75, 71, 69, 72, 76, 73]
 result: [ 1,  1,  4,  2,  1,  1,  0,  0]
 ```
+
+### Walkthrough — LC 739: Daily Temperatures
+
+**This template solves: LC 739, 496/503 (next greater), 901 (online stock span), 1019 (next greater in linked list).**
+
+**Full statement.** Given daily `temperatures[]`, return `answer[]` where `answer[i]` is the number of days you must wait after day `i` for a **warmer** temperature. If none, `0`. `[73,74,75,71,69,72,76,73]` → `[1,1,4,2,1,1,0,0]`.
+
+**Pattern-focused solution.** "Days until warmer" is next-greater-element returning a *distance* instead of the value. Keep a **decreasing** stack of indices (warm days waiting for a warmer one). Each new day `i` pops every colder day it beats — and because we stored indices, the wait length is simply `i - idx`. This is `daily_temperatures` from §7, index arithmetic doing the real teaching.
+
+```python
+def daily_temperatures(temps):
+    n = len(temps)
+    result = [0] * n
+    stack = []                       # decreasing stack of DAY INDICES
+    for i in range(n):
+        while stack and temps[stack[-1]] < temps[i]:
+            idx = stack.pop()
+            result[idx] = i - idx    # distance, not value
+        stack.append(i)
+    return result                    # days left on stack keep 0 (no warmer day)
+```
+
+**Trace** over `[73,74,75,71,69,72,76,73]`:
+
+```
+i=0 t=73: push                       stack:[0]
+i=1 t=74: 73<74 pop 0, result[0]=1   push 1  stack:[1]
+i=2 t=75: 74<75 pop 1, result[1]=1   push 2  stack:[2]
+i=3 t=71: 75<71? no  push 3          stack:[2,3]
+i=4 t=69: 71<69? no  push 4          stack:[2,3,4]
+i=5 t=72: 69<72 pop 4, result[4]=1
+          71<72 pop 3, result[3]=2
+          75<72? no  push 5          stack:[2,5]
+i=6 t=76: 72<76 pop 5, result[5]=1
+          75<76 pop 2, result[2]=4
+          push 6                     stack:[6]
+i=7 t=73: 76<73? no  push 7          stack:[6,7]
+end: 6,7 never warmed -> result stays 0
+
+result = [1,1,4,2,1,1,0,0]   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Storing indices, not temperatures, is what makes the distance fall out for free** (`i - idx`). Had you pushed temperatures you'd know *that* it warmed but not *when* — you'd have lost the day number. This is the concrete payoff of the "store indices" rule from the top of the guide.
+- **The default `0` is passive, not computed.** Days still on the stack at the end never found a warmer day, so their pre-filled `0` is the answer — you never write it explicitly. Recognizing "unresolved = the default" saves a cleanup pass.
+- **LC 901 (Stock Span) is the mirror image**: previous-greater-or-equal distance instead of next-greater. Same decreasing stack, but you read the span *as you push* (distance back to the stack top) rather than *as you pop*. Next-vs-previous is just "resolve on pop" vs "resolve on push" — see §2.3.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -968,6 +1313,47 @@ Dequeue:              push_stack: []            pop_stack: [3, 2, 1]
 
 Amortized O(1) per operation: each element is moved at most once from push to pop stack.
 
+### Walkthrough — LC 155: Min Stack
+
+**This template solves: LC 155, 716 (max stack), 895 (max frequency stack), 1381 (custom stack).**
+
+**Full statement.** Design a stack with `push`, `pop`, `top`, and `getMin` — all in **O(1)**. `getMin` returns the minimum element currently in the stack. A plain stack does push/pop/top in O(1) but `getMin` would be O(N).
+
+**Pattern-focused solution.** The trap is thinking you need a *separate* min structure. Instead, **carry the running minimum inside each frame**: store `(value, min_of_stack_up_to_here)`. When you push, the new frame's min is `min(val, previous_frame_min)`. Popping automatically restores the correct min because the previous frame already recorded *its* era's minimum. `getMin` is just `stack[-1][1]`.
+
+```python
+class MinStack:
+    def __init__(self):
+        self.stack = []              # each entry: (value, min_so_far)
+    def push(self, val):
+        curr_min = min(val, self.stack[-1][1]) if self.stack else val
+        self.stack.append((val, curr_min))
+    def pop(self):
+        return self.stack.pop()[0]
+    def top(self):
+        return self.stack[-1][0]
+    def getMin(self):
+        return self.stack[-1][1]
+```
+
+**Trace** — `push(-2)`, `push(0)`, `push(-3)`, `getMin`, `pop`, `top`, `getMin`:
+
+```
+push -2 : min(-2)          stack: [(-2,-2)]
+push  0 : min(0,-2)=-2     stack: [(-2,-2), (0,-2)]
+push -3 : min(-3,-2)=-3    stack: [(-2,-2), (0,-2), (-3,-3)]
+getMin  -> stack[-1][1] = -3   ✓
+pop     -> returns -3      stack: [(-2,-2), (0,-2)]
+top     -> stack[-1][0] = 0    ✓
+getMin  -> stack[-1][1] = -2   ✓  (min correctly "rewound" to the -3-free era)
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Each frame owns the min of the stack *at its own moment*.** That is why pop needs no recomputation — throwing away the top frame reveals the previous frame, which already stored the minimum of everything beneath it. The history is embedded, not recalculated.
+- **This "augment every element with a running aggregate" trick generalizes past min/max** to any O(1)-mergeable summary (max, gcd, running-and/or). Swap `min` for the aggregate and the structure is unchanged — LC 716 (Max Stack) is literally `min → max`.
+- **Min *Queue* can't reuse this directly** — a queue removes from the *far* end, so the "min beneath me" invariant breaks. The fix is two augmented stacks simulating a queue (see §9 above); each stack keeps this same per-frame min, and `getMin` takes the min of the two tops.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 10. Trapping Rain Water
@@ -1067,6 +1453,52 @@ def trap_prefix(height):
 | Two Pointers | O(N) | O(1) | Process from both ends inward |
 | Prefix Max | O(N) | O(N) | Water at each position = min(left_max, right_max) - height |
 
+### Walkthrough — LC 42: Trapping Rain Water
+
+**This template solves: LC 42, 407 (2D rain water), 84 (histogram — the mirror), 11 (container with most water — two-pointer cousin).**
+
+**Full statement.** Given `height[]` (an elevation map, bar width 1), compute how much rain water it traps after raining. `[0,1,0,2,1,0,1,3,2,1,2,1]` → `6`.
+
+**Pattern-focused solution.** Water above position `i` is bounded by `min(tallest wall left, tallest wall right) - height[i]`. The monotonic-stack view computes water in **horizontal layers**: keep a decreasing stack of indices; when bar `i` is taller than the top, the top is a *valley floor* that just found its right wall (`i`) — the new stack top is its left wall. The trapped slab between them is `width × (min(left,right) - floor)`. This is `trap_stack` from §10.
+
+```python
+def trap_stack(height):
+    stack = []                # decreasing stack of indices
+    water = 0
+    for i in range(len(height)):
+        while stack and height[stack[-1]] < height[i]:
+            bottom = stack.pop()          # valley floor
+            if not stack:                 # no left wall -> water spills off
+                break
+            width = i - stack[-1] - 1
+            bounded = min(height[i], height[stack[-1]]) - height[bottom]
+            water += width * bounded
+        stack.append(i)
+    return water
+```
+
+**Trace** — the key layer, popping index 2 (`h=0`) because of index 3 (`h=2`) in `[0,1,0,2,...]`:
+
+```
+i=0 h=0: push               stack:[0]
+i=1 h=1: 0<1 pop 0, stack empty -> break; push 1   stack:[1]
+i=2 h=0: 1<0? no  push 2    stack:[1,2]
+i=3 h=2: 1... wait top is 2 (h=0): 0<2 pop 2 (floor)
+         left wall = stack[-1]=1 (h=1), right wall = 3 (h=2)
+         width = 3-1-1 = 1
+         bounded = min(1,2) - 0 = 1
+         water += 1*1 = 1
+         now top 1 (h=1): 1<2 pop 1, stack empty -> break
+         push 3             stack:[3]
+... continues; final water = 6   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Water is filled in horizontal slabs, not vertical columns.** Each pop resolves *one* rectangular layer bounded by a left wall, a right wall, and the valley floor being popped. This is the same "pop = fix a rectangle" move as LC 84 — trapping water and largest rectangle are the *same* monotonic-stack skeleton with a different area formula.
+- **`if not stack: break` is essential** — a popped floor with nothing beneath it has no left wall, so water spills off that side and traps nothing. Beginners omit this and index into an empty stack.
+- **Two pointers beat the stack here on space (O(1) vs O(N)).** The insight: whichever side has the *shorter* running max is the binding wall, so advance that pointer and bank `side_max - height`. When both a stack *and* a two-pointer solution exist, the two-pointer one usually wins — but the stack version generalizes to problems (like LC 84) where two pointers don't apply.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 11. Pattern Recognition Cheat Sheet
@@ -1159,3 +1591,62 @@ Start here
     ▼
   42  (Hard)   ──── Trapping Rain Water: stack (layers) or two pointers — the capstone
 ```
+
+---
+
+## The Stack & Queue Toolbox at a Glance
+
+```
+Does an element WAIT for a later element to resolve it?
+│
+├─ NO  ── not a stack/queue problem — heap? hash map? sort?
+│
+└─ YES ── which pending element resolves FIRST?
+   │
+   ├─ NEWEST first (nesting / nearest / innermost)  =====>  STACK
+   │   │
+   │   ├─ "next / prev greater or smaller"        Monotonic stack (§2)  — LC 496, 739
+   │   ├─ "matching / balanced brackets"          Stack match     (§3)  — LC 20
+   │   ├─ "evaluate expression"                   Stack parser    (§4)  — LC 227
+   │   ├─ "largest rectangle / max area"          Increasing stack(§6)  — LC 84
+   │   ├─ "trapped water between walls"           Decreasing stack(§10) — LC 42
+   │   └─ "min/max with push/pop in O(1)"         Augmented stack (§9)  — LC 155
+   │
+   └─ OLDEST first (arrival / level / time order) =====>  QUEUE / DEQUE
+       │
+       ├─ "max/min over a window of size k"        Monotonic deque (§5)  — LC 239
+       ├─ "shortest hops / level by level"         BFS queue       (§8)  — LC 102
+       └─ "count events in a time window"          Plain queue     (§8)  — LC 933
+```
+
+### THREE MOVES, EVERY MONOTONIC PROBLEM
+
+```
+1. PUSH the index (never the value) — it now waits for its trigger.
+2. POP while the new element breaks the invariant — the pop BIRTHS an answer.
+3. READ the answer at the pop (next-*) or at the push (prev-*).
+```
+
+### LeetCode Practice Ladder (the 8 walkthroughs)
+
+```
+20  Valid Parentheses        pure LIFO matching — no invariant
+  │
+155 Min Stack                augment each frame with a running min
+  │
+739 Daily Temperatures       monotonic stack returning a DISTANCE
+  │
+496 Next Greater Element I   monotonic stack + hash-map lookup
+  │
+227 Basic Calculator II      single stack of signed terms, precedence = resolve-now
+  │
+239 Sliding Window Maximum   monotonic DEQUE — evict front (expired) + back (dominated)
+  │
+84  Largest Rectangle        pop = fix a bar's width via prev/next smaller
+  │
+42  Trapping Rain Water      pop = fill a horizontal layer — the capstone
+```
+
+---
+
+*Pattern mastered — stop rescanning for the nearest neighbor and let each element wait on the stack until the one that resolves it walks by.*
