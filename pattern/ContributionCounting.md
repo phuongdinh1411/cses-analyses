@@ -74,6 +74,10 @@ Total = Σ (contribution of each unit × number of subarrays containing that uni
 
 The "unit" can be an element, a pair, a bit position, a character occurrence --- whatever the problem decomposes into.
 
+`★ Insight ─────────────────────────────────────`
+This is the same summation-order swap that powers edge contribution on trees — here the "bridge" is a subarray boundary instead of a tree edge. `Σ_subarrays property = Σ_units (unit's value × subarrays containing it)`. The swap is legal only when a subarray's property is a **sum of independent per-unit terms** (sum, min-as-minimum-indicator, XOR-per-bit, distinctness-per-char). The instant the property depends on a *combination* of units — "at least k pairs", "max − min ≤ k" — the terms stop being independent and the swap is invalid (see [§9](#9-when-contribution-counting-does-not-work)).
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 2. Foundation: Element Containment Formula
@@ -105,6 +109,10 @@ The 9 subarrays: [c], [b,c], [a,b,c], [c,d], [b,c,d], [a,b,c,d],
 ```
 
 This is the **building block** for everything below.
+
+`★ Insight ─────────────────────────────────────`
+`(i+1) × (n-i)` is just "count the left endpoints × count the right endpoints" — a subarray is pinned down entirely by its `(l, r)` pair, and `l` ranges freely over `[0, i]` while `r` ranges over `[i, n-1]`. Multiplying independent choice-counts is the whole formula. Every harder variant only *narrows those ranges*: a min-problem clips `l` to "after the previous smaller" and `r` to "before the next smaller"; a distinct-char problem clips to "after previous same char" and "before next same char". Same skeleton `left_choices × right_choices` — different fences.
+`─────────────────────────────────────────────────`
 
 ### Application: Sum of All Subarray Sums
 
@@ -250,6 +258,10 @@ Verify: subarrays and their mins:
   Sum = 3+1+2+4+1+1+2+1+1+1 = 17 ✓
 ```
 
+`★ Insight ─────────────────────────────────────`
+The strict-`<` on one side, `<=` on the other is the single subtlety that makes duplicate values behave. If both boundaries used strict comparison, a subarray of equal minimums like `[2,2]` would be claimed by *both* `2`s as "the subarray where I am the minimum" and counted twice. Breaking the tie asymmetrically — "I own the subarray only if I'm the *leftmost* occurrence of the minimum" (strict on the previous side, non-strict on the next) — assigns every subarray to exactly one owner. This tie-break rule recurs everywhere spans partition a range: it is why NGE/NLE templates flip one comparison, not both.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 4. Sum of Subarray Ranges: Dual Contribution
@@ -386,6 +398,10 @@ def appealSum(s):
 
 **O(n) time, O(26) space.** Elegantly simple.
 
+`★ Insight ─────────────────────────────────────`
+For character problems the fences are the *same-character* neighbors, not smaller/greater ones. A char occurrence "owns" a subarray for uniqueness when the previous identical char sits left of `l` and the next identical char sits right of `r` → `(i − prev) × (next − i)`. LC 2262 (appeal) is a one-line collapse of this: instead of both neighbors, only `prev` matters because you count each occurrence as the *first* of its kind in a subarray, so `(i − prev) × (n − i)`. Recognizing that "unique here" and "first-occurrence here" are the same fencing idea with one fence dropped is what turns a monotonic-stack problem into a single running-dictionary pass.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 6. Bit-Level Contribution
@@ -406,6 +422,10 @@ def totalHammingDistance(nums):
 ```
 
 **Time:** O(30n), **Space:** O(1)
+
+`★ Insight ─────────────────────────────────────`
+Bits are the cleanest "independent units" of all: a number's bits never interact, so you decompose the whole problem into 30 (or 64) parallel one-bit problems and sum the answers. For Hamming distance, bit `b` contributes `ones × zeros` — every set/unset pair differs in that bit, and pairs are independent across bits. For XOR-of-subarrays the per-bit trick is prefix-parity: a subarray's bit is 1 iff an odd number of that bit falls inside, i.e. iff the two enclosing prefix parities differ, so the count is `count[0] × count[1]`. When you see "sum/xor/hamming over all …", split by bit *first* — the per-bit subproblem is almost always trivial.
+`─────────────────────────────────────────────────`
 
 ### Problem: Sum of XOR of All Subarrays
 
@@ -548,6 +568,10 @@ You CAN count total equal pairs across ALL subarrays using contribution: each pa
 
 But you CANNOT count subarrays with **at least k** pairs, because that requires knowing how many pairs are **simultaneously** inside each specific subarray. The contributions interact --- you need **sliding window** for that.
 
+`★ Insight ─────────────────────────────────────`
+The litmus test: **does the property factor into a sum of per-unit terms, or does it involve a comparison/threshold across units?** "Total equal pairs" factors — each pair `(i,j)` contributes its containment count regardless of the others, so contribution counting works. "At least k equal pairs" does *not* factor — whether a subarray qualifies depends on the *joint* count of all its pairs, an interaction. Same trap hides in "min > X" (needs the whole window's min), "≤ k distinct" (needs the window's distinct set), "range ≤ k" (needs both extremes at once). Additive → contribution counting, O(n). Threshold/interaction → sliding window / DP / segment tree. Misreading this is the one way to apply the technique to a problem it silently gets wrong.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 10. Pattern Recognition Cheat Sheet
@@ -628,4 +652,24 @@ The core skill is always the same: **stop thinking about subarrays, start thinki
 Total = Σ (value of unit) × (number of subarrays/subsets containing that unit)
 ```
 
+### THREE MOVES BEHIND EVERY CONTRIBUTION PROBLEM
+
+```
+1. PICK THE UNIT     Element? pair? bit? character occurrence? The unit is
+                     whatever makes the property a SUM of independent terms.
+
+2. FENCE THE SPAN    Count subarrays/subsets containing the unit:
+                       plain element   → (i+1) × (n-i)
+                       as minimum       → (i-PLE) × (NLE-i)   [monotonic stack]
+                       as distinct char → (i-prev) × (next-i)  [last occurrence]
+                       across a pair    → (i+1) × (n-j)
+                       in a subset       → powers of 2 after sorting
+
+3. CHECK ADDITIVITY  Does the property factor into per-unit terms? YES → sum
+                     value×span, O(n). NO (threshold / "at least k" / range≤k)
+                     → wrong tool; use sliding window / DP / segment tree.
+```
+
 Master the containment formula `(i+1) × (n-i)`, learn to combine it with monotonic stacks for min/max problems and with last-occurrence tracking for character problems, and you'll solve an entire class of "aggregate over all subarrays" problems in O(n).
+
+*Pattern mastered — stop enumerating subarrays; count what each unit contributes and let the total assemble itself.*
