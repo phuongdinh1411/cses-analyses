@@ -24,6 +24,7 @@ A segment tree answers **range queries** and applies **updates** on an array in 
 | Handle values too large to index | Coordinate compression | [7](#7-segment-tree-on-values) |
 | Query historical versions | Persistent segment tree | [8](#8-persistent-segment-tree) |
 | Just count inversions / order-stats | BIT (Fenwick) alternative | [9](#9-when-to-use-a-bit-instead) |
+| See full **worked LeetCode solutions** | 307 / 699 / 327 walkthroughs | [9.5](#95-worked-leetcode-problems) |
 
 ---
 
@@ -38,6 +39,7 @@ A segment tree answers **range queries** and applies **updates** on an array in 
 7. [Segment Tree on Values](#7-segment-tree-on-values)
 8. [Persistent Segment Tree](#8-persistent-segment-tree)
 9. [When to Use a BIT Instead](#9-when-to-use-a-bit-instead)
+9.5. [Worked LeetCode Problems](#95-worked-leetcode-problems)
 10. [Common Patterns Collection](#10-common-patterns-collection)
 11. [Pattern Recognition Cheat Sheet](#11-pattern-recognition-cheat-sheet)
 
@@ -77,6 +79,22 @@ array = [5, 3, 7, 9, 6, 2]   (sum tree)
 ```
 
 A range query decomposes `[l, r]` into O(log N) node ranges that exactly tile it. That's the whole trick.
+
+### Master LeetCode Comparison Table
+
+The five representative segment-tree problems, ordered by the sub-pattern they force. Read the "Tree indexed by" column first — it is the single fork that decides everything else.
+
+| LC # | Problem | Difficulty | Tree indexed by | Node stores | Update kind | Query answers | Sub-pattern (§) |
+|------|---------|-----------|-----------------|-------------|-------------|---------------|-----------------|
+| **307** | Range Sum Query - Mutable | Medium | array position | sum | point assign | range sum | Basic point-update (§2/§3) |
+| **699** | Falling Squares | Hard | compressed x | max height | range assign-max (lazy) | range max | Lazy propagation (§5) |
+| **715** | Range Module | Hard | compressed x | covered? | range assign 0/1 (lazy) | range all-covered? | Lazy assign (§5) |
+| **327** | Count of Range Sums | Hard | **prefix value** | count | point +1 | count in value range | Tree on values (§7) |
+| **1649** | Create Sorted Array | Hard | **element value** | count | point +1 | count smaller / larger | Tree on values (§7) |
+
+`★ Insight ─────────────────────────────────────`
+Two problems (307, 699) index by **position** — the leaf is array slot `i`. Two (327, 1649) index by **value** — the leaf is "how many elements equal value `v` seen so far", and the array position is thrown away. That axis choice is the whole design decision: position-indexed answers "aggregate over a slice"; value-indexed answers "how many seen so far are smaller/larger/in-range". Same tree, opposite meaning of the index. The counting (value-indexed) rows can all be done with a shorter [BIT](/pattern/fenwick-tree) instead — reach for the segment tree only when you also need min/max/assign or range-updates.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -574,6 +592,194 @@ class BIT:
 
 ---
 
+## 9.5 Worked LeetCode Problems
+
+Three problems, one per core sub-pattern from the [Master Comparison Table](#master-leetcode-comparison-table): a position-indexed point-update tree (307), a lazy range-assign tree (699), and a value-indexed count tree (327). Every solution below was executed against the LeetCode canonical answers before being written here.
+
+### Problem 307 — Range Sum Query - Mutable
+
+**Difficulty**: Medium
+
+**Statement.** Given an integer array `nums`, support two operations any number of times, interleaved: `update(index, val)` sets `nums[index] = val`, and `sumRange(left, right)` returns the sum of `nums[left..right]` inclusive.
+
+This is the "hello world" of segment trees — and the exact problem [FenwickTree §9.5](/pattern/fenwick-tree#95-worked-leetcode-problems) also solves, which is the whole lesson: **when the aggregate is just a sum, a BIT is shorter. The segment tree earns its extra code only when you need min/max/assign.** We use the iterative tree from Section 3 because point-update + range-sum is exactly its sweet spot.
+
+```python
+class NumArray:
+    def __init__(self, nums):
+        self.n = len(nums)
+        self.tree = [0] * (2 * self.n)
+        for i, v in enumerate(nums):            # leaves live at [n, 2n)
+            self.tree[self.n + i] = v
+        for i in range(self.n - 1, 0, -1):      # build internal nodes bottom-up
+            self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+
+    def update(self, index, val):
+        i = index + self.n
+        self.tree[i] = val                      # ASSIGN the leaf (not += a delta)
+        i //= 2
+        while i >= 1:                            # re-pull every ancestor
+            self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
+            i //= 2
+
+    def sumRange(self, left, right):
+        res = 0
+        l, r = left + self.n, right + self.n + 1  # half-open [l, r)
+        while l < r:
+            if l & 1: res += self.tree[l]; l += 1
+            if r & 1: r -= 1; res += self.tree[r]
+            l //= 2; r //= 2
+        return res
+```
+
+**Trace** on `nums = [1, 3, 5]` (leaves at indices 3,4,5; internal 1,2):
+
+```
+build:  tree[3..5] = 1,3,5
+        tree[2] = tree[4]+tree[5] = 3+5 = 8
+        tree[1] = tree[2]+tree[3] = 8+1 = 9
+
+sumRange(0,2): l=3, r=6
+  l=3 odd  -> res=1, l=4        (leaf 0 grabbed directly)
+  l=4 even, r=6 even
+  l=2, r=3
+  l=2 even, r=3 odd -> r=2, res += tree[2]=8 -> res=9
+  l=1, r=1 stop  => 9   ✓
+
+update(1, 2): leaf 4 = 2; tree[2]=2+5=7; tree[1]=7+1=8
+sumRange(0,2) now => 8   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+The point-update here **assigns** (`self.tree[i] = val`) — unlike a BIT, whose `update` adds a *delta* and therefore needs `delta = val - old[index]` plus a shadow copy of the array. The segment-tree leaf holds the absolute value, so it can overwrite in place with no shadow array. That is a small but real ergonomic win of the iterative segment tree over a BIT for the "set element = value" flavor of update.
+`─────────────────────────────────────────────────`
+
+### Problem 699 — Falling Squares
+
+**Difficulty**: Hard
+
+**Statement.** Squares drop one at a time onto a number line. Square `i` is given as `positions[i] = [left, sideLength]`, occupying the interval `[left, left + sideLength - 1]` horizontally. A falling square lands on top of the tallest surface currently under any part of its footprint (the ground is height 0), so its new top height is `(max height under footprint) + sideLength`. After each drop, report the tallest stack seen so far. Return the list of running maxima.
+
+This is the canonical LeetCode teacher for **lazy range-assign-max**. Coordinates go up to 1e8, so we coordinate-compress the endpoints first (Section 7's companion technique), then run a recursive lazy tree whose merge is `max`.
+
+```python
+def fallingSquares(positions):
+    xs = set()                                   # compress interval endpoints
+    for l, s in positions:
+        xs.add(l); xs.add(l + s - 1)
+    order = sorted(xs)
+    idx = {v: i for i, v in enumerate(order)}
+    n = len(order)
+    tree = [0] * (4 * n)
+    lazy = [0] * (4 * n)                          # pending "height is at least this"
+
+    def apply(node, val):
+        tree[node] = max(tree[node], val)        # pull-up merge AND lazy-merge are both max
+        lazy[node] = max(lazy[node], val)
+    def push(node):
+        if lazy[node]:
+            apply(2 * node, lazy[node]); apply(2 * node + 1, lazy[node])
+            lazy[node] = 0
+    def update(node, lo, hi, l, r, val):
+        if r < lo or hi < l: return
+        if l <= lo and hi <= r:
+            apply(node, val); return             # whole node covered: assign-max, stop
+        push(node); mid = (lo + hi) // 2
+        update(2 * node, lo, mid, l, r, val)
+        update(2 * node + 1, mid + 1, hi, l, r, val)
+        tree[node] = max(tree[2 * node], tree[2 * node + 1])
+    def query(node, lo, hi, l, r):
+        if r < lo or hi < l: return 0
+        if l <= lo and hi <= r: return tree[node]
+        push(node); mid = (lo + hi) // 2
+        return max(query(2 * node, lo, mid, l, r),
+                   query(2 * node + 1, mid + 1, hi, l, r))
+
+    res = []; best = 0
+    for l, s in positions:
+        a, b = idx[l], idx[l + s - 1]
+        newh = query(1, 0, n - 1, a, b) + s      # land on tallest under footprint
+        update(1, 0, n - 1, a, b, newh)          # raise the whole footprint to newh
+        best = max(best, newh)
+        res.append(best)
+    return res
+```
+
+**Trace** on `positions = [[1,2],[2,3],[6,1]]`:
+
+```
+endpoints: sq0 [1,2], sq1 [2,4], sq2 [6,6]  ->  compressed {1,2,4,6}
+
+sq0 [1,2]: query footprint = 0, newh = 0+2 = 2, assign-max 2 over [1,2]. best=2
+sq1 [2,4]: query footprint (covers x=2, held by sq0 at h=2) = 2,
+           newh = 2+3 = 5, assign-max 5 over [2,4].                 best=5
+sq2 [6,6]: query footprint = 0 (empty column), newh = 0+1 = 1.      best=5
+=> [2, 5, 5]   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+Assign-max is the *easy* lazy flavor: `max` is idempotent, so a leftover stale lazy re-applied to a node changes nothing, and `0` is a safe "no pending" sentinel — no `has_lazy` flag needed (contrast the assign-*sum* variant in §5, where lazy `0` is ambiguous with "assign the value 0"). The problem shape "each new item sits on the current max under its span, then raises that span" — stacking boxes, booking the tallest hotel floor in a range — is the fingerprint that says lazy assign-max.
+`─────────────────────────────────────────────────`
+
+### Problem 327 — Count of Range Sums
+
+**Difficulty**: Hard
+
+**Statement.** Given an integer array `nums` and two integers `lower` and `upper`, return the number of range sums `S(i, j) = nums[i] + ... + nums[j]` (with `i <= j`) that lie in `[lower, upper]` inclusive.
+
+The reframe is the whole solution. With prefix sums `P[0..n]`, a range sum `S(i,j) = P[j+1] - P[i]`. Counting `lower <= P[j+1] - P[i] <= upper` over all `i <= j` becomes: sweep the prefixes left to right, and for each new prefix `p`, count how many **already-seen** prefixes `P[i]` satisfy `p - upper <= P[i] <= p - lower`. That is a value-range count over a value-indexed tree — Section 7's pattern, done here with the shorter BIT counting form.
+
+```python
+from bisect import bisect_left, bisect_right
+
+def countRangeSum(nums, lower, upper):
+    prefix = [0]
+    for x in nums:
+        prefix.append(prefix[-1] + x)
+
+    order = sorted(set(prefix))                  # compress prefix VALUES
+    rank = {v: i for i, v in enumerate(order)}
+    m = len(order)
+    tree = [0] * (m + 1)                         # value-indexed count BIT (1-indexed)
+
+    def upd(i):
+        i += 1
+        while i <= m: tree[i] += 1; i += i & (-i)
+    def qpre(i):                                 # count inserted with rank in [0, i]
+        i += 1; s = 0
+        while i > 0: s += tree[i]; i -= i & (-i)
+        return s
+    def qrange(loval, hival):                    # count inserted prefix values in [loval, hival]
+        li = bisect_left(order, loval)           # first rank whose value >= loval
+        ri = bisect_right(order, hival) - 1      # last  rank whose value <= hival
+        if li > ri: return 0
+        return qpre(ri) - (qpre(li - 1) if li > 0 else 0)
+
+    count = 0
+    for p in prefix:
+        count += qrange(p - upper, p - lower)    # earlier prefixes making a valid range END here
+        upd(rank[p])                             # then register p as a candidate start
+    return count
+```
+
+**Trace** on `nums = [-2, 5, -1]`, `lower = -2`, `upper = 2`:
+
+```
+prefix = [0, -2, 3, 2]
+
+p=0:  need earlier P[i] in [0-2, 0+2]=[-2,2] -> none inserted yet -> 0.   insert 0
+p=-2: need P[i] in [-4, 0]        -> {0} qualifies                -> +1.  insert -2
+p=3:  need P[i] in [1, 5]         -> {0,-2}? none in [1,5]        -> 0.    insert 3
+p=2:  need P[i] in [0, 4]         -> {0, 3} qualify (0 and 3)     -> +2.   insert 2
+total = 3   ✓   (ranges [0,0]=-2, [2,2]=-1, [0,2]=2)
+```
+
+`★ Insight ─────────────────────────────────────`
+The counting axis is the **prefix value**, not the array index — the tree never knows where in the array a prefix came from, only its magnitude. The `i <= j` (earlier-index) constraint is enforced purely by **when** you insert: query for the answer *before* inserting the current prefix, so only strictly-earlier prefixes are in the tree. That "query-then-insert" ordering is the same trick behind counting inversions and "count smaller after self" — the sweep direction encodes the index constraint for free. And because we only count (never min/max), a BIT replaces the segment tree with less code.
+`─────────────────────────────────────────────────`
+
+---
+
 ## 10. Common Patterns Collection
 
 ### Range Sum with Point Updates (CSES "Dynamic Range Sum Queries")
@@ -696,3 +902,9 @@ Start here
     ▼
   699  (Hard)   ──── Falling Squares: lazy range-ASSIGN + compression, max query (§5, §7)
 ```
+
+Worked in full in [§9.5](#95-worked-leetcode-problems): **307** (point-update, §2/§3), **699** (lazy assign-max, §5), **327** (value-indexed count, §7).
+
+---
+
+*Pattern mastered — one skeleton (build = combine children, update = change leaf then pull up, query = tile the range with O(log N) covered nodes), and two questions: (1) do I need lazy, i.e. range-updates? (2) is my index axis position or value? Sum-only, no range-update, invertible → a [BIT](/pattern/fenwick-tree) is shorter; min/max/assign/range-update → the segment tree is why you're here.*
