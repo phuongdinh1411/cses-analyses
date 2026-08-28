@@ -22,6 +22,22 @@ All problems share:
 
 ---
 
+## Quick Navigation: I need to...
+
+| Symptom in the problem | The `state` you add | Go to |
+|---|---|---|
+| "count numbers in `[L, R]` with **digit sum** = S / in `[a,b]`" | running sum / remaining | [2719](#9-problem-2719--count-of-integers-digit-sum-bounds) |
+| "count numbers with **all distinct digits**" | 10-bit `mask` | [2376](#5-problem-2376--count-special-integers) |
+| "count numbers with **at least one repeated digit**" | 10-bit `mask` + complement | [1012](#8-problem-1012--numbers-with-repeated-digits) |
+| "**how many times** does digit X appear across `1..n`" | occurrence `count` (return it, not 0/1) | [233](#6-problem-233--number-of-digit-one) |
+| "only these digits are **allowed**" | none — iterate the allowed set | [902](#7-problem-902--numbers-at-most-n-given-digit-set) |
+| "sum of **odd-position** digits = sum of **even-position**" | `diff` + `length` | [3791](#4-problem-3791--balanced-integers-in-a-range) |
+| "**divisible by k** AND some digit property" | `rem` (+ second state) | [2827](#10-problem-2827--number-of-beautiful-integers) |
+| "which digit families exist / what state do I pick" | — | [§3 Common State Choices](#3-common-state-choices), [§12 identify router](#12-how-to-identify-this-pattern) |
+| "range endpoints are **strings** too big for `int`" | string-subtraction trick | [2719 note](#9-problem-2719--count-of-integers-digit-sum-bounds) |
+
+---
+
 ## Table of Contents
 
 0. [Why This Pattern Exists](#0-why-this-pattern-exists)
@@ -128,6 +144,12 @@ The only thing that changes between problems:
 - **`transition`**: how state updates when placing digit `d`
 - **`check`**: what condition to verify at the end
 
+`★ Insight ─────────────────────────────────────`
+- The `count(high) - count(low - 1)` split is the whole reason Digit DP only ever solves "**count from 1 to N**". You never write range logic — you write one upper-bound counter and subtract two calls. A property that holds on `[L,R]` becomes `f(R) - f(L-1)`, exactly like a prefix sum on the number line.
+- `count()` is `count(1..num)`, so the caller must pass `low - 1`, NOT `low`. Off-by-one here is the #1 Digit DP bug — the `count(low-1)` call is what excludes everything below `low`.
+- The four parameters split cleanly: `pos` + `tight` + `started` are the **skeleton** (identical in every problem); only `state` carries the problem. Learn the skeleton once and each new problem is just "what's the state?".
+`─────────────────────────────────────────────────`
+
 ### A Tiny Recursion Trace
 
 Count integers in `[0, 13]` with **no digit 4**. Digits of 13 = `[1, 3]`, so `n = 2`. Nodes are `(pos, tight)`:
@@ -180,6 +202,12 @@ pos=2 after placing 3,5, tight=True, limit=2:
 
 **Rule**: `tight` stays True only if **every** digit placed so far equals N's corresponding digit.
 
+`★ Insight ─────────────────────────────────────`
+- `tight` is a **one-way door**: once you place a digit *below* the bound, `new_tight = tight and (d == limit)` goes False and stays False for the rest of the number. There's exactly one tight path (the prefix that equals N so far) and everything that falls off it lands in the same free subtree.
+- That is precisely why memoization works. A `tight=True` state has a *unique* prefix, so it's visited once and barely benefits from caching — the payoff is all the `tight=False` states, where thousands of different prefixes collapse onto the same `(pos, state, False)` node. **Never memoize on `tight=True` expecting reuse; do memoize the free states.**
+- Most bugs come from computing `limit` wrong: it's `digits[pos]` **only when tight**, else `9`. Flip that and you either overcount (freely using 9s under a tight bound) or undercount.
+`─────────────────────────────────────────────────`
+
 ### `started` — Leading Zeros
 
 Handles the fact that `007` is actually `7` (a 1-digit number, not 3-digit).
@@ -192,6 +220,11 @@ Transition: new_started = started or (d != 0)
 ```
 
 Without this, we'd incorrectly treat leading zeros as real digits, breaking problems that depend on digit count or position.
+
+`★ Insight ─────────────────────────────────────`
+- `started` exists so a leading `0` is a **non-choice**, not a placed digit. Before `started`, the `0` you "place" must skip the state transition (see 2376/3791: `new_mask` / `new_diff` only update `if new_started`). Forget that guard and `007` looks like it "used digit 0" or "has length 3" — wrong for distinct-digit or position-parity problems.
+- Not every problem needs it. **Digit-sum problems (2719) drop `started` entirely** — leading zeros add 0 to the sum, so they're harmless. Add `started` only when leading zeros would corrupt the state: digit *count*, position parity, first-digit rules, or "no repeated digit" (where a phantom leading 0 falsely marks 0 as used).
+`─────────────────────────────────────────────────`
 
 ### `state` — Problem-Specific
 
@@ -384,6 +417,11 @@ class Solution:
 
 **Note**: The base case returns `count` (not 0 or 1) because we're summing occurrences, not counting numbers.
 
+`★ Insight ─────────────────────────────────────`
+- This is the one problem that breaks the "return 0/1" reflex. Every other guide problem asks *how many numbers* qualify (base case returns 1); 233 asks *how many 1's total*, so the base case returns the accumulated `count`. Same skeleton, one-word change in the payload.
+- Equivalent reframing: `dp` here computes a **sum over numbers of (their digit-1 count)**, which by linearity equals summing 1 each time a 1 is *placed*. Both views give the same answer — the accumulate-in-state version shown is the one that generalizes to "count digit X" or "count pairs" with no new machinery.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 7. Problem 902 — Numbers At Most N Given Digit Set
@@ -429,6 +467,12 @@ class Solution:
 ```
 
 **State**: `(pos, tight, started)` — minimal state since any combination of allowed digits is valid.
+
+`★ Insight ─────────────────────────────────────`
+- The loop changes from `for d in range(0, limit+1)` to `for d in allowed` — you iterate the *permitted* digits, not all ten. Because `allowed` is sorted, `if d > limit: break` is a clean early cutoff under the tight bound.
+- The separate `if not started: dp(pos+1, False, False)` branch is how you count **shorter** numbers. Staying in leading-zeros one more position means "this number has fewer digits than N" — that single line is what lets a 3-digit bound also count all the valid 1- and 2-digit numbers.
+- No `state` at all here: once digits are drawn only from `allowed`, *every* completion is valid, so there's nothing to check but "did we start". Minimal-state problems are the best place to first internalize the bare `pos/tight/started` skeleton.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -587,6 +631,12 @@ class Solution:
 **State**: `(pos, diff, rem, tight, started)` — combines two properties in one DP.
 
 **Complexity**: O(n × (2n+1) × k × 2 × 2 × 10) where n = digit count
+
+`★ Insight ─────────────────────────────────────`
+- Two independent conditions ("even-count = odd-count" AND "divisible by k") become **two independent state dimensions** carried side by side — `diff` and `rem` — and the check is just `diff == 0 and rem == 0`. You never multiply the problems; you widen the state tuple. This is the general recipe for "property A AND property B".
+- The `rem` transition `(rem * 10 + d) % k` is Horner's method: it's the running number mod k, updated one digit at a time so you never build the full (possibly huge) integer. This is *the* reason divisibility fits Digit DP — the remainder is a tiny bounded state even when the number isn't.
+- Cost multiplies too: state count is `pos × diff-range × k × ...`. If `k` is large this DP gets heavy — divisibility problems are only cheap because `rem < k` and `k` is small.
+`─────────────────────────────────────────────────`
 
 ---
 
