@@ -28,6 +28,94 @@ Backtracking is **brute force with early termination**. You explore a decision t
 
 ---
 
+## From-Scratch Idea: What Makes a Problem Backtracking
+
+Before any template, the identification test. A problem is backtracking when **both** hold:
+
+```
+1. The answer is BUILT INCREMENTALLY — one decision at a time
+   (pick the next element, place the next queen, add the next char).
+
+2. A partial answer can be JUDGED before it's complete — you can tell
+   "this prefix is already doomed" and abandon it (prune) instead of
+   finishing it.
+```
+
+If only (1) holds and every prefix is always fine until the end, it's plain enumeration. If the incremental decisions have *overlapping* subproblems you'd recompute, it's DP, not backtracking. Backtracking is the case where you must **walk the decision tree** but can **cut dead branches**.
+
+### The one mental model: a decision tree you walk depth-first
+
+Every backtracking problem is a tree. A node is a partial answer, an edge is one decision, a leaf is complete-or-pruned. Backtracking = DFS on that tree, **undoing** each decision on the way back up so the shared `path`/state is reused instead of copied at every node.
+
+```
+                    (empty answer)          ← root: nothing decided
+                   /      |      \
+              choice A  choice B  choice C   ← level 0: first decision
+              /   \        |
+           ...    ...     PRUNE              ← branch that can't lead to a
+                                               valid/optimal leaf: skip it
+```
+
+The three lines of the template map exactly onto walking one edge:
+
+```
+apply(choice)     ── walk DOWN the edge (choose)
+backtrack(...)    ── explore the subtree
+undo(choice)      ── walk BACK UP the edge (unchoose)  ← the "back" in backtracking
+```
+
+Everything else — permutations, N-Queens, parentheses — is the **same DFS** with a different "what are my choices at this node?" and a different "is this branch doomed?" test.
+
+`★ Insight ─────────────────────────────────────`
+- The reason we `undo` instead of passing a fresh copy down each edge is cost: one shared mutable `path` costs O(depth) memory total; copying at every node costs O(nodes × depth). The `pop()` after the recursive call is what makes the whole tree reuse a single path buffer.
+- "Can I judge a partial answer early?" is the entire value proposition. Two problems can have the *same* leaves (e.g. all 2ⁿ subsets) but wildly different runtimes purely from how early the doomed branches get cut.
+`─────────────────────────────────────────────────`
+
+### Choices-per-node decides the technique
+
+```
+"pick the NEXT element, order matters, can't reuse"   → Permutations (§2)   choices = unused elements
+"pick a SUBSET of size k, order doesn't matter"       → Combinations (§3)   choices = elements after index i
+"include-or-skip each element"                        → Subsets (§4)        choices = {take, skip}
+"same as above but input has repeats"                 → Duplicates (§5)     choices = distinct values at this level
+"place one item per row/cell under constraints"       → Grid/Board (§6)     choices = safe positions
+"cut the input into valid pieces"                     → Partition (§7)      choices = valid next segment
+"append the next character under a rule"              → String (§8)         choices = legal next chars
+```
+
+### LeetCode ↔ CP translation
+
+The competitive-programming framing and the LeetCode framing are the same tree; only the vocabulary differs.
+
+| Competitive programming | LeetCode | Same underlying tree |
+|-------------------------|----------|----------------------|
+| "generate all permutations" | LC 46 / 47 | choices = unused elements |
+| "enumerate subsets / power set" | LC 78 / 90 | choices = take/skip per index |
+| "place N non-attacking queens" | LC 51 / 52 | choices = safe columns per row |
+| "fill grid under row/col/box constraint" | LC 37 Sudoku | choices = legal digits per cell |
+| "count / find one feasible assignment" | LC 39/40 Combination Sum | choices = candidates ≥ start |
+| "split string into valid tokens" | LC 131 / 93 | choices = valid next segment |
+
+### Master LeetCode Comparison Table
+
+Six canonical problems, one per technique. Read the "choices at each node" and "prune when" columns — that pair *is* the algorithm.
+
+| LC # | Problem | Technique (§) | Difficulty | Choices at each node | Prune / skip when |
+|------|---------|---------------|-----------|----------------------|-------------------|
+| **46** | Permutations | Permutations (§2) | Medium | every **unused** element | element already in path (`used[i]`) |
+| **78** | Subsets | Subsets (§4) | Medium | each element with index ≥ `start` | (never prune — record every node) |
+| **90** | Subsets II | Duplicates (§5) | Medium | distinct values from `start` | `i > start and nums[i]==nums[i-1]` |
+| **79** | Word Search | Grid/Board (§6) | Medium | 4 neighbors of current cell | off-grid, wrong char, or visited |
+| **22** | Generate Parentheses | String (§8) | Medium | append `(` or `)` | `(` when open==n; `)` when close==open |
+| **131** | Palindrome Partitioning | Partition (§7) | Medium | every prefix `s[start:end+1]` | prefix isn't a palindrome |
+
+`★ Insight ─────────────────────────────────────`
+- Notice §4 Subsets has an empty "prune when" column — it records at *every* node, not just leaves, and never cuts a branch. That's the cheapest backtracking shape: pure enumeration of 2ⁿ nodes. Every other row earns its speed from the prune column.
+- LC 46 vs LC 78 differ only in *what counts as a choice*: 46 picks from unused elements (order matters, n! leaves); 78 picks from later indices (order fixed, 2ⁿ nodes). Same DFS skeleton, different candidate set — the whole family is one template with a swapped inner loop.
+`─────────────────────────────────────────────────`
+
+---
+
 ## Table of Contents
 
 1. [The Backtracking Framework](#1-the-backtracking-framework)
@@ -235,6 +323,62 @@ def permutations_swap(nums):
 - **Time**: O(n × n!) — n! permutations, each takes O(n) to copy
 - **Space**: O(n) recursion depth (excluding output)
 
+#### Walkthrough — LC 46 Permutations
+
+**This template solves: LC 46 (Permutations), LC 47 (Permutations II — add the §5 duplicate skip), LC 60 (Permutation Sequence — same tree, count instead of collect).**
+
+> **Full statement.** Given an array `nums` of *distinct* integers, return all possible permutations in any order.
+> Example: `nums = [1,2,3]` → `[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]`.
+
+The pattern-focused view: each tree level fixes one more position; the choices at a node are the elements not yet in `path`. The `used` array is the "what's still available" set.
+
+```python
+def permute(nums):
+    n = len(nums)
+    result = []
+    used = [False] * n
+
+    def backtrack(path):
+        if len(path) == n:          # leaf: a full permutation
+            result.append(path[:])  # copy — path keeps mutating
+            return
+        for i in range(n):
+            if used[i]:             # prune: element already placed
+                continue
+            used[i] = True          # choose
+            path.append(nums[i])
+            backtrack(path)         # explore
+            path.pop()              # unchoose
+            used[i] = False
+
+    backtrack([])
+    return result
+```
+
+```
+nums = [1,2,3]        path grows down, used = which elements are taken
+
+[]  used=---
+├─ pick 1  path=[1] used=T--
+│   ├─ pick 2  [1,2] used=TT-
+│   │   └─ pick 3  [1,2,3] ✓ LEAF
+│   └─ pick 3  [1,3] used=T-T
+│       └─ pick 2  [1,3,2] ✓ LEAF
+├─ pick 2  path=[2] used=-T-
+│   ├─ pick 1 → [2,1,3] ✓
+│   └─ pick 3 → [2,3,1] ✓
+└─ pick 3  path=[3] used=--T
+    ├─ pick 1 → [3,1,2] ✓
+    └─ pick 2 → [3,2,1] ✓
+
+6 leaves = 3! permutations
+```
+
+`★ Insight ─────────────────────────────────────`
+- The `used[i]=False` on the way back up is the whole trick: after exploring "1 first", we release element 1 so the "2 first" branch can use it. Forget that line and every permutation starts with 1.
+- LC 47 (duplicates) is *this exact code* plus one guard: sort, then `if i>0 and nums[i]==nums[i-1] and not used[i-1]: continue` (§5). The base algorithm never changes — you only tighten the candidate set.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 3. Combinations
@@ -399,6 +543,50 @@ def subsets_bitmask(nums):
 - **Time**: O(n × 2^n)
 - **Space**: O(n) recursion depth
 
+#### Walkthrough — LC 78 Subsets
+
+**This template solves: LC 78 (Subsets), LC 77 (Combinations — stop recording until `len(path)==k`), LC 39 (Combination Sum — recurse on `i` not `i+1` to allow reuse, prune on remaining target).**
+
+> **Full statement.** Given an array `nums` of *unique* integers, return all possible subsets (the power set). The solution set must not contain duplicate subsets.
+> Example: `nums = [1,2,3]` → `[[],[1],[2],[3],[1,2],[1,3],[2,3],[1,2,3]]` (any order).
+
+The pattern-focused view: unlike permutations/combinations, **every node of the tree is a valid answer**, not just leaves — so you record on entry, before the loop. The `start` index enforces increasing order, which is what stops `[2,1]` and `[1,2]` both appearing.
+
+```python
+def subsets(nums):
+    result = []
+
+    def backtrack(start, path):
+        result.append(path[:])          # record EVERY node, not just leaves
+        for i in range(start, len(nums)):
+            path.append(nums[i])        # choose nums[i]
+            backtrack(i + 1, path)      # explore; i+1 = never look back
+            path.pop()                  # unchoose
+
+    backtrack(0, [])
+    return result
+```
+
+```
+nums = [1,2,3]     record at entry (before the loop)
+
+start=0 path=[]              → record []
+├─ i=0 [1]                   → record [1]
+│   ├─ i=1 [1,2]             → record [1,2]
+│   │   └─ i=2 [1,2,3]       → record [1,2,3]
+│   └─ i=2 [1,3]             → record [1,3]
+├─ i=1 [2]                   → record [2]
+│   └─ i=2 [2,3]             → record [2,3]
+└─ i=2 [3]                   → record [3]
+
+8 records = 2^3 subsets
+```
+
+`★ Insight ─────────────────────────────────────`
+- `backtrack(i+1, ...)` — not `i`, not `start` — is the ordering lock. `i+1` means "future choices come strictly after me," which collapses the 3! = 6 orderings of `{1,2,3}` into the single subset `[1,2,3]`. Using `i` instead gives combinations-with-repetition; using `start` re-generates the same subset many times.
+- Subsets is the one family with no prune: it visits all 2ⁿ nodes by design. Turn it into LC 77 Combinations by only recording when `len(path)==k`, and into LC 39 Combination Sum by recursing on `i` (reuse allowed) and pruning once `remaining < 0`.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 5. Handling Duplicates
@@ -527,6 +715,53 @@ def combination_sum_with_dup(candidates, target):
 | Subsets with dups | Yes | `i > start and nums[i] == nums[i-1]` |
 | Permutations with dups | Yes | `i > 0 and nums[i] == nums[i-1] and not used[i-1]` |
 | Combinations with dups | Yes | `i > start and nums[i] == nums[i-1]` |
+
+#### Walkthrough — LC 90 Subsets II
+
+**This template solves: LC 90 (Subsets II), LC 40 (Combination Sum II — same skip + a remaining-target prune), LC 47 (Permutations II — the `used[i-1]` variant of the same idea).**
+
+> **Full statement.** Given an integer array `nums` that **may contain duplicates**, return all possible subsets. The solution set must not contain duplicate subsets.
+> Example: `nums = [1,2,2]` → `[[],[1],[1,2],[1,2,2],[2],[2,2]]`.
+
+The pattern-focused view: it's LC 78 plus one line. Sort so equal values are adjacent, then at each level skip a value **already tried as the first choice at this level**. The guard is `i > start` (not `i > 0`) — the *first* occurrence at a level is always allowed; only re-picking an equal value as a *sibling* is banned.
+
+```python
+def subsetsWithDup(nums):
+    nums.sort()                          # equal values become adjacent
+    result = []
+
+    def backtrack(start, path):
+        result.append(path[:])
+        for i in range(start, len(nums)):
+            if i > start and nums[i] == nums[i - 1]:
+                continue                 # skip duplicate SIBLING at this level
+            path.append(nums[i])
+            backtrack(i + 1, path)
+            path.pop()
+
+    backtrack(0, [])
+    return result
+```
+
+```
+nums = [1,2,2]  (already sorted)
+
+start=0 []                       → record []
+├─ i=0 pick 1 → [1]              → record [1]
+│   ├─ i=1 pick 2 → [1,2]        → record [1,2]
+│   │   └─ i=2 pick 2 → [1,2,2]  → record [1,2,2]
+│   └─ i=2  nums[2]==nums[1] and i(2)>start(1) → SKIP  ✗
+├─ i=1 pick 2 → [2]              → record [2]
+│   └─ i=2 pick 2 → [2,2]        → record [2,2]
+└─ i=2  nums[2]==nums[1] and i(2)>start(0) → SKIP  ✗
+
+6 records — the two pruned siblings would have re-made [1,2] and [2]
+```
+
+`★ Insight ─────────────────────────────────────`
+- Why `i > start` and not `i > 0`? The condition must fire only for *siblings* in the same loop, never across levels. At `start=1` the first `2` (i=1) is the branch head and must run; the second `2` (i=2) is its sibling and is the real duplicate. `i > start` says exactly "this is not the first candidate at this level."
+- Sort is load-bearing, not cosmetic: the skip test compares `nums[i]` to `nums[i-1]`, so equal values *must* be adjacent for it to catch them. Skip the sort and `[2,1,2]` slips two identical subsets through.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -693,6 +928,58 @@ def word_search(board, word):
 
 **In-place visited trick**: Temporarily replace `board[r][c]` with a sentinel character (`'#'`), then restore it when backtracking. Saves allocating a separate `visited` array.
 
+#### Walkthrough — LC 79 Word Search
+
+**This template solves: LC 79 (Word Search), LC 200 (Number of Islands — same grid DFS, no word to match), LC 212 (Word Search II — this DFS over a Trie of many words).**
+
+> **Full statement.** Given an `m × n` grid of characters and a string `word`, return `True` if `word` exists in the grid. The word is built from **sequentially adjacent** cells (horizontal/vertical neighbors); the **same cell may not be used twice**.
+> Example: `board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]`, `word = "ABCCED"` → `True`; `word = "ABCB"` → `False`.
+
+The pattern-focused view: the decision tree branches over the 4 neighbors at each step, matching one character deeper. The prune is aggressive — three fail-fast tests (off-grid, wrong char, already-visited) kill a branch before recursing. "Visited" is encoded by mutating the cell to `'#'` and restoring on the way back up.
+
+```python
+def exist(board, word):
+    R, C = len(board), len(board[0])
+
+    def backtrack(r, c, k):
+        if k == len(word):                       # matched every char
+            return True
+        if r < 0 or r >= R or c < 0 or c >= C:   # prune: off-grid
+            return False
+        if board[r][c] != word[k]:               # prune: wrong char / visited '#'
+            return False
+
+        tmp = board[r][c]
+        board[r][c] = '#'                        # choose: mark visited
+        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+            if backtrack(r + dr, c + dc, k + 1):  # explore neighbors
+                return True
+        board[r][c] = tmp                        # unchoose: restore
+        return False
+
+    return any(backtrack(r, c, 0) for r in range(R) for c in range(C))
+```
+
+```
+word = "ABCCED", start at (0,0)='A'
+
+(0,0)A k0 ✓  mark #
+ └─ right (0,1)B k1 ✓  mark #
+     └─ right (0,2)C k2 ✓  mark #
+         ├─ right (0,3)E k3 ✗ (need 'C')  ← prune
+         ├─ left  (0,1)# k3 ✗ (visited)   ← prune
+         └─ down  (1,2)C k3 ✓  mark #
+             └─ down (2,2)E k4 ✓  mark #
+                 └─ left (2,1)D k5 ✓ (need 'D')  mark #
+                     └─ k6 == len → TRUE
+path A→B→C→C→E→D  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- Setting `board[r][c]='#'` *unifies* the visited-check with the char-check: a visited cell now holds `'#'`, which never equals `word[k]`, so the single `board[r][c] != word[k]` line rejects both "wrong letter" and "already used." One comparison, two prunes.
+- The restore `board[r][c] = tmp` must run on *every* exit path, not just success. If you return `True` early you skip it — that's fine because you're done — but on failure the cell must be freed so a *different* starting cell can legally step through it later.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 7. Partitioning Problems
@@ -811,6 +1098,66 @@ def palindrome_partition_optimized(s):
     return result
 ```
 
+#### Walkthrough — LC 131 Palindrome Partitioning
+
+**This template solves: LC 131 (Palindrome Partitioning), LC 93 (Restore IP Addresses — segments are "≤255, no leading zero" instead of "palindrome"), LC 842 (Split into Fibonacci — segment validity is a running numeric rule).**
+
+> **Full statement.** Given a string `s`, partition it so that every substring of the partition is a palindrome. Return all possible partitionings.
+> Example: `s = "aab"` → `[["a","a","b"],["aa","b"]]`.
+
+The pattern-focused view: partitioning is "where do I cut next?" The choices at a node are all prefixes `s[start:end+1]`; a prefix is only a valid choice if it passes the segment test (here: is-palindrome). Recurse from just past the cut. This is the universal *partition* shape — swap the validity test and it becomes IP-address or Fibonacci splitting.
+
+```python
+def partition(s):
+    result = []
+
+    def is_palindrome(l, r):
+        while l < r:
+            if s[l] != s[r]:
+                return False
+            l += 1
+            r -= 1
+        return True
+
+    def backtrack(start, path):
+        if start == len(s):              # consumed the whole string
+            result.append(path[:])
+            return
+        for end in range(start, len(s)):        # choose a cut point
+            if is_palindrome(start, end):       # prune: non-palindrome prefix
+                path.append(s[start:end + 1])   # choose the segment
+                backtrack(end + 1, path)        # explore the rest
+                path.pop()                      # unchoose
+
+    backtrack(0, [])
+    return result
+```
+
+```
+s = "aab"
+
+start=0
+├─ cut "a"   (0..0 pal ✓)  path=["a"]
+│   └─ start=1
+│       ├─ cut "a"  (1..1 pal ✓)  path=["a","a"]
+│       │   └─ start=2
+│       │       └─ cut "b" (2..2 pal ✓) path=["a","a","b"]
+│       │           └─ start=3 == len → RECORD ["a","a","b"]
+│       └─ cut "ab" (1..2 pal ✗)  ← prune
+├─ cut "aa"  (0..1 pal ✓)  path=["aa"]
+│   └─ start=2
+│       └─ cut "b" (2..2 pal ✓) path=["aa","b"]
+│           └─ start=3 == len → RECORD ["aa","b"]
+└─ cut "aab" (0..2 pal ✗)  ← prune
+
+results: [["a","a","b"], ["aa","b"]]
+```
+
+`★ Insight ─────────────────────────────────────`
+- Partitioning problems all share this skeleton — the *only* thing that changes between LC 131, 93, and 842 is the `is_valid(segment)` test and, sometimes, a bound on how many pieces are allowed. Learn the shape once; the "prune when segment invalid" line is the pattern's soul.
+- Recomputing `is_palindrome` on every prefix is O(n) per test → O(n·2ⁿ) overall. The DP-precompute version above fills `is_pal[i][j]` once so the test is O(1), a textbook "hoist the repeated sub-check out of the recursion" optimization — same trick DP memoization uses.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 8. String Backtracking
@@ -848,6 +1195,55 @@ def generate_parentheses(n):
     backtrack([], 0, 0)
     return result
 ```
+
+#### Walkthrough — LC 22 Generate Parentheses
+
+**This template solves: LC 22 (Generate Parentheses), LC 17 (Letter Combinations — same char-by-char build, choices from a fixed map), LC 784 (Letter Case Permutation — append lower/upper per char).**
+
+> **Full statement.** Given `n` pairs of parentheses, generate all combinations of well-formed parentheses.
+> Example: `n = 3` → `["((()))","(()())","(())()","()(())","()()()"]`.
+
+The pattern-focused view: build the string one character at a time; the choices are `(` and `)`, but each is **guarded by a counting invariant** rather than a data structure. `(` is legal while opens remain (`open < n`); `)` is legal only while it wouldn't outnumber opens (`close < open`). Those two guards make every generated string valid by construction — no post-filter needed.
+
+```python
+def generateParenthesis(n):
+    result = []
+
+    def backtrack(path, open_count, close_count):
+        if len(path) == 2 * n:                # used all n pairs
+            result.append(''.join(path))
+            return
+        if open_count < n:                    # can still open
+            path.append('(')
+            backtrack(path, open_count + 1, close_count)
+            path.pop()
+        if close_count < open_count:          # closing stays balanced
+            path.append(')')
+            backtrack(path, open_count, close_count + 1)
+            path.pop()
+
+    backtrack([], 0, 0)
+    return result
+```
+
+```
+n = 2   (o=open used, c=close used)   guards cut invalid branches
+
+""            o0 c0
+├─ '('        o1 c0
+│   ├─ '('    o2 c0
+│   │   └─ ')' o2 c1 → ')' o2 c2  → "(())" ✓
+│   └─ ')'    o1 c1
+│       └─ '(' o2 c1 → ')' o2 c2  → "()()" ✓
+└─ ')'  ✗  close_count(0) < open_count(0) is FALSE → branch never taken
+
+results (n=2): ["(())","()()"]
+```
+
+`★ Insight ─────────────────────────────────────`
+- The two `if` guards *are* the pruning — there's no separate "is this valid?" check at the leaf. `close_count < open_count` is what forbids `")("`: you can never close what you haven't opened. Constraint-by-construction beats generate-then-filter, which would waste time building the 2^(2n) raw strings.
+- This is the "build a string under a running rule" archetype. Swap the guards for a digit→letters map and it's LC 17; swap for "lower or upper per alpha char" and it's LC 784. The append/recurse/pop spine is identical.
+`─────────────────────────────────────────────────`
 
 ### Letter Combinations of Phone Number
 
@@ -970,6 +1366,11 @@ def add_operators(num, target):
 ## 9. Pruning Techniques
 
 Pruning is what makes backtracking practical. Without it, you're just doing brute force.
+
+`★ Insight ─────────────────────────────────────`
+- The five prune types below attack the tree at different points: **feasibility** cuts a branch the moment it's provably dead; **bound** cuts branches that can't beat the best-so-far (needs a running best); **symmetry** cuts branches that are mirror images of one already tried; **ordering** doesn't cut anything itself but makes the *other* prunes fire earlier; **memoization** cuts by never re-solving a state — which is the exact moment backtracking becomes DP.
+- Ordering is the cheap force-multiplier: sorting `nums` descending so big elements fail fast (partition, combination-sum) often turns a TLE into an instant answer with zero change to the logic — only the iteration order moves.
+`─────────────────────────────────────────────────`
 
 ### Type 1: Feasibility Pruning
 
@@ -1421,6 +1822,11 @@ Problem asks to...
 | Constraints are **complex** (hard to encode as DP state) | State can be encoded as **tuple/mask** |
 | Small input (n ≤ ~20) | Larger input (n ≤ ~1000+) |
 
+`★ Insight ─────────────────────────────────────`
+- The dividing line is *overlap*. Backtracking and memoized-DP walk the same decision tree; DP wins only when different branches reach the **same** subproblem so the cache pays off. If every partial state is unique (all permutations, all subsets), there's nothing to cache and backtracking is already optimal.
+- Practical tell: if you can name the state as a small tuple (`(index, remaining)`, `(mask, last)`) and two different choice-sequences can land on it, add `@lru_cache` and you've upgraded to DP for free. If the state is the whole `path` (an ordering), it can't collapse — stay with backtracking.
+`─────────────────────────────────────────────────`
+
 ### When Backtracking vs Greedy
 
 | Use Backtracking | Use Greedy |
@@ -1471,3 +1877,56 @@ for candidate_char in options:
 ---
 
 **Backtracking is systematic trial-and-error.** The "trial" part is choosing a candidate; the "error" part is recognizing dead ends and undoing the choice. Master the template, learn the pruning tricks, and know when to switch to DP — that covers 90% of backtracking problems.
+
+---
+
+## The Backtracking Toolbox at a Glance
+
+```
+Every backtracking algorithm is one DFS. Only two things change per problem:
+
+  CHOICES at each node          PRUNE / SKIP when
+  ────────────────────          ─────────────────
+  unused elements        (46)   already in path
+  indices ≥ start        (78)   (none — record every node)
+  distinct values        (90)   equals left sibling: i>start & a[i]==a[i-1]
+  4 grid neighbors       (79)   off-grid / wrong char / visited
+  '(' or ')'             (22)   open==n  /  close==open
+  valid prefixes        (131)   segment fails the validity test
+
+The spine never changes:
+  choose  →  recurse  →  UNCHOOSE   (the pop() is the "back" in backtracking)
+
+Then the heavy pruning, when the raw tree is too big:
+  overshoot the target        → feasibility prune (remaining < 0)
+  can't beat best-so-far      → bound prune (branch & bound)
+  interchangeable branches    → symmetry prune (empty-bucket set)
+  subproblems repeat          → memoize → it's now DP
+```
+
+### LeetCode Practice Ladder (the 6 walkthroughs)
+
+```
+46  (Medium) ── permutations: choices = unused elements
+    │
+    ▼
+78  (Medium) ── subsets: record every node, i+1 locks order
+    │
+    ▼
+90  (Medium) ── subsets II: sort + skip duplicate sibling
+    │
+    ▼
+22  (Medium) ── generate parens: constraint-by-construction
+    │
+    ▼
+131 (Medium) ── palindrome partition: choices = valid prefixes
+    │
+    ▼
+79  (Medium) ── word search: grid DFS + in-place visited
+```
+
+Then step up: 47/40 add the duplicate skip to permutations/combination-sum; 51 N-Queens adds diagonal pruning; 37 Sudoku adds MRV ordering; 39 Combination Sum swaps `i+1`→`i` for reuse.
+
+---
+
+*Pattern mastered — walk the decision tree depth-first, undo each choice on the way back up, and cut every branch you can already prove is doomed. The savings live in the branches you never visit.*
