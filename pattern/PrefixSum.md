@@ -28,6 +28,93 @@ Prefix sum is one of the most fundamental techniques in competitive programming.
 
 ---
 
+## From-Scratch Idea: What Makes a Problem "Prefix Sum"
+
+Before memorizing 11 variants, understand the one move under all of them. A prefix sum answers a question of the form **"what is the aggregate over a contiguous range?"** by precomputing the aggregate over every *prefix* — every range that starts at the beginning. Then any range `[l, r]` is the difference of two prefixes:
+
+```
+answer(l, r) = prefix(r) ⊖ prefix(l-1)
+```
+
+where `⊖` is the *inverse* of your combine operation. Sum uses subtraction, XOR uses XOR (its own inverse), product uses division (if no zeros). The whole family is this one equation with different operators.
+
+### The two-question identify test
+
+Ask both. If both are "yes," reach for prefix sum:
+
+1. **Is the query over a contiguous range** (subarray, submatrix, root-to-node path)?
+2. **Is the aggregate reversible** — can I "undo" the part before `l`? Sum/XOR/count: yes. Max/min: NO (you cannot un-max), so those need sparse tables or segment trees, not prefix sum.
+
+### The mental shift: from "scan the range" to "difference two endpoints"
+
+The naive approach recomputes the range every query — O(N) per query. Prefix sum spends O(N) *once* so every later query is O(1). The symptom that screams "precompute": **many queries on a static array**, or **counting pairs of positions** that satisfy a range condition.
+
+| Symptom in the problem | Axis you build the prefix over | The trick |
+|------------------------|-------------------------------|-----------|
+| "sum/xor of `a[l..r]`", many queries | index | `pre[r+1] ⊖ pre[l]` |
+| "sum of submatrix", many queries | 2D index | inclusion-exclusion (4 corners) |
+| "count subarrays with sum = k" | running sum value | hash map: how many earlier prefixes = `cur - k` |
+| "count subarrays sum divisible by k" | running sum **mod k** | count equal remainders |
+| "apply many range-adds, read once" | index (inverted) | difference array: `d[l]+=v, d[r+1]-=v` |
+| "product/min/gcd of all-but-one" | index, both directions | prefix combined with suffix |
+
+### From-scratch template — the one equation, three operators
+
+```python
+# SUM: build once, query O(1)
+pre = [0]
+for x in a: pre.append(pre[-1] + x)
+range_sum = pre[r+1] - pre[l]          # inverse of + is -
+
+# XOR: identical shape, ^ is its own inverse
+pre = [0]
+for x in a: pre.append(pre[-1] ^ x)
+range_xor = pre[r+1] ^ pre[l]          # inverse of ^ is ^
+
+# COUNT-PAIRS: don't store the prefix array — stream it into a hash map
+count = {0: 1}                          # the empty prefix is a real start point
+cur = 0; ans = 0
+for x in a:
+    cur += x
+    ans += count.get(cur - k, 0)        # earlier prefixes that make a range summing to k
+    count[cur] = count.get(cur, 0) + 1
+```
+
+`★ Insight ─────────────────────────────────────`
+- **`count[0] = 1` is not optional.** It represents the empty prefix (sum 0 before any element). Without it, a subarray that starts at index 0 and sums to `k` is never counted — the single most common prefix-sum bug.
+- **The array version and the hash-map version are the same idea at different speeds.** When you need *every* range answered → store the whole prefix array. When you need to *count* ranges hitting a target → stream prefixes into a hash map and never store the array. Same equation, different data structure.
+- **Reversibility is the gate.** Sum, XOR, count, and product-without-zeros are invertible, so prefix sum works. Max/min/gcd are NOT invertible over a left-truncated range → use prefix+suffix (§8) or a segment tree, never `pre[r]-pre[l]`.
+`─────────────────────────────────────────────────`
+
+### LeetCode ↔ CP translation
+
+| LeetCode framing | CP framing | Same technique |
+|------------------|-----------|----------------|
+| Range Sum Query — Immutable (303) | Static Range Sum Queries (CSES) | 1D prefix sum (§1) |
+| Range Sum Query 2D (304) | Forest Queries (CSES) | 2D prefix sum (§2) |
+| Subarray Sum Equals K (560) | — | prefix + hash map (§3) |
+| Subarray Sums Divisible by K (974) | Subarray Divisibility (CSES) | prefix mod k (§4) |
+| Corporate Flight Bookings (1109) | Range Update Queries (CSES) | difference array (§5) |
+| XOR Queries of a Subarray (1310) | Range Xor Queries (CSES) | prefix XOR (§7) |
+| Count of Range Sum (327) | — | prefix + ordered structure (§10) |
+
+### Master LeetCode Comparison Table
+
+| LC# | Problem | Technique (§) | Difficulty | What you build the prefix over | The O(1)/O(log) query |
+|-----|---------|---------------|------------|-------------------------------|-----------------------|
+| 303 | Range Sum Query — Immutable | 1D prefix (§1) | Easy | index → running sum | `pre[r+1] - pre[l]` |
+| 304 | Range Sum Query 2D — Immutable | 2D prefix (§2) | Medium | (row, col) → running sum | 4-corner inclusion-exclusion |
+| 560 | Subarray Sum Equals K | prefix + hash map (§3) | Medium | running sum value → frequency | `count[cur - k]` |
+| 974 | Subarray Sums Divisible by K | prefix mod k (§4) | Medium | running sum **mod k** → frequency | `count[cur % k]` |
+| 1109 | Corporate Flight Bookings | difference array (§5) | Medium | index (inverted) → deltas | one prefix-sum sweep at the end |
+| 1310 | XOR Queries of a Subarray | prefix XOR (§7) | Medium | index → running XOR | `pre[r+1] ^ pre[l]` |
+| 238 | Product of Array Except Self | prefix + suffix (§8) | Medium | index, both directions | `left[i] * right[i]` |
+| 327 | Count of Range Sum | prefix + ordered set (§10) | Hard | running sum value, order-queried | count prefixes in `[cur-hi, cur-lo]` |
+
+Each section below now carries a **Walkthrough — LC NNN** with the full problem statement, a pattern-focused solution, an executed trace, and an insight box.
+
+---
+
 ## Table of Contents
 
 1. [Basic 1D Prefix Sum](#1-basic-1d-prefix-sum)
@@ -120,6 +207,47 @@ def build_prefix_v2(a):
 2. **Maximum subarray sum** — Kadane's is better, but `max(pre[j] - pre[i])` for `j > i` also works
 3. **Equilibrium index** — Find index where left sum = right sum
 
+### Walkthrough — LC 303: Range Sum Query — Immutable
+
+> **Statement.** Given an integer array `nums`, handle many queries of the form `sumRange(left, right)` = sum of `nums[left..right]` inclusive. `sumRange` may be called up to 10⁴ times. Implement a class `NumArray(nums)` with method `sumRange(left, right)`.
+
+**This template solves: LC 303, 1480 (Running Sum), 724 (Pivot Index).**
+
+The signal is "**many queries, array never changes**" — precompute in the constructor so each query is O(1). Recomputing the range per call would be O(N) each → O(N·Q) total, too slow.
+
+```python
+class NumArray:
+    def __init__(self, nums):
+        # pre[i] = sum of first i elements; pre[0] = 0 (empty prefix)
+        self.pre = [0]
+        for x in nums:
+            self.pre.append(self.pre[-1] + x)
+
+    def sumRange(self, left, right):
+        # sum(left..right) = pre[right+1] - pre[left]
+        return self.pre[right + 1] - self.pre[left]
+```
+
+**Executed trace** on `nums = [-2, 0, 3, -5, 2, -1]`:
+
+```
+nums:   -2   0   3  -5   2  -1
+pre:  [0, -2, -2, 1, -4, -2, -3]
+       ^   ^   ^  ^   ^   ^   ^
+       |   |   |  |   |   |   sum of all 6 = -3
+       empty prefix = 0
+
+sumRange(0,2) = pre[3] - pre[0] = 1  - 0  = 1   ✓  (-2+0+3)
+sumRange(2,5) = pre[6] - pre[2] = -3 - (-2) = -1 ✓  (3-5+2-1)
+sumRange(0,5) = pre[6] - pre[0] = -3 - 0  = -3  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The constructor pays O(N) once; every query is a single subtraction.** This is the entire prefix-sum bargain — trade one linear pass for constant-time queries forever after.
+- **`pre` has length `n+1`, not `n`.** The leading `pre[0] = 0` is what lets `sumRange(0, r)` use the uniform formula `pre[r+1] - pre[0]` with no special case for `left == 0`. Off-by-one bugs here are the #1 prefix-sum mistake.
+- **Negatives are fine.** Sum is invertible regardless of sign, so this exact code works on `[-2, 0, 3, ...]`. (Contrast §10, where binary search on prefixes needs *non-negative* values to keep the prefix array sorted.)
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 2. 2D Prefix Sum
@@ -211,6 +339,60 @@ def rect_sum(pre, r1, c1, r2, c2):
 1. **Forest Queries (CSES)** — Count trees in sub-rectangle
 2. **Maximum sum sub-rectangle** — Combine with Kadane's (O(N³) for N×N)
 3. **Counting 1s in binary matrix** — Direct application
+
+### Walkthrough — LC 304: Range Sum Query 2D — Immutable
+
+> **Statement.** Given a 2D matrix, handle many queries `sumRegion(row1, col1, row2, col2)` = sum of all cells in the rectangle with top-left `(row1, col1)` and bottom-right `(row2, col2)` inclusive. Matrix never changes. Implement `NumMatrix(matrix)` and `sumRegion(...)`.
+
+**This template solves: LC 304, 1314 (Matrix Block Sum), 221 (Maximal Square — as a helper).**
+
+Same bargain as 303, one dimension higher. Build a `(R+1)×(C+1)` prefix grid where `pre[i][j]` = sum of everything above-and-left of `(i,j)`. Each query is **four array lookups** via inclusion-exclusion.
+
+```python
+class NumMatrix:
+    def __init__(self, matrix):
+        R, C = len(matrix), len(matrix[0])
+        self.pre = [[0] * (C + 1) for _ in range(R + 1)]
+        for i in range(R):
+            for j in range(C):
+                self.pre[i+1][j+1] = (matrix[i][j]
+                                      + self.pre[i][j+1]     # region above
+                                      + self.pre[i+1][j]     # region left
+                                      - self.pre[i][j])      # overlap added twice
+
+    def sumRegion(self, r1, c1, r2, c2):
+        p = self.pre
+        return (p[r2+1][c2+1]   # whole rectangle from origin to (r2,c2)
+                - p[r1][c2+1]   # strip above the query
+                - p[r2+1][c1]   # strip left of the query
+                + p[r1][c1])    # top-left corner subtracted twice, add back
+```
+
+**Executed trace** on the standard LC 304 matrix, `sumRegion(2,1,4,3)`:
+
+```
+matrix:                     pre (1-indexed, row 0 / col 0 all zero):
+ 3 0 1 4 2                    0  0  0  0  0  0
+ 5 6 3 2 1                    0  3  3  4  8 10
+ 1 2 0 1 5                    0  8 14 18 24 27
+ 4 1 0 1 7                    0  9 17 21 28 36
+ 1 0 3 0 5                    0 13 22 26 34 49
+                             0 14 23 30 38 58
+
+sumRegion(2,1,4,3):
+  = pre[r2+1][c2+1] - pre[r1][c2+1] - pre[r2+1][c1] + pre[r1][c1]
+  = pre[5][4]       - pre[2][4]     - pre[5][1]     + pre[2][1]
+  = 38              - 24            - 14            + 8
+  = 8   ✓   (cells rows 2-4, cols 1-3: 2+0+1 + 1+0+1 + 0+3+0 = 8)
+```
+
+(Executed: `sumRegion(2,1,4,3)=8`, `sumRegion(1,1,2,2)=11`, `sumRegion(1,2,2,4)=12` — all correct.)
+
+`★ Insight ─────────────────────────────────────`
+- **The `-pre[i][j]` in the build and the `+pre[r1][c1]` in the query are the same correction.** Building sums the "above" and "left" rectangles, which double-count their shared top-left block; the query subtracts two overlapping strips, which double-remove their shared corner. Both fix a double-count — draw the rectangles and the signs are forced.
+- **Memorize the query as `bottom-right − top − left + corner`.** The sign pattern `+ − − +` is the 2D analogue of `pre[r+1] − pre[l]`; in 3D it becomes 8 terms with alternating signs (the general N-D inclusion-exclusion).
+- **Row-0 and col-0 of `pre` stay all-zero** for the same reason `pre[0]=0` in 1D — it kills the edge cases where the query touches the top row or left column.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -331,6 +513,47 @@ def _count_at_most(a, target):
 
 The hash map transforms the "check all pairs (i, j)" approach from O(N²) to O(N). The key insight: **you don't need to enumerate pairs — you just need to count how many earlier prefixes had the right value.**
 
+### Walkthrough — LC 560: Subarray Sum Equals K
+
+> **Statement.** Given an integer array `nums` and an integer `k`, return the total **number** of contiguous subarrays whose sum equals `k`. Values may be negative, so a sliding window does NOT work.
+
+**This template solves: LC 560, 974 (divisible-by-k twin), 523 (continuous subarray sum), 1248 (nice subarrays — count odds as +1).**
+
+Why not sliding window? Because negatives break monotonicity — growing the window can *decrease* the sum, so you can't decide when to shrink. The prefix + hash map trick sidesteps ordering entirely: it counts, for each right endpoint, how many left endpoints complete a range summing to `k`.
+
+```python
+from collections import defaultdict
+
+def subarraySum(nums, k):
+    count = defaultdict(int)
+    count[0] = 1                 # empty prefix — enables subarrays starting at index 0
+    cur = 0
+    res = 0
+    for x in nums:
+        cur += x
+        res += count[cur - k]    # earlier prefixes p with cur - p == k
+        count[cur] += 1
+    return res
+```
+
+**Executed trace** on `nums = [1, 1, 1]`, `k = 2`:
+
+```
+count = {0:1}, cur=0, res=0
+
+x=1: cur=1. need cur-k = 1-2 = -1 → count[-1]=0. res=0. count={0:1, 1:1}
+x=1: cur=2. need 2-2 = 0 → count[0]=1.  res=1. count={0:1, 1:1, 2:1}
+x=1: cur=3. need 3-2 = 1 → count[1]=1.  res=2. count={0:1, 1:1, 2:1, 3:1}
+
+Answer = 2  ✓   (subarrays [1,1] at indices 0-1 and 1-2)
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The hash-map version never materializes the prefix array** — it streams one running sum and a frequency map. This is the mental unlock: "count subarrays with sum = k" is really "for each prefix, how many earlier prefixes sit exactly `k` below me."
+- **`res += count[cur-k]` must come BEFORE `count[cur] += 1`.** Recording the current prefix first would let a zero-length subarray (or `k=0` self-match) sneak in. Query the past, then add yourself to it.
+- **This is the O(N) escape from the O(N²) pair scan** — and the same skeleton reappears in §4 (swap `cur` for `cur % k`) and §7 (swap `+` for `^`). Learn it once, reuse it three times.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 4. Prefix Sum + Modular Arithmetic
@@ -397,6 +620,48 @@ Combine the modular prefix sum with a sliding window or deque to add the length 
 1. **Subarray Divisibility (CSES)** — Direct application
 2. **LeetCode 974: Subarray Sums Divisible by K** — Same pattern
 3. **LeetCode 523: Continuous Subarray Sum** — Divisible by k with length ≥ 2
+
+### Walkthrough — LC 974: Subarray Sums Divisible by K
+
+> **Statement.** Given an integer array `nums` and an integer `k`, return the number of contiguous subarrays whose sum is **divisible by k**. Values may be negative.
+
+**This template solves: LC 974, 523 (needs length ≥ 2), and the CSES "Subarray Divisibility".**
+
+The reframe: `sum(l,r) % k == 0` ⟺ `pre[r+1] % k == pre[l] % k`. So a subarray is divisible iff its two endpoint-prefixes share the **same remainder**. Count subarrays = count pairs of equal remainders. The hash map from §3 shrinks to a fixed array of size `k`.
+
+```python
+def subarraysDivByK(nums, k):
+    count = [0] * k
+    count[0] = 1                 # empty prefix has remainder 0
+    cur = 0
+    res = 0
+    for x in nums:
+        cur = (cur + x) % k      # Python's % is always non-negative for positive k
+        res += count[cur]        # earlier prefixes with the SAME remainder
+        count[cur] += 1
+    return res
+```
+
+**Executed trace** on `nums = [4, 5, 0, -2, -3, 1]`, `k = 5`:
+
+```
+count[0..4] = [1,0,0,0,0], cur=0, res=0
+
+x= 4: cur=(0+4)%5=4. count[4]=0 → res=0. count=[1,0,0,0,1]
+x= 5: cur=(4+5)%5=4. count[4]=1 → res=1. count=[1,0,0,0,2]
+x= 0: cur=(4+0)%5=4. count[4]=2 → res=3. count=[1,0,0,0,3]
+x=-2: cur=(4-2)%5=2. count[2]=0 → res=3. count=[1,0,1,0,3]
+x=-3: cur=(2-3)%5=4. count[4]=3 → res=6. count=[1,0,1,0,4]   (Python: -1%5 = 4)
+x= 1: cur=(4+1)%5=0. count[0]=1 → res=7. count=[2,0,1,0,4]
+
+Answer = 7  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **"Divisible" turns sum-equality into remainder-equality.** Instead of asking "which earlier prefix equals `cur - k`" (§3), you ask "which earlier prefixes share my remainder" — a strictly stronger grouping that collapses the hash map into a length-`k` array.
+- **The negative-modulo trap.** Python guarantees `(-1) % 5 == 4`, so the code above is safe. In C++/Java `-1 % 5 == -1`, which would index out of bounds or miscount — there you must write `((cur % k) + k) % k`. The trace's `x=-3` step (`-1 % 5 → 4`) is exactly where a C++ port silently breaks.
+- **LC 523 is the same code with one twist:** it wants a subarray of length ≥ 2, so you store the *first index* each remainder appears (like §3's longest-subarray variant) and check the gap, rather than counting all pairs.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -500,6 +765,56 @@ result = reconstruct(diff)   # [2, 5, 4, 2, 2, -1]
 1. **Range Update Queries (CSES)** — Direct application
 2. **Corporate Flight Bookings (LC 1109)** — Range add, then prefix sum
 3. **Car Pooling (LC 1094)** — Difference array on timeline
+
+### Walkthrough — LC 1109: Corporate Flight Bookings
+
+> **Statement.** There are `n` flights labeled `1..n`. You're given `bookings` where `bookings[i] = [first, last, seats]` means `seats` seats were booked on **every** flight from `first` to `last` inclusive. Return an array `answer` of length `n` where `answer[i]` is the total seats booked on flight `i+1`.
+
+**This template solves: LC 1109, 1094 (Car Pooling), 370 (Range Addition), and CSES "Range Update Queries".**
+
+The signal is "**apply many range-adds, then read the whole array once**." Applying each booking directly is O(range) → O(n·bookings). The difference array makes each booking O(1): mark a `+seats` where the range starts and a `−seats` just past where it ends, then one prefix-sum sweep reconstructs every flight's total.
+
+```python
+def corpFlightBookings(bookings, n):
+    diff = [0] * (n + 2)         # 1-indexed flights; +2 guards the r+1 write
+    for first, last, seats in bookings:
+        diff[first] += seats     # start adding here
+        diff[last + 1] -= seats  # stop adding after `last`
+    res = [0] * n
+    cur = 0
+    for i in range(1, n + 1):    # prefix sum of diff = actual per-flight totals
+        cur += diff[i]
+        res[i - 1] = cur
+    return res
+```
+
+**Executed trace** on `bookings = [[1,2,10],[2,3,20],[2,5,25]]`, `n = 5`:
+
+```
+Apply deltas (index 1..6):
+  [1,2,10]: diff[1]+=10, diff[3]-=10
+  [2,3,20]: diff[2]+=20, diff[4]-=20
+  [2,5,25]: diff[2]+=25, diff[6]-=25
+
+diff (idx 1..6):  10   45  -10  -20    0  -25
+                   ^    ^
+                flight1  flight2 got +20+25=45
+
+Prefix-sum sweep:
+  flight1: cur=0+10        = 10
+  flight2: cur=10+45       = 55
+  flight3: cur=55-10       = 45
+  flight4: cur=45-20       = 25
+  flight5: cur=25+0        = 25
+
+answer = [10, 55, 45, 25, 25]  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Difference array is prefix sum run backwards.** Prefix sum turns point values into range sums; the difference array turns range *updates* into two point writes, and a final prefix-sum sweep turns them back into point values. They are inverse operations — that's why the reconstruction is literally a prefix sum.
+- **`diff[last+1] -= seats` is the "stop" marker.** The `+seats` at `first` leaks rightward forever under prefix sum; the `−seats` at `last+1` cancels it exactly past the range. Sizing the array `n+2` guarantees that write is in-bounds even when `last == n`.
+- **O(1) per update is the whole win.** B bookings cost O(B) to record and O(n) to reconstruct — O(B+n) total instead of O(B·n). Whenever you see "add X to a range" repeated many times with a single final read, reach for this.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -657,6 +972,44 @@ XOR is its own inverse! `x ^ k = y ⟺ x = y ^ k`.
 2. **LeetCode 1442: Subarray XOR Triplets** — Count (i,j,k) with XOR splits
 3. **Maximum XOR subarray** — Combine with trie
 
+### Walkthrough — LC 1310: XOR Queries of a Subarray
+
+> **Statement.** Given `arr` and a list of `queries` where `queries[i] = [l, r]`, return an array whose `i`-th element is `arr[l] ^ arr[l+1] ^ ... ^ arr[r]` (XOR of the subarray). Many queries, array static.
+
+**This template solves: LC 1310, the CSES "Range Xor Queries", and it's the building block for LC 1442 (count XOR triplets).**
+
+XOR is invertible — it's *its own* inverse (`x ^ x = 0`). So the entire §1 machinery transplants directly: build a prefix-XOR array, and every range is the XOR of two endpoints. The shared prefix `arr[0]^...^arr[l-1]` cancels itself out.
+
+```python
+def xorQueries(arr, queries):
+    pre = [0]                    # pre[i] = XOR of first i elements
+    for x in arr:
+        pre.append(pre[-1] ^ x)
+    return [pre[r + 1] ^ pre[l] for l, r in queries]
+```
+
+**Executed trace** on `arr = [1, 3, 4, 8]`, `queries = [[0,1],[1,2],[0,3],[3,3]]`:
+
+```
+arr:        1    3    4    8
+pre:  [0,   1,   2,   6,  14]
+       ^    ^    ^    ^    ^
+       0  0^1  1^3  2^4  6^8
+
+[0,1]: pre[2] ^ pre[0] = 2  ^ 0 = 2    (1^3       = 2)  ✓
+[1,2]: pre[3] ^ pre[1] = 6  ^ 1 = 7    (3^4       = 7)  ✓
+[0,3]: pre[4] ^ pre[0] = 14 ^ 0 = 14   (1^3^4^8   = 14) ✓
+[3,3]: pre[4] ^ pre[3] = 14 ^ 6 = 8    (8         = 8)  ✓
+
+answer = [2, 7, 14, 8]  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Prefix sum and prefix XOR are the same template with the operator swapped.** Sum's inverse is subtraction (`pre[r+1] - pre[l]`); XOR's inverse is XOR itself (`pre[r+1] ^ pre[l]`). Any *associative, invertible* operation with an identity element (0 for both +and ^) drops straight into this shape.
+- **Why the cancellation works:** `pre[r+1] ^ pre[l]` = `(a₀^…^a_r) ^ (a₀^…^a_{l-1})`. Every term with index `< l` appears twice and vanishes (`x^x=0`), leaving exactly `a_l^…^a_r`. Subtraction cancels the same prefix for sums.
+- **"Count subarrays with XOR = k" reuses §3 verbatim** — swap `count[cur-k]` for `count[cur ^ k]`, because `pre[j] ^ pre[i] = k ⟺ pre[i] = pre[j] ^ k`. The hash-map counting trick is operator-agnostic.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 8. Prefix & Suffix Products
@@ -756,6 +1109,56 @@ def gcd_except_self(a):
             result[i] = gcd(left, right)
     return result
 ```
+
+### Walkthrough — LC 238: Product of Array Except Self
+
+> **Statement.** Given an integer array `nums`, return `answer` where `answer[i]` = product of all elements **except** `nums[i]`. You must NOT use division, and it should run in O(N). (Follow-up: O(1) extra space beyond the output.)
+
+**This template solves: LC 238, 1013 (partition into equal-sum — prefix/suffix balance), and the general "aggregate of all-but-one" family (sum/min/gcd except self).**
+
+Division would be trivial (`total / nums[i]`) but breaks on a zero. The prefix/suffix idea: `answer[i]` = (product of everything left of `i`) × (product of everything right of `i`). Compute the left products in a forward pass, then fold the right products in a backward pass — reusing the output array so no extra prefix/suffix arrays are needed.
+
+```python
+def productExceptSelf(nums):
+    n = len(nums)
+    res = [1] * n
+
+    left = 1                      # product of nums[0..i-1]
+    for i in range(n):
+        res[i] = left             # store prefix product BEFORE multiplying in nums[i]
+        left *= nums[i]
+
+    right = 1                     # product of nums[i+1..n-1]
+    for i in range(n - 1, -1, -1):
+        res[i] *= right           # fold in the suffix product
+        right *= nums[i]
+
+    return res
+```
+
+**Executed trace** on `nums = [1, 2, 3, 4]`:
+
+```
+Left pass (res[i] = product of everything before i):
+  i=0: res[0]=1;          left=1*1=1
+  i=1: res[1]=1;          left=1*2=2
+  i=2: res[2]=2;          left=2*3=6
+  i=3: res[3]=6;          left=6*4=24
+  res = [1, 1, 2, 6]
+
+Right pass (multiply in product of everything after i):
+  i=3: res[3]=6*1=6;      right=1*4=4
+  i=2: res[2]=2*4=8;      right=4*3=12
+  i=1: res[1]=1*12=12;    right=12*2=24
+  i=0: res[0]=1*24=24;    right=24*1=24
+  res = [24, 12, 8, 6]  ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Prefix alone can't answer "except self" — you need the mirror.** For a range you difference *one* prefix array; for "everything but position i" you multiply a prefix (left) by a suffix (right). This left×right structure generalizes: sum-except-self = `prefixSum[i-1] + suffixSum[i+1]`, min-except-self = `min(prefixMin, suffixMin)`.
+- **The O(1)-space trick is ordering.** Store left-products into the output first, then walk backward accumulating right-products *in a scalar* and multiplying in place. No second array — the output doubles as scratch.
+- **Handles zeros for free.** Executed on `[-1,1,0,-3,3]` it returns `[0,0,9,0,0]` — the only nonzero answer is at the single zero's position. Division-based code would divide by zero; prefix/suffix never divides, so zeros are just ordinary factors. That immunity is the whole reason the problem forbids division.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1020,6 +1423,50 @@ def count_subarrays_sum_in_range_general(a, lo, hi):
 | Binary search on sorted prefix | O(N log N) | Non-negative arrays |
 | SortedList | O(N log N) | Any array |
 | BIT + coordinate compression | O(N log N) | Any array |
+
+### Walkthrough — LC 327: Count of Range Sum
+
+> **Statement.** Given an integer array `nums` and two integers `lower` and `upper`, return the number of range sums `sum(i, j)` that lie in `[lower, upper]` inclusive (`i ≤ j`). Values may be negative. `N` up to ~10⁵, so O(N²) is too slow.
+
+**This template solves: LC 327, 315 (count smaller after self), 493 (reverse pairs) — the "count prefixes in a value range" family.**
+
+`sum(i,j) = pre[j+1] - pre[i]` lies in `[lower, upper]` ⟺ `pre[i] ∈ [pre[j+1] - upper, pre[j+1] - lower]`. So as you build prefixes left to right, for each new prefix you count how many **earlier** prefixes fall in that window. With negatives the prefix array isn't sorted, so a plain binary search fails — keep the seen prefixes in an **order-statistic structure** (`SortedList`) that supports range-count in O(log N).
+
+```python
+from sortedcontainers import SortedList
+
+def countRangeSum(nums, lower, upper):
+    sl = SortedList([0])          # prefix sums seen so far; seed with empty prefix 0
+    cur = 0
+    cnt = 0
+    for x in nums:
+        cur += x
+        # earlier prefixes p with  cur - upper <= p <= cur - lower
+        cnt += sl.bisect_right(cur - lower) - sl.bisect_left(cur - upper)
+        sl.add(cur)
+    return cnt
+```
+
+**Executed trace** on `nums = [-2, 5, -1]`, `lower = -2`, `upper = 2`:
+
+```
+sl = [0], cur=0, cnt=0
+
+x=-2: cur=-2. window p in [cur-upper, cur-lower] = [-4, 0].
+      sl=[0]: prefixes in [-4,0] → just {0}. cnt += 1 → cnt=1.  add -2 → sl=[-2,0]
+x= 5: cur= 3. window [3-2, 3+2] = [1, 5].
+      sl=[-2,0]: none in [1,5]. cnt += 0 → cnt=1.  add 3 → sl=[-2,0,3]
+x=-1: cur= 2. window [0, 4].
+      sl=[-2,0,3]: {0, 3} in [0,4]. cnt += 2 → cnt=3.  add 2
+
+Answer = 3  ✓   (ranges [0,0]=-2, [2,2]=-1, [0,2]=2 all in [-2,2])
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Negatives are the whole reason this is Hard.** With non-negative values the prefix array is sorted and plain `bisect` on a list suffices (§10's earlier `count_subarrays_sum_in_range`). Negatives destroy the sorted order, forcing a structure that stays sorted under insertion — `SortedList`, a BIT with coordinate compression, or merge-sort-with-counting.
+- **The query is still the §3 idea, just made ordered.** §3 asks "how many earlier prefixes *equal* `cur-k`" (a hash map lookup). Here we ask "how many earlier prefixes fall in a *range*" — the same "look back at prefixes" move, upgraded from point-equality to range-count, so the data structure upgrades from hash map to ordered multiset.
+- **Seed with `0` for the same reason as `count[0]=1`.** The empty prefix must be present before the loop so ranges starting at index 0 are counted (the trace's first step relies on `0` already being in `sl`).
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1385,3 +1832,70 @@ Start here
 ---
 
 **The prefix sum is the Swiss Army knife of competitive programming.** Almost every "range query" or "subarray counting" problem has a prefix sum hiding inside it. When you see "subarray," "range," "sum," "count," or "divisible" — think prefix sum first.
+
+---
+
+## The Prefix Sum Toolbox at a Glance
+
+```
+"Aggregate over a contiguous range?"
+   │
+   ├── QUERY a static array many times
+   │     ├── 1D sum/xor        → prefix array, pre[r+1] ⊖ pre[l]     (§1 LC 303, §7 LC 1310)
+   │     └── 2D submatrix       → 2D prefix, 4-corner + − − +          (§2 LC 304)
+   │
+   ├── COUNT subarrays hitting a target
+   │     ├── sum == k           → hash map on running sum, count[cur-k]  (§3 LC 560)
+   │     ├── sum % k == 0       → array on remainder, count[cur%k]        (§4 LC 974)
+   │     ├── xor == k           → hash map, count[cur^k]                  (§7)
+   │     └── sum in [lo,hi]      → ordered set / BIT on prefixes          (§10 LC 327)
+   │
+   ├── UPDATE ranges, read once
+   │     ├── 1D range-add        → difference array, d[l]+=v, d[r+1]-=v   (§5 LC 1109)
+   │     └── 2D rectangle-add     → 2D difference, 4 corner deltas          (§6)
+   │
+   ├── AGGREGATE of all-but-one
+   │     └── product/min/gcd     → prefix × suffix (mirror pass)            (§8 LC 238)
+   │
+   └── Higher dimensions / bitmask subsets
+         └── sum over submasks   → SOS DP, prefix per bit                  (§11)
+
+THREE MOVES, EVERY TIME:
+  1. Pick the AXIS you accumulate over (index / mod value / running sum value / bit).
+  2. Pick the COMBINE op and confirm it's INVERTIBLE (+, ^, count — yes; max/min — no).
+  3. Reduce the range to a DIFFERENCE of two prefixes (or a count of earlier prefixes).
+```
+
+## LeetCode Practice Ladder (the 8 walkthroughs)
+
+```
+Start
+  │
+  ▼
+303  (Easy)   ── 1D prefix: build once, query O(1)                       §1
+  │
+  ▼
+1310 (Medium) ── same shape, operator swapped to XOR                     §7
+  │
+  ▼
+560  (Medium) ── prefix + hash map: count subarrays sum = k              §3
+  │
+  ▼
+974  (Medium) ── same map, keyed on remainder (divisible-by-k)           §4
+  │
+  ▼
+238  (Medium) ── prefix × suffix: aggregate of all-but-one               §8
+  │
+  ▼
+1109 (Medium) ── difference array: many range-adds, one read             §5
+  │
+  ▼
+304  (Medium) ── 2D prefix: inclusion-exclusion over a grid              §2
+  │
+  ▼
+327  (Hard)   ── prefix + ordered set: count range sums with negatives   §10
+```
+
+---
+
+*Pattern mastered — stop rescanning the range and start differencing its endpoints. Choose the axis, confirm the operation can be undone, and every range query collapses to arithmetic on two precomputed values.*
