@@ -37,6 +37,23 @@ Now `dp[mask]` is "the best answer for exactly the set of tasks in `mask`". Ther
 
 ---
 
+## Quick Navigation: I need to...
+
+| My problem says... | It's this flavor | Go to |
+|--------------------|------------------|-------|
+| "Split all items into groups, **minimize group count**" | `dp[mask]`, peel one *fitting* subset | [1986 Work Sessions](#3-problem-1986--minimum-number-of-work-sessions) |
+| "Assign items to k people, **minimize the max** anyone gets" | `dp[j][mask]` OR binary-search + 1986 | [2305 Cookies](#4-problem-2305--fair-distribution-of-cookies) · [1723 Jobs](#6-problem-1723--find-minimum-time-to-complete-all-jobs) |
+| "Can I split into **k equal-sum** subsets?" | `dp[mask]`, subset filter = `== target` | [698 Equal Partition](#5-problem-698--partition-to-k-equal-sum-subsets) |
+| "Merge n things pairwise, **custom cost per merge**" | `dp[mask]` split into two halves (`sub < comp`) | [3801 Merge Lists](#7-problem-3801--minimum-cost-to-merge-sorted-lists) |
+| "**Order matters** / pairwise overlap / arrange in a line" | TSP: add `last` dim → `dp[mask][last]` | [943 Superstring](#8-problem-943--find-the-shortest-superstring-tsp) |
+| "Items have **prerequisites**, take ≤ k per round" | `dp[mask]`, filter available by prereqs | [1494 Parallel Courses](#9-problem-1494--parallel-courses-ii-dependencies) |
+| "How do I even **enumerate submasks**?" | The `(sub-1) & mask` loop | [Core Technique](#1-core-technique-subset-enumeration) |
+| "Which one is this? Give me a decision tree" | Trigger + router | [How to Identify](#11-how-to-identify-this-pattern) |
+
+> **Sibling guide:** For the raw bit operations (popcount, lowest-bit, SOS DP, general subset enumeration beyond partition/TSP) see the broader [Bitmask Techniques](/pattern/bitmask) guide. This page is the **partition + TSP specialist**; that one is the generalist toolbox.
+
+---
+
 ## Pattern Overview
 
 All problems in this family share:
@@ -230,6 +247,12 @@ class Solution:
 
 **Complexity**: O(3^n) time, O(2^n) space
 
+`★ Insight ─────────────────────────────────────`
+- "Peel off one fitting subset per session" is the whole engine: `dp[mask] = dp[mask ^ sub] + 1` for the best fitting `sub`. Each session is +1, so you minimize a *count*.
+- `dp[0] = 0` is the floor — the empty set needs zero sessions. Every other cell bottoms out here; forget it and all cells stay `INF`.
+- The `while sub > 0` submask loop skips `sub = 0`, which is exactly right: you never "peel off nothing." That omission is a feature, not a bug.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 4. Problem 2305 — Fair Distribution of Cookies
@@ -319,6 +342,12 @@ class Solution:
 
 **Complexity**: O(k · 3^n) time, O(k · 2^n) space
 
+`★ Insight ─────────────────────────────────────`
+- "Minimize the maximum" is the tell for **two interchangeable encodings**: binary-search the answer then reuse a *feasibility* check (Approach A), or carry the max directly in the DP value (Approach B). Same problem, two shapes.
+- Approach B's transition is `max(dp[j-1][remaining], total[sub])` — not `+`. When the objective is a max-over-groups, the combine op is `max`, and you minimize *that*. Swapping the aggregate op is how one skeleton covers count / sum / max objectives.
+- The `j` (child/worker) dimension exists only because each group is a *distinct* recipient. In 698/1986 the groups are interchangeable, so no `j` is needed.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 5. Problem 698 — Partition to K Equal Sum Subsets
@@ -368,6 +397,12 @@ class Solution:
 ```
 
 **Complexity**: O(3^n) time, O(2^n) space
+
+`★ Insight ─────────────────────────────────────`
+- 698 is 1986 with **one line changed**: `fits[sub] = total[sub] <= limit` becomes `valid[sub] = total[sub] == target`. The DP engine is byte-for-byte identical; only the "is this subset good?" predicate swaps `<=` for `==`.
+- The two prune lines (`total_sum % k != 0` and `max(nums) > target`) aren't the algorithm — they're cheap early exits that kill impossible inputs before the O(3^n) fill. Correct without them, just slower.
+- Return is `dp[full] == k`, not `dp[full]`: here `dp[mask]` counts how many *exact-target* buckets fill `mask`, so a k-way equal split means the full set fills in exactly k buckets.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -564,6 +599,12 @@ class Solution:
 
 XOR toggles the bit off. Since we know `last` is in the mask (we just visited it), the bit is guaranteed to be 1, so XOR turns it to 0 — removing it.
 
+`★ Insight ─────────────────────────────────────`
+- This is the pattern's **fork line**. Partition problems (1986/698/2305) throw away order inside a group, so `dp[mask]` suffices. The moment "which item comes *after* which" changes the cost, you must remember the endpoint — add a `last` dimension: `dp[mask][last]`.
+- That extra dimension is why TSP is O(n²·2^n), not O(3^n): for each `(mask, last)` you try every next word `j`, an n×n×2^n loop. You pay an `n` for order.
+- The `parent[mask][last]` table is only for **reconstruction** — the optimal *value* never needs it. Separate "what's the best cost" (dp) from "what produced it" (parent); many TSP-style problems ask only for the cost and can drop `parent` entirely.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 9. Problem 1494 — Parallel Courses II (Dependencies)
@@ -625,6 +666,12 @@ class Solution:
 ```
 
 **Complexity**: O(3^n · n) time, O(2^n) space
+
+`★ Insight ─────────────────────────────────────`
+- Dependencies just add a **gate** on the submask loop: compute `available` (courses whose prereqs `⊆ mask`), then only enumerate submasks *of `available`*, not of everything. The prereq test `(prereq[i] & mask) == prereq[i]` is the `is_subset` bit-idiom.
+- Two constraints stack here: the prereq gate (which courses *can* be taken) and `popcount(sub) <= k` (how many at once). Bitmask DP shines when several such filters compose — each is one cheap bitwise test inside the same loop.
+- This "push forward from `mask`" fill (`dp[mask | sub] = dp[mask] + 1`) is the mirror of the "peel back into `mask`" fill in 1986. Same recurrence, opposite direction — pick whichever makes the transition legal to express.
+`─────────────────────────────────────────────────`
 
 ---
 
