@@ -32,6 +32,63 @@ Trees are everywhere in competitive programming. This guide covers **every major
 
 ---
 
+## From-Scratch Idea: What Makes Trees Special
+
+A tree is a graph with no cycles — `N` nodes, `N-1` edges, exactly one path between any two nodes. That "exactly one path" is the entire reason tree algorithms are simpler and faster than general-graph ones: **there is nothing to revisit**. Once a DFS moves from a node into a child, it can never come back around a cycle, so a single `parent` guard replaces the whole `visited[]` set you'd need on a graph.
+
+Almost every tree technique is a variation on one move: **post-order DFS**, where a node computes its answer *after* its children have computed theirs.
+
+```
+Compute leaves first, combine upward:
+
+        answer(node) = f( answer(child₁), answer(child₂), ... )
+                              ▲               ▲
+                        already known   already known
+                        (children done before parent)
+```
+
+That single recurrence — "a node's value is a function of its children's values" — is subtree DP, diameter, rerooting, hashing, and small-to-large all at once. What differs is *what* `f` combines and *what* each node returns.
+
+`★ Insight ─────────────────────────────────────`
+- **The `parent` argument IS the visited set.** On an undirected adjacency list, `for child in adj[node]: if child == parent: continue` is the only thing stopping infinite recursion. Forget it and the DFS bounces `node → child → node → child` forever. LeetCode binary trees dodge this entirely because `left`/`right` pointers already point *away* from the parent.
+- **Post-order = bottom-up = "children before parent."** Any problem phrased as "for each subtree, compute X" is post-order. Any problem phrased as "for each node, using info from above" (rerooting, depth) has a **pre-order (top-down)** phase too. Knowing which direction the information flows tells you where to put your work — before the child recursion or after it.
+`─────────────────────────────────────────────────`
+
+### LeetCode ↔ CP translation
+
+This guide uses CP conventions (adjacency lists, 0-indexed nodes, a `parent` guard). Most LeetCode tree problems hand you a `TreeNode` with `.left` / `.right` instead. The pattern is identical — only the plumbing differs:
+
+| CP style (this guide) | LeetCode `TreeNode` style |
+|-----------------------|---------------------------|
+| `for child in adj[node]: if child==parent: continue` | `for child in (node.left, node.right): if child:` |
+| pass `parent` to avoid looping back | pointers already face away — no `parent` needed |
+| node = integer index into arrays | node = object; use a dict or attribute for memo |
+| post-order aggregation returns a number/tuple | same — the recursion returns per-subtree info |
+
+Every walkthrough below is written in the LeetCode `TreeNode` form (that's what you'll practice on), then tied back to the CP technique it instantiates.
+
+---
+
+## Master LeetCode Comparison Table
+
+One numbered problem per core technique — solve these in order and you have touched every beginner→intermediate tree pattern. Each is expanded into a full walkthrough later in its section.
+
+| LC # | Problem | Technique (§) | Difficulty | What each DFS returns | One-line transition |
+|------|---------|---------------|-----------|-----------------------|---------------------|
+| **104** | Maximum Depth of Binary Tree | Traversal / height (§1) | Easy | height of subtree | `1 + max(left, right)` |
+| **543** | Diameter of Binary Tree | Path through node (§6, §9) | Easy | height; side-effect tracks best | `best = max(best, Lh + Rh)` |
+| **337** | House Robber III | Select/Skip Tree DP (§9) | Medium | pair `(rob, skip)` | `rob = val + skipL + skipR` |
+| **236** | Lowest Common Ancestor | LCA (§4) | Medium | which target(s) found below | both sides non-null → this node is LCA |
+| **834** | Sum of Distances in Tree | Rerooting DP (§5) | Hard | subtree size + dist sum, then reroot | `ans[c] = ans[node] − size[c] + (n − size[c])` |
+| **1519** | Nodes in Subtree with Same Label | Subtree merge / small-to-large (§8) | Medium | label-frequency map of subtree | merge child maps into parent |
+
+`★ Insight ─────────────────────────────────────`
+- Read the **"what each DFS returns"** column top to bottom — it's the whole skill. A tree problem is "solved" the moment you can name the single value each node hands its parent. Height (a number), `(rob, skip)` (a pair), a frequency map (a dict): pick the smallest object that lets the parent finish its own computation.
+- Notice **543 returns a height but *answers* a diameter**. The return value and the answer are often different things: the diameter lives in a side-effect variable while the recursion keeps returning heights so the parent can keep climbing. That split — "return what the parent needs, record the answer on the side" — is the most reused idea in tree DP.
+`─────────────────────────────────────────────────`
+
+---
+
 ## Table of Contents
 
 1. [Tree Traversals](#1-tree-traversals)
@@ -133,6 +190,42 @@ def dfs_iterative(root, adj):
                 stack.append((child, node, False))
     return order, parent
 ```
+
+#### Walkthrough — LC 104 Maximum Depth of Binary Tree
+
+**This template solves: LC 104 (Max Depth), LC 559 (Max Depth N-ary Tree), LC 111 (Min Depth), LC 110 (Balanced Binary Tree).**
+
+> Given the `root` of a binary tree, return its maximum depth — the number of nodes along the longest path from the root down to the farthest leaf.
+
+This is the "hello world" of trees, and it is pure post-order aggregation: a node's height is `1 + the taller of its two children`. A child must finish before the parent can add its `+1`, so the work happens *after* the two recursive calls.
+
+```python
+def maxDepth(root):
+    if not root:
+        return 0                                  # empty subtree has height 0
+    return 1 + max(maxDepth(root.left), maxDepth(root.right))
+```
+
+```
+tree:        3
+            / \
+           9  20
+              / \
+            15   7
+
+maxDepth(9)  = 1 + max(0,0) = 1     leaf
+maxDepth(15) = 1                    leaf
+maxDepth(7)  = 1                    leaf
+maxDepth(20) = 1 + max(1,1) = 2     children 15,7
+maxDepth(3)  = 1 + max(1,2) = 3     children 9,20   ← answer
+```
+
+The whole recursion is one line because the base case (`None → 0`) and the combine step (`1 + max(...)`) are all a height problem has. Swap `max` for `min` (and guard the one-child case) and you have LC 111 Minimum Depth; return the height *and* a "is-balanced" flag as a tuple and you have LC 110.
+
+`★ Insight ─────────────────────────────────────`
+- **`None` returning 0 is the base case that makes the recursion terminate.** Every tree DFS needs an answer for the empty subtree; here it's the identity for "height so far." Get this wrong (e.g. returning 1 for `None`) and every depth is inflated by the number of missing children — a classic off-by-one.
+- This is the **height archetype** at the root of the Practice Order ladder. Subtree *size* (`1 + sum(children)`), subtree *sum*, and node *count* are the same shape with `max` swapped for `sum`. Master this and every §9 subtree-aggregation DP is a one-symbol change.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -440,6 +533,51 @@ Return up[0][4] = 1.   LCA(3, 6) = 1  ✓
 | HLD | O(N) | O(log N) | Already using HLD |
 | Tarjan's (offline) | O(N + Q) | Amortized O(1) | All queries known upfront |
 
+#### Walkthrough — LC 236 Lowest Common Ancestor of a Binary Tree
+
+**This template solves: LC 236 (LCA Binary Tree), LC 235 (LCA of a BST — use the order property to pick a side), LC 1650 (LCA with parent pointers).**
+
+> Given a binary tree and two nodes `p` and `q` present in it, return their lowest common ancestor — the deepest node that has both `p` and `q` in its subtree.
+
+Binary Lifting (above) is the heavy machinery for *many* LCA queries on a static tree. For a **single** LCA query on a LeetCode binary tree, there's a beautifully short recursion that needs no preprocessing: search for `p` and `q`; the first node that finds one target on its **left** and the other on its **right** is the split point — the LCA.
+
+```python
+def lowestCommonAncestor(root, p, q):
+    if root is None or root is p or root is q:
+        return root                       # found a target (or dead end)
+    left  = lowestCommonAncestor(root.left,  p, q)
+    right = lowestCommonAncestor(root.right, p, q)
+    if left and right:
+        return root                       # p and q split here → this is the LCA
+    return left or right                  # both on one side → bubble that side up
+```
+
+```
+tree:          3
+             /   \
+            5     1
+           / \   / \
+          6   2 0   8
+             / \
+            7   4
+
+LCA(5, 1):  5 is in 3's left subtree, 1 in 3's right
+  dfs(3): left=dfs(5)=5 (hits root is p), right=dfs(1)=1 (hits root is q)
+  both non-null → return 3     ✓
+
+LCA(5, 4):  4 lives inside 5's own subtree
+  dfs(3): left=dfs(5) → dfs(5) hits `root is p` FIRST → returns 5 immediately
+          right=dfs(1)=None
+  left=5, right=None → return "left or right" = 5     ✓
+```
+
+The trace shows the two cases: when the targets **split** (5 and 1 sit in different subtrees of 3), the splitting node is the answer; when one target is an **ancestor** of the other (5 is above 4), the early `root is p` return makes the ancestor bubble up as the answer.
+
+`★ Insight ─────────────────────────────────────`
+- **The recursion returns "what did I find below me," and the LCA is where the two finds meet.** A node returns non-null if *either* target is in its subtree. The unique node receiving a non-null result from *both* children is the lowest ancestor of both — everything above it also sees both, but only through one child, so it correctly forwards that side instead of claiming to be the LCA.
+- **The `root is p or root is q` early return quietly handles the ancestor case.** If `p` is an ancestor of `q`, the DFS returns `p` the moment it touches it and never descends to find `q` — which is correct, because `p` *is* the LCA. That is why the problem can promise "both nodes exist" and skip the messy "what if only one is present" bookkeeping.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 5. Rerooting DP
@@ -570,6 +708,71 @@ def farthest_from_each(n, adj):
 5. answer[node] = combine(dp_down[node], dp_up[node])
 ```
 
+#### Walkthrough — LC 834 Sum of Distances in Tree
+
+**This template solves: LC 834 (Sum of Distances), LC 543/1245 (Tree Diameter via two-longest rerooting), LC 2477 (Minimum Fuel — subtree-size rerooting), and CSES "Tree Distances I/II".**
+
+> There is an undirected tree of `n` nodes. Return an array `ans` where `ans[i]` is the sum of distances from node `i` to every other node.
+
+Computing one node's answer is an easy O(n) DFS. Doing it for all `n` roots naively is O(n²). Rerooting collapses it to O(n) with the classic two-pass structure: one post-order pass to solve the root, one pre-order pass to *slide* the answer from a parent to each child.
+
+The slide is the whole trick. When you move the root from `node` to its child `c`:
+- every node **inside `c`'s subtree** gets **1 closer** → subtract `size[c]`,
+- every node **outside `c`'s subtree** gets **1 farther** → add `(n − size[c])`.
+
+```python
+def sumOfDistancesInTree(n, edges):
+    adj = [[] for _ in range(n)]
+    for a, b in edges:
+        adj[a].append(b); adj[b].append(a)
+    size = [1] * n
+    ans  = [0] * n
+
+    def dfs1(node, par):                      # post-order: solve root 0
+        for c in adj[node]:
+            if c != par:
+                dfs1(c, node)
+                size[node] += size[c]
+                ans[node]  += ans[c] + size[c]   # child's cost + 1 per subtree node
+
+    def dfs2(node, par):                       # pre-order: slide to each child
+        for c in adj[node]:
+            if c != par:
+                ans[c] = ans[node] - size[c] + (n - size[c])
+                dfs2(c, node)
+
+    dfs1(0, -1)
+    dfs2(0, -1)
+    return ans
+```
+
+```
+n = 6, edges = [[0,1],[0,2],[2,3],[2,4],[2,5]]
+
+        0
+       / \
+      1   2
+         /|\
+        3 4 5
+
+dfs1 (post-order from 0):
+  size = [6,1,4,1,1,1]
+  ans[0] = 8    (0→1 is 1; 0→2 is 1; 0→3,4,5 are 2 each = 1+1+2+2+2 = 8)
+
+dfs2 (slide 0 → each child):
+  ans[1] = ans[0] - size[1] + (6-size[1]) = 8 - 1 + 5 = 12
+  ans[2] = ans[0] - size[2] + (6-size[2]) = 8 - 4 + 2 = 6
+  then from 2 → 3,4,5:
+  ans[3] = ans[2] - 1 + 5 = 6 - 1 + 5 = 10   (same for 4, 5)
+
+result = [8, 12, 6, 10, 10, 10]   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Rerooting = "reuse the neighbor's answer instead of recomputing."** The pre-order slide `ans[c] = ans[node] − size[c] + (n − size[c])` is an O(1) edit of the parent's already-known answer. This is the same overlap-reuse idea as a sliding window, lifted onto a tree: don't rescan, adjust.
+- **The two passes carry opposite information.** `dfs1` (post-order) gathers *bottom-up* facts (subtree size, subtree cost). `dfs2` (pre-order) pushes *top-down* the correction for "everything outside my subtree." Any rerooting problem is: decide the bottom-up aggregate, then decide the O(1) formula that converts a parent's answer into a child's. If that conversion isn't O(1), rerooting won't beat the naive O(n²).
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 6. Tree Diameter and Center
@@ -629,6 +832,48 @@ def diameter_dp(n, adj):
     dfs(0, -1)
     return diameter[0]
 ```
+
+#### Walkthrough — LC 543 Diameter of Binary Tree
+
+**This template solves: LC 543 (Diameter), LC 124 (Max Path Sum — same shape, sums instead of edge counts, clamp negatives to 0), LC 687 (Longest Univalue Path), LC 1245 (Tree Diameter general).**
+
+> Given the `root` of a binary tree, return the length of its diameter: the number of edges on the longest path between *any* two nodes (the path need not pass through the root).
+
+The insight that makes this O(n): the longest path bending at a node `v` is `height(v.left) + height(v.right)` (in edges). So run a height DFS, and at **every** node update a global best with "left height + right height." The recursion still *returns* a height (so the parent can keep climbing), but *records* the diameter on the side.
+
+```python
+def diameterOfBinaryTree(root):
+    best = [0]
+    def height(node):
+        if not node:
+            return 0
+        L = height(node.left)
+        R = height(node.right)
+        best[0] = max(best[0], L + R)     # longest path bending HERE (edges)
+        return 1 + max(L, R)              # height handed to the parent
+    height(root)
+    return best[0]
+```
+
+```
+tree:      1
+          / \
+         2   3
+        / \
+       4   5
+
+height(4)=1, height(5)=1
+node 2: L=1,R=1 → best=max(0, 1+1)=2 ; returns 1+max(1,1)=2
+node 3: leaf → returns 1 ; best unchanged (0+0=0)
+node 1: L=height(2)=2, R=height(3)=1 → best=max(2, 2+1)=3 ; returns 3
+
+diameter = 3   (path 4-2-1-3, three edges)   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Return one thing, record another.** The parent needs the *single* longest downward reach (`1 + max(L,R)`) to extend its own path — it can only use one side going up. But the *answer* at a node uses *both* sides (`L + R`), because a path can turn around at `v` and go down both branches. Returning `L+R` would be wrong (a path can't fork); recording only the return value would miss bent paths. Splitting the two is the crux.
+- **LC 124 Max Path Sum is this exact template with two tweaks:** carry node *values* instead of `+1` edge counts, and clamp a negative branch to `0` (`max(0, childGain)`) because you can always choose to *not* extend into a branch that only hurts you. Recognizing that 124-Hard is 543-Easy plus "clamp negatives" is a big transfer win.
+`─────────────────────────────────────────────────`
 
 ### Center of Tree
 
@@ -875,6 +1120,61 @@ For "distinct values in subtree" problems, you can also:
 | Small-to-large | **O(N log N)** | O(N) |
 | Euler Tour + Mo's | O(N sqrt(N)) | O(N) |
 
+#### Walkthrough — LC 1519 Number of Nodes in the Sub-Tree With the Same Label
+
+**This template solves: LC 1519 (same-label count), LC 508 (subtree sum frequencies), and any "for each node, some statistic over its subtree" problem — the natural home of small-to-large when the statistic is a whole map.**
+
+> A tree of `n` nodes rooted at `0`; each node has a lowercase-letter label. For every node `i`, return how many nodes in `i`'s subtree (including `i`) share `i`'s label.
+
+Each node needs a **frequency map** of the labels in its subtree, then reads off its own label's count. The clean version merges each child's map into the parent's; the *fast* version applies small-to-large (always merge the smaller map into the larger) to hit O(N log N). Here is the direct merge — correct, and O(N·26) because there are only 26 labels:
+
+```python
+from collections import defaultdict
+
+def countSubTrees(n, edges, labels):
+    adj = [[] for _ in range(n)]
+    for a, b in edges:
+        adj[a].append(b); adj[b].append(a)
+    ans = [0] * n
+
+    def dfs(node, par):
+        freq = defaultdict(int)
+        freq[labels[node]] += 1
+        for c in adj[node]:
+            if c != par:
+                child_freq = dfs(c, node)
+                for k, v in child_freq.items():   # merge child's map up
+                    freq[k] += v
+        ans[node] = freq[labels[node]]            # my label's count in my subtree
+        return freq
+
+    dfs(0, -1)
+    return ans
+```
+
+```
+n=7  edges=[[0,1],[0,2],[1,4],[1,5],[2,3],[2,6]]  labels = "abaedcd"
+
+        0(a)
+       /    \
+     1(b)   2(a)
+     / \    / \
+   4(e)5(d)3(e)6(d)
+
+leaves 4,5,3,6 → each freq {own:1}, ans=1
+node 1(b): merge {e},{d} + self b → {b:1,e:1,d:1}; ans[1]=freq['b']=1
+node 2(a): merge {e},{d} + self a → {a:1,e:1,d:1}; ans[2]=freq['a']=1
+node 0(a): merge child1 + child2 + self a
+           → {a:2, b:1, e:2, d:2}; ans[0]=freq['a']=2   (nodes 0 and 2)
+
+result = [2,1,1,1,1,1,1]   ✓
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The unit each node returns here is a whole data structure (a map), not a scalar.** That's the leap from §9 aggregation (return a number) to §8 small-to-large (return a set/map). The correctness is identical to any post-order merge; the only *performance* worry is how expensively maps combine — which is exactly what small-to-large fixes by never copying the bigger side.
+- **Small-to-large's O(N log N) comes from a counting argument, not a cleverer merge.** Every element moves only when it lands in a map at least twice its old size, so it moves at most log N times over the whole tree. When labels are bounded (26 letters), a plain merge is already O(26N) and small-to-large is overkill — reach for it when the per-subtree structure can be large (arbitrary colors, values, coordinates).
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 9. Tree DP Patterns
@@ -925,6 +1225,50 @@ def max_independent_set(n, adj, val, root=0):
     dfs(root, -1)
     return max(dp[root])
 ```
+
+#### Walkthrough — LC 337 House Robber III
+
+**This template solves: LC 337 (House Robber III), LC 968 (Binary Tree Cameras — 3-state select/skip), LC 1519 (subtree aggregation cousin), and CSES "Tree Matching" / max-independent-set on trees.**
+
+> The houses form a binary tree. The root is the entrance; two directly-linked houses cannot both be robbed on the same night. Given the tree, return the maximum money you can rob.
+
+This is the **linear House Robber (LC 198) tree-ified**: "can't rob adjacent" becomes "can't rob a node and its child." The select/skip state carries up as a pair per node — `(rob this node, skip this node)` — so the parent can decide with full information.
+
+```python
+def rob(root):
+    def dfs(node):
+        if not node:
+            return (0, 0)                 # (rob_here, skip_here)
+        rl, sl = dfs(node.left)
+        rr, sr = dfs(node.right)
+        rob_here  = node.val + sl + sr    # rob node → children MUST be skipped
+        skip_here = max(rl, sl) + max(rr, sr)   # skip node → children free to choose
+        return (rob_here, skip_here)
+    return max(dfs(root))
+```
+
+```
+tree:      3
+          / \
+         2   3
+          \   \
+           3   1
+
+dfs(leaf 3 under 2): (3, 0)
+dfs(leaf 1 under right-3): (1, 0)
+node 2: rob = 2 + skip(child) = 2 + 0 = 2 ; skip = max(3,0) = 3 → (2, 3)
+node right-3: rob = 3 + 0 = 3 ; skip = max(1,0) = 1 → (3, 1)
+root 3: rob  = 3 + skip(2) + skip(right3) = 3 + 3 + 1 = 7
+        skip = max(2,3) + max(3,1) = 3 + 3 = 6
+        → (7, 6)
+
+answer = max(7, 6) = 7   ✓  (rob root + the two grandchildren 3 and 1)
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Return a pair, not a number.** If `dfs` returned only "best for this subtree," the parent couldn't tell whether that best *used the child* — and it needs to know, because robbing the parent forbids robbing the child. Carrying both `(rob, skip)` up is what lets the parent choose correctly in O(1). Whenever a decision at a node constrains its children, the return type grows from a scalar to a tuple of "one entry per state."
+- **`skip_here` takes `max(rob_child, skip_child)`; `rob_here` is forced to `skip_child`.** That asymmetry *is* the adjacency rule. It's the identical recurrence as §9 Pattern 2 Maximum Independent Set — LC 337 is literally weighted MIS on a tree, which is why a linear-DP problem and a graph-theory problem share one template.
+`─────────────────────────────────────────────────`
 
 ### Pattern 3: Matching on Tree
 
@@ -1374,3 +1718,53 @@ Start here
     ▼
   Count pairs at dist k   ──── centroid decomposition: count paths through each centroid (§7)
 ```
+
+### LeetCode Practice Ladder (the 6 walkthroughs)
+
+If you want a concrete, click-and-solve path on LeetCode rather than the CP ladder above, do these in order — each teaches one return-value shape:
+
+```
+104 (Easy)    ── height: return a number         1 + max(L, R)
+    │
+    ▼
+543 (Easy)    ── return height, record diameter  best = max(best, L + R)
+    │
+    ▼
+337 (Medium)  ── return a PAIR (rob, skip)       adjacency constraint on a tree
+    │
+    ▼
+236 (Medium)  ── return "found below?"           split point = LCA
+    │
+    ▼
+1519 (Medium) ── return a MAP, merge upward      subtree statistic (small-to-large)
+    │
+    ▼
+834 (Hard)    ── rerooting: slide parent→child   ans[c] = ans[p] − size[c] + (n − size[c])
+```
+
+Then generalize: 124 (Max Path Sum) reuses 543; 968 (Cameras) extends 337 to 3 states; 235 (BST LCA) simplifies 236 using order.
+
+---
+
+## The Tree Toolbox at a Glance
+
+```
+Every tree algorithm is post-order DFS with a different return value:
+
+  return a NUMBER   → height (104), size, subtree sum, diameter-height (543)
+  return a PAIR     → select/skip DP (337), matching, "balanced?" flag
+  return "found?"   → LCA search (236)
+  return a MAP/SET  → subtree statistics, small-to-large (1519)
+  add a 2nd pass    → rerooting: bottom-up then top-down slide (834)
+
+Then the heavy machinery, when a plain DFS is too slow:
+  many subtree queries + updates   → Euler tour + segment tree (§2)
+  many path   queries + updates    → HLD + segment tree (§3)
+  many LCA / distance queries      → binary lifting (§4)
+  distance-based path counting     → centroid decomposition (§7)
+  only K ≪ N nodes matter per query → virtual tree (§10)
+```
+
+---
+
+*Pattern mastered — a tree has one path between any two nodes, so a single post-order DFS with the right return value answers almost everything; the rest is machinery for when "almost" isn't fast enough.*

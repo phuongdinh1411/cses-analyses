@@ -32,6 +32,74 @@ Graphs model relationships: cities connected by roads, users in a social network
 
 ---
 
+## How to Identify a Graph Problem
+
+The hardest part of graph problems is usually **realizing it's a graph problem at all**. The word "graph" almost never appears. Instead, the input *is* a graph in disguise. Train your eye on these disguises:
+
+```
+The problem gives you...                          → it's a graph where...
+─────────────────────────────────────────────────────────────────────────
+a grid / matrix / maze / board                    → cell = node, 4/8 neighbors = edges
+"prerequisites" / "depends on" / "before"         → task = node, dependency = directed edge
+word/string transformations (one letter at a time)→ word = node, one-edit = edge
+"x / y = 2.0" equations, currency conversions     → variable = node, ratio = weighted edge
+people who "know" / "are friends with" each other → person = node, relation = edge
+states reachable by a move (locks, jumps, gene)   → state = node, legal move = edge
+"connected" / "province" / "group" / "island"     → connectivity → traversal or Union-Find
+```
+
+Once you know it's a graph, route to the right **family** by what the problem *asks*:
+
+```
+What does the question want?
+    │
+    ├── "reach / explore / count regions / shortest hops (unweighted)"
+    │        → FAMILY A: Traversal (BFS/DFS/flood fill)          §1, §7, §14
+    │
+    ├── "cheapest / shortest path with EDGE WEIGHTS"
+    │        → FAMILY B: Weighted shortest path                   §2
+    │
+    ├── "valid order / dependencies / can-finish / detect cycle (directed)"
+    │        → FAMILY C: Topological sort / DAG                    §4, §8, §15
+    │
+    ├── "connect all / are these connected / merge groups / min cost to link"
+    │        → FAMILY D: Union-Find & MST                          §3, §9
+    │
+    ├── "critical edge/node / mutually-reachable groups"
+    │        → FAMILY E: Structural analysis (SCC / bridges)       §5, §6
+    │
+    └── "max flow / matching / visit every edge / 2-var clauses"
+             → FAMILY F: Advanced (flow / matching / Euler / 2-SAT) §10–§13
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Weighted vs unweighted is the first fork.** "Shortest path" alone is ambiguous — if every edge costs the same (grid steps, one-letter changes), BFS is optimal and Dijkstra is overkill. The moment edges carry *different* costs, BFS breaks and you need Family B.
+- **"Connected components" has two tools.** If the graph is static and you just explore it once, traversal (Family A) counts components in one pass. If edges *arrive over time* and you must answer "connected now?" between additions, Union-Find (Family D) is the tool. Same question, different pattern, decided by whether the graph is dynamic.
+`─────────────────────────────────────────────────`
+
+---
+
+## Master LeetCode Comparison Table
+
+The problems this guide walks through, spanning all six families. Read this table top-to-bottom once — it's the map of what each family *feels like* as a problem statement.
+
+| # | Problem | Family | Difficulty | Graph modeling | Template variant |
+|---|---------|--------|-----------|----------------|------------------|
+| **200** | Number of Islands | A Traversal | Medium | grid cell = node | flood fill, count launches |
+| **994** | Rotting Oranges | A Traversal | Medium | grid cell = node | **multi-source** BFS (§14) |
+| **743** | Network Delay Time | B Shortest path | Medium | node = node, weighted | **Dijkstra** (§2.1) |
+| **787** | Cheapest Flights ≤ K Stops | B Shortest path | Medium | city = node, weighted | **Bellman-Ford**, bounded rounds (§2.2) |
+| **207** | Course Schedule | C Topo/DAG | Medium | course = node, prereq = edge | Kahn's, *can it finish?* (§4.1) |
+| **210** | Course Schedule II | C Topo/DAG | Medium | course = node, prereq = edge | Kahn's, *emit the order* (§4.1) |
+| **547** | Number of Provinces | D Union-Find | Medium | person = node | **DSU** component count (§9) |
+| **1584** | Min Cost to Connect All Points | D MST | Medium | point = node, complete graph | **Kruskal / Prim** (§3) |
+| **1192** | Critical Connections | E Structural | Hard | server = node | **bridge-finding** (§6) |
+| **332** | Reconstruct Itinerary | F Advanced | Hard | airport = node, ticket = edge | **Hierholzer** Euler path (§12) |
+
+Each row is unpacked as a full walkthrough inside its family's section below.
+
+---
+
 ## Table of Contents
 
 1. [Graph Traversals](#1-graph-traversals)
@@ -194,6 +262,117 @@ def dfs_iterative(start, adj, n):
 | Finds shortest path? | Yes (unweighted) | No |
 | Memory | O(width of graph) | O(depth of graph) |
 | Use for | Shortest path, level-order | Cycle detection, topo sort, SCC |
+
+### Family A anchor: which LeetCode problems this template solves
+
+BFS/DFS traversal is the workhorse — most "grid" problems are this template with `adj` replaced by "the 4 neighbor cells." The reusable skeleton has three blanks: **what a node is**, **what an edge is**, and **what you do on visit**.
+
+- **Flood fill / count regions** → LC **200** Number of Islands, LC 695 Max Area of Island, LC 130 Surrounded Regions, LC 733 Flood Fill.
+- **Shortest hops in unweighted graph** → LC 127 Word Ladder, LC 1091 Shortest Path in Binary Matrix.
+- **Multi-source BFS** (seed the queue with *all* sources) → LC **994** Rotting Oranges, LC 542 01 Matrix, LC 286 Walls and Gates.
+- **2-coloring** → LC 785 Is Graph Bipartite, LC 886 Possible Bipartition.
+
+### A.1 — Problem 200: Number of Islands
+
+**Difficulty**: Medium
+
+> Given an `m x n` grid of `'1'` (land) and `'0'` (water), return the number of islands. An island is land connected **4-directionally** (up/down/left/right); the grid edges are all water.
+
+The graph is hidden: each `'1'` cell is a node, and two land cells are neighbors if they're adjacent. "Number of islands" = number of connected components. The pattern move: scan every cell; each time you hit an unvisited land cell, that's a **new** island — launch a flood fill that sinks the whole component so it's counted once.
+
+```python
+def num_islands(grid):
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+    islands = 0
+
+    def flood(r, c):
+        # off-grid or water → stop
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1':
+            return
+        grid[r][c] = '0'                 # sink it = mark visited
+        flood(r + 1, c); flood(r - 1, c)
+        flood(r, c + 1); flood(r, c - 1)
+
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == '1':        # unvisited land = new component
+                islands += 1
+                flood(r, c)              # sink the entire island
+    return islands
+```
+
+```
+grid:                    scan order finds land at (0,0) first → island #1,
+  1 1 0 0                 flood sinks the whole top-left blob:
+  1 1 0 0                   (0,0)→(0,1)→(1,0)→(1,1) all become 0
+  0 0 1 0                 scan continues, hits (2,2) → island #2, sink it
+  0 0 0 1                 scan continues, hits (3,3) → island #3, sink it
+
+islands = 3
+```
+
+The two blanks that make this "just the traversal template": a **node** is a land cell, and **visit** means "sink it and recurse into 4 neighbors." Everything else is the generic component-counting loop.
+
+`★ Insight ─────────────────────────────────────`
+- **Sinking = marking visited without a separate `visited` array.** Overwriting `'1'→'0'` is the visited-set, saving O(mn) space. Legitimate because the input is disposable here; if it weren't, use a real `visited` set — same pattern.
+- **The outer double loop is the "launch from every component" idiom** from §1's disconnected-components fix, specialized to a grid. Each `flood` call finishes one whole component before the loop can find the next, which is exactly why the counter increments once per island.
+`─────────────────────────────────────────────────`
+
+### A.2 — Problem 994: Rotting Oranges
+
+**Difficulty**: Medium
+
+> In an `m x n` grid, each cell is `0` (empty), `1` (fresh orange), or `2` (rotten). Every minute, a rotten orange rots all fresh oranges **4-directionally adjacent** to it. Return the minimum minutes until no fresh orange remains, or `-1` if some fresh orange can never rot.
+
+"Minimum minutes for rot to spread from *all* rotten oranges simultaneously" is the tell for **multi-source BFS**: the rot advances one ring per minute from many sources at once. If you ran BFS from each rotten orange separately you'd overcount; seeding the queue with *every* rotten orange at distance 0 makes them expand in lockstep, and the last ring reached is the answer.
+
+```python
+from collections import deque
+
+def oranges_rotting(grid):
+    rows, cols = len(grid), len(grid[0])
+    queue = deque()
+    fresh = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                queue.append((r, c, 0))   # (row, col, minute) — ALL sources seeded
+            elif grid[r][c] == 1:
+                fresh += 1
+
+    minutes = 0
+    while queue:
+        r, c, t = queue.popleft()
+        minutes = max(minutes, t)
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                grid[nr][nc] = 2          # rot it (= mark visited at time t+1)
+                fresh -= 1
+                queue.append((nr, nc, t + 1))
+
+    return minutes if fresh == 0 else -1  # leftover fresh = unreachable
+```
+
+```
+start (2 = rotten, 1 = fresh):     queue seeds BOTH rotten cells at t=0
+  2 1 1                            ┌ (0,0,0)  (2,0,0)   fresh=4
+  1 1 0
+  0 1 2
+
+t=0 pop (0,0): rot (0,1)@1, (1,0)@1        pop (2,2): rot (1,2)? no(0) / (2,1)@1
+t=1 pop (0,1): rot (0,2)@2, (1,1)@2        pop (1,0): (1,1) already; pop (2,1): (1,1) already
+t=2 pop (0,2),(1,1) ...                    all fresh consumed
+
+fresh = 0 → answer = 2 minutes
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Multi-source BFS = single-source BFS with the queue pre-loaded.** No new algorithm — the correctness of "first time reached = shortest distance" (§1) still holds; you've just added a virtual super-source at distance 0 connected to every real source (see §14's virtual-node trick).
+- **The `fresh` counter is the `-1` detector.** Any fresh orange in a region no rotten orange can reach never gets decremented, so `fresh > 0` at the end means unreachable. Cheaper than re-scanning the grid.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -426,6 +605,103 @@ def shortest_path_dag(adj, n, start):
 | 0-1 BFS | O(V+E) | O(V) | 0 or 1 | N/A |
 | DAG relaxation | O(V+E) | O(V) | Any (DAG) | N/A (no cycles) |
 
+### Family B anchor: which LeetCode problems these algorithms solve
+
+The whole family answers "cheapest way from A to B when edges cost different amounts." Picking the algorithm is a decision tree on the *weights*, not the problem theme:
+
+- **All weights `≥ 0`, want single-source distances** → **Dijkstra** → LC **743** Network Delay Time, LC 1631 Path With Minimum Effort, LC 1514 Path with Max Probability, LC 778 Swim in Rising Water.
+- **A hard cap on number of edges/stops**, or negative weights → **Bellman-Ford** (bounded rounds) → LC **787** Cheapest Flights Within K Stops.
+- **All-pairs distances, tiny V (≤ ~400)** → **Floyd-Warshall** → LC 1334 City With Smallest Number of Neighbors.
+- **Weights are only 0 or 1** → **0-1 BFS** (deque) → LC 1368 Min Cost to Make at Least One Valid Path.
+
+### B.1 — Problem 743: Network Delay Time
+
+**Difficulty**: Medium
+
+> You have `n` nodes labeled `1..n`. Given `times[i] = (u, v, w)` — a signal from `u` to `v` takes `w` time — and a start node `k`, return the time for *all* nodes to receive the signal, or `-1` if some node never does.
+
+"Signal reaches everyone" = the **maximum** of the shortest-path distances from `k` to every node. Edges carry different delays and all are positive, so this is textbook single-source Dijkstra: compute `dist[]` from `k`, then answer is `max(dist)` (or `-1` if any node is unreachable, i.e. `dist == inf`).
+
+```python
+import heapq
+from collections import defaultdict
+
+def network_delay_time(times, n, k):
+    adj = defaultdict(list)
+    for u, v, w in times:
+        adj[u].append((v, w))
+
+    dist = {}
+    pq = [(0, k)]                      # (distance_so_far, node)
+    while pq:
+        d, u = heapq.heappop(pq)
+        if u in dist:                  # already finalized = stale entry, skip
+            continue
+        dist[u] = d                    # first pop = shortest (greedy invariant)
+        for v, w in adj[u]:
+            if v not in dist:
+                heapq.heappush(pq, (d + w, v))
+
+    return max(dist.values()) if len(dist) == n else -1
+```
+
+```
+times = [(2,1,1),(2,3,1),(3,4,1)], n=4, k=2
+
+pq=[(0,2)]                 pop (0,2)  dist{2:0}  push (1,1),(1,3)
+pq=[(1,1),(1,3)]           pop (1,1)  dist{2:0,1:1}   (1 has no out-edges)
+pq=[(1,3)]                 pop (1,3)  dist{...,3:1}   push (2,4)
+pq=[(2,4)]                 pop (2,4)  dist{...,4:2}
+
+all 4 reached → answer = max(0,1,1,2) = 2
+```
+
+`★ Insight ─────────────────────────────────────`
+- **"First pop off the heap = finalized" is the whole algorithm.** The `if u in dist: continue` guard replaces a decrease-key operation — you let stale, larger entries sit in the heap and skip them when they surface. This "lazy deletion" is the standard Python Dijkstra idiom (heapq has no decrease-key).
+- The problem wording ("time for all to receive") hides a `max` over distances. Recognizing that "everyone is reached by time T" ⇔ `T = max shortest distance` is the modeling step; the rest is the raw template.
+`─────────────────────────────────────────────────`
+
+### B.2 — Problem 787: Cheapest Flights Within K Stops
+
+**Difficulty**: Medium
+
+> `n` cities, `flights[i] = (from, to, price)`. Find the cheapest price from `src` to `dst` using **at most `k` stops** (so at most `k + 1` edges). Return `-1` if none.
+
+The "at most `k` stops" cap is the tell that plain Dijkstra is *wrong here*: Dijkstra finalizes a node by cheapest cost, but the globally-cheapest way to reach a city might use too many hops, while a pricier few-hop path is the one you actually need. **Bellman-Ford's edge-count structure fits exactly**: relax all edges `k + 1` times and each round extends every path by one more edge — so after round `i`, `dist[v]` is the cheapest cost reaching `v` using `≤ i` edges. Bounding the rounds bounds the hops for free.
+
+```python
+def find_cheapest_price(n, flights, src, dst, k):
+    INF = float('inf')
+    dist = [INF] * n
+    dist[src] = 0
+
+    for _ in range(k + 1):             # ≤ k stops = ≤ k+1 edges = k+1 rounds
+        snapshot = dist[:]             # freeze: relax off LAST round only
+        for u, v, w in flights:
+            if snapshot[u] + w < dist[v]:
+                dist[v] = snapshot[u] + w
+
+    return dist[dst] if dist[dst] != INF else -1
+```
+
+```
+n=4, flights=[(0,1,100),(1,2,100),(2,0,100),(1,3,600),(2,3,200)]
+src=0, dst=3, k=1   → at most 1 stop, so ≤ 2 edges
+
+round 1 (≤1 edge from src):  snapshot all INF except dist[0]=0
+   relax 0→1: dist[1]=100
+round 2 (≤2 edges):          snapshot = [0,100,INF,INF]
+   0→1: 100 (no change)   1→2: dist[2]=200   1→3: dist[3]=700
+
+dist[3]=700   (path 0→1→3, 1 stop). The cheaper 0→1→2→3 = 400 needs 2 stops → excluded.
+answer = 700
+```
+
+`★ Insight ─────────────────────────────────────`
+- **The `snapshot = dist[:]` line is load-bearing.** Without it, one Bellman-Ford round could chain several edges (0→1 *then* 1→2 in the same pass), letting a path use more than the intended number of edges. Freezing the previous round's distances forces "exactly one more edge per round," which is what makes "k rounds = k hops" true.
+- This is Bellman-Ford *repurposed*: normally you run `V-1` rounds for correctness; here you run exactly `k+1` rounds because the round count **is** the constraint. Same algorithm, different stopping rule — recognizing that reuse is the pattern lesson.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 3. Minimum Spanning Tree
@@ -616,6 +892,116 @@ def topo_sort_dfs(adj, n):
 | Shortest/longest path in DAG | Relax edges in topo order |
 | DP on DAG | Process states in topo order |
 | Cycle detection (directed) | If topo sort fails, cycle exists |
+
+### Family C anchor: which LeetCode problems this template solves
+
+Topological sort is the answer whenever items have **"must come before"** dependencies. The signal in a problem statement: *prerequisites, dependencies, build order, "before you can X you must Y."* Two questions decide the exact variant:
+
+- **"Is a valid order even possible?"** (just feasibility = no cycle) → Kahn's, check you emitted all `V` nodes → LC **207** Course Schedule, LC 802 Find Eventual Safe States.
+- **"Give me the order."** → Kahn's, return the emission list → LC **210** Course Schedule II, LC 269 Alien Dictionary, LC 310 Minimum Height Trees.
+- **"Longest chain / max value along dependencies"** → topo order + DP-on-DAG (§15) → LC 329 Longest Increasing Path in a Matrix, LC 1857 Largest Color Value in a Directed Graph.
+
+Both walkthroughs below use **Kahn's algorithm** (BFS with in-degrees): repeatedly remove a node with no remaining prerequisites. It doubles as cycle detection — if you can never empty the queue, some nodes are stuck in a cycle.
+
+### C.1 — Problem 207: Course Schedule
+
+**Difficulty**: Medium
+
+> There are `numCourses` courses `0..numCourses-1`. `prerequisites[i] = (a, b)` means you must take `b` before `a`. Return `True` if you can finish all courses.
+
+"Can you finish?" = "is the prerequisite graph acyclic?" Model each course as a node and each prereq `(a, b)` as a directed edge `b → a` (take `b`, then `a` unlocks). A valid schedule exists iff the graph is a DAG. Kahn's algorithm counts how many courses it can actually emit; if that count equals `numCourses`, no cycle blocked it.
+
+```python
+from collections import deque, defaultdict
+
+def can_finish(num_courses, prerequisites):
+    adj = defaultdict(list)
+    indeg = [0] * num_courses
+    for a, b in prerequisites:         # b must come before a  → edge b→a
+        adj[b].append(a)
+        indeg[a] += 1
+
+    queue = deque(c for c in range(num_courses) if indeg[c] == 0)
+    taken = 0
+    while queue:
+        c = queue.popleft()            # a course with no unmet prereqs
+        taken += 1
+        for nxt in adj[c]:
+            indeg[nxt] -= 1            # one prereq satisfied
+            if indeg[nxt] == 0:
+                queue.append(nxt)
+
+    return taken == num_courses        # all emitted = acyclic
+```
+
+```
+numCourses=4, prereqs=[(1,0),(2,0),(3,1),(3,2)]
+edges: 0→1, 0→2, 1→3, 2→3     indeg: [0,1,1,2]
+
+queue=[0]           pop 0, taken=1  → indeg 1:0, 2:0  → queue=[1,2]
+queue=[1,2]         pop 1, taken=2  → indeg 3:1
+queue=[2]           pop 2, taken=3  → indeg 3:0        → queue=[3]
+queue=[3]           pop 3, taken=4
+
+taken=4 == numCourses → True
+```
+
+```
+Cyclic case: prereqs=[(1,0),(0,1)]   edges 0→1, 1→0   indeg [1,1]
+queue starts EMPTY (no zero-indegree node) → taken=0 ≠ 2 → False
+```
+
+`★ Insight ─────────────────────────────────────`
+- **In-degree = "number of unmet prerequisites."** A node is ready exactly when its in-degree hits 0. The queue holds the "ready now" frontier — this is BFS, but on dependency-readiness instead of distance.
+- **Cycle detection falls out for free.** Nodes inside a cycle mutually keep each other's in-degree above 0 forever, so they never enter the queue and `taken` falls short. No separate cycle check needed — the count *is* the check.
+`─────────────────────────────────────────────────`
+
+### C.2 — Problem 210: Course Schedule II
+
+**Difficulty**: Medium
+
+> Same setup as LC 207, but return *a* valid ordering of all courses (any one), or `[]` if impossible.
+
+Identical graph and identical Kahn's loop — the only change is that you **record the emission order** instead of just counting. The order in which nodes leave the queue *is* a topological order, because a node is only emitted after every prerequisite has already been emitted. If the final list is short (a cycle blocked some nodes), return `[]`.
+
+```python
+from collections import deque, defaultdict
+
+def find_order(num_courses, prerequisites):
+    adj = defaultdict(list)
+    indeg = [0] * num_courses
+    for a, b in prerequisites:
+        adj[b].append(a)
+        indeg[a] += 1
+
+    queue = deque(c for c in range(num_courses) if indeg[c] == 0)
+    order = []
+    while queue:
+        c = queue.popleft()
+        order.append(c)                # <-- the ONLY change vs LC 207
+        for nxt in adj[c]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                queue.append(nxt)
+
+    return order if len(order) == num_courses else []
+```
+
+```
+numCourses=4, prereqs=[(1,0),(2,0),(3,1),(3,2)]   (same graph as C.1)
+
+emit 0 → order=[0]
+emit 1 → order=[0,1]
+emit 2 → order=[0,1,2]
+emit 3 → order=[0,1,2,3]
+
+len 4 == numCourses → [0,1,2,3]   (also valid: [0,2,1,3])
+```
+
+`★ Insight ─────────────────────────────────────`
+- **LC 207 and LC 210 are the same algorithm with one extra line.** This is the payoff of learning the *pattern* rather than the problem: "can it be ordered?" and "give the order" differ only by `order.append(c)` vs a counter. Feasibility is just "the order exists."
+- **Any zero-indegree node is a legal next pick**, so multiple valid orders exist. If a problem wants a *specific* tie-break (e.g. lexicographically smallest, LC 269-style), swap the `deque` for a heap — the skeleton is untouched.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -861,6 +1247,92 @@ low[a] = 0 (inherits from b)
 
 Edge u-a: low[a]=0 not > disc[u]=0  -> NOT a bridge (correct: back edge saves it)
 ```
+
+### Family E anchor: which LeetCode problems this solves
+
+Structural analysis (bridges, articulation points, SCC) answers **"which parts are critical / mutually reachable?"** These are the rarest in interviews but the signal is sharp: *critical connection, single point of failure, "removing this disconnects the graph," strongly connected, mutually reachable.* All are built on **Tarjan's DFS with `disc[]`/`low[]` timestamps** (§6) or its SCC cousin (§5).
+
+- **Edges whose removal disconnects the graph** (bridges) → **Tarjan bridge-finding** → LC **1192** Critical Connections in a Network.
+- **Nodes whose removal disconnects the graph** (articulation points) → same DFS, articulation rule (§6).
+- **Groups where every node reaches every other** (SCC) → **Tarjan/Kosaraju** (§5), often then condense to a DAG → see the SCC note below.
+
+### E.1 — Problem 1192: Critical Connections in a Network
+
+**Difficulty**: Hard
+
+> `n` servers `0..n-1` connected by undirected `connections`. A *critical connection* is an edge that, if removed, makes some servers unreachable from others. Return all critical connections.
+
+"Edge whose removal disconnects the graph" is the exact definition of a **bridge**. So this Hard problem is just "find all bridges" — no new algorithm, only recognizing the vocabulary. Tarjan's bridge algorithm does one DFS assigning each node a discovery time `disc[u]`, and computes `low[u]` = the earliest node reachable from `u`'s subtree via tree edges plus at most one back edge. An edge `(u, v)` (v a child) is a bridge exactly when `low[v] > disc[u]`: v's subtree has **no** back edge climbing to `u` or above, so cutting `(u,v)` strands it.
+
+```python
+from collections import defaultdict
+
+def critical_connections(n, connections):
+    adj = defaultdict(list)
+    for u, v in connections:
+        adj[u].append(v)
+        adj[v].append(u)
+
+    disc = [-1] * n                    # discovery time; -1 = unvisited
+    low = [0] * n
+    bridges = []
+    timer = [0]
+
+    def dfs(u, parent):
+        disc[u] = low[u] = timer[0]
+        timer[0] += 1
+        for v in adj[u]:
+            if v == parent:
+                continue               # don't bounce back on the edge we came in
+            if disc[v] == -1:          # tree edge
+                dfs(v, u)
+                low[u] = min(low[u], low[v])
+                if low[v] > disc[u]:   # v can't reach u or higher → bridge
+                    bridges.append([u, v])
+            else:                      # back edge
+                low[u] = min(low[u], disc[v])
+
+    dfs(0, -1)                         # graph is connected
+    return bridges
+```
+
+```
+n=4, connections=[[0,1],[1,2],[2,0],[1,3]]
+
+    0 --- 1 --- 3
+     \   /
+      \ /
+       2
+
+DFS from 0: disc=[0,1,2,_]  triangle 0-1-2 has back edge 2→0
+  low[2]=disc[0]=0, low[1]=0  → edges in the triangle: low ≤ disc → NOT bridges
+  edge 1→3: low[3]=3 > disc[1]=1 → BRIDGE
+
+bridges = [[1,3]]   (cutting 1-3 isolates server 3)
+```
+
+`★ Insight ─────────────────────────────────────`
+- **`low[v] > disc[u]` is the entire bridge test.** It asks "can v's subtree climb back to u or higher without using edge (u,v)?" If not, that edge is the only lifeline — a bridge. An edge on a cycle always has a back edge saving it, so cycles contain no bridges.
+- **Recognizing "critical connection = bridge" is the whole difficulty.** The Hard rating is for knowing the vocabulary maps to a standard algorithm; the code is textbook Tarjan. This is why building a *named-concept* vocabulary (§6) beats memorizing individual problems.
+`─────────────────────────────────────────────────`
+
+### E.2 — Note: Strongly Connected Components (condensation)
+
+Clean numbered LC problems for SCC are rare (they hide inside harder problems like LC 1568), so here's the pattern rather than a full walkthrough. **SCC = a maximal set of nodes where every node reaches every other** (only meaningful in *directed* graphs). The high-value move is **condensation**: collapse each SCC into a single super-node. The result is always a **DAG**, which unlocks Family C tools (topological sort, DP-on-DAG) on problems that were cyclic and therefore un-orderable.
+
+```
+Directed graph with a cycle:        Condense SCCs → DAG:
+  A → B → C → A   (one SCC)           [SCC: A,B,C] → [SCC: D]
+        ↓                             now topologically orderable
+        D
+```
+
+Typical uses: "minimum edges to add so the whole graph is strongly connected" (count condensed-DAG sources/sinks), or running DP over mutually-dependent states after collapsing their cycles. When you see cyclic directed dependencies that block a topo sort, **condense to a DAG first** — that's the reusable idea. See §5 for Tarjan's and Kosaraju's SCC implementations.
+
+`★ Insight ─────────────────────────────────────`
+- **Condensation turns "cyclic and unsolvable by topo sort" into "acyclic and solvable."** It's the bridge from Family E back to Family C — whenever a directed problem has cycles, ask "what if each cycle were one node?"
+- Both bridges (E.1) and SCC share Tarjan's `disc`/`low` timestamp machinery — learn the timestamp-DFS skeleton once and it powers the entire structural family.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1122,6 +1594,122 @@ class WeightedDSU:
         return True
 ```
 
+### Family D anchor: which LeetCode problems these solve
+
+Union-Find (§9) and MST (§3) are one family — both are about **grouping nodes by connectivity**, one asking "who's connected?" and the other "connect everyone as cheaply as possible." The statement signal: *provinces, groups, "are these two connected?", redundant connection, connect all points, accounts merge.*
+
+- **Count / test connectivity, edges arrive incrementally** → **Union-Find** → LC **547** Number of Provinces, LC 684 Redundant Connection, LC 721 Accounts Merge, LC 1319 Number of Operations to Make Network Connected.
+- **Connect all nodes at minimum total weight** → **MST** (Kruskal = sort edges + Union-Find; Prim = greedy heap) → LC **1584** Min Cost to Connect All Points, LC 1135 Connecting Cities With Minimum Cost, LC 1489 Critical/Pseudo-Critical Edges.
+
+Kruskal is literally "Union-Find + sorted edges," so the two anchors below share one data structure — learn DSU once and MST is nearly free.
+
+### D.1 — Problem 547: Number of Provinces
+
+**Difficulty**: Medium
+
+> `isConnected` is an `n x n` matrix where `isConnected[i][j] == 1` means city `i` and city `j` are directly connected. A province is a group of directly or indirectly connected cities. Return the number of provinces.
+
+"Number of groups of connected things" = number of connected components = the classic Union-Find headline use. Start with `n` singleton groups; for every edge `(i, j)`, `union` them. Each successful union (two *different* roots merging) drops the component count by one. (You could also flood-fill this like LC 200 — but the matrix-of-relationships shape and "indirectly connected" wording is the textbook DSU trigger.)
+
+```python
+def find_circle_num(is_connected):
+    n = len(is_connected)
+    parent = list(range(n))            # each city its own province initially
+    count = n
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]   # path compression
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        nonlocal count
+        ra, rb = find(a), find(b)
+        if ra != rb:                   # genuinely separate provinces
+            parent[ra] = rb
+            count -= 1                  # two provinces became one
+
+    for i in range(n):
+        for j in range(i + 1, n):      # upper triangle: matrix is symmetric
+            if is_connected[i][j]:
+                union(i, j)
+    return count
+```
+
+```
+isConnected = [[1,1,0],
+               [1,1,0],
+               [0,0,1]]        parent=[0,1,2]  count=3
+
+edge (0,1): find0=0, find1=1, differ → union, parent=[1,1,2] count=2
+edge (0,2): value 0 → skip
+edge (1,2): value 0 → skip
+
+count = 2  (provinces {0,1} and {2})
+```
+
+`★ Insight ─────────────────────────────────────`
+- **`count` starts at `n` and only ever decreases — once per genuine merge.** You never recount components at the end; the answer is maintained incrementally. That's the DSU superpower over flood fill: connectivity updates are near-O(1) as edges stream in.
+- **The `ra != rb` guard is what makes counting correct.** Unioning two cities already in the same province must NOT decrement `count`. This same guard is exactly how Kruskal (D.2) rejects a cycle-forming edge — one primitive, two uses.
+`─────────────────────────────────────────────────`
+
+### D.2 — Problem 1584: Min Cost to Connect All Points
+
+**Difficulty**: Medium
+
+> Given `points` on a 2D plane, the cost to connect two points is their Manhattan distance `|x1-x2| + |y1-y2|`. Return the minimum cost to connect *all* points (so any point is reachable from any other).
+
+"Connect all nodes, minimize total edge weight, result is a tree" is the definition of a **Minimum Spanning Tree**. The graph is *complete* — every pair of points is a candidate edge — so build all `n(n-1)/2` edges, then run **Kruskal**: sort edges cheapest-first and add an edge only if it joins two currently-separate components (the Union-Find `ra != rb` guard again). Stop once `n-1` edges are in the tree.
+
+```python
+def min_cost_connect_points(points):
+    n = len(points)
+    edges = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            w = abs(points[i][0]-points[j][0]) + abs(points[i][1]-points[j][1])
+            edges.append((w, i, j))
+    edges.sort()                       # Kruskal: consider cheapest edges first
+
+    parent = list(range(n))
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    total, used = 0, 0
+    for w, i, j in edges:
+        ri, rj = find(i), find(j)
+        if ri != rj:                   # adding this edge won't form a cycle
+            parent[ri] = rj
+            total += w
+            used += 1
+            if used == n - 1:          # tree complete
+                break
+    return total
+```
+
+```
+points = [(0,0),(2,2),(3,10),(5,2),(7,0)]
+
+all edges sorted by weight (Manhattan):
+  (0,1)=4 (1,3)=3 (3,4)=4 (0,4)=7 (1,2)=9 ...   → sort: 3,4,4,...
+
+take (1,3)=3   union 1,3          total=3 used=1
+take (0,1)=4   union {1,3} & 0    total=7 used=2
+take (3,4)=4   union in {0,1,3} & 4  total=11 used=3
+take (1,2)=9   union & 2          total=20 used=4 == n-1 → stop
+
+min cost = 20
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Kruskal = sort edges + Union-Find, nothing more.** The `if ri != rj` cycle check is the identical guard from LC 547 (D.1). "Add the cheapest edge that doesn't create a cycle, `n-1` times" is the entire greedy — recognizing MST as *Union-Find with sorted edges* means D.1 and D.2 collapse to one idea.
+- **Complete graph → `O(n²)` edges → Kruskal's sort dominates at `O(n² log n)`.** For dense graphs like this, **Prim with a heap** (§3.2) is often preferred since it never materializes all `n²` edges. Same MST, different edge-selection engine — pick by density.
+`─────────────────────────────────────────────────`
+
 ---
 
 ## 10. Network Flow
@@ -1350,6 +1938,71 @@ def solve_2sat(n, clauses):
 | x = y | (x OR NOT y) AND (NOT x OR y) |
 | x implies y | (NOT x OR y) |
 | At most one of x,y | (NOT x OR NOT y) |
+
+---
+
+## Family F anchor: advanced graph patterns in LeetCode
+
+Family F (flow §10, matching §11, Eulerian §12, 2-SAT §13) is the rarest in interviews, and clean numbered LC problems are scarce — so this family gets **one full walkthrough (Eulerian) plus notes**, since a real LC problem exists for Euler but flow/2-SAT usually appear disguised inside Hard problems. The signals:
+
+- **"Use every edge exactly once," itinerary, reconstruct path** → **Eulerian path**, Hierholzer's algorithm → LC **332** Reconstruct Itinerary, LC 753 Cracking the Safe.
+- **"Maximum matching / assignment," bipartite pairing** → **bipartite matching / max-flow** → LC 1349 Maximum Students Taking Exam (flow/matching), LC 1595 Minimum Cost to Connect Two Groups.
+- **"Each choice is a boolean with either/or constraints"** → **2-SAT** (§13) — almost never numbered; appears in contest problems.
+
+### F.1 — Problem 332: Reconstruct Itinerary
+
+**Difficulty**: Hard
+
+> Given `tickets[i] = (from, to)` (all departing from `"JFK"`), reconstruct the itinerary that uses **all** tickets exactly once. If multiple valid itineraries exist, return the one with the smallest **lexical** order when read as a single string.
+
+"Use every ticket (edge) exactly once" is the definition of an **Eulerian path**. Model airports as nodes and tickets as directed edges; you want a trail that traverses every edge once. **Hierholzer's algorithm** builds it: greedily walk edges (removing each as you use it) until you get stuck, then splice that dead-end into the route. To get lexical order, always take the **smallest available destination first** — a min-heap or sorted list per node. The trick: append an airport to the result only when it has no more outgoing edges (post-order), then reverse.
+
+```python
+from collections import defaultdict
+import heapq
+
+def find_itinerary(tickets):
+    adj = defaultdict(list)
+    for src, dst in tickets:
+        heapq.heappush(adj[src], dst)   # min-heap → lexical order
+
+    route = []
+    def visit(airport):
+        while adj[airport]:             # take smallest dest until stuck
+            nxt = heapq.heappop(adj[airport])
+            visit(nxt)
+        route.append(airport)           # post-order: add when edges exhausted
+
+    visit("JFK")
+    return route[::-1]                  # reverse the post-order to get the trail
+```
+
+```
+tickets = [(JFK,SFO),(JFK,ATL),(SFO,ATL),(ATL,JFK),(ATL,SFO)]
+adj (min-heaps):  JFK:[ATL,SFO]  ATL:[JFK,SFO]  SFO:[ATL]
+
+recurse smallest-first: JFK→ATL→JFK→SFO→ATL→SFO (now stuck, no edges left)
+post-order appends as each node's edges run out:  SFO, ATL, SFO, JFK, ATL, JFK
+reverse → JFK, ATL, JFK, SFO, ATL, SFO
+
+itinerary = ["JFK","ATL","JFK","SFO","ATL","SFO"]
+```
+
+`★ Insight ─────────────────────────────────────`
+- **Post-order + reverse is what makes Hierholzer correct.** If you appended airports in visit-order, a premature dead-end would land in the middle of your route. Recording a node only when its edges are exhausted, then reversing, automatically splices dead-end loops into the right place.
+- **"Use every edge once" ⇒ Eulerian, "use every node once" ⇒ Hamiltonian.** These sound alike but Eulerian is polynomial (Hierholzer) while Hamiltonian is NP-hard. Reading edge-vs-node in the statement picks tractable vs intractable — a critical identification skill.
+`─────────────────────────────────────────────────`
+
+### F.2 — Notes: flow, matching, and 2-SAT
+
+**Max-flow / bipartite matching.** When a problem is "assign items in group X to items in group Y under capacity/compatibility limits, maximize pairings," it's **bipartite matching**, solvable as max-flow (add a super-source → X, Y → super-sink, all capacities 1; see §10–§11). LC 1349 (seat students so no two cheat) reduces to maximum independent set on a bipartite-by-column graph = matching. The reusable move: **spot the two disjoint groups + a "one-to-one under constraints" objective**, then reach for matching. Full walkthroughs are rare because most interviews stop short of flow.
+
+**2-SAT.** When every decision is a boolean and constraints are "if A then B" / "at most one of A,B" / "A or B," build the implication graph (§13), find SCCs (§5), and a solution exists iff no variable `x` shares an SCC with `¬x`. This ties Family F back to Family E — **2-SAT is an SCC application**. It almost never appears as a numbered LC problem but is standard in competitive programming.
+
+`★ Insight ─────────────────────────────────────`
+- **Advanced graph problems are usually a reduction, not a new algorithm.** "Maximize assignments" → matching → flow; "boolean constraints" → 2-SAT → SCC. The skill is recognizing the reduction; the engine underneath is something from Families A–E.
+- Because these are rare and heavy, prioritize them *last* in study — master A–D (interview bread-and-butter) and the structural family E before investing here.
+`─────────────────────────────────────────────────`
 
 ---
 
@@ -1602,6 +2255,11 @@ What is the problem about?
 | Mixing 0-indexed and 1-indexed node labels | Off-by-one: array of size `n` indexed at `n`, or node 0 left unprocessed | Pick one convention; size arrays `n+1` if the input is 1-indexed |
 | Ignoring disconnected components | A single BFS/DFS from one start visits only its component; the rest stay unvisited | Loop `for i in range(n): if not visited[i]: traverse(i)` |
 | Recursion-depth overflow on deep graphs (Python) | Recursive DFS hits `RecursionError` on long chains (~10^4+) | Use the iterative stack-based DFS, or raise `sys.setrecursionlimit` |
+| Using plain Dijkstra when there's a hop/stop cap (LC 787) | Dijkstra finalizes by cost, so it may lock in a cheap-but-too-many-hops path and miss the pricier legal one | Bellman-Ford with exactly `k+1` rounds; snapshot distances each round so one round = one edge |
+| Kahn's topo sort without checking the emitted count | A cycle silently drops nodes; you return a partial order as if valid | Compare `len(order)` (or `taken`) to `V`; short = cycle exists |
+| Decrementing MST/DSU component count on a redundant edge | Unioning two nodes already in the same set isn't a real merge; count goes wrong | Only act when `find(a) != find(b)` — the same guard rejects cycle edges in Kruskal |
+| Appending airports in visit-order for Eulerian path (LC 332) | A premature dead-end lands mid-route; the trail is wrong | Append in post-order (when edges exhausted) and reverse at the end (Hierholzer) |
+| Confusing "every edge once" (Eulerian) with "every node once" (Hamiltonian) | Eulerian is polynomial; Hamiltonian is NP-hard — wrong model = wrong complexity | Read edge-vs-node carefully; edges → Hierholzer, nodes → backtracking/bitmask DP |
 
 ---
 
@@ -1628,6 +2286,35 @@ Start here
   LC 787  Cheapest Flights ≤K Stops (Medium)── Bellman-Ford: relax edges a bounded number of rounds
     │
     ▼
-  LC 127  Word Ladder              (Hard)   ── model words as nodes, BFS for shortest transform
+  LC 210  Course Schedule II        (Medium) ── same as 207 + record emission = topological order
+    │
+    ▼
+  LC 547  Number of Provinces       (Medium) ── Union-Find: count connected components as edges arrive
+    │
+    ▼
+  LC 1584 Min Cost Connect Points    (Medium)── MST = Union-Find + sorted edges (Kruskal)
+    │
+    ▼
+  LC 127  Word Ladder               (Hard)   ── model words as nodes, BFS for shortest transform
+    │
+    ▼
+  LC 1192 Critical Connections       (Hard)  ── Tarjan bridges: disc/low timestamps (Family E)
+    │
+    ▼
+  LC 332  Reconstruct Itinerary      (Hard)  ── Eulerian path via Hierholzer (Family F)
 ```
+
+### The 6 families at a glance
+
+Once the ladder is done, this is the map that turns any new problem into an algorithm:
+
+```
+A. Traversal / flood fill    grid, regions, "connected"        → BFS/DFS (§1,§7,§14)   LC 200, 994
+B. Weighted shortest path    "cheapest", edge costs differ     → Dijkstra/Bellman (§2) LC 743, 787
+C. Topological / DAG order   prerequisites, "before you can"   → Kahn's topo (§4,§8,§15) LC 207, 210
+D. Union-Find / MST          provinces, "connect all cheaply"  → DSU / Kruskal (§3,§9)  LC 547, 1584
+E. Structural analysis       "critical edge", single failure   → Tarjan disc/low (§5,§6) LC 1192
+F. Advanced (flow/euler/2SAT) "use every edge", matching        → Hierholzer/flow (§10-13) LC 332
+```
+
 
