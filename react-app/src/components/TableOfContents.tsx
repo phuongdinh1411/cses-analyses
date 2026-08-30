@@ -51,7 +51,15 @@ function extractHeadings(markdown: string): TocItem[] {
 export default function TableOfContents({ content }: TableOfContentsProps) {
   const headings = useMemo(() => extractHeadings(content), [content])
   const [activeId, setActiveId] = useState('')
+  const [hidden, setHidden] = useState(
+    () => localStorage.getItem('tocHidden') === 'true'
+  )
   const observerRef = useRef<IntersectionObserver | null>(null)
+
+  // Persist TOC collapse choice across pages/reloads
+  useEffect(() => {
+    localStorage.setItem('tocHidden', String(hidden))
+  }, [hidden])
 
   // Set up IntersectionObserver to track which heading is in view
   useEffect(() => {
@@ -106,9 +114,32 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   // Don't render TOC for pages with fewer than 2 headings
   if (headings.length < 2) return null
 
+  if (hidden) {
+    return (
+      <button
+        className="toc-show-btn"
+        onClick={() => setHidden(false)}
+        aria-label="Show page outline"
+        title="Show On this page"
+      >
+        On this page
+      </button>
+    )
+  }
+
   return (
     <nav className="toc" aria-label="Table of contents">
-      <h4 className="toc__title">On this page</h4>
+      <div className="toc__header">
+        <h4 className="toc__title">On this page</h4>
+        <button
+          className="toc__collapse"
+          onClick={() => setHidden(true)}
+          aria-label="Hide page outline"
+          title="Hide"
+        >
+          »
+        </button>
+      </div>
       <ul className="toc__list">
         {headings.map((h) => (
           <li

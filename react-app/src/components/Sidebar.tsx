@@ -4,8 +4,10 @@ import { navigationData, type NavItem } from '../data/navigation'
 
 interface SidebarProps {
   mobileOpen: boolean
+  hidden?: boolean
   onLinkClick: () => void
   onSearchClick?: () => void
+  onToggleHidden?: () => void
 }
 
 // Check if an item or any of its descendants match the query
@@ -30,7 +32,7 @@ function filterNavItems(items: NavItem[], query: string): NavItem[] {
     })
 }
 
-export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: SidebarProps) {
+export default function Sidebar({ mobileOpen, hidden, onLinkClick, onSearchClick, onToggleHidden }: SidebarProps) {
   const location = useLocation()
   const currentPath = decodeURIComponent(location.pathname).replace(/\/$/, '') || '/'
 
@@ -188,8 +190,20 @@ export default function Sidebar({ mobileOpen, onLinkClick, onSearchClick }: Side
   )
 
   return (
-    <nav className={`sidebar${mobileOpen ? ' mobile-open' : ''}`} id="sidebar">
-      <h3>Learning</h3>
+    <nav className={`sidebar${mobileOpen ? ' mobile-open' : ''}${hidden ? ' sidebar--hidden' : ''}`} id="sidebar">
+      <div className="sidebar__header">
+        <h3>Learning</h3>
+        {onToggleHidden && (
+          <button
+            className="sidebar__collapse"
+            onClick={onToggleHidden}
+            aria-label="Hide sidebar"
+            title="Hide sidebar"
+          >
+            «
+          </button>
+        )}
+      </div>
       {onSearchClick && (
         <button className="sidebar-search-btn" onClick={onSearchClick}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

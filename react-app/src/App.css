@@ -44,6 +44,75 @@ body {
   letter-spacing: -0.025em;
 }
 
+/* ======== Sidebar collapse / show ======== */
+
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar__header h3 {
+  margin-bottom: 0;
+}
+
+.sidebar__collapse {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.sidebar__collapse:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+/* Hide the whole sidebar on desktop. On mobile the fixed slide-in
+   (mobile-open) mechanism owns visibility, so don't display:none there. */
+@media (min-width: 769px) {
+  .sidebar--hidden { display: none; }
+}
+
+/* Floating "show sidebar" button (desktop only) */
+.sidebar-show-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.sidebar-show-btn:hover {
+  color: #111827;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+/* Collapse/show are desktop features; on mobile the hamburger handles nav */
+@media (max-width: 768px) {
+  .sidebar__collapse,
+  .sidebar-show-btn { display: none; }
+}
+
+
 .nav__items {
   list-style: none;
 }
@@ -471,6 +540,68 @@ body {
   color: #6b7280;
   margin-bottom: 0.75rem;
 }
+
+/* ======== TOC collapse / show ======== */
+
+.toc__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.toc__header .toc__title {
+  margin-bottom: 0;
+}
+
+.toc__collapse {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.toc__collapse:hover {
+  color: #111827;
+  background: #f3f4f6;
+}
+
+/* Compact re-open affordance shown when the TOC is collapsed */
+.toc-show-btn {
+  flex-shrink: 0;
+  align-self: flex-start;
+  position: sticky;
+  top: 2rem;
+  margin-top: 3rem;
+  writing-mode: vertical-rl;
+  padding: 0.75rem 0.35rem;
+  background: #fafafa;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toc-show-btn:hover {
+  color: #111827;
+  border-color: #3b82f6;
+}
+
+/* TOC is hidden on narrow screens anyway; hide its re-open tab too */
+@media (max-width: 1024px) {
+  .toc-show-btn { display: none; }
+}
+
 
 .toc__list {
   list-style: none;
