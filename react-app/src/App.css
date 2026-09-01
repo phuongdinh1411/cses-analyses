@@ -389,10 +389,9 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 3rem 4rem;
-  max-width: calc(100vw - 380px);
-  background: #ffffff;
   min-width: 0;
+  padding: 3rem 4rem;
+  background: #ffffff;
 }
 
 .page-title {
@@ -600,7 +599,7 @@ body {
 }
 
 /* TOC is hidden on narrow screens anyway; hide its re-open tab too */
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .toc-show-btn { display: none; }
 }
 
@@ -1155,10 +1154,8 @@ body {
   .sidebar { width: 320px; }
   .main-content {
     padding: 2.5rem 3rem;
-    max-width: calc(100vw - 320px);
   }
   .page-title { font-size: 2.25rem; }
-  .toc { display: none; }
   .content-body { max-width: 1000px; margin: 0 auto; }
 }
 
@@ -1191,7 +1188,6 @@ body {
 
   .main-content {
     padding: 2rem 1.5rem;
-    max-width: 100%;
   }
 
   .page-title { font-size: 2rem; margin-bottom: 2rem; }
@@ -1199,6 +1195,7 @@ body {
   .content h1 { font-size: 1.75rem; }
   .content h2 { font-size: 1.375rem; }
   .content h3 { font-size: 1.125rem; }
+  .toc { display: none; }
 }
 
 @media (max-width: 480px) {
