@@ -550,6 +550,7 @@ export const navigationData: NavItem[] = [
       { title: "Decision Map", url: "/pattern/decision-map" },
       { title: "LCA", url: "/pattern/lca" },
       { title: "Dynamic Programming", url: "/pattern/dp" },
+      { title: "DP — LeetCode Catalog", url: "/pattern/dp-leetcode-catalog" },
       { title: "Tree Patterns", url: "/pattern/tree" },
       { title: "Graph Patterns", url: "/pattern/graph" },
       { title: "Stack & Queue", url: "/pattern/stack-queue" },
