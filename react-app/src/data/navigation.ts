@@ -554,6 +554,7 @@ export const navigationData: NavItem[] = [
       { title: "Mastery Program", url: "/pattern/mastery" },
       { title: "LCA", url: "/pattern/lca" },
       { title: "Dynamic Programming", url: "/pattern/dp" },
+      { title: "DP — LeetCode Catalog", url: "/pattern/dp-leetcode-catalog" },
       { title: "Knapsack Variants (75 Problems)", url: "/pattern/knapsack-dp-youknowwho" },
       { title: "Sorting Patterns", url: "/pattern/sorting" },
       { title: "Tree Patterns", url: "/pattern/tree" },
