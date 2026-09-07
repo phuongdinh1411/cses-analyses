@@ -876,6 +876,8 @@ main:
     url: /cses-analyses/pattern/lca
   - title: Dynamic Programming
     url: /cses-analyses/pattern/dp
+  - title: DP — LeetCode Catalog
+    url: /cses-analyses/pattern/dp-leetcode-catalog
   - title: Tree Patterns
     url: /cses-analyses/pattern/tree
   - title: Graph Patterns
