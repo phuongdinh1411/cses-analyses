@@ -790,15 +790,6 @@ Start here
   88 (Easy*)   ──── Direction matters: fill backwards to avoid clobbering
     │
     ▼
-  11 (Medium)  ──── Prune the provably-worse move
-    │
-    ▼
-  75 (Medium)  ──── Three-way partition (Dutch flag)
-    │
-    ▼
-  15 (Medium)  ──── Sort + fixed anchor + two-pointer sweep
-    │
-    ▼
   141 (Easy*)  ──── Floyd's cycle detection (easy code, deep why)
     │
     ▼

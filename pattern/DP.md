@@ -72,7 +72,14 @@ Only (1)  → plain recursion / divide & conquer (subproblems don't repeat).
 Neither   → greedy, simulation, or a different paradigm.
 ```
 
-The third tell is the **ask**: DP answers *"count the ways"*, *"minimum/maximum cost"*, or *"is it possible?"* — never *"give me any one valid answer"* (that's usually greedy/backtracking).
+The third tell is the **ask**: DP's natural output is a *number* — *"count the ways"*,
+*"minimum/maximum cost"*, or *"is it possible?"*. That does not mean DP cannot hand you the actual
+solution. If the ask is *"give me the sequence/assignment itself"*, DP still applies; you just add
+a **reconstruction** step — keep the full table (or parent pointers) and walk backwards through the
+choices that produced the optimum, as §7 does for LCS. Plan for it up front, because the usual
+space optimisation of keeping only the last row throws away exactly the information reconstruction
+needs. Reach for backtracking instead when you need *all* valid answers, or when there is no
+optimal substructure to build on.
 
 `★ Insight ─────────────────────────────────────`
 - **Optimal substructure + overlapping subproblems** are the two license conditions. If subproblems don't overlap, memoization buys nothing and it's just recursion. If there's no optimal substructure (a locally-best choice can't be trusted), DP's whole "build from smaller answers" premise collapses.

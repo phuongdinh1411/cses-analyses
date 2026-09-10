@@ -1699,7 +1699,7 @@ def find_circle_num(is_connected):
         nonlocal count
         ra, rb = find(a), find(b)
         if ra != rb:                   # genuinely separate provinces
-            parent[ra] = rb
+            parent[ra] = rb            # no rank here — see the note below
             count -= 1                  # two provinces became one
 
     for i in range(n):
@@ -1708,6 +1708,14 @@ def find_circle_num(is_connected):
                 union(i, j)
     return count
 ```
+
+> **Why no union by rank here, when §9 insists on it?** This version attaches roots arbitrarily and
+> still passes, because *path compression alone* already gives O(log n) amortised — and with
+> `n <= 200` on this problem, the difference is invisible. The full DSU class in §9 keeps rank
+> because the two optimisations together give the near-constant α(n) bound, which starts to matter
+> when `n` reaches 10⁵ and an adversarial union order could otherwise build a deep chain before
+> compression flattens it. Rule of thumb: write the short version when you are pasting a DSU into
+> one function under contest pressure; use the §9 class when the DSU is the load-bearing structure.
 
 ```
 isConnected = [[1,1,0],

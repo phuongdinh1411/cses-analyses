@@ -148,14 +148,18 @@ After this DFS:
 - `sub[v]` = number of nodes in v's subtree (including v)
 - Removing edge (parent, v) splits tree into `sub[v]` and `n - sub[v]`
 
+This guide uses **one running example throughout** — the tree from LeetCode 834's first example,
+`n = 6`, `edges = [[0,1],[0,2],[2,3],[2,4],[2,5]]` — so that every `sub[]` array and every answer
+below refers to the same picture:
+
 ```
        0
-      /|\
-     1 2 3        sub = [6, 1, 3, 1, 2, 1]
-       |
-       4          Removing edge 0-2:
-       |            Left  = {2, 4, 5} → sub[2] = 3
-       5            Right = {0, 1, 3} → n - sub[2] = 3
+      / \
+     1   2         sub = [6, 1, 4, 1, 1, 1]
+        /|\
+       3 4 5       Removing edge 0-2:
+                     Below = {2, 3, 4, 5} → sub[2] = 4
+                     Above = {0, 1}       → n - sub[2] = 2
 ```
 
 ---
@@ -208,13 +212,15 @@ The only thing that changes between problems is `contribution()` and `adjust()`.
 
 ```
        0           answer[0] = sub[1] + sub[2] + sub[3] + sub[4] + sub[5]
-      /|\                    = 1 + 3 + 1 + 2 + 1 = 8
-     1 2 3
-       |           Each node contributes 1 per edge on its path to root
-       4           = its depth. So Σ sub[v] = Σ depth(node).
-       |
-       5
+      / \                    = 1 + 4 + 1 + 1 + 1 = 8
+     1   2
+        /|\        Each node contributes 1 per edge on its path to root
+       3 4 5       = its depth. So Σ sub[v] = Σ depth(node).
 ```
+
+Check the second reading directly: depths are `1, 1, 2, 2, 2` for nodes 1–5, summing to 8. Both
+routes give the same number because they are the same count grouped differently — by *edge* on the
+left, by *node* on the right.
 
 **Pass 2**: Moving root from u to child v:
 
@@ -266,24 +272,28 @@ class Solution:
 
 ```
        0
-      /|\
-     1 2 3
-       |
-       4
-       |
-       5
+      / \
+     1   2
+        /|\
+       3 4 5
 
-Pass 1: sub = [6, 1, 3, 1, 2, 1], answer[0] = 8
+Pass 1: sub = [6, 1, 4, 1, 1, 1], answer[0] = 8
 
-Pass 2:
-  answer[1] = 8 - 1 + 5 = 12
-  answer[2] = 8 - 3 + 3 = 8
-  answer[3] = 8 - 1 + 5 = 12
-  answer[4] = 8 - 2 + 4 = 10   (from node 2)
-  answer[5] = 10 - 1 + 5 = 14  (from node 4)
+Pass 2, sliding one edge at a time with answer[v] = answer[u] - sub[v] + (n - sub[v]):
+  answer[1] = 8 - 1 + 5 = 12   (from node 0)
+  answer[2] = 8 - 4 + 2 = 6    (from node 0)
+  answer[3] = 6 - 1 + 5 = 10   (from node 2)
+  answer[4] = 6 - 1 + 5 = 10   (from node 2)
+  answer[5] = 6 - 1 + 5 = 10   (from node 2)
 
-answer = [8, 12, 8, 12, 10, 14]
+answer = [8, 12, 6, 10, 10, 10]
 ```
+
+Notice `answer[2] = 6` is the minimum — node 2 is the tree's centre of gravity, with four of the
+six nodes one step away. Moving the root from 0 to 2 trades 4 nodes getting closer for only 2
+getting farther, which is exactly what `- sub[v] + (n - sub[v])` measures. Whenever
+`sub[v] > n/2`, the slide is a net improvement; that inequality is the whole reason a centroid
+minimises total distance.
 
 **Complexity**: O(n) time, O(n) space
 

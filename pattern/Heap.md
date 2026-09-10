@@ -1040,19 +1040,10 @@ Start here
   253 (Medium) ──── Min-heap of end times (interval scheduling)
     │
     ▼
-   23 (Hard)   ──── Merge k streams + the tiebreaker gotcha
+   23 (Hard)   ──── Merge k streams + the tiebreaker gotcha (§11)
     │
     ▼
   703 (Easy*)  ──── The same fixed-size trick, but online
-    │
-    ▼
-  347 (Medium) ──── Heap over a count map
-    │
-    ▼
-  253 (Medium) ──── Min-heap of end times (interval scheduling)
-    │
-    ▼
-   23 (Hard)   ──── Merge k streams + the tiebreaker gotcha (§11)
     │
     ▼
   632 (Hard)   ──── Heap of cursors + a running max

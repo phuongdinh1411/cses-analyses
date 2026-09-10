@@ -275,3 +275,13 @@ Ranked by mastery impact. Nothing here is wrong; it is material that is *missing
    the guide says rank is load-bearing.
 6. **Duplicate entries** in the `TwoPointers.md` and `Heap.md` practice ladders; LC 621 mentioned
    but never taught in `Heap.md`.
+
+## Round 2 follow-up — cross-file and consistency fixes
+
+| File | Defect | Resolution |
+|------|--------|------------|
+| `EdgeContribution.md` vs `Tree.md` | Both traced LC 834 and reached **different answers** (`[8,12,8,12,10,14]` vs `[8,12,6,10,10,10]`). Neither was arithmetically wrong — they used *different trees* under the same problem heading, and only `Tree.md` used the official LeetCode example. | Unified `EdgeContribution.md` onto the official tree `[[0,1],[0,2],[2,3],[2,4],[2,5]]`, stated up front that the file uses one running example, and rewrote §3's diagram, the pass-1 sum, and the pass-2 slide chain to match. Verified the code reproduces `[8,12,6,10,10,10]`. |
+| `DP.md:75` | Claimed DP answers "never *give me any one valid answer*". False — the guide teaches LCS reconstruction 800 lines later, and many DP problems require returning the witness. | Rewritten to say DP's natural output is a number but reconstruction (full table / parent pointers) recovers the witness, with the warning that row-only space optimisation destroys exactly what reconstruction needs. Backtracking is now scoped to *all* answers or no optimal substructure. |
+| `Heap.md` practice ladder | 347, 253, and 23 each appeared twice in sequence. | Removed the duplicate block, kept the `(§11)` annotation on the surviving LC 23 entry. |
+| `TwoPointers.md` practice ladder | 11, 75, and 15 each appeared twice. | Removed the duplicate block; ladder now ascends once through to 141/142. |
+| `Graph.md` LC 547 | The walkthrough's DSU attaches roots without rank while "When This Fails" calls rank load-bearing — a learner cannot tell which is right. | Added a note explaining that path compression alone gives O(log n) amortised and suffices at `n <= 200`, while the §9 class keeps rank for the α(n) bound at `n ≈ 10⁵`, with a rule of thumb for choosing. |
