@@ -736,7 +736,13 @@ sum([3, 2]) = 5   ✓
 
 ## 5. Monotonic Deque (Sliding Window Min/Max)
 
-The queue counterpart of monotonic stack. Maintains a window's min or max in **O(1) per element**.
+The queue counterpart of monotonic stack. Maintains a window's min or max in **O(1) amortized per
+element** — each index is pushed once and popped once, so the inner `while` loops do O(n) work in
+total even though a single step can pop many entries.
+
+> Same algorithm, other entry point: [Sliding Window §8](/pattern/sliding-window) frames this as a
+> window problem rather than a data-structure one. This section owns the amortized argument and
+> the min/max symmetry; that one owns the window-template context.
 
 ### The Core Idea
 
@@ -1646,6 +1652,118 @@ Does an element WAIT for a later element to resolve it?
   │
 42  Trapping Rain Water      pop = fill a horizontal layer — the capstone
 ```
+
+---
+
+## When This Fails
+
+A monotonic stack answers "nearest element to my left/right that is greater/smaller". It is the
+wrong tool when:
+
+- **You need the extreme of an arbitrary set, not the nearest unresolved neighbour.** That is a
+  [heap](/pattern/heap). The stack only ever knows about elements it has not yet resolved.
+- **You need the extreme of a sliding window.** A stack cannot expire elements from the far end;
+  use a monotonic *deque* (§5).
+- **Elements must be removed from the middle.** Neither structure supports it. Use a balanced BST
+  or an order-statistic structure.
+- **The nesting is not actually LIFO.** Interleaved bracket types like `([)]` are invalid
+  precisely because bracket matching *is* LIFO; if your problem allows interleaving, a stack does
+  not model it.
+
+Also watch the direction: scanning left-to-right with a decreasing stack gives *next greater to
+the right*. Get the direction or the strictness backwards and the code runs fine and answers a
+different question.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. Why is a monotonic stack O(n) when it contains a nested `while` loop?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Each index is pushed exactly once and popped at most once, so the total number of pops across the whole scan is bounded by `n`. A single step can pop many elements, but the *amortized* cost per element is O(1). Saying "O(n)" without "amortized" hides the actual argument.
+
+</details>
+
+**2. Strict (`>`) or non-strict (`>=`) when popping — how do you decide?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+It decides who owns ties, and it matters whenever equal values are adjacent. For "sum of subarray minimums", make one side strict and the other non-strict so each subarray is attributed to exactly one element — otherwise duplicates are double-counted or dropped entirely. Symmetric handling is the bug.
+
+</details>
+
+**3. What does the stack physically hold, and why is it usually indices rather than values?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Elements whose answer is still unknown, in monotone order. Indices, because you almost always need the *distance* (a span, a width, a rectangle) and not just the value — and you can always get the value from the index.
+
+</details>
+
+**4. In the largest-rectangle-in-histogram algorithm, what does popping an element mean?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The bar being popped has just found its right boundary: the current bar is the first one shorter than it. Its left boundary is whatever is now beneath it on the stack. Width is `right − left − 1`, and that rectangle can now be finalised.
+
+</details>
+
+**5. Why do histogram solutions append a sentinel of height 0?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+To force every remaining bar off the stack at the end. Without it, bars still on the stack when the scan finishes never get their rectangle computed — a whole class of answers silently missing.
+
+</details>
+
+**6. A monotonic deque for window maximum pops from both ends. What are the two rules and why do they differ?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Pop the **front** when its index has fallen out of the window (expiry — purely positional). Pop the **back** while its value is `<=` the incoming value (domination — a later, larger element beats it on both recency and size, so it can never be the answer again). One rule is about time, the other about value.
+
+</details>
+
+**7. How do two stacks implement a queue in amortized O(1)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Push onto an `in` stack. To pop, if the `out` stack is empty, drain `in` into `out` — which reverses the order — then pop from `out`. Each element moves between stacks at most once, so the transfer cost amortizes to O(1) per operation even though one `pop` can cost O(n).
+
+</details>
+
+**8. Trapping rain water and largest rectangle use the same skeleton. What differs?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The formula applied on pop. Histogram computes a rectangle bounded *below* by the popped bar's height. Trapping computes a horizontal layer bounded *above* by `min(left, right)` minus the popped floor. Same stack discipline, different arithmetic — which is exactly why recognising the skeleton is worth more than memorising either.
+
+</details>
+
+---
+
+## See Also
+
+- [Sliding Window §8](/pattern/sliding-window) — the same monotonic deque as §5, framed as a window problem instead of a data-structure one.
+- [Contribution Counting §3](/pattern/contribution-counting) — the payoff of §2: once each element's span is known, "sum of subarray minimums" becomes arithmetic.
+- [Prefix Sum](/pattern/prefix-sum) — the prefix-max/suffix-max approach to trapping rain water (§10), and the prefix array that turns "shortest subarray with sum >= k" into a deque problem.
+- [Graph Patterns §1](/pattern/graph) — where the BFS queue of §8 actually earns its keep.
+- [Heap / Priority Queue](/pattern/heap) — when you need the extreme of the *whole* set rather than the nearest unresolved neighbour.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

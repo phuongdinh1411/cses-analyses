@@ -225,6 +225,7 @@ graph TD
 |------------|-----------|-------|
 | Range sums, **no updates** after building | Prefix Sum | [Prefix Sum](/pattern/prefix-sum) |
 | Range **sum/xor** with point updates; simplest code | Fenwick Tree (BIT) | [Fenwick Tree (BIT)](/pattern/fenwick-tree) |
+| Range **add** *and* range **sum** — still no min/max | Fenwick, two-BIT trick | [Fenwick Tree §6](/pattern/fenwick-tree) |
 | Range **min/max/gcd/assign**, lazy propagation, non-invertible ops | Segment Tree | [Segment Tree](/pattern/segment-tree) |
 
 `★ Insight ─────────────────────────────────────`
@@ -268,6 +269,10 @@ When two techniques both seem to fit, these are the *predictable* confusions and
 | **Backtracking** vs **DP** | Do I need to *list actual solutions*, or just *count/optimize*? | Enumerate solutions → Backtracking. Count/optimize with overlapping subproblems → DP. |
 | **Contribution Counting** vs **direct DP/scan** | Does each element contribute *independently* to the total? | Independent per-element contribution → Contribution Counting. Contributions interact / threshold → DP or two-pointer. |
 | **Heap** vs **Sort** vs **BST** | Do I need the *top-k / streaming min* repeatedly, or the *whole thing sorted once*? | Repeated extract-min / running top-k → Heap. One-shot full order → Sort. Ordered + dynamic membership → balanced BST / ordered set. |
+| **BFS** vs **Dijkstra** | Do the edges have weights? | All weights equal (or unweighted) → BFS, O(V+E). Weights only 0 and 1 → 0-1 BFS with a deque. Arbitrary non-negative weights → Dijkstra. Running Dijkstra on an unweighted graph is not wrong, just a needless log factor. |
+| **Dijkstra** vs **Bellman-Ford** | Any negative edge weights, or a cap on the *number* of edges used? | Non-negative weights → Dijkstra. Any negative edge, or "at most k stops" (LC 787) → Bellman-Ford, whose round-by-round relaxation is exactly an edge-count bound. Dijkstra's greedy finalisation is what negative edges break. |
+| **Kruskal** vs **Prim** | Is the graph sparse or dense? | Sparse (E ≈ V) → Kruskal: sort edges, union-find. Dense (E ≈ V²) → Prim with a heap. Both give a correct MST; this is purely a constant-factor call. |
+| **Position-indexed** vs **value-indexed** range structure | Is the index axis "where in the array" or "which value"? | Range sums over positions → index by position. "How many values less than x so far" (inversions, LC 315/493) → compress values and index by *rank*. Getting this backwards is the single most common range-structure bug. |
 
 ---
 
@@ -347,6 +352,120 @@ All 18 guides, with the one-line cue that should make you reach for each.
 | Segment Tree | range min/max/assign with updates, lazy propagation | [Segment Tree](/pattern/segment-tree) |
 | Fenwick Tree (BIT) | range sum/xor with point updates, minimal code | [Fenwick Tree (BIT)](/pattern/fenwick-tree) |
 | Heap / Priority Queue | repeated extract-min, top-k, merge k lists, running median | [Heap / Priority Queue](/pattern/heap) |
+
+---
+
+## When This Fails
+
+When the router does not settle it, that is information, not failure. Three common reasons:
+
+- **The problem is a composition, not a single technique.** "Count subarrays whose sum is
+  divisible by k" is prefix sums *and* a hash map. "Shortest path where each node has a budget
+  dimension" is Dijkstra *on a state-expanded graph*. Route the *pieces*, not the whole.
+- **The stated input shape is a disguise.** A grid is a graph. A string is an array. `i -> nums[i]`
+  is a linked list. Reframe first, then route.
+- **Two techniques genuinely both work.** Then it is a constant-factor call, not a correctness
+  one — pick the one you can write without bugs under time pressure.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not recall:
+rereading an explanation feels like knowing, and it is not. A question you cannot answer cold
+names the exact guide to revisit.
+
+**1. Which two cues pick the technique family, and which one breaks a tie?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+**Input shape** picks the family (array / tree / graph / grid / set of choices), **the ask** picks the branch within it (a pair? a contiguous region? count the ways? a range query?), and **constraint size** breaks ties. Size usually wins when it disagrees with your instinct, because it is the hardest cue to fake.
+
+</details>
+
+**2. `n <= 20` appears in the constraints. What does that almost certainly mean?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Exponential in `n` is intended: `O(2^n)` or `O(2^n * n)`. Think [bitmask](/pattern/bitmask), [bitmask DP](/pattern/bitmask-dp-subset-partition), or [backtracking](/pattern/backtracking). If your candidate solution is polynomial, you have probably misread the problem — a bound that small exists to *permit* exponential work.
+
+</details>
+
+**3. `n <= 10^18`. What survives?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Nothing that touches every element. Only `O(log n)` or closed form: [binary search on the answer](/pattern/binary-search), matrix exponentiation, [digit DP](/pattern/digit-dp), or direct math.
+
+</details>
+
+**4. `n <= 10^5` with `q <= 10^5` queries and updates. What does that combination point at?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`O((n + q) log n)`. A [Fenwick tree](/pattern/fenwick-tree) or [segment tree](/pattern/segment-tree). The presence of *updates* alongside many queries is the specific cue — without updates, [prefix sums](/pattern/prefix-sum) suffice.
+
+</details>
+
+**5. Fenwick or segment tree — what is the single deciding question?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Is the aggregate **invertible**? A Fenwick answers `query(l,r)` as `prefix(r) - prefix(l-1)`, which requires an inverse. Sum and xor: yes, use a BIT. Min, max, gcd, range-assign: no inverse, use a segment tree.
+
+</details>
+
+**6. Two pointers or sliding window?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Do both pointers move forward, and do you care about the *region between* them? Sliding window. Do the pointers converge from opposite ends, or are you after a *pair* rather than a region? Two pointers. See [Sliding Window §11](/pattern/sliding-window).
+
+</details>
+
+**7. Backtracking or DP?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Do you need to *list the actual solutions*? Backtracking. Do you only need to *count* them or *optimize* over them, and do subproblems repeat? DP. Enumerating when a count would have done is the most expensive routing mistake there is.
+
+</details>
+
+**8. A 2-D grid appears. Which family?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Depends on the ask, not the shape. Flood fill, connected regions, or shortest path through a maze → treat the grid as an implicit [graph](/pattern/graph) (each cell a node, neighbours are its four sides). Count paths or minimise path cost under movement rules → [grid DP](/pattern/dp).
+
+</details>
+
+**9. BFS, 0-1 BFS, Dijkstra, or Bellman-Ford?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+By weight structure: all weights equal → BFS. Weights only 0 and 1 → 0-1 BFS with a deque. Arbitrary non-negative → Dijkstra. Any negative edge, or a cap on the *number* of edges used → Bellman-Ford. See [Graph §2](/pattern/graph).
+
+</details>
+
+---
+
+## Where to Go Next
+
+This page tells you *which* technique a problem calls for. Two other things are worth knowing:
+
+- **[Pattern Mastery Program](/pattern/mastery)** — routing is a skill, and reading this map does
+  not build it. That page has the spaced-repetition schedule, a per-pattern checklist with an
+  explicit definition of "done", and the cold-routing drill that trains exactly what this map
+  describes.
+- **Every guide's `## Self-Test` and `## When This Fails` sections.** Knowing when a technique
+  *stops* working is most of what separates recognising a pattern from being able to use it.
 
 ---
 

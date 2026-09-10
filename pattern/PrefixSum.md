@@ -1898,4 +1898,104 @@ Start
 
 ---
 
+## When This Fails
+
+Prefix sums answer range queries by *subtracting* two endpoints, so the technique needs an
+invertible operation and a static array:
+
+- **Values change between queries.** Rebuilding is O(n) per update. Switch to a
+  [Fenwick tree](/pattern/fenwick-tree) for O(log n) updates.
+- **The operation has no inverse.** Range min, max, or gcd cannot be recovered by subtraction.
+  Use a [segment tree](/pattern/segment-tree), or a sparse table for static RMQ.
+- **You want the best region, not all regions.** If the array is non-negative and you want the
+  longest or shortest qualifying window, [sliding window](/pattern/sliding-window) is O(n) with
+  O(1) space; prefix sums are overkill.
+- **Overflow in fixed-width languages.** Prefix sums grow to `n · max`. Python is fine; C++ needs
+  `long long`. Modular prefix sums additionally need `((a - b) % m + m) % m` in languages where
+  `%` can return a negative.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What two conditions must hold before you reach for prefix sums?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The operation must be **invertible** (so `range = prefix(r) − prefix(l−1)` is valid), and the array must be effectively **static** between queries (otherwise each update costs an O(n) rebuild).
+
+</details>
+
+**2. Why is `P` usually sized `n+1` with `P[0] = 0`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+So that `sum(a[l..r]) = P[r+1] − P[l]` needs no special case at `l = 0`. The extra leading zero removes an entire class of off-by-one bugs; it is worth the one extra slot every time.
+
+</details>
+
+**3. How does the hash-map variant count subarrays summing to k, and why does it work?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`sum(l..r) = k` is exactly `P[r+1] − P[l] = k`, i.e. `P[l] = P[r+1] − k`. Sweep `r` and keep a map from prefix value to how many times it has occurred; at each step add the count of `P[r+1] − k` seen so far. Seed the map with `{0: 1}` for subarrays that start at index 0.
+
+</details>
+
+**4. What is a difference array, and when is it the right tool?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The inverse construction: to add `v` over `[l, r]`, write `d[l] += v` and `d[r+1] -= v`, then take a prefix sum of `d` at the end to materialise the array. Right tool for many range *updates* followed by one final read — O(1) per update instead of O(r−l).
+
+</details>
+
+**5. Why does prefix XOR work for subarray-XOR queries, and what makes it possible at all?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+XOR is its own inverse: `x ^ x = 0`. So `xor(l..r) = P[r+1] ^ P[l]`, exactly parallel to subtraction for sums. Invertibility is the whole requirement, and XOR happens to satisfy it in an unusually convenient way.
+
+</details>
+
+**6. What is the 2-D range-sum formula, and where does the correction term come from?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`sum = P[r2+1][c2+1] − P[r1][c2+1] − P[r2+1][c1] + P[r1][c1]`. Subtracting the top strip and the left strip removes their overlap twice, so the top-left corner has to be added back — plain inclusion–exclusion.
+
+</details>
+
+**7. Prefix sums on a tree: what replaces "subtract the two endpoints"?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Root-to-node sums plus the LCA. The path sum from `u` to `v` is `P[u] + P[v] − 2·P[lca(u,v)]` (add `val[lca]` back if nodes rather than edges carry the weight). The LCA plays the role the left endpoint plays in an array.
+
+</details>
+
+---
+
+## See Also
+
+- [Fenwick Tree (BIT)](/pattern/fenwick-tree) — the upgrade the moment values change between queries; prefix sums are O(n) to rebuild, a BIT is O(log n) to update.
+- [Sliding Window](/pattern/sliding-window) — the cheaper tool when the array is non-negative and you want the *best* window rather than *all* range sums.
+- [Binary Search §10](/pattern/binary-search) — `bisect` over a monotone prefix array turns "shortest subarray with sum >= k" into O(n log n).
+- [Contribution Counting](/pattern/contribution-counting) — prefix XOR (§7) is the engine behind per-bit contribution counting.
+- [Tree Patterns](/pattern/tree) — root-to-node prefix sums (§9) need the traversal and LCA machinery there.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
+
 *Pattern mastered — stop rescanning the range and start differencing its endpoints. Choose the axis, confirm the operation can be undone, and every range query collapses to arithmetic on two precomputed values.*

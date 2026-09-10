@@ -750,4 +750,102 @@ Start here
 
 ---
 
+## When This Fails
+
+Digit DP counts numbers by building them digit by digit, so it needs the property to be
+**decidable from a small running summary**:
+
+- **The property is not digit-local.** "Is `x` prime?" or "is `x` a perfect square?" cannot be
+  tracked in a compact state as you place digits. Digit DP does not apply.
+- **The state explodes.** A state that must remember the entire prefix (say, all digits seen in
+  order) is `10^d` states — no better than enumeration. Digit DP pays off only when the summary
+  is small: a count, a remainder, a mask, a parity.
+- **You forgot `started` where leading zeros matter.** Counting numbers *with distinct digits*
+  must not treat the leading zeros of a short number as digits. If a leading zero would be
+  counted, you need the flag.
+- **The bound is exclusive or the range is on the wrong side.** `count(R) − count(L−1)` assumes
+  `count` is inclusive. Off by one here shifts every answer by one number.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What is the standard range trick, and what does it assume?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`answer([L, R]) = count(R) − count(L − 1)`, where `count(X)` counts qualifying values in `[0, X]`. It assumes `count` is inclusive of its bound. For huge `L` given as a string, subtract by decrementing the string rather than converting.
+
+</details>
+
+**2. What do the four standard parameters mean?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`pos`: which digit index you are placing. `tight`: whether the prefix so far exactly matches the bound, which caps the current digit. `started`: whether a non-zero digit has appeared yet, distinguishing real digits from leading padding. Plus the problem-specific state (a digit sum, a remainder, a mask).
+
+</details>
+
+**3. Why must `tight` be in the memo key but the bound itself need not be?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The bound is fixed for the whole call, so it is context, not state. `tight` varies between paths reaching the same `pos` and genuinely changes how many completions exist — cache them together and you get wrong counts.
+
+</details>
+
+**4. When can you omit `started`, and when is omitting it a bug?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Omit it when leading zeros are harmless — counting occurrences of the digit 1 from 0 upward, for instance. It is required whenever a leading zero would be miscounted as a real digit: distinct-digit problems, digit-set membership, first-digit constraints.
+
+</details>
+
+**5. What is the upper limit for the current digit when `tight` is true?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The corresponding digit of the bound. Placing exactly that digit keeps `tight` for the next position; placing anything smaller frees the remaining positions to range over all ten digits.
+
+</details>
+
+**6. What kinds of running state actually work here?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Small summaries: a digit sum (bounded by `9d`), a remainder mod `m`, a bitmask of digits used (`2^10`), a count, a parity, the previous digit. Anything requiring the full prefix defeats the purpose.
+
+</details>
+
+**7. How would you count the *sum* of qualifying numbers rather than how many there are?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Return a pair `(count, sum)` from the recursion. When you place digit `d` at a position with place value `p`, the contribution is `sum_child + d · p · count_child` — the child's own sum plus this digit repeated once for each completion beneath it.
+
+</details>
+
+---
+
+## See Also
+
+- [Dynamic Programming §12](/pattern/dp) — digit DP's place among the other DP families, if you arrived from the general DP guide.
+- [Bitmask Techniques](/pattern/bitmask) — when your digit state is a *set* of seen digits (LC 1012, 2376), the mask machinery lives there.
+- [Binary Search](/pattern/binary-search) — the other technique that survives `n <= 10^18`; if the property is not digit-local, search the answer instead of building it digit by digit.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
+
 *Pattern mastered — same template, different pluggable state and transitions.*

@@ -872,6 +872,8 @@ main:
   children:
   - title: Decision Map
     url: /cses-analyses/pattern/decision-map
+  - title: Mastery Program
+    url: /cses-analyses/pattern/mastery
   - title: LCA
     url: /cses-analyses/pattern/lca
   - title: Dynamic Programming

@@ -767,4 +767,103 @@ Tree + "distance / cost / balance across pairs"?
 
 ---
 
+## When This Fails
+
+Edge contribution rests on one fact: **removing an edge from a tree splits it into exactly two
+components.** Everything follows from that, and everything breaks without it:
+
+- **The graph is not a tree.** With a cycle, removing an edge disconnects nothing, so
+  `size × (n − size)` counts nothing meaningful.
+- **The per-pair quantity is not additive along the path.** The technique decomposes a sum over
+  pairs into a sum over edges, which requires each pair's value to be the sum of its edges'
+  contributions. Distance qualifies. "Maximum edge weight on the path" does not — use
+  [LCA](/pattern/lca) or a max-aggregating structure.
+- **You need one specific pair, not an aggregate.** Computing all-pairs machinery to answer
+  `dist(u, v)` once is backwards; that is a plain LCA query.
+- **The parent-to-child conversion is not O(1).** Then rerooting is no cheaper than running the
+  DFS from every root.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. Why does edge `(u, v)` appear in exactly `size[v] × (n − size[v])` paths?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Removing it splits the tree into `v`'s subtree (`size[v]` nodes) and the rest (`n − size[v]`). Every path between the two sides must use that edge, and no path within one side touches it. So the count is the product.
+
+</details>
+
+**2. What is the one-line formula for the sum of distances over all pairs?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`Σ_edges size[v] × (n − size[v])` (times the edge weight if weighted). One post-order DFS, no rerooting needed — rerooting is only required when you want a *per-node* answer rather than a single total.
+
+</details>
+
+**3. What is the mental flip that defines this pattern?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Stop iterating over pairs and asking "what is this pair's distance?" Start iterating over edges and asking "how many pairs use *me*?" The O(n²) enumeration becomes an O(n) sum because each edge's count has a closed form.
+
+</details>
+
+**4. In LC 834, why is the child's answer `ans[parent] − size[c] + (n − size[c])`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Moving the root from parent to child: the `size[c]` nodes inside the child's subtree each get one step closer, and the `n − size[c]` outside each get one step farther. Net O(1) edit of an answer you already have.
+
+</details>
+
+**5. Why must a grouped contribution be counted *before* merging child data into the parent?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+After merging you can no longer distinguish which pairs are newly joined by this edge from those already counted inside a child's subtree. Counting first attributes each pair to exactly one edge — the highest one on its path.
+
+</details>
+
+**6. What signals this pattern rather than plain tree DP?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The question asks for an aggregate over **all pairs or all nodes** — "sum of distances from every node", "total cost over every pair" — rather than a single rooted value. That plural is the cue.
+
+</details>
+
+**7. Distribute Coins (LC 979): what is the per-edge contribution?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The absolute value of the excess flowing across the edge. If a subtree has `k` coins and `m` nodes, `|k − m|` coins must cross the edge to its parent, and each crossing is one move. Sum those absolute values over all edges.
+
+</details>
+
+---
+
+## See Also
+
+- [Tree Patterns](/pattern/tree) — the traversal backbone (subtree sizes, post-order DFS) these formulas ride on, plus the farthest-node flavour of rerooting not covered here.
+- [Contribution Counting](/pattern/contribution-counting) — the same mental flip on arrays: count each element's contribution instead of enumerating subarrays.
+- [LCA](/pattern/lca) — when you need the distance between two *specific* nodes repeatedly rather than an aggregate over all pairs.
+- [Dynamic Programming §10](/pattern/dp) — the general tree-DP framing; rerooting is tree DP with a second, downward pass.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
+
 *Pattern mastered — same DFS backbone, different per-edge formulas and optional rerooting.*

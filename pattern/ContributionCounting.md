@@ -55,7 +55,13 @@ This is O(n^2) subarrays × O(cost per subarray).
 for each element/pair/bit:
     count how many subarrays it participates in → accumulate
 ```
-This is O(n) elements × O(1) per element = **O(n)**.
+This is O(n) elements × O(1) *amortized* per element = **O(n)**.
+
+The "amortized" matters. When the per-element count is a closed-form formula (§2, §7, §8) the
+work really is O(1) each. When you need each element's span — how far it dominates to the left
+and right (§3, §4) — you get those spans from a monotonic stack, where a single element can
+trigger many pops. No element is ever pushed or popped more than once across the whole scan, so
+the total stays O(n), but any individual step can be O(n).
 
 ### The Analogy
 
@@ -75,7 +81,7 @@ Total = Σ (contribution of each unit × number of subarrays containing that uni
 The "unit" can be an element, a pair, a bit position, a character occurrence --- whatever the problem decomposes into.
 
 `★ Insight ─────────────────────────────────────`
-This is the same summation-order swap that powers edge contribution on trees — here the "bridge" is a subarray boundary instead of a tree edge. `Σ_subarrays property = Σ_units (unit's value × subarrays containing it)`. The swap is legal only when a subarray's property is a **sum of independent per-unit terms** (sum, min-as-minimum-indicator, XOR-per-bit, distinctness-per-char). The instant the property depends on a *combination* of units — "at least k pairs", "max − min ≤ k" — the terms stop being independent and the swap is invalid (see [§9](#9-when-contribution-counting-does-not-work)).
+This is the same summation-order swap that powers [edge contribution on trees](/pattern/edge-contribution) — here the "bridge" is a subarray boundary instead of a tree edge. `Σ_subarrays property = Σ_units (unit's value × subarrays containing it)`. The swap is legal only when a subarray's property is a **sum of independent per-unit terms** (sum, min-as-minimum-indicator, XOR-per-bit, distinctness-per-char). The instant the property depends on a *combination* of units — "at least k pairs", "max − min ≤ k" — the terms stop being independent and the swap is invalid (see [§9](#9-when-contribution-counting-does-not-work)).
 `─────────────────────────────────────────────────`
 
 ---
@@ -671,5 +677,91 @@ Total = Σ (value of unit) × (number of subarrays/subsets containing that unit)
 ```
 
 Master the containment formula `(i+1) × (n-i)`, learn to combine it with monotonic stacks for min/max problems and with last-occurrence tracking for character problems, and you'll solve an entire class of "aggregate over all subarrays" problems in O(n).
+
+---
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. State the summation swap in one line, and the condition that makes it legal.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`Σ_over_subarrays f(subarray) = Σ_over_units (unit's value × how many subarrays contain it)`. Legal only when a subarray's value is a **sum of independent per-unit terms**. The moment the property depends on a *combination* of units ("max − min ≤ k", "at least k pairs"), the terms interact and the swap is invalid.
+
+</details>
+
+**2. How many subarrays contain index `i` in an array of length `n`, and why?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`(i + 1) × (n − i)`. There are `i + 1` choices of left endpoint (0 through `i`) and `n − i` choices of right endpoint (`i` through `n − 1`), chosen independently.
+
+</details>
+
+**3. For "sum of subarray minimums", what does each element need, and how do you get it?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The span over which it *is* the minimum: distance to the previous smaller element on the left and the next smaller on the right. A monotonic stack produces both in O(n) total. The element then contributes `value × left_span × right_span`.
+
+</details>
+
+**4. Why must the tie-breaking be asymmetric in that problem?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+With duplicates, a symmetric rule makes two equal elements each claim the subarrays spanning both — counted twice. Making one side strict and the other non-strict assigns every subarray to exactly one owner. This is the bug that only shows up on inputs with repeats.
+
+</details>
+
+**5. How does per-bit decomposition turn an XOR-sum problem into counting?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Bits are independent under XOR, so handle each of the 32 positions separately. For bit `b`, count how many subarrays have an odd number of set bits at that position; each contributes `2^b`. Sum over bits. One hard problem becomes 32 easy independent ones.
+
+</details>
+
+**6. Give a problem where contribution counting does *not* apply, and say why.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+"Count subarrays where max − min ≤ k." No element has an independent contribution — whether a subarray qualifies depends on two elements *jointly*, and their interaction is the whole constraint. That is a sliding-window or monotonic-deque problem.
+
+</details>
+
+**7. Is the per-element cost really O(1)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Only when it is a closed-form formula. When you need spans from a monotonic stack it is **amortized** O(1) — one element can trigger many pops, but each index is pushed and popped once so the total stays O(n).
+
+</details>
+
+---
+
+## See Also
+
+- [Stack & Queue §2](/pattern/stack-queue) — the monotonic stack primitive that §3-4 depend on. Learn it there first if the strict-vs-non-strict tie-breaking feels arbitrary.
+- [Edge Contribution & Rerooting](/pattern/edge-contribution) — the same mental flip on a tree: count what each *edge* contributes instead of enumerating node pairs.
+- [Bitmask Techniques](/pattern/bitmask) — background for the per-bit decomposition in §6.
+- [Prefix Sum §7](/pattern/prefix-sum) — prefix XOR, the tool §6 uses to make each bit's count O(n).
+- [Sliding Window](/pattern/sliding-window) — where to go when §9 tells you contribution counting does *not* apply, because the constraint is a threshold over the window rather than an independent per-element property.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
 
 *Pattern mastered — stop enumerating subarrays; count what each unit contributes and let the total assemble itself.*

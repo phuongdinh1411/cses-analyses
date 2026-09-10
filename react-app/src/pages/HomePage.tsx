@@ -108,7 +108,7 @@ export default function HomePage() {
             <span className="hero__stat-label">System Designs</span>
           </div>
           <div className="hero__stat">
-            <span className="hero__stat-number">19</span>
+            <span className="hero__stat-number">20</span>
             <span className="hero__stat-label">Patterns</span>
           </div>
         </div>

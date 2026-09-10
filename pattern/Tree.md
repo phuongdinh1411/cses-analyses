@@ -233,6 +233,12 @@ The whole recursion is one line because the base case (`None → 0`) and the com
 
 **Problem type**: "Query/update all nodes in the subtree of X"
 
+> **Not the same Euler tour as the LCA one.** This section records each node **once**, as a
+> `tin`/`tout` pair, giving an N-entry array in which a subtree is a contiguous range. The LCA
+> guide's [Euler tour](/pattern/lca) re-records a node on **every backtrack**, giving a 2N−1
+> array whose purpose is range-minimum over depths. Same DFS, different bookkeeping, different
+> payoff — do not copy one convention into the other's code.
+
 ### The Idea
 
 DFS assigns each node an **enter time** (`tin`) and **exit time** (`tout`). A node's entire subtree falls within `[tin[node], tout[node]]` in the flattened array.
@@ -428,101 +434,18 @@ class HLD:
 
 See the detailed [LCA Pattern Guide](/pattern/lca) for full coverage. Summary:
 
-### Binary Lifting (Most Common)
+### Binary Lifting — owned by the LCA guide
 
-```python
-LOG = 20
+The full binary-lifting class, the Euler-tour + sparse-table O(1)-query build, Tarjan's offline
+algorithm, and a numeric trace of every one of them live in
+**[LCA Patterns](/pattern/lca)** — that guide is canonical for ancestor queries. Duplicating the
+table here would just give you two versions to keep in sync.
 
-class LCA:
-    def __init__(self, n, adj, root=0):
-        self.depth = [0] * n
-        self.up = [[-1] * n for _ in range(LOG)]
-        self._dfs(root, -1, adj)
-        self._build()
-
-    def _dfs(self, node, par, adj):
-        self.up[0][node] = par
-        for nb in adj[node]:
-            if nb != par:
-                self.depth[nb] = self.depth[node] + 1
-                self._dfs(nb, node, adj)
-
-    def _build(self):
-        for k in range(1, LOG):
-            for v in range(len(self.depth)):
-                mid = self.up[k-1][v]
-                self.up[k][v] = -1 if mid == -1 else self.up[k-1][mid]
-
-    def lca(self, u, v):
-        if self.depth[u] < self.depth[v]:
-            u, v = v, u
-        diff = self.depth[u] - self.depth[v]
-        for k in range(LOG):
-            if diff & (1 << k):
-                u = self.up[k][u]
-        if u == v:
-            return u
-        for k in range(LOG - 1, -1, -1):
-            if self.up[k][u] != self.up[k][v]:
-                u = self.up[k][u]
-                v = self.up[k][v]
-        return self.up[0][u]
-
-    def dist(self, u, v):
-        return self.depth[u] + self.depth[v] - 2 * self.depth[self.lca(u, v)]
-```
-
-### Worked Trace (Binary Lifting)
-
-```
-Tree (rooted at 0):
-
-        0
-       / \
-      1   2
-     / \   \
-    3   4   5
-         \
-          6
-
-depth: 0->0  1->1  2->1  3->2  4->2  5->2  6->3
-```
-
-Build the sparse table. `up[k][v]` = the 2^k-th ancestor of `v` (-1 if it runs off the root).
-
-```
-up[0][v] (parent):
-  v:      0   1   2   3   4   5   6
-  up[0]: -1   0   0   1   1   2   4
-
-up[1][v] (grandparent = up[0][up[0][v]]):
-  up[1][3] = up[0][1] = 0
-  up[1][4] = up[0][1] = 0
-  up[1][5] = up[0][2] = 0
-  up[1][6] = up[0][4] = 1
-  (0,1,2 have no grandparent -> -1)
-  v:      0   1   2   3   4   5   6
-  up[1]: -1  -1  -1   0   0   0   1
-
-up[2][v] (4th ancestor = up[1][up[1][v]]):
-  up[2][6] = up[1][1] = -1   (nothing is 4 levels above depth-3 node 6)
-  everything else -1 too (all depths < 4)
-```
-
-Query **LCA(3, 6)**:
-
-```
-depth[3]=2, depth[6]=3  ->  6 is deeper, so lift 6 up first.
-diff = 3 - 2 = 1 = binary 1  ->  bit k=0 set:  6 -> up[0][6] = 4
-Now u=4, v=3, both at depth 2, but 4 != 3.
-
-Lift both together, high bit to low, only when ancestors DIFFER:
-  k=1: up[1][4]=0, up[1][3]=0  equal -> skip
-  k=0: up[0][4]=1, up[0][3]=1  equal -> skip
-
-Return up[0][4] = 1.   LCA(3, 6) = 1  ✓
-(ancestors of 3 = {3,1,0}; of 6 = {6,4,1,0}; deepest shared = 1)
-```
+What you need to carry back into *this* guide: binary lifting stores `up[k][v]` = the `2^k`-th
+ancestor of `v`, built in O(N log N), and answers `lca(u, v)` in O(log N) by first equalising the
+two depths, then lifting both nodes together from the high bit down, only while their ancestors
+*differ*. `dist(u, v) = depth[u] + depth[v] - 2 * depth[lca(u, v)]` — that identity is what makes
+LCA the workhorse behind path queries on trees.
 
 ### Technique Comparison
 
@@ -584,6 +507,12 @@ The trace shows the two cases: when the targets **split** (5 and 1 sit in differ
 
 **Problem type**: "Compute some value for every node as if it were the root"
 
+> **Who owns what.** This section owns the *generic two-pass template* and the farthest-node
+> flavour (two-longest-downward), which is the one rerooting shape that does not reduce to
+> counting edges. The **problem catalog** — LC 834, 979, 2049, 2858, and grouped same-colour
+> distances — plus the per-edge counting argument that explains *why* the slide formula is valid,
+> belongs to **[Edge Contribution & Rerooting](/pattern/edge-contribution)**.
+
 ### The Problem
 
 Normal tree DP computes the answer rooted at one node. Rerooting computes the answer for **all N roots** in O(N) total (not O(N^2)).
@@ -613,46 +542,6 @@ Final:              answer[node] = combine(dp_down[node], dp_up[node])
 
 answer[2] = combine(dp_down[2], dp_up[2])
            = answer as if 2 were the root
-```
-
-### Example: Sum of Distances to All Nodes
-
-**Problem**: For each node, find the sum of distances to all other nodes.
-
-```python
-def sum_of_distances(n, adj):
-    subtree_size = [1] * n
-    dp_down = [0] * n   # sum of distances within subtree
-    answer = [0] * n
-
-    # Phase 1: DFS down (post-order)
-    def dfs_down(node, par):
-        for child in adj[node]:
-            if child == par:
-                continue
-            dfs_down(child, node)
-            subtree_size[node] += subtree_size[child]
-            dp_down[node] += dp_down[child] + subtree_size[child]
-            #                                  ^^^^^^^^^^^^^^^^^^
-            #                   each node in child's subtree is 1 edge farther
-
-    # Phase 2: DFS up (pre-order)
-    def dfs_up(node, par):
-        answer[node] = dp_down[node]  # will add dp_up contribution
-        if par != -1:
-            # dp_up = parent's answer minus our subtree's contribution
-            # then add 1 for each node outside our subtree
-            outside = answer[par] - (dp_down[node] + subtree_size[node])
-            answer[node] += outside + (n - subtree_size[node])
-
-        for child in adj[node]:
-            if child != par:
-                dfs_up(child, node)
-
-    dfs_down(0, -1)
-    answer[0] = dp_down[0]
-    dfs_up(0, -1)
-    return answer
 ```
 
 ### Example: Farthest Node from Each Node (Tree Distances I)
@@ -710,7 +599,7 @@ def farthest_from_each(n, adj):
 
 #### Walkthrough — LC 834 Sum of Distances in Tree
 
-**This template solves: LC 834 (Sum of Distances), LC 543/1245 (Tree Diameter via two-longest rerooting), LC 2477 (Minimum Fuel — subtree-size rerooting), and CSES "Tree Distances I/II".**
+**This template solves: LC 834 (Sum of Distances), LC 543/1245 (Tree Diameter via two-longest rerooting), LC 2477 (Minimum Fuel — subtree-size rerooting), and CSES "Tree Distances I/II".** For the rest of the family — LC 979 (Distribute Coins), 2049 (Highest Score), 2858 (Minimum Edge Reversals), grouped same-colour distances — see [Edge Contribution & Rerooting](/pattern/edge-contribution).
 
 > There is an undirected tree of `n` nodes. Return an array `ans` where `ans[i]` is the sum of distances from node `i` to every other node.
 
@@ -1180,6 +1069,13 @@ result = [2,1,1,1,1,1,1]   ✓
 ## 9. Tree DP Patterns
 
 A collection of the most common tree DP patterns.
+
+> **Who owns what.** [Dynamic Programming §10](/pattern/dp) is canonical for generic tree DP —
+> the select/skip recurrence, LC 337 in full, matching, and colouring — because that is where it
+> belongs among the other DP families. This section keeps the same patterns in *tree* vocabulary
+> and connects them to the machinery that is unique to trees: subtree aggregation feeding
+> [Euler-tour flattening](#2-euler-tour-subtree-queries), rerooting (§5), and virtual trees (§10).
+> If the two ever disagree, DP §10 wins.
 
 ### Pattern 1: Subtree Aggregation
 
@@ -1764,6 +1660,115 @@ Then the heavy machinery, when a plain DFS is too slow:
   distance-based path counting     → centroid decomposition (§7)
   only K ≪ N nodes matter per query → virtual tree (§10)
 ```
+
+---
+
+## When This Fails
+
+Most tree techniques rely on properties that vanish the moment the structure is not a tree:
+
+- **The graph has a cycle.** Exactly one path between any two nodes is what makes subtree
+  aggregation, LCA, and rerooting work. With cycles you are in
+  [general graph](/pattern/graph) territory.
+- **The tree is a forest.** LCA is undefined across components. Root each component separately
+  and answer "same component?" first.
+- **Recursion depth.** A DFS on a path-shaped tree of 10⁵ nodes overflows Python's default limit
+  of 1000. Either `sys.setrecursionlimit(200_000)` or write the traversal iteratively.
+- **Rerooting where the parent-to-child update is not O(1).** If converting a parent's answer to
+  a child's requires re-aggregating, rerooting is no better than the naive O(n²).
+- **The two-BFS diameter trick on a non-tree or on negative weights.** It is valid for trees with
+  non-negative edges only.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What single structural fact do subtree aggregation, LCA, and rerooting all rely on?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+There is exactly one simple path between any two nodes. That is what makes a post-order DFS see each subtree exactly once, makes "the" ancestor well-defined, and makes removing an edge split the tree into precisely two components.
+
+</details>
+
+**2. What do `tin` and `tout` buy you, and what is the ancestor test?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+They flatten the tree so that a node's entire subtree occupies a contiguous index range — which lets a segment tree or BIT answer subtree queries. `u` is an ancestor of `v` exactly when `tin[u] <= tin[v] <= tout[u]`.
+
+</details>
+
+**3. Two things in this repo are called an "Euler tour". How do they differ?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+This guide's §2 records each node once as a `tin`/`tout` pair — `n` entries, subtree becomes a range. The [LCA guide](/pattern/lca) records a node again on every backtrack — `2n−1` entries, enabling range-minimum over depths. Same DFS, different bookkeeping, different payoff.
+
+</details>
+
+**4. Rerooting: what do the two passes each compute?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The post-order pass computes, for every node, the answer restricted to its own subtree (bottom-up facts). The pre-order pass pushes down the correction for everything *outside* that subtree, converting the parent's complete answer into the child's in O(1).
+
+</details>
+
+**5. In sum-of-distances, why is the slide `ans[c] = ans[node] − size[c] + (n − size[c])`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Moving the root from `node` to child `c`: every node inside `c`'s subtree gets one step closer (there are `size[c]` of them, so subtract), and every node outside gets one step farther (there are `n − size[c]`, so add).
+
+</details>
+
+**6. Why does two-BFS find the diameter, and when is that argument invalid?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+From any start, the farthest node is provably an endpoint of some diameter; a second BFS from there finds the other endpoint. The argument needs the unique-path property, so it holds for trees with non-negative edges and fails on general graphs.
+
+</details>
+
+**7. What does small-to-large merging buy, and what makes the bound work?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Merging each node's children's sets while always inserting the *smaller* set into the larger. Any single element can be moved only when the set containing it at least doubles, so it moves at most `log n` times — total O(n log n).
+
+</details>
+
+**8. When is centroid decomposition the right tool?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Counting or querying over *paths* that may pass anywhere in the tree. Removing a centroid splits the tree into pieces of at most half the size, so the recursion is `O(log n)` deep and every path is examined at exactly one level.
+
+</details>
+
+---
+
+## See Also
+
+- [LCA](/pattern/lca) — the canonical guide for ancestor queries: five techniques compared, with the binary-lifting and Euler-tour implementations in full.
+- [Edge Contribution & Rerooting](/pattern/edge-contribution) — the canonical guide for distance/cost rerooting (LC 834, 2049, 2858) and the per-edge counting argument.
+- [Dynamic Programming §10](/pattern/dp) — the canonical guide for generic tree DP (select/skip, matching, colouring).
+- [Segment Tree](/pattern/segment-tree) / [Fenwick Tree (BIT)](/pattern/fenwick-tree) — the range structures that §2's `tin`/`tout` flattening and §3's HLD chains feed into.
+- [Graph Patterns](/pattern/graph) — the general case; drop the acyclicity and most of this guide's shortcuts disappear.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

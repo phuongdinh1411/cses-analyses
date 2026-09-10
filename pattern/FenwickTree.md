@@ -6,7 +6,7 @@ permalink: /pattern/fenwick-tree
 
 # Fenwick Tree (Binary Indexed Tree) — Comprehensive Guide
 
-A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix aggregates with point updates in O(log N) using one flat array and a single bit trick. It does less than a [segment tree](/cses-analyses/pattern/segment-tree) but with far less code and a smaller constant factor. When your aggregate is **invertible** (sum, xor) and you need point-update + prefix/range-query, the BIT is the right tool.
+A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix aggregates with point updates in O(log N) using one flat array and a single bit trick. It does less than a [segment tree](/pattern/segment-tree) but with far less code and a smaller constant factor. When your aggregate is **invertible** (sum, xor) and you need point-update + prefix/range-query, the BIT is the right tool.
 
 ---
 
@@ -365,7 +365,7 @@ class BIT2D:
                 - self.prefix(r2, c1 - 1) + self.prefix(r1 - 1, c1 - 1))
 ```
 
-Inclusion-exclusion on four prefix rectangles gives the submatrix sum — same shape as the [2D prefix-sum](/cses-analyses/pattern/prefix-sum) formula, but now updatable.
+Inclusion-exclusion on four prefix rectangles gives the submatrix sum — same shape as the [2D prefix-sum](/pattern/prefix-sum) formula, but now updatable.
 
 ---
 
@@ -374,6 +374,10 @@ Inclusion-exclusion on four prefix rectangles gives the submatrix sum — same s
 ### Count Inversions
 
 Sweep right-to-left over value-ranks; each element asks "how many already-seen values are smaller."
+
+This guide is canonical for the counting / order-statistics family (LC 315, LC 493, CSES
+Inversions). [Segment Tree §7](/pattern/segment-tree) shows the same sweep on a segment tree —
+worth reading only if you already have one built for another part of the problem.
 
 ```python
 def count_inversions(arr):
@@ -615,7 +619,10 @@ Start here
   Range Update Queries (CSES)     ──── Two-BIT trick: range add + range sum (§6)
     │
     ▼
-  Count Inversions (LC 493 / CSES) ─── Value-indexed BIT: count smaller-so-far (§9)
+  Count Inversions (LC 315 / CSES) ─── Value-indexed BIT: count smaller-so-far (§9)
+    │
+    ▼
+  Reverse Pairs (LC 493, Hard)    ──── Same BIT, but the query bound is 2*x (§9)
     │
     ▼
   K-th / order-statistic descent  ──── find_kth: one O(log N) bit walk (§7)
@@ -626,10 +633,113 @@ Start here
 
 ---
 
+## When This Fails
+
+A Fenwick tree answers `query(l, r)` as `prefix(r) − prefix(l−1)`, so it lives or dies by
+invertibility:
+
+- **Non-invertible aggregates.** Min, max, and gcd cannot be recovered by subtraction. A
+  "max BIT" exists but only supports prefix maxima with increase-only updates — it cannot do
+  arbitrary range max. Use a [segment tree](/pattern/segment-tree).
+- **Zero-indexing.** The `i & -i` walk requires 1-based indices; index 0 makes `lowbit` zero and
+  the loop never terminates. Always offset by one internally.
+- **Value-indexed use without compression.** Indexing by raw value needs an array the size of the
+  value range. Compress to ranks first.
+- **No updates at all.** A [prefix sum](/pattern/prefix-sum) is O(1) per query. Do not build a
+  BIT for static data.
+- **Confusing the two axes.** Indexing by position answers "sum of a range of positions";
+  indexing by value rank answers "how many values below x". Mixing them up is the most common
+  bug in this family.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What does `i & -i` compute, and why is it the whole data structure?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The lowest set bit of `i`. It defines each index's *responsibility range*: `tree[i]` covers the `i & -i` elements ending at `i`. Every prefix decomposes into O(log n) such ranges — one per set bit of the index — which is exactly why both operations are O(log n).
+
+</details>
+
+**2. Which direction does update walk, and which direction does query?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Update climbs to the ancestors that include `i`: `i += i & -i`. Query descends through the disjoint blocks composing the prefix: `i -= i & -i`. Swapping them is a silent wrong answer.
+
+</details>
+
+**3. Why must a Fenwick tree be 1-indexed?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`0 & -0 == 0`, so both loops would fail to advance and spin forever. Store data at internal index `i + 1` and translate at the boundary.
+
+</details>
+
+**4. What can a BIT do that people assume it cannot?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Range update with range query for **sums**, using two BITs (one for the linear coefficient, one for the constant). Also order-statistic descent: find the k-th element in one O(log n) bit walk, no binary search wrapper. What it genuinely cannot do is non-invertible aggregates.
+
+</details>
+
+**5. What is the k-th element descent, and why is it O(log n) rather than O(log² n)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Walk down the implicit tree from the highest power of two, greedily taking a step whenever the accumulated count stays below `k`. It uses the BIT's own bit structure directly instead of doing a binary search whose every probe costs another O(log n) query.
+
+</details>
+
+**6. How do you count inversions with a BIT?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Compress values to ranks, then sweep the array asking, for each element, how many already-inserted values are smaller (or larger, depending on direction) via a prefix query — then insert it. O(n log n) total. LC 315 is this directly; LC 493 is the same sweep with the query bound at `2x`.
+
+</details>
+
+**7. Can you build a BIT in O(n)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Yes. Copy the values in, then for each `i` add `tree[i]` into its parent `i + (i & -i)` if that is in range. Each node is pushed to its parent once, giving O(n) instead of `n` separate O(log n) updates.
+
+</details>
+
+**8. Position-indexed or value-indexed — which do you need?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Ask what the index axis *means*. "Sum of `a[l..r]`" indexes by position. "How many values less than x have I seen so far" indexes by value rank. Same code, entirely different problems, and picking wrong is the classic bug here.
+
+</details>
+
+---
+
 ## See Also
 
-- [Segment Tree Patterns](/cses-analyses/pattern/segment-tree) — when you need min/max/gcd, range assign, lazy propagation, or persistence.
-- [Prefix Sum Patterns](/cses-analyses/pattern/prefix-sum) — static (no-update) range queries in O(1).
+- [Segment Tree Patterns](/pattern/segment-tree) — when you need min/max/gcd, range assign, lazy propagation, or persistence.
+- [Prefix Sum Patterns](/pattern/prefix-sum) — static (no-update) range queries in O(1).
+- [Tree Patterns §2](/pattern/tree) — `tin`/`tout` flattening turns a subtree into a contiguous range, which is what makes subtree-sum-with-point-update a BIT problem.
+- [Binary Search](/pattern/binary-search) — contrast with §7: the k-th descent walks the BIT's own bit structure instead of wrapping a query in a search loop.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

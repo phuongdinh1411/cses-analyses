@@ -23,8 +23,8 @@ Graphs model relationships: cities connected by roads, users in a social network
 | Check if graph is **bipartite** | BFS/DFS 2-coloring | [7](#7-bipartite-graphs) |
 | Detect **cycles** | DFS coloring / Union-Find | [8](#8-cycle-detection) |
 | Manage **connected components** dynamically | Union-Find (DSU) | [9](#9-union-find-dsu) |
-| Find **max flow / min cut** | Ford-Fulkerson / Dinic's | [10](#10-network-flow) |
-| Find **maximum matching** | Hopcroft-Karp / Hungarian | [11](#11-matching) |
+| Find **max flow / min cut** | Dinic's | [10](#10-network-flow) |
+| Find **maximum matching** | Kuhn's augmenting-path DFS | [11](#11-matching) |
 | Find **Eulerian path/circuit** | Hierholzer's | [12](#12-eulerian-paths-and-circuits) |
 | Solve boolean satisfiability | 2-SAT via SCC | [13](#13-2-sat) |
 | Handle **multi-source** shortest path | Multi-source BFS / virtual node | [14](#14-multi-source-and-virtual-nodes) |
@@ -102,6 +102,7 @@ Each row is unpacked as a full walkthrough inside its family's section below.
 
 ## Table of Contents
 
+0. [Graph Representations](#0-graph-representations)
 1. [Graph Traversals](#1-graph-traversals)
 2. [Shortest Paths](#2-shortest-paths)
 3. [Minimum Spanning Tree](#3-minimum-spanning-tree)
@@ -115,9 +116,12 @@ Each row is unpacked as a full walkthrough inside its family's section below.
 11. [Matching](#11-matching)
 12. [Eulerian Paths and Circuits](#12-eulerian-paths-and-circuits)
 13. [2-SAT](#13-2-sat)
+13.5. [Family F Anchor: Advanced Graph Patterns in LeetCode](#135-family-f-anchor-advanced-graph-patterns-in-leetcode)
 14. [Multi-Source and Virtual Nodes](#14-multi-source-and-virtual-nodes)
 15. [DP on Graphs](#15-dp-on-graphs)
 16. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
+17. [Common Mistakes](#17-common-mistakes)
+18. [Practice Order](#18-practice-order)
 
 ---
 
@@ -1788,7 +1792,7 @@ class Dinic:
 
 ## 11. Matching
 
-### Bipartite Matching (Kuhn's / Hungarian)
+### Bipartite Matching (Kuhn's augmenting-path algorithm)
 
 **Problem**: Find the maximum set of edges with no shared endpoints in a bipartite graph.
 
@@ -1822,9 +1826,16 @@ Maximum Matching = Minimum Vertex Cover
                  = Total Nodes - Maximum Independent Set
 ```
 
-### General Matching
+Kuhn's runs one augmenting-path DFS per left node: **O(V · E)**. Good enough for interview-scale
+graphs and for every LC problem that reduces to matching.
 
-For non-bipartite graphs, use **Edmond's blossom algorithm** (complex, usually use a library).
+### Beyond Kuhn's (not implemented here)
+
+| Need | Algorithm | Why it is not in this guide |
+|------|-----------|-----------------------------|
+| Faster bipartite matching on large graphs | **Hopcroft-Karp**, O(E·√V) | Only pays off past ~10⁴ nodes; never required for an LC problem |
+| Maximum-**weight** bipartite matching (assignment problem) | **Hungarian**, O(V³) | For the small `n ≤ 20` assignment problems that actually appear, use bitmask DP — see [Bitmask DP](/pattern/bitmask-dp-subset-partition) |
+| Matching in a **non-bipartite** graph | **Edmonds' blossom** | Genuinely intricate; reach for a library |
 
 ---
 
@@ -1941,7 +1952,7 @@ def solve_2sat(n, clauses):
 
 ---
 
-## Family F anchor: advanced graph patterns in LeetCode
+## 13.5 Family F Anchor: Advanced Graph Patterns in LeetCode
 
 Family F (flow §10, matching §11, Eulerian §12, 2-SAT §13) is the rarest in interviews, and clean numbered LC problems are scarce — so this family gets **one full walkthrough (Eulerian) plus notes**, since a real LC problem exists for Euler but flow/2-SAT usually appear disguised inside Hard problems. The signals:
 
@@ -2064,11 +2075,18 @@ dist = dijkstra(virtual, adj, n + 1)
 
 ## 15. DP on Graphs
 
+> **Who owns what.** [Dynamic Programming §14](/pattern/dp) is canonical for DP-on-DAG as a *DP
+> technique*, including the memoized implicit-DAG framing (LC 329). This section owns the
+> graph-side prerequisite that guide does not cover: what to do when your graph has **cycles** —
+> condense it into its SCC DAG (§5) first, then DP over the condensation.
+
 ### DP on DAG
 
 Process nodes in topological order. Most DP on graphs requires no cycles.
 
 ```python
+from collections import deque
+
 # Longest path in DAG
 def longest_path(adj, n):
     in_deg = [0] * n
@@ -2093,6 +2111,8 @@ def longest_path(adj, n):
 ### Counting Paths in DAG
 
 ```python
+from collections import deque
+
 def count_paths(adj, n, src, dst):
     # Assumes topological processing order (Kahn's below guarantees it);
     # dp[src]=1 seeds the source. Counts paths in a DAG — a cycle would
@@ -2317,4 +2337,123 @@ E. Structural analysis       "critical edge", single failure   → Tarjan disc/l
 F. Advanced (flow/euler/2SAT) "use every edge", matching        → Hierholzer/flow (§10-13) LC 332
 ```
 
+---
 
+## When This Fails
+
+Each graph algorithm has a precondition, and violating it produces a plausible wrong answer
+rather than a crash:
+
+- **Dijkstra with negative edges.** Its greedy finalisation assumes distances only grow when you
+  extend a path. One negative edge invalidates that. Use Bellman-Ford.
+- **Bellman-Ford without the extra pass.** `V−1` rounds compute distances; detecting a negative
+  cycle needs one more round and a check for further improvement.
+- **Floyd-Warshall with `k` not outermost.** The `k` loop must enclose `i` and `j`, because the
+  DP means "shortest path using only intermediates from the first `k` nodes". Swap the order and
+  it silently computes something else.
+- **Topological sort on a cyclic graph.** Kahn's simply emits fewer than `V` nodes. Always
+  compare the processed count against `V` rather than trusting the output.
+- **Undirected cycle detection that forgets the parent edge.** Every undirected edge looks like a
+  2-cycle. Skip the edge you arrived on — but with *multi*-edges, skip by edge id, not by node.
+- **Union-Find without both path compression and union by rank/size.** You lose the
+  near-constant amortized bound and can degrade to O(n) per operation.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. Why is Dijkstra's greedy choice safe, and what exactly does a negative edge break?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When the minimum-distance unfinalised node is popped, no other route can beat it — any alternative starts with an already-longer prefix and can only add non-negative weight. A negative edge destroys "can only add", so a finalised node may later be improvable, and Dijkstra never revisits it.
+
+</details>
+
+**2. What does the stale-entry check `if d > dist[u]: continue` do?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Discards heap entries superseded by a better path found after they were pushed. It is the substitute for decrease-key: instead of updating in place, push a new entry and ignore obsolete ones on the way out.
+
+</details>
+
+**3. How does Bellman-Ford detect a negative cycle?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+After `V−1` relaxation rounds, every shortest path with no cycle is final (a simple path has at most `V−1` edges). Run one more round: any further improvement proves a path with `V` or more edges is still getting shorter, which requires a negative cycle.
+
+</details>
+
+**4. Why must `k` be the outermost loop in Floyd-Warshall?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`dp[k][i][j]` is the shortest path from `i` to `j` using only nodes `0..k` as intermediates. It is defined in terms of `dp[k−1]`, so every `(i,j)` pair must be updated for intermediate `k` before moving to `k+1`. Any other nesting reads a half-built layer.
+
+</details>
+
+**5. Kahn's algorithm produces a shorter list than expected. What does that mean?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The graph has a cycle. Nodes inside a cycle never reach in-degree zero, so they are never enqueued. Comparing the processed count against `V` is the standard cycle test.
+
+</details>
+
+**6. What is the bridge condition in Tarjan's algorithm, and why?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Edge `(u, v)` is a bridge when `low[v] > disc[u]`: nothing in `v`'s subtree can reach `u` or above except through this edge, so removing it disconnects the graph. The articulation-point condition is `low[v] >= disc[u]` — reaching `u` itself is enough to keep the graph connected but still makes `u` critical.
+
+</details>
+
+**7. When updating `low[u]` from a back edge to `v`, do you use `low[v]` or `disc[v]`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`disc[v]`. A back edge reaches `v` itself, not wherever `v` could subsequently reach. Using `low[v]` over-propagates and makes real bridges disappear.
+
+</details>
+
+**8. BFS, 0-1 BFS, Dijkstra, Bellman-Ford — pick by weight structure.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+All weights equal → BFS, O(V+E). Weights only 0 and 1 → 0-1 BFS with a deque (push-front on 0, push-back on 1), O(V+E). Arbitrary non-negative → Dijkstra, O((V+E) log V). Any negative → Bellman-Ford, O(VE).
+
+</details>
+
+**9. How is 2-SAT solved with SCCs?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Build the implication graph: each clause `(a ∨ b)` adds `¬a → b` and `¬b → a`. A solution exists iff no variable shares an SCC with its own negation. When one exists, read it off by setting each variable according to which of `x`, `¬x` comes later in reverse topological order.
+
+</details>
+
+---
+
+## See Also
+
+- [Heap / Priority Queue](/pattern/heap) — the data structure Dijkstra and Prim are built on, including the lazy-deletion trick that replaces decrease-key.
+- [Dynamic Programming §14](/pattern/dp) — DP on DAGs from the DP side, with the memoized implicit-DAG framing (LC 329) that §15 only sketches.
+- [Tree Patterns](/pattern/tree) — a tree is a connected acyclic graph, and it unlocks techniques (rerooting, LCA, HLD) that general graphs cannot use.
+- [Stack & Queue §8](/pattern/stack-queue) — the queue mechanics behind BFS, and the deque behind 0-1 BFS (§2.4).
+- [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) — TSP and "visit every node" once `V <= 20`.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.

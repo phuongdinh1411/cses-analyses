@@ -48,7 +48,7 @@ LCA is a **building block** for many tree problems:
 | Find LCA in a **binary-tree-node** form, one query | Recursive "found below me?" | [Walkthrough — LC 236](#walkthrough--lc-236-lca-of-a-binary-tree) |
 | Find LCA in a **BST**, exploit ordering | Walk down until values split | [Walkthrough — LC 235](#walkthrough--lc-235-lca-of-a-bst) |
 | Answer **many** LCA queries on a big tree (online) | Binary Lifting | [Technique 2](#technique-2-binary-lifting) |
-| Answer LCA in **O(1)** after preprocess | Euler Tour + Sparse Table | [Technique 3](#technique-3-euler-tour--sparse-table-rmq) |
+| Answer LCA in **O(1)** after preprocess | Euler Tour + Sparse Table | [Technique 3](#technique-3-euler-tour-with-backtracking-2n1-visits--sparse-table-rmq) |
 | Answer **all** queries given upfront (offline) | Tarjan + DSU | [Technique 5](#technique-5-tarjans-offline-lca) |
 | Get the **Kth ancestor** of a node | Binary Lifting table alone | [Walkthrough — LC 1483](#walkthrough--lc-1483-kth-ancestor-of-a-tree-node) |
 | Get **directions** (L/R/U) between two tree nodes | Root-paths, strip common prefix | [Walkthrough — LC 2096](#walkthrough--lc-2096-step-by-step-directions) |
@@ -586,7 +586,20 @@ getKthAncestor(6, 3): k=3 = binary 11 -> bit0: up[0][6]=2; bit1: up[1][2]=-1 -> 
 
 ---
 
-## Technique 3: Euler Tour + Sparse Table (RMQ)
+## Technique 3: Euler Tour with Backtracking (2N−1 visits) + Sparse Table (RMQ)
+
+> **"Euler tour" means two different things, and mixing them up will cost you an afternoon.**
+>
+> | | This section | [Tree Patterns §2](/pattern/tree#2-euler-tour-subtree-queries) |
+> |---|---|---|
+> | What gets recorded | Every node, again on **every backtrack** | Each node once, as a `tin`/`tout` pair |
+> | Array length | **2N−1** visits | N entries |
+> | What it buys you | LCA = shallowest node between two first-occurrences → RMQ | A subtree is a **contiguous range** → segment tree / BIT |
+> | Companion structure | Sparse table over depths | Range structure over the flattened array |
+>
+> They are both legitimately called an Euler tour and both come from the same DFS. Use the
+> backtracking form here when you need ancestors; use the `tin`/`tout` form there when you need
+> subtree aggregates.
 
 ### Idea
 
@@ -1100,5 +1113,114 @@ Two nodes need relating through shared history?  -> it's LCA
  ↓
 Company Queries II / Distance Queries (CSES) — lifting LCA + depth arithmetic
 ```
+
+---
+
+## When This Fails
+
+LCA machinery assumes a fixed, rooted tree. It fails or needs adapting when:
+
+- **The tree changes.** Binary lifting and Euler+sparse-table are built once over a static tree.
+  Link/cut trees handle dynamic structure; nothing in this guide does.
+- **The input is a forest.** "Lowest common ancestor" is undefined across components. Answer
+  "same component?" first, then run per-component tables.
+- **`LOG` is undersized.** It must satisfy `2^LOG > n` (or `>= max depth`). Too small and the
+  highest jump silently caps out, giving a wrong ancestor with no error.
+- **One query on a LeetCode binary tree.** Building an O(n log n) table to answer a single query
+  is pure waste. The recursive split-point search is O(n) with no preprocessing.
+- **You need path *updates*, not ancestor queries.** LCA reads the tree; changing values along a
+  path needs HLD plus a segment tree ([Tree Patterns §3](/pattern/tree)).
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What does `up[k][v]` hold, and what is the recurrence that builds it?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The `2^k`-th ancestor of `v`, or a sentinel if that runs off the root. `up[k][v] = up[k-1][ up[k-1][v] ]` — half the jump twice. The `k` loop must be outermost so that level `k−1` is complete before level `k` reads it.
+
+</details>
+
+**2. Walk the three steps of a binary-lifting LCA query.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+One: if the depths differ, lift the deeper node by exactly the difference, using the set bits of that difference. Two: if the nodes are now equal, that node is the answer. Three: otherwise lift both together from the high bit down, jumping only where `up[k][u] != up[k][v]`. Afterwards `up[0][u]` is the LCA.
+
+</details>
+
+**3. Why does step three jump only when the ancestors *differ*?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Because you are searching for the highest node that is *not* yet common. Jumping when ancestors are equal would overshoot past the LCA. Stopping just below it means both nodes end up as children of the LCA, so one more parent step lands exactly on it.
+
+</details>
+
+**4. How does the Euler-tour reduction turn LCA into RMQ?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Record every visit including backtracks (`2n−1` entries) along with each node's depth. Between the first occurrences of `u` and `v`, the tour must pass through their LCA and never goes shallower. So the LCA is the minimum-depth entry in that range — a range-minimum query, answerable in O(1) with a sparse table.
+
+</details>
+
+**5. Compare the four main techniques on preprocessing and query cost.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Binary lifting: O(n log n) build, O(log n) query, easy to extend to k-th ancestor. Euler + sparse table: O(n log n) build, **O(1)** query, best when queries greatly outnumber nodes. HLD: O(n) build, O(log n) query, free if you already have HLD. Tarjan offline: near O(n + q) total, but requires all queries up front.
+
+</details>
+
+**6. What is the distance formula, and why does it work?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`dist(u,v) = depth[u] + depth[v] − 2·depth[lca(u,v)]`. The two root-to-node paths share exactly the root-to-LCA prefix, so subtracting it twice removes the double count.
+
+</details>
+
+**7. `LOG = 20` — where does 20 come from, and what breaks if it is too small?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`2^20 > 10^6`, so it covers any tree up to about a million nodes. Too small and the highest available jump caps out below the required depth: far ancestors become unreachable and the query returns a wrong node **silently**, with no index error to warn you.
+
+</details>
+
+**8. You need a single LCA on a LeetCode binary tree. What is the right approach?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The recursive split-point search: return the node if it is `p` or `q`, recurse both sides, and the first node that receives a non-null result from *both* sides is the LCA. O(n) time, no preprocessing. Binary lifting only pays off across many queries.
+
+</details>
+
+---
+
+## See Also
+
+- [Tree Patterns](/pattern/tree) — the surrounding machinery: traversals, subtree flattening (§2), HLD (§3), diameter, centroid decomposition.
+- [Edge Contribution & Rerooting](/pattern/edge-contribution) — when you need an aggregate over *all* pairs rather than the distance between two named nodes; rerooting gets it in O(n) with no LCA at all.
+- [Segment Tree](/pattern/segment-tree) — pair it with HLD when you need to update values *along paths*, not just query ancestors.
+- [Fenwick Tree (BIT)](/pattern/fenwick-tree) — flatten the tree with `tin`/`tout` and a BIT gives subtree sum with point update.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
 
 *Pattern mastered — stop re-climbing the tree one step at a time; find the one node where two paths diverge and let distance, path, and directions fall out of it.*

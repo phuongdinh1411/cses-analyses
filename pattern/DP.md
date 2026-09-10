@@ -49,7 +49,7 @@ The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, 
 | Compute a subtree value from its **children** | Tree | [10](#10-tree-dp) |
 | Track **which of ≤20 items** are used (visit-all, assign) | Bitmask | [11](#11-bitmask-dp) |
 | Count numbers in **`[L,R]`** with a **digit** property | Digit | [12](#12-digit-dp) |
-| Compute a **probability / expected count** over random steps | Probability | [13](#13-probability-expected-value-dp) |
+| Compute a **probability / expected count** over random steps | Probability | [13](#13-probability--expected-value-dp) |
 | DP where dependencies form a **directed acyclic graph** | DP on DAG | [14](#14-dp-on-dags) |
 | A correct DP that is **too slow** and needs speeding up | Optimizations | [15](#15-dp-optimizations) |
 
@@ -147,7 +147,7 @@ One canonical LeetCode problem per family — the walkthrough for each lives in 
 10. [Tree DP](#10-tree-dp)
 11. [Bitmask DP](#11-bitmask-dp)
 12. [Digit DP](#12-digit-dp)
-13. [Probability / Expected Value DP](#13-probability-expected-value-dp)
+13. [Probability / Expected Value DP](#13-probability--expected-value-dp)
 14. [DP on DAGs](#14-dp-on-dags)
 15. [DP Optimizations](#15-dp-optimizations)
 16. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
@@ -640,7 +640,12 @@ def knapsack_bounded(weights, values, counts, W):
 
 #### Walkthrough — LC 416 Partition Equal Subset Sum
 
-**This template solves: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum — assign +/- signs), LC 698 (Partition to K Equal Subsets), LC 1049 (Last Stone Weight II — minimize |two-group difference|).**
+**This template solves: LC 416 (Partition Equal Subset Sum), LC 494 (Target Sum — assign +/- signs), LC 1049 (Last Stone Weight II — minimize |two-group difference|).**
+
+> **Not LC 698.** "Partition to K Equal Sum Subsets" only collapses to this knapsack when `k = 2`
+> (one target subset, everything else is the complement). For general `k` you must track *which*
+> items each of the `k` buckets took, which is a mask state, not a capacity —
+> see [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition).
 
 > Given an array of positive integers, determine whether it can be split into **two subsets with equal sum**.
 
@@ -1228,6 +1233,12 @@ def max_profit_k(prices, k):
 
 ## 10. Tree DP
 
+> **Who owns what.** This section is canonical for generic tree DP — select/skip, matching,
+> colouring, and LC 337. [Tree Patterns §9](/pattern/tree) restates the same patterns in tree
+> vocabulary and connects them to the tree-only machinery (Euler flattening, rerooting, virtual
+> trees). For "the answer for every node as root", go straight to
+> [Edge Contribution & Rerooting](/pattern/edge-contribution).
+
 ### Pattern
 
 DP on a rooted tree where each node's value depends on its children.
@@ -1367,6 +1378,12 @@ This is called **rerooting technique** and avoids O(N^2) recomputation.
 
 ## 11. Bitmask DP
 
+> **Who owns what.** This section owns bitmask DP's *place among the DP families* — the state
+> shapes, the three cost classes, and the LC 847 walkthrough. The mechanics live elsewhere:
+> [Bitmask Techniques](/pattern/bitmask) for bit operations, subset enumeration, and SOS DP;
+> [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) for the O(3ⁿ) partition
+> family (LC 1986, 2305, 698, 943, 1494). Read this to know *when*, read those to know *how*.
+
 ### Pattern
 
 When you have a **small set** (N <= 20) and need to track which elements are used. Represent the set as a bitmask.
@@ -1456,6 +1473,15 @@ Check by hand: the only distinct cycle is `0→1→2→0` = 10+20+15 = **45** (i
 
 **Problem**: N workers, N tasks. Assign each worker exactly one task to minimize total cost.
 
+**Convention** (shared with [Bitmask Techniques](/pattern/bitmask), so the two guides read the
+same): the **mask holds the workers already used**, and `popcount(mask)` is therefore the index of
+the **next job to fill**. Assigning greedily in job order costs nothing — every worker still gets
+considered for every job across the state space — and it removes a whole dimension from the table.
+
+You will also see the dual convention in the wild (mask = jobs filled, `popcount` = next worker).
+It is equally correct; just never mix the two halfway through a solution, because `cost[a][b]`
+silently transposes on you.
+
 ```python
 def min_assignment(cost):
     n = len(cost)
@@ -1464,23 +1490,26 @@ def min_assignment(cost):
     dp[0] = 0
 
     for mask in range(1 << n):
-        worker = bin(mask).count('1')  # which worker we're assigning next
-        if worker >= n:
+        if dp[mask] == INF:
             continue
-        for task in range(n):
-            if mask & (1 << task):
+        job = bin(mask).count('1')      # mask = workers used, so this is the next job
+        if job >= n:
+            continue
+        for worker in range(n):
+            if mask & (1 << worker):    # this worker is already assigned
                 continue
-            dp[mask | (1 << task)] = min(
-                dp[mask | (1 << task)],
-                dp[mask] + cost[worker][task]
-            )
+            nxt = mask | (1 << worker)
+            dp[nxt] = min(dp[nxt], dp[mask] + cost[worker][job])
 
     return dp[(1 << n) - 1]
 ```
 
+Time O(2ⁿ · n), space O(2ⁿ). LC 1879 (Minimum XOR Sum of Two Arrays) is this template with
+`cost[i][j] = nums1[i] ^ nums2[j]`.
+
 #### Walkthrough — LC 847 Shortest Path Visiting All Nodes
 
-**This template solves: LC 847 (Shortest Path Visiting All Nodes), LC 943 (Find the Shortest Superstring — overlap-cost TSP), LC 1494 (Parallel Courses II), LC 526 (Beautiful Arrangement — count over used-mask).**
+**This template solves: LC 847 (Shortest Path Visiting All Nodes), LC 943 (Find the Shortest Superstring — overlap-cost TSP), LC 526 (Beautiful Arrangement — count over used-mask).**
 
 > An undirected connected graph of `n` nodes (`0..n-1`) is given as an adjacency list. Return the length of the **shortest walk that visits every node**. You may start and end anywhere, and revisit nodes and edges.
 
@@ -1542,13 +1571,32 @@ bin(mask).count('1')  # or mask.bit_count() in Python 3.10+
 
 ### Complexity
 
-Time: O(2^N * N) or O(2^N * N^2), Space: O(2^N * N)
+There are three distinct cost classes here, and picking the wrong one is how people mis-budget a
+bitmask solution:
 
-Only feasible for N <= ~20.
+| Shape of the transition | Time | Example |
+|-------------------------|------|---------|
+| From each mask, pick one **unused element** | O(2^N · N) | assignment DP, count-arrangements |
+| From each `(mask, last)`, move to one **next element** | O(2^N · N²) | TSP, LC 847, LC 943 |
+| From each mask, iterate every **submask** of it | **O(3^N)** | k-way partition, set cover, LC 2305 |
+
+The O(3^N) row surprises people. Summing `2^popcount(mask)` over all `2^N` masks gives `3^N`, not
+`4^N` — see [Bitmask Techniques](/pattern/bitmask) for the derivation and
+[Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) for the partition family
+that lives entirely in this row.
+
+Space: O(2^N) or O(2^N · N). Only feasible for N <= ~20 (N <= ~16 if you are in the O(3^N) row).
 
 ---
 
 ## 12. Digit DP
+
+> **Who owns what.** [Digit DP](/pattern/digit-dp) is canonical: seven worked problems, the
+> `tight`/`started` flag discipline, and the pitfalls. This section covers the range trick and
+> one walkthrough so you can recognise the family from inside the DP guide. Note the flag
+> difference: the template below omits `started` because LC 233 counts from 0 and leading zeros
+> are harmless there. Any problem where a leading zero would be *counted as a digit* needs the
+> `started` flag — that is why the canonical guide carries it everywhere.
 
 ### Pattern
 
@@ -1781,6 +1829,11 @@ The recurrence works *forward* in probability: dividing by 8 at each level sprea
 
 ## 14. DP on DAGs
 
+> **Who owns what.** This section is canonical for the DP framing — memoized recursion over an
+> *implicit* DAG (LC 329, where the DAG is "cell → strictly larger neighbour" and never gets
+> built). [Graph Patterns §15](/pattern/graph) owns the graph-side pipeline: condense a cyclic
+> graph into its SCC DAG first, then run this.
+
 ### Pattern
 
 Any DP where dependencies form a Directed Acyclic Graph. Process nodes in **topological order**.
@@ -1854,7 +1907,12 @@ def count_paths_dag(adj, n, src, dst):
     return dp[dst]
 ```
 
-**This template solves: LC 329 (Longest Increasing Path in a Matrix), LC 1494 (Parallel Courses II), LC 2050 (Parallel Courses III), LC 851 (Loud and Rich).**
+**This template solves: LC 329 (Longest Increasing Path in a Matrix), LC 2050 (Parallel Courses III), LC 851 (Loud and Rich).**
+
+> **LC 1494 (Parallel Courses II) is not one of these**, despite looking like a dependency-order
+> problem. The `k`-courses-per-semester cap means you choose a *submask* of the currently
+> available courses each step, so the state is a mask, not a topological position:
+> [Bitmask DP — Subset Partition §9](/pattern/bitmask-dp-subset-partition).
 
 #### Walkthrough — LC 329 Longest Increasing Path in a Matrix
 
@@ -2168,7 +2226,9 @@ Raise that matrix to the `n`-th power with the same `mat_pow` binary-exponentiat
 | LCS | O(MN) | O(MN) or O(N) |
 | Interval DP | O(N^3) or O(N^2) | O(N^2) |
 | Tree DP | O(N) | O(N) |
-| Bitmask DP | O(2^N * N) | O(2^N) |
+| Bitmask DP (pick next element) | O(2^N * N) | O(2^N) |
+| Bitmask DP (TSP, `dp[mask][last]`) | O(2^N * N^2) | O(2^N * N) |
+| Bitmask DP (submask enumeration) | O(3^N) | O(2^N) |
 | Digit DP | O(D * S * 10) | O(D * S) |
 | Matrix Exponent. | O(K^3 log N) | O(K^2) |
 
@@ -2232,6 +2292,132 @@ PROBABILITY   carry probability / expected value         LC 688  Knight Probabil
 DP ON DAG     topological / memoized order over a DAG    LC 329  Longest Increasing Path in a Matrix
 OPTIMIZATION  CHT / Knuth / SOS / matrix-power speedups   LC 1137 N-th Tribonacci (huge-N → matrix expo)
 ```
+
+---
+
+## When This Fails
+
+DP needs **optimal substructure** (the best solution is built from best solutions of
+subproblems) and **overlapping subproblems** (the same subproblem recurs). Missing either one:
+
+- **No overlap.** Distinct subproblems every time means memoization only adds bookkeeping — it is
+  plain divide and conquer, or backtracking.
+- **No optimal substructure.** If a globally best answer can require a locally suboptimal
+  subsolution, the recurrence is wrong. This is the failure that produces a confidently incorrect
+  answer.
+- **The state is incomplete.** If two situations share a state key but have different futures,
+  memoization returns the wrong cached value. The fix is always to add the missing dimension —
+  which is why "what exactly does `dp[i]` mean?" must be answerable in one sentence.
+- **Greedy actually works.** Coin change with arbitrary denominations needs DP; with canonical
+  currency systems, greedy is correct and far faster. Prove it before assuming it.
+- **The state space does not fit.** `2^n` with `n = 40` is not a table. Consider
+  meet-in-the-middle, or a different formulation entirely.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What two properties must a problem have before DP applies?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Optimal substructure (an optimal solution is composed of optimal solutions to subproblems) and overlapping subproblems (the same subproblem is solved repeatedly). Without overlap it is divide and conquer; without optimal substructure the recurrence is simply wrong.
+
+</details>
+
+**2. What five questions define any DP, in order?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+What does the state mean (in one sentence)? What is the recurrence? What are the base cases? Which cell holds the answer? In what iteration order must the table be filled so every dependency is ready? If you cannot answer the first, the rest cannot be right.
+
+</details>
+
+**3. 0/1 knapsack versus unbounded — what is the code difference and why?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The inner capacity loop direction. Descending for 0/1: reading `dp[w - weight]` from the *previous* item's row means each item is used at most once. Ascending for unbounded: it reads the current row, already updated with this item, allowing reuse. One character apart, completely different problems, no error message.
+
+</details>
+
+**4. LIS in O(n log n): what does the `tails` array hold?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`tails[i]` is the smallest possible tail of any increasing subsequence of length `i+1`. It is not itself a valid subsequence. Its *length* is the answer. Use `bisect_left` for strictly increasing, `bisect_right` for non-decreasing.
+
+</details>
+
+**5. Why must interval DP iterate by increasing interval length?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`dp[i][j]` depends on strictly shorter intervals inside `[i, j]`. Length-outer ordering guarantees every dependency is computed. Looping `i` and `j` directly reads uninitialised cells.
+
+</details>
+
+**6. Digit DP: why must the `tight` flag be part of the memo key?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`tight` means "the prefix so far exactly matches the bound's prefix", which restricts the digits still available. Two states identical except for `tight` have genuinely different completion counts, so sharing a cache entry between them is wrong.
+
+</details>
+
+**7. Name the three cost classes of bitmask DP.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Pick one unused element per mask: O(2^n · n). Track `(mask, last)` and move to a next element (TSP): O(2^n · n²). Enumerate every submask of every mask (partition): **O(3^n)**, because `Σ 2^popcount(mask)` over all masks equals `3^n`.
+
+</details>
+
+**8. Top-down or bottom-up — what actually decides it?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Top-down when the reachable state space is sparse (it only visits states you need) or when the recurrence is easier to express recursively. Bottom-up when you want to drop a dimension via rolling arrays, or to avoid Python's recursion limit. They compute the same table.
+
+</details>
+
+**9. When is greedy enough and DP wasted?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When a locally optimal choice is provably globally optimal — activity selection by earliest end time, Huffman coding, coin change in a canonical system. The word is *provably*: greedy that merely passes the samples is the classic wrong answer.
+
+</details>
+
+---
+
+## See Also
+
+The DP families that grew their own guides:
+
+- [Digit DP](/pattern/digit-dp) — the full treatment of §12: seven worked problems, `tight`/`started` discipline, and the pitfalls.
+- [Bitmask Techniques](/pattern/bitmask) — bit operations, subset enumeration, and SOS DP, the machinery §11 assumes.
+- [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) — the O(3^n) partition family (LC 1986, 2305, 698, 943, 1494).
+- [Tree Patterns](/pattern/tree) — tree DP in its natural habitat, plus rerooting, HLD, and centroid decomposition.
+- [Edge Contribution & Rerooting](/pattern/edge-contribution) — "answer for every node as root" in O(n), the rerooting cousin of tree DP.
+- [Graph Patterns §15](/pattern/graph) — DP on DAGs from the graph side, including the SCC-condensation pipeline that turns a cyclic graph into a DAG you can DP over.
+- [Backtracking](/pattern/backtracking) — when you need the actual solutions, not just the count or the optimum.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
 
 *Pattern mastered — every DP is a choice at each step whose subproblems repeat. Name the state, name the transition, and the family names itself.*
 

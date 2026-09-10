@@ -45,7 +45,7 @@ All subsets of {0, 1, 2}:
 |--------------|-----------|-------------|---------|
 | List every subset of `n` items | Subset enumeration | **78** Subsets | [§2](#2-subset-enumeration-techniques) · [walkthrough](#problem-78--subsets) |
 | Split items into `k` fair groups / buckets | Subset DP over groups | **2305** Fair Distribution, **698** Partition to K | [§3](#3-bitmask-dp-patterns) · [walkthrough](#problem-2305--fair-distribution-of-cookies) |
-| Assign `n` workers to `n` jobs, min cost | Assignment DP `dp[mask]` | **698** (disguise) | [§3 Pattern 2](#pattern-2-assignment-problem) |
+| Assign `n` workers to `n` jobs, min cost | Assignment DP `dp[mask]` | **1879** Min XOR Sum of Two Arrays | [§3 Pattern 2](#pattern-2-assignment-problem) |
 | Visit ALL nodes, cost depends on where I am now | TSP `dp[mask][last]` | **847** Shortest Path Visiting All Nodes | [§3 Pattern 1](#pattern-1-traveling-salesman-problem-tsp) · [walkthrough](#problem-847--shortest-path-visiting-all-nodes) |
 | Aggregate a value over all submasks of every mask | SOS DP | **1178** Valid Words for Puzzles | [§5](#5-sos-sum-over-subsets-dp) · [walkthrough](#problem-1178--number-of-valid-words-for-each-puzzle) |
 | Find max XOR of a subset | XOR (linear) basis | **1707** Max XOR With Element | [§5 max_xor_subset](#5-sos-sum-over-subsets-dp) |
@@ -737,6 +737,22 @@ class Solution:
 - Sort descending + prune `nums[0] > target` kills the exponential early: the biggest item must fit in a bucket, and large-first packing fails fast. Same idea powers the backtracking solution, but here it just trims the DP.
 `─────────────────────────────────────────────────`
 
+#### The other LC 698 solution (and why the complexities differ)
+
+You will find this problem solved two ways, with two different costs. Both are correct; they are
+different algorithms, not a contradiction.
+
+| | **Mod-target** (this section) | **Peel-off** ([Bitmask DP guide §5](/pattern/bitmask-dp-subset-partition)) |
+|---|---|---|
+| State | `dp[mask]` = fill level of the *current* bucket, mod `target` | `dp[mask]` = how many complete buckets the items in `mask` form |
+| Transition | add one unused item | remove one whole valid submask |
+| Cost | **O(2ⁿ · n)** | **O(3ⁿ)** |
+| Generalises to | nothing much — it leans on every bucket having the *same* target | any per-group predicate: unequal targets, capacity limits, min-max objectives (LC 1986, 2305, 1723) |
+
+Prefer mod-target when you actually have LC 698's equal-target structure — it is asymptotically
+cheaper. Reach for peel-off the moment the groups stop being interchangeable, which is what the
+rest of the partition family looks like.
+
 ### Problem 2305 — Fair Distribution of Cookies
 
 **Difficulty**: Medium · **This template solves**: the [Partition DP](#pattern-3-partition-dp) submask enumeration — split a set among `k` recipients.
@@ -1398,6 +1414,113 @@ Quick tell: if only *which items* matters → `dp[mask]`; if *the order/last ite
 ```
 
 **Decision in one line**: only *which items* matters → `dp[mask]`; *order or current position* matters → `dp[mask][last]`; must *partition* a set → submask loop; *aggregate over all submasks* → SOS DP.
+
+---
+
+## When This Fails
+
+Bitmask techniques are bounded by the size of the set, and by what a bit can represent:
+
+- **`n > 20` or so.** `2^n` states stops fitting. At `n ≈ 40`, meet-in-the-middle splits the set
+  in half and searches `2^(n/2)` on each side. Beyond that, look for different structure.
+- **Submask enumeration at `n > 16`.** `3^16` is about 43 million — borderline. `3^20` is 3.5
+  billion — not happening. Know which cost class you are in before you write it.
+- **Order matters within the subset.** A mask records *membership only*. If the sequence matters,
+  you need a second dimension (`dp[mask][last]`), which multiplies the state count by `n`.
+- **Elements are not distinguishable by position.** A bitmask indexes items by a fixed position;
+  multiset problems where only counts matter are usually better served by a different state.
+- **Off-by-one on shifts.** `1 << n` is the full-mask *bound*, `(1 << n) - 1` is the full mask.
+  In C++, `1 << 31` overflows a signed int — use `1LL`.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. Give the five bit operations you cannot function without.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Test bit `i`: `mask & (1 << i)`. Set it: `mask | (1 << i)`. Clear it: `mask & ~(1 << i)`. Toggle it: `mask ^ (1 << i)`. Population count: `bin(mask).count('1')` or `mask.bit_count()` in Python 3.10+.
+
+</details>
+
+**2. What does `mask & (mask - 1)` do, and `mask & -mask`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`mask & (mask - 1)` clears the lowest set bit — loop on it to visit set bits in O(popcount) rather than O(n). `mask & -mask` isolates the lowest set bit, which is exactly the Fenwick tree's `lowbit`.
+
+</details>
+
+**3. Write the submask enumeration idiom and explain the termination.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`sub = mask; while sub: ...; sub = (sub - 1) & mask`. Subtracting one borrows through the low zeros and the mask-and re-restricts to `mask`'s bits, walking every submask in decreasing order. It stops at zero, so handle the empty submask separately if you need it.
+
+</details>
+
+**4. Why is submask enumeration over all masks O(3^n) rather than O(4^n)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Each of the `n` bit positions is independently in one of three states: in the submask, in the mask but not the submask, or in neither. That is `3^n` (mask, submask) pairs total. Equivalently `Σ_mask 2^popcount(mask) = 3^n` by the binomial theorem.
+
+</details>
+
+**5. What is SOS DP computing, and at what cost?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+For every mask, an aggregate over all of its submasks — in O(2^n · n) instead of the naive O(3^n). It processes one bit position at a time, letting each mask absorb the value of the mask with that bit cleared, which is a subset-sum analogue of a prefix sum in `n` dimensions.
+
+</details>
+
+**6. `dp[mask]` or `dp[mask][last]` — how do you decide?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Ask whether the future depends on *which* item you finished on. Assignment and partition: no, only membership matters, so `dp[mask]`. TSP or shortest superstring: yes, because the next cost depends on your current position, so add the `last` dimension and pay a factor of `n`.
+
+</details>
+
+**7. LC 698 has two solutions with different complexities. What are they and when does each apply?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Mod-target `dp[mask]` tracking the current bucket's fill level, O(2^n · n) — valid because all `k` buckets share one target. Peel-off via submask enumeration, O(3^n) — slower but works for unequal targets, capacities, and min-max objectives. Use the first on LC 698 itself, the second for the rest of the family.
+
+</details>
+
+**8. You need to enumerate subsets and `n = 40`. Now what?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Meet in the middle: split into two halves of 20, enumerate `2^20` on each side, sort one half, and combine with binary search or hashing. `2 · 2^20` is trivial where `2^40` is not.
+
+</details>
+
+---
+
+## See Also
+
+- [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) — the specialist guide for the partition/TSP family (LC 1986, 2305, 698, 943, 1494) that lives in the O(3^n) submask row.
+- [Dynamic Programming §11](/pattern/dp) — where bitmask DP sits among the other 12 DP families, if you arrived from the DP side.
+- [Backtracking §10](/pattern/backtracking) — the same mask used as a live `visited` set during search, before it becomes a table.
+- [Contribution Counting §6](/pattern/contribution-counting) — the other way to use bits: decompose an answer per bit position and sum the columns.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

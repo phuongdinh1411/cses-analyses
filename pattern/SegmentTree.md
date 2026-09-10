@@ -448,6 +448,13 @@ Build the tree indexed by **value** (or value-rank), not array position. Leaf `v
 
 ### Count Inversions
 
+> **Use a BIT for this in practice.** Counting inversions needs only prefix *sums* with point
+> increments, which is exactly a Fenwick tree's job — half the code and a smaller constant. See
+> [Fenwick Tree §9](/pattern/fenwick-tree), which is canonical for the counting/order-statistics
+> family (LC 315, 493, CSES Inversions). The version below is here for one reason: if you already
+> have a segment tree in the file for another part of the problem, reusing it beats writing a
+> second structure.
+
 > **Which tree / assign vs add:** this uses `SegTreeIterative` from Section 3, whose `update(i, val)` **assigns** (overwrites) leaf `i`. Because it has no "+=" operation, we emulate an increment by reading the current count and assigning `count + 1` (`st.update(r, st.query(r, r) + 1)`). If you swap in a tree whose `update` *adds* a delta, drop the read and just do `st.update(r, 1)`.
 
 ```python
@@ -551,7 +558,7 @@ Store a prefix of versions (version `i` = value-counts of `a[0..i-1]`). To answe
 
 ## 9. When to Use a BIT Instead
 
-A **Binary Indexed Tree (Fenwick)** does prefix-sum + point-update in O(log N) with far less code. If your problem only needs those two, prefer it. Full treatment (range-update BIT, 2D BIT, k-th descent): [Fenwick Tree Patterns](/cses-analyses/pattern/fenwick-tree).
+A **Binary Indexed Tree (Fenwick)** does prefix-sum + point-update in O(log N) with far less code. If your problem only needs those two, prefer it. Full treatment (range-update BIT, 2D BIT, k-th descent): [Fenwick Tree Patterns](/pattern/fenwick-tree).
 
 ```python
 class BIT:
@@ -904,6 +911,116 @@ Start here
 ```
 
 Worked in full in [§9.5](#95-worked-leetcode-problems): **307** (point-update, §2/§3), **699** (lazy assign-max, §5), **327** (value-indexed count, §7).
+
+---
+
+## When This Fails
+
+A segment tree needs an **associative** merge with an identity. Beyond that, the practical
+limits:
+
+- **The operation is not associative.** The tree combines children in a fixed shape, so
+  `merge(merge(a,b),c)` must equal `merge(a,merge(b,c))`. Sum, min, max, gcd, matrix product: yes.
+  "Average" and "median": no, at least not directly — store enough to reconstruct them instead.
+- **Sum with point updates only.** Then a [Fenwick tree](/pattern/fenwick-tree) does the same job
+  in half the code with a smaller constant.
+- **No updates at all.** A [prefix sum](/pattern/prefix-sum) gives O(1) queries after O(n) setup.
+  Building a tree is strictly worse.
+- **Lazy tags that do not compose.** Mixing range-assign with range-add requires deciding what
+  happens when both are pending on one node. If your tag algebra is not closed under composition,
+  the propagation will be wrong.
+- **Persistence without the space budget.** A persistent tree costs O(log n) new nodes per
+  update, so O(n log n) total. Check that fits before committing.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What must be true of the merge function?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+It must be associative and have an identity element (for out-of-range queries). It need *not* be invertible — that is exactly the freedom a segment tree buys over a Fenwick tree.
+
+</details>
+
+**2. Why is a query O(log n)? Give the actual argument.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+At each of the `log n` levels, the query range can partially overlap at most two nodes — one at each end. Everything strictly inside is fully covered and returns immediately. So you touch O(1) nodes per level, hence O(log n) total.
+
+</details>
+
+**3. Why allocate `4n` rather than `2n`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When `n` is not a power of two, the recursive 1-based layout leaves gaps, and indices can reach up to just under `4n`. Allocating `2n` works only for the iterative bottom-up variant or when `n` is padded to a power of two.
+
+</details>
+
+**4. What is lazy propagation, and what invariant does push-down maintain?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+A pending update stored at a node, covering its whole range, not yet applied to its children. The invariant: a node's stored value is always correct for its range, while its children may be stale. So before descending, push the tag down; before reading a child, ensure the parent has pushed.
+
+</details>
+
+**5. Why does build take O(n) and not O(n log n)?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Each node is constructed exactly once, doing O(1) merge work. There are `2n − 1` nodes. There is no per-node log factor because you never search — you fill bottom-up.
+
+</details>
+
+**6. What does "segment tree on values" mean, and when do you need it?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Index by *value rank* rather than array position: `tree[v]` counts how many times value `v` has been inserted. It answers "how many values less than x have I seen?" and is the shape behind inversion counting and order statistics. Compress values to ranks first.
+
+</details>
+
+**7. How does a persistent segment tree get away with O(log n) space per version?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+An update touches only the root-to-leaf path — `log n` nodes. Every other node is shared with the previous version by pointer. So each version costs O(log n) new nodes rather than a full copy.
+
+</details>
+
+**8. Segment tree or Fenwick — decide.**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Fenwick if the aggregate is invertible (sum, xor) and you need point updates with prefix or range queries: shorter, faster, smaller. Segment tree if you need min, max, gcd, assignment, lazy range updates, persistence, or a descend-the-tree search.
+
+</details>
+
+---
+
+## See Also
+
+- [Fenwick Tree (BIT)](/pattern/fenwick-tree) — shorter and faster whenever the aggregate is invertible (sum, xor) and you only need point updates.
+- [Prefix Sum](/pattern/prefix-sum) — if nothing ever updates, do not build a tree: O(1) queries after an O(n) scan.
+- [Tree Patterns §2](/pattern/tree) — `tin`/`tout` flattening turns a subtree into a contiguous range, which is what lets a segment tree answer subtree queries.
+- [Binary Search](/pattern/binary-search) — the descend-the-tree query in §6 is a binary search that reuses the tree's own structure instead of wrapping it in a search loop.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

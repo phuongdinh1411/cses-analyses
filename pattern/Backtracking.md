@@ -1929,4 +1929,112 @@ Then step up: 47/40 add the duplicate skip to permutations/combination-sum; 51 N
 
 ---
 
+## When This Fails
+
+Backtracking enumerates; that is both its purpose and its limit:
+
+- **You only need a count or an optimum.** Enumerating every solution to count them is
+  exponential where [DP](/pattern/dp) is polynomial. The tell is subproblems recurring with the
+  same state.
+- **The search space is exponential with no effective pruning.** Without a constraint that kills
+  branches early, backtracking is brute force with extra steps. If you cannot prune, reconsider.
+- **The recursion is too deep.** Python's default limit is 1000 frames.
+- **State is not restored on the way back up.** Every mutation on the way down needs an exact
+  undo on the way up. A missed undo corrupts every sibling branch that follows — and it usually
+  produces *almost* right answers, which is the hardest kind of bug to spot.
+- **You appended the path without copying it.** `result.append(path)` stores a reference that
+  later mutations will change. Use `path[:]` — unless `path` is a string, which is immutable.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What are the three moves in every backtracking function?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Choose (apply a candidate to the state), explore (recurse), un-choose (undo exactly what you applied). If the undo does not mirror the choose precisely, sibling branches inherit corrupted state.
+
+</details>
+
+**2. Why `result.append(path[:])` and not `result.append(path)`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`path` is a single list mutated throughout the search. Storing the reference means every recorded solution ends up pointing at the same object, showing whatever it holds at the end. The slice takes a snapshot. Strings need no copy because they are immutable.
+
+</details>
+
+**3. How do you avoid duplicate results when the input has duplicates?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Sort first, then within a single recursion level skip a candidate equal to the previous one: `if i > start and nums[i] == nums[i-1]: continue`. The `i > start` is essential — it permits duplicates at *different* depths (a legitimate repeat) while blocking them at the *same* depth (the same set in a different order).
+
+</details>
+
+**4. For permutations with duplicates, the skip condition adds `and not used[i-1]`. Why?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+It enforces that among equal values, the earlier index is always placed first. Without it, swapping two identical values counts as a distinct permutation. The `not used[i-1]` check means "the previous equal element is not currently in the path, so using this one now would be an out-of-order repeat".
+
+</details>
+
+**5. Combinations use `i + 1` in the recursive call; combination-sum-with-reuse uses `i`. Why?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`i + 1` moves past the current element so it cannot be chosen again. `i` allows reusing the same element. That single character is the entire difference between LC 39 and LC 40.
+
+</details>
+
+**6. Name three pruning techniques stronger than "check validity at the leaf".**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Check feasibility on the way down and cut immediately (bound pruning). Order candidates most-constrained-first so failures surface early (MRV, as in Sudoku). Break symmetry by fixing an arbitrary choice — for N-Queens, restricting the first row's column to the left half halves the search.
+
+</details>
+
+**7. When should backtracking become DP?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When the same state recurs with the same future. If two different paths reach an identical `(position, resources-used)` state, everything below is identical and should be computed once. Memoize; if the state is a subset, that is a bitmask DP.
+
+</details>
+
+**8. How do you detect a missing undo?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Solutions come out subtly wrong rather than crashing — an extra element, a stale flag, a board that never fully resets. Print the state at the top of each call and check it matches the state at the same depth on the previous branch.
+
+</details>
+
+---
+
+## See Also
+
+- [Dynamic Programming](/pattern/dp) — the same decision tree, but when you only need to *count* or *optimize* rather than list solutions. Overlapping subproblems mean memoize, not enumerate.
+- [Bitmask Techniques](/pattern/bitmask) — replaces the `used[]` array with a single integer once `n <= 20`, which is what makes the state memoizable.
+- [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) — where §10 leads: once the search repeats states, the recursion becomes a `dp[mask]` table.
+- [Graph Patterns](/pattern/graph) — backtracking on an explicit graph (Hamiltonian paths, colouring) sits on the DFS machinery there.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
+
+---
+
 *Pattern mastered — walk the decision tree depth-first, undo each choice on the way back up, and cut every branch you can already prove is doomed. The savings live in the branches you never visit.*

@@ -466,6 +466,8 @@ def split_array(nums, k):
         parts = 1
         current = 0
         for num in nums:
+            if num > max_sum:       # one element alone already busts the cap
+                return False
             if current + num > max_sum:
                 parts += 1
                 current = num
@@ -622,6 +624,8 @@ def splitArray(nums, k):
     def can_split(cap):                 # feasible if <= k parts each with sum <= cap
         parts, current = 1, 0
         for x in nums:
+            if x > cap:                 # one element alone already busts the cap
+                return False
             if current + x > cap:
                 parts += 1
                 current = x
@@ -1338,6 +1342,8 @@ def ship_within_days(weights, days):
     def can_ship(capacity):
         d, current = 1, 0
         for w in weights:
+            if w > capacity:            # one package alone already busts the capacity
+                return False
             if current + w > capacity:
                 d += 1
                 current = w
@@ -1450,6 +1456,7 @@ def maximize(lo, hi, condition):
 | Integer overflow in `(lo+hi)/2` | Always use `lo + (hi - lo) // 2` |
 | Float BS doesn't converge | Use fixed iterations (100) instead of `while lo < hi` |
 | Forgetting edge cases | Check: empty array, single element, all same, target not present |
+| Greedy predicate silently accepts an impossible cap | A packing check like `can_split`/`can_ship` must reject a *single* item bigger than the cap, not just an overflowing running sum. Setting `lo = max(nums)` hides the hole — the search never tests those values — but the predicate is wrong on its own, and it breaks as soon as you reuse it with a different `lo`. Guard it: `if x > cap: return False`. |
 
 ### Complexity Summary
 
@@ -1539,6 +1546,116 @@ Start here
  ▼
 4    Median of Two Sorted ....... search the PARTITION that balances both halves
 ```
+
+---
+
+## When This Fails
+
+Binary search needs a predicate that is **monotone** along the search axis: false, false, ...,
+false, true, true, ..., true, with exactly one boundary. It fails when:
+
+- **The predicate is not monotone.** If `feasible(x)` flips more than once, you may land on any
+  boundary. Prove monotonicity before writing the loop; if you cannot, the technique does not
+  apply.
+- **The search space is unbounded above.** Find a bound first with exponential search (double
+  `hi` until `feasible(hi)` holds), then binary search inside `[hi/2, hi]`.
+- **The array is sorted but has duplicates and you need a specific index.** Plain binary search
+  returns an arbitrary match. Use `lower_bound` / `upper_bound` and be explicit about which
+  boundary you want.
+- **Floats.** `while lo < hi` may never terminate. Use a fixed iteration count (100 doublings of
+  precision is plenty) or an absolute epsilon.
+- **Your feasibility check is subtly wrong.** This is the most common real failure and it does
+  not look like a binary-search bug — see the `can_split` pitfall in §12.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What must be true of `feasible(x)` before you binary search on the answer?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+It must be monotone: once true it stays true (or once false it stays false) as `x` increases. You are not searching for a value in data, you are searching for the boundary between "no" and "yes" — and that boundary only exists if the predicate flips exactly once.
+
+</details>
+
+**2. `lower_bound` versus `upper_bound` — what does each return?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`lower_bound(x)` is the first index whose value is `>= x`; `upper_bound(x)` is the first index whose value is `> x`. The count of elements equal to `x` is `upper_bound(x) − lower_bound(x)`, and both return the insertion point when `x` is absent.
+
+</details>
+
+**3. When must you use `mid = lo + (hi - lo + 1) // 2` instead of the usual form?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When a branch assigns `lo = mid`. With the floor form and `hi = lo + 1`, `mid` computes to `lo`, so `lo = mid` makes no progress and the loop spins forever. Rounding up in that case guarantees advancement.
+
+</details>
+
+**4. Why does `lo + (hi - lo) // 2` matter when `(lo + hi) // 2` looks equivalent?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+In fixed-width languages `lo + hi` can overflow. Python has arbitrary-precision integers so it is not a correctness issue there, but the habit costs nothing and transfers to C++ and Java, where it is a real bug.
+
+</details>
+
+**5. A greedy packing predicate returns `parts <= k`. What is the classic hole in it?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+It checks only the *running* sum, never whether a **single element** exceeds the cap. `can_split([8,10], max_sum=9)` returns `True` with `k=2` even though no split exists. Setting `lo = max(nums)` hides it because the search never tests such a cap — but the predicate is wrong on its own and breaks the moment it is reused. Guard with `if x > cap: return False`.
+
+</details>
+
+**6. How do you binary search a rotated sorted array?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+At each step at least one half is sorted — determine which by comparing `nums[lo]` with `nums[mid]`. If the target lies inside that sorted half's range, recurse there; otherwise recurse into the other half. With duplicates, `nums[lo] == nums[mid]` is ambiguous and you must shrink `lo` by one, degrading to O(n) worst case.
+
+</details>
+
+**7. Why does the peak-finding binary search work on an *unsorted* array?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Monotonicity of the predicate, not of the data. If `nums[mid] < nums[mid+1]`, an ascent is happening, so a peak must exist to the right (the array is bounded by −∞ sentinels at both ends). The predicate "a peak exists to my right" is monotone even though the values are not sorted.
+
+</details>
+
+**8. Binary search on floats — how do you terminate?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Not with `lo < hi`, which may never converge in floating point. Use a fixed iteration count (about 100 halvings takes any starting interval below any practical epsilon) or an explicit `while hi - lo > eps`.
+
+</details>
+
+---
+
+## See Also
+
+- [Prefix Sum](/pattern/prefix-sum) — the usual source of the sorted array you binary-search over; `bisect` on a prefix array answers "shortest subarray with sum >= k" for non-negative inputs.
+- [Sliding Window](/pattern/sliding-window) — the linear alternative when the predicate is monotone *and* the input is non-negative. If a window works, it beats an O(n log n) search.
+- [Fenwick Tree (BIT)](/pattern/fenwick-tree) — order-statistic descent finds the k-th smallest in one O(log N) bit walk instead of a search wrapping a query.
+- [Segment Tree](/pattern/segment-tree) — same idea one level up: descend the tree to find the first prefix satisfying a predicate.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 

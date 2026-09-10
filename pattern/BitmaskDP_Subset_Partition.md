@@ -360,6 +360,14 @@ class Solution:
 
 The valid subset condition is **exact equality** (`total[sub] == target`), not `<=`.
 
+> **There is a cheaper solution for this specific problem.** Because all `k` buckets share the
+> same target, you can track only the *current* bucket's fill level mod `target` and get
+> **O(2ⁿ · n)** instead of the O(3ⁿ) peel-off below — see
+> [Bitmask Techniques §3](/pattern/bitmask). That shortcut evaporates the moment the groups stop
+> being interchangeable (unequal targets, per-group capacities, a min-max objective), which is
+> exactly the rest of this guide. Learn the peel-off here because it is the one that generalises;
+> use mod-target on LC 698 itself if you are optimising for speed.
+
 ```python
 class Solution:
     def canPartitionKSubsets(self, nums: list[int], k: int) -> bool:
@@ -794,6 +802,103 @@ Start here
 | Lowest set bit | `mask & -mask` | Isolate lowest bit |
 | Count bits | `bin(mask).count('1')` | How many items in subset |
 | All n bits | `(1 << n) - 1` | Full mask |
+
+---
+
+## When This Fails
+
+This family is O(3^n), which puts a hard ceiling on it:
+
+- **`n > 16`.** `3^16 ≈ 43 million` is already the practical limit; `3^20` is out of reach. If the
+  constraints allow larger `n`, the intended solution is not this.
+- **A cheaper structure exists.** When every group has the *same* target, a mod-target `dp[mask]`
+  gets O(2^n · n) — see [Bitmask Techniques §3](/pattern/bitmask). Only use peel-off when the
+  groups genuinely differ.
+- **Groups are distinguishable in a way the mask ignores.** If group identity affects cost (kid
+  `j` values cookies differently), you need the extra `dp[j][mask]` dimension; a bare `dp[mask]`
+  quietly assumes interchangeable groups.
+- **You forgot to canonicalise.** Enumerating both `sub` and its complement doubles the work and,
+  for some objectives, double-counts. Fixing the lowest set bit into one side removes the
+  symmetry.
+
+## Self-Test
+
+Answer these from memory, out loud or on paper, *before* looking. Recognition is not
+recall: rereading an explanation feels like knowing, and it is not. A question you cannot answer
+cold names the exact section to revisit — you do not need to reread the guide.
+
+
+**1. What is the peel-off recurrence, in words?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+`dp[mask]` = the best way to cover the items in `mask`. Transition: choose one *valid* submask `sub` to be the next complete group, and combine its cost with `dp[mask ^ sub]`. Each step removes one whole group, hence "peel off".
+
+</details>
+
+**2. Why is this O(3^n), and what is the practical `n` ceiling?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Every (mask, submask) pair is visited once, and there are `3^n` of them. Roughly `n <= 16`; `3^16` is about 43 million operations, which is at the edge of acceptable.
+
+</details>
+
+**3. How do you avoid enumerating each partition twice?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Fix the lowest set bit of `mask` to always belong to the submask you are peeling. That makes each unordered split appear exactly once, halving the work and eliminating a double-counting class of bugs.
+
+</details>
+
+**4. What does precomputing `total[mask]` buy?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+The sum (or feasibility) of every subset, in one O(2^n · n) pass. The DP then tests a candidate group in O(1) rather than re-summing its bits, which is what keeps the inner loop cheap enough for the O(3^n) outer structure.
+
+</details>
+
+**5. When do you need `dp[j][mask]` instead of `dp[mask]`?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+When the groups are not interchangeable — when the cost of assigning a set depends on *which* group receives it. LC 2305 needs it because it minimises the maximum over a fixed number of children, so you must know how many have already been served.
+
+</details>
+
+**6. How does TSP differ from the partition recurrence?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+TSP adds a `last` dimension: `dp[mask][last]` is the best cost to have visited `mask` and be standing on `last`, because the next edge's cost depends on where you are. Partition problems have no position, so `dp[mask]` suffices.
+
+</details>
+
+**7. LC 1494 caps courses per semester at `k`. Why is that still this pattern rather than a topological sort?**
+
+<details markdown="1">
+<summary>Answer</summary>
+
+Because each step chooses a *submask* of the currently-available courses, subject to `popcount(sub) <= k`. The choice of which subset to take now affects what is available later, so the state must be the set of finished courses — a mask — not a position in a topological order.
+
+</details>
+
+---
+
+## See Also
+
+- [Dynamic Programming §11](/pattern/dp) — bitmask DP's place among the other DP families.
+- [Backtracking](/pattern/backtracking) — the search this table replaces. If you cannot see the repeated state yet, write the backtracker first and watch it recompute.
+- [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?
+- [Pattern Mastery Program](/pattern/mastery) — the spaced-repetition schedule, mastery checklist, and drill formats that turn reading into recall.
 
 ---
 
