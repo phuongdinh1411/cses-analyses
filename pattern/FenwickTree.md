@@ -59,6 +59,13 @@ Concretely: you have an array and must process 10^5 interleaved `update(i, x)` a
 
 Fenwick and segment tree have the same asymptotic cost. The Fenwick wins on **code size** (≈10 lines) and **constant factor** (one array, no recursion, cache-friendly). It loses on **generality**: it can only do invertible aggregates (Section 4).
 
+The cleanest way to hold the relationship in your head: **a Fenwick tree is the segment tree you get
+to skip building when the operation is invertible.** A segment tree needs explicit nodes because it
+must answer `[l, r]` directly. If the operation has an inverse, you never need `[l, r]` directly —
+you get it as `prefix(r) − prefix(l−1)`. That single concession removes the need to store children,
+navigate down from a root, or handle a general range at all. What is left is the `i ± lowbit(i)`
+index arithmetic below, which *is* the tree, walked implicitly.
+
 ### The Idea
 
 Index `i` (1-based) is responsible for a range of length `lowbit(i)` ending at `i`, where `lowbit(i) = i & (-i)` is the lowest set bit. A prefix sum walks down by stripping lowest bits; an update walks up by adding them.
@@ -77,6 +84,38 @@ Responsibility ranges (1-indexed, n=8):
  tree[6] covers a[5..6]
  tree[8] covers a[1..8]
 ```
+
+#### Where the lowbit rule comes from
+
+That table looks arbitrary until you see it is forced, not chosen. Start from the requirement and
+the lowbit rule falls out.
+
+**The requirement.** Every prefix `a[1..k]` must be expressible as a sum of a few stored blocks.
+Write `k` in binary and peel its set bits from the top: `k = 11 = 1011₂ = 8 + 2 + 1`, so
+
+```
+a[1..11]  =  a[1..8]  +  a[9..10]  +  a[11]
+             ^^^^^^^     ^^^^^^^^     ^^^^^
+             8 = 1000    2 = 10       1 = 1     block lengths are exactly k's set bits
+```
+
+Each block ends at a running total of the bits consumed so far — `8`, then `8+2 = 10`, then
+`8+2+1 = 11`. So if we store each block at the index where it *ends*, the block ending at index `i`
+has length equal to `i`'s **lowest** set bit. That is the rule: `tree[i]` covers
+`a[i - lowbit(i) + 1 .. i]`. It is not a clever trick someone invented; it is the unique layout
+that makes binary decomposition of a prefix work.
+
+**Both walks are now determined.** Reading `prefix(k)` means consuming `k`'s set bits from the
+bottom, and `k -= lowbit(k)` does exactly that — `11 → 10 → 8 → 0`, summing
+`tree[11] + tree[10] + tree[8]`, which is the three blocks above.
+
+Updating `a[i]` must touch every block *containing* `i`. Those are found by `i += lowbit(i)`: from
+`i = 5` you get `5 → 6 → 8`, and indeed `tree[5]` covers `a[5]`, `tree[6]` covers `a[5..6]`, and
+`tree[8]` covers `a[1..8]` — the three blocks containing index 5, and no others.
+
+The two walks move in opposite directions because they answer opposite questions: *which blocks
+tile this prefix* (strip bits) versus *which blocks contain this index* (add bits). Both consume at
+most one bit position per step, so both are O(log n).
 
 ### Master LeetCode Comparison Table
 

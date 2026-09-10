@@ -78,7 +78,9 @@ array = [5, 3, 7, 9, 6, 2]   (sum tree)
   [0,0]=5 [1,1]=3   [3,3]=9 [4,4]=6
 ```
 
-A range query decomposes `[l, r]` into O(log N) node ranges that exactly tile it. That's the whole trick.
+A range query decomposes `[l, r]` into O(log N) node ranges that exactly tile it. That's the whole
+trick — and the reason only O(log N) of them are ever needed is derived in
+[The Three Cases in Query](#the-three-cases-in-query) below.
 
 ### Master LeetCode Comparison Table
 
@@ -163,9 +165,53 @@ query [l, r] vs node [lo, hi]:
       [lo ... [l...] ... hi]
 ```
 
+#### Why this visits only O(log N) nodes
+
+Case C is the only one that spawns more work — A and B return immediately. So the cost of a query
+is just *how many Case C nodes exist*, and the bound comes from a counting argument on each level
+of the tree.
+
+**Claim: at most two nodes per level are Case C.** The nodes on any one level partition the array
+into consecutive, non-overlapping blocks. A node is Case C only when the query boundary `l` or `r`
+falls strictly inside its block. Since `l` lies inside exactly one block on that level, and `r`
+lies inside exactly one, at most two blocks per level can be partially overlapped. Every other
+block on the level is either entirely inside `[l, r]` (Case B, stops) or entirely outside (Case A,
+stops).
+
+With at most 2 Case C nodes per level, each spawning 2 children, we touch at most 4 nodes per
+level. The tree has `log N` levels, so a query visits O(log N) nodes total — not O(N), even though
+the query range itself may cover most of the array.
+
+This is also the precise reason **Case B must not recurse**. Recursion is what costs; stopping at a
+fully-covered node is what collapses an arbitrarily wide range into a handful of stored aggregates.
+If you "simplify" the code by dropping the total-overlap check and descending to the leaves, every
+node in the range becomes Case C and the query silently degrades to O(N) — correct answers, useless
+performance.
+
 ### Why `4 * n`?
 
-The recursion tree is not perfectly balanced when `n` is not a power of two. Node indices can reach up to `~2 * next_power_of_two(n)`, and `4 * n` is a simple safe over-allocation. If you round `n` up to a power of two first, `2 * n` suffices.
+The recursion tree is not perfectly balanced when `n` is not a power of two, and with heap indexing
+(`node`, `2*node`, `2*node+1`) an unbalanced tree leaves *gaps* in the index space. Make it concrete
+with `n = 5`, splitting each range at its midpoint:
+
+```
+                    node 1  [0,4]
+             /                          \
+      node 2 [0,2]                  node 3 [3,4]
+      /          \                  /          \
+node 4 [0,1]  node 5 [2,2]   node 6 [3,3]  node 7 [4,4]
+   /     \
+node 8   node 9
+ [0,0]   [1,1]
+```
+
+Only 9 nodes are actually used, but the largest index reached is **9**, already past `2n = 10`'s
+comfortable margin — and a less even split pushes it higher. The worst case is bounded by
+`2 * next_power_of_two(n)`, which for `n = 5` is `2 * 8 = 16`. Since `next_power_of_two(n) < 2n`,
+the bound `4 * n` always covers it, which is why `4 * n` is the standard allocation.
+
+If you round `n` up to a power of two before building, the tree is perfect, no gaps appear, and
+`2 * n` suffices.
 
 ### Complexity
 

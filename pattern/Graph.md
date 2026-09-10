@@ -428,7 +428,35 @@ def dijkstra(start, adj, n):
     return dist
 ```
 
-**Why it works**: Always processes the unvisited node with the smallest distance. Since all weights are non-negative, once a node is processed, its distance is final.
+**Why it works.** The claim to prove is the invariant the whole algorithm rests on: *when a node
+`u` is popped with `d == dist[u]` (i.e. it survives the stale-entry skip), `dist[u]` is already
+the true shortest distance and can never improve later.*
+
+Suppose it could. Then some path `P` from the source to `u` is **strictly shorter** than
+`dist[u]`. Walk along `P` from the source and stop at the first node `x` that has not been
+finalised yet. Such an `x` always exists, because `u` itself is not finalised at the instant we
+pop it. Now split `P` at `x`:
+
+```
+source  ~~~~~~~~~~~>  x  ~~~~~~~~~~~>  u
+        all finalised     non-negative
+        so this prefix    so this tail
+        costs >= dist[x]  costs >= 0
+```
+
+- The prefix ending at `x` runs entirely through finalised nodes, so we have already relaxed our
+  way to `x`: that prefix costs **at least `dist[x]`**.
+- The tail from `x` to `u` is a sum of **non-negative** weights, so it only adds.
+- We just popped `u`, which means `u` had the smallest tentative distance of every unfinalised
+  node — and `x` is unfinalised — so **`dist[u] <= dist[x]`**.
+
+Chaining those three: `cost(P) >= dist[x] + 0 >= dist[x] >= dist[u]`. So `P` is not shorter than
+`dist[u]` after all, contradicting the assumption. No such `P` exists, and `dist[u]` is final.
+
+Notice exactly where each hypothesis is spent. Non-negativity is used once, in the middle step. Drop
+it and the tail from `x` to `u` can be *negative*, so `cost(P)` may fall below `dist[x]`, the chain
+snaps, and a finalised node really can improve later. That is the whole reason a single negative
+edge breaks Dijkstra — and why the fix is not a patch but a different algorithm (Bellman-Ford, §2.2).
 
 **Trace** (start = 0; edges directed):
 
@@ -515,7 +543,47 @@ def floyd_warshall(n, dist):
     return dist
 ```
 
-**Why it works**: `dp[i][j][k]` = shortest path from i to j using only nodes 0..k as intermediates. The three nested loops consider each possible intermediate node.
+**Why it works.** The state is `dp[k][i][j]` = the shortest path from `i` to `j` that is allowed to
+use **only nodes `0..k−1` as intermediates**. The recurrence asks one yes/no question — *does
+letting node `k` be an intermediate help?*
+
+```
+dp[k+1][i][j] = min( dp[k][i][j],              don't route through k
+                     dp[k][i][k] + dp[k][k][j] )   do route through k
+```
+
+That is correct because any path allowed to use `0..k` either avoids `k` entirely (first term) or
+passes through `k` exactly once, splitting into an `i → k` piece and a `k → j` piece that each use
+only `0..k−1` (second term).
+
+**Why `k` must be the outermost loop.** Look at what the recurrence consumes: every term on the
+right is from layer `k`, and the result is layer `k+1`. The code collapses all layers into a single
+`dist` matrix and mutates it in place, which is only safe if, at the moment you compute any
+`dist[i][j]` for a given `k`, the two cells you read are still layer-`k` values.
+
+Keeping `k` outermost guarantees exactly that: the entire matrix is upgraded from layer `k` to
+layer `k+1` before `k` advances. The two cells you read, `dist[i][k]` and `dist[k][j]`, are also
+special — a shortest path from `i` to `k` never needs `k` as an *intermediate*, so those two cells
+are identical in layer `k` and layer `k+1`. Overwriting them mid-sweep is harmless.
+
+Move `k` inside, and that breaks. With `for i: for j: for k`, you finish all `k` values for the
+pair `(i, j)` before moving to the next pair, so a later pair reads cells that have already jumped
+several layers ahead while others are still behind. The result is a matrix of mixed-layer values —
+no crash, just wrong answers. A 4-node counterexample:
+
+```
+adjacency (∞ = no edge)        correct, k outer        wrong, k innermost
+  0    ∞    3    ∞               0    8    3    5        0   ∞    3    5     ← dist[0][1] never found
+  ∞    0    9    5               8    0    9    5        8   0    9    5
+  9    ∞    0    2               5    5    0    2        5   5    0    2
+  3    3    9    0               3    3    6    0        3   3    6    0
+```
+
+The true `0 → 1` route is `0 →3→ 2 →2→ 3 →3→ 1`, costing 8. The `i, j, k` version finishes the pair
+`(0,1)` first, and at that moment `dist[0][3]` is still `∞` — the `0 → 2 → 3` shortcut that makes
+the route possible is not discovered until the pair `(0,3)` comes up later. By then nothing ever
+revisits `(0,1)`, so it stays `∞` forever. Getting the loop order wrong does not slow the algorithm
+down; it silently answers a different question.
 
 **Trace** one intermediate (`k = 1`) on 3 nodes:
 
