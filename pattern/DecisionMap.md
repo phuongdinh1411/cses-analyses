@@ -283,8 +283,8 @@ The `n` bound in the problem statement quietly announces the intended complexity
 | `n` bound | Budget you can afford | Techniques it points to |
 |-----------|-----------------------|-------------------------|
 | `n ≤ 20` | `O(2ⁿ)` / `O(2ⁿ · n)` | Bitmask, Bitmask DP, Backtracking |
-| `n ≤ 100` | `O(n³)`... `O(n⁴)` | Floyd-Warshall, interval DP, small matrix DP |
-| `n ≤ 500` | `O(n³)` | Floyd-Warshall, DP with 3 nested states |
+| `n ≤ 100` | `O(n⁴)` | 4 nested states, small matrix DP, brute-force-ish search |
+| `n ≤ 500` | `O(n³)` | Floyd-Warshall, interval DP, DP with 3 nested states |
 | `n ≤ 5000` | `O(n²)` | Classic 2-D DP, `O(n²)` graph algorithms |
 | `n ≤ 10⁵` | `O(n log n)` | Sort, Binary Search, Dijkstra, Segment/Fenwick Tree, Sliding Window |
 | `n ≤ 10⁶` | `O(n)` / `O(n log log n)` | Two Pointers, Prefix Sum, single-pass DP, sieve |
@@ -319,7 +319,7 @@ The router only pays off if you can *run it* on a cold problem. Here are five, e
 
 **Example 5** — *"Assign N tasks to N workers minimizing total cost, N ≤ 18."*
 - Shape: assignment over a small set. Loud cue: **N ≤ 18** → `2ⁿ` intended.
-- Router → §7 Subset/small-n → "optimize over subsets, overlapping subproblems" → **Bitmask DP** (`dp[mask]` = min cost to assign the tasks in `mask`).
+- Router → §7 Subset/small-n → "optimize over subsets, overlapping subproblems" → **Bitmask DP** (`dp[mask]` = min cost once the workers in `mask` are used; `popcount(mask)` is the next job to fill).
 
 `★ Insight ─────────────────────────────────────`
 - Notice the order every time: **shape → ask → size**. Shape picks the family, the ask picks the branch, and the constraint (Example 5's `N ≤ 18`) confirms or overrides. When size and ask disagree, size usually wins — it's the hardest cue to fake.

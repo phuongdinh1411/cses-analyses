@@ -1990,7 +1990,7 @@ Root-to-node sums plus the LCA. The path sum from `u` to `v` is `P[u] + P[v] −
 
 - [Fenwick Tree (BIT)](/pattern/fenwick-tree) — the upgrade the moment values change between queries; prefix sums are O(n) to rebuild, a BIT is O(log n) to update.
 - [Sliding Window](/pattern/sliding-window) — the cheaper tool when the array is non-negative and you want the *best* window rather than *all* range sums.
-- [Binary Search §10](/pattern/binary-search) — `bisect` over a monotone prefix array turns "shortest subarray with sum >= k" into O(n log n).
+- [Binary Search §2 — lower/upper bound](/pattern/binary-search#2-lower-bound-and-upper-bound) — a `bisect` over a monotone prefix array turns "shortest subarray with sum >= k" into O(n log n). (For the `bisect` module's own API, see [§10](/pattern/binary-search#10-pythons-bisect-module).)
 - [Contribution Counting](/pattern/contribution-counting) — prefix XOR (§7) is the engine behind per-bit contribution counting.
 - [Tree Patterns](/pattern/tree) — root-to-node prefix sums (§9) need the traversal and LCA machinery there.
 - [Pattern Decision Map](/pattern/decision-map) — the router: which technique does a cold problem call for?

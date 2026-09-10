@@ -283,7 +283,7 @@ right=5 win=9 ≥7 → record len 3 [2,4,3],   shrink win=7 left=4
 best = 2  (subarray [4,3])
 ```
 
-> **Why this needs non-negative numbers.** Growing `right` monotonically increases the sum, and shrinking `left` monotonically decreases it — that monotonicity is what lets `left` never backtrack. With negatives, adding an element can *decrease* the sum, so the window is no longer monotonic and a plain sliding window breaks. For arrays with negatives, use **prefix sum + monotonic deque** (see the [Prefix Sum guide](/pattern/prefix-sum)).
+> **Why this needs non-negative numbers.** Growing `right` monotonically increases the sum, and shrinking `left` monotonically decreases it — that monotonicity is what lets `left` never backtrack. With negatives, adding an element can *decrease* the sum, so the window is no longer monotonic and a plain sliding window breaks. For arrays with negatives you need **prefix sum + monotonic deque**, which is exactly what [§13 (LC 862)](#13-problem-862--shortest-subarray-with-sum-at-least-k-negatives-allowed) below builds — read this section first, then go see how the assumption gets repaired.
 
 ---
 

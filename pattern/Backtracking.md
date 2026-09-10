@@ -1848,7 +1848,9 @@ Problem asks to...
 
 ### Template Quick Reference
 
-```python
+*Pseudocode — shapes to recall, not runnable code.*
+
+```text
 # Permutations
 def perms(nums):
     backtrack with used[] or swap

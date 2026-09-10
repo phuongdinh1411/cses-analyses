@@ -2084,10 +2084,15 @@ dist = dijkstra(virtual, adj, n + 1)
 
 Process nodes in topological order. Most DP on graphs requires no cycles.
 
+> **Adjacency format.** This one takes a **weighted** list, `adj[u] = [(v, w), ...]`, because a
+> longest path adds up edge weights. The path-*counting* version right below takes an
+> **unweighted** list, `adj[u] = [v, ...]`. Mixing the two is a fast route to
+> `cannot unpack non-iterable int` — check which shape a template wants before you paste it.
+
 ```python
 from collections import deque
 
-# Longest path in DAG
+# Longest path in DAG — adj[u] = [(v, w), ...]
 def longest_path(adj, n):
     in_deg = [0] * n
     for u in range(n):
@@ -2114,6 +2119,7 @@ def longest_path(adj, n):
 from collections import deque
 
 def count_paths(adj, n, src, dst):
+    # adj[u] = [v, ...] — unweighted, unlike longest_path above.
     # Assumes topological processing order (Kahn's below guarantees it);
     # dp[src]=1 seeds the source. Counts paths in a DAG — a cycle would
     # loop forever (its nodes never reach in-degree 0, so Kahn's skips them).
@@ -2354,7 +2360,11 @@ rather than a crash:
 - **Topological sort on a cyclic graph.** Kahn's simply emits fewer than `V` nodes. Always
   compare the processed count against `V` rather than trusting the output.
 - **Undirected cycle detection that forgets the parent edge.** Every undirected edge looks like a
-  2-cycle. Skip the edge you arrived on — but with *multi*-edges, skip by edge id, not by node.
+  2-cycle, so you must skip the edge you arrived on. The `v == parent` node-skip in §8 handles
+  parallel edges correctly *as a multigraph*: a repeated `u—v` is caught on `u`'s second pass over
+  its list, and it genuinely is a cycle. The trap is a semantic one — if your input duplicates each
+  undirected edge by accident rather than by intent, that "cycle" is an artefact of the input. When
+  parallel edges are real data but must not count, skip by edge id instead of by node.
 - **Union-Find without both path compression and union by rank/size.** You lose the
   near-constant amortized bound and can degrade to O(n) per operation.
 

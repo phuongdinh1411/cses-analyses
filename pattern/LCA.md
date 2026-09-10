@@ -474,6 +474,14 @@ class BinaryLifting:
 
         # now u and v are children of the LCA
         return self.up[0][u]
+
+    def dist(self, u, v):
+        """Edges on the path u..v — the most common thing you actually want."""
+        return self.depth[u] + self.depth[v] - 2 * self.depth[self.lca(u, v)]
+
+    def kth_ancestor(self, node, k):
+        """Ancestor k steps up, or -1 if it climbs past the root."""
+        return self._lift(node, k)
 ```
 
 > **Recursion-depth caveat.** The `LOG = 20` table handles the *ancestor jumps*

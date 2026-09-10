@@ -453,33 +453,47 @@ Max = 4, count = 3
 
 **Difficulty**: Hard
 
-> Directed tree. For each node i, find minimum edge reversals so every node can reach i.
+> Directed tree. For each node `i`, find the minimum edge reversals needed so that **starting from
+> `i` you can reach every other node**.
 
 ### Key Idea
 
-**Pass 1**: Root at 0. For each directed edge, if it points **away** from root → must reverse (cost 1). If it points **toward** root → already correct (cost 0).
+**Get the direction straight first.** The ask is *outbound* reachability: from the root, you must be
+able to walk to everyone. So every edge must end up pointing **away** from the root. An edge already
+pointing away is free; one pointing back toward the root must be reversed. (Reading this backwards
+is the single easiest way to get a wrong answer here — see the weight note below.)
 
-**Pass 2**: Reroot. Moving root from u to child v, only the edge between them flips:
+**Pass 1**: Root at 0 and walk down. Each edge you traverse in the direction it already points costs
+0; each edge you traverse against its arrow costs 1. Sum those for `answer[0]`.
+
+**Pass 2**: Reroot. Moving the root from `u` to its child `v` flips the orientation of exactly one
+edge relative to the root — the `u–v` edge itself. Every other edge keeps its cost:
 
 ```
-Edge pointed toward u (cost 0 for u) → now points away from v (cost 1 for v)
-Edge pointed away from u (cost 1 for u) → now points toward v (cost 0 for v)
+w = what the u–v edge costs while u is the root
 
-answer[v] = answer[u] - 2w + 1
+w=0  (points u→v, free for u)  → from v it points inward  → now costs 1
+w=1  (points v→u, u must pay)  → from v it points outward → now free
 
-  w=0 (was good for u): answer[v] = answer[u] + 1  (lost a good edge)
-  w=1 (was bad for u):  answer[v] = answer[u] - 1  (gained a good edge)
+answer[v] = answer[u] - w + (1 - w) = answer[u] - 2w + 1
+
+  w=0: answer[v] = answer[u] + 1   (we now pay for an edge u got free)
+  w=1: answer[v] = answer[u] - 1   (we stop paying for one u had to reverse)
 ```
 
 ### Building the adjacency list
 
 ```python
 for u, v in edges:
-    adj[u].append((v, 1))   # original u→v: if v is child, wrong direction → cost 1
-    adj[v].append((u, 0))   # reverse v→u: if u is child, right direction → cost 0
+    adj[u].append((v, 0))   # walking u→v follows the arrow → nothing to reverse
+    adj[v].append((u, 1))   # walking v→u goes against the arrow → must reverse it
 ```
 
-The weight means: "if I traverse this direction (parent → child), how much does this edge cost?"
+The weight means: **"if I traverse this direction (parent → child), how much does this edge cost?"**
+Reaching every node *from* the root means every edge must point *away* from the root. So an edge
+you traverse **with** the arrow costs 0, and one you traverse **against** it costs 1. Getting these
+two weights backwards is the classic bug here — it returns `(total edges) − (correct answer)`, a
+plausible-looking array that is wrong at every index.
 
 ### Solution
 
@@ -488,8 +502,8 @@ class Solution:
     def minEdgeReversals(self, n: int, edges: list[list[int]]) -> list[int]:
         adj = [[] for _ in range(n)]
         for u, v in edges:
-            adj[u].append((v, 1))
-            adj[v].append((u, 0))
+            adj[u].append((v, 0))   # with the arrow: free
+            adj[v].append((u, 1))   # against the arrow: one reversal
 
         answer = [0] * n
 
@@ -521,24 +535,30 @@ class Solution:
 ```
 Directed: 2→0, 2→1, 1→3
 
-Rooted at 0:
+Rooted at 0, the tree shape is 0 — 2 — 1 — 3. Walking DOWN from root 0:
+
        0
-       |  w=0  (edge 2→0 points toward root)
+       |  0 -> 2 : the arrow is 2→0, so we walk against it   w = 1
        2
-       |  w=1  (edge 2→1 points away from root)
+       |  2 -> 1 : the arrow is 2→1, we walk with it         w = 0
        1
-       |  w=1  (edge 1→3 points away from root)
+       |  1 -> 3 : the arrow is 1→3, we walk with it         w = 0
        3
 
-Pass 1: answer[0] = 0 + 1 + 1 = 2
+Pass 1: answer[0] = 1 + 0 + 0 = 1
+        (reverse 2→0 into 0→2, and 0 reaches 2, then 1, then 3)
 
-Pass 2:
-  answer[2] = 2 - 2(0) + 1 = 3
-  answer[1] = 3 - 2(1) + 1 = 2
-  answer[3] = 2 - 2(1) + 1 = 1
+Pass 2 (slide the root down one edge at a time, answer[v] = answer[u] - 2w + 1):
+  answer[2] = answer[0] - 2(1) + 1 = 1 - 2 + 1 = 0
+  answer[1] = answer[2] - 2(0) + 1 = 0 - 0 + 1 = 1
+  answer[3] = answer[1] - 2(0) + 1 = 1 - 0 + 1 = 2
 
-answer = [2, 2, 3, 1]
+answer = [1, 1, 0, 2]
 ```
+
+Sanity-check `answer[2] = 0` by hand: from node 2 the arrows already run 2→0, 2→1, and 1→3, so
+node 2 reaches everyone with zero reversals. And `answer[3] = 2` is the worst case — node 3 is a
+leaf at the far end, so it must reverse 1→3 and 2→1 to climb back out.
 
 `★ Insight ─────────────────────────────────────`
 The reroot formula `answer[v] = answer[u] - 2w + 1` is a single-edge accounting trick, not magic. When the root hops across one edge, only that one edge changes orientation relative to the root — every other edge keeps its cost. If it cost `w` for `u`, flipping makes it cost `1 - w`, a delta of `(1 - w) - w = 1 - 2w`. That is the *entire* difference between the two answers, which is why rerooting is O(1) per node instead of a fresh O(n) DFS from each root. The directed-weight adjacency (`(v,1)` forward, `(u,0)` reverse) is what lets one traversal see both a "traverse this way" cost and its flip for free.

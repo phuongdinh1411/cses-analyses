@@ -128,6 +128,9 @@ class BIT:
 
 Naive build is N updates = O(N log N). Linear build: add each value to its parent.
 
+> **Note — this is a method on the `BIT` class above, not standalone code.** The indentation is
+> deliberate: paste it inside the class body.
+
 ```python
     @classmethod
     def from_array(cls, data):

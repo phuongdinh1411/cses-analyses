@@ -161,12 +161,12 @@ Now `dp[0] = 0` and each `dp[mask]` peels off one *fitting* subset:
 When splitting a mask into two halves, (sub, comp) and (comp, sub) are the same split:
 
 ```python
-sub = (mask - 1) & mask
+sub = (mask - 1) & mask       # largest proper submask of mask
 while sub > 0:
-    comp = mask ^ sub
-    if sub < comp:        # only process each pair once
-        # process (sub, comp)
-    sub = (sub - 1) & mask
+    comp = mask ^ sub         # the other half of the split
+    if sub < comp:            # only process each unordered pair once
+        best = min(best, cost(sub) + cost(comp))
+    sub = (sub - 1) & mask    # next proper submask, descending
 ```
 
 ---
@@ -724,7 +724,7 @@ See n ≤ 16?
 ```python
 # 1. Precompute per-mask values
 for mask in range(1, 1 << n):
-    # compute total[mask], fits[mask], valid[mask], etc.
+    total[mask] = ...   # whatever the problem needs: sum, length, feasibility
 
 # 2. Base case
 dp[0] = 0  # (or dp[1<<i] for single items)
@@ -851,7 +851,12 @@ Every (mask, submask) pair is visited once, and there are `3^n` of them. Roughly
 <details markdown="1">
 <summary>Answer</summary>
 
-Fix the lowest set bit of `mask` to always belong to the submask you are peeling. That makes each unordered split appear exactly once, halving the work and eliminating a double-counting class of bugs.
+There are two canonicalisation tricks, and it is worth knowing which one this guide's code uses where:
+
+- **`if sub < comp`** — the one in the code above (§2 split template, LC 2158 median split). Of the pair `(sub, comp)` it processes only the numerically smaller, so each unordered *two-way* split is seen once. Simple, but only meaningful when you are splitting into exactly two parts.
+- **Fix the lowest set bit of `mask` into the submask you peel** — the general form for multi-group peel-off. Since `mask`'s lowest set bit must land in *some* group, forcing it into the group you peel right now pins down the group order, so a partition into `k` groups is built exactly one way instead of `k!` ways.
+
+The plain peel-off loops in §3–§5 deliberately skip both and enumerate every submask. For `min`/`max` objectives that is still *correct* — just redundant work, since re-deriving the same partition in another order cannot beat itself. If your objective **counts** partitions, the redundancy becomes a wrong answer and you must canonicalise.
 
 </details>
 

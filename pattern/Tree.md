@@ -311,7 +311,12 @@ seg.range_update(tin[node], tout[node], delta)
 | Subtree update | Lazy segment tree | O(log N) |
 | Is u ancestor of v? | `tin[u] <= tin[v] <= tout[u]` | O(1) |
 | Subtree size | `tout[u] - tin[u] + 1` | O(1) |
-| LCA (with RMQ) | Min depth in Euler tour range | O(1) |
+
+> **Not on this list: LCA.** The O(1)-LCA-by-RMQ trick needs the *other* Euler tour — the
+> `2N-1`-entry walk that re-records a node every time you backtrack into it — because LCA is the
+> minimum-depth entry *between* two visits. The `tin`/`tout` tour above stores each node once, so
+> that range simply does not contain the ancestor you need. See
+> [LCA §Euler Tour + RMQ](/pattern/lca) for the variant that does support it.
 
 ---
 
@@ -599,7 +604,13 @@ def farthest_from_each(n, adj):
 
 #### Walkthrough — LC 834 Sum of Distances in Tree
 
-**This template solves: LC 834 (Sum of Distances), LC 543/1245 (Tree Diameter via two-longest rerooting), LC 2477 (Minimum Fuel — subtree-size rerooting), and CSES "Tree Distances I/II".** For the rest of the family — LC 979 (Distribute Coins), 2049 (Highest Score), 2858 (Minimum Edge Reversals), grouped same-colour distances — see [Edge Contribution & Rerooting](/pattern/edge-contribution).
+**This template solves: LC 834 (Sum of Distances), LC 2477 (Minimum Fuel — subtree-size rerooting), CSES "Tree Distances I" (one root) and "Tree Distances II" (all roots).**
+
+A caution on diameter problems: **LC 543 needs only the post-order half of this template**, not the
+reroot pass. A single bottom-up DFS that returns each node's height while updating a global
+`best = max(best, left + right)` is the whole solution — reaching for rerooting there is overkill.
+Rerooting earns its keep only when you need a *per-node* answer, e.g. CSES "Tree Distances I"
+(farthest node from **every** node). For the rest of the family — LC 979 (Distribute Coins), 2049 (Highest Score), 2858 (Minimum Edge Reversals), grouped same-colour distances — see [Edge Contribution & Rerooting](/pattern/edge-contribution).
 
 > There is an undirected tree of `n` nodes. Return an array `ans` where `ans[i]` is the sum of distances from node `i` to every other node.
 
@@ -1262,20 +1273,26 @@ Instead of working on the full N-node tree, build a **virtual tree** containing 
 This reduces the tree to at most **2K - 1 nodes**.
 
 ```
-Full tree (10 nodes):        Virtual tree for nodes {3, 7, 9}:
+Full tree (10 nodes):        Virtual tree for query nodes {3, 9, 10}:
 
          1                           1
         / \                         / \
        2   3                       3   5
-      / \                              \
-     4   5                              8
-    /   / \                              \
-   6   7   8                              9
+      / \                             / \
+     4   5                           9   10
+    /   / \
+   6   7   8
       /     \
      9      10
 
-Only 5 nodes: {1, 3, 5, 8, 9}  (query nodes + LCAs)
+Only 5 nodes: {1, 3, 5, 9, 10}  =  {3, 9, 10} query nodes + {1, 5} LCAs
 ```
+
+Why exactly those two extra nodes: `LCA(9, 10) = 5` (their paths join at 5), and `LCA(3, 9) =
+LCA(3, 10) = 1`. Nodes 2, 7, and 8 are on the connecting paths but are *not* LCAs of any query
+pair, so they get compressed away — edge `1 → 5` stands in for the path `1 → 2 → 5`, and `5 → 9`
+stands in for `5 → 7 → 9`. Every query node must survive into the virtual tree; if one goes
+missing, you have built the wrong node set.
 
 ### Building a Virtual Tree
 

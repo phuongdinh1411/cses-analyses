@@ -46,7 +46,7 @@ All subsets of {0, 1, 2}:
 | List every subset of `n` items | Subset enumeration | **78** Subsets | [§2](#2-subset-enumeration-techniques) · [walkthrough](#problem-78--subsets) |
 | Split items into `k` fair groups / buckets | Subset DP over groups | **2305** Fair Distribution, **698** Partition to K | [§3](#3-bitmask-dp-patterns) · [walkthrough](#problem-2305--fair-distribution-of-cookies) |
 | Assign `n` workers to `n` jobs, min cost | Assignment DP `dp[mask]` | **1879** Min XOR Sum of Two Arrays | [§3 Pattern 2](#pattern-2-assignment-problem) |
-| Visit ALL nodes, cost depends on where I am now | TSP `dp[mask][last]` | **847** Shortest Path Visiting All Nodes | [§3 Pattern 1](#pattern-1-traveling-salesman-problem-tsp) · [walkthrough](#problem-847--shortest-path-visiting-all-nodes) |
+| Visit ALL nodes, cost depends on where I am now | TSP `dp[mask][last]` | **847** Shortest Path Visiting All Nodes | [§3 Pattern 1](#pattern-1-hamiltonian-path--tsp-tour) · [walkthrough](#problem-847--shortest-path-visiting-all-nodes) |
 | Aggregate a value over all submasks of every mask | SOS DP | **1178** Valid Words for Puzzles | [§5](#5-sos-sum-over-subsets-dp) · [walkthrough](#problem-1178--number-of-valid-words-for-each-puzzle) |
 | Find max XOR of a subset | XOR (linear) basis | **1707** Max XOR With Element | [§5 max_xor_subset](#5-sos-sum-over-subsets-dp) |
 | Tile a grid / narrow board | Profile DP `dp[col][profile]` | **1349** Max Students | [§6 Template 3](#template-3-profile-dp-grid-problems) |
@@ -424,16 +424,29 @@ mask  binary   bits set        subset
 
 ## 3. Bitmask DP Patterns
 
-### Pattern 1: Traveling Salesman Problem (TSP)
+### Pattern 1: Hamiltonian Path / TSP Tour
 
-**Problem**: Visit all n cities exactly once, minimize total distance.
+**Problem**: Visit all `n` cities exactly once starting from city 0, minimizing total distance.
 
 **State**: `dp[mask][i]` = minimum cost to visit cities in `mask`, ending at city `i`
 
+> **Open path or closed tour? Decide before you write the return line.** The DP table is
+> *identical* for both; only the final answer differs.
+>
+> | Variant | What it asks | Answer line |
+> |---------|--------------|-------------|
+> | **Hamiltonian path** (this code, LC 847) | visit everything, stop wherever | `min(dp[full][i])` |
+> | **TSP tour** (the classic TSP, [DP §11](/pattern/dp#11-bitmask-dp)) | visit everything *and return to 0* | `min(dp[full][i] + dist[i][0])` |
+>
+> The two give genuinely different numbers — on the matrix below, the open path costs 65 and the
+> closed tour costs 80. Returning the path cost on a problem that wanted the tour is a silent
+> wrong answer, not a crash, so it survives your own testing and dies on submission.
+
 ```python
-def tsp(dist, n):
+def hamiltonian_path_cost(dist, n, close_tour=False):
     """
-    Traveling Salesman Problem using bitmask DP.
+    Cheapest route from city 0 visiting every city exactly once (open path).
+    Set `close_tour=True` to get the classic TSP tour instead.
 
     State: dp[mask][i] = min cost to visit cities in mask, ending at city i
     Transition: Try going from city i to unvisited city j
@@ -464,9 +477,11 @@ def tsp(dist, n):
                 dp[next_mask][v] = min(dp[next_mask][v],
                                       dp[mask][u] + dist[u][v])
 
-    # Return minimum cost ending at any city (or add return to start)
+    # THE ONLY LINE THAT DIFFERS between the two variants:
     full_mask = (1 << n) - 1
-    return min(dp[full_mask][i] for i in range(n))
+    if close_tour:
+        return min(dp[full_mask][i] + dist[i][0] for i in range(n))   # TSP tour
+    return min(dp[full_mask][i] for i in range(n))                    # open path
 
 # Example usage
 dist = [
@@ -475,12 +490,13 @@ dist = [
     [15, 35, 0, 30],
     [20, 25, 30, 0]
 ]
-print(f"Minimum TSP cost: {tsp(dist, 4)}")
+print(hamiltonian_path_cost(dist, 4))                    # 65  -> 0->1->3->2, stop
+print(hamiltonian_path_cost(dist, 4, close_tour=True))   # 80  -> 0->1->3->2->0
 ```
 
 ### Problem 847 — Shortest Path Visiting All Nodes
 
-**Difficulty**: Hard · **This template solves**: the [TSP `dp[mask][last]`](#pattern-1-traveling-salesman-problem-tsp) state, in BFS form.
+**Difficulty**: Hard · **This template solves**: the [`dp[mask][last]`](#pattern-1-hamiltonian-path--tsp-tour) state, in BFS form.
 
 > Undirected connected graph of `n` nodes. Return the length of the shortest path that visits **every** node. You may start and stop at any node, revisit nodes, and reuse edges.
 

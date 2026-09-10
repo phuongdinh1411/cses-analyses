@@ -1943,17 +1943,34 @@ def longestIncreasingPath(matrix):
 Trace on `[[9,9,4],[6,6,8],[2,1,1]]` (rows top→bottom):
 
 ```
-dfs at each cell = longest increasing path STARTING there:
+values                    dfs = longest increasing path STARTING at that cell
 
-  9  9  4        1  1  1
-  6  6  8   →    2  2  1        dfs(2,1)=1 (value 1, no larger neighbor up=2? 2>1 yes)
-  2  1  1        3  4  1
+  9  9  4                   1  1  2
+  6  6  8       →           2  2  1
+  2  1  1                   3  4  2
+```
 
-follow the max: 1(2,1) → 2(1,0/1)? actual best chain:
-  1 → 2 → 6 → 9   lengths  1 → 2 → 3 → 4
+Read the table off the corners inward, because `dfs` only depends on *larger* neighbours:
+
+- `dfs(0,0) = dfs(0,1) = 1` — both are 9s, the maximum, so no larger neighbour exists.
+- `dfs(1,2) = 1` — the 8 is boxed in by 4, 6, 1, all smaller.
+- `dfs(1,0) = 2` — the 6 climbs to the 9 above it: `1 + dfs(0,0)`.
+- `dfs(2,0) = 3` — the 2 climbs to that 6: `1 + dfs(1,0)`.
+- `dfs(2,1) = 4` — the 1 steps left to the 2, inheriting its chain: `1 + dfs(2,0)`.
+  It could instead climb to the 6 above (`1 + dfs(1,1) = 3`), but `max` keeps the 4.
+
+The winning chain is the one ending at `dfs(2,1)`:
+
+```
+  1 (2,1)  →  2 (2,0)  →  6 (1,0)  →  9 (0,0)
+  length 4     length 3    length 2    length 1     (dfs values along the way)
 
 answer = max over all cells = 4
 ```
+
+Note that `dfs(0,2) = 2` and `dfs(2,2) = 2` even though those cells sit on the border — the 4 climbs
+to a 9 or the 8, and the bottom-right 1 climbs to the 8. Every cell is a legal *starting* point,
+which is exactly why the answer takes a `max` over all of them rather than reading one corner.
 
 The memo is what turns exponential path enumeration into `O(R·C)`: each cell's longest-path-from-here is computed once and reused by every neighbor that flows into it. Because the guard `matrix[nr][nc] > matrix[r][c]` only ever recurses "uphill," the recursion depth is bounded and no visited-set is needed — the strict inequality *is* the acyclicity certificate.
 

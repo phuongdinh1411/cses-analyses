@@ -646,25 +646,47 @@ Infix:    3 + 4 * 2 / (1 - 5)
 Postfix:  3 4 2 * 1 5 - / +
 ```
 
+Both functions below take a **token list**, not a raw string, so tokenize first. Classify each
+token by asking "is it an operator?" — *not* by its Python type. `'-11'` is a negative number but
+`'-'` is an operator, and a type test cannot tell them apart once input arrives as strings (which
+is exactly how LeetCode hands it to you).
+
 ```python
+PREC = {'+': 1, '-': 1, '*': 2, '/': 2}
+
+def tokenize(s):
+    """'3 + 4 * 2 / (1 - 5)' -> [3, '+', 4, '*', 2, '/', '(', 1, '-', 5, ')']"""
+    out, num = [], ''
+    for ch in s:
+        if ch.isdigit():
+            num += ch
+            continue
+        if num:
+            out.append(int(num)); num = ''
+        if ch in PREC or ch in '()':
+            out.append(ch)
+    if num:
+        out.append(int(num))
+    return out
+
 def infix_to_postfix(tokens):
-    output = []
-    ops = []
-    prec = {'+': 1, '-': 1, '*': 2, '/': 2}
+    output, ops = [], []
 
     for token in tokens:
-        if isinstance(token, (int, float)):
-            output.append(token)
+        if token in PREC:
+            # Pop every operator that binds at least as tightly — that is what
+            # makes equal precedence associate left-to-right.
+            while ops and ops[-1] != '(' and PREC[ops[-1]] >= PREC[token]:
+                output.append(ops.pop())
+            ops.append(token)
         elif token == '(':
             ops.append(token)
         elif token == ')':
             while ops[-1] != '(':
                 output.append(ops.pop())
-            ops.pop()
+            ops.pop()                      # discard the matching '('
         else:
-            while ops and ops[-1] != '(' and prec.get(ops[-1], 0) >= prec[token]:
-                output.append(ops.pop())
-            ops.append(token)
+            output.append(token)           # a number
 
     while ops:
         output.append(ops.pop())
@@ -672,22 +694,30 @@ def infix_to_postfix(tokens):
     return output
 ```
 
+`infix_to_postfix(tokenize("3 + 4 * 2 / (1 - 5)"))` gives `[3, 4, 2, '*', 1, 5, '-', '/', '+']` —
+the postfix line shown above.
+
 ### Postfix Evaluation
 
 ```python
 def eval_postfix(tokens):
+    """LC 150. Accepts ints or strings: [2, 1, '+'] and ['2', '1', '+'] both work."""
     stack = []
     for token in tokens:
-        if isinstance(token, (int, float)):
-            stack.append(token)
-        else:
-            b, a = stack.pop(), stack.pop()
+        if token in PREC:                    # operator, not a number
+            b, a = stack.pop(), stack.pop()  # NOTE: b is the *right* operand
             if token == '+': stack.append(a + b)
             elif token == '-': stack.append(a - b)
             elif token == '*': stack.append(a * b)
-            elif token == '/': stack.append(int(a / b))
+            else: stack.append(int(a / b))   # int() truncates toward zero, // floors
+        else:
+            stack.append(int(token))         # int('-11') == -11, so negatives are fine
     return stack[0]
 ```
+
+**Why pop order matters.** `b` comes off first because it was pushed last, so it is the *right*
+operand. Writing `a, b = stack.pop(), stack.pop()` silently computes `5 - 3` as `3 - 5`; the bug is
+invisible for `+` and `*` and only shows up on `-` and `/`.
 
 ### Walkthrough — LC 227: Basic Calculator II
 
@@ -848,7 +878,12 @@ Each element is pushed into the deque **once** and popped **at most once**. Tota
 
 ### Walkthrough — LC 239: Sliding Window Maximum
 
-**This template solves: LC 239, 1425 (constrained subseq sum), 862 (shortest subarray ≥ K), 1438 (abs-diff window).**
+**This exact template solves LC 239.** Three neighbours use the same monotonic-deque *tool* but each
+reshapes it, so treat them as variations to derive rather than copy targets: **LC 1425** (constrained
+subsequence sum) runs a max-deque over DP values instead of raw array values; **LC 862** (shortest
+subarray ≥ K) runs an increasing deque over *prefix sums* with a variable window, and is worked in
+full at [Sliding Window §13](/pattern/sliding-window#13-problem-862--shortest-subarray-with-sum-at-least-k-negatives-allowed);
+**LC 1438** (abs-diff window) needs *two* deques at once, a max and a min, to track the window's spread.
 
 **Full statement.** Given `nums` and window size `k`, return the maximum of every contiguous window of size `k` as the window slides left to right by one each step. `nums=[1,3,-1,-3,5,3,6,7]`, `k=3` → `[3,3,5,5,6,7]`.
 
@@ -988,12 +1023,20 @@ def maximal_rectangle(matrix):
 
     for i in range(m):
         for j in range(n):
-            heights[j] = heights[j] + 1 if matrix[i][j] == 1 else 0
+            # int() so this works whether the cell is 1 or "1" — LC 85 hands you
+            # STRINGS, and `matrix[i][j] == 1` would be False for every cell,
+            # silently returning 0 instead of crashing.
+            heights[j] = heights[j] + 1 if int(matrix[i][j]) else 0
 
         max_area = max(max_area, largest_rectangle_histogram(heights))
 
     return max_area
 ```
+
+**The column-height recurrence is the whole trick.** `heights[j]` counts consecutive 1s ending at
+row `i`, so a `0` must reset it to 0 rather than decrement it — a rectangle cannot span a hole.
+Every row then becomes a histogram whose largest rectangle you already know how to find, and the
+answer is the best over all rows.
 
 ```
 Matrix:         Heights row by row:

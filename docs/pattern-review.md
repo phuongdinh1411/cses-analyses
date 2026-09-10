@@ -216,3 +216,62 @@ schedule, per-pattern mastery checklist, and drill prompts.
   Harmless for a find-one-path goal.
 - `StackQueue.md` / `Heap.md` median traces show heap contents as positive values while the code
   stores negated values in the low heap. Simplified notation, not a wrong algorithm.
+
+---
+
+# Round 2 — Pedagogical Audit (five parallel deep reviews)
+
+Round 1 above targeted correctness and consistency. Round 2 asked a different question: **can a
+self-learner reach mastery from these pages alone?** Each guide was read line by line against a
+10-point rubric (motivation before mechanism, derivation vs assertion, worked traces, stated
+invariants, hard parts not skipped, no code walls, sane progression, cross-file consistency,
+coverage gaps, nothing misleading).
+
+## Verified and fixed
+
+| # | File | Defect | Verification |
+|---|------|--------|--------------|
+| 1 | `EdgeContribution.md` | `minEdgeReversals` had the two edge weights **swapped** (`with-arrow` charged 1, `against-arrow` charged 0), returning `(#edges − correct)` at every index. The problem statement was also inverted ("every node can reach `i`" instead of "from `i` you can reach every node"), and the trace was computed from the buggy weights. | Fixed all four (statement, weights, prose, trace). Re-verified against both LeetCode examples and **400 random directed trees** vs brute force: 0 mismatches. |
+| 2 | `DP.md` | LC 329 trace table had two wrong cells (`dfs(0,2)` and `dfs(2,2)` shown as 1, actually 2) plus a self-contradictory inline note (`dfs(2,1)=1 (…2>1 yes)` — it is 4). | Recomputed the table programmatically; replaced with a corrected table and a corner-inward derivation. |
+| 3 | `Tree.md` | Virtual-tree example **dropped query node 7** and listed `{1,3,5,8,9}`, which contains non-LCA nodes and contradicts its own diagram. | Replaced with query set `{3,9,10}` → `{1,3,5,9,10}`, hand-verified (`LCA(9,10)=5`), still hitting the `2K−1` bound, plus prose on why 2/7/8 compress away. |
+| 4 | `Tree.md` | "LCA (with RMQ), O(1)" listed as a capability of the **`tin`/`tout`** Euler tour. That variant stores each node once and cannot support LCA-by-RMQ; it needs the `2N−1` backtracking tour. Directly contradicted the disambiguation added in Round 1. | Removed from the table, replaced with a callout explaining why, pointing to `LCA.md`. |
+| 5 | `SlidingWindow.md` | The negatives caveat routed readers to `PrefixSum.md` for prefix-sum + monotonic deque — but **§13 of the same file** is exactly that (LC 862), 400 lines below. | Re-pointed to `§13` with a "read this, then see how the assumption gets repaired" handoff. |
+| 6 | `StackQueue.md` | "This template solves: LC 239, 1425, 862, 1438" — only 239 is solved by the fixed-size template. 1425 runs over DP values, 862 over prefix sums with a variable window, 1438 needs two deques. | Reworded to "same tool, different shape", naming each variation and linking 862 to `SlidingWindow §13`. |
+| 7 | `BitmaskDP_Subset_Partition.md` | Self-Test Q3 taught lowest-set-bit canonicalisation, but **every code block uses `sub < comp`** and the peel-off loops use neither. | Answer now distinguishes both tricks, says which code uses which, and notes the redundancy is harmless for `min`/`max` but wrong for **counting**. |
+| 8 | `PrefixSum.md` | See-also cited "Binary Search §10" for lower-bound-over-prefix-array; §10 is *Python's bisect Module*. | Re-pointed to §2 (lower/upper bound) with §10 kept as the API reference. |
+| 9 | `Bitmask.md` | Stale anchor `#pattern-1-traveling-salesman-problem-tsp` surviving the Round 1 heading rename. | Fixed; full link sweep now clean. |
+
+## Reported but rejected after verification
+
+Reviewer findings are not automatically defects. These were checked and left alone:
+
+- **`EdgeContribution.md` LC 834 trace "wrong" (`sub[]` and pass-2 answers).** Hand-verified all
+  six distance sums against the tree `0-1, 0-2, 0-3, 2-4, 4-5`: `[8,12,8,12,10,14]` is correct,
+  as is `sub = [6,1,3,1,2,1]` and `answer[0]=8`. No change.
+- **`Graph.md` undirected cycle detection "silently breaks on multi-edges".** Executed it: a
+  doubled `u—v` returns `True`, which is *correct* — two parallel edges genuinely form a cycle in
+  a multigraph. The node-skip catches it on `u`'s second pass over its list. The guide's own
+  "When This Fails" bullet was the misleading part (it implied the template is broken), so that
+  bullet was rewritten to name the real trap: accidental duplicate edges in the *input*.
+
+## Open pedagogical backlog (not defects — enhancement work)
+
+Ranked by mastery impact. Nothing here is wrong; it is material that is *missing* or misplaced.
+
+1. **Derivations living only in Self-Test answers.** Dijkstra's exchange argument, Floyd-Warshall's
+   "why `k` outermost", segment-tree `O(log n)` tiling, and Fenwick's lowbit responsibility range
+   are all proved in Self-Test but merely asserted in the body. Self-Tests should *review* a
+   derivation, not be the first place it appears.
+2. **Missing traces on the hardest mechanics.** Lazy propagation (58 lines, no numbers), Tarjan
+   SCC and articulation points (no `disc`/`low` walk), Dinic, Kuhn matching, two-BIT range
+   update/query, `find_kth`, persistent segment tree.
+3. **`Graph.md` is two documents.** It teaches Families A–D well and turns into a template catalog
+   from §5 onward. §14 (multi-source BFS) is referenced from §1 but sits ~1600 lines later, after
+   flow and 2-SAT.
+4. **DP state design is asserted, not derived** — states appear fully formed rather than being
+   built from a failed attempt. Same for the LIS `bisect_left` step and Edit Distance (routed but
+   never taught).
+5. **Union-Find inconsistency in `Graph.md`** — the LC 547 walkthrough attaches without rank while
+   the guide says rank is load-bearing.
+6. **Duplicate entries** in the `TwoPointers.md` and `Heap.md` practice ladders; LC 621 mentioned
+   but never taught in `Heap.md`.
