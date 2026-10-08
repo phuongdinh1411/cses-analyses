@@ -551,6 +551,7 @@ export const navigationData: NavItem[] = [
       { title: "Mastery Program", url: "/pattern/mastery" },
       { title: "LCA", url: "/pattern/lca" },
       { title: "Dynamic Programming", url: "/pattern/dp" },
+      { title: "Knapsack Variants (75 Problems)", url: "/pattern/knapsack-dp-youknowwho" },
       { title: "Tree Patterns", url: "/pattern/tree" },
       { title: "Graph Patterns", url: "/pattern/graph" },
       { title: "Stack & Queue", url: "/pattern/stack-queue" },

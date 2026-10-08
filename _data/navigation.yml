@@ -878,6 +878,8 @@ main:
     url: /cses-analyses/pattern/lca
   - title: Dynamic Programming
     url: /cses-analyses/pattern/dp
+  - title: Knapsack Variants (75 Problems)
+    url: /cses-analyses/pattern/knapsack-dp-youknowwho
   - title: Tree Patterns
     url: /cses-analyses/pattern/tree
   - title: Graph Patterns
