@@ -776,6 +776,10 @@ main:
     url: /cses-analyses/system_design/design-ad-click-aggregation
   - title: S3 Object Storage
     url: /cses-analyses/system_design/design-s3-object-storage
+  - title: Data Pipeline
+    url: /cses-analyses/system_design/design-data-pipeline
+  - title: Observability Platform
+    url: /cses-analyses/system_design/design-observability-platform
 - title: Low Level Design
   url: /cses-analyses/low_level_design
   children:
@@ -912,5 +916,7 @@ main:
     url: /cses-analyses/pattern/edge-contribution
   - title: Contribution Counting
     url: /cses-analyses/pattern/contribution-counting
+  - title: Async Python
+    url: /cses-analyses/pattern/async-python
 - title: About
   url: /cses-analyses/about

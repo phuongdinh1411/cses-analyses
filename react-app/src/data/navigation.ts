@@ -473,6 +473,8 @@ export const navigationData: NavItem[] = [
       { title: "Message Queue", url: "/system_design/design-message-queue" },
       { title: "Ad Click Aggregation", url: "/system_design/design-ad-click-aggregation" },
       { title: "S3 Object Storage", url: "/system_design/design-s3-object-storage" },
+      { title: "Data Pipeline", url: "/system_design/design-data-pipeline" },
+      { title: "Observability Platform", url: "/system_design/design-observability-platform" },
     ],
   },
   {
@@ -568,6 +570,7 @@ export const navigationData: NavItem[] = [
       { title: "Digit DP", url: "/pattern/digit-dp" },
       { title: "Edge Contribution & Rerooting", url: "/pattern/edge-contribution" },
       { title: "Contribution Counting", url: "/pattern/contribution-counting" },
+      { title: "Async Python", url: "/pattern/async-python" },
     ],
   },
   ...bytebytegNavigationData,
