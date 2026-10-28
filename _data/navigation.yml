@@ -920,5 +920,7 @@ main:
     url: /cses-analyses/pattern/contribution-counting
   - title: Async Python
     url: /cses-analyses/pattern/async-python
+  - title: pandas vs Polars vs Dask
+    url: /cses-analyses/pattern/pandas-polars-dask
 - title: About
   url: /cses-analyses/about

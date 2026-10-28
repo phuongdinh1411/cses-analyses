@@ -572,6 +572,7 @@ export const navigationData: NavItem[] = [
       { title: "Edge Contribution & Rerooting", url: "/pattern/edge-contribution" },
       { title: "Contribution Counting", url: "/pattern/contribution-counting" },
       { title: "Async Python", url: "/pattern/async-python" },
+      { title: "pandas vs Polars vs Dask", url: "/pattern/pandas-polars-dask" },
     ],
   },
   ...bytebytegNavigationData,
