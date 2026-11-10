@@ -237,6 +237,7 @@ export const navigationData: NavItem[] = [
           { title: "Subarray Maximums", url: "/problem_soulutions/sliding_window/subarray_maximums_analysis" },
           { title: "Subarray Minimums", url: "/problem_soulutions/sliding_window/subarray_minimums_analysis" },
           { title: "Subarray with K Distinct", url: "/problem_soulutions/sliding_window/subarray_with_k_distinct_analysis" },
+          { title: "Maximum of Sliding Window Minimums", url: "/problem_soulutions/sliding_window/maximum_of_sliding_window_minimums_analysis" },
         ],
       },
       {
