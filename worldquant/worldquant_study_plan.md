@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "WorldQuant Senior SWE — Study Plan"
-permalink: /worldquant_study_plan
+permalink: /worldquant/worldquant_study_plan
 ---
 
 # WorldQuant Senior SWE — Study Plan

@@ -237,7 +237,7 @@ export const navigationData: NavItem[] = [
           { title: "Subarray Maximums", url: "/problem_soulutions/sliding_window/subarray_maximums_analysis" },
           { title: "Subarray Minimums", url: "/problem_soulutions/sliding_window/subarray_minimums_analysis" },
           { title: "Subarray with K Distinct", url: "/problem_soulutions/sliding_window/subarray_with_k_distinct_analysis" },
-          { title: "Maximum of Sliding Window Minimums", url: "/problem_soulutions/sliding_window/maximum_of_sliding_window_minimums_analysis" },
+
         ],
       },
       {
@@ -577,6 +577,15 @@ export const navigationData: NavItem[] = [
     ],
   },
   ...bytebytegNavigationData,
+  {
+    title: "WorldQuant Prep",
+    url: "/worldquant",
+    children: [
+      { title: "Study Plan", url: "/worldquant/worldquant_study_plan" },
+      { title: "Senior SWE Prep", url: "/worldquant/worldquant_senior_swe_prep" },
+      { title: "Maximum of Sliding Window Minimums", url: "/worldquant/maximum_of_sliding_window_minimums" },
+    ],
+  },
   {
     title: "About",
     url: "/about",

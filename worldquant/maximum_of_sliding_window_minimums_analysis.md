@@ -1,7 +1,7 @@
 ---
 layout: simple
 title: "Maximum of Sliding Window Minimums"
-permalink: /problem_soulutions/sliding_window/maximum_of_sliding_window_minimums
+permalink: /worldquant/maximum_of_sliding_window_minimums
 difficulty: Medium
 tags: [sliding-window, monotonic-deque, array, worldquant]
 ---
