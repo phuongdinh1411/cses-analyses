@@ -20,6 +20,7 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 | System Design (distributed, ETL, data pipelines) | ⭐⭐⭐⭐⭐ | |
 | Database / SQL (PostgreSQL, query optimization) | ⭐⭐⭐⭐⭐ | |
 | API Design (REST / gRPC) | ⭐⭐⭐⭐ | |
+| Network Protocols & Secure Communication | ⭐⭐⭐⭐ | |
 | Data Engineering (ETL/ELT, Kafka, Airflow) | ⭐⭐⭐⭐ | |
 | AI/LLM tooling (agentic workflows) | ⭐⭐⭐⭐ | |
 | DevOps (Docker, CI/CD, observability) | ⭐⭐⭐ | |
@@ -400,6 +401,138 @@ Step 4: Onsite / Final Interview (reported as 4–9 hours, multiple interviewers
 | 8 | How would you profile a slow Python script? Walk me through the process. | Performance |
 | 9 | What happens when you do `import module` in Python? How does the import system work? | Python Internals |
 | 10 | Explain type hints in Python. What is the difference between `Protocol` and `ABC`? | Typing |
+
+---
+
+### 🌐 Network Knowledge Questions
+
+> Covers the JD requirement: _"Solid grasp of network protocols, API design, and secure communication implementations"_
+
+#### 🔌 Network Protocols
+
+| # | Question | Topic |
+|---|---|---|
+| 1 | Walk me through what happens when you type `https://api.worldquant.com/data` in a browser — from DNS to TLS handshake to response. | HTTP / TLS / DNS |
+| 2 | What is the difference between TCP and UDP? When would you choose UDP over TCP in a financial system? | Transport Layer |
+| 3 | Explain the TCP 3-way handshake. What happens during connection teardown (4-way)? | TCP |
+| 4 | What is HTTP/2 and how does it differ from HTTP/1.1? What is HTTP/3 (QUIC)? | HTTP |
+| 5 | What is the difference between a reverse proxy and a load balancer? Give an example of each (e.g., Nginx, HAProxy). | Infrastructure |
+| 6 | Explain WebSockets. How do they differ from long-polling and SSE (Server-Sent Events)? When would you use each? | Real-time Comms |
+| 7 | What is a CDN and how does it work? When is it NOT useful? | Networking |
+| 8 | Explain the OSI model in plain terms. Which layers matter most for a backend engineer? | Fundamentals |
+
+#### 🔧 API Design
+
+| # | Question | Topic |
+|---|---|---|
+| 1 | Design a RESTful API for serving computed financial signals. How do you handle versioning (`v1`, `v2`)? | REST Design |
+| 2 | What is the difference between REST, GraphQL, and gRPC? When would you choose gRPC for internal services? | API Paradigms |
+| 3 | What are idempotency and safety in REST? Which HTTP methods are idempotent? | REST Semantics |
+| 4 | How do you handle API rate limiting? Describe token bucket vs leaky bucket algorithms. | Rate Limiting |
+| 5 | Design a pagination strategy for an API returning millions of financial records. Compare offset vs cursor-based pagination. | API Design |
+| 6 | How do you design backward-compatible APIs? What breaks backward compatibility? | Versioning |
+| 7 | What is an API gateway? What responsibilities should it own vs the individual service? | Architecture |
+| 8 | How would you design a webhook system where your service pushes real-time events to clients? | Event-Driven |
+
+#### 🔒 Secure Communication
+
+| # | Question | Topic |
+|---|---|---|
+| 1 | Explain TLS 1.3 handshake. What changed from TLS 1.2? Why does it matter for latency-sensitive systems? | TLS / Security |
+| 2 | What is mTLS (Mutual TLS)? How does it differ from one-way TLS? When would you use it in a microservices system? | mTLS |
+| 3 | Explain JWT (JSON Web Token). What are the risks of storing JWTs in `localStorage` vs `httpOnly` cookies? | Auth / Security |
+| 4 | What is OAuth 2.0? Explain the difference between Authorization Code flow and Client Credentials flow. | OAuth |
+| 5 | What is the difference between authentication and authorization? Give an example of each in a financial API. | Security Fundamentals |
+| 6 | How do you prevent common API vulnerabilities: SQL injection, SSRF, IDOR, and excessive data exposure? | API Security |
+| 7 | What is certificate pinning? When is it useful and when is it a maintenance burden? | TLS / Mobile |
+| 8 | How do you securely store API keys and secrets in a production system? Compare env vars, Vault, AWS Secrets Manager. | Secrets Management |
+
+#### 💡 Key Concepts Summary
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    NETWORK KNOWLEDGE MAP                            │
+├─────────────────┬───────────────────────────────────────────────────┤
+│ PROTOCOLS       │ TCP/IP, UDP, HTTP/1.1, HTTP/2, HTTP/3 (QUIC),     │
+│                 │ WebSocket, DNS, TLS 1.2/1.3                        │
+├─────────────────┼───────────────────────────────────────────────────┤
+│ API DESIGN      │ REST (idempotency, versioning, pagination),        │
+│                 │ gRPC (protobuf, streaming), GraphQL, WebHooks,     │
+│                 │ Rate limiting (token bucket), API Gateway          │
+├─────────────────┼───────────────────────────────────────────────────┤
+│ SECURITY        │ TLS handshake, mTLS, JWT, OAuth 2.0,              │
+│                 │ OWASP Top 10 (SSRF, IDOR, injection),             │
+│                 │ Secrets management (Vault, AWS SSM)                │
+└─────────────────┴───────────────────────────────────────────────────┘
+```
+
+#### 🔑 Must-Know Code Patterns
+
+```python
+# ── Secure HTTPS request with timeout + retry ──────────────────────
+import httpx
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+def fetch_signal(url: str, api_key: str) -> dict:
+    with httpx.Client(timeout=5.0, verify=True) as client:
+        response = client.get(
+            url,
+            headers={"Authorization": f"Bearer {api_key}"},
+        )
+        response.raise_for_status()
+        return response.json()
+
+# ── gRPC client (stub pattern) ──────────────────────────────────────
+import grpc
+import signals_pb2_grpc, signals_pb2
+
+with grpc.secure_channel(
+    "signals.worldquant.internal:443",
+    grpc.ssl_channel_credentials()
+) as channel:
+    stub = signals_pb2_grpc.SignalServiceStub(channel)
+    response = stub.GetSignal(signals_pb2.SignalRequest(id="alpha_001"))
+
+# ── JWT decode + verify (never trust without verification) ──────────
+import jwt  # PyJWT
+
+SECRET = "from-vault-not-hardcoded"
+payload = jwt.decode(token, SECRET, algorithms=["HS256"])
+# Always verify: exp, iss, aud claims
+
+# ── Rate limiter (token bucket) ─────────────────────────────────────
+import time
+from threading import Lock
+
+class TokenBucket:
+    def __init__(self, rate: float, capacity: float):
+        self.rate = rate          # tokens per second
+        self.capacity = capacity
+        self.tokens = capacity
+        self.last = time.monotonic()
+        self._lock = Lock()
+
+    def consume(self, n: int = 1) -> bool:
+        with self._lock:
+            now = time.monotonic()
+            self.tokens = min(self.capacity, self.tokens + (now - self.last) * self.rate)
+            self.last = now
+            if self.tokens >= n:
+                self.tokens -= n
+                return True
+            return False
+```
+
+#### 🗂️ WorldQuant-Specific Scenarios to Prepare
+
+| Scenario | What to Discuss |
+|---|---|
+| Internal microservices communication | gRPC + mTLS, protobuf schemas, service mesh (Istio) |
+| Serving financial signals via API | REST versioning, cursor pagination, rate limiting, caching (Redis) |
+| Real-time market data ingestion | WebSocket / TCP streams, backpressure, Kafka consumers |
+| Securing research platform APIs | OAuth 2.0 Client Credentials, API Gateway, JWT validation |
+| Secret rotation in production | HashiCorp Vault dynamic secrets, AWS Secrets Manager, no hardcoded keys |
 
 ---
 
