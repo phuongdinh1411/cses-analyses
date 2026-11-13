@@ -871,6 +871,8 @@ main:
     url: /cses-analyses/quick_reference/advanced_algorithms
   - title: Common Mistakes
     url: /cses-analyses/quick_reference/common_mistakes
+  - title: Hedge Fund SWE Interviews
+    url: /cses-analyses/quick_reference/hedge_fund_swe_interviews
 - title: Patterns
   url: /cses-analyses/pattern
   children:

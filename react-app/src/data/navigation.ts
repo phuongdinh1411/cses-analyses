@@ -544,6 +544,7 @@ export const navigationData: NavItem[] = [
       { title: "Code Templates", url: "/quick_reference/code_templates" },
       { title: "Advanced Algorithms", url: "/quick_reference/advanced_algorithms" },
       { title: "Common Mistakes", url: "/quick_reference/common_mistakes" },
+      { title: "Hedge Fund SWE Interviews", url: "/quick_reference/hedge_fund_swe_interviews" },
     ],
   },
   {
