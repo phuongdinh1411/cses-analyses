@@ -1,3 +1,9 @@
+---
+layout: simple
+title: "WorldQuant Senior SWE — 2-Month Interview Prep Plan"
+permalink: /worldquant/worldquant_senior_swe_prep
+---
+
 # 🏦 WorldQuant Senior SWE — 2-Month Interview Prep Plan
 
 > **Target Role:** Senior Software Engineer @ WorldQuant  

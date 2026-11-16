@@ -13,6 +13,7 @@ const markdownModules = import.meta.glob<string>(
     '../../../low_level_design/**/*.md',
     '../../../quick_reference/**/*.md',
     '../../../pattern/**/*.md',
+    '../../../worldquant/**/*.md',
     '../../../bytebytego_content/*/*.md',
     '../../content_index.md',
     '../../content_about.md',

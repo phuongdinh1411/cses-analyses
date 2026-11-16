@@ -46,11 +46,11 @@ If time is limited, study in this order — each row is a bigger differentiator 
 
 | Topic | Resource | Target |
 |-------|----------|--------|
-| Graphs (BFS/DFS/Dijkstra/Union-Find) | [`pattern/Graph.md`](/cses-analyses/pattern/graph) | 5 medium problems |
-| DP (knapsack, intervals, bitmask) | [`pattern/DP.md`](/cses-analyses/pattern/dp), [`KnapsackDP`](/cses-analyses/pattern/knapsack-dp-youknowwho) | 5 medium problems |
-| Binary search on answer | [`pattern/BinarySearch.md`](/cses-analyses/pattern/binary-search) | 3 problems |
-| Heaps / Priority queues | [`pattern/Heap.md`](/cses-analyses/pattern/heap) | 3 problems |
-| Segment tree / Fenwick tree | [`pattern/SegmentTree.md`](/cses-analyses/pattern/segment-tree), [`FenwickTree.md`](/cses-analyses/pattern/fenwick-tree) | 2 problems each |
+| Graphs (BFS/DFS/Dijkstra/Union-Find) | [`pattern/Graph.md`](/pattern/graph) | 5 medium problems |
+| DP (knapsack, intervals, bitmask) | [`pattern/DP.md`](/pattern/dp), [`KnapsackDP`](/pattern/knapsack-dp-youknowwho) | 5 medium problems |
+| Binary search on answer | [`pattern/BinarySearch.md`](/pattern/binary-search) | 3 problems |
+| Heaps / Priority queues | [`pattern/Heap.md`](/pattern/heap) | 3 problems |
+| Segment tree / Fenwick tree | [`pattern/SegmentTree.md`](/pattern/segment-tree), [`FenwickTree.md`](/pattern/fenwick-tree) | 2 problems each |
 
 ### Recommended LeetCode Problems
 
@@ -71,17 +71,17 @@ Heap:      215 (Kth Largest), 295 (Median from Stream)
 
 | Topic | Resource | Gap to fill |
 |-------|----------|-------------|
-| Message queues / event streaming | [`design-message-queue.md`](/cses-analyses/system_design/design-message-queue) | Add Kafka internals: partitions, consumer groups, offset management |
-| Key-value store / caching | [`design-key-value-store.md`](/cses-analyses/system_design/design-key-value-store) | Add Redis pub/sub, eviction policies (LRU vs LFU) |
-| Distributed object storage | [`design-s3-object-storage.md`](/cses-analyses/system_design/design-s3-object-storage) | Review consistent hashing |
-| Payment / financial systems | [`design-payment-system.md`](/cses-analyses/system_design/design-payment-system) | Emphasize idempotency, exactly-once delivery |
+| Message queues / event streaming | [`design-message-queue.md`](/system_design/design-message-queue) | Add Kafka internals: partitions, consumer groups, offset management |
+| Key-value store / caching | [`design-key-value-store.md`](/system_design/design-key-value-store) | Add Redis pub/sub, eviction policies (LRU vs LFU) |
+| Distributed object storage | [`design-s3-object-storage.md`](/system_design/design-s3-object-storage) | Review consistent hashing |
+| Payment / financial systems | [`design-payment-system.md`](/system_design/design-payment-system) | Emphasize idempotency, exactly-once delivery |
 
 ### New guides to create (highest-leverage gaps)
 
 | Guide | Why it matters for WorldQuant |
 |-------|-------------------------------|
-| [`design-data-pipeline.md`](/cses-analyses/system_design/design-data-pipeline) | WorldQuant runs large-scale financial data pipelines; this is likely to come up |
-| [`design-observability-platform.md`](/cses-analyses/system_design/design-observability-platform) | OpenTelemetry/Grafana/ELK are explicitly listed in the JD |
+| [`design-data-pipeline.md`](/system_design/design-data-pipeline) | WorldQuant runs large-scale financial data pipelines; this is likely to come up |
+| [`design-observability-platform.md`](/system_design/design-observability-platform) | OpenTelemetry/Grafana/ELK are explicitly listed in the JD |
 
 ### System design interview framework (20/20/5 split)
 
@@ -322,9 +322,9 @@ prices_pipeline()
 
 | Resource | Focus for WorldQuant |
 |----------|---------------------|
-| [`digital-wallet-service.md`](/cses-analyses/low_level_design/digital-wallet-service) | Idempotency keys, double-spend prevention, audit log |
-| [`logging-framework.md`](/cses-analyses/low_level_design/logging-framework) | Observer pattern, structured logging, async log buffers |
-| [`lru-cache.md`](/cses-analyses/low_level_design/lru-cache) | Thread safety with `asyncio.Lock`, TTL-based expiration |
+| [`digital-wallet-service.md`](/low_level_design/digital-wallet-service) | Idempotency keys, double-spend prevention, audit log |
+| [`logging-framework.md`](/low_level_design/logging-framework) | Observer pattern, structured logging, async log buffers |
+| [`lru-cache.md`](/low_level_design/lru-cache) | Thread safety with `asyncio.Lock`, TTL-based expiration |
 
 ### Design patterns for financial software
 
@@ -404,6 +404,6 @@ class CircuitBreaker:
 
 | Page | Status | Why |
 |------|--------|-----|
-| [`system_design/design-data-pipeline.md`](/cses-analyses/system_design/design-data-pipeline) | ✅ Created | Core WorldQuant use case |
-| [`pattern/AsyncPython.md`](/cses-analyses/pattern/async-python) | ✅ Created | Senior Python differentiator |
-| [`system_design/design-observability-platform.md`](/cses-analyses/system_design/design-observability-platform) | ✅ Created | OpenTelemetry/Grafana/ELK from JD |
+| [`system_design/design-data-pipeline.md`](/system_design/design-data-pipeline) | ✅ Created | Core WorldQuant use case |
+| [`pattern/AsyncPython.md`](/pattern/async-python) | ✅ Created | Senior Python differentiator |
+| [`system_design/design-observability-platform.md`](/system_design/design-observability-platform) | ✅ Created | OpenTelemetry/Grafana/ELK from JD |

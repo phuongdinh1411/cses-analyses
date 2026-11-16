@@ -926,5 +926,40 @@ main:
     url: /cses-analyses/pattern/async-python
   - title: pandas vs Polars vs Dask
     url: /cses-analyses/pattern/pandas-polars-dask
+- title: WorldQuant Prep
+  url: /cses-analyses/worldquant/worldquant_study_plan
+  children:
+  - title: Study Plan
+    url: /cses-analyses/worldquant/worldquant_study_plan
+  - title: Senior SWE Prep
+    url: /cses-analyses/worldquant/worldquant_senior_swe_prep
+  - title: Maximum of Sliding Window Minimums
+    url: /cses-analyses/worldquant/maximum_of_sliding_window_minimums
+  - title: Minimum Swaps to Sort by Popularity
+    url: /cses-analyses/worldquant/minimum_swaps_to_sort_by_popularity
+  - title: Biological Hazards
+    url: /cses-analyses/worldquant/biological_hazards
+  - title: Counting Pairs
+    url: /cses-analyses/worldquant/counting_pairs
+  - title: Degree of an Array
+    url: /cses-analyses/worldquant/degree_of_an_array
+  - title: Sliding Window Minimum
+    url: /cses-analyses/worldquant/sliding_window_minimum
+  - title: Rolling Rank in a Sliding Window
+    url: /cses-analyses/worldquant/rolling_rank_in_a_sliding_window
+  - title: Top-K Portfolio Selection
+    url: /cses-analyses/worldquant/top_k_portfolio_selection_with_stability_constraint
+  - title: Cross-Sectional Rank Transform
+    url: /cses-analyses/worldquant/cross_sectional_rank_transform
+  - title: Rolling Information Coefficient
+    url: /cses-analyses/worldquant/rolling_information_coefficient_at_scale
+  - title: Longest Consecutive-Increasing Path in Grid
+    url: /cses-analyses/worldquant/longest_consecutive_increasing_path_in_a_grid
+  - title: Three-Way Equal-Value Partition
+    url: /cses-analyses/worldquant/three_way_equal_value_partition
+  - title: Online EWMA Mean and Variance
+    url: /cses-analyses/worldquant/online_ewma_mean_and_variance
+  - title: Rolling Correlation With Missing Values
+    url: /cses-analyses/worldquant/rolling_correlation_with_missing_values
 - title: About
   url: /cses-analyses/about
