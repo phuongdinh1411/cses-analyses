@@ -476,6 +476,8 @@ export const navigationData: NavItem[] = [
       { title: "S3 Object Storage", url: "/system_design/design-s3-object-storage" },
       { title: "Data Pipeline", url: "/system_design/design-data-pipeline" },
       { title: "Observability Platform", url: "/system_design/design-observability-platform" },
+      { title: "Hello Interview Breakdowns", url: "/system_design/hellointerview/" },
+      { title: "System Design School", url: "/system_design/sds/" },
     ],
   },
   {

@@ -5,12 +5,16 @@ import rehypeHighlight from 'rehype-highlight'
 import rehypeRaw from 'rehype-raw'
 import rehypeSlug from 'rehype-slug'
 import type { Components } from 'react-markdown'
+import { Link } from 'react-router-dom'
 import MermaidBlock from './MermaidBlock'
+import { resolveLink } from '../utils/resolveLink'
 
 // No highlight.js theme import — we use a custom Catppuccin Mocha palette in App.css
 
 interface MarkdownRendererProps {
   content: string
+  /** Directory of the source markdown file, used to resolve relative links */
+  sourceDir?: string
 }
 
 // Language display names
@@ -204,8 +208,16 @@ const components: Components = {
     }
     return <div className={className} {...props}>{children}</div>
   },
-  // Make links open in new tab for external URLs
-  a({ href, children, ...props }) {
+}
+
+// Internal links go through the router so its basename supplies the deploy base;
+// external http(s) links open in a new tab.
+function makeLinkComponent(sourceDir: string): Components['a'] {
+  return function MarkdownLink({ href, children, ...props }) {
+    const resolved = href ? resolveLink(href, sourceDir, import.meta.env.BASE_URL) : null
+    if (resolved?.type === 'route') {
+      return <Link to={resolved.to} {...props}>{children}</Link>
+    }
     const isExternal = href?.startsWith('http')
     return (
       <a
@@ -216,7 +228,7 @@ const components: Components = {
         {children}
       </a>
     )
-  },
+  }
 }
 
 // Preprocess markdown to wrap consecutive code blocks in tab group markers.
@@ -277,14 +289,18 @@ function groupCodeBlocks(md: string): string {
   return result
 }
 
-export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+export default function MarkdownRenderer({ content, sourceDir = '/' }: MarkdownRendererProps) {
   const processed = useMemo(() => groupCodeBlocks(content), [content])
+  const pageComponents = useMemo(
+    () => ({ ...components, a: makeLinkComponent(sourceDir) }),
+    [sourceDir]
+  )
 
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw, rehypeSlug, rehypeHighlight]}
-      components={components}
+      components={pageComponents}
     >
       {processed}
     </ReactMarkdown>

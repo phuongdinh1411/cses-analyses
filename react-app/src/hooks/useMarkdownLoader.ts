@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { parseFrontMatter, type ParsedMarkdown } from '../utils/frontmatter'
+import { sourceDirOf } from '../utils/resolveLink'
 
 // Eagerly load all markdown files at compile time as raw strings.
 // Individual .md files are small (1-10KB each), and total content is ~3-5MB,
@@ -147,12 +148,15 @@ export interface UseMarkdownResult {
   loading: boolean
   error: string | null
   data: ParsedMarkdown | null
+  /** Directory of the source file (e.g. "/system_design/sds/"), for resolving relative links */
+  sourceDir: string
 }
 
 export function useMarkdownLoader(routePath: string): UseMarkdownResult {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<ParsedMarkdown | null>(null)
+  const [sourceDir, setSourceDir] = useState('/')
 
   useEffect(() => {
     setLoading(true)
@@ -188,9 +192,10 @@ export function useMarkdownLoader(routePath: string): UseMarkdownResult {
       raw = cleanByteBytGoContent(raw)
     }
 
+    setSourceDir(sourceDirOf(globKey.replace(/^(\.\.\/)+/, '').replace(/^content_/, '')))
     setData(parseFrontMatter(raw))
     setLoading(false)
   }, [routePath])
 
-  return { loading, error, data }
+  return { loading, error, data, sourceDir }
 }

@@ -7,7 +7,7 @@ import { getPageNavContext } from '../utils/pageNav'
 
 export default function ContentPage() {
   const location = useLocation()
-  const { loading, error, data } = useMarkdownLoader(location.pathname)
+  const { loading, error, data, sourceDir } = useMarkdownLoader(location.pathname)
 
   const navContext = useMemo(
     () => getPageNavContext(location.pathname),
@@ -24,7 +24,7 @@ export default function ContentPage() {
       }
     }
     window.scrollTo(0, 0)
-  }, [location.pathname, location.hash])
+  }, [location.pathname, location.hash, data])
 
   if (loading) {
     return (
@@ -78,7 +78,7 @@ export default function ContentPage() {
         {title && !contentStartsWithH1 && <h1 className="page-title">{title}</h1>}
 
         {/* Content */}
-        <MarkdownRenderer content={data.content} />
+        <MarkdownRenderer content={data.content} sourceDir={sourceDir} />
 
         {/* Prev/Next Navigation */}
         {(navContext.prev || navContext.next) && (
