@@ -408,7 +408,7 @@ We could use a distributed message queue system like Kafka, which allows us to c
 
 The main challenge with this approach is the complexity of managing a queueing system. We need to ensure that the queue is scalable, fault-tolerant, and highly available. We can address this by using a managed queueing service like Amazon SQS, Amazon MSK (Managed Streaming for Apache Kafka), or Confluent Cloud, which provide these capabilities out of the box. This allows us to focus on the business logic of the system without worrying about the underlying infrastructure.
 
-The other issue with this approach is that since it is a FIFO queue you could have requests that are stuck behind a request that is taking a long time to process. This is a common issue with FIFO queues and can be addressed by using a priority queue instead. This allows us to prioritize requests based on factors like driver proximity, driver rating, and other relevant factors. This ensures that the most important requests are processed first, leading to a better user experience.
+The other issue with this approach is that since it is a FIFO queue you could have requests that are stuck behind a request that is taking a long time to process. This is a common issue with FIFO queues and can be addressed by using a priority queue instead. This allows us to prioritize ride requests based on request-side factors like how long the rider has been waiting, ride tier, or demand in the area; driver proximity and rating then come into play when the matcher picks which driver to offer each request to. This ensures that the most important requests are processed first, leading to a better user experience.
 
 Queue with Dynamic Scaling
 
@@ -512,7 +512,7 @@ The Bar for Uber: For this question, an E4 candidate will have clearly defined t
 
 Depth of Expertise: As a senior candidate, expectations shift towards more in-depth knowledge — about 60% breadth and 40% depth. This means you should be able to go into technical details in areas where you have hands-on experience. It's crucial that you demonstrate a deep understanding of key concepts and technologies relevant to the task at hand.
 
-Advanced System Design: You should be familiar with advanced system design principles. For example, knowing how to use a search-optimized data store like Elasticsearch for event searching is essential. You're also expected to understand the use of a distributed cache or similar for locking drivers and to discuss detailed scaling strategies (it's ok if this took some probing/hints from the interviewer), including sharding and replication. Your ability to navigate these advanced topics with confidence and clarity is key.
+Advanced System Design: You should be familiar with advanced system design principles. For example, knowing how to choose and justify a geospatial index for high-frequency driver location updates (e.g. Redis GEO/geohash vs. quadtree vs. PostGIS) is essential. You're also expected to understand the use of a distributed cache or similar for locking drivers and to discuss detailed scaling strategies (it's ok if this took some probing/hints from the interviewer), including sharding and replication. Your ability to navigate these advanced topics with confidence and clarity is key.
 
 Articulating Architectural Decisions: You should be able to clearly articulate the pros and cons of different architectural choices, especially how they impact scalability, performance, and maintainability. You justify your decisions and explain the trade-offs involved in your design choices.
 

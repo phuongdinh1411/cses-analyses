@@ -120,8 +120,8 @@ PUT /users/{user_id}/preferences
 ```
 Upstream Service → POST /notifications
   → Notification API (validates, checks preferences)
-  → Persist to DB (status=pending)
-  → Kafka ("notifications-high" or "notifications-normal")
+  → Persist to DB (status=pending) + outbox row, in one transaction
+  → Outbox relay → Kafka ("notifications-high" or "notifications-normal")
   → Delivery Worker
     → Resolve channel (or pick best channel if "auto")
     → Check user preferences (opt-outs, quiet hours)
@@ -176,8 +176,8 @@ Campaign created (or scheduled time arrives)
 
 **Quiet hours logic (delivery worker):**
 ```python
-def should_deliver(user_prefs, channel, now):
-    if channel in user_prefs.opt_out_channels:
+def should_deliver(notification, user_prefs, now):
+    if notification.channel in user_prefs.opt_out_channels:
         return False
     user_time = convert_to_user_timezone(now, user_prefs.timezone)
     if is_in_quiet_hours(user_time, user_prefs.quiet_hours_start, user_prefs.quiet_hours_end):
@@ -198,7 +198,7 @@ def should_deliver(user_prefs, channel, now):
 The key insight: once we write the notification to our DB with `status=pending`, we own it. We must deliver it or explicitly mark it failed after retries.
 
 **Durable pipeline:**
-1. `POST /notifications` → write to DB (status=pending) → publish to Kafka → return `accepted`
+1. `POST /notifications` → in one DB transaction, insert the notification (status=pending) and an outbox row → return `accepted`. An outbox relay (polling or CDC, e.g. Debezium) publishes outbox rows to Kafka and marks them sent. This avoids the dual-write gap where the DB commit succeeds but the Kafka publish fails (or vice versa); the relay may publish twice, which the dedup below absorbs
 2. Kafka retains messages until consumer commits offset → no loss from consumer crash
 3. Delivery worker: process → call provider → on success: commit Kafka offset + update status to `sent`
 4. On provider failure: publish to a delayed retry topic, then commit the offset (Kafka has no per-message redelivery; an uncommitted offset is only re-read after a crash/rebalance)
@@ -267,9 +267,9 @@ RETURNING id;
 ```
 
 **Provider-level deduplication:**
-- Many providers (FCM, SendGrid) support idempotency keys on their API calls
-- Pass our `notification_id` as the provider's idempotency key
-- Provider deduplicates at their end too
+- Don't rely on providers to dedupe: FCM, SendGrid and Twilio generally don't offer request idempotency keys for sends
+- Deduplicate on our side instead: store the send status per `notification_id` (delivery table below) and check it before every provider call
+- A timeout after the provider accepted the request can still cause a rare duplicate; where the provider exposes a message ID or status API, check it before re-sending
 
 **Delivery tracking table:**
 ```sql
@@ -283,7 +283,7 @@ CREATE TABLE delivery_log (
 SELECT 1 FROM delivery_log WHERE notification_id = :id AND provider = :provider;
 ```
 
-**Two-phase commit alternative (for critical notifications):**
+**Send-attempt tracking (for critical notifications; not a true two-phase commit, since the provider can't participate in a transaction):**
 1. Record "delivery attempt started" in delivery_log
 2. Call provider
 3. Record "delivery confirmed"
@@ -297,9 +297,9 @@ If step 3 fails: on retry, see step 1 exists → check provider status before re
 Upstream Services (auth, marketing, product)
   ↓ POST /notifications or POST /campaigns
 Notification API
-  ├─ Validate + persist (PostgreSQL)
+  ├─ Validate + persist notification + outbox row (PostgreSQL, one transaction)
   ├─ Check idempotency (UNIQUE constraint)
-  └─ Publish to Kafka:
+  └─ Outbox relay publishes to Kafka:
        notifications-high    (OTP, security)
        notifications-normal  (marketing, campaigns)
 
@@ -337,7 +337,7 @@ Scheduler
 
 ### Senior
 - Separate high/normal priority Kafka topics for SLA isolation
-- Idempotency key deduplication at ingest + provider level
+- Idempotency key deduplication at ingest + per-notification send status before provider calls
 - Campaign fan-out with batching
 - Provider failover strategy
 - Quiet hours with timezone handling

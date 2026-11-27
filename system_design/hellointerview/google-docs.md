@@ -176,17 +176,18 @@ def transform_insert_against_insert(op, against):
 **Client-side state machine:**
 
 The client maintains:
-- `confirmed_state`: document as server has acknowledged it
-- `pending_ops[]`: operations sent but not yet confirmed by server
-- `uncommitted_ops[]`: operations typed but not yet sent
+- `server_revision`: the last server revision the client has seen/acknowledged
+- `inflight_op`: at most **one** operation sent but not yet acknowledged by the server
+- `buffer`: operations typed while an op is in flight, composed into a single op, not yet sent
 
-Before sending an op: transform it against all pending_ops (compose them).
+Local edit: apply it to the displayed document immediately. If nothing is in flight, send it (tagged with `server_revision`) and make it the `inflight_op`; otherwise compose it into `buffer`.
 
-Client receives server op:
-1. Transform server op against all pending_ops
-2. Apply to `confirmed_state`
-3. Update the pending_ops accordingly (transform them against the server op)
-4. Reapply pending_ops to get the displayed state
+Client receives a server op from another user:
+1. Transform the server op against `inflight_op`, then against `buffer` (each transform also yields updated versions of `inflight_op` and `buffer`, which replace the old ones)
+2. Apply the transformed server op to the displayed document (local edits stay applied)
+3. Increment `server_revision`
+
+Client receives the ack for its `inflight_op`: increment `server_revision`; if `buffer` is non-empty, send it (tagged with the new `server_revision`) as the new `inflight_op` and clear the buffer.
 
 This is the standard **Jupiter OT protocol** used by Google Wave and adapted in Google Docs.
 
@@ -338,7 +339,7 @@ Client page load:
 - Cursor sharing and presence
 
 ### Staff
-- Full OT client-side state machine (confirmed/pending/uncommitted ops)
+- Full OT client-side state machine (acknowledged revision / one in-flight op / buffer)
 - Document Server fault tolerance (checkpoint + replay)
 - Scaling to 1M documents (100 document servers, consistent hash routing)
 - Storage tiering and snapshot GC policy

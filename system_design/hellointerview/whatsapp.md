@@ -20,7 +20,7 @@ permalink: /system_design/hellointerview/whatsapp
 
 ## Understanding the Problem
 
-🚗 What is Whatsapp?
+💬 What is Whatsapp?
 Whatsapp is a messaging service that allows users to send and receive encrypted messages and calls from their phones and computers. Whatsapp is famously built on Erlang and renowned for handling high scale with limited engineering and infrastructure outlay.
 
 ### Functional Requirements
@@ -258,7 +258,7 @@ With our next requirement, we're going to need to start storing messages in our 
 
 Let's keep an "Inbox" for each user which will contain all undelivered messages. When messages are sent, we'll write them to the inbox of each recipient user. If they're already online, we can go ahead and try to deliver the message immediately. If they're not online, we'll store the message and wait for them to come back later.
 
-How much write throughput does this add? The vast majority of chats are 1:1, and the average user sends about 20 messages per day. With 200M active users, that's 4B messages/day or roughly 40K messages/second. For each message in a 1:1 chat, we write once to Messages and once to Inbox (for the recipient). Even accounting for group chats, we're looking at roughly 100K writes/second — well within DynamoDB's capabilities with userId as the partition key.
+How much write throughput does this add? The vast majority of chats are 1:1, and the average user sends about 20 messages per day. With 200M active users, that's 4B messages/day or roughly 46K messages/second. For each message in a 1:1 chat, we write once to Messages and once to Inbox (for the recipient). Even accounting for group chats, we're looking at roughly 100K writes/second — well within DynamoDB's capabilities with userId as the partition key.
 
 Send a Message
 
@@ -596,7 +596,7 @@ This gives you fast detection of missed messages (within one heartbeat interval)
 
 The global sequence per user requires an atomic counter, which adds coordination. You can use Redis INCR commands, but it's another dependency. The benefit is that a single sequence catches all missed messages regardless of which chat they're in.
 
-In practice, most production systems combine these strategies: heartbeats detect dead WebSocket connections, sequence numbers on to detect missed messages, and periodic polling serves as a final backstop.
+In practice, most production systems combine these strategies: heartbeats detect dead WebSocket connections, per-chat sequence numbers on messages let clients detect missed messages, and periodic polling serves as a final backstop.
 
 ### 5) How do we handle out-of-order messages?
 

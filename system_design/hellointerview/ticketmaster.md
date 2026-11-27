@@ -227,7 +227,7 @@ When a user goes to book a ticket, the following happens:
 
 - Check the availability of the selected tickets.
 
-- Update the status of the selected tickets to "booked".
+- Update the status of the selected tickets to "sold".
 
 - Create a new booking record in the Bookings table.
 
@@ -261,7 +261,7 @@ A bad solution many candidates propose for this problem is to use long-running d
 
 When it comes to unlocking, there are two cases we need to consider:
 
-- If the user finalizes the purchase, the transaction is committed, the database lock is released, and the ticket status is set to "Booked".
+- If the user finalizes the purchase, the transaction is committed, the database lock is released, and the ticket status is set to "sold".
 
 - If the user takes too long or abandons the purchase, the system has to rely on their subsequent actions or session timeouts to release the lock. This introduces the risk of tickets being locked indefinitely if not appropriately handled.
 
@@ -273,11 +273,11 @@ Why is this a bad idea? Well, database locks are meant to be used for short peri
 
 ###### Approach
 
-A better solution is to lock the ticket by adding a status field and expiration time on the ticket table. The ticket can then be in 1 of 3 states: available, reserved, booked. This allows us to track the status of each ticket and automatically release the lock once the expiration time is reached. When a user selects a ticket, the status changes from "available" to "reserved", and the current timestamp is recorded.
+A better solution is to lock the ticket by adding a status field and expiration time on the ticket table. The ticket can then be in 1 of 3 states: available, reserved, sold. This allows us to track the status of each ticket and automatically release the lock once the expiration time is reached. When a user selects a ticket, the status changes from "available" to "reserved", and the current timestamp is recorded.
 
 Now lets think about how we handle unlocking with this approach:
 
-- If the user finalizes the purchase, the status changes to "booked", and the lock is released.
+- If the user finalizes the purchase, the status changes to "sold", and the lock is released.
 
 - If the user takes too long or abandons the purchase, the status changes back to "available" once the expiration time is reached, and the lock is released. The tricky part here is how we handle the expiration time. We could use a cron job to periodically query for rows with "reserved" status where the time elapsed exceeds the lock duration and then set them back to "available". This is much better, but the lag between the elapsed time and the time the row is changed is not ideal for popular events. Ideally, the lock should be removed almost exactly after expiration.
 
@@ -325,11 +325,11 @@ Here is how it would work:
 
 - When a user selects a ticket, acquire a lock in Redis using a unique identifier (e.g., ticket ID) with a predefined TTL (Time To Live). This TTL acts as an automatic expiration time for the lock.
 
-- If the user completes the purchase, the ticket's status in the database is updated to "Booked", and the lock in Redis is manually released by the application code before the TTL expires.
+- If the user completes the purchase, the ticket's status in the database is updated to "sold", and the lock in Redis is manually released by the application code before the TTL expires.
 
 - If the TTL expires (indicating the user did not complete the purchase in time), Redis automatically releases the lock. This ensures that the ticket becomes available for booking by other users without any additional intervention.
 
-Now our Ticket table only has two states: available and booked. Locking of reserved tickets is handled entirely by Redis. The key-value pair in Redis is the ticket ID and the value is the user ID. This way we can ensure that when a user confirms the booking, they are the user who reserved the ticket.
+Now our Ticket table only has two states: available and sold. Locking of reserved tickets is handled entirely by Redis. The key-value pair in Redis is the ticket ID and the value is the user ID. This way we can ensure that when a user confirms the booking, they are the user who reserved the ticket.
 
 There's no race condition when acquiring the lock, Redis's SET key value NX EX seconds command is atomic, so only one client will successfully set the key. For multi-ticket bookings (a user selecting multiple seats), you can acquire locks sequentially per ticket. If any lock fails, release the ones you already acquired. Using a Lua script on Redis can make multi-lock acquisition atomic if the tickets hash to the same Redis node.
 
@@ -339,7 +339,7 @@ Read-path complexity: With reservations living in Redis rather than the database
 
 Failure handling: If our lock goes down for any reason, then we have a period of time where user experience is degraded. Note that we will still never have a "double booking" since our database will use OCC (Optimistic Concurrency Control) or row-level locking to ensure this. The downside is just that users can get an error after filling out their payment details if someone beats them to it. This sucks, but I would argue that it is a better outcome than having all tickets appear unavailable (as would be the case if the cron job in our previous solution failed).
 
-TTL expiration during payment: What if the lock TTL expires while payment is being processed? If User A's lock expires at minute 10 but their payment completes at minute 11, User B could have grabbed the lock in between. In this rare scenario, the database transaction in step 7 will fail for one of them (OCC ensures only one write succeeds), and we issue an automatic refund via Stripe for the failed booking. Set the TTL generously to minimize this, and, even better, consider extending the lock when payment is initiated.
+TTL expiration during payment: What if the lock TTL expires while payment is being processed? If User A's lock expires at minute 10 but their payment completes at minute 11, User B could have grabbed the lock in between. In this rare scenario, the webhook's database transaction (the step in the booking flow below that marks the ticket "sold") will fail for one of them (OCC ensures only one write succeeds), and we issue an automatic refund via Stripe for the failed booking. Set the TTL generously to minimize this, and, even better, consider extending the lock when payment is initiated.
 
 In this case, let's go with the great solution and use distributed lock. We can now update our design to support this flow.
 

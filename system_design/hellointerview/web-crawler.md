@@ -200,7 +200,7 @@ This can work, it's just complex to implement and maintain. Fortunately for us, 
 
 SQS doesn't have a built-in exponential backoff setting, but it provides the primitives to build one cleanly. The key mechanism is the visibility timeout: when a consumer receives a message but doesn't delete it, the message becomes visible again after the visibility timeout expires (default 30 seconds, configurable up to 12 hours).
 
-To implement exponential backoff, we use the ChangeMessageVisibility API to dynamically adjust the timeout based on the ApproximateReceiveCount attribute, which tracks how many times a message has been received. For example, after each failed fetch, we calculate the next visibility timeout as and call ChangeMessageVisibility to set it. This keeps the message hidden until we're ready to retry.
+To implement exponential backoff, we use the ChangeMessageVisibility API to dynamically adjust the timeout based on the ApproximateReceiveCount attribute, which tracks how many times a message has been received. For example, after each failed fetch, we calculate the next visibility timeout as timeout = min(base × 2^attempt, max_timeout) (e.g. base = 30s, attempt = ApproximateReceiveCount, capped at SQS's 12-hour maximum) and call ChangeMessageVisibility to set it. This keeps the message hidden until we're ready to retry.
 
 ###### Challenges
 

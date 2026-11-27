@@ -25,8 +25,6 @@ Yelp is an online platform that allows users to search for and review local busi
 
 ---
 
-## Understanding the Problem
-
 ### Functional Requirements
 
 **Core Requirements**
@@ -186,7 +184,7 @@ SET
 WHERE id = :business_id;
 ```
 
-This is O(1) per write but requires careful handling of concurrent updates.
+This is O(1) per write but requires careful handling of concurrent updates. It's also only correct in PostgreSQL (and standard SQL), where every SET expression sees the old row values; MySQL evaluates assignments left to right, so `avg_rating` would use the already-incremented `review_count` (put the `avg_rating` assignment first there).
 
 **Great Solution: Atomic increment with optimistic locking or DB transaction**
 
@@ -234,15 +232,15 @@ For Staff+ level: introduce a **Query Rewriting Service** that uses an NLP model
 
 1. Maintain a **Place Name → Bounding Box** lookup (backed by data from OpenStreetMap or Google Places)
 2. Store `city`, `neighborhood` fields on each business (populate during ingestion via reverse geocoding)
-3. On query: detect location entity → resolve to bounding box → pass as `geo_bounding_box` filter to Elasticsearch
+3. On query: detect location entity → resolve to bounding box → pass as `geo_bounding_box` filter to Elasticsearch (radius searches like "near me" keep using `geo_distance`)
 4. Cache place name lookups in Redis (place names change rarely)
 
 **Data flow:**
 ```
 User: "tacos in SoHo NYC"
   → NLP extracts: query="tacos", location="SoHo NYC"
-  → Geocoding Service: "SoHo NYC" → { lat: 40.723, lng: -74.002, radius: 0.5km }
-  → Elasticsearch: keyword="tacos" + geo_distance within 0.5km of (40.723, -74.002)
+  → Geocoding Service: "SoHo NYC" → { top_left: (40.728, -74.005), bottom_right: (40.720, -73.997) }
+  → Elasticsearch: keyword="tacos" + geo_bounding_box filter with that box
 ```
 
 ---

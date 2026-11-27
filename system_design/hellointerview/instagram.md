@@ -127,8 +127,8 @@ CREATE TABLE follows (
   created_at  TIMESTAMP,
   PRIMARY KEY (follower_id, followee_id)
 );
--- Index for "who does user X follow?"
-CREATE INDEX idx_follower ON follows(follower_id);
+-- "Who does user X follow?" is served by the primary key (follower_id is its leading column),
+-- so a separate follower_id index would be redundant.
 -- Index for "who follows user X?"
 CREATE INDEX idx_followee ON follows(followee_id);
 ```
@@ -149,7 +149,7 @@ For 500M users, the follows table can reach billions of rows. Shard by `follower
 
 1. When a user creates a post, the **Fan-out Service** looks up all their followers
 2. Writes post_id into each follower's **feed cache** (Redis sorted set, keyed by user_id, scored by timestamp)
-3. `GET /feed` simply reads from the user's Redis feed cache → O(1)
+3. `GET /feed` simply reads from the user's Redis feed cache → O(log N + M) sorted-set range (N = feed size, M = page size), i.e. a single cheap Redis call
 
 **Trade-off:** High-follower accounts (celebrities with 50M followers) cause fan-out storms.
 
@@ -183,7 +183,7 @@ Feed Service reads from Redis in < 1ms, then fetches post metadata (hydration) i
 **Cache eviction:** Keep only the last 500 posts per user feed (prune old entries). Deeper history can be fetched from DB on scroll.
 
 **Numbers:**
-- 500M users × 500 posts × 8 bytes/post_id ≈ 2TB Redis for feed caches
+- 500M users × 500 posts × 8 bytes/post_id ≈ 2TB of raw IDs; sorted-set overhead (score + skiplist/hash pointers) adds ~2-3x, so plan for ~4-6TB of Redis (or cache only active users' feeds)
 
 ### 2) The system should render photos and videos instantly
 

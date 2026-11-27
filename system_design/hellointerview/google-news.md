@@ -196,7 +196,7 @@ Using the compound cursor `(published_at DESC, id DESC)` ensures:
 - The global feed (first 2–3 pages) is the same for all users
 - Cache it at CDN edge with TTL = 60s
 - Cache-Control: `public, max-age=60`
-- 95% of users only read the first page → CDN hit rate > 95%
+- 95% of users only read the first page → ~95% of feed requests target CDN-cacheable pages; the actual hit rate on those is high but below 100% (each edge/page misses once per 60s TTL, plus purges on new articles), and the remaining ~5% of deeper-page requests go to Redis/DB
 
 **Tier 2: Redis feed cache**
 - Cache paginated article ID lists in Redis
@@ -232,7 +232,7 @@ Crawl Scheduler (every 15 min per feed)
 **Crawl frequency optimization:**
 - Not all feeds update equally. Use adaptive crawling:
   - High-frequency publishers (NYT, BBC): crawl every 5 min
-  - Low-frequency publishers: crawl every 60 min
+  - Low-frequency publishers: crawl every 15 min (the cap: a slower interval would break the 30-minute SLA, and 10K feeds every 15 min is only ~11 fetches/sec)
   - Track `articles_per_hour` per publisher, adjust interval dynamically
 
 **RSS parsing and deduplication:**

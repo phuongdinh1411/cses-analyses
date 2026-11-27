@@ -352,7 +352,7 @@ Let's recap:
 
 This solution is not without its challenges. We've added complexity, and the cache could potentially become a bottleneck if not properly scaled. That said, it's worth noting that the cache data should be relatively small. With 100 million per day, if these were all unique impressions, then that's only 100 million * 16 bytes (128 bits) = 1.6 GB. Tiny.
 
-Regardless, we can easily play it safe by using a distributed cache like Redis Cluster to scale. In the event the cache goes down, we would handle this by having a replica of the cache that could take over and by enabling Redis persistence (RDB or AOF) so the cache data is not lost.
+Regardless, we can easily play it safe by using a distributed cache like Redis Cluster to scale. In the event the cache goes down, we would handle this by having a replica of the cache that could take over and by enabling Redis persistence (RDB or AOF) to limit data loss. Persistence isn't lossless: AOF with `appendfsync everysec` can lose ~1s of writes, RDB loses everything since the last snapshot, and async replicas can miss recent writes on failover. That's acceptable here because a few missed impression IDs only allow occasional duplicates, which reconciliation catches.
 
 ### 4) How can we ensure that advertisers can query metrics at low latency?
 

@@ -63,7 +63,7 @@ Online chess platforms let players find an opponent of similar skill, play real-
 - Move rate: ~1 move per 3 seconds per player → 500K × (2/3) ≈ **333K moves/sec** peak
 - Each move event: ~100 bytes
 - Leaderboard: 10M players, updated after every game finish
-- Rating updates: 500K games/day × 2 players = 1M rating updates/day → ~12 updates/sec (easy)
+- Rating updates: 500K concurrent games ÷ ~360s average game (~6 min) ≈ 1,400 games ending/sec (~120M games/day) × 2 players ≈ **2,800 rating updates/sec** (fine for a sharded PostgreSQL + Redis, but not trivial)
 
 ---
 
@@ -198,12 +198,16 @@ This gives O(log N) rank updates and O(log N + k) top-N queries for 10M players.
 
 As shown above: when Worker A acquires a lock on player X's row (via `FOR UPDATE`), Worker B's query skips that row (via `SKIP LOCKED`). Worker B only sees unlocked rows → never duplicates the match.
 
-**Additional guard:** `UNIQUE(player_id)` constraint on active games:
+**Additional guard:** one active game per player. `games` has separate `white_player_id`/`black_player_id` columns, so a single unique index can't cover both; use an `active_games` table keyed by player:
 ```sql
-CREATE UNIQUE INDEX idx_active_game_player ON games(player_id)
-  WHERE status = 'active';
+CREATE TABLE active_games (
+  player_id UUID PRIMARY KEY,
+  game_id   UUID NOT NULL REFERENCES games(id)
+);
+-- On game creation, in the same transaction: insert one row per player.
+-- On game finish: delete both rows.
 ```
-Attempting to create a second active game for the same player fails at the DB level.
+Attempting to create a second active game for the same player fails at the DB level (primary key violation).
 
 #### What if matchmaking outgrows Postgres?
 
@@ -214,10 +218,15 @@ At very high scale (millions of players queueing simultaneously), Postgres scann
 - Matchmaking Worker: `ZRANGE matchmaking_queue {rating-50} {rating+50} BYSCORE` → find candidates
 - Use `Lua script` for atomic match-and-remove (prevents race conditions without DB locks):
   ```lua
-  local candidates = redis.call('ZRANGEBYSCORE', 'matchmaking_queue', min_rating, max_rating)
-  if #candidates > 0 then
-    redis.call('ZREM', 'matchmaking_queue', player_id, candidates[1])
-    return candidates[1]
+  if not redis.call('ZSCORE', 'matchmaking_queue', player_id) then
+    return nil  -- player already matched by another worker
+  end
+  local candidates = redis.call('ZRANGEBYSCORE', 'matchmaking_queue', min_rating, max_rating, 'LIMIT', 0, 2)
+  for _, candidate in ipairs(candidates) do
+    if candidate ~= player_id then  -- never match a player with themselves
+      redis.call('ZREM', 'matchmaking_queue', player_id, candidate)
+      return candidate
+    end
   end
   return nil
   ```

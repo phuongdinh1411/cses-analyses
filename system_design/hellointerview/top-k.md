@@ -367,7 +367,7 @@ When it comes time to query, our Top-K service can simply query the higher granu
 
 ###### Challenges
 
-Having a cron read and write to our database implies additional load that we're already struggling to sustain. The queries to sum up hour to days, or days to months are still expensive and slow (but maybe not as slow as aggregating 24 hours * 30 days = 720 records for each video!). In the worst case, our top-K queries for the last delay are delayed by however long it takes to (1) write the hour-grain aggregates, (2) kick off a cron, (3) aggregate those hours together with the other hours in that {day, month}, (4) write those to the database, and (5) read them back again.
+Having a cron read and write to our database implies additional load that we're already struggling to sustain. The queries to sum up hour to days, or days to months are still expensive and slow (but maybe not as slow as aggregating 24 hours * 30 days = 720 records for each video!). In the worst case, our top-K queries for the last day/month are delayed by however long it takes to (1) write the hour-grain aggregates, (2) kick off a cron, (3) aggregate those hours together with the other hours in that {day, month}, (4) write those to the database, and (5) read them back again.
 
 You might make the case to your interviewer that this latency is acceptable given (a) the higher granularity top-K queries change a lot less frequently, and (b) the expectations of freshness from users are lower. But we can do better.
 
@@ -405,7 +405,7 @@ Our Flink job would look something like this:
 
 ```
 public final class VideoTopKJob {
-    private static final int TOP_K = 100;
+    private static final int TOP_K = 1000;
     private static final List<WindowSpec> WINDOWS = List.of(
         new WindowSpec("last_hour", java.time.Duration.ofHours(1)),
         new WindowSpec("last_day", java.time.Duration.ofDays(1)),
@@ -616,7 +616,7 @@ We can model per-hour aggregates as a hypertable partitioned by hour-grained tim
 
 The problem with this is that the large window queries can't use those indexes! Imagine having 60 sorted lists of views, how do you get the top K from the sum of them. Fortunately, TimescaleDB gives us a solution that looks a lot like materialized views called "continuous aggregates"!
 
-We can use continuous aggregates to maintain rollups for the last hour/day/month. These are just like our ViewViewsLastHour, VideoViewsLastDay, and VideoViewsLastMonth tables. We can put an index on the rollup tables’ views and serve queries with ORDER BY "views" DESC LIMIT {k}. Add retention/compression policies to keep only what you need.
+We can use continuous aggregates to maintain rollups for the last hour/day/month. These are just like our VideoViewsLastHour, VideoViewsLastDay, and VideoViewsLastMonth tables. We can put an index on the rollup tables’ views and serve queries with ORDER BY "views" DESC LIMIT {k}. Add retention/compression policies to keep only what you need.
 
 Net/net: it looks a lot like our existing solution but using TimescaleDB's features and with a more efficient storage structure.
 

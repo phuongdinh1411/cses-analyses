@@ -130,7 +130,8 @@ CREATE TABLE jobs (
   cron_expression TEXT,       -- NULL for one-time
   next_run_at     TIMESTAMP NOT NULL,  -- computed: when to run next
   status          TEXT DEFAULT 'pending',  -- pending/running/completed/failed
-  created_at      TIMESTAMP DEFAULT NOW()
+  created_at      TIMESTAMP DEFAULT NOW(),
+  updated_at      TIMESTAMP DEFAULT NOW()  -- set on every status change
 );
 
 -- Critical index: scheduler polls this frequently
@@ -143,8 +144,8 @@ CREATE INDEX idx_due_jobs ON jobs (next_run_at, status)
 - **Future one-time:** `next_run_at = scheduled_at`
 - **Recurring (cron):** `next_run_at = compute_next(cron_expression, NOW())`
 
-**Scheduler polling (Leader-based):**
-1. Scheduler service (single elected leader) polls every second:
+**Scheduler polling (multiple pollers, no leader):**
+1. Each scheduler pod polls every second:
    ```sql
    SELECT * FROM jobs
    WHERE next_run_at <= NOW() + interval '5 seconds'
@@ -156,7 +157,7 @@ CREATE INDEX idx_due_jobs ON jobs (next_run_at, status)
 3. Dispatches to Kafka queue
 4. Workers consume from Kafka and execute
 
-**`FOR UPDATE SKIP LOCKED`** is key: allows multiple scheduler instances to poll concurrently without conflicts — each locks its own batch of rows.
+**`FOR UPDATE SKIP LOCKED`** is key: allows multiple scheduler instances to poll concurrently without conflicts — each locks its own batch of rows, so no leader election is needed.
 
 ### 2) Users should be able to monitor the status of their jobs
 
@@ -167,7 +168,7 @@ pending → running → completed
 ```
 
 **Status updates:**
-- Worker transitions job to `running` when it dequeues
+- Scheduler already marks the job `running` at dispatch, so the worker doesn't write that transition again; it starts heartbeating when it dequeues
 - Worker transitions to `completed` or `failed` on finish
 - Write job execution record to `job_executions` table
 
@@ -216,6 +217,7 @@ The job re-enters the queue for its next scheduled run.
 1. Redis sorted set for jobs due in next 5 min (fast polling)
 2. DB as source of truth
 3. Background sync: every 60s, reload next 5 min of jobs from DB into Redis
+4. Jobs created already inside the lookahead window (including immediate jobs) are `ZADD`ed to Redis by the API at creation time, so they never wait up to 60s for the next sync and still meet the 2s target
 
 ### 2) How can we ensure the system is scalable to support 10K jobs/second?
 
@@ -242,7 +244,7 @@ Scheduler Pod 3 → Kafka partition 8–11
 - Target: each worker handles 10–50 jobs/sec → 200–1000 workers for 10K jobs/sec
 
 **DB write throughput:**
-- 10K job status updates/sec → heavy write load
+- ~30–50K job status updates/sec (10K jobs/sec × 3–5 transitions) → heavy write load
 - Use **write buffering**: batch status updates in workers before writing (every 500ms)
 - Or: use **Kafka for status updates** → consumer writes to DB asynchronously
 
@@ -257,13 +259,13 @@ Scheduler Pod 3 → Kafka partition 8–11
    SET job:{job_id}:heartbeat {ts} EX 30  (30s TTL)
    ```
 
-2. **Reaper service** (runs every 60s): scans for jobs in `running` status where the heartbeat key has expired in Redis:
+2. **Reaper service** (runs every 60s): finds candidate jobs that have been `running` for longer than the heartbeat TTL:
    ```sql
    SELECT id FROM jobs
    WHERE status = 'running'
      AND updated_at < NOW() - interval '30 seconds';
    ```
-   Re-queues these jobs (set `status=pending`).
+   For each candidate, it checks Redis (`EXISTS job:{job_id}:heartbeat`); only jobs whose heartbeat key has expired are re-queued (conditional `UPDATE ... SET status='pending' WHERE id=? AND status='running'`).
 
 3. **Idempotent job execution:** Job handlers should be idempotent — running the same job twice produces the same result. This is the job developer's responsibility (at-least-once contract).
 
@@ -285,7 +287,7 @@ Client
   ▼
 API Server ──→ PostgreSQL (jobs table, job_executions)
                ↑ poll every 1s
-Scheduler Pods (3×, leader elected via Zookeeper)
+Scheduler Pods (3×, all polling; no leader election needed)
   │  FOR UPDATE SKIP LOCKED
   │  → batch due jobs
   ▼

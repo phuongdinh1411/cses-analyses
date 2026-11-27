@@ -123,7 +123,7 @@ A cache node is an in-process key-value store backed by:
 1. Look up in HashMap
 2. Remove from HashMap + unlink from LRU list
 
-All operations are O(1). HashMap for O(1) lookup; doubly linked list allows O(1) node removal + insertion at head.
+GET/SET/DELETE are O(1) for the HashMap + LRU list. HashMap for O(1) lookup; doubly linked list allows O(1) node removal + insertion at head. (If TTLs are tracked in a min-heap, SET/DELETE with a TTL add O(log n); the lazy + active sampling approach below keeps everything O(1).)
 
 ### 2) Users should be able to configure TTL for key-value pairs
 
@@ -246,7 +246,7 @@ Key "foo" → hash("foo") = 2^31 → maps to nearest clockwise vnode → B73 →
 
 **Solutions:**
 
-**Option A: Probabilistic write (write coalescing)**
+**Option A: Write batching (write coalescing)**
 - Each app server accumulates increments locally for N ms, then sends one batched write
 - Reduces writes from 100K/sec to 1K/sec at the cost of small latency in value freshness
 

@@ -56,7 +56,7 @@ CamelCamelCamel monitors Amazon product prices over time and alerts users when p
 - 500M Amazon products to track
 - Price changes: assume ~10% of products change price daily → 50M price updates/day → ~580 price updates/sec
 - Chrome extension: 1M active users, ~5% on Amazon at any time → 50K concurrent product page views
-- Price history requests: 50K × 1 request = 50K/sec peak (via extension)
+- Price history requests: 50K concurrent viewers ≈ 50K/sec only if each loads a new product page every second; with a more realistic ~10s dwell per page it is ~5K/sec (plan for ~50K/sec as a burst ceiling)
 - Each price record: timestamp (8B) + price (4B) + product_id (8B) = ~20 bytes
 - Price history per product: ~365 records/year × 20B = ~7KB/year/product
 - 500M products × 7KB = **3.5TB/year** of price data
@@ -202,7 +202,7 @@ CREATE INDEX idx_product_subscriptions ON subscriptions(product_id, threshold, i
 **Validation strategies:**
 
 **A) Anomaly detection:**
-- If reported price deviates > 50% from last known price, flag for verification
+- If reported price deviates > 20% from last known price, flag for verification
 - Cross-reference with other extension reports for the same product (consensus)
 - If 3+ users independently report the same price change → accept it
 
@@ -211,7 +211,7 @@ CREATE INDEX idx_product_subscriptions ON subscriptions(product_id, threshold, i
 - Low-trust users' reports require corroboration before acceptance
 
 **C) Authoritative verification:**
-- For large price changes (> 20%), verify by fetching the product page from our own crawler before triggering notifications
+- For large price changes (> 20%, the same changes flagged in A), verify by fetching the product page from our own crawler before triggering notifications
 - Slight delay (minutes) but prevents false positives
 
 **D) Rate limiting:**
@@ -240,7 +240,7 @@ Notification Workers (email/push/SMS)
 
 **Subscription index optimization:**
 
-Naive: scan all 500M subscriptions for each price change.
+Naive: scan the entire subscriptions table (subscriptions across all 500M tracked products) for each price change.
 
 Better: index subscriptions by `(product_id, threshold)`:
 ```sql

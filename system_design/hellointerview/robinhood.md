@@ -193,7 +193,7 @@ Exchange Trade Feed
 **Scale math:**
 - 500 WebSocket servers × 10K connections = 5M connections ✓
 - 10K trades/sec → ~10K Pub/Sub messages/sec → Redis handles easily
-- Each symbol update: published once to Redis → broadcast to ~10 WebSocket servers (those with AAPL watchers) → each server pushes to its local watchers
+- Each symbol update: published once to Redis → broadcast only to the WebSocket servers that have watchers for that symbol → each server pushes to its local watchers. Because connections are spread by user_id, a symbol with ~1,000 watchers across 500 servers lands on most servers (~430 on average), so popular symbols fan out to nearly all servers while long-tail symbols reach only a few; Redis Pub/Sub fan-out of ~10K msgs/sec × a few hundred subscribers is still manageable (shard Pub/Sub by symbol if needed)
 
 **Connection routing:**
 - Load balancer uses consistent hashing on user_id to route WebSocket connections

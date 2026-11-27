@@ -61,7 +61,7 @@ ChatGPT is a conversational AI where users send prompts and get responses stream
 - 200M DAU, ~5 prompts/user/day → 1B prompts/day → ~12K prompts/sec
 - Average response: 500 tokens, generated at ~50 tokens/sec → 10 seconds/response
 - Concurrent streaming: 12K prompts/sec × 10 seconds = **120K concurrent generations**
-- Each GPU: handles ~10 concurrent 7B-param model inferences at 50 tok/sec
+- Each GPU: handles ~10 concurrent 7B-param model sequences at 50 tok/sec (continuous batching)
 - Need: 120K / 10 = **12,000 GPUs** (approximate, depends on model size)
 - Context window: average conversation has 10 turns × 500 tokens = 5K tokens of context
 
@@ -185,14 +185,15 @@ Client:
 ```
 GPU Worker
   → generates token "Paris"
-  → Redis XADD gen:{generation_id}:tokens {token: "Paris", seq: 42}
-  → Streaming Gateway (subscribed via XREAD)
-  → SSE push to client: data: {"token":"Paris","seq":42}\n\n
+  → Redis: XADD gen:{generation_id}:tokens MAXLEN ~ 10000 * seq 42 token "Paris"
+           (returns entry ID, e.g. 1700000000000-0)
+  → Streaming Gateway: XREAD BLOCK 5000 STREAMS gen:{generation_id}:tokens {last_entry_id}
+  → SSE push to client: id: 1700000000000-0\ndata: {"token":"Paris","seq":42}\n\n
 ```
 
 **Back-pressure:** SSE connection speed limits how fast tokens flow. Streaming Gateway buffers tokens in Redis Stream; if client is slow, tokens queue in Redis (capped at 10K entries per stream).
 
-**Token ordering:** Include `seq` number. If SSE delivers out of order (rare), client sorts by seq before display.
+**Token ordering:** SSE over a single TCP connection is delivered in order, so no client-side reordering is needed within one connection. Ordering/duplication issues arise only across reconnects; the `seq` number plus `Last-Event-ID` resume (below) lets the client drop duplicates and continue from the right position.
 
 ### 2) How do we keep the stream alive across reconnects and deploys?
 
@@ -202,19 +203,20 @@ GPU Worker
 
 Redis Stream (`gen:{generation_id}:tokens`) stores all generated tokens with sequence numbers:
 - TTL: 1 hour (long enough for reconnect scenarios)
-- On reconnect: client sends `Last-Event-ID` header with last received sequence number
-- Streaming Gateway: `XREAD gen:{id}:tokens COUNT 1000 AFTER {last_seq}` → replay missed tokens
+- On reconnect: client sends `Last-Event-ID` header with the last received event ID (the SSE `id:` is the Redis stream entry ID)
+- Streaming Gateway: `XREAD COUNT 1000 STREAMS gen:{id}:tokens {last_entry_id}` → replay missed tokens (entries strictly after that ID)
 - Then re-subscribe for new tokens
 
 ```
 Client reconnects after refresh:
   GET /stream/{generation_id}
-  Headers: Last-Event-ID: 42
+  Headers: Last-Event-ID: 1700000000000-0
 
 Streaming Gateway:
-  XRANGE gen:{generation_id}:tokens 43 +  → returns tokens 43, 44, 45 (already generated)
+  XRANGE gen:{generation_id}:tokens (1700000000000-0 + COUNT 1000
+    → returns entries after the last one received (already generated)
   → push to client immediately
-  XREAD BLOCK gen:{generation_id}:tokens → wait for new tokens
+  XREAD BLOCK 5000 STREAMS gen:{generation_id}:tokens {last_returned_id} → wait for new tokens
 ```
 
 **Handling rolling deploys:**
@@ -233,7 +235,7 @@ GPU Dispatch Service
 ```
 
 Each GPU worker:
-- Consumes a job from Kafka (one at a time, no prefetch)
+- Consumes jobs from Kafka only while it has free batch slots (~10 concurrent sequences per GPU via continuous batching)
 - Loads model (or uses pre-loaded model in memory)
 - Runs inference, publishes tokens to Redis Stream
 - Commits Kafka offset on completion
@@ -244,7 +246,7 @@ Each GPU worker:
 - Kafka consumer lag = visible queue depth → auto-scale workers
 
 **Worker assignment:**
-- Consumer group with `max.poll.records=1` per worker → each worker handles one job at a time
+- Consumer group with small polls (`max.poll.records` ≤ free slots) per worker → each GPU runs ~10 sequences concurrently with continuous batching, so 12K GPUs serve ~120K concurrent generations
 - Kafka partitions = number of GPU workers (or more for flexibility)
 - Rebalancing handles worker failures automatically
 
@@ -345,7 +347,7 @@ Chat API Server
   ├─ Rate limit check → Redis (token quota counter)
   └─ Enqueue → Kafka("jobs-paid" or "jobs-free")
                       ↓
-                GPU Workers (12K pods, one job at a time)
+                GPU Workers (12K pods, ~10 concurrent sequences each via continuous batching)
                   ├─ Load model (pre-loaded in memory)
                   ├─ Run inference
                   ├─ Publish tokens → Redis Stream (gen:{id}:tokens)

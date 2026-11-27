@@ -184,7 +184,7 @@ Store File in Blob Storage
 
 ##### Challenges
 
-One challenge with this approach is that it's more complex. We need to integrate with the Blob Storage service and handle the case where the file is uploaded but the metadata is not saved. We also need to handle the case where the metadata is saved but the file is not uploaded. We can solve these issues by using a transactional approach where we only save the metadata if the file is successfully uploaded and vice versa.
+One challenge with this approach is that it's more complex. We need to integrate with the Blob Storage service and handle the case where the file is uploaded but the metadata is not saved. We also need to handle the case where the metadata is saved but the file is not uploaded. A true transaction spanning Blob Storage and the database isn't possible, so instead we write the metadata first with status "uploading", upload the file to Blob Storage, and mark the metadata "uploaded" only once the upload is confirmed (e.g. via an S3 event notification or a client confirmation verified against S3). A periodic reconciliation job cleans up orphans: "uploading" rows that never completed and blobs with no matching metadata.
 
 Second, this approach (as depicted above) requires that we technically upload a file twice -- once to our backend and once to Blob Storage. This is redundant. We can solve this issue by allowing the user to upload the file directly to the Blob Storage service.
 

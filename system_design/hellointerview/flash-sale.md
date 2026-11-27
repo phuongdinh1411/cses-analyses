@@ -79,7 +79,7 @@ Three distinct phases:
 ### Defining the Core Entities
 
 - **SaleItem** – id, product_id, name, description, price, total_inventory, sold_count, sale_starts_at, sale_ends_at, status (upcoming/active/ended)
-- **Reservation** – id, sale_item_id, user_id, status (active/completed/expired/cancelled), reserved_at, expires_at
+- **Reservation** – id, sale_item_id, user_id, status (active/paying/completed/expired/cancelled), reserved_at, expires_at
 - **Order** – id, reservation_id, user_id, sale_item_id, payment_status, created_at
 
 ### API or System Interface
@@ -122,7 +122,7 @@ Client → CDN (CloudFront) → [cache miss] → API Server → Redis → Postgr
 
 - Sale item details (name, price, description, images) are **static** — cache at CDN with TTL 60s
 - During active sale, `inventory_remaining` changes rapidly — **don't show real-time inventory on the page** (too expensive to serve live counts at this scale)
-- Instead: show "Available" or "Sold Out" (binary), updated every 30 seconds via CDN cache bust
+- Instead: show "Available" or "Sold Out" (binary) from a separate availability endpoint cached at the CDN with TTL 30s (plus a cache bust on sell-out), so status is at most ~30 seconds stale while static details keep TTL 60s
 
 **Pre-warming the cache:**
 - 1 hour before sale start, push sale page content to CDN edge nodes globally
@@ -151,25 +151,30 @@ SET sale:{sale_id}:inventory 10000
 Reservation attempt:
 ```lua
 -- Atomic Lua script (runs as a single Redis command, no race conditions)
+-- KEYS[1] = sale:{sale_id}:inventory, KEYS[2] = reservations:{sale_id}, ARGV[1] = user_id
+if redis.call('SISMEMBER', KEYS[2], ARGV[1]) == 1 then
+    return -2  -- user already holds a reservation
+end
 local inventory = tonumber(redis.call('GET', KEYS[1]))
 if inventory == nil or inventory <= 0 then
     return -1  -- sold out
 end
 redis.call('DECR', KEYS[1])
+redis.call('SADD', KEYS[2], ARGV[1])
 return inventory - 1  -- remaining count
 ```
+
+The duplicate check and the decrement happen inside one script, so two concurrent requests from the same user can't both pass the check. (In Redis Cluster both keys share the `{sale_id}` hash tag, so they live on the same slot.)
 
 Since Redis is **single-threaded**, `DECR` is atomic — no two users can decrement simultaneously and get the same result. Oversell is impossible at the Redis layer.
 
 **Full reservation flow:**
 1. User calls `POST /sales/{sale_id}/reserve`
-2. API Server checks: user doesn't already have an active reservation (Redis `SISMEMBER reservations:{sale_id} {user_id}`)
-3. Execute Redis Lua script: attempt DECR
-4. If DECR successful (returned ≥ 0):
+2. Execute Redis Lua script: duplicate check + DECR + `SADD reservations:{sale_id} {user_id}`, all atomically
+3. If script successful (returned ≥ 0):
    - Write Reservation to PostgreSQL: `{ user_id, sale_item_id, status=active, expires_at = now + 10min }`
-   - Add user to Redis set: `SADD reservations:{sale_id} {user_id}` (prevent duplicate reservations)
    - Return `{ reservation_id, expires_at }`
-5. If DECR returned -1: return `{ error: "sold_out" }`
+4. If script returned -1: return `{ error: "sold_out" }`; if -2: return `{ error: "already_reserved" }`
 
 ### 3) Users who secure a unit can complete payment
 
@@ -177,10 +182,11 @@ Since Redis is **single-threaded**, `DECR` is atomic — no two users can decrem
 1. User submits payment within 10-minute window
 2. `POST /reservations/{id}/purchase`
 3. API Server:
-   - Verify reservation exists, status=active, not expired
+   - Claim the reservation with a conditional update: `UPDATE reservations SET status='paying' WHERE id=? AND status='active' AND expires_at > now()`; if 0 rows, reject (expired or already in payment)
    - Call Payment Service (external, e.g., Stripe) → may take 3–10 seconds
    - On payment success: update reservation `status=completed`, create Order record
-   - On payment failure: reservation still active until expiry (user can retry)
+   - On payment failure: set status back to `active` if still before `expires_at` (user can retry); otherwise mark `expired`, restore inventory and remove the user from the reservation set
+   - The sweeper only expires `active` reservations, so it can't release a unit while payment is in flight; reservations stuck in `paying` (server crash) are resolved by checking the payment status with Stripe
 4. Return `{ order_id, status: "confirmed" }`
 
 **Why reservation TTL matters:** If user abandons the checkout, the reservation expires in 10 minutes → Redis inventory counter is **not** automatically restored (see Deep Dive #2).
@@ -195,7 +201,7 @@ Since Redis is **single-threaded**, `DECR` is atomic — no two users can decrem
 
 **Layer 1: Redis (fast gate)**
 - Redis DECR atomic operation is the primary inventory gate
-- 50M requests → Redis single-threaded → serialized at ~1M ops/sec → first 10,000 get through; rest get `sold_out` immediately
+- 50M requests → Redis single-threaded → serialized at ~100K–200K Lua calls/sec per instance (shard by SKU or spread across multiple instances for more) → first 10,000 get through in well under a second; rest get `sold_out`
 - Redis is the first line of defense: rejects the vast majority of requests in microseconds
 
 **Layer 2: PostgreSQL (source of truth)**
@@ -204,7 +210,7 @@ Since Redis is **single-threaded**, `DECR` is atomic — no two users can decrem
 - If Redis fails or is out of sync: DB is the fallback
   
 **Layer 3: Reconciliation**
-- Background job every 5 minutes: compare Redis inventory count with `total_inventory - COUNT(active + completed reservations)` from PostgreSQL
+- Background job every 5 minutes: compare Redis inventory count with `total_inventory - COUNT(active + paying + completed reservations)` from PostgreSQL
 - If mismatch (Redis says 50 remaining but DB says 100 reserved out of 10,000): reset Redis from DB
 - This handles Redis crash/restart scenarios
 
@@ -232,12 +238,13 @@ On reservation creation: add to this sorted set with expiry timestamp.
 ```python
 expired = redis.zrangebyscore('reservations:expiry', 0, time.time())
 for reservation_id in expired:
-    # Not atomic across DB + Redis: the status='active' guard prevents double-restore; reconciliation repairs partial failures
+    # Not atomic across DB + Redis: the status='active' guard prevents double-restore
+    # and skips 'paying'/'completed' rows; reconciliation repairs partial failures
     db.execute("UPDATE reservations SET status='expired' WHERE id=? AND status='active'", reservation_id)
     if rows_affected > 0:
         redis.incr(f'sale:{sale_id}:inventory')  # restore inventory
+        redis.srem(f'reservations:{sale_id}', user_id)  # only expired users may try again
     redis.zrem('reservations:expiry', reservation_id)
-    redis.srem(f'reservations:{sale_id}', user_id)  # allow user to try again (set holds user IDs)
 ```
 
 **Why not rely on Redis TTL alone?** Redis key expiry is approximate (can be delayed). We need precise expiry for inventory accounting. The sorted set approach gives exact control.
@@ -276,7 +283,7 @@ Queue Manager (runs every 1 second):
 ```
 
 **C) Bot filtering**
-- Rate limit by IP: max 1 reserve request per user per second
+- Rate limit per user: max 1 reserve request per user per second (with a coarser per-IP limit as a first layer)
 - Require valid session token (CAPTCHA at queue entry if suspicious)
 - Fingerprint-based dedup: device fingerprint + user ID prevents one user from holding multiple reservations with different accounts
 
@@ -318,14 +325,13 @@ Client
   │                               → SSE connection (notified when "your turn")
   │
   ├─ [Reserve] POST /reserve ──→ API Server
-  │  (triggered when "your turn")  → Redis: DECR inventory (Lua, atomic)
-  │                                → Check duplicate (SISMEMBER)
+  │  (triggered when "your turn")  → Redis Lua (atomic): duplicate check + DECR inventory + SADD user
   │                                → PostgreSQL: INSERT reservation
   │                                → Redis: ZADD expiry sorted set
   │                                → Return { reservation_id, expires_at }
   │
   └─ [Purchase] POST /purchase ──→ API Server
-                                   → Verify reservation active + not expired
+                                   → Conditional UPDATE status active→paying (not expired)
                                    → Call Payment Service (Stripe)
                                    → UPDATE reservation status=completed
                                    → CREATE order record
@@ -333,8 +339,8 @@ Client
 Background Workers:
   Expiry Sweeper (every 30s)
     → ZRANGEBYSCORE expiry sorted set → expired reservations
-    → Mark expired + INCR Redis inventory (restore)
-    → Allow user to re-queue
+    → Mark expired (only status=active) + INCR Redis inventory (restore)
+    → Allow expired users to re-queue (SREM)
 
 Queue Manager (every 1s)
     → INCR released_count

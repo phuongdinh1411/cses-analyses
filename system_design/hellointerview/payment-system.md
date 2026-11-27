@@ -208,7 +208,7 @@ Customer card → Stripe.js → Stripe ingest API (HSM vault)
   AuthorizationApproved
   ChargeCreated
   ```
-- Current state = replay of events (no update queries, only appends)
+- The event log is append-only (no updates); current state = replay of events. The `payment_intents` table is a projection (read model) derived from these events, so the status UPDATEs below modify the projection, never the event history
 - Full audit trail for regulatory compliance
 
 ### 3) The system should guarantee transaction safety despite async payment networks
@@ -220,22 +220,23 @@ Customer card → Stripe.js → Stripe ingest API (HSM vault)
 **Outbox pattern + idempotent retries:**
 
 ```
-Transaction:
+On POST /payment_intents/{id}/confirm (card details now attached):
   BEGIN;
-  INSERT INTO payment_intents (id, status=processing, ...);
+  UPDATE payment_intents SET status=processing WHERE id=:id AND status=created;
   INSERT INTO outbox_events (type=authorization_request, payload={...});
   COMMIT;
 
 Outbox Poller (async):
   - Poll outbox_events for unprocessed events
-  - Call card network with idempotency_key = payment_intent_id
+  - Call card network with our unique transaction reference (e.g. STAN/RRN tied to payment_intent_id)
   - On success: UPDATE payment_intents SET status=succeeded; DELETE FROM outbox
-  - On timeout: retry (card network deduplicates via idempotency_key)
+  - On timeout: don't blindly resend; query the authorization status by transaction reference,
+    or send a reversal for the original and then retry
 ```
 
-**Idempotency at card network:**
-- Include `idempotency_key` in authorization request (usually the PaymentIntent ID)
-- If network timeouts and we retry: card network returns the same authorization response (not a double charge)
+**Where idempotency lives:**
+- Card networks don't accept idempotency keys; idempotency is enforced at our (the PSP's, e.g. Stripe's) API: merchants send an `Idempotency-Key` on create/confirm, and retries return the stored result instead of starting a new authorization
+- Toward the network, duplicates are prevented by tracking each authorization attempt by its transaction reference and resolving timeouts via status inquiry or reversal
 
 **Two-phase approach:**
 1. **Authorization** – card network holds funds (no charge yet)
@@ -247,7 +248,7 @@ If authorization succeeds but capture fails: funds are automatically released af
 
 #### Servers
 
-- **Stateless API servers**: auto-scale behind load balancer; 10K TPS at 50ms avg → 500 concurrent requests → ~10 servers (~50 concurrent ≈ 1K req/sec each) + headroom
+- **Stateless API servers**: auto-scale behind load balancer. By Little's law, in-flight requests = rate × latency: 10K TPS × 2–5s card-network latency ≈ 20K–50K concurrent requests. With async I/O (~5K open requests per server) that's ~5–10 servers + headroom; thread-per-request servers (~200 threads each) would need hundreds
 - Each payment path: DB write + external card network call (2–5s) → real bottleneck is external call latency, not our compute
 
 #### Kafka
@@ -277,11 +278,11 @@ Customer Browser
 API Gateway (TLS termination, rate limiting)
   │
   ├─ [Create PaymentIntent] → Payment Intent Service → PostgreSQL (write primary)
-  │                         → Outbox: authorization_request event
   │
   ├─ [Confirm] → Payment Processor Service
   │              ├─ Card Vault (HSM) → tokenize card
   │              ├─ Fraud Engine → score
+  │              ├─ Outbox: authorization_request event (same txn as status=processing)
   │              ├─ Outbox Poller → Card Network (Visa/MC) API → Issuing Bank
   │              ├─ Update PaymentIntent (succeeded/failed) → PostgreSQL
   │              └─ Publish to Kafka → Webhook Worker → Merchant webhook

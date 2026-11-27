@@ -374,7 +374,7 @@ This solution uses Redis sorted sets to maintain a real-time leaderboard while s
 
 Redis sorted sets are an in-memory data structure that allows us to efficiently store and retrieve data based on a score. This is perfect for our use case, as we can update the leaderboard by adding or removing users and their scores, and then retrieve the top N users with the highest scores.
 
-The Redis sorted set uses a key format like competition:leaderboard:{competitionId}, with the score being the user's total score or solve time, and the value being the userId. We'd implement an API endpoint like GET /competitions/:competitionId/leaderboard?top=100. When processing a submission, we'd update Redis with a command like ZADD competition:leaderboard:{competitionId} {score} {userId}. To retrieve the top N users, we'd use ZRANGE competition:leaderboard:{competitionId} 0 N-1 REV WITHSCORES (note: ZREVRANGE is deprecated as of Redis 6.2 in favor of ZRANGE with the REV flag).
+The Redis sorted set uses a key format like competition:leaderboard:{competitionId}, with the value being the userId. Because a sorted set has a single numeric score, we encode both ranking keys into it: score = solved_count * 1e10 - last_solve_ts (unix seconds, < 1e10). More solves always rank higher, and among equal solve counts the earlier last solve gets the higher score, so ZRANGE ... REV breaks ties correctly (the value stays well within a double's 2^53 exact-integer range). We'd implement an API endpoint like GET /competitions/:competitionId/leaderboard?top=100. When processing a submission, we'd update Redis with a command like ZADD competition:leaderboard:{competitionId} {score} {userId}. To retrieve the top N users, we'd use ZRANGE competition:leaderboard:{competitionId} 0 N-1 REV WITHSCORES (note: ZREVRANGE is deprecated as of Redis 6.2 in favor of ZRANGE with the REV flag).
 
 Then, when a user requests the leaderboard, we'll send them the first couple pages of results to display (maybe the top 1,000). Then, as they page via the client, we can fetch the next page of results from the server, updating the UI in the process.
 
@@ -424,7 +424,7 @@ We can take the same exact approach as above but add a queue between the API ser
 
 When a user submits their code, the API server will add the submission to the queue and the containers will pull submissions off the queue as they become available. This will help us manage the load on the containers and ensure that we don't lose any submissions during peak times.
 
-Once our worker gets the results, it will notify the App Server so it can update both the database and the cache simultaneously.
+Once our worker gets the results, it will notify the App Server so it can update the database first and then the cache. The two writes aren't atomic, so if the cache update fails or Redis restarts, the leaderboard is rebuilt/reconciled from the database (the source of truth).
 
 One important thing to note is that the introduction of the queue has made the system asynchronous. This means that the API server will no longer be able to return the results of the submission immediately. Instead, the user will need to poll the server for the results. We introduce a new endpoint, say GET /check/:id, that is polled every second by the client to check if the submission has been processed. It simply looks up the submission in the database and returns the results if they are available or returns a "processing" message if not.
 

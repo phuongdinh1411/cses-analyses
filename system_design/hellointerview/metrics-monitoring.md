@@ -249,14 +249,14 @@ Kafka (raw metrics)
 ```
 
 **Sliding window state management:**
-- Use a Redis sorted set per active rule: `ZADD rule:{id}:window {timestamp} {value}`
+- Use a Redis sorted set per active rule: `ZADD rule:{id}:window {timestamp} {timestamp}:{series_id}:{value}` (sorted-set members must be unique, so the member embeds timestamp + series rather than just the value, otherwise duplicate values would collapse into one entry)
 - On each new metric: add to sorted set + `ZREMRANGEBYSCORE` to remove old data outside window
 - Compute avg: `ZRANGE + SUM / COUNT` → compare to threshold
-- This allows evaluation on every new data point → latency = propagation delay through Kafka (seconds, not minutes)
+- This allows evaluation on every new data point → evaluation latency = propagation delay through Kafka (seconds, not minutes). The rule's own semantics still apply: a 5-minute average needs enough of the window to cross the threshold, so this removes the polling delay, not the window itself
 
 **Alert evaluation at scale:**
 - 5M metrics/sec × average 0.1 alert rules/metric = 500K rule evaluations/sec
-- Partition by `rule_id` to colocate rule state
+- Partition by `rule_id` to colocate rule state. Raw metrics are partitioned by series, so a lightweight matcher stage first re-keys each matching (metric, rule) pair onto an `alert-inputs` topic keyed by `rule_id`, which the evaluators consume
 - Each evaluation: Redis ops → ~1ms → need 500 alert evaluator workers
 
 ### 3) How do we ensure high availability during spikes and failures?

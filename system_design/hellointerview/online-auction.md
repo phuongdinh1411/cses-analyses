@@ -57,7 +57,7 @@ An online auction lets users list items for sale while others compete by placing
 ### Constraints & Estimates
 
 - 10M concurrent auctions
-- Peak bidding: assume 100 bids/sec per hot auction; most auctions see 1 bid/min
+- Peak bidding: assume ~100 bids/sec sustained per hot auction (bursting to 10K/sec on a single item in the final seconds, below); most auctions see 1 bid/min
 - Average: 10M auctions × 1 bid/min = ~167K bids/sec globally
 - Hot auctions (sniping in last seconds): up to 10K bids/sec on a single item
 - Each bid record: ~200 bytes
@@ -206,8 +206,8 @@ Client → API Server → Kafka (partitioned by auction_id) → Bid Processor (1
 Each Bid Processor handles bids for its assigned auctions sequentially:
 1. Read current highest bid (in-memory, no DB round-trip)
 2. Validate new bid
-3. Update in-memory state
-4. Write accepted bid to DB asynchronously (batch writes)
+3. Commit accepted bid to DB synchronously: insert the bid + conditional `UPDATE auctions SET highest_bid = :amount WHERE id = :id AND highest_bid < :amount` (small group commits are fine, but success is returned only after the commit)
+4. Update in-memory state and Redis after the commit
 
 **Benefits:**
 - Zero contention — bids for the same auction are processed serially

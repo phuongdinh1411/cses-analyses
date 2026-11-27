@@ -163,7 +163,7 @@ There's also the question of where to store the rate limiting state. The gateway
 
 We'll talk all about how to do this effectively in our deep dives!
 
-For our design, we'll go with the API Gateway approach. It's the most common pattern and gives us centralized control without adding extra network calls to every request. Now we can focus our attention to the next question, how do we identify clients?
+For our design, we'll go with the API Gateway approach. It's the most common pattern and gives us centralized control at the edge. It does add one Redis round trip per request (sub-millisecond within a datacenter), but blocked requests never reach application servers. Now we can focus our attention to the next question, how do we identify clients?
 
 How do we identify clients?
 
@@ -423,7 +423,7 @@ While we don't tend to talk about it much in our breakdowns (simply because ther
 
 Every rate limit check requires a network round trip to Redis, which adds latency to user requests. While Redis operations are typically sub-millisecond, the network overhead can add several milliseconds per request. At 1M requests/second, this latency can become an issue.
 
-The most important optimization is connection pooling. Instead of establishing a new TCP connection to Redis for each rate limit check, your API gateways maintain a pool of persistent connections. This eliminates the TCP handshake overhead (which can be 20-50ms depending on network distance) and allows connections to be reused across multiple requests. Most Redis clients handle connection pooling automatically, but you need to tune the pool size based on your request volume and Redis response times.
+The most important optimization is connection pooling. Instead of establishing a new TCP connection to Redis for each rate limit check, your API gateways maintain a pool of persistent connections. This eliminates the per-request TCP (and TLS, if enabled) handshake overhead (roughly 0.1-1ms within a datacenter, more with TLS or across regions, which adds up at millions of requests/sec) and allows connections to be reused across multiple requests. Most Redis clients handle connection pooling automatically, but you need to tune the pool size based on your request volume and Redis response times.
 
 Geographic distribution provides the biggest latency wins. Deploy your rate limiting infrastructure close to your users e.g. API gateways and Redis clusters in multiple regions. A user in Tokyo talking to a Redis instance in Virginia will see much higher latency than talking to one in the same region. The trade-off is complexity around data consistency across regions, but for rate limiting, you can often accept eventual consistency between regions in exchange for lower latency.
 

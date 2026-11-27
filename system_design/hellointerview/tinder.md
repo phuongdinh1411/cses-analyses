@@ -319,7 +319,7 @@ In the next deep dive, we'll discuss how we can solve this problem by ensuring t
 
 ##### Approach
 
-We can leverage Cassandra's single-partition transactions to atomically handle swipes. The key is to ensure that all swipes between two users are stored in the same partition.
+We can leverage Cassandra's single-partition guarantees to handle swipes consistently. The key is to ensure that all swipes between two users are stored in the same partition.
 
 - First, create a table with a compound primary key that ensures swipes between the same users are in one partition:
 
@@ -345,21 +345,23 @@ def get_user_pair(user_a, user_b):
 def handle_swipe(from_user, to_user, direction):
     user_pair = get_user_pair(from_user, to_user)
 
-    # Both operations happen atomically in same partition
-    batch = """
-    BEGIN BATCH
-        INSERT INTO swipes (user_pair, from_user, to_user, direction, created_at)
-        VALUES (?, ?, ?, ?, ?);
+    # CQL batches can't contain SELECTs: write first, then read the reverse swipe
+    # from the same partition (both at QUORUM)
+    session.execute(
+        "INSERT INTO swipes (user_pair, from_user, to_user, direction, created_at) "
+        "VALUES (?, ?, ?, ?, ?)",
+        (user_pair, from_user, to_user, direction, now()))
 
-        SELECT direction FROM swipes
-        WHERE user_pair = ?
-        AND from_user = ?
-        AND to_user = ?;
-    APPLY BATCH;
-    """
+    reverse = session.execute(
+        "SELECT direction FROM swipes "
+        "WHERE user_pair = ? AND from_user = ? AND to_user = ?",
+        (user_pair, to_user, from_user)).one()
+
+    if direction == 'right' and reverse and reverse.direction == 'right':
+        create_match(from_user, to_user)  # idempotent: keyed by user_pair
 ```
 
-This approach is effective because Cassandra's single-partition transactions provide the atomicity guarantees we need. By ensuring all swipes between two users are stored in the same partition, we can atomically check for matches without worrying about distributed transaction complexities. The partition key design eliminates the need for cross-partition operations, making the solution both performant and reliable.
+This approach is effective because both swipes live in one partition and each swiper writes before reading: with QUORUM writes and reads, if two users swipe right at the same moment, at least one of them sees the other's swipe, so a match is never missed (both may see it, which is why `create_match` is idempotent). By ensuring all swipes between two users are stored in the same partition, we can atomically check for matches without worrying about distributed transaction complexities. The partition key design eliminates the need for cross-partition operations, making the solution both performant and reliable.
 
 ##### Challenges
 
@@ -425,7 +427,7 @@ The main challenge with this approach is managing the Redis cluster effectively.
 
 Memory management is another consideration, but since we're using Cassandra as our durable storage layer, we can be aggressive about expiring data from Redis. We can periodically flush swipe data to Cassandra and maintain only recent swipes in Redis. If we ever lose Redis data due to a node failure, we're only losing the ability to detect matches for very recent swipes - users can always swipe again, and we're not losing the historical record in Cassandra.
 
-This hybrid approach gives us the best of both worlds: Redis's strong consistency and atomic operations for real-time match detection, combined with Cassandra's durability and storage capabilities for historical data. The system remains highly available and scalable while meeting our core requirement of consistent, immediate match detection.
+This hybrid approach gives us the best of both worlds: Redis's atomic operations for real-time match detection (consistent per key on the single primary; replication is async, so a failover can lose very recent swipes, as noted above), combined with Cassandra's durability and storage capabilities for historical data. The system remains highly available and scalable while meeting our core requirement of consistent, immediate match detection.
 
 ### 2) How can we ensure low latency for feed/stack generation?
 

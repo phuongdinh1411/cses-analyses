@@ -261,7 +261,7 @@ Clearly, this method would not meet constraint #1 about uniqueness. Any two urls
 
 We need some entropy (randomness) to try to ensure that our codes are unique. We could try a random number generator or a hash function!
 
-Using a random number generator to create short codes involves generating a random number each time a new URL is shortened. This random number serves as the unique identifier for the URL. We can use common random number generation functions like JavaScript's Math.random() or more robust cryptographic random number generators for increased unpredictability. The generated random number would then be used as the short code for the URL. But a random number generator does not provide enough entropy to ensure that our codes are unique.
+Using a random number generator to create short codes involves generating a random number each time a new URL is shortened. This random number serves as the unique identifier for the URL. We can use common random number generation functions like JavaScript's Math.random() or more robust cryptographic random number generators for increased unpredictability. The generated random number would then be used as the short code for the URL. A cryptographically secure random generator with the same output length collides no more often than a truncated hash (Math.random() is weaker and predictable, so avoid it), but neither guarantees uniqueness: both approaches need a collision check (e.g. a UNIQUE constraint and retry).
 
 So instead, we could use a hash function like SHA-256 to generate a fixed-size hash code. Hash functions take an input and return a deterministic, fixed-size string of characters. Pure hash functions are deterministic: the same long URL always maps to the same short code without needing to query the database. This may be desirable (deduplication) or not (if you need multiple codes per URL or want to prevent guessability/adversarial preimages). For the latter cases, add a secret salt or nonce (HMAC). Hash functions also provide a high degree of entropy, meaning that the output appears random and is unlikely to collide for different inputs.
 
@@ -421,7 +421,7 @@ Database Replication: By using a database like Postgres that supports replicatio
 
 -
 
-Database Backup: We could also implement a backup system that periodically takes a snapshot of our database and stores it in a separate location. This adds complexity to our system design as we now need to ensure that our Primary Server can interact with the backup without any issues. This can be tricky to get right and adds operational overhead.
+Database Backup: Replication protects against server failure but not against bad writes or deletions, which replicate instantly. Backups cover that case: take periodic snapshots (e.g. daily) and continuously archive the write-ahead log (WAL), enabling point-in-time recovery to any moment before an incident. Store snapshots and WAL archives off-site (another region or object storage) and test restores regularly.
 
 Now, let's point our attention to the Primary Server.
 
