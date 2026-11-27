@@ -139,29 +139,7 @@ For s1 = "LOVE" and s2 = "MOVIE":
 Answer: dp[4][5] = 2
 ```
 
-Wait, let me recalculate more carefully:
-
-```
-s1 = "LOVE" (length 4)
-s2 = "MOVIE" (length 5)
-
-        ""   M    O    V    I    E
-    +----+----+----+----+----+----+
- "" |  0 |  1 |  2 |  3 |  4 |  5 |  <- Insert j chars
-    +----+----+----+----+----+----+
-  L |  1 |  1 |  2 |  3 |  4 |  5 |
-    +----+----+----+----+----+----+
-  O |  2 |  2 |  1 |  2 |  3 |  4 |  <- O matches O
-    +----+----+----+----+----+----+
-  V |  3 |  3 |  2 |  1 |  2 |  3 |  <- V matches V
-    +----+----+----+----+----+----+
-  E |  4 |  4 |  3 |  2 |  2 |  2 |  <- E matches E
-    +----+----+----+----+----+----+
-     ^
-     Delete i chars
-
-Answer: dp[4][5] = 2
-```
+The 2 edits: replace L with M, insert I before E (LOVE -> MOVE -> MOVIE).
 
 ## Detailed Dry Run
 

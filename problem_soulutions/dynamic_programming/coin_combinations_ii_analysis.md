@@ -100,7 +100,7 @@ Sum 5: Try coin 2 -> need dp[3] -> already includes [3] -> gives [3,2]
        Both [2,3] and [3,2] counted separately!
 
 COMBINATIONS (correct loop order):
-Process coin 2 first: dp[2]=1 ([2,2]->wait, dp[2]=1 means {2})
+Process coin 2 first: dp[2] = 1, the single way {2}
 Process coin 3 next:  dp[5] can use dp[2] -> {2} + 3 = {2,3}
                       We CANNOT get {3,2} because 3 is processed AFTER 2
 Only {2,3} counted once!

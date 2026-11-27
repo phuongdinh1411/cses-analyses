@@ -48,22 +48,13 @@ Input:
 Output:
 8
 
-Explanation:
-- Player 1 takes 4 (left): score = 4, remaining = [5, 1, 3]
-- Player 2 takes 5 (left): remaining = [1, 3]
-- Player 1 takes 3 (right): score = 4 + 3 = 7, remaining = [1]
-- Player 2 takes 1: game ends
-Wait, that gives 7. Let's try another strategy:
-- Player 1 takes 3 (right): score = 3, remaining = [4, 5, 1]
-- Player 2 takes 5 (optimally): remaining = [4, 1]
-- Player 1 takes 4 (left): score = 3 + 4 = 7, remaining = [1]
-- Player 2 takes 1: game ends
-Or:
-- Player 1 takes 4 (left): score = 4, remaining = [5, 1, 3]
-- Player 2 takes 3 (right): remaining = [5, 1]
-- Player 1 takes 5 (left): score = 4 + 5 = 9, remaining = [1]
-But player 2 plays optimally! They would take 5, not 3.
-Optimal play gives Player 1 a score of 8.
+Explanation (optimal play):
+- Player 1 takes 3 (right): remaining = [4, 5, 1]
+- Player 2 can only take 4 or 1; the 5 is not at an end
+- Say Player 2 takes 4: remaining = [5, 1]
+- Player 1 takes 5: score = 3 + 5 = 8
+- Player 2 takes 1
+Taking 4 first instead lets Player 2 grab the 5, and Player 1 gets only 7.
 ```
 
 ## Key Insight
