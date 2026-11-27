@@ -36,10 +36,10 @@ After solving this problem, you will be able to:
 **Input:**
 - Line 1: n (number of elements)
 - Line 2: n space-separated integers (the initial list)
-- Lines 3 to n+2: n integers, each representing a position p (1-indexed) to remove
+- Line 3: n integers p_1 … p_n, the 1-indexed position to remove at each step
 
 **Output:**
-- n lines: the element removed at each query
+- One line: the removed elements, separated by spaces
 
 **Constraints:**
 - 1 <= n <= 2 x 10^5
@@ -52,46 +52,18 @@ After solving this problem, you will be able to:
 Input:
 5
 2 6 1 4 2
-3
-1
-3
-1
-2
+3 1 3 1 1
 
 Output:
-1
-2
-2
-6
-4
+1 2 2 6 4
 ```
 
 **Explanation:**
-- Query p=3: List is [2,6,1,4,2], remove position 3 -> remove 1, list becomes [2,6,4,2]
-- Query p=1: List is [2,6,4,2], remove position 1 -> remove 2, list becomes [6,4,2]
-- Query p=3: List is [6,4,2], remove position 3 -> remove 2, list becomes [6,4]
-- Query p=1: List is [6,4], remove position 1 -> remove 6, list becomes [4]
-- Query p=2: List is [4], but wait - we only have 1 element? (Re-check: this was for illustration)
-
-Let me use the simpler example from the problem:
-```
-Input:
-5
-1 2 3 4 5
-3
-3
-2
-1
-
-Output:
-3
-2
-1
-```
-
-- Query p=3: List [1,2,3,4,5], remove position 3 -> 3, list becomes [1,2,4,5]
-- Query p=2: List [1,2,4,5], remove position 2 -> 2, list becomes [1,4,5]
-- Query p=1: List [1,4,5], remove position 1 -> 1, list becomes [4,5]
+- Remove position 3 from [2,6,1,4,2] → 1; list becomes [2,6,4,2]
+- Remove position 1 → 2; list becomes [6,4,2]
+- Remove position 3 → 2; list becomes [6,4]
+- Remove position 1 → 6; list becomes [4]
+- Remove position 1 → 4; list is empty
 
 ---
 
@@ -143,14 +115,14 @@ def solve_brute_force():
   """
   n = int(input())
   arr = list(map(int, input().split()))
+  positions = list(map(int, input().split()))
 
   results = []
-  for _ in range(n):
-    p = int(input())
+  for p in positions:
     removed = arr.pop(p - 1)  # O(n) operation
     results.append(removed)
 
-  print('\n'.join(map(str, results)))
+  print(' '.join(map(str, results)))
 ```
 
 ### Complexity
@@ -334,13 +306,13 @@ def solve():
   build(1, 0, n - 1)
 
   # Process queries
+  positions = list(map(int, input().split()))
   results = []
-  for _ in range(n):
-    p = int(input())
+  for p in positions:
     idx = find_kth_and_remove(1, 0, n - 1, p)
     results.append(arr[idx])
 
-  print('\n'.join(map(str, results)))
+  print(' '.join(map(str, results)))
 
 if __name__ == "__main__":
   solve()

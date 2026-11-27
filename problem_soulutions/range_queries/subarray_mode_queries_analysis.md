@@ -16,7 +16,7 @@ tags: [range-queries, mo-algorithm, sqrt-decomposition, frequency-counting]
 | **Category** | Range Queries |
 | **Time Limit** | 1 second |
 | **Key Technique** | Mo's Algorithm / Sqrt Decomposition |
-| **CSES Link** | [Sliding Window Mode](https://cses.fi/problemset/task/3224) |
+| **Related CSES** | [Sliding Window Mode](https://cses.fi/problemset/task/3224) (fixed-size windows; this page solves arbitrary ranges) |
 
 ### Learning Goals
 
@@ -58,9 +58,9 @@ Input:
 1 8
 
 Output:
-2
+1
 7
-2
+1
 2
 ```
 

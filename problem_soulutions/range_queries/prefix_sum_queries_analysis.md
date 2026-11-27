@@ -60,13 +60,13 @@ Input:
 2 1 8
 
 Output:
-13
+19
 3
-6
+10
 ```
 
 **Explanation:**
-- Query `2 1 8`: Prefix sums are [3, 2, 6, 7, 2, 11, 13, 19]. Max = 13 at position 7.
+- Query `2 1 8`: Prefix sums are [3, 2, 6, 7, 2, 11, 13, 19]. Max = 19 at position 8.
 - Query `2 2 3`: Range [-1, 4], prefix sums [-1, 3]. Max = 3.
 - Update `1 3 -5`: arr[3] becomes -5.
 - Query `2 1 8`: New prefix sums [3, 2, -3, -2, -7, 2, 4, 10]. Max = 10.

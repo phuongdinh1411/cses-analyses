@@ -57,20 +57,15 @@ Input:
 5 -4
 
 Output:
-15
+18
+12
 9
-6
 ```
 
-**Explanation:**
-- Initial array: [1, 2, -3, 4, 5]
-- After update at position 3 to 6: [1, 2, 6, 4, 5] -> max subarray = entire array = 18? Actually 1+2+6+4+5=18... Let me recalculate.
-- Wait, the example output says 15. Let me verify: After changing position 3 to 6, array is [1, 2, 6, 4, 5], sum = 1+2+6+4+5 = 18. But output is 15...
-
-Actually, looking more carefully at typical CSES examples, let me provide a clearer trace:
-- Initial: [1, 2, -3, 4, 5], max subarray is [4, 5] = 9 or [1, 2] = 3 or entire = 9
-- After position 3 becomes 6: [1, 2, 6, 4, 5], max = 1+2+6+4+5 = 18
-- This suggests the example values may differ. The key concept remains: track maximum subarray with updates.
+**Explanation:** after each update, print the maximum subarray sum (the empty subarray counts as 0).
+- Update position 3 to 6: [1, 2, 6, 4, 5] → whole array, 18
+- Update position 4 to −2: [1, 2, 6, −2, 5] → whole array, 12
+- Update position 5 to −4: [1, 2, 6, −2, −4] → [1, 2, 6], 9
 
 ---
 
