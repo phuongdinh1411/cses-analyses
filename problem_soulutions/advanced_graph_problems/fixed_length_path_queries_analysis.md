@@ -218,27 +218,13 @@ Original Tree:
             |
             5
 
-Paths of length 2 through centroid 3:
-  1 -- 2 -- [3]           depth 2 + depth 0 = 2  (node 1 to centroid)
-  [3] -- 2 -- 1           Same path
+All 4 paths of length 2 pass through centroid 3:
+  1 - 2 - [3]      depth 2 (node 1) + depth 0 (centroid itself)
+  2 - [3] - 4      depth 1 + depth 1
+  2 - [3] - 5      depth 1 + depth 1
+  4 - [3] - 5      depth 1 + depth 1
 
-  2 -- [3] -- 4           depth 1 + depth 1 = 2
-  2 -- [3] -- 5           depth 1 + depth 1 = 2
-  4 -- [3] -- 5           depth 1 + depth 1 = 2
-
-Wait, let's recount properly:
-  Path (1,2,3): uses 2 edges  -> depth of 1 from centroid = 2, depth of 3 = 0
-  But we want paths, not just to centroid.
-
-  Paths passing through 3:
-    1-2-3-4: length 3 (no)
-    1-2-3-5: length 3 (no)
-    1-2-3: length 2 (yes) - but this ends at centroid
-    2-3-4: length 2 (yes)
-    2-3-5: length 2 (yes)
-    4-3-5: length 2 (yes)
-
-Correct count: 4 paths of length 2
+Paths like 1-2-3-4 have length 3 and are not counted.
 ```
 
 ### Code (Python)

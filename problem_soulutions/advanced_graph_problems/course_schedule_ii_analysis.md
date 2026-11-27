@@ -60,6 +60,8 @@ Output:
 
 **Explanation:** Course 1 has no prerequisites, so we take it first. Course 3 requires 1 (done). Course 4 requires 1 (done). Course 5 requires 4 (done). Course 2 is independent.
 
+Any valid order is accepted; the code below prints `2 1 4 5 3`, which also respects every prerequisite.
+
 ---
 
 ## Intuition: How to Think About This Problem

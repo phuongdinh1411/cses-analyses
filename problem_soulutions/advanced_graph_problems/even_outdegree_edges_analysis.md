@@ -64,6 +64,8 @@ Output:
 
 **Explanation:** After orientation, outdegrees are: vertex 1 has outdegree 2, vertex 2 has outdegree 0, vertex 3 has outdegree 2, vertex 4 has outdegree 0. All are even.
 
+Any valid orientation is accepted; the code below prints `2 1`, `2 3`, `4 3`, `4 1` (vertices 2 and 4 get outdegree 2).
+
 ---
 
 ## Intuition: How to Think About This Problem

@@ -63,13 +63,13 @@ Input:
 
 Output:
 1
-2
+0
 1
 ```
 
 **Explanation:**
 - Query 1: Paths of length 2 from 1 to 3: `1->2->3` (1 path)
-- Query 2: Paths of length 2 from 1 to 4: No 2-edge paths exist from 1 to 4
+- Query 2: Paths of length 2 from 1 to 4: none (1->2 continues only to 3, and 1->4 has no outgoing edge), so 0
 - Query 3: Paths of length 3 from 1 to 1: `1->2->3->1` (1 path)
 
 ---

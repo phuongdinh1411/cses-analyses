@@ -167,28 +167,6 @@ Computing A^3 using binary exponentiation:
 
 k = 3 (binary: 11)
 
-Step 1: k=3 is odd, result = result * base
-  result = I * A = A
-  k = 2, base = A * A = A^2
-
-  A^2 calculation:
-  A^2[0][0] = A[0][0]*A[0][0] + A[0][1]*A[1][0] + A[0][2]*A[2][0] = 0
-  A^2[0][1] = A[0][0]*A[0][1] + A[0][1]*A[1][1] + A[0][2]*A[2][1] = 0
-  A^2[0][2] = A[0][0]*A[0][2] + A[0][1]*A[1][2] + A[0][2]*A[2][2] = 1
-  ...
-
-  A^2 = [ 0  0  1 ]
-        [ 1  0  0 ]
-        [ 0  1  0 ]
-
-Step 2: k=2 is even
-  k = 1, base = A^2 * A^2 = A^4
-
-Step 3: k=1 is odd, result = result * base
-  result = A * A^4 = A^5? No wait...
-
-Let me redo more carefully:
-
 Initial: result = I (identity), base = A, k = 3
 
 Iteration 1: k=3 (odd)
@@ -200,6 +178,11 @@ Iteration 2: k=1 (odd)
   result = A * A^2 = A^3
   base = A^2 * A^2 = A^4
   k = 1 // 2 = 0
+
+where
+  A^2 = [ 0  0  1 ]     A^2[0][2] = A[0][1] * A[1][2] = 1  (path 0 -> 1 -> 2)
+        [ 1  0  0 ]
+        [ 0  1  0 ]
 
 Final: result = A^3
 

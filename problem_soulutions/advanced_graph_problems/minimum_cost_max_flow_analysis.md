@@ -58,10 +58,15 @@ Input:
 3 4 2 1
 
 Output:
-2 8
+3 13
 ```
 
-**Explanation:** Maximum flow of 2 achieved with paths: 1->2->4 (flow=1, cost=4) and 1->3->4 (flow=1, cost=5). Total cost = 4 + 5 = 9. Alternative: 1->2->3->4 gives lower cost.
+**Explanation:** Node 1 can send at most 2 + 1 = 3 units and node 4 can receive 1 + 2 = 3, and 3 is achievable:
+- 1->2->4: 1 unit, cost 1 + 3 = 4
+- 1->2->3->4: 1 unit, cost 1 + 2 + 1 = 4
+- 1->3->4: 1 unit, cost 4 + 1 = 5
+
+Max flow 3, min cost 4 + 4 + 5 = 13. The cheapest paths are used first: both cost-4 paths go before the cost-5 one.
 
 ---
 
@@ -174,9 +179,9 @@ SPFA from node 1:
     Edge 3->4: dist[4] = min(4, 3+1) = 4
   dist = [0, 1, 3, 4]
 
-Shortest path: 1 -> 2 -> 4, cost = 4
+Shortest path: 1 -> 2 -> 4, cost = 4 (1 -> 2 -> 3 -> 4 ties at 4)
 Bottleneck capacity = min(2, 1) = 1
-Flow += 1, Total Cost += 1 * 4 = 4
+Flow += 1, Total Cost = 4
 ```
 
 ### Iteration 2: Update Residual Graph and Find Next Path
@@ -190,29 +195,30 @@ Updated capacities:
 SPFA from node 1:
   Shortest path: 1 -> 2 -> 3 -> 4, cost = 1+2+1 = 4
   Bottleneck = min(1, 1, 2) = 1
-  Flow += 1, Total Cost += 1 * 4 = 4
+  Flow += 1, Total Cost += 1 * 4 = 8
 
-Total: Flow = 2, Cost = 8
+So far: Flow = 2, Cost = 8
 ```
 
-### Iteration 3: No More Paths
+### Iteration 3: Last Augmenting Path
 
 ```
-After iteration 2:
-  1->2: cap=0, 1->3: cap=1
-  Path 1->3->4 has cost 4+1=5
+Residual capacities now:
+  1->2: 0, 1->3: 1, 2->3: 0, 2->4: 0, 3->4: 1
 
-  Shortest path: 1 -> 3 -> 4, cost = 5
-  But wait - can we do better with residual edges?
-
-  Actually, 2->4 is saturated, so no path through node 2.
-  Only path: 1->3->4 but capacity=1 already used? No, cap=1 remains.
-
-Final augment: 1->3->4, flow=1? No - we already have max flow=2.
-Check: source outgoing = 2+1=3, but paths found use 2.
+SPFA from node 1:
+  Only path left: 1 -> 3 -> 4, cost = 4 + 1 = 5
+  Bottleneck = min(1, 1) = 1
+  Flow += 1, Total Cost = 8 + 5 = 13
 ```
 
-**Final Answer:** Max Flow = 2, Min Cost = 8
+### Iteration 4: No More Paths
+
+```
+Every edge out of node 1 is saturated (1->2: 0, 1->3: 0), so SPFA cannot reach node 4.
+```
+
+**Final Answer:** Max Flow = 3, Min Cost = 13
 
 ---
 

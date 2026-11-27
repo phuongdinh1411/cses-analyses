@@ -59,7 +59,7 @@ Input:
 Output:
 YES
 YES
-YES
+NO
 NO
 YES
 ```
@@ -67,7 +67,7 @@ YES
 **Explanation:**
 - Edge (1,2) weight 1: Always in MST (smallest edge)
 - Edge (2,3) weight 2: In MST
-- Edge (3,4) weight 3: In MST
+- Edge (3,4) weight 3: NO. Edges 1-2, 2-3 and 2-4 are lighter and already connect 3 and 4
 - Edge (4,1) weight 4: Creates cycle with heavier weight, never in MST
 - Edge (2,4) weight 2: Can be in MST (ties with edge 2-3)
 
@@ -132,12 +132,12 @@ Weight 2: Edges (2,3) and (2,4)
   - After merging: {1,2,3,4}
 
 Weight 3: Edge (3,4)
-  - Both in same component {1,2,3,4}
-  - But could we have chosen different edges at weight 2?
-  - Actually YES - if we took (2,4) instead of (2,3), we'd need (3,4)
+  - 3 and 4 are already in the same component {1,2,3,4}
+  - Mark as NO. Both weight-2 edges are taken together (they form no cycle),
+    so every MST connects 3 and 4 before weight 3 is reached
 
 Weight 4: Edge (4,1)
-  - Both in same component, no ties available
+  - Both in the same component
   - Mark as NO
 ```
 

@@ -158,21 +158,18 @@ Edges: (1,2), (2,3), (3,4), (3,5)
 
 Initial degrees: [-, 1, 2, 3, 1, 1]  (1-indexed, node 3 has degree 3)
 
-Step 1: ptr=1, degree[1]=1 (leaf)
-  Parent = 2, Code = [2]
-  degree[2] = 2-1 = 1 (becomes leaf, but 2 > ptr)
+Step 1: ptr=1, degree[1]=1 -> leaf 1, its neighbor is 2
+  Code = [2], degree[2] = 2-1 = 1
+  2 is now a leaf, but 2 > ptr, so the pointer will reach it anyway
 
-Step 2: ptr=2, degree[2]=1 (leaf)
-  But wait - we already have ptr at 1, continue scan
-  ptr=4, degree[4]=1 (leaf)
-  Parent = 3, Code = [2, 3]
-  degree[3] = 3-1 = 2
+Step 2: ptr=2, degree[2]=1 -> leaf 2, its remaining neighbor is 3
+  Code = [2, 3], degree[3] = 3-1 = 2
 
-Step 3: ptr=5, degree[5]=1 (leaf)
-  Parent = 3, Code = [2, 3, 3]
-  degree[3] = 2-1 = 1
+Step 3: ptr=3 has degree 2 (not a leaf), ptr=4, degree[4]=1 -> leaf 4
+  Code = [2, 3, 3], degree[3] = 2-1 = 1
+  (3 < ptr would be processed immediately, but the code is complete)
 
-Stop: Only 2 nodes remain (2 and 3)
+Stop: n - 2 = 3 entries written; nodes 3 and 5 remain
 Final Prufer Code: [2, 3, 3]
 ```
 
