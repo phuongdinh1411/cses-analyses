@@ -56,20 +56,10 @@ Output:
 ```
 
 **Explanation:** Two subarrays sum to 7:
-- [2, -1, 3, 5, -2] indices 0-4: 2 + (-1) + 3 + 5 + (-2) = 7
-- [2, -1, 3, 5] indices 0-3: 2 + (-1) + 3 + 5 = 9... wait, let me recalculate
-- Actually: [2, -1, 3, 3] = indices matter. The subarrays are [2, -1, 3, 5, -2] and perhaps another combination.
+- indices 0-4: 2 + (-1) + 3 + 5 + (-2) = 7
+- indices 1-3: (-1) + 3 + 5 = 7
 
-Let's use a clearer example:
-```
-Input:
-5 7
-2 4 1 2 7
-
-Output:
-3
-```
-Subarrays: [2, 4, 1], [1, 2, 7... no wait], [7]. Let me trace properly in Dry Run.
+The negative numbers are why a sliding window fails here: [-1, 3, 5] sums to 7, and growing it on both sides (2 on the left, -2 on the right) gives 7 again. Window sums are not monotonic, so there is no safe moment to shrink.
 
 ---
 
@@ -156,7 +146,7 @@ def count_subarrays_brute(arr, x):
 
 ### Dry Run Example
 
-Input: `n=5, arr=[2, 4, 1, 2, 7], x=7`
+Input: `n=5, arr=[2, 4, 1, 2, 7], x=7` (all positive to keep the trace short; the steps are identical with negatives)
 
 ```
 Initialize: prefix_count = {0: 1}, current_prefix = 0, count = 0

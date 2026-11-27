@@ -163,7 +163,7 @@ i=0: arr[0]=2
      Deque: []
      Pop back? No elements
      Add 0: [0]
-     Pop front? 0 > 0-3, no
+     Pop front? 0 <= 0-3? No
      Window incomplete (i < k-1)
      Deque: [0]          (values: [2])
 
@@ -172,7 +172,7 @@ i=1: arr[1]=1
      Pop back? arr[0]=2 >= arr[1]=1, yes -> pop 0
      Deque: []
      Add 1: [1]
-     Pop front? 1 > 1-3, no
+     Pop front? 1 <= 1-3? No
      Window incomplete
      Deque: [1]          (values: [1])
 
@@ -180,7 +180,7 @@ i=2: arr[2]=4
      Deque: [1]
      Pop back? arr[1]=1 >= arr[2]=4? No
      Add 2: [1, 2]
-     Pop front? 1 > 2-3, no
+     Pop front? 1 <= 2-3? No
      Window complete! Output arr[1] = 1
      Deque: [1, 2]       (values: [1, 4])
 
@@ -188,9 +188,7 @@ i=3: arr[3]=5
      Deque: [1, 2]
      Pop back? arr[2]=4 >= arr[3]=5? No
      Add 3: [1, 2, 3]
-     Pop front? 1 > 3-3=0? No (1 > 0 is true... wait)
-     Actually: 1 <= 3-3=0? No, 1 > 0
-     Pop front? 1 <= 0? No
+     Pop front? 1 <= 3-3=0? No
      Window complete! Output arr[1] = 1
      Deque: [1, 2, 3]    (values: [1, 4, 5])
 

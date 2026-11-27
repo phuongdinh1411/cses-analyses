@@ -53,10 +53,10 @@ Input:
 3 1 4 1 5 9 2 6
 
 Output:
-4
+3
 ```
 
-**Explanation:** The subarray [3, 1, 4] has sum 8 and length 3. The subarray [1, 4, 1, 2] = wait, let's check: we need sum = 8. Subarray [3, 1, 4] = 8 with length 3. Subarray [1, 5, 2] is not contiguous. The longest valid subarray is [3, 1, 4] with length 3.
+**Explanation:** Two subarrays sum to 8: [3, 1, 4] (length 3) and [2, 6] (length 2). The longest is [3, 1, 4], so the answer is 3.
 
 ---
 
