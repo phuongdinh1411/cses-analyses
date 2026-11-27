@@ -60,6 +60,33 @@ Generating globally unique IDs in distributed systems is challenging because mul
 
 ---
 
+## Back of the Envelope Estimation
+
+```
+Target scale: 10,000 IDs/second (medium-scale service)
+              100,000 IDs/second (large-scale, e.g. payment events)
+              10,000,000 IDs/second (hyper-scale, e.g. Twitter at peak)
+
+Snowflake capacity:
+  Sequence bits: 12 → 4,096 IDs per millisecond per machine = 4M IDs/sec/node
+  Machine IDs:   10 bits → 1,024 nodes
+  Max cluster:   1,024 nodes × 4M IDs/sec = ~4 billion IDs/sec
+  Lifespan:      Timestamp bits: 41 → 2^41 ms ≈ 69 years from epoch
+
+UUID v4:
+  Generation: ~100 ns (no coordination), ~100K IDs/sec on a single core
+  Collision probability at 1B IDs: ~1 in 10^18 (negligible)
+
+Storage:
+  64-bit Snowflake: 8 bytes per ID
+  128-bit UUID:     16 bytes per ID → 2× storage, 2× index size
+  At 100M IDs/day: 800 MB/day (Snowflake) vs 1.6 GB/day (UUID)
+```
+
+> **Interviewer might ask**: "How long does the Snowflake timestamp last?" → 69 years from your chosen epoch. Twitter's epoch is 2010; they can generate until 2079 before needing a migration.
+
+---
+
 ## Why Not Simple Solutions?
 
 > **Interview context**: This is the key discussion. Show you understand WHY simple solutions fail before jumping to complex ones.

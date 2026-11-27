@@ -256,6 +256,53 @@ flowchart LR
 
 ---
 
+## Implementation
+
+The ring is a **sorted array** (or sorted list) of `(hash_value, node_id)` pairs. A key lookup is a binary search: find the first entry with hash ≥ `hash(key)`, wrapping around to index 0 if none exists. This gives O(log V) lookup where V = total virtual nodes.
+
+```python
+import hashlib, bisect
+
+class ConsistentHashRing:
+    def __init__(self, nodes=(), virtual=150):
+        self._ring = []          # sorted list of (hash_value, node)
+        self._virtual = virtual
+        for node in nodes:
+            self.add_node(node)
+
+    def _hash(self, key: str) -> int:
+        return int(hashlib.md5(key.encode()).hexdigest(), 16)
+
+    def add_node(self, node: str):
+        for i in range(self._virtual):
+            h = self._hash(f"{node}#{i}")
+            bisect.insort(self._ring, (h, node))
+
+    def remove_node(self, node: str):
+        self._ring = [(h, n) for h, n in self._ring if n != node]
+
+    def get_node(self, key: str) -> str:
+        if not self._ring:
+            raise ValueError("empty ring")
+        h = self._hash(key)
+        idx = bisect.bisect_left(self._ring, (h,))
+        idx %= len(self._ring)   # wrap around
+        return self._ring[idx][1]
+```
+
+**Complexity summary:**
+
+| Operation | Time | Notes |
+|-----------|------|-------|
+| `add_node` | O(V log V) | insert V virtual nodes into sorted list |
+| `remove_node` | O(V) | linear scan; use a dict of lists in hot paths |
+| `get_node` | O(log V) | binary search on sorted array |
+| Space | O(N × V) | N physical nodes, V virtual nodes each |
+
+> **Say this in the interview:** "A sorted array + binary search gives O(log V) lookups. V = 150–200 is typical; larger V improves balance at the cost of more memory."
+
+---
+
 ## Interview Tips
 
 ### How to Explain Consistent Hashing (5 minutes)
