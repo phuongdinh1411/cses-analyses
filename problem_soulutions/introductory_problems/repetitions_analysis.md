@@ -206,6 +206,7 @@ if __name__ == "__main__":
 ### Mistake 1: Forgetting Final Update
 
 ```python
+# fragment
 # WRONG - Missing final comparison
 for i in range(1, len(s)):
   if s[i] == s[i-1]:
@@ -223,6 +224,7 @@ print(max_length)  # Bug: misses run at end of string!
 ### Mistake 2: Off-by-One in Loop Start
 
 ```python
+# fragment
 # WRONG - Starting from index 0
 for i in range(len(s)):
   if s[i] == s[i-1]:  # s[-1] when i=0 - accesses last character!
@@ -233,19 +235,21 @@ for i in range(len(s)):
 
 **Fix:** Start the loop from index 1: `for i in range(1, len(s))`.
 
-### Mistake 3: Not Handling Empty/Single Character String
+### Mistake 3: Forgetting to Initialize the Answer
 
 ```python
-# WRONG - Crashes on empty string
+# fragment
+# WRONG - max_length is only assigned inside the else branch
 s = input()
-for i in range(1, len(s)):  # This is fine
+current_length = 1
+for i in range(1, len(s)):
   ...
-print(max_length)  # But max_length was never set if len(s) <= 1
+print(max_length)  # NameError for "A" or "AAAA": the else branch never ran
 ```
 
-**Problem:** If string has only one character, loop never executes but answer should be 1.
+**Problem:** For a one-character string, or one with no change of letter, the else branch never runs, so `max_length` is never assigned.
 
-**Fix:** Initialize `max_length = 1` and handle empty string case separately.
+**Fix:** Start with `max_length = 1` (CSES guarantees at least one character), before the loop.
 
 ---
 

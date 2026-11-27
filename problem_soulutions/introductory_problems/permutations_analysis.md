@@ -51,6 +51,8 @@ Output:
 4 2 5 3 1
 ```
 
+Any valid permutation is accepted, for example `2 4 1 3 5` (evens, then odds) or `1 3 5 2 4` (odds, then evens).
+
 **Explanation:** In the sequence [4, 2, 5, 3, 1]:
 - |4 - 2| = 2 (not 1)
 - |2 - 5| = 3 (not 1)

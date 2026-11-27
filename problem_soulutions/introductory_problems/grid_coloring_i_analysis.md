@@ -54,6 +54,8 @@ Output:
 1 2 1
 ```
 
+Any valid coloring is accepted; the code below prints a two-color checkerboard (`1 2 1 / 2 1 2 / 1 2 1`), which is also valid.
+
 **Explanation:** Each cell is colored with one of 3 colors. No two horizontally or vertically adjacent cells share the same color. For example, cell (0,0)=1 is adjacent to (0,1)=2 and (1,0)=2, all different.
 
 ---

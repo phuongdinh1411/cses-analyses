@@ -52,6 +52,8 @@ Output:
 AACABACAA
 ```
 
+Any palindrome is accepted; the code below prints `AAACBCAAA`.
+
 **Explanation:** The string "AAAACACBA" has characters: A(6), B(1), C(2). Since only one character (B) has an odd count, we can form a palindrome by placing B in the middle and arranging A's and C's symmetrically.
 
 ---

@@ -37,7 +37,7 @@ After solving this problem, you will be able to:
 - Line 2: `k` integers `a1, a2, ..., ak` (allowed moves)
 
 **Output:**
-- Print "W" if the first player wins, "L" if the first player loses
+- A string of `n` characters: character i is "W" if the first player wins with i sticks, "L" if they lose
 
 **Constraints:**
 - 1 <= n <= 10^6
@@ -52,14 +52,16 @@ Input:
 1 2 5
 
 Output:
-WLWWWWWWWL
+WWLWWLWWLW
 ```
 
 **Explanation:** The output shows the result for each pile size from 1 to n:
 - n=1: First player removes 1, wins (W)
 - n=2: First player removes 1 or 2, wins (W)
-- n=3: Any move leaves opponent in winning position, loses (L)
-- ... and so on
+- n=3: Moves reach 2 or 1, both W for the opponent, so L
+- n=4: Remove 1 to leave 3 (L), so W
+- n=6: Moves reach 5, 4, 1, all W, so L
+- With moves {1, 2, 5} the losing positions are exactly the multiples of 3
 
 ---
 
@@ -377,7 +379,7 @@ if move <= i and not dp[i - move]:
 
 | Problem | New Concept |
 |---------|-------------|
-| [Nim Game II (CSES)](https://cses.fi/problemset/task/1730) | Multiple piles, XOR |
+| [Nim Game II (CSES)](https://cses.fi/problemset/task/1098) | Multiple piles, XOR |
 | [Grundy's Game (CSES)](https://cses.fi/problemset/task/2207) | Sprague-Grundy numbers |
 | [Staircase Nim](https://cses.fi/problemset/task/1099) | Modified Nim rules |
 

@@ -160,183 +160,75 @@ This solution is correct but will time out. Without pruning, it explores many pa
 
 > **The Trick:** Prune paths that cannot possibly visit all remaining cells. If we detect a dead end early, we can skip millions of useless recursive calls.
 
-### Pruning Strategies
+### Pruning Rules
 
-| Pruning Rule | Description |
-|--------------|-------------|
-| **Connectivity** | If moving would split unvisited cells into disconnected regions, prune |
-| **Dead End** | If next cell has only one unvisited neighbor (and isn't the end), we must go there |
-| **Wall Hug** | If we hit a wall and both parallel cells are unvisited, we've split the region |
+| Rule | Check | Why it is safe |
+|------|-------|----------------|
+| **Early arrival** | Standing on the lower-left corner before step 48 → return 0 | The path must end there, so it can never leave again |
+| **Split** | Blocked ahead *and* behind, but both sides free (or the rotated case) → return 0 | The unvisited cells are now cut into two parts; a single path can only finish one of them |
+
+"Blocked" means a wall or an already visited cell. Padding the 7x7 board with a border of permanently visited cells turns walls into ordinary visited cells, so one check covers both cases and no bounds tests are needed.
 
 ### Algorithm
 
-1. Start at (0, 0), mark as visited
-2. For each step, apply pruning rules before recursing:
-   - **Pruning 1:** If we can go straight but would create a split, prune
-   - **Pruning 2:** If the current move is forced (dead-end neighbor), take it
-3. Recurse on valid moves, backtrack after
+1. Start at the top-left corner, marked visited.
+2. On entering a cell: apply the early-arrival check, then the split check.
+3. Try the forced move if `path[step]` is a letter, otherwise all four; recurse into unvisited cells and unmark on return.
+4. Count 1 when the corner is reached at exactly step 48.
 
-### Dry Run Example
-
-Let's trace through a small portion with input `???????...`:
+### Visual Diagram: The Split Check
 
 ```
-Initial state:
-  Grid 7x7, start at (0,0), step=0
-  visited[0][0] = True
+  # = visited or wall     . = unvisited     X = current cell
 
-Step 0: path[0] = '?', can move D or R (U and L are out of bounds)
-
-  Try R: Move to (0,1)
-    Check pruning: Does this split the grid? No.
-    visited[0][1] = True
-    Continue to step 1...
-
-  Try D: Move to (1,0)
-    Check pruning: Does this split the grid? No.
-    visited[1][0] = True
-    Continue to step 1...
-
-Step 1: At (0,1), path[1] = '?', can move D, L, R
-
-  Try L: Would go back to (0,0) - already visited, skip
-  Try R: Move to (0,2)
-    PRUNING CHECK:
-    - Cell above (0,2) is wall
-    - Cell (1,1) and (1,2) are both unvisited
-    - If we go right along the wall, we might split the grid
-    Continue checking...
-
-  [Process continues with pruning eliminating bad paths early]
-
-...
-
-Final step (step 47):
-  Must be at (6,0) to count as valid path
-  If yes: return 1
-  If no: return 0
+  . . . # . . .
+  . . . X . . .      Up and down are blocked, left and right are free.
+  . . . # . . .      The visited path plus the walls form a barrier through
+                     X's column, so the free cells on the left and on the
+                     right are now separate parts. X can finish one of them
+                     but never come back for the other -> return 0
 ```
 
-### Visual Diagram: Pruning in Action
-
-```
-Pruning Scenario - Hitting a wall:
-
-Current position: X
-Unvisited cells:  .
-Visited cells:    #
-Wall:             |
-
-  | . . . . . . |     If X moves RIGHT along the top wall:
-  | # X . . . . |
-  | # . . . . . |     Cells below (marked *) become disconnected
-  | # * . . . . |     from cells to the right!
-  | # * . . . . |
-  | # * . . . . |     PRUNE THIS PATH - it cannot succeed
-  | # * . . . . |
-```
+The most common trigger is running into the board edge: the path walks along row 2 straight into the right wall, cells above and below are still unvisited, and the wall blocks "ahead".
 
 ### Code
 
 ```python
-def solve_optimal(path: str) -> int:
-  """
-  Backtracking with pruning optimizations.
+import sys
 
-  Time: O(~exponential but heavily pruned) - passes within time limit
-  Space: O(n^2) for visited array
-  """
-  n = 7
-  visited = [[False] * n for _ in range(n)]
 
-  # Direction mappings
-  dir_map = {'U': 0, 'D': 1, 'L': 2, 'R': 3}
-  dr = [-1, 1, 0, 0]  # U, D, L, R
-  dc = [0, 0, -1, 1]
-  opposite = [1, 0, 3, 2]  # opposite directions
+def count_paths(path: str) -> int:
+  # 9x9 grid: the 7x7 board plus a border of permanently visited cells,
+  # so neighbor checks never need bounds tests.
+  vis = [[r in (0, 8) or c in (0, 8) for c in range(9)] for r in range(9)]
+  moves = {'U': (-1, 0), 'D': (1, 0), 'L': (0, -1), 'R': (0, 1)}
+  all_moves = list(moves.values())
 
-  def is_valid(r: int, c: int) -> bool:
-    return 0 <= r < n and 0 <= c < n and not visited[r][c]
-
-  def dfs(row: int, col: int, step: int) -> int:
-    # Base case: completed path
-    if step == 48:
-      return 1 if row == 6 and col == 0 else 0
-
-    # Reached destination too early
-    if row == 6 and col == 0:
+  def dfs(r: int, c: int, step: int) -> int:
+    if r == 7 and c == 1:              # lower-left corner
+      return 1 if step == 48 else 0    # arriving early wastes the path
+    # Split check: blocked ahead and behind but free on both sides (or the
+    # mirror case) cuts the unvisited cells into two parts -> dead end.
+    if vis[r - 1][c] and vis[r + 1][c] and not vis[r][c - 1] and not vis[r][c + 1]:
       return 0
+    if vis[r][c - 1] and vis[r][c + 1] and not vis[r - 1][c] and not vis[r + 1][c]:
+      return 0
+    total = 0
+    for dr, dc in ([moves[path[step]]] if path[step] != '?' else all_moves):
+      nr, nc = r + dr, c + dc
+      if not vis[nr][nc]:
+        vis[nr][nc] = True
+        total += dfs(nr, nc, step + 1)
+        vis[nr][nc] = False
+    return total
 
-    count = 0
-
-    # Determine which directions to try
-    if path[step] != '?':
-      directions = [dir_map[path[step]]]
-    else:
-      directions = range(4)
-
-    for d in directions:
-      nr, nc = row + dr[d], col + dc[d]
-
-      if not is_valid(nr, nc):
-        continue
-
-      # PRUNING 1: Check if we hit a wall and would split the grid
-      # If moving parallel to a wall and both perpendicular cells are unvisited,
-      # we're creating a dead end
-
-      # Check perpendicular directions
-      perp1 = (d + 2) % 4 if d < 2 else (d + 2) % 4
-      perp2 = (d + 3) % 4 if d < 2 else (d + 1) % 4
-
-      # Simplified connectivity pruning:
-      # If the cell ahead in current direction is blocked/visited,
-      # but cells on both sides of current position are unvisited,
-      # we're splitting the grid
-
-      # Left-right or up-down checks
-      if d < 2:  # Moving U or D (vertical)
-        left_valid = is_valid(row, col - 1)
-        right_valid = is_valid(row, col + 1)
-        ahead_blocked = not is_valid(row + 2*dr[d], col)
-
-        if left_valid and right_valid and ahead_blocked:
-          continue
-      else:  # Moving L or R (horizontal)
-        up_valid = is_valid(row - 1, col)
-        down_valid = is_valid(row + 1, col)
-        ahead_blocked = not is_valid(row, col + 2*dc[d])
-
-        if up_valid and down_valid and ahead_blocked:
-          continue
-
-      # PRUNING 2: Can't go through and neighbor cells form dead end
-      # Count unvisited neighbors of (nr, nc)
-      unvisited_neighbors = 0
-      for d2 in range(4):
-        nnr, nnc = nr + dr[d2], nc + dc[d2]
-        if is_valid(nnr, nnc):
-          unvisited_neighbors += 1
-
-      # If moving to a cell that would have 0 unvisited neighbors
-      # and it's not the final destination
-      if unvisited_neighbors == 0 and not (nr == 6 and nc == 0 and step == 47):
-        continue
-
-      visited[nr][nc] = True
-      count += dfs(nr, nc, step + 1)
-      visited[nr][nc] = False
-
-    return count
-
-  visited[0][0] = True
-  return dfs(0, 0, 0)
+  vis[1][1] = True
+  return dfs(1, 1, 0)
 
 
-# Main function for CSES submission
 def main():
-  path = input().strip()
-  print(solve_optimal(path))
+  print(count_paths(sys.stdin.readline().strip()))
+
 
 if __name__ == "__main__":
   main()
@@ -346,7 +238,7 @@ if __name__ == "__main__":
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | ~O(exponential, heavily pruned) | Pruning reduces from 4^48 to manageable |
+| Time | Exponential, heavily pruned | Measured in CPython: about 0.7 s for the sample, about 10 s for 48 `?` (88418 paths). The naive version is many orders of magnitude slower |
 | Space | O(n^2) | 7x7 visited array + O(48) recursion stack |
 
 ---
@@ -372,7 +264,7 @@ def dfs(row, col, step):
 ```
 
 **Problem:** Without pruning, the algorithm explores paths that are guaranteed to fail.
-**Fix:** Add wall-split and dead-end pruning as shown in the optimal solution.
+**Fix:** Add the split check and the early-arrival check from the optimal solution.
 
 ### Mistake 2: Forgetting to Check Early Termination
 
@@ -405,7 +297,7 @@ dc = [0, 0, 1, -1]   # Wrong: R and L swapped
 | Case | Input | Expected Output | Why |
 |------|-------|-----------------|-----|
 | All wildcards | `????????????????...` (48 ?'s) | 88418 | Total Hamiltonian paths from (0,0) to (6,0) |
-| Forced first move | `D???????????????...` | ~half of total | Restricts to paths starting down |
+| Forced first move | `D` + 47 `?` | 45647 | Paths starting down (starting right gives 42771; together 88418) |
 | Impossible path | `UUUUUUUUUUUUUUUUUUUU...` | 0 | Can't go up from row 0 |
 | Single valid path | Fully specified valid path | 1 | Only one path matches |
 
