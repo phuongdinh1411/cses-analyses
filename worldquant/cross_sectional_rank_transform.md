@@ -87,6 +87,27 @@ Output: [1.0, 1.0, 1.0]  (all ties get the minimum rank = 1)
 
 ---
 
+## Brute Force → Optimal Reasoning
+
+**Brute force O(n²):** For each element, scan all other elements to count how many are smaller (its rank), skipping NaNs.
+
+```python
+# sketch: O(n²) brute force
+def rank_brute(row):
+    result = [float('nan')] * len(row)
+    valid = [(v, i) for i, v in enumerate(row) if v == v]  # NaN != NaN
+    for val, idx in valid:
+        rank = sum(1 for other, _ in valid if other < val) + 1
+        result[idx] = rank
+    return result
+```
+
+**Why sorting is better:** Sorting costs O(n log n) and lets us assign ranks in a single sweep — the rank of each element is simply its 1-based position in the sorted order. The brute-force scan is O(n) *per element*, giving O(n²) total. For n=10⁶ (a typical cross-section of instruments), that’s the difference between microseconds and minutes.
+
+**Finance context:** Cross-sectional rank is applied daily across thousands of instruments. Even a single daily sort is cheap; the brute-force approach would dominate the pipeline’s latency budget.
+
+---
+
 ## Approach
 
 ```

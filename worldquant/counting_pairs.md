@@ -85,6 +85,27 @@ Output: 3  (all three pairs have difference 0)
 
 ---
 
+## Brute Force → Optimal Reasoning
+
+**Brute force O(n²):** Check every pair `(i, j)` with `i < j`.
+
+```python
+# sketch: O(n²) brute force — too slow for n = 10^5
+def count_pairs_brute(nums, k):
+    count = 0
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if abs(nums[i] - nums[j]) <= k:
+                count += 1
+    return count
+```
+
+**Why it’s slow:** We visit all C(n,2) = n(n-1)/2 pairs, so O(n²). For n=10⁵ that’s 5\xd710⁹ operations.
+
+**Key insight that enables O(n log n):** Sorting changes `|nums[i] - nums[j]| ≤ k` into a *range* condition. After sorting, for every right pointer `r`, all valid left partners satisfy `nums[r] - nums[l] ≤ k`, which means `l ≥ r - (position of first element > nums[r] - k)`. Because both pointers only move right, the total work across all `r` is O(n).
+
+---
+
 ## Approach 1: Sort + Two Pointers — O(n log n)
 
 After sorting, for each right pointer `r`, use a left pointer `l` to find the leftmost index where `nums[r] - nums[l] <= k`. All indices between `l` and `r-1` form valid pairs with `r`.

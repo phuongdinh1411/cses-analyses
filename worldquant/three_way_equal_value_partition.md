@@ -79,7 +79,30 @@ Part 3: s[4..6] = "001" → 1
 
 ---
 
-## Approach: Count 1s, then match the last part's pattern
+## Brute Force → Optimal Reasoning
+
+**Brute force O(n²):** Try every pair of split indices `(i, j)` with `1 ≤ i < j ≤ n-1`. Compute the sum of `s[0..i-1]`, `s[i..j-1]`, and `s[j..n-1]` and check if they’re equal.
+
+```python
+# sketch: O(n²) brute force
+def can_partition_brute(s):
+    n = len(s)
+    total = s.count('1')
+    if total % 3 != 0: return False
+    for i in range(1, n - 1):
+        for j in range(i + 1, n):
+            if s[:i].count('1') == s[i:j].count('1') == s[j:].count('1'):
+                return True
+    return False
+```
+
+**Why counting is O(n):** Total 1s must be divisible by 3; call that `t3`. The first boundary must fall after the `t3`-th one, the second after the `2×t3`-th one — two fixed positions computable in a single scan. No loop over pairs needed.
+
+**Key insight:** The *positions* of boundaries are uniquely determined by where the cumulative 1-count crosses `t3` and `2×t3`. Everything between the fixed 1s can be zeros — the split is valid as long as the trailing zeros can be distributed correctly. This reduces a 2D search to two pointer positions found in O(n).
+
+---
+
+## Approach: Count 1s, then match the last part’s pattern
 
 ### Key observations
 

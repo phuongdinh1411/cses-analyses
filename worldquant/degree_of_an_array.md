@@ -82,6 +82,27 @@ Output: 1
 
 ---
 
+## Brute Force → Optimal Reasoning
+
+**Brute force O(n²):** For each value in the array, scan the whole array to find all its positions, then compute the subarray length from the first to last occurrence.
+
+```python
+# sketch: O(n²) brute force
+def find_shortest_brute(nums):
+    min_len = len(nums)
+    for target in set(nums):
+        positions = [i for i, v in enumerate(nums) if v == target]
+        span = positions[-1] - positions[0] + 1
+        min_len = min(min_len, span)
+    return min_len
+```
+
+**Why the hash map is O(n):** Instead of re-scanning for each distinct value, track `first_seen` and `last_seen` in a single pass. At each index update `last_seen[v]`; initialise `first_seen[v]` only the first time. The result is `min(last[v] - first[v] + 1)` over all v. No second scan needed.
+
+**Key insight:** Degree = maximum frequency of any element. The shortest subarray with that degree must start at the first occurrence of the most-frequent element and end at its last occurrence. Recording first/last in one pass gives both pieces of information simultaneously.
+
+---
+
 ## Approach: One-Pass Hash Map
 
 For every element, track:
