@@ -50,10 +50,10 @@ Input:
 5 2
 
 Output:
-232
+240
 ```
 
-**Explanation:** On a 5x5 board, there are 232 ways to place 2 non-attacking bishops.
+**Explanation:** There are C(25, 2) = 300 ways to pick 2 squares. Two bishops attack when they share a diagonal. Each direction has diagonals of lengths 1, 2, 3, 4, 5, 4, 3, 2, 1, which give 0+1+3+6+10+6+3+1+0 = 30 attacking pairs, so 60 for both directions. 300 - 60 = 240.
 
 ---
 
@@ -192,39 +192,31 @@ Board diagonals (n=3):
 Black diagonals: sizes [1, 3, 1] (3 diagonals)
 White diagonals: sizes [2, 2] (2 diagonals)
 
-DP for Black Diagonals [1, 3, 1]:
-Initial: dp[0][0] = 1
+Sort each color's diagonals by length first: black [1, 1, 3], white [2, 2].
+With shorter diagonals first, every bishop already placed blocks exactly one
+square of the current diagonal, so a diagonal of length L with j bishops
+already placed has L - j free squares.
 
-Diagonal 0 (size=1):
-  dp[1][0] = dp[0][0] = 1
-  dp[1][1] = dp[0][0] * (1-0) = 1
-
-Diagonal 1 (size=3):
-  dp[2][0] = dp[1][0] = 1
-  dp[2][1] = dp[1][1] + dp[1][0] * (3-0) = 1 + 3 = 4
-  dp[2][2] = dp[1][1] * (3-1) = 1 * 2 = 2
-
-Diagonal 2 (size=1):
-  dp[3][0] = 1
-  dp[3][1] = dp[2][1] + dp[2][0] * (1-0) = 4 + 1 = 5
-  dp[3][2] = dp[2][2] + dp[2][1] * (1-1) = 2 + 0 = 2
-
-Black DP: [1, 5, 2] (0,1,2 bishops)
+DP for Black Diagonals [1, 1, 3]:   dp[j] = ways to place j bishops
+  start:          [1, 0, 0]
+  size 1:         [1, 1, 0]          dp[1] += dp[0] * (1 - 0)
+  size 1:         [1, 2, 0]          dp[1] += dp[0] * 1;  dp[2] += dp[1] * (1 - 1) = 0
+  size 3:         [1, 5, 4]          dp[1] += dp[0] * 3;  dp[2] += dp[1] * (3 - 1) = 2 * 2
 
 DP for White Diagonals [2, 2]:
-Similar process...
-White DP: [1, 4, 2] (0,1,2 bishops)
+  start:          [1, 0, 0]
+  size 2:         [1, 2, 0]
+  size 2:         [1, 4, 2]          dp[1] += 1 * 2;  dp[2] += 2 * (2 - 1)
 
 Combine for k=2:
-  i=0: black[0] * white[2] = 1 * 2 = 2
-  i=1: black[1] * white[1] = 5 * 4 = 20
-  i=2: black[2] * white[0] = 2 * 1 = 2
+  black[0] * white[2] = 1 * 2 = 2
+  black[1] * white[1] = 5 * 4 = 20
+  black[2] * white[0] = 4 * 1 = 4
 
-Total = 2 + 20 + 2 = 24
-
-Wait - but example says n=3, k=2 gives 26...
-(The exact diagonal sizes depend on n parity - let's verify with code)
+Total = 26   (brute force agrees: 36 square pairs minus 10 attacking pairs)
 ```
+
+Without the sort, black [1, 3, 1] gives [1, 5, 2] and the total comes out 24: the last length-1 diagonal is wrongly treated as blocked.
 
 ### Visual: Diagonal Structure
 
@@ -285,8 +277,10 @@ def solve_optimal(n, k):
 
     return dp
 
-  black_sizes = get_diagonal_sizes(n, 0)
-  white_sizes = get_diagonal_sizes(n, 1)
+  # Shortest diagonals first: then each earlier bishop blocks exactly one
+  # square of the current diagonal, so it has (size - placed) free squares.
+  black_sizes = sorted(get_diagonal_sizes(n, 0))
+  white_sizes = sorted(get_diagonal_sizes(n, 1))
 
   black_dp = count_placements(black_sizes)
   white_dp = count_placements(white_sizes)
@@ -310,6 +304,11 @@ def solve_optimal(n, k):
 ---
 
 ## Common Mistakes
+
+### Mistake 0: Not Sorting the Diagonals
+
+**Problem:** The factor `size - (j-1)` assumes each earlier bishop blocks one square of the current diagonal. That holds only if earlier diagonals are no longer than the current one. In natural order (lengths 1, 3, 5, ..., 3, 1) it undercounts: n=3, k=2 gives 24 instead of 26.
+**Fix:** `sorted(...)` the diagonal lengths of each color before the DP.
 
 ### Mistake 1: Forgetting Diagonal Independence
 

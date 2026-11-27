@@ -145,7 +145,7 @@ def solve_recursive(s):
         # Number of ways to interleave operations
         inner_pairs = (k - 1 - (i + 1) + 1) // 2
         outer_pairs = (j - (k + 1) + 1) // 2
-        ways = C[inner_pairs + outer_pairs][inner_pairs]
+        ways = C[inner_pairs + outer_pairs + 1][outer_pairs]
 
         result = (result + inner * outer % MOD * ways) % MOD
 
@@ -184,13 +184,14 @@ For each interval [i, j], try matching s[i] with every s[k] where s[i] == s[k]:
 
 ```
 dp[i][j] = SUM over all k where s[i]==s[k]:
-           dp[i+1][k-1] * dp[k+1][j] * C((k-i-1)/2 + (j-k)/2, (k-i-1)/2)
+           dp[i+1][k-1] * dp[k+1][j] * C((j-i+1)/2, (j-k)/2)
 ```
 
 **Why?** When s[i] pairs with s[k]:
 - Inner part s[i+1..k-1] has (k-i-1)/2 pairs to remove
 - Outer part s[k+1..j] has (j-k)/2 pairs to remove
-- We can interleave these removals in C(total_pairs, inner_pairs) ways
+- The pair (i, k) itself can only go after every inner removal, since it becomes adjacent only then. So the inner part plus the pair is a fixed-order block of (k-i+1)/2 removals
+- Outer removals interleave freely with that block: choose which of the (j-i+1)/2 time slots are outer, C((j-i+1)/2, (j-k)/2) ways
 
 ### Base Cases
 
@@ -212,7 +213,7 @@ Step 1: Initialize base cases (empty intervals = 1)
 Step 2: Length 2 intervals
   dp[0][1]: s[0]='a', s[1]='a' -> match!
             inner=dp[1][0]=1, outer=dp[2][1]=1
-            pairs: inner=0, outer=0, C(0,0)=1
+            pairs: inner=0, outer=0, C(0+0+1, 0)=1
             dp[0][1] = 1*1*1 = 1
 
   dp[1][2]: s[1]='a', s[2]='b' -> no match
@@ -224,21 +225,15 @@ Step 2: Length 2 intervals
 Step 3: Length 4 interval dp[0][3]
   Try k=1: s[0]='a'==s[1]='a' -> match!
            inner=dp[1][0]=1, outer=dp[2][3]=1
-           pairs: inner=0, outer=1, C(1,0)=1
-           contribution = 1*1*1 = 1
+           pairs: inner=0, outer=1, C(0+1+1, 1)=2
+           contribution = 1*1*2 = 2
 
   Try k=3: s[0]='a'!=s[3]='b' -> no match
 
-  dp[0][3] = 1
-
-But wait - for "aabb" there are actually 2 ways:
-  Way 1: Remove "aa" -> "bb" -> remove "bb" -> ""
-  Way 2: Remove "bb" -> "aa" -> remove "aa" -> ""
-
-Let's recalculate...
+  dp[0][3] = 2
 ```
 
-Actually for "aabb", we need to reconsider. The DP counts ways considering the **order** of operations matters.
+Those 2 ways are "aa" then "bb", or "bb" then "aa": the pair (0,1) and the outer pair (2,3) can go in either order. That is exactly what the binomial factor counts.
 
 ### Visual Diagram
 
@@ -284,10 +279,7 @@ def solve(s):
   # dp[i][j] = ways to empty s[i..j]
   dp = [[0] * n for _ in range(n)]
 
-  # Base case: empty intervals
-  for i in range(n + 1):
-    if i < n:
-      dp[i][i-1] = 1  # Handled by checking i > j
+  # Empty intervals count as 1 way; handled inline below.
 
   # Fill by interval length
   for length in range(2, n + 1, 2):  # Only even lengths
@@ -302,7 +294,9 @@ def solve(s):
 
           inner_pairs = (k - i - 1) // 2
           outer_pairs = (j - k) // 2
-          ways = C[inner_pairs + outer_pairs][inner_pairs]
+          # The pair (i, k) goes last among the inner removals, but inner and
+          # outer removals interleave freely: choose the outer slots.
+          ways = C[inner_pairs + outer_pairs + 1][outer_pairs]
 
           dp[i][j] = (dp[i][j] + inner * outer % MOD * ways) % MOD
 
@@ -332,8 +326,8 @@ if __name__ == "__main__":
 # WRONG - missing binomial coefficient
 dp[i][j] += dp[i+1][k-1] * dp[k+1][j]
 
-# CORRECT - include interleaving ways
-ways = C[inner_pairs + outer_pairs][inner_pairs]
+# CORRECT - include interleaving ways (the +1 is the pair (i, k) itself)
+ways = C[inner_pairs + outer_pairs + 1][outer_pairs]
 dp[i][j] += dp[i+1][k-1] * dp[k+1][j] * ways
 ```
 

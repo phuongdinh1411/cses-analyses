@@ -31,10 +31,12 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
-**Problem:** Count the number of ways to make k moves on a game board with n positions, where each move must go to a different position.
+**Problem:** A token visits k positions on a board with positions 1..n, and it must move to a different position every turn. Count the possible sequences of k positions, i.e. sequences of length k in which consecutive positions differ.
+
+> This is a practice counting problem, not CSES "Raab Game II" (which counts permutation pairs for a card game).
 
 **Input:**
-- Line 1: Two integers n (number of positions) and k (number of moves)
+- Line 1: Two integers n (number of positions) and k (length of the sequence)
 
 **Output:**
 - The number of valid move sequences modulo 10^9 + 7
@@ -53,27 +55,7 @@ Output:
 6
 ```
 
-**Explanation:** Starting from any of 3 positions, we make 2 moves where each move goes to a different position.
-- From position 1: can go to 2 then 1 or 3, OR to 3 then 1 or 2 (4 paths, but wait...)
-
-Actually, let us count more carefully:
-- Start at 1, move to 2, move to 1 or 3 = 2 paths
-- Start at 1, move to 3, move to 1 or 2 = 2 paths
-- ... but we need to count ALL starting positions.
-
-Formula: n starting positions x (n-1) choices per move x k moves = n x (n-1)^k = 3 x 2^2 = 3 x 4 = 12?
-
-Wait, re-reading: if we just count SEQUENCES of k moves (not paths), then:
-- n choices for start
-- (n-1) choices for each of k moves
-- Total = n x (n-1)^k
-
-For n=3, k=2: 3 x 2^2 = 12. But output is 6...
-
-The problem likely counts just the k-move SEQUENCES (without counting start position separately):
-- Total = n x (n-1)^(k-1) with k moves means (k-1) transitions? Or just (n-1)^k for k transitions from a fixed start?
-
-Given output 6 = 3 x 2 = n x (n-1)^1, it seems k=2 means 1 move/transition, giving n x (n-1) = 6.
+**Explanation:** Sequences of 2 positions with no repeat in a row: [1,2], [1,3], [2,1], [2,3], [3,1], [3,2]. That is 3 starts × 2 next positions = 6.
 
 ---
 
@@ -97,7 +79,7 @@ Think of this like a "no-repeat-adjacent" sequence:
 - First position: n choices
 - Each subsequent position: (n-1) choices (anything except current position)
 
-This gives us the formula: **n x (n-1)^k** for a sequence of length (k+1) positions with k moves.
+This gives the formula **n × (n-1)^(k-1)** for a sequence of k positions (k-1 moves). If the input counted moves instead, the answer would be n × (n-1)^k.
 
 ---
 
@@ -111,7 +93,7 @@ Generate all possible sequences recursively and count valid ones.
 
 1. Start from each of n positions
 2. For each position, recursively explore all (n-1) next positions
-3. Count all complete sequences of k moves
+3. Count all complete sequences of k positions (k - 1 moves)
 
 ### Code
 
@@ -120,7 +102,7 @@ def count_sequences_brute(n, k):
   """
   Brute force: enumerate all sequences.
 
-  Time: O(n * (n-1)^k) - exponential
+  Time: O(n * (n-1)^(k-1)) - exponential
   Space: O(k) - recursion depth
   """
   MOD = 10**9 + 7
@@ -135,9 +117,11 @@ def count_sequences_brute(n, k):
         count = (count + dfs(next_pos, moves_left - 1)) % MOD
     return count
 
+  if k == 0:
+    return 0
   total = 0
   for start in range(1, n + 1):
-    total = (total + dfs(start, k)) % MOD
+    total = (total + dfs(start, k - 1)) % MOD
   return total
 ```
 
@@ -158,52 +142,39 @@ For n = 10^6 and k = 10^6, we would need to enumerate 10^6,000,000 sequences - c
 
 ### Key Insight
 
-> **The Trick:** Each position independently has (n-1) choices, so total = n x (n-1)^k
+> **The Trick:** The first position has n choices and every later one has n-1 (anything but the previous), so total = n × (n-1)^(k-1)
 
 Since the number of choices at each step is constant (always n-1), we can directly compute the count using exponentiation.
 
 ### Formula Derivation
 
 ```
-Position 0 (start): n choices
-Position 1: (n-1) choices (anything except position 0)
+Position 1 (start): n choices
 Position 2: (n-1) choices (anything except position 1)
+Position 3: (n-1) choices (anything except position 2)
 ...
 Position k: (n-1) choices (anything except position k-1)
 
-Total = n * (n-1) * (n-1) * ... * (n-1)
-      = n * (n-1)^k
+Total = n * (n-1) * ... * (n-1)     [k-1 factors of (n-1)]
+      = n * (n-1)^(k-1)
 ```
 
 ### Algorithm
 
-1. Handle edge case: if n = 1 and k > 0, return 0 (no valid moves)
-2. Compute (n-1)^k using fast modular exponentiation
-3. Multiply by n and return result mod 10^9 + 7
+1. If k = 0, return 0 (no sequence of length 0)
+2. Compute (n-1)^(k-1) with fast modular exponentiation
+3. Multiply by n and return the result mod 10^9 + 7
+
+n = 1 needs no special case: `pow(0, 0, MOD)` is 1, since the single sequence [1] is valid when k = 1, and `pow(0, e, MOD)` is 0 for e > 0.
 
 ### Dry Run Example
 
 Let us trace through with n = 3, k = 2:
 
 ```
-Step 1: Identify the formula
-  Total sequences = n * (n-1)^k
-
-Step 2: Substitute values
-  = 3 * (3-1)^2
-  = 3 * 2^2
-  = 3 * 4
-  = 12
-
-Wait - but expected output is 6. Let me reconsider...
-
-If k represents the LENGTH of sequence (not number of moves):
-  k = 2 means sequence of 2 positions with 1 move
-  Total = n * (n-1)^(k-1) = 3 * 2^1 = 6  [Matches!]
-
-So the formula depends on problem interpretation:
-  - If k = number of moves: n * (n-1)^k
-  - If k = sequence length: n * (n-1)^(k-1)
+Total = n * (n-1)^(k-1)
+      = 3 * 2^1
+      = 6
 ```
 
 ### Visual Diagram
@@ -234,16 +205,10 @@ def count_sequences(n, k):
   """
   MOD = 10**9 + 7
 
-  # Edge case: single position, cannot make any moves
-  if n == 1:
-    return 1 if k <= 1 else 0
-
-  # Formula: n * (n-1)^(k-1) for sequence length k
-  # Or: n * (n-1)^k for k moves
-  # Using built-in pow with modular arithmetic
   if k == 0:
     return 0  # No sequence of length 0
 
+  # n = 1 works too: pow(0, 0, MOD) = 1 and pow(0, e, MOD) = 0 for e > 0
   return (n * pow(n - 1, k - 1, MOD)) % MOD
 
 
@@ -255,9 +220,6 @@ def count_moves(n, k):
   Space: O(1)
   """
   MOD = 10**9 + 7
-
-  if n == 1:
-    return 0 if k > 0 else n
 
   return (n * pow(n - 1, k, MOD)) % MOD
 ```
@@ -273,38 +235,26 @@ def count_moves(n, k):
 
 ## Common Mistakes
 
-### Mistake 1: Integer Overflow
+### Mistake 1: Reducing Too Late
 
 ```python
-# WRONG - overflow for large n, k
-def count_wrong(n, k):
-  return n * (n - 1) ** k  # Overflow!
+# fragment
+# SLOW - builds a number with about k*log2(n) bits, then reduces it
+def count_slow(n, k):
+  return n * (n - 1) ** (k - 1) % MOD
 
-# CORRECT - use modular arithmetic throughout
-def count_correct(n, k):
-  MOD = 10**9 + 7
-  return (n * pow(n - 1, k, MOD)) % MOD
+# FAST - reduce at every squaring step
+def count_fast(n, k):
+  return n * pow(n - 1, k - 1, MOD) % MOD
 ```
 
-**Problem:** Python handles big integers, but the result must be modulo 10^9 + 7.
-**Fix:** Use `pow(base, exp, mod)` for modular exponentiation.
+**Problem:** Python ints never overflow, but (n-1)^(k-1) with k = 10^6 has millions of digits, so the slow version takes far too long. In C++ it would overflow instead.
+**Fix:** Use three-argument `pow(base, exp, mod)`.
 
-### Mistake 2: Wrong Base Case for n = 1
+### Mistake 2: Special-Casing n = 1 Wrongly
 
-```python
-# WRONG - returns non-zero for impossible case
-def count_wrong(n, k):
-  return n * pow(n - 1, k, MOD)  # When n=1, this gives 1 * 0^k
-
-# CORRECT - explicitly handle edge case
-def count_correct(n, k):
-  if n == 1 and k > 0:
-    return 0  # Cannot move anywhere
-  return (n * pow(n - 1, k, MOD)) % MOD
-```
-
-**Problem:** With only one position, you cannot make any moves.
-**Fix:** Return 0 when n = 1 and k > 0.
+**Problem:** It is tempting to return 0 whenever n = 1. But with k = 1 the single sequence [1] is valid, so the answer is 1.
+**Fix:** Let the formula handle it: `1 * pow(0, 0, MOD) = 1` for k = 1 and `pow(0, k-1, MOD) = 0` for k ≥ 2.
 
 ### Mistake 3: Confusing Moves vs Sequence Length
 
@@ -393,7 +343,7 @@ result = n * pow(n - 1, k - 1, MOD)
 ## Practice Checklist
 
 Before moving on, make sure you can:
-- [ ] Derive the formula n * (n-1)^k from first principles
+- [ ] Derive the formula n * (n-1)^(k-1) from first principles
 - [ ] Implement binary exponentiation from scratch
 - [ ] Explain why modular arithmetic is necessary
 - [ ] Solve this problem in under 5 minutes

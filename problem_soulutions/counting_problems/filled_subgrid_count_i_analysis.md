@@ -55,15 +55,13 @@ Input:
 3 3 3 3
 
 Output:
-4
+2
 ```
 
-**Explanation:** The four filled 2x2 subgrids are:
+**Explanation:** There are 2 × 3 = 6 positions for a 2x2 window (top-left corner at rows 0-1, columns 0-2). Two are filled:
 - (0,0): all 1s
 - (0,2): all 2s
-- (1,0): values [1,1,3,3] - NOT filled
-- (1,2): all 2s and 3s mixed - NOT filled
-- Actually: positions (0,0), (0,2), (1,2) have uniform values, plus bottom-right corner.
+- (0,1) mixes 1s and 2s; every window starting in row 1 mixes the bottom row of 3s with 1s or 2s
 
 ---
 

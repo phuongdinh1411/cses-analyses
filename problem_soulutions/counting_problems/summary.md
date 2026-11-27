@@ -33,7 +33,7 @@ One row per problem: the technique, the one-line insight, and the time complexit
 | [Grid Paths II](grid_paths_ii_analysis) | Grid DP with Obstacles | The number of paths to cell (i,j) only depends on paths to (i-1,j) and (i,j-1) | O(n^2) |
 | [Mobius Function and Inversion](mobius_function_analysis) | Mobius Function, Linear Sieve, Inclusion-Exclusion | The Mobius function encodes inclusion-exclusion coefficients for divisibility problems | O(n) |
 | [Permutation Inversions](permutation_inversions_analysis) | DP with Prefix Sum Optimization | The inner sum `dp[i-1][j] + dp[i-1][j-1] +  | O(n * k) |
-| [Raab Game II](raab_game_ii_analysis) | Modular Exponentiation | Each position independently has (n-1) choices, so total = n x (n-1)^k | O(log k) |
+| [Raab Game II](raab_game_ii_analysis) | Modular Exponentiation | The first position has n choices and every later one has n-1 (anything but the previous), so total = n × (n-1)^(k-1) | O(log k) |
 | [Stirling Numbers (First and Second Kind)](stirling_numbers_analysis) | Dynamic Programming with Recurrence Relations | S(n, k) = k · S(n−1, k) + S(n−1, k−1): the new element joins an existing block or starts one | O(n · k) |
 | [Tournament Graph Count](tournament_graph_distribution_analysis) | Modular Exponentiation | Use binary exponentiation to compute 2^k mod m in O(log k) time | O(log n) |
 | [Tree Traversals (Counting)](tree_traversals_analysis) | Catalan Numbers, Tree DP, Factorial Counting | Instead of enumerating, multiply factorials of children counts | O(n) |

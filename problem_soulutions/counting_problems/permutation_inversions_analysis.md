@@ -53,10 +53,9 @@ Output:
 ```
 
 **Explanation:** The permutations of [1,2,3,4] with exactly 3 inversions are:
-- [2,4,3,1] - inversions: (2,3), (2,1), (4,3), (4,1), (3,1) = wait, that's 5
-- Actually: [3,2,1,4], [2,4,1,3], [4,1,2,3], [1,4,3,2], [3,1,4,2], [2,3,4,1]
+[1,4,3,2], [2,3,4,1], [2,4,1,3], [3,1,4,2], [3,2,1,4], [4,1,2,3]
 
-Let me verify [3,2,1,4]: pairs (3,2), (3,1), (2,1) = 3 inversions. Correct!
+For example, [3,2,1,4] has the inverted pairs (3,2), (3,1), (2,1).
 
 ---
 

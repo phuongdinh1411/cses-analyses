@@ -54,13 +54,14 @@ Input:
 ....
 
 Output:
-3
+4
 ```
 
-**Explanation:** The three valid paths from (1,1) to (4,4) avoiding obstacles:
-1. Right -> Right -> Right -> Down -> Down -> Down
-2. Down -> Right -> Right -> Down -> Down -> Right
-3. Down -> Down -> Right -> Right -> Down -> Right
+**Explanation:** The four valid paths from (1,1) to (4,4) avoiding obstacles (R = right, D = down):
+1. R R R D D D
+2. R R D R D D
+3. D D R D R R
+4. D D D R R R
 
 ---
 

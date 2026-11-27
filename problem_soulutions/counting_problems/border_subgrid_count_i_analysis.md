@@ -49,22 +49,20 @@ After solving this problem, you will be able to:
 Input:
 3
 **.
-*.*
+***
 .**
 
 Output:
-1
+2
 ```
 
 **Explanation:** The grid looks like:
 ```
 * * .
-* . *
+* * *
 . * *
 ```
-Only one subgrid has all four corners black: rows 1-2, columns 1-2 (the top-left 2x2 region has corners at positions (0,0), (0,1), (1,0), (1,1) - but (1,1) is '.', so that's not valid). Actually, the valid subgrid uses rows 0-1, columns 0-1 where corners are (0,0)='*', (0,1)='*', (1,0)='*', (1,1)='.' - wait, let me reconsider.
-
-The answer is 1 because there's exactly one rectangle where all 4 corners are '*'.
+Two rectangles have four black corners: rows 0-1 × columns 0-1, and rows 1-2 × columns 1-2. Every other choice of two rows and two columns hits a '.' corner.
 
 ---
 
@@ -157,34 +155,17 @@ Instead of iterating over all column pairs, we:
 Grid (3x3):
   col: 0 1 2
 row 0: * * .
-row 1: * . *
+row 1: * * *
 row 2: . * *
 
-Step 1: Rows (0, 1)
-  Check each column:
-    col 0: grid[0][0]='*', grid[1][0]='*' -> Both black, count++
-    col 1: grid[0][1]='*', grid[1][1]='.' -> Not both black
-    col 2: grid[0][2]='.', grid[1][2]='*' -> Not both black
-  k = 1, pairs = 1*0/2 = 0
+Rows (0, 1): both '*' in columns 0, 1     -> k = 2, pairs = 2*1/2 = 1
+Rows (0, 2): both '*' in column 1 only    -> k = 1, pairs = 0
+Rows (1, 2): both '*' in columns 1, 2     -> k = 2, pairs = 1
 
-Step 2: Rows (0, 2)
-  col 0: '*', '.' -> No
-  col 1: '*', '*' -> Yes, count++
-  col 2: '.', '*' -> No
-  k = 1, pairs = 0
-
-Step 3: Rows (1, 2)
-  col 0: '*', '.' -> No
-  col 1: '.', '*' -> No
-  col 2: '*', '*' -> Yes, count++
-  k = 1, pairs = 0
-
-Total = 0 + 0 + 0 = 0
-
-Wait - let me recheck the example. The answer should be 1.
+Total = 1 + 0 + 1 = 2
 ```
 
-Let me use a clearer example:
+A full row pair shows why the formula is k(k-1)/2:
 
 ```
 Grid:

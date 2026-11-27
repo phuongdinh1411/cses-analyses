@@ -54,14 +54,10 @@ Input:
 1 1 1
 
 Output:
-14
+36
 ```
 
-**Explanation:**
-- 9 subgrids of size 1x1 (each cell)
-- 4 subgrids of size 2x2
-- 1 subgrid of size 3x3
-- Total: 9 + 4 + 1 = 14
+**Explanation:** Every rectangle is filled, so count all rectangles: choose 2 of the 4 horizontal grid lines and 2 of the 4 vertical ones, C(4,2) × C(4,2) = 6 × 6 = 36. Counting only squares would give 9 + 4 + 1 = 14.
 
 ---
 
@@ -305,7 +301,7 @@ sum = prefix[r2+1][c2+1] - prefix[r1][c2+1] - prefix[r2+1][c1] + prefix[r1][c1]
 | Case | Input | Expected Output | Why |
 |------|-------|-----------------|-----|
 | All zeros | 2x2 grid of 0s | 0 | No filled subgrids |
-| All ones | 3x3 grid of 1s | 14 | All possible subgrids valid |
+| All ones | 3x3 grid of 1s | 36 | Every rectangle is valid: C(4,2)² |
 | Single cell (1) | 1x1 grid with 1 | 1 | One 1x1 subgrid |
 | Single cell (0) | 1x1 grid with 0 | 0 | No valid subgrids |
 | Single row | 1x5 of all 1s | 15 | 5+4+3+2+1 = 15 |
