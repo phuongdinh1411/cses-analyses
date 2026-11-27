@@ -39,6 +39,7 @@ The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, 
 
 | I need to... | Family | Section |
 |--------------|--------|---------|
+| **Recognize the right state** — prefix vs ending-at vs interval vs budget | State Design | [1b](#1b-state-recognition--design) |
 | Choose take-or-skip along a **line** (rob houses, climb stairs) | Linear | [3](#3-linear-dp) |
 | Walk a **grid** moving only right/down; count paths or min cost | Grid | [4](#4-grid-dp) |
 | Fill a **capacity/target** with items (subset sum, coin change) | Knapsack | [5](#5-knapsack-family) |
@@ -143,22 +144,23 @@ One canonical LeetCode problem per family — the walkthrough for each lives in 
 ## Table of Contents
 
 1. [How to Approach DP Problems](#1-how-to-approach-dp-problems)
-2. [Top-Down vs Bottom-Up](#2-top-down-vs-bottom-up)
-3. [Linear DP](#3-linear-dp)
-4. [Grid DP](#4-grid-dp)
-5. [Knapsack Family](#5-knapsack-family)
-6. [Longest Increasing Subsequence](#6-longest-increasing-subsequence)
-7. [Longest Common Subsequence](#7-longest-common-subsequence)
-8. [Interval DP](#8-interval-dp)
-9. [State Machine DP](#9-state-machine-dp)
-10. [Tree DP](#10-tree-dp)
-11. [Bitmask DP](#11-bitmask-dp)
-12. [Digit DP](#12-digit-dp)
-13. [Probability / Expected Value DP](#13-probability--expected-value-dp)
-14. [DP on DAGs](#14-dp-on-dags)
-15. [DP Optimizations](#15-dp-optimizations)
-16. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
-17. [Practice Order](#17-practice-order)
+2. [State Recognition & Design](#1b-state-recognition--design)
+3. [Top-Down vs Bottom-Up](#2-top-down-vs-bottom-up)
+4. [Linear DP](#3-linear-dp)
+5. [Grid DP](#4-grid-dp)
+6. [Knapsack Family](#5-knapsack-family)
+7. [Longest Increasing Subsequence](#6-longest-increasing-subsequence)
+8. [Longest Common Subsequence](#7-longest-common-subsequence)
+9. [Interval DP](#8-interval-dp)
+10. [State Machine DP](#9-state-machine-dp)
+11. [Tree DP](#10-tree-dp)
+12. [Bitmask DP](#11-bitmask-dp)
+13. [Digit DP](#12-digit-dp)
+14. [Probability / Expected Value DP](#13-probability--expected-value-dp)
+15. [DP on DAGs](#14-dp-on-dags)
+16. [DP Optimizations](#15-dp-optimizations)
+17. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
+18. [Practice Order](#17-practice-order)
 
 ---
 
@@ -214,6 +216,227 @@ Step 5: OPTIMIZE SPACE (optional)
 | Tree DP returning one number | Return a **pair** `(use_node, skip_node)` so the parent can choose (§10, LC 337) |
 | Rolling variables committed in wrong order | Compute all next-states from *old* values, then assign together — `a, b = b, max(...)` not two lines (§3, LC 198; §9 states) |
 | Reaching for matrix-expo on the Easy version | Only when `n` is astronomically large; rolling window otherwise (§15.5, LC 1137) |
+
+---
+
+## 1b. State Recognition & Design
+
+This is the hardest step in DP. The transition and base cases are mechanical once the state is right — but a wrong state produces a table that looks plausible and silently gives wrong answers.
+
+### The Core Question
+
+Before writing a single line of code, ask:
+
+> **"What is the minimal information I need at step X to make the next decision — without caring how I got here?"**
+
+That answer *is* your state. Too little info → subproblems aren't truly independent (wrong answer). Too much → table explodes (TLE/MLE).
+
+`★ Insight ─────────────────────────────────────`
+The state must encode exactly what the future decisions need. If your recurrence requires information not captured in the state, add it as a new dimension. The goal is the *minimal* sufficient state.
+`─────────────────────────────────────────────────`
+
+---
+
+### 1D State: "prefix" vs "ending-at"
+
+These two look almost identical but solve completely different problems.
+
+#### `dp[i]` = best answer **considering first i elements** (prefix / take-or-skip)
+
+You can **choose** whether to include element `i` or not.
+
+```
+Question: "What is the best I can do using items 0..i?"
+Element i can be skipped — it may or may not appear in the optimal answer.
+
+Example: 0/1 Knapsack, House Robber
+  dp[i] = max(skip item i → dp[i-1],
+              take item i → dp[i-1] + val[i])
+```
+
+#### `dp[i]` = best answer **ending AT index i** (must include i)
+
+Element `i` is **required** to be the last element of the structure you're building.
+
+```
+Question: "What is the best if the answer MUST end exactly at position i?"
+Element i is mandatory — it's the last element in the subsequence/subarray.
+
+Example: LIS, Kadane's Max Subarray
+  dp[i] = best ending at i
+        = either start fresh at i, or extend the best structure ending at j < i
+
+Final answer = max(dp[i]) over all i — not dp[n-1] alone.
+```
+
+#### Decision Test
+
+Ask these three questions to pick the right 1D semantics:
+
+```
+Q1: Can I skip element i and still get a valid answer?
+    YES → "first i elements" (prefix) semantics
+    NO  → "ending at i" semantics
+
+Q2: Does validity depend on where the last element is
+    (to know whether the next element can extend it)?
+    YES → "ending at i"
+    NO  → "first i elements"
+
+Q3: Does the problem ask about a contiguous subarray/substring?
+    YES → almost always "ending at i"
+    NO  → usually "first i elements"
+```
+
+#### Why LIS uses "ending at i", not "first i"
+
+```
+Wrong attempt: dp[i] = longest increasing subsequence using first i elements
+  Transition fails: to extend, you need to know the LAST element's value,
+  which "first i" doesn't encode. Two different subsets of length 3 within
+  the first i elements may end at different values — you can't cache them
+  as the same state.
+
+Right: dp[i] = longest increasing subsequence ending AT index i
+  Transition: dp[i] = 1 + max(dp[j] for j < i where arr[j] < arr[i])
+  arr[i] IS the endpoint — checking arr[j] < arr[i] is legal and complete.
+```
+
+---
+
+### 2D State: The Four Archetypes
+
+When 1D isn't enough, recognize which 2D archetype fits:
+
+#### Archetype 1 — Two independent sequences
+
+> *"I'm making decisions about two things simultaneously"*
+
+- `dp[i][j]` = answer for prefix of sequence A of length i, prefix of B of length j
+- Each step advances one or both pointers
+- **Recognition signal**: two strings/arrays; each step you match, skip A, or skip B
+
+```
+Classic: LCS, Edit Distance, String matching
+
+dp[i][j] = LCS of A[0..i-1] and B[0..j-1]
+  if A[i-1] == B[j-1]: dp[i-1][j-1] + 1      ← advance both
+  else:                max(dp[i-1][j],          ← advance A only
+                           dp[i][j-1])           ← advance B only
+```
+
+#### Archetype 2 — Interval `[i, j]`
+
+> *"I'm solving a subproblem on a contiguous range"*
+
+- `dp[i][j]` = answer for the range from index i to j
+- Filled by **increasing interval length** (j − i)
+- **Recognition signal**: you're *splitting* a range; the subproblem is defined by its boundaries, not by which elements you've processed so far
+
+```
+Classic: Burst Balloons, Matrix Chain Multiplication, Palindrome Partitioning
+
+dp[i][j] = best answer for subarray/substring from i to j
+  = best over all split points k: combine(dp[i][k], dp[k+1][j]) + cost
+
+Iterate: for length in 2..n: for i in 0..n-length: j = i + length - 1
+```
+
+`★ Insight ─────────────────────────────────────`
+**"First to act" vs "last to act" flips the entire recurrence.** For Burst Balloons, defining `dp[i][j]` as the best when balloon k bursts *last* (not first) inside [i,j] makes the two halves independent — by the time k pops, its neighbors are exactly the fixed boundaries i and j. When an operation *changes adjacency* (merge, burst, remove), reframe around the final operation.
+`─────────────────────────────────────────────────`
+
+#### Archetype 3 — Index + budget/capacity
+
+> *"I'm deciding about element i, and I have some resource left"*
+
+- `dp[i][j]` = best answer using first i items with j remaining resource
+- **Recognition signal**: a constraint (capacity, budget, step count) is consumed as you make choices; both *where you are* and *how much remains* must be tracked
+
+```
+Classic: 0/1 Knapsack, Coin Change with limits, Jump Game variants
+
+dp[i][w] = max value using first i items with capacity w
+  skip: dp[i-1][w]
+  take: dp[i-1][w - weight[i]] + value[i]   (if w >= weight[i])
+```
+
+#### Archetype 4 — Position in 2D space
+
+> *"I'm moving through a grid"*
+
+- `dp[i][j]` = best answer to reach cell (i, j)
+- **Recognition signal**: literally 2D input, movement constrained to a few directions
+
+```
+Classic: Minimum Path Sum, Unique Paths, Dungeon Game
+
+dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+```
+
+---
+
+### The State Design Flow
+
+Apply this every time you face a new DP problem:
+
+```
+Step 1 — What does the final answer look like?
+  Single best value over all elements?   → 1D (prefix or ending-at)
+  Best over all pairs (i, j)?             → interval or two-sequence
+  Best path in a grid?                    → grid DP
+  Best over subsets of a small set?       → bitmask DP
+
+Step 2 — What information do I need to extend a partial solution?
+  "I need to know where I last was"     → include position in state
+  "I need to know what I've spent"      → include budget/capacity in state
+  "I need both endpoints of the range"  → interval DP
+  "I need to know which items are used" → bitmask DP
+
+Step 3 — Can I write the recurrence?
+  YES: state is correct
+  NO (recurrence needs info not in state): add that info as a new dimension
+
+Step 4 — Can I phrase dp[state] in one sentence in English?
+  If not, the state conflates two different things.
+  Split it, or pin down the single invariant that defines it.
+```
+
+---
+
+### The State-Inadequacy Bug
+
+The most common DP mistake: a state that *looks* complete but loses information the recurrence needs.
+
+```
+Bug: dp[i] = "length of longest increasing subsequence in first i elements"
+  Recurrence attempt: dp[i] = max(dp[j] + 1 for j < i if arr[j] < arr[i])
+  Problem: to check arr[j] < arr[i], you need to know the VALUE that the
+           best subsequence of length dp[j] ends with. "Length" doesn't
+           encode that — two length-3 subsequences ending at different values
+           within the first j elements are different states, but share the
+           same dp[j] key.
+
+Fix: dp[i] = "length of longest increasing subsequence ending AT index i"
+  Now arr[i] IS the last value, so arr[j] < arr[i] is a correct extension check.
+```
+
+General rule: **if the recurrence needs to distinguish between states that share the same key, add more dimensions until they're separate entries**.
+
+---
+
+### State Semantics at a Glance
+
+| Pattern | State meaning | Key recognition signal |
+|---------|--------------|------------------------|
+| `dp[i]` prefix | Best using items 0..i (can skip i) | Take-or-skip choices freely |
+| `dp[i]` ending-at | Best ending AT index i (i mandatory) | Contiguous/connected; need to extend |
+| `dp[i][j]` two-seq | Prefixes of lengths i and j | Two strings; match or skip one |
+| `dp[i][j]` interval | Best answer for range [i, j] | Splitting/merging ranges |
+| `dp[i][j]` knapsack | Item i, j resource remaining | Constraint consumed per choice |
+| `dp[i][j]` grid | Cell (i, j) in 2D space | 2D movement with restricted directions |
+| `dp[mask]` bitmask | Which of N≤20 items are used | Subset tracking; order doesn't matter |
+| `dp[i][mode]` machine | At step i, in discrete mode | Mode/phase transitions |
 
 ---
 
