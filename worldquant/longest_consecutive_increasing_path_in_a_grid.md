@@ -196,7 +196,7 @@ Starting at (0,0)=1:
 If the constraint is `grid[next] > grid[curr]` (not necessarily +1), the same DFS + memo approach works. This is LeetCode 329.
 
 ```python
-# fragment: inside dfs, replace the == grid[r][c] + 1 test with
+# sketch: inside dfs, replace the == grid[r][c] + 1 test with
 if grid[nr][nc] > grid[r][c]:
     best = max(best, 1 + dfs(nr, nc))
 ```

@@ -162,6 +162,8 @@ For each window of W rows, maintain running sums:
 
 When the window slides, **subtract the leaving row's contribution** and **add the entering row's contribution**.
 
+The numerics need the same two guards as [Rolling Correlation](/worldquant/rolling_correlation_with_missing_values#numerical-stability). Raw sums crash `math.sqrt` on a variance that rounds to −2e-14 (`rolling_ic([[1,2,3],[1,2,3]], [[0.3]*3]*2, 2)`) and return junk such as 1.07 for constant windows. So the code centres on the first valid pair and detects constant windows exactly.
+
 ### Complexity
 
 | | Complexity |
@@ -182,50 +184,60 @@ def rolling_ic(
     returns: list[list[float]],
     window: int
 ) -> list[float]:
-    T = len(factors)
-    N = len(factors[0])
     result = []
 
     # Sliding window of rows
     win_f = deque()  # stores rows of factors
     win_r = deque()  # stores rows of returns
 
-    # Running sums (over valid pairs only)
+    def valid_pairs(f_row, r_row):
+        return ((f, r) for f, r in zip(f_row, r_row) if not (math.isnan(f) or math.isnan(r)))
+
+    # Centre on the first valid pair: correlation is shift-invariant, and centred
+    # sums avoid catastrophic cancellation in count*S_xx - S_x**2
+    cf, cr = next((p for f_row, r_row in zip(factors, returns)
+                   for p in valid_pairs(f_row, r_row)), (0.0, 0.0))
+
+    # Running sums (over valid, centred pairs only)
     S_x = S_y = S_xx = S_yy = S_xy = 0.0
     count = 0
+    # Trailing run of equal factor (return) values in arrival order; a run covering
+    # all `count` pairs means a constant window: IC is NaN, not rounding noise
+    run_f = run_r = 0
+    last_f = last_r = math.nan
 
     def add_row(f_row, r_row):
-        nonlocal S_x, S_y, S_xx, S_yy, S_xy, count
-        for f, r in zip(f_row, r_row):
-            if math.isnan(f) or math.isnan(r):
-                continue
+        nonlocal S_x, S_y, S_xx, S_yy, S_xy, count, run_f, run_r, last_f, last_r
+        for f, r in valid_pairs(f_row, r_row):
+            run_f = run_f + 1 if f == last_f else 1
+            run_r = run_r + 1 if r == last_r else 1
+            last_f, last_r = f, r
+            f, r = f - cf, r - cr
             S_x  += f;  S_y  += r
             S_xx += f*f; S_yy += r*r; S_xy += f*r
             count += 1
 
     def remove_row(f_row, r_row):
         nonlocal S_x, S_y, S_xx, S_yy, S_xy, count
-        for f, r in zip(f_row, r_row):
-            if math.isnan(f) or math.isnan(r):
-                continue
+        for f, r in valid_pairs(f_row, r_row):
+            f, r = f - cf, r - cr
             S_x  -= f;  S_y  -= r
             S_xx -= f*f; S_yy -= r*r; S_xy -= f*r
             count -= 1
 
     def pearson():
-        if count < 2:
+        if count < 2 or run_f >= count or run_r >= count:
             return float('nan')
-        num = count * S_xy - S_x * S_y
-        den = math.sqrt(
-            (count * S_xx - S_x**2) *
-            (count * S_yy - S_y**2)
-        )
-        return num / den if den != 0 else float('nan')
+        var_f = count * S_xx - S_x**2   # computed separately: rounding can make
+        var_r = count * S_yy - S_y**2   # either one slightly negative
+        if var_f <= 0 or var_r <= 0:
+            return float('nan')
+        return max(-1.0, min(1.0, (count * S_xy - S_x * S_y) / math.sqrt(var_f * var_r)))
 
-    for t in range(T):
-        add_row(factors[t], returns[t])
-        win_f.append(factors[t])
-        win_r.append(returns[t])
+    for f_row, r_row in zip(factors, returns):
+        add_row(f_row, r_row)
+        win_f.append(f_row)
+        win_r.append(r_row)
 
         if len(win_f) > window:
             remove_row(win_f.popleft(), win_r.popleft())
@@ -243,6 +255,7 @@ def rolling_ic(
 Spearman IC = Pearson correlation of the **ranks** rather than raw values.
 
 ```python
+import math
 from scipy.stats import rankdata
 
 def spearman_ic_row(f_row: list[float], r_row: list[float]) -> float:

@@ -83,8 +83,6 @@ n=6, k=3, t=1
 returns = [5, 8, 3, 9, 1, 7]
 prev    = [0, 1, 2]   (returns = [5, 8, 3])
 
-Output: [1, 3, 5]
-
 Output: [0, 1, 3]
 
 Explanation:
@@ -117,7 +115,7 @@ The gain of the i-th swap, `returns[outsiders[i]] - returns[held[i]]`, is non-in
 
 | | Complexity |
 |---|---|
-| **Time** | O(n log n) — or O(n + t log n) with `heapq.nlargest`/`nsmallest(t, ...)` |
+| **Time** | O(n log n) — or O(n log t) with `heapq.nlargest`/`nsmallest(t, ...)` |
 | **Space** | O(n) |
 
 ---

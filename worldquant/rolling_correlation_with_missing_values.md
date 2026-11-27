@@ -19,7 +19,7 @@ tags: [statistics, rolling-window, correlation, nan-handling, worldquant, financ
 ### Learning Goals
 - [ ] Compute rolling Pearson correlation between two time series
 - [ ] Handle NaN values by excluding them from each window's computation
-- [ ] Use running sums to make each step O(N) instead of O(W)
+- [ ] Use running sums to make each step O(1) instead of O(W)
 - [ ] Return NaN when fewer than 2 valid pairs exist in a window
 
 ### In 60 seconds
@@ -118,32 +118,45 @@ def rolling_corr(x: list[float], y: list[float], W: int) -> list[float]:
     n = len(x)
     result = []
 
-    # Running sums
-    S1 = Sx = Sy = Sxx = Syy = Sxy = 0.0
-
     def is_valid(xi, yi):
         return not math.isnan(xi) and not math.isnan(yi)
 
+    # Correlation is shift-invariant: centring on the first valid pair stops
+    # S1*Sxx - Sx**2 cancelling catastrophically when |x| is large but the spread small
+    cx, cy = next(((xi, yi) for xi, yi in zip(x, y) if is_valid(xi, yi)), (0.0, 0.0))
+
+    # Running sums over valid (centred) pairs
+    S1 = Sx = Sy = Sxx = Syy = Sxy = 0.0
+    # Length of the trailing run of equal x (y) values among valid pairs;
+    # run_x >= S1 means x is constant in the window: return NaN, not rounding noise
+    run_x = run_y = 0
+    last_x = last_y = math.nan
+
     def add(xi, yi):
-        nonlocal S1, Sx, Sy, Sxx, Syy, Sxy
+        nonlocal S1, Sx, Sy, Sxx, Syy, Sxy, run_x, run_y, last_x, last_y
         if is_valid(xi, yi):
+            run_x = run_x + 1 if xi == last_x else 1
+            run_y = run_y + 1 if yi == last_y else 1
+            last_x, last_y = xi, yi
+            xi, yi = xi - cx, yi - cy
             S1  += 1;  Sx  += xi;  Sy  += yi
             Sxx += xi*xi; Syy += yi*yi; Sxy += xi*yi
 
     def remove(xi, yi):
         nonlocal S1, Sx, Sy, Sxx, Syy, Sxy
         if is_valid(xi, yi):
+            xi, yi = xi - cx, yi - cy
             S1  -= 1;  Sx  -= xi;  Sy  -= yi
             Sxx -= xi*xi; Syy -= yi*yi; Sxy -= xi*yi
 
     def pearson():
-        if S1 < 2:
-            return float('nan')
-        num = S1 * Sxy - Sx * Sy
-        den_sq = (S1 * Sxx - Sx**2) * (S1 * Syy - Sy**2)
-        if den_sq <= 0:
-            return float('nan')  # constant series
-        return num / math.sqrt(den_sq)
+        if S1 < 2 or run_x >= S1 or run_y >= S1:
+            return float('nan')  # too few pairs, or a constant series
+        vx = S1 * Sxx - Sx**2
+        vy = S1 * Syy - Sy**2
+        if vx <= 0 or vy <= 0:
+            return float('nan')  # variance lost to rounding
+        return max(-1.0, min(1.0, (S1 * Sxy - Sx * Sy) / math.sqrt(vx * vy)))
 
     for t in range(n):
         add(x[t], y[t])
@@ -159,9 +172,16 @@ def rolling_corr(x: list[float], y: list[float], W: int) -> list[float]:
 
 ## Numerical Stability
 
-The one-pass formula `S1*Sxy - Sx*Sy` can suffer from **catastrophic cancellation** for large values with small variance. For production use, prefer a two-pass or compensated approach:
+The one-pass formula `S1*Sxy - Sx*Sy` suffers **catastrophic cancellation** for large values with small variance: at `|x| ≈ 1e9` with spread 1, raw sums give correlations off by more than 1. The implementation above applies two guards:
+
+- **Centre** every value on the first valid pair before accumulating. Correlation is unchanged, and the error at `1e9` drops to about `1e-14`. If the level drifts far from that first value, re-centre when you rebuild the sums.
+- **Detect constant windows exactly.** Once values have entered and left, a flat window's variance term is a rounding residue rather than 0, so raw sums return junk: `4.9e-8` instead of NaN for `x = [0.1, 0.7, 0.3, 0.3, 0.3, 0.3]`, `y = [1..6]`, `W = 3`. Counting trailing equal values (pandas' rolling variance does the same) gives NaN exactly when every value in the window is equal.
+
+Also **recompute the six sums from scratch every K steps**, because millions of add/remove updates accumulate floating-point drift. To check the streaming version, compare it with a two-pass computation per window:
 
 ```python
+import math
+
 def stable_pearson(xs, ys):
     """Two-pass Pearson on a small list."""
     n = len(xs)
@@ -175,8 +195,6 @@ def stable_pearson(xs, ys):
     den = math.sqrt(vx * vy)
     return cov / den if den > 0 else float('nan')
 ```
-
-Two more practical fixes: **center the data** (subtract a rough mean such as the first valid value) before accumulating, which removes most of the cancellation; and **recompute the six sums from scratch every K steps**, because millions of add/remove updates accumulate floating-point drift. Also treat a tiny positive `den_sq` (e.g. below `1e-12 · S1²`) as a constant window.
 
 ---
 
@@ -194,6 +212,7 @@ Two more practical fixes: **center the data** (subtract a rough mean such as the
 ## Pandas Equivalent
 
 ```python
+# sketch: pandas reference — x, y, W are defined above
 import pandas as pd
 
 corr = pd.Series(x).rolling(W, min_periods=2).corr(pd.Series(y))

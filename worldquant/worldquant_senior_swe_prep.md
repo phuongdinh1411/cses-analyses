@@ -41,7 +41,7 @@ WorldQuant is a **quantitative investment management firm**. Their SWE roles sit
 
 ### Python Mastery (Senior Level) — weeks 1–2
 
-> Based on JD: _"Mastery of Python internals, concurrency, performance profiling, packaging, FastAPI/Flask, SQLAlchemy, pytest, mypy"_
+> The JD's must-have is Python mastery (language internals, performant and reliable code); `asyncio`, FastAPI, SQLAlchemy, pytest and mypy are listed as nice-to-have (see the Senior SWE JD below).
 
 - [ ] **Advanced Python**: generators, decorators, context managers, metaclasses, descriptors
 - [ ] **Concurrency**: `threading`, `multiprocessing`, `asyncio`, GIL implications, `concurrent.futures`
@@ -383,7 +383,7 @@ Step 4: Onsite / Final Interview (reported as 4–9 hours, multiple interviewers
 | 1 | You roll 3 dice (each 1–6). What is the probability that the **maximum** of the three rolls is exactly P? | Probability |
 | 2 | Fair coin: what is the **expected number of throws** to get N consecutive heads? Find a recurrence relation between p(n) and p(n+1). | Probability / Recurrence |
 | 3 | You have a biased coin where P(heads) = 51%. Create an event with exactly **P = 25%** using this coin. | Probability |
-| 4 | There are 5 points in an equilateral triangle of side 1. Prove there exist 2 points with distance < 1/2. (Pigeonhole Principle) | Combinatorics / Proof |
+| 4 | There are 5 points in an equilateral triangle of side 1. Prove there exist 2 points with distance ≤ 1/2. (Pigeonhole Principle; the bound is tight: vertices and edge midpoints are exactly 1/2 apart, so "< 1/2" is false) | Combinatorics / Proof |
 | 5 | A calculator has all digit keys and arithmetic operators disabled. Only scientific functions (exp, log, sin, cos, arctan) work. It shows 0. Convert it to 2, then 3. | Math / Creativity |
 | 6 | Given a random number from a **uniform distribution**, produce a random variable that is **normally distributed**. | Statistics / Simulation |
 | 7 | With your wildest imagination — give 3 things that can predict the stock price. | Domain / Creativity |

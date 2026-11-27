@@ -83,7 +83,7 @@ Output: 0  (already sorted)
 
 ### Key Insight
 
-Build the **permutation** `P` where `P[i]` = the index that element `i` should move to in the sorted order. The minimum swaps = `n - (number of cycles in P)`.
+Build the **permutation** `P` where `P[i]` = the original index of the element that belongs at position `i` in sorted order (`indexed[i][0]` in the code). The minimum swaps = `n - (number of cycles in P)`. Its inverse ("where element `i` should move to") has the same cycles, so either direction gives the same answer.
 
 For a cycle of length `L`, you need `L - 1` swaps to fix it.
 
@@ -91,7 +91,7 @@ For a cycle of length `L`, you need `L - 1` swaps to fix it.
 
 ```
 1. Create pairs (value, original_index) and sort by value.
-2. Build the target permutation: sorted_pos[i] = where element at position i should go.
+2. Read the permutation: P[i] = indexed[i][0], the original position of the i-th smallest element.
 3. Use a visited array to find all cycles.
 4. For each unvisited node, traverse its cycle; add (cycle_length - 1) to answer.
 ```

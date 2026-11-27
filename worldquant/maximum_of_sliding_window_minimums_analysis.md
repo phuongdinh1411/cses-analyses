@@ -205,7 +205,7 @@ Final answer: **3** ✅
 
 | Pitfall | Fix |
 |---|---|
-| Removing from the back when `nums[back] > val` instead of `>= val` | Use `>=` to handle duplicates correctly |
+| Believing `>` instead of `>=` in the pop condition breaks duplicates | Both are correct, because eviction is by index; `>=` keeps the deque smaller |
 | Checking the window boundary with `< i - k` instead of `<= i - k` | Use `<=` — the window starts at `i - k + 1`, so index `i - k` is out |
 | Starting to update result before the first full window (i < k-1) | Guard with `if i >= k - 1` |
 
@@ -215,7 +215,7 @@ Final answer: **3** ✅
 
 | Problem | Relationship |
 |---|---|
-| [Sliding Window Minimum](sliding_window_minimum) | Core building block of this problem |
+| [Sliding Window Minimum](/worldquant/sliding_window_minimum) | Core building block of this problem |
 | [Sliding Window Minimum (CSES-style analysis)](/problem_soulutions/sliding_window/subarray_minimums_analysis) | Same deque technique, full walkthrough |
 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Symmetric — flip deque to decreasing order |
 | [Sum of Subarray Minimums (LeetCode 907)](https://leetcode.com/problems/sum-of-subarray-minimums/) | All subarrays, not fixed k: monotonic stack |

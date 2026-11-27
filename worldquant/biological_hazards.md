@@ -185,4 +185,4 @@ def two_zones_suffice(n: int, pairs: list[tuple[int, int]]) -> bool:
 |---|---|
 | Count Subarrays With Fixed Bounds (LeetCode 2444) | Same "valid starts for each end" counting |
 | Possible Bipartition (LeetCode 886) | The zone variant with 2 zones |
-| [Counting Pairs](counting_pairs) | Another pair-constraint counting problem |
+| [Counting Pairs](/worldquant/counting_pairs) | Another pair-constraint counting problem |

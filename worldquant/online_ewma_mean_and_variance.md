@@ -20,7 +20,7 @@ tags: [statistics, streaming, ewma, worldquant, finance]
 - [ ] Implement EWMA mean with decay factor alpha in O(1) per update
 - [ ] Implement EWMA variance using the online update formula
 - [ ] Understand the difference between EWMA and simple rolling average
-- [ ] Handle the warm-up period and bias correction
+- [ ] Handle the warm-up period (this recurrence vs pandas `adjust=True`)
 
 ### In 60 seconds
 - **Pattern:** Online recurrence (Finch 2009)
@@ -157,6 +157,8 @@ def online_ewma_std(stream: list[float], alpha: float):
 | Given com (center of mass) `c` | `alpha = 1 / (1 + c)` |
 
 ```python
+import math
+
 def alpha_from_halflife(halflife: float) -> float:
     return 1 - math.exp(-math.log(2) / halflife)
 

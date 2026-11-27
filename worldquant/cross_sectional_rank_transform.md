@@ -20,11 +20,11 @@ tags: [array, sorting, ranking, nan-handling, worldquant, finance]
 - [ ] Implement cross-sectional ranking (rank across assets at one point in time)
 - [ ] Handle multiple tie-breaking strategies: min, max, average, dense
 - [ ] Correctly exclude or assign NaN values during ranking
-- [ ] Normalise ranks to [-1, 1] or [0, 1] as used in alpha research
+- [ ] Normalise ranks to [-1, 1] as used in alpha research (`(x + 1) / 2` maps that to [0, 1])
 
 ### In 60 seconds
 - **Pattern:** Sort indices, then group ties
-- **Key insight:** Sort valid (non-NaN) values once; each run of equal values gets one rank chosen by the tie method (average, min, max, dense, first).
+- **Key insight:** Sort valid (non-NaN) values once; each run of equal values gets one rank chosen by the tie method (average, min, max, dense).
 - **Complexity:** O(n log n) per date
 - **Trap:** Ranking NaNs as values; using the wrong denominator when normalising to percentiles.
 

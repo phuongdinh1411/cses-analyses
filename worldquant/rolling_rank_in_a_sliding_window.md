@@ -98,6 +98,7 @@ For each i:
 ## Implementation
 
 ```python
+# sketch: requires third-party sortedcontainers (pip install sortedcontainers)
 from sortedcontainers import SortedList
 
 def rolling_rank(nums: list[int], k: int) -> list[int]:
