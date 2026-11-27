@@ -34,9 +34,9 @@ After solving this problem, you will be able to:
 **Problem:** Find the minimum number of moves for a knight to reach a target position on an n x n chessboard from a starting position.
 
 **Input:**
-- n: size of the chessboard (n x n)
-- start: starting position (row, col)
-- target: target position (row, col)
+- Line 1: n, the size of the chessboard (n x n)
+- Line 2: the starting position `row col` (0-indexed)
+- Line 3: the target position `row col` (0-indexed)
 
 **Output:**
 - Minimum number of knight moves needed, or -1 if impossible
@@ -49,9 +49,9 @@ After solving this problem, you will be able to:
 
 ```
 Input:
-n = 8
-start = (0, 0)
-target = (7, 7)
+8
+0 0
+7 7
 
 Output:
 6
@@ -362,11 +362,12 @@ moves = [(2,1), (2,-1), (-2,1), (-2,-1),
 
 | Case | Input | Expected | Why |
 |------|-------|----------|-----|
-| Same position | start = target | 0 | No moves needed |
-| Adjacent (non-reachable) | n=3, (0,0) to (0,1) | varies | Knight can't move 1 square |
-| Small board | n=2 | often -1 | Knight can't move within 2x2 |
-| Corner to corner | (0,0) to (n-1,n-1) | varies | Tests full board traversal |
-| Single cell board | n=1 | 0 or -1 | Start must equal target |
+| Same position | n=8, (0,0) to (0,0) | 0 | No moves needed |
+| One square away | n=3, (0,0) to (0,1) | 3 | Knight can't move 1 square; it detours |
+| Unreachable centre | n=3, (0,0) to (1,1) | -1 | No knight move lands on the 3x3 centre |
+| Tiny board | n=2, (0,0) to (1,1) | -1 | No knight move fits on a 2x2 board |
+| Corner to corner | n=4, (0,0) to (3,3) | 2 | (0,0) -> (1,2) -> (3,3) |
+| Single cell board | n=1, (0,0) to (0,0) | 0 | Start equals target |
 
 ---
 
