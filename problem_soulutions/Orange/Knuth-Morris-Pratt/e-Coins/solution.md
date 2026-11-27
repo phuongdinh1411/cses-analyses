@@ -24,16 +24,27 @@ For each case, print minimum coins needed, or "not possible" if impossible.
 ## Example
 ```
 Input:
-1
-3 5
+3
+2 5
 0 2
 2 0
-3 4
+3 20
+0 2
+2 0
+2 1
+3 5
+3 0
+0 4
+5 5
 
 Output:
+not possible
+10
 2
 ```
-Target e-modulus is 5, meaning we need x^2 + y^2 = 25. Coin types: (0,2), (2,0), (3,4). Using one (3,4) coin gives x=3, y=4, and 3^2 + 4^2 = 25. So minimum coins = 1. Actually with the given coins, using (3,4) alone reaches modulus 5 in 1 coin.
+- **Case 1:** every reachable (x, y) has both coordinates even, so x² + y² = 25 is impossible.
+- **Case 2:** needs 400 = x² + y². Ten (2, 0) coins reach (20, 0). Mixing in (0, 2) or (2, 1) never needs fewer coins.
+- **Case 3:** one (3, 0) and one (0, 4) give (3, 4), and 9 + 16 = 25. The single (5, 5) coin overshoots (50 ≠ 25).
 
 ## Solution
 

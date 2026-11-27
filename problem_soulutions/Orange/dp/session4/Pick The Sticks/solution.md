@@ -31,21 +31,31 @@ For each test case: "Case #x: y" where y is maximum value.
 ## Example
 ```
 Input:
-2
+4
+3 7
+4 1
+2 1
+8 1
+3 7
+4 2
+2 1
+8 4
 3 5
-8 100
-4 10
-5 200
-2 4
-8 200
-4 100
+4 1
+2 2
+8 9
+1 1
+10 3
 
 Output:
-Case #1: 200
-Case #2: 300
+Case #1: 2
+Case #2: 6
+Case #3: 11
+Case #4: 3
 ```
-Case 1: Container length 5, sticks: (8,100), (4,10), (5,200). Stick of length 8 hanging uses 4 units, leaving 1. Can't fit anything else. Or stick length 5 hanging uses 2.5 units. Max value is 200.
-Case 2: Container length 4. Two sticks (8,200) and (4,100). Hang both? Each uses half: 4+2=6 > 4. Hang 8 (uses 4) = 200, or hang both partially. Max is 300.
+In doubled units, the capacity is 2L. A stick costs 2a fully inside and a when hanging.
+- **Case 2:** capacity 14. Hanging the 8 and the 4 costs 8 + 4 = 12 and gives value 4 + 2 = 6. Adding the 2 inside would cost 4 more (16 > 14).
+- **Case 4:** a lone length-10 stick in a length-1 container still fits centred, giving 3.
 
 ## Solution
 
@@ -110,53 +120,10 @@ def solve():
         if dp[c][h] != INF:
           result = max(result, dp[c][h])
 
+    # A lone stick can always be placed with its centre inside, whatever its length.
+    result = max(result, max(v for _, v in sticks))
+
     print(f"Case #{case}: {result}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Alternative Solution
-
-```python
-def solve():
-  t = int(input())
-
-  for case in range(1, t + 1):
-    n, L = map(int, input().split())
-
-    # Read sticks using list comprehension
-    sticks = [tuple(map(int, input().split())) for _ in range(n)]
-
-    # Use 2*L to handle half-lengths as integers
-    capacity = 2 * L
-    NEG_INF = float('-inf')
-
-    # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
-    dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
-    dp[0][0] = 0
-
-    for length, value in sticks:
-      full_cost, half_cost = 2 * length, length
-
-      # Process backwards
-      for c in range(capacity, -1, -1):
-        for e in range(3):
-          if dp[c][e] == NEG_INF:
-            continue
-
-          # Option A: place fully inside
-          if c + full_cost <= capacity:
-            dp[c + full_cost][e] = max(dp[c + full_cost][e], dp[c][e] + value)
-
-          # Option B: place hanging
-          if e < 2 and c + half_cost <= capacity:
-            dp[c + half_cost][e + 1] = max(dp[c + half_cost][e + 1], dp[c][e] + value)
-
-    # Get max value using nested max comprehension
-    ans = max(dp[c][e] for c in range(capacity + 1) for e in range(3) if dp[c][e] != NEG_INF)
-
-    print(f"Case #{case}: {ans}")
 
 if __name__ == "__main__":
   solve()
@@ -167,4 +134,6 @@ if __name__ == "__main__":
 - **Space Complexity:** O(L)
 
 ### Key Insight
-At most 2 sticks can hang over edges (one per side). A hanging stick uses only half its length of container space. Use 3D DP tracking: capacity used and number of hanging sticks (0/1/2). Multiply lengths by 2 to handle half-lengths as integers.
+At most 2 sticks can hang over the edges, one per side, and a hanging stick uses only half its length of container space. So run a knapsack over (capacity used, sticks hanging ∈ {0, 1, 2}), doubling all lengths so that halves become integers.
+
+One special case: a single stick fits on its own no matter how long it is (centre it in the container), so the answer is at least max(vᵢ).

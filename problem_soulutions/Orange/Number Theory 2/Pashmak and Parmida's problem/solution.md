@@ -22,15 +22,19 @@ Print the count of valid pairs.
 ## Example
 ```
 Input:
-6
-1 2 1 1 2 2
+7
+1 2 1 1 2 2 1
 
 Output:
 8
 ```
-L[i] = count of a[i] in prefix [1..i]: L = [1, 1, 2, 3, 2, 3]
-R[j] = count of a[j] in suffix [j..n]: R = [3, 3, 2, 1, 2, 1]
-Count pairs (i,j) where i < j and L[i] > R[j]. Valid pairs: (1,4), (1,6), (2,4), (2,6), (3,4), (3,6), (5,4), (5,6) = 8 pairs.
+L[i] counts a[i] in the prefix [1..i], so L = [1, 1, 2, 3, 2, 3, 4]. R[j] counts a[j] in the suffix [j..n], so R = [4, 3, 3, 2, 2, 1, 1]. Counting pairs i < j with L[i] > R[j]:
+- i = 3 (L = 2) pairs with j = 6 and j = 7, giving 2.
+- i = 4 (L = 3) pairs with j = 5, 6, 7, giving 3.
+- i = 5 (L = 2) pairs with j = 6 and j = 7, giving 2.
+- i = 6 (L = 3) pairs with j = 7, giving 1.
+
+The total is 8.
 
 ## Solution
 

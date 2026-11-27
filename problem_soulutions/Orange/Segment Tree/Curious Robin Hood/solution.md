@@ -27,20 +27,30 @@ For each test case, print "Case X:" followed by results for type 1 and type 3 qu
 ```
 Input:
 1
-5 4
-1 2 3 4 5
+5 6
+3 2 1 4 5
+1 4
+2 3 4
+3 0 3
 1 2
-2 2 4
-3 1 4
-1 3
+3 0 4
+1 1
 
 Output:
 Case 1:
-3
+5
 14
-7
+1
+13
+2
 ```
-Sacks: [1,2,3,4,5]. Query 1 2: give away sack 2's money (3), output 3, sacks become [1,2,0,4,5]. Query 2 2 4: add 4 to sack 2, sacks become [1,2,4,4,5]. Query 3 1 4: sum of [1,4] = 2+4+4+5 = 15... Hmm, let me use 0-indexing: [1,2,0,4,5] -> add 4 to index 2 -> [1,2,4,4,5]. Sum [1,4] = 2+4+4+5 = 15. Query 1 3: give away index 3's money (4), output 4.
+Sacks are 0-indexed: [3, 2, 1, 4, 5].
+- `1 4`: give away sack 4, printing 5; sacks are now [3, 2, 1, 4, 0].
+- `2 3 4`: add 4 to sack 3, giving [3, 2, 1, 8, 0].
+- `3 0 3`: the sum is 3 + 2 + 1 + 8 = 14.
+- `1 2`: print 1; sacks are now [3, 2, 0, 8, 0].
+- `3 0 4`: the sum is 13.
+- `1 1`: print 2.
 
 ## Solution
 

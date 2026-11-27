@@ -30,18 +30,19 @@ Convert each bitmap to the other format, with dimensions right-justified (width 
 ## Example
 ```
 Input:
-B 3 4
-001
-011
-011
-1
+B    3    4
+001000011011
+D    2    3
+DD10111
 #
 
 Output:
 D   3   4
-D0D1D011
+D0D1001D101
+B   2   3
+101111
 ```
-A 3x4 bitmap "001011011001" is converted to D format. The region is mixed, so output 'D', then recursively encode 4 quarters. The format uses right-justified dimensions.
+The 3x4 bitmap has rows `0010`, `0001`, `1011`. Its quarters are top-left `00/00` → `0`, top-right `10/01` → `D1001`, bottom-left `10` → `D10` (the empty lower quarters emit nothing), and bottom-right `11` → `1`.
 
 ## Solution
 
@@ -151,7 +152,7 @@ if __name__ == "__main__":
 ```
 
 ### Complexity Analysis
-- **Time Complexity:** O(H × W) for both conversions
+- **Time Complexity:** B→D is O(H × W × log max(H, W)), because each recursion level re-sums its whole area (a 2D prefix sum would make it O(H × W)). D→B is O(H × W).
 - **Space Complexity:** O(H × W) for storing the bitmap
 
 ### Key Insight

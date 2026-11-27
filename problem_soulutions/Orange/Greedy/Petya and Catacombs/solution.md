@@ -25,12 +25,12 @@ Print the minimum possible number of rooms in Paris catacombs.
 ```
 Input:
 5
-0 1 0 3 2
+0 1 0 1 3
 
 Output:
 3
 ```
-Notes: [0, 1, 0, 3, 2]. Minute 1: note 0 (could be revisiting start or new room - use new room). Minute 2: note 1 (revisit room from minute 1). Minute 3: note 0 (revisit start room). Minute 4: note 3 (new room). Minute 5: note 2 (revisit room from minute 2). Minimum rooms = 3.
+Each minute can be someone's "last visit" at most once. Minute 0 is consumed by t1 = 0 and minute 1 by t2 = 1. Then t3 = 0 is already consumed, so this is a new room, and so is t4 = 1. Finally t5 = 3 reuses minute 3. That gives the starting room plus 2 new ones, 3 in total.
 
 ## Solution
 

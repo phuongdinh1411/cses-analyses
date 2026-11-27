@@ -22,18 +22,24 @@ For each test case: "Case X: L C" where L is shortest length and C is count of u
 ## Example
 ```
 Input:
-2
-ABC
-BCD
-ABCD
-ABCE
+3
+USA
+USSR
+LAILI
+MAJNU
+SHAHJAHAN
+MOMTAJ
 
 Output:
-Case 1: 4 2
-Case 2: 5 2
+Case 1: 5 3
+Case 2: 9 40
+Case 3: 13 15
 ```
-Case 1: "ABC" and "BCD" can combine into "ABCD" or "BCDA"... Actually SCS is "ABCD" (length 4). There are 2 ways: ABCD (A then BCD shared) or BCAD? The count is 2.
-Case 2: "ABCD" and "ABCE" have LCS "ABC", so SCS length = 4+4-3 = 5. Two shortest strings possible.
+Case 1: LCS("USA", "USSR") = 2, so the length is 3 + 4 - 2 = 5. The three shortest strings are USSAR, USSRA and USASR.
+
+The count DP follows the length DP:
+- **Matching letters:** if a[i] = b[j], take ways[i-1][j-1].
+- **Different letters:** add ways[i-1][j] and/or ways[i][j-1], whichever branch achieves the minimum length.
 
 ## Solution
 

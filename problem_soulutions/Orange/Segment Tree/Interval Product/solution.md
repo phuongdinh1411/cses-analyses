@@ -35,14 +35,26 @@ Input:
 C 1 10
 P 1 4
 C 3 7
-P 2 4
+P 2 2
 C 4 -5
 P 1 4
+5 9
+1 5 -2 4 3
+P 1 2
+P 1 5
+C 4 -5
+P 1 5
+P 4 5
+C 3 0
+P 1 5
+C 4 -5
+C 4 -5
 
 Output:
 0+-
++-+-0
 ```
-Initial: [-2, 6, 0, -1]. After C 1 10: [10, 6, 0, -1]. P 1 4: product includes 0, so '0'. After C 3 7: [10, 6, 7, -1]. P 2 4: 6*7*(-1) = -42, so '-'. After C 4 -5: [10, 6, 7, -5]. P 1 4: 10*6*7*(-5) = -2100, so '-'. Wait, that gives "0--". Let me recalculate based on 1-indexing.
+First case: [10, 6, 0, -1] contains 0, so `0`. [6] alone gives `+`. [10, 6, 7, -5] has one negative, so `-`. Only signs matter, so each leaf can store -1, 0, or +1 and each node the product of its children.
 
 ## Solution
 

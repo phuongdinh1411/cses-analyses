@@ -8,7 +8,7 @@
 
 ## Problem Statement
 
-Create a shortest name for a new fruit that contains both original fruit names as substrings. For example, "apple" and "pear" can combine to "applear" (contains both "apple" and "pear").
+Create a shortest name for a new fruit that contains both original fruit names as subsequences: the shortest common supersequence. For example, "apple" and "peach" combine to "appleach".
 
 ## Input Format
 - Multiple test cases until EOF
@@ -27,9 +27,9 @@ pear peach
 Output:
 appleach
 bananas
-pearch
+peachr
 ```
-"apple" + "peach": LCS is "p" or "ea"? LCS is "pea" -> SCS = 5+5-3 = 7? Actually "appleach" has length 8. The LCS approach gives the shortest supersequence containing both as subsequences.
+The length is |a| + |b| - LCS(a, b). For example, "apple" and "peach" share the LCS "pe", giving 5 + 5 - 2 = 8. Any shortest supersequence is accepted: the judge's sample prints "pearch", while this code prints "peachr", which has the same length.
 
 ## Solution
 

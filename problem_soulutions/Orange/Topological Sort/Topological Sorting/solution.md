@@ -23,16 +23,21 @@ If there are multiple solutions, print the one whose first number is smallest, i
 ## Example
 ```
 Input:
-5 4
+8 9
+1 4
 1 2
-2 3
-1 3
-1 5
+4 2
+4 3
+3 2
+5 2
+3 5
+8 2
+8 6
 
 Output:
-1 2 4 3 5
+1 4 3 5 7 8 2 6
 ```
-Jobs 1 must be done before 2, 3, and 5. Job 2 must be done before 3. Job 4 has no dependencies. The lexicographically smallest valid ordering is 1, 2, 4, 3, 5.
+Use Kahn's algorithm with a min-heap instead of a queue: always take the smallest job whose prerequisites are done. The available jobs start as {1, 7, 8}. Taking 1 frees 4, so we take 4, which frees 3. Then 3 frees 5, and after 5 we take 7 and 8, which frees 2 and then 6. If the heap empties before all n jobs are output, there is a cycle and the answer is "Sandro fails.".
 
 ## Solution
 

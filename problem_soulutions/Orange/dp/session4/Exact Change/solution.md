@@ -44,10 +44,12 @@ Input:
 
 Output:
 14 2
-100 2
+100 1
 ```
-Test 1: Price 13, coins [7,5,9]. Minimum payment >= 13: 7+9=16 (2 coins), or 5+9=14 (2 coins). Best is 14 with 2 coins.
-Test 2: Price 95, coins [10,30,40,50,70,100]. Can pay exactly with 50+40+10=100? No, 50+40=90<95. Pay 100 (1 coin) or 50+70=120 (2 coins). Minimum is 100 with 1 coin... but answer shows 100 with 2 coins.
+- **Test 1:** {5, 9} pays 14 with 2 coins, and nothing sums to exactly 13.
+- **Test 2:** 95 cannot be paid exactly with these coins, so pay 100. The single 100 coin uses 1 coin, beating 10 + 40 + 50 or 30 + 70.
+
+Run a subset-sum DP over amounts up to the largest useful amount, storing the fewest coins for each.
 
 ## Solution
 

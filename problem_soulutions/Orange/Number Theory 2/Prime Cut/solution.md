@@ -30,10 +30,11 @@ Input:
 Output:
 7 3: 1 2 3 5 7
 
-21 2: 3 5 7
+21 2: 5 7 11
+
 ```
-For N=7, C=3: Primes up to 7 (including 1) are [1, 2, 3, 5, 7] (5 primes, odd count). Center 2*3-1=5 elements = all of them.
-For N=21, C=2: Primes up to 21 are [1, 2, 3, 5, 7, 11, 13, 17, 19] (9 primes, odd). Center 2*2-1=3 elements starting from index 3: [3, 5, 7].
+For N = 7, C = 3: the list [1, 2, 3, 5, 7] has 5 entries (odd), so take 2·3 - 1 = 5, which is all of them.
+For N = 21, C = 2: the list [1, 2, 3, 5, 7, 11, 13, 17, 19] has 9 entries (odd), so take the centre 3: [5, 7, 11].
 
 ## Solution
 

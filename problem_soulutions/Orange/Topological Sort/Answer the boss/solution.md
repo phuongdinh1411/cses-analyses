@@ -37,11 +37,11 @@ Input:
 Output:
 Scenario #1:
 1 1
+1 3
 2 0
 2 2
-3 3
 ```
-Employee 1 is the boss (rank 1) since no one is above them. Employees 0 and 2 are directly below employee 1 (rank 2). Employee 3 is below employee 0 (rank 3).
+Each line "R1 R2" means R1 is lower than R2. Nobody is above 1 or 3, so both have rank 1. Employee 0 is below 1 and 3, and employee 2 is below 1, so both have rank 2. In general, rank(v) = 1 + the maximum rank over v's superiors, computed in topological order.
 
 ## Solution
 

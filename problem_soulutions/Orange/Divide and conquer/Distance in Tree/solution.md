@@ -34,12 +34,12 @@ Tree is a path: 1-2-3-4-5. Pairs at distance exactly 2: (1,3), (2,4), (3,5). Tot
 ## Solution
 
 ### Approach
-Use Centroid Decomposition or simple DFS with counting:
-1. For each node, count pairs passing through it
-2. Use DFS to find distances from each node
-3. Count pairs with distance sum = k
+Because k ≤ 500, a tree DP over distances is enough (no centroid decomposition needed):
+1. `cnt[d]` = number of nodes at depth d below u, for d ≤ k.
+2. Before merging each child v, pair it with what is already in `cnt`: a node at depth d2 in v's subtree is d2 + 1 from u, so it pairs with `cnt[k - d2 - 1]`.
+3. Merge the child's counts shifted by one.
 
-For small k (≤ 500), we can use DP on the tree.
+Each pair is counted exactly once, at its highest node.
 
 ### Python Solution (Tree DP)
 
@@ -88,55 +88,6 @@ def solve():
 
     dfs(1, -1)
     print(total_pairs)
-
-if __name__ == "__main__":
-    solve()
-```
-
-### Alternative Solution (Centroid Decomposition concept)
-
-```python
-from collections import defaultdict, deque
-
-def solve():
-    n, k = map(int, input().split())
-
-    adj = defaultdict(list)
-    for _ in range(n - 1):
-        a, b = map(int, input().split())
-        adj[a].append(b)
-        adj[b].append(a)
-
-    result = 0
-
-    # Simple O(n * k) approach
-    for root in range(1, n + 1):
-        cnt = [0] * (k + 2)
-        cnt[0] = 1
-
-        for child in adj[root]:
-            # Get distances in child subtree using iterative DFS
-            child_dist = defaultdict(int)
-            stack = [(child, root, 1)]
-
-            while stack:
-                node, par, d = stack.pop()
-                if d <= k:
-                    child_dist[d] += 1
-                    # Add neighbors to stack using extend
-                    stack.extend((nxt, node, d + 1) for nxt in adj[node] if nxt != par)
-
-            # Count pairs using items()
-            for d, c in child_dist.items():
-                if k - d >= 0:
-                    result += cnt[k - d] * c
-
-            # Merge
-            for d, c in child_dist.items():
-                if d <= k:
-                    cnt[d] += c
-
-    print(result // 2)  # Each pair counted twice
 
 if __name__ == "__main__":
     solve()

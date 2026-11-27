@@ -28,45 +28,21 @@ adcba bc
 
 Output:
 g
-b
+c
 ```
 Test 1: In "geeksforgeeks", characters g, e, k from pattern appear at indices 0, 1, 3. The minimum index is 0 (character 'g').
-Test 2: In "adcba", 'b' appears at index 3 and 'c' at index 2. The minimum is 2, so output 'c'. Wait, actually 'b' appears at index 3 and 'c' at index 2, so 'c' has minimum index but output is 'b'... The problem wants the first char from patt found in str.
+Test 2: In "adcba", 'c' first appears at index 2 and 'b' at index 3, so the answer is 'c'.
 
 ## Solution
 
 ### Approach
-1. Create a set/dictionary of all characters in `str` for O(1) lookup
-2. Iterate through `patt` and find the first character that exists in `str`
-3. Return that character, or "No character present" if none found
+1. Record the first index of each character of `str` in a dictionary.
+2. Among the characters of `patt` that occur in `str`, print the one with the smallest recorded index.
+3. If none occur, print "No character present".
+
+Do not just return the first character of `patt` found in `str`. That answers a different question: for "adcba" and "bc" it would give 'b', but 'c' occurs earlier.
 
 ### Python Solution
-
-```python
-def solve():
-  t = int(input())
-
-  for _ in range(t):
-    str_input, patt = input().split()
-
-    # Create set of characters in str for O(1) lookup
-    str_chars = set(str_input)
-
-    result = "No character present"
-
-    # Find first character in patt that exists in str
-    for char in patt:
-      if char in str_chars:
-        result = char
-        break
-
-    print(result)
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Alternative Solution (Finding Minimum Index)
 
 ```python
 def solve():
@@ -88,22 +64,6 @@ def solve():
       print(min(valid_chars, key=lambda c: char_index[c]))
     else:
       print("No character present")
-
-if __name__ == "__main__":
-  solve()
-```
-
-### One-liner Style Solution
-
-```python
-def solve():
-  t = int(input())
-
-  for _ in range(t):
-    s, p = input().split()
-    chars = set(s)
-    result = next((c for c in p if c in chars), "No character present")
-    print(result)
 
 if __name__ == "__main__":
   solve()

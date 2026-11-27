@@ -24,9 +24,9 @@ Input:
 aaaaaa
 
 Output:
-2
+4
 ```
-Pattern "01" with text "aaaaaa" (length 6). We need c0*L0 + c1*L1 = 6 where c0=1, c1=1. So L0 + L1 = 6. Valid pairs: (L0=1, L1=5) gives r0="a", r1="aaaaa" - works since both are different. (L0=5, L1=1) gives r0="aaaaa", r1="a" - also works. So 2 valid pairs.
+Here c0 = c1 = 1, so L0 + L1 = 6. The splits (1,5), (2,4), (4,2) and (5,1) all work, but (3,3) gives r0 = r1 = "aaa", which is not allowed. That makes 4.
 
 ## Solution
 

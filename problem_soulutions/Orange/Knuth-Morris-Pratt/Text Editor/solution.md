@@ -44,71 +44,21 @@ No prefix of "abc" appears in "xyz".
 ## Solution
 
 ### Approach
-1. For each prefix of B (length 1, 2, ..., |B|), count occurrences in A
-2. Find the longest prefix with count ≥ n
-3. Use KMP for efficient counting
+Run KMP for pattern B over text A once:
+1. At each position of A, record `j`, the length of the longest prefix of B ending there, in `cnt[j]`. When a full match ends (`j == m`), fall back to `fail[m-1]` before reading the next character.
+2. Every border of a matched prefix also ends at that position, so push counts down the border chain, from longest to shortest: `cnt[fail[k-1]] += cnt[k]`.
+3. `cnt[k]` is now the number of (possibly overlapping) occurrences of `B[:k]`. Return the longest k with `cnt[k] >= n`.
+
+Trying every prefix length with a separate KMP search also works, but costs O(|A|·|B|).
 
 ### Python Solution
 
 ```python
-def count_occurrences(text, pattern):
-  """Count occurrences of pattern in text using KMP"""
-  if not pattern:
-    return len(text) + 1
-
-  m = len(pattern)
-  fail = [0] * m
-
-  # Build failure function
-  for i in range(1, m):
-    j = fail[i - 1]
-    while j > 0 and pattern[i] != pattern[j]:
-      j = fail[j - 1]
-    if pattern[i] == pattern[j]:
-      j += 1
-    fail[i] = j
-
-  # KMP search with cleaner iteration
-  count = 0
-  j = 0
-  for char in text:
-    while j > 0 and char != pattern[j]:
-      j = fail[j - 1]
-    if char == pattern[j]:
-      j += 1
-    if j == m:
-      count += 1
-      j = fail[j - 1]
-
-  return count
-
 def solve():
   A = input().strip()
   B = input().strip()
   n = int(input())
 
-  # Try each prefix length from longest to shortest
-  for length in range(len(B), 0, -1):
-    prefix = B[:length]
-    if count_occurrences(A, prefix) >= n:
-      print(prefix)
-      return
-
-  print("IMPOSSIBLE")
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Optimized Solution with Single KMP Pass
-
-```python
-def solve():
-  A = input().strip()
-  B = input().strip()
-  n = int(input())
-
-  # Build KMP failure function for B
   m = len(B)
   fail = [0] * m
   for i in range(1, m):
@@ -119,31 +69,28 @@ def solve():
       j += 1
     fail[i] = j
 
-  # Count occurrences of each prefix length
-  # cnt[k] = number of times prefix of length k appears in A
+  # cnt[k] = number of positions in A where the longest matched prefix of B has length k
   cnt = [0] * (m + 1)
-
   j = 0
   for char in A:
+    if j == m:
+      j = fail[j - 1]
     while j > 0 and char != B[j]:
       j = fail[j - 1]
-    if j < m and char == B[j]:
+    if char == B[j]:
       j += 1
-
-    # Prefix of length j matched here
     cnt[j] += 1
 
-  # Propagate counts: if prefix of length k appears, so does prefix of length fail[k-1]
+  # Every border of a matched prefix also ends there, so push counts down the border chain
   for k in range(m, 0, -1):
     cnt[fail[k - 1]] += cnt[k]
 
-  # Find longest prefix with count >= n
   for length in range(m, 0, -1):
     if cnt[length] >= n:
       print(B[:length])
       return
-
   print("IMPOSSIBLE")
+
 
 if __name__ == "__main__":
   solve()

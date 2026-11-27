@@ -38,12 +38,14 @@ Output a single integer - the minimum value of f(i, j) where i ≠ j.
 ```
 Input:
 4
-1 2 3 4
+1 0 0 -1
 
 Output:
-2
+1
 ```
-For i=1, j=2: f(1,2) = (1-2)^2 + g(1,2)^2 = 1 + 2^2 = 5. For i=2, j=3: f(2,3) = 1 + 3^2 = 10. For i=3, j=4: f(3,4) = 1 + 4^2 = 17. For i=1, j=3: f(1,3) = 4 + (2+3)^2 = 29. The minimum is f(1,2) = 1 + 1 = 2 when considering adjacent indices with small prefix sum differences.
+With prefix sums P = [1, 1, 1, 0], f(i, j) = (i - j)² + (P[j] - P[i])². Taking i = 1, j = 2 gives 1² + 0² = 1, and no pair can do better because i ≠ j forces (i - j)² ≥ 1.
+
+So the problem is the closest pair of points (i, P[i]) in the plane.
 
 ## Solution
 

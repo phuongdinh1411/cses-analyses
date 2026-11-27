@@ -67,7 +67,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Solution with Fast Modular Exponentiation
+##### Solution with Fast Modular Exponentiation
 
 ```python
 MOD = 10**9 + 7

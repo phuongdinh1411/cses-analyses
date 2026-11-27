@@ -11,9 +11,7 @@
 Define logical OR on {0, 1}: result is 1 if either or both values are 1, otherwise 0.
 
 Nam has matrix A of m×n with elements 0 or 1. He creates matrix B where:
-- B[i][j] = A[i][1] OR A[i][2] OR ... OR A[i][n] (OR of row i) AND A[1][j] OR A[2][j] OR ... OR A[m][j] (OR of column j)
-
-Actually: B[i][j] = OR of all elements in row i AND column j of matrix A.
+- B[i][j] = OR of every element in row i of A together with every element in column j of A.
 
 Given matrix B, find if matrix A exists that produces B.
 
@@ -32,11 +30,22 @@ Input:
 0 0
 
 Output:
-YES
-1 0
-0 0
+NO
 ```
-With A = [[1,0],[0,0]], we compute B: B[0][0] = (1 OR 0) OR (1 OR 0) = 1, B[0][1] = (1 OR 0) OR (0 OR 0) = 1... Actually this needs to produce B[0][1]=0, so row 0 and col 1 of A must be all zeros. The valid A is [[1,0],[0,0]] which produces B=[[1,0],[0,0]].
+B[1][2] = 0 forces row 1 and column 2 of A to be all 0, and B[2][1] = 0 forces row 2 and column 1 to be all 0. Then A is all zeros, so B[1][1] would be 0, not 1.
+
+```
+Input:
+2 3
+0 1 0
+1 1 1
+
+Output:
+YES
+0 0 0
+0 1 0
+```
+The construction is A[i][j] = 1 exactly when row i and column j of B are all ones. Recompute B from that A, and answer NO if it differs.
 
 ## Solution
 

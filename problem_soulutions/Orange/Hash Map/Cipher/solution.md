@@ -40,9 +40,9 @@ Input:
 1110100110
 
 Output:
-1001011
+1001010
 ```
-Original message b="1001011" with k=4. Encoding creates string of length n+k-1=10. Decoding "1110100110" with k=4 recovers the original "1001011".
+Check by re-encoding: column j of the XOR is b[j-3] ^ ... ^ b[j]. For b = 1001010 this gives 1110100110.
 
 ## Solution
 
@@ -82,57 +82,6 @@ def solve():
       xor_sum ^= int(b[i - k + 1])
 
   print(''.join(b))
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Alternative Solution
-
-```python
-def solve():
-  n, k = map(int, input().split())
-  s = input().strip()
-
-  result = []
-  window_xor = 0
-
-  for i, char in enumerate(s[:n]):  # Use enumerate for cleaner iteration
-    # Decode b[i]
-    # s[i] = window_xor ^ b[i], so b[i] = s[i] ^ window_xor
-    b_i = int(char) ^ window_xor
-    result.append(b_i)
-
-    # Add b[i] to window
-    window_xor ^= b_i
-
-    # Remove b[i-k+1] from window if window exceeds k
-    if i >= k - 1:
-      window_xor ^= result[i - k + 1]
-
-  print(''.join(map(str, result)))
-
-if __name__ == "__main__":
-  solve()
-```
-
-### One-liner Style
-
-```python
-def solve():
-  n, k = map(int, input().split())
-  s = input().strip()
-
-  b = [0] * n
-  xor = 0
-
-  for i in range(n):
-    b[i] = int(s[i]) ^ xor
-    xor ^= b[i]
-    if i >= k - 1:
-      xor ^= b[i - k + 1]
-
-  print(''.join(map(str, b)))
 
 if __name__ == "__main__":
   solve()

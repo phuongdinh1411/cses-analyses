@@ -31,7 +31,7 @@ Input:
 1 4
 3 4
 1 2
-2 1
+1 2
 
 Output:
 1
@@ -39,7 +39,7 @@ Output:
 3
 3
 ```
-n=2 means 2^2=4 elements: [1,6,3,5]. First OR pairs: [1|6, 3|5] = [7, 7]. Then XOR: 7^7 = 0. Wait, let me recalculate. After query p=1, b=4: array [4,6,3,5]. OR: [4|6, 3|5]=[6,7]. XOR: 6^7=1. Output 1.
+After `1 4` the array is [4, 6, 3, 5]. OR pairs gives [6, 7], then XOR gives 1. After `3 4` it is [4, 6, 4, 5], giving [6, 5] and then 3. Setting a[1] = 2 gives [2, 6, 4, 5], giving [6, 5] and again 3.
 
 ## Solution
 

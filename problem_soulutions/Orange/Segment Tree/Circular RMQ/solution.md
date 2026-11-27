@@ -37,6 +37,7 @@ Input:
 Output:
 1
 0
+0
 ```
 Array: [1,2,3,4]. Query rmq(3,0): circular range [3] U [0] = min(4,1) = 1. Inc(3,0,-1): circular, add -1 to indices 3,0. Array becomes [0,2,3,3]. Query rmq(0,1): min(0,2) = 0. Query rmq(2,1): circular [2,3,0,1] = min(3,3,0,2) = 0.
 

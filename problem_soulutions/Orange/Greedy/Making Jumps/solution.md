@@ -31,9 +31,9 @@ Input:
 0
 
 Output:
-Case 1, 0 squares can not be reached.
+Case 1, 4 squares can not be reached.
 ```
-A 2x3 board with no offsets. Starting from top-left, the knight can reach all 6 squares via valid knight moves (may require backtracking). 0 unreachable squares.
+On a 2x3 board the knight at (0,0) has a single move, to (1,2), and from there it can only go back. So it covers 2 of the 6 squares, and 4 are unreachable.
 
 ## Solution
 

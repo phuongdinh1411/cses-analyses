@@ -27,18 +27,18 @@ For each query, print "YES" if such string exists, "NO" otherwise.
 ```
 Input:
 2 3
-abc
-aac
-abc
-acc
-bbc
+aaaaa
+acacaca
+aabaa
+ccacacc
+caaac
 
 Output:
 YES
-YES
+NO
 NO
 ```
-Memory: {"abc", "aac"}. Query "abc": differs by 1 from "aac" (position 1: b vs a). YES. Query "acc": differs by 1 from "aac" (position 2: c vs a). YES. Query "bbc": differs by 2 from "abc", differs by 2 from "aac". NO.
+"aabaa" differs from "aaaaa" only at position 2, so YES. "ccacacc" differs from "acacaca" in more than one position, and "caaac" differs from "aaaaa" in two, so both are NO.
 
 ## Solution
 

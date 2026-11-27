@@ -453,11 +453,7 @@ This is a classic problem. With N students:
 - First, everyone sends their story to one person (N-1 messages, one person has all stories)
 - Then that person sends to everyone else (N-1 messages)
 
-But we can optimize: use a tree-like broadcast structure.
-- Minimum messages = 2*(N-1) for N ≥ 2
-- For N = 1: 0 messages needed
-
-Actually, the optimal is **2*(N-1)** for N > 1.
+That gives **2(N-1)** messages for N ≥ 2, and 0 for N = 1. It is also the minimum: someone must be the first to know every story, which needs at least N-1 incoming messages, and the other N-1 people then still need at least one message each.
 
 ##### Python Solution
 

@@ -145,7 +145,7 @@ if __name__ == "__main__":
 ```
 
 ##### Complexity Analysis
-- **Time Complexity:** O(H × W) for both conversions
+- **Time Complexity:** B→D is O(H × W × log max(H, W)), because each recursion level re-sums its whole area (a 2D prefix sum would make it O(H × W)). D→B is O(H × W).
 - **Space Complexity:** O(H × W) for storing the bitmap
 
 ##### Key Insight
@@ -179,12 +179,12 @@ Print the number of distinct pairs with distance exactly k.
 #### Solution
 
 ##### Approach
-Use Centroid Decomposition or simple DFS with counting:
-1. For each node, count pairs passing through it
-2. Use DFS to find distances from each node
-3. Count pairs with distance sum = k
+Because k ≤ 500, a tree DP over distances is enough (no centroid decomposition needed):
+1. `cnt[d]` = number of nodes at depth d below u, for d ≤ k.
+2. Before merging each child v, pair it with what is already in `cnt`: a node at depth d2 in v's subtree is d2 + 1 from u, so it pairs with `cnt[k - d2 - 1]`.
+3. Merge the child's counts shifted by one.
 
-For small k (≤ 500), we can use DP on the tree.
+Each pair is counted exactly once, at its highest node.
 
 ##### Python Solution
 
@@ -236,76 +236,6 @@ def solve():
 
   dfs(1, -1)
   print(total_pairs)
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-from collections import defaultdict, deque
-
-def solve():
-  n, k = map(int, input().split())
-
-  adj = defaultdict(list)
-  for _ in range(n - 1):
-    a, b = map(int, input().split())
-    adj[a].append(b)
-    adj[b].append(a)
-
-  result = 0
-
-  # For each node as root, count paths of length k passing through it
-  visited = [False] * (n + 1)
-
-  def count_at_dist(start, parent, dist):
-    """Count nodes at each distance from start"""
-    counts = defaultdict(int)
-    queue = deque([(start, 0)])
-
-    while queue:
-      node, d = queue.popleft()
-      if d > k:
-        continue
-      counts[d] += 1
-
-      for neighbor in adj[node]:
-        if neighbor != parent and not visited[neighbor]:
-          queue.append((neighbor, d + 1))
-
-    return counts
-
-  # Simple O(n * k) approach
-  for root in range(1, n + 1):
-    cnt = [0] * (k + 2)
-    cnt[0] = 1
-
-    for child in adj[root]:
-      # Get distances in child subtree
-      child_dist = defaultdict(int)
-      stack = [(child, root, 1)]
-
-      while stack:
-        node, par, d = stack.pop()
-        if d <= k:
-          child_dist[d] += 1
-          for nxt in adj[node]:
-            if nxt != par:
-              stack.append((nxt, node, d + 1))
-
-      # Count pairs
-      for d, c in child_dist.items():
-        if k - d >= 0:
-          result += cnt[k - d] * c
-
-      # Merge
-      for d, c in child_dist.items():
-        if d <= k:
-          cnt[d] += c
-
-  print(result // 2)  # Each pair counted twice
 
 if __name__ == "__main__":
   solve()
@@ -1029,74 +959,6 @@ def solve():
         print("yes" if result else "no")
     else:
       idx += 1
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-import sys
-import re
-
-def solve():
-  data = sys.stdin.read()
-
-  # Extract all tokens: integers and parentheses
-  tokens = re.findall(r'-?\d+|\(|\)', data)
-
-  i = 0
-  while i < len(tokens):
-    # Read target sum
-    target = int(tokens[i])
-    i += 1
-
-    stack = []  # Stack of (value, null_count)
-    current_sum = 0
-    found = False
-
-    while i < len(tokens):
-      token = tokens[i]
-      i += 1
-
-      if token == '(':
-        if i < len(tokens) and tokens[i] not in '()':
-          # This is a node with a value
-          value = int(tokens[i])
-          i += 1
-          stack.append((value, 0))
-          current_sum += value
-        else:
-          # Empty tree marker
-          if stack:
-            val, null_count = stack[-1]
-            stack[-1] = (val, null_count + 1)
-
-      elif token == ')':
-        if not stack:
-          break  # End of tree
-
-        val, null_count = stack[-1]
-
-        if null_count >= 2:
-          # This is a leaf node
-          if current_sum == target:
-            found = True
-
-          # Pop this node
-          stack.pop()
-          current_sum -= val
-
-          # Update parent's null count
-          if stack:
-            parent_val, parent_null = stack[-1]
-            stack[-1] = (parent_val, parent_null + 1)
-        else:
-          # Not enough children processed yet
-          pass
-
-    print("yes" if found else "no")
 
 if __name__ == "__main__":
   solve()

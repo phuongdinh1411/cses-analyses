@@ -100,8 +100,8 @@ For "25114":
 - dp[0] = 1 (empty)
 - dp[1] = 1 ("2" → B)
 - dp[2] = 2 ("25" → BE or Y)
-- dp[3] = 2 ("251" → BEA or YA)
-- dp[4] = 3 ("2511" → BEAA, YAA, BKA)
-- dp[5] = 5 ("25114" → BEAAD, YAAD, YKD, YAN, BEAN, BEKD... wait, let me recount)
+- dp[3] = 2 ("251" → BEA, YA)
+- dp[4] = 4 ("2511" → BEAA, YAA, BEK, YK)
+- dp[5] = dp[4] + dp[3] = 6 ("4" decodes alone, and "14" is a valid pair: BEAAD, YAAD, BEKD, YKD, BEAN, YAN)
 
 The answer is 6 different decodings.

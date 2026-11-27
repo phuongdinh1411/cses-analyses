@@ -8,9 +8,9 @@
 
 ## Problem Statement
 
-A prestigious club has N members, each with strength Si and beauty Bi. Member i hates member j if Si < Sj and Bi > Bj, or Si > Sj and Bi < Bj.
+A prestigious club has N members, each with strength Si and beauty Bi. Member i hates member j if Si ≤ Sj and Bi ≥ Bj, or Si ≥ Sj and Bi ≤ Bj. So two members can both be invited only if one is strictly stronger and strictly more beautiful than the other.
 
-For a party, select maximum members such that no two hate each other. Two members don't hate each other if Si ≤ Sj and Bi ≤ Bj (or vice versa).
+Invite as many members as possible, with no two hating each other.
 
 ## Input Format
 - First line: N (number of members, 2 ≤ N ≤ 100,000)
@@ -23,16 +23,17 @@ For a party, select maximum members such that no two hate each other. Two member
 ## Example
 ```
 Input:
-3
+4
 1 1
 1 2
 2 1
+2 2
 
 Output:
 2
-1 2
+1 4
 ```
-Members: (1,1), (1,2), (2,1). Member 1 and 2 don't hate each other (1<=1, 1<=2). Member 1 and 3 don't hate each other (1<=2, 1>=1 - but S1<S3 and B1>B3? No: 1<2 and 1>1 is false). We can invite members 1 and 2, or 1 and 3. Maximum is 2.
+Only (1,1) and (2,2) are strictly increasing in both values. Any other pair ties in one value, so its members hate each other. The answer is a strictly increasing chain: sort by S ascending, breaking ties by B descending so equal strengths cannot chain, then take the strict LIS on B.
 
 ## Solution
 

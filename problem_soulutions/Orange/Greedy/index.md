@@ -776,6 +776,6 @@ if __name__ == "__main__":
 - **Time Complexity:** O(n) per test case
 - **Space Complexity:** O(n) for storing the array
 
-### Explanation
+##### Explanation
 Think of it as: between each pair of adjacent houses, some wine needs to flow. If house i has demand `a[i]`, the wine flowing between house i and i+1 is the cumulative sum up to i. The work done is |cumulative_sum| for each edge.
 

@@ -802,7 +802,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Lucas Theorem Solution (for larger moduli)
+##### Lucas Theorem Solution (for larger moduli)
 
 ```python
 def solve():
@@ -937,90 +937,6 @@ def solve():
         available[station] += 1
 
     print(f"Case #{case}: {needed['A']} {needed['B']}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-import heapq
-
-def solve():
-  n = int(input())
-
-  for case in range(1, n + 1):
-    t = int(input())
-    na, nb = map(int, input().split())
-
-    def to_minutes(s):
-      h, m = s.split(':')
-      return int(h) * 60 + int(m)
-
-    # Collect all trips
-    trips_from_a = []
-    trips_from_b = []
-
-    for _ in range(na):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_a.append((dep, arr))
-
-    for _ in range(nb):
-      parts = input().split()
-      dep = to_minutes(parts[0])
-      arr = to_minutes(parts[1])
-      trips_from_b.append((dep, arr))
-
-    trips_from_a.sort()
-    trips_from_b.sort()
-
-    # available_at_X is a min-heap of times when trains become available at X
-    available_a = []
-    available_b = []
-    trains_a = 0
-    trains_b = 0
-
-    # Process trips from A
-    for dep, arr in trips_from_a:
-      # Check if train available at A before dep
-      while available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-        # Train is ready but we'll use one
-      if available_a and available_a[0] <= dep:
-        heapq.heappop(available_a)
-      else:
-        # Need to check heap properly
-        pass
-
-    # Actually, let's use the event-based approach properly
-    # Reset and redo
-
-    events = []
-    for dep, arr in trips_from_a:
-      events.append((dep, 0, 'A'))
-      events.append((arr + t, 1, 'B'))
-    for dep, arr in trips_from_b:
-      events.append((dep, 0, 'B'))
-      events.append((arr + t, 1, 'A'))
-
-    events.sort(key=lambda x: (x[0], -x[1]))
-
-    avail = {'A': 0, 'B': 0}
-    need = {'A': 0, 'B': 0}
-
-    for tm, typ, st in events:
-      if typ == 0:
-        if avail[st] > 0:
-          avail[st] -= 1
-        else:
-          need[st] += 1
-      else:
-        avail[st] += 1
-
-    print(f"Case #{case}: {need['A']} {need['B']}")
 
 if __name__ == "__main__":
   solve()

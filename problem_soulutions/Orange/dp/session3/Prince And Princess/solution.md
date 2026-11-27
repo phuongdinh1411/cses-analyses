@@ -13,7 +13,7 @@ On an n×n chessboard, Prince makes p jumps visiting p+1 distinct squares (x1, x
 Find the longest common subsequence of their paths - the maximum number of squares they both visit in the same order.
 
 ## Input Format
-- Multiple test cases
+- First line: T (number of test cases)
 - Each test case:
   - First line: n, p, q
   - Second line: p+1 integers (Prince's path)
@@ -26,114 +26,55 @@ For each test case: "Case X: L" where L is the LCS length.
 ```
 Input:
 1
-4 4 3
-1 7 5 4 8
-1 7 5 8
+3 6 7
+1 7 5 4 8 3 9
+1 4 3 5 6 2 8 9
 
 Output:
-Case 1: 3
+Case 1: 4
 ```
-Prince visits squares [1, 7, 5, 4, 8], Princess visits [1, 7, 5, 8]. The LCS is [1, 7, 5] or [1, 7, 8] with length 3.
+Prince's positions are 1→0, 7→1, 5→2, 4→3, 8→4, 3→5, 9→6. Princess's path becomes [0, 3, 5, 2, 4, 6] (squares 6 and 2 are dropped). Its LIS, for example [0, 2, 4, 6] (squares 1, 5, 8, 9), has length 4.
 
 ## Solution
 
 ### Approach
-Direct LCS would be O(p×q) which is too slow for p, q up to 62500.
+A direct LCS is O(p·q), which is too slow for p, q up to 62500.
 
-Key insight: All numbers in each sequence are distinct and ≤ n².
-Transform to LIS: Map Prince's sequence to positions 1, 2, ..., p+1. Then for each element in Princess's sequence, replace with its position in Prince's sequence (or skip if not present). The LCS equals LIS of the transformed sequence.
+Each path visits distinct squares, so map each square in Prince's path to its index. Then rewrite Princess's path as those indices, dropping squares Prince never visits. A common subsequence is now exactly an increasing subsequence of the rewritten list, so the answer is its LIS, found with patience sorting (`bisect_left`).
+
+Note that the input starts with the number of test cases.
 
 ### Python Solution
 
 ```python
 import bisect
-
-def solve():
-  import sys
-  input = sys.stdin.readline
-
-  case = 0
-  while True:
-    line = input().split()
-    if not line:
-      break
-
-    n, p, q = int(line[0]), int(line[1]), int(line[2])
-    case += 1
-
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
-
-    # Map prince's sequence to positions
-    pos = {}
-    for i, val in enumerate(prince):
-      pos[val] = i
-
-    # Transform princess's sequence
-    transformed = []
-    for val in princess:
-      if val in pos:
-        transformed.append(pos[val])
-
-    # LIS on transformed sequence
-    if not transformed:
-      print(f"Case {case}: 0")
-      continue
-
-    tails = []
-    for x in transformed:
-      idx = bisect.bisect_left(tails, x)
-      if idx == len(tails):
-        tails.append(x)
-      else:
-        tails[idx] = x
-
-    print(f"Case {case}: {len(tails)}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Alternative Solution
-
-```python
-import bisect
 import sys
 
+
 def solve():
-  input = sys.stdin.readline
-  case = 0
+  data = sys.stdin.read().split()
+  idx = 0
+  t = int(data[idx]); idx += 1
 
-  while True:
-    try:
-      line = input()
-      if not line.strip():
-        break
-      n, p, q = map(int, line.split())
-    except:
-      break
+  for case in range(1, t + 1):
+    n, p, q = map(int, data[idx:idx + 3]); idx += 3
+    prince = data[idx:idx + p + 1]; idx += p + 1
+    princess = data[idx:idx + q + 1]; idx += q + 1
 
-    case += 1
-
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
-
-    # Create position map for prince using enumerate
-    prince_pos = {val: idx for idx, val in enumerate(prince)}
-
-    # Convert princess to positions using list comprehension
-    seq = [prince_pos[val] for val in princess if val in prince_pos]
-
-    # LIS using binary search
+    # Squares are distinct within a path, so LCS reduces to LIS of positions.
+    pos = {val: i for i, val in enumerate(prince)}
     tails = []
-    for x in seq:
-      pos = bisect.bisect_left(tails, x)
-      if pos == len(tails):
-        tails.append(x)
-      else:
-        tails[pos] = x
+    for val in princess:
+      if val in pos:
+        x = pos[val]
+        k = bisect.bisect_left(tails, x)
+        if k == len(tails):
+          tails.append(x)
+        else:
+          tails[k] = x
 
     print(f"Case {case}: {len(tails)}")
+
 
 if __name__ == "__main__":
   solve()

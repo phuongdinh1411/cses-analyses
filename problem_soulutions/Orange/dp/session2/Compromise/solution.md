@@ -35,70 +35,14 @@ Text1: [die, eier, von, bransen], Text2: [die, eansen, von, eansen]. The LCS of 
 ## Solution
 
 ### Approach
-Standard LCS problem but on sequences of words instead of characters.
-1. Parse both texts into word arrays
-2. Compute LCS using DP
-3. Backtrack to reconstruct the actual LCS sequence
+This is the standard LCS, run on word lists instead of characters.
+1. Split the whole input on '#'. Consecutive pieces form the two texts of a test case.
+2. Fill `dp[i][j]`, the LCS length of the first i words and the first j words.
+3. Walk back from `dp[m][n]` to recover the words.
+
+Keep the DP and backtrack indices separate from any input-cursor variable. Reusing `i` for both resets the cursor and loops forever.
 
 ### Python Solution
-
-```python
-def solve():
-  import sys
-
-  lines = sys.stdin.read().strip().split('\n')
-  i = 0
-
-  while i < len(lines):
-    # Read first text until '#'
-    text1 = []
-    while i < len(lines) and lines[i].strip() != '#':
-      text1.extend(lines[i].split())
-      i += 1
-    i += 1  # skip '#'
-
-    # Read second text until '#' or EOF
-    text2 = []
-    while i < len(lines) and lines[i].strip() != '#':
-      text2.extend(lines[i].split())
-      i += 1
-    i += 1  # skip '#'
-
-    if not text1 or not text2:
-      continue
-
-    # LCS on word arrays
-    m, n = len(text1), len(text2)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-
-    for i in range(1, m + 1):
-      for j in range(1, n + 1):
-        if text1[i-1] == text2[j-1]:
-          dp[i][j] = dp[i-1][j-1] + 1
-        else:
-          dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-
-    # Backtrack to get LCS
-    lcs = []
-    i, j = m, n
-    while i > 0 and j > 0:
-      if text1[i-1] == text2[j-1]:
-        lcs.append(text1[i-1])
-        i -= 1
-        j -= 1
-      elif dp[i-1][j] > dp[i][j-1]:
-        i -= 1
-      else:
-        j -= 1
-
-    lcs.reverse()
-    print(' '.join(lcs))
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Alternative Solution
 
 ```python
 def lcs_words(words1, words2):

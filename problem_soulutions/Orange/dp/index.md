@@ -295,7 +295,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Solution with Memoization
+##### Solution with Memoization
 
 ```python
 from functools import lru_cache
@@ -403,7 +403,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Space Optimized Solution
+##### Space Optimized Solution
 
 ```python
 def solve():
@@ -457,9 +457,11 @@ Output the character in `patt` that is present at the minimum index in `str`. Pr
 #### Solution
 
 ##### Approach
-1. Create a set/dictionary of all characters in `str` for O(1) lookup
-2. Iterate through `patt` and find the first character that exists in `str`
-3. Return that character, or "No character present" if none found
+1. Record the first index of each character of `str` in a dictionary.
+2. Among the characters of `patt` that occur in `str`, print the one with the smallest recorded index.
+3. If none occur, print "No character present".
+
+Do not just return the first character of `patt` found in `str`. That answers a different question: for "adcba" and "bc" it would give 'b', but 'c' occurs earlier.
 
 ##### Python Solution
 
@@ -470,67 +472,19 @@ def solve():
   for _ in range(t):
     str_input, patt = input().split()
 
-    # Create set of characters in str for O(1) lookup
-    str_chars = set(str_input)
-
-    result = "No character present"
-
-    # Find first character in patt that exists in str
-    for char in patt:
-      if char in str_chars:
-        result = char
-        break
-
-    print(result)
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-def solve():
-  t = int(input())
-
-  for _ in range(t):
-    str_input, patt = input().split()
-
-    # Map each character to its first occurrence index in str
+    # Map each character to its first occurrence index in str using enumerate
     char_index = {}
     for i, char in enumerate(str_input):
       if char not in char_index:
         char_index[char] = i
 
-    min_index = float('inf')
-    result_char = None
+    # Find character in patt with minimum index in str using min with key
+    valid_chars = [c for c in patt if c in char_index]
 
-    # Find character in patt with minimum index in str
-    for char in patt:
-      if char in char_index and char_index[char] < min_index:
-        min_index = char_index[char]
-        result_char = char
-
-    if result_char:
-      print(result_char)
+    if valid_chars:
+      print(min(valid_chars, key=lambda c: char_index[c]))
     else:
       print("No character present")
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### One-liner
-
-```python
-def solve():
-  t = int(input())
-
-  for _ in range(t):
-    s, p = input().split()
-    chars = set(s)
-    result = next((c for c in p if c in chars), "No character present")
-    print(result)
 
 if __name__ == "__main__":
   solve()
@@ -609,10 +563,7 @@ def solve():
         for k in range(m):
           A[k][j] = 0
 
-  # Verify: compute B' from A
-  # B'[i][j] = (OR of row i) OR (OR of column j)?
-  # Actually B[i][j] = OR of (A[i][k] for all k) combined with OR of (A[k][j] for all k)
-  # Re-reading: B[i][j] is OR of all A in row i, then OR with OR of all A in column j
+  # Verify: B'[i][j] = (OR of row i of A) OR (OR of column j of A) must equal B
 
   # Precompute row OR and column OR
   row_or = [0] * m
@@ -773,7 +724,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Space-Optimized Solution
+##### Space-Optimized Solution
 
 ```python
 def solve():
@@ -1022,65 +973,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-##### Alternative
-
-```python
-def solve():
-  import sys
-  input = sys.stdin.readline
-
-  while True:
-    line = input()
-    if not line:
-      break
-    s = line.strip()
-    if not s:
-      continue
-
-    n = len(s)
-
-    # dp[i][j] = min insertions for s[i:j+1]
-    # Use only 2 rows since dp[i] depends on dp[i+1]
-    # Actually for gap-based DP:
-
-    # dp[length][start] but we can optimize
-    # Use dp[j] = min insertions for substring ending at j with some length
-
-    # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
-
-    # Direct approach with LPS
-    # dp[i][j] = LPS of s[i:j+1]
-    # dp[i][i] = 1
-    # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
-    #          = max(dp[i+1][j], dp[i][j-1]) otherwise
-
-    if n <= 1:
-      print(0)
-      continue
-
-    # Space optimized: process by length
-    prev = [1] * n  # length 1 substrings
-    curr = [0] * n
-
-    for length in range(2, n + 1):
-      for i in range(n - length + 1):
-        j = i + length - 1
-        if s[i] == s[j]:
-          curr[i] = prev[i+1] + 2 if length > 2 else 2
-        else:
-          curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
-          # Actually need different indexing
-
-      prev, curr = curr, [0] * n
-
-    lps = prev[0]
-    print(n - lps)
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Cleaner LCS Solution
+##### Cleaner LCS Solution
 
 ```python
 import sys
@@ -1146,70 +1039,14 @@ For each test case, print the longest common subsequence of words.
 #### Solution
 
 ##### Approach
-Standard LCS problem but on sequences of words instead of characters.
-1. Parse both texts into word arrays
-2. Compute LCS using DP
-3. Backtrack to reconstruct the actual LCS sequence
+This is the standard LCS, run on word lists instead of characters.
+1. Split the whole input on '#'. Consecutive pieces form the two texts of a test case.
+2. Fill `dp[i][j]`, the LCS length of the first i words and the first j words.
+3. Walk back from `dp[m][n]` to recover the words.
+
+Keep the DP and backtrack indices separate from any input-cursor variable. Reusing `i` for both resets the cursor and loops forever.
 
 ##### Python Solution
-
-```python
-def solve():
-  import sys
-
-  lines = sys.stdin.read().strip().split('\n')
-  i = 0
-
-  while i < len(lines):
-    # Read first text until '#'
-    text1 = []
-    while i < len(lines) and lines[i].strip() != '#':
-      text1.extend(lines[i].split())
-      i += 1
-    i += 1  # skip '#'
-
-    # Read second text until '#' or EOF
-    text2 = []
-    while i < len(lines) and lines[i].strip() != '#':
-      text2.extend(lines[i].split())
-      i += 1
-    i += 1  # skip '#'
-
-    if not text1 or not text2:
-      continue
-
-    # LCS on word arrays
-    m, n = len(text1), len(text2)
-    dp = [[0] * (n + 1) for _ in range(m + 1)]
-
-    for i in range(1, m + 1):
-      for j in range(1, n + 1):
-        if text1[i-1] == text2[j-1]:
-          dp[i][j] = dp[i-1][j-1] + 1
-        else:
-          dp[i][j] = max(dp[i-1][j], dp[i][j-1])
-
-    # Backtrack to get LCS
-    lcs = []
-    i, j = m, n
-    while i > 0 and j > 0:
-      if text1[i-1] == text2[j-1]:
-        lcs.append(text1[i-1])
-        i -= 1
-        j -= 1
-      elif dp[i-1][j] > dp[i][j-1]:
-        i -= 1
-      else:
-        j -= 1
-
-    lcs.reverse()
-    print(' '.join(lcs))
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
 
 ```python
 def lcs_words(words1, words2):
@@ -1225,14 +1062,13 @@ def lcs_words(words1, words2):
       else:
         dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-  # Reconstruct
+  # Reconstruct using tuple unpacking in while loop
   result = []
   i, j = m, n
   while i > 0 and j > 0:
     if words1[i-1] == words2[j-1]:
       result.append(words1[i-1])
-      i -= 1
-      j -= 1
+      i, j = i - 1, j - 1
     elif dp[i-1][j] >= dp[i][j-1]:
       i -= 1
     else:
@@ -1247,16 +1083,13 @@ def solve():
   # Split by '#' to get test cases
   parts = content.strip().split('#')
 
-  i = 0
-  while i + 1 < len(parts):
-    text1 = parts[i].split()
-    text2 = parts[i + 1].split()
+  # Process pairs using range with step 2
+  for idx in range(0, len(parts) - 1, 2):
+    text1, text2 = parts[idx].split(), parts[idx + 1].split()
 
     if text1 and text2:
       result = lcs_words(text1, text2)
       print(' '.join(result))
-
-    i += 2
 
 if __name__ == "__main__":
   solve()
@@ -1365,7 +1198,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Space-Optimized Solution
+##### Space-Optimized Solution
 
 ```python
 def lcs_optimized(agnes, tom):
@@ -1495,7 +1328,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Space-Optimized Solution
+##### Space-Optimized Solution
 
 ```python
 def solve():
@@ -2292,102 +2125,43 @@ For each test case: "Case X: L" where L is the LCS length.
 #### Solution
 
 ##### Approach
-Direct LCS would be O(p×q) which is too slow for p, q up to 62500.
+A direct LCS is O(p·q), which is too slow for p, q up to 62500.
 
-Key insight: All numbers in each sequence are distinct and ≤ n².
-Transform to LIS: Map Prince's sequence to positions 1, 2, ..., p+1. Then for each element in Princess's sequence, replace with its position in Prince's sequence (or skip if not present). The LCS equals LIS of the transformed sequence.
+Each path visits distinct squares, so map each square in Prince's path to its index. Then rewrite Princess's path as those indices, dropping squares Prince never visits. A common subsequence is now exactly an increasing subsequence of the rewritten list, so the answer is its LIS, found with patience sorting (`bisect_left`).
+
+Note that the input starts with the number of test cases.
 
 ##### Python Solution
 
 ```python
 import bisect
+import sys
+
 
 def solve():
-  import sys
-  input = sys.stdin.readline
+  data = sys.stdin.read().split()
+  idx = 0
+  t = int(data[idx]); idx += 1
 
-  case = 0
-  while True:
-    line = input().split()
-    if not line:
-      break
+  for case in range(1, t + 1):
+    n, p, q = map(int, data[idx:idx + 3]); idx += 3
+    prince = data[idx:idx + p + 1]; idx += p + 1
+    princess = data[idx:idx + q + 1]; idx += q + 1
 
-    n, p, q = int(line[0]), int(line[1]), int(line[2])
-    case += 1
-
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
-
-    # Map prince's sequence to positions
-    pos = {}
-    for i, val in enumerate(prince):
-      pos[val] = i
-
-    # Transform princess's sequence
-    transformed = []
+    # Squares are distinct within a path, so LCS reduces to LIS of positions.
+    pos = {val: i for i, val in enumerate(prince)}
+    tails = []
     for val in princess:
       if val in pos:
-        transformed.append(pos[val])
-
-    # LIS on transformed sequence
-    if not transformed:
-      print(f"Case {case}: 0")
-      continue
-
-    tails = []
-    for x in transformed:
-      idx = bisect.bisect_left(tails, x)
-      if idx == len(tails):
-        tails.append(x)
-      else:
-        tails[idx] = x
+        x = pos[val]
+        k = bisect.bisect_left(tails, x)
+        if k == len(tails):
+          tails.append(x)
+        else:
+          tails[k] = x
 
     print(f"Case {case}: {len(tails)}")
 
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-import bisect
-import sys
-
-def solve():
-  input = sys.stdin.readline
-  case = 0
-
-  while True:
-    try:
-      line = input()
-      if not line.strip():
-        break
-      n, p, q = map(int, line.split())
-    except:
-      break
-
-    case += 1
-
-    prince = list(map(int, input().split()))
-    princess = list(map(int, input().split()))
-
-    # Create position map for prince
-    prince_pos = {v: i for i, v in enumerate(prince)}
-
-    # Convert princess to positions in prince's sequence
-    seq = [prince_pos[v] for v in princess if v in prince_pos]
-
-    # LIS
-    dp = []
-    for x in seq:
-      pos = bisect.bisect_left(dp, x)
-      if pos == len(dp):
-        dp.append(x)
-      else:
-        dp[pos] = x
-
-    print(f"Case {case}: {len(dp)}")
 
 if __name__ == "__main__":
   solve()
@@ -3301,7 +3075,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Space-Optimized with Reconstruction
+##### Space-Optimized with Reconstruction
 
 ```python
 def solve():
@@ -3634,63 +3408,10 @@ def solve():
         if dp[c][h] != INF:
           result = max(result, dp[c][h])
 
+    # A lone stick can always be placed with its centre inside, whatever its length.
+    result = max(result, max(v for _, v in sticks))
+
     print(f"Case #{case}: {result}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-def solve():
-  t = int(input())
-
-  for case in range(1, t + 1):
-    n, L = map(int, input().split())
-
-    sticks = []
-    for _ in range(n):
-      a, v = map(int, input().split())
-      sticks.append((a, v))
-
-    # Use 2*L to handle half-lengths as integers
-    capacity = 2 * L
-    NEG_INF = float('-inf')
-
-    # dp[c][e] = max value with c capacity used and e edge slots used (0, 1, 2)
-    dp = [[NEG_INF] * 3 for _ in range(capacity + 1)]
-    dp[0][0] = 0
-
-    for length, value in sticks:
-      full_cost = 2 * length  # fully inside
-      half_cost = length       # hanging (uses only half)
-
-      # Process backwards
-      for c in range(capacity, -1, -1):
-        for e in range(3):
-          if dp[c][e] == NEG_INF:
-            continue
-
-          # Option A: place fully inside
-          nc = c + full_cost
-          if nc <= capacity:
-            dp[nc][e] = max(dp[nc][e], dp[c][e] + value)
-
-          # Option B: place hanging
-          if e < 2:
-            nc = c + half_cost
-            if nc <= capacity:
-              dp[nc][e + 1] = max(dp[nc][e + 1], dp[c][e] + value)
-
-    # Get max value
-    ans = 0
-    for c in range(capacity + 1):
-      for e in range(3):
-        if dp[c][e] != NEG_INF:
-          ans = max(ans, dp[c][e])
-
-    print(f"Case #{case}: {ans}")
 
 if __name__ == "__main__":
   solve()
@@ -3701,7 +3422,9 @@ if __name__ == "__main__":
 - **Space Complexity:** O(L)
 
 ##### Key Insight
-At most 2 sticks can hang over edges (one per side). A hanging stick uses only half its length of container space. Use 3D DP tracking: capacity used and number of hanging sticks (0/1/2). Multiply lengths by 2 to handle half-lengths as integers.
+At most 2 sticks can hang over the edges, one per side, and a hanging stick uses only half its length of container space. So run a knapsack over (capacity used, sticks hanging ∈ {0, 1, 2}), doubling all lengths so that halves become integers.
+
+One special case: a single stick fits on its own no matter how long it is (centre it in the container), so the answer is at least max(vᵢ).
 
 ---
 
@@ -3953,7 +3676,7 @@ if __name__ == "__main__":
   solve()
 ```
 
-### In-Place Solution
+##### In-Place Solution
 
 ```python
 def solve():

@@ -37,9 +37,9 @@ Input:
 
 Output:
 0 1
-1 2
+0 2
 ```
-For query [1,3]: XOR of {1,0,1} = 0, zeros count = 1. For query [2,5]: XOR of {0,1,0,1} = 0 XOR 1 XOR 0 XOR 1 = 0... wait, let me recalculate: 0^1=1, 1^0=1, 1^1=0. So XOR=0 and zeros=2.
+For query [1,3]: XOR of {1,0,1} = 0, zeros count = 1. For query [2,5]: XOR of {0,1,0,1} = 0, zeros count = 2.
 
 ## Solution
 

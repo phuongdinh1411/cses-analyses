@@ -37,144 +37,67 @@ For each n, print the smallest anagrammatic prime in range (n, next_power_of_10)
 #### Solution
 
 ##### Approach
-Key observations:
-1. Multi-digit anagrammatic primes can only contain digits 1, 3, 7, 9 (others make some permutation even or divisible by 5)
-2. For 2+ digits, all digits must be the same (else some permutation might not be prime)
-3. Repunit primes (111...1) and repdigit primes (like 11, 77777) are candidates
+Generate every anagrammatic prime below 10⁷ once, then answer each query with a scan.
 
-Actually, for multi-digit numbers:
-- 2 digits: 11 is anagrammatic prime
-- 3+ digits: Must be all same digit, and that digit repunit must be prime
+1. With two or more digits, every digit must be 1, 3, 7 or 9. Otherwise some permutation ends in an even digit or in 5.
+2. Enumerate digit multisets over {1, 3, 7, 9} with up to 7 digits (each multiset once), and keep those whose permutations are all prime.
+3. For a query n, the limit is `10 ** len(str(n))`. Print the first listed prime p with n < p < limit, or 0 if there is none.
 
-Precompute all anagrammatic primes up to 10^7.
+Below 10⁷ the full list is 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, 97, 113, 131, 199, 311, 337, 373, 733, 919, 991. The next one is the repunit R19.
 
 ##### Python Solution
 
 ```python
+import sys
+from itertools import permutations, product
+
+
+def is_prime(n):
+  if n < 2:
+    return False
+  if n % 2 == 0:
+    return n == 2
+  i = 3
+  while i * i <= n:
+    if n % i == 0:
+      return False
+    i += 2
+  return True
+
+
+def anagrammatic_primes(max_digits=7):
+  # With 2+ digits, any 0, 2, 4, 5, 6, 8 can be moved last, making the number even or divisible by 5.
+  found = [2, 3, 5, 7]
+  for length in range(2, max_digits + 1):
+    for digits in product("1379", repeat=length):
+      if list(digits) != sorted(digits):
+        continue  # test each digit multiset once
+      perms = {int("".join(p)) for p in permutations(digits)}
+      if all(is_prime(p) for p in perms):
+        found.extend(perms)
+  return sorted(found)
+
+
 def solve():
-  # Precompute all anagrammatic primes up to 10^7
-  MAX = 10**7
-
-  def is_prime(n):
-    if n < 2:
-      return False
-    if n == 2:
-      return True
-    if n % 2 == 0:
-      return False
-    for i in range(3, int(n**0.5) + 1, 2):
-      if n % i == 0:
-        return False
-    return True
-
-  def get_permutations(n):
-    from itertools import permutations
-    digits = str(n)
-    perms = set()
-    for p in permutations(digits):
-      if p[0] != '0':  # No leading zeros
-        perms.add(int(''.join(p)))
-    return perms
-
-  def is_anagrammatic_prime(n):
-    perms = get_permutations(n)
-    return all(is_prime(p) for p in perms)
-
-  # Find all anagrammatic primes
-  anagrammatic = []
-
-  # Single digit primes are anagrammatic
-  for p in [2, 3, 5, 7]:
-    anagrammatic.append(p)
-
-  # For multi-digit, check candidates
-  # Multi-digit anagrammatic primes: 11, R2 (11 is prime)
-  # After checking: 2, 3, 5, 7, 11, R19, R23, ... repunits
-
-  # Actually, let's just check small numbers
-  for n in range(10, 1000):
-    if is_anagrammatic_prime(n):
-      anagrammatic.append(n)
-
-  # For larger numbers, only repdigit 1s (repunits) could work
-  # But 111 = 3 * 37, 1111 = 11 * 101, etc.
-  # Check repunits
-  for length in range(3, 8):
-    repunit = int('1' * length)
-    if is_prime(repunit):
-      anagrammatic.append(repunit)
-
-  anagrammatic.sort()
-
-  # For each query
-  import sys
+  primes = anagrammatic_primes()
   for line in sys.stdin:
-    n = int(line.strip())
+    n = int(line)
     if n == 0:
       break
+    limit = 10 ** len(str(n))  # next power of 10 above n
+    print(next((p for p in primes if n < p < limit), 0))
 
-    # Find next power of 10 > n
-    power = 1
-    while power <= n:
-      power *= 10
-
-    # Find smallest anagrammatic prime in (n, power)
-    result = 0
-    for p in anagrammatic:
-      if p > n and p < power:
-        result = p
-        break
-
-    print(result)
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Precomputed Solution
-
-```python
-def solve():
-  # Known anagrammatic primes up to 10^7
-  # Single digits: 2, 3, 5, 7
-  # Two digits: 11
-  # Beyond that: only R2 = 11 works in reasonable range
-  # R19 = 1111111111111111111 (19 ones) is prime but > 10^7
-
-  # For this problem, anagrammatic primes are: 2, 3, 5, 7, 11
-  # After 11, next would be a repunit prime but those are very large
-
-  anagrammatic = [2, 3, 5, 7, 11]
-
-  import sys
-  for line in sys.stdin:
-    n = int(line.strip())
-    if n == 0:
-      break
-
-    # Next power of 10
-    limit = 10
-    while limit <= n:
-      limit *= 10
-
-    result = 0
-    for p in anagrammatic:
-      if n < p < limit:
-        result = p
-        break
-
-    print(result)
 
 if __name__ == "__main__":
   solve()
 ```
 
 ##### Complexity Analysis
-- **Time Complexity:** O(1) per query (with precomputation)
+- **Time Complexity:** precomputation tests at most 4⁷ digit strings, then O(22) per query
 - **Space Complexity:** O(1)
 
 ##### Key Insight
-Anagrammatic primes are very rare. For single digits: 2, 3, 5, 7. For two digits: only 11 (same digits). For 3+ digits, any number with different digits will have permutations that are even or divisible by 5, so only repdigits work, and only repunit (all 1s) primes exist. The next repunit prime after R2=11 is R19 which exceeds 10^7.
+Anagrammatic (permutable) primes are rare: 22 exist below 10⁷, none with 4 to 7 digits. The digit rule shrinks the search to 4⁷ candidates, so precomputing is instant. So every query with n ≥ 991 answers 0.
 
 ---
 
@@ -206,140 +129,38 @@ For each case: "Case X: Y" where Y is the minimized maximum jump.
 #### Solution
 
 ##### Approach
-Since small rocks can only be used once, and frog must go and return:
-- Going: Can use any rocks
-- Returning: Small rocks are gone
+Big rocks and the two banks can be used on both trips, so list each of them twice. A small rock can be used once, so list it once. Sort the list.
 
-Key insight: Process rocks by position. For the return trip, small rocks won't exist, so the frog must jump over gaps where small rocks were.
+In an optimal plan the two trips alternate through this sorted list: one trip lands on even indices, the other on odd ones. Each jump therefore spans two consecutive list entries, and the answer is `max(stones[i+2] - stones[i])`.
 
-Strategy: On the way there, use all rocks. On return, only big rocks remain. The answer is the maximum of:
-1. Max jump on the way there (using all rocks)
-2. Max jump on return (only big rocks + banks)
+The intuitive plan of using every rock going and only big rocks returning is wrong. With D = 10 and small rocks at 3 and 6, it gives 10, while splitting the small rocks gives 7.
 
 ##### Python Solution
 
 ```python
+import sys
+
+
 def solve():
-  t = int(input())
-
-  for case in range(1, t + 1):
-    parts = input().split()
-    n, d = int(parts[0]), int(parts[1])
-
-    rocks = []
-    for i in range(n):
-      rock = parts[2 + i] if len(parts) > 2 + i else input().split()[0]
-      rock_type = rock[0]
-      dist = int(rock[2:])
-      rocks.append((dist, rock_type))
-
-    rocks.sort()
-
-    # Add banks
-    positions = [0]  # left bank
-    big_positions = [0]
-
-    for dist, rock_type in rocks:
-      positions.append(dist)
-      if rock_type == 'B':
-        big_positions.append(dist)
-
-    positions.append(d)  # right bank
-    big_positions.append(d)
-
-    # Max jump going (using all rocks)
-    max_jump_go = 0
-    for i in range(1, len(positions)):
-      max_jump_go = max(max_jump_go, positions[i] - positions[i-1])
-
-    # Max jump returning (only big rocks)
-    max_jump_return = 0
-    for i in range(1, len(big_positions)):
-      max_jump_return = max(max_jump_return, big_positions[i] - big_positions[i-1])
-
-    result = max(max_jump_go, max_jump_return)
-    print(f"Case {case}: {result}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-##### Alternative
-
-```python
-def solve():
-  t = int(input())
-
-  for case in range(1, t + 1):
-    line = input().split()
-    n, d = int(line[0]), int(line[1])
-
-    rocks = []
-    idx = 2
-    while len(rocks) < n:
-      if idx < len(line):
-        rocks.append(line[idx])
-        idx += 1
-      else:
-        rocks.extend(input().split())
-
-    # Parse rocks
-    parsed = []
-    for rock in rocks:
-      rock_type = rock[0]
-      pos = int(rock.split('-')[1])
-      parsed.append((pos, rock_type))
-
-    parsed.sort()
-
-    # Calculate jumps
-    all_pos = [0] + [p for p, _ in parsed] + [d]
-    big_pos = [0] + [p for p, t in parsed if t == 'B'] + [d]
-
-    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-    max_return = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
-
-    print(f"Case {case}: {max(max_go, max_return)}")
-
-if __name__ == "__main__":
-  solve()
-```
-
-### Input Parsing Variant
-
-```python
-def solve():
-  import sys
   data = sys.stdin.read().split()
   idx = 0
-
-  t = int(data[idx])
-  idx += 1
+  t = int(data[idx]); idx += 1
 
   for case in range(1, t + 1):
-    n = int(data[idx])
-    d = int(data[idx + 1])
-    idx += 2
+    n, d = int(data[idx]), int(data[idx + 1]); idx += 2
 
-    rocks = []
-    for _ in range(n):
-      rock = data[idx]
-      idx += 1
-      rock_type = rock[0]
-      pos = int(rock[2:])
-      rocks.append((pos, rock_type))
+    # Big rocks serve both trips, so list them twice; banks too.
+    stones = [0, 0, d, d]
+    for rock in data[idx:idx + n]:
+      kind, pos = rock[0], int(rock[2:])
+      stones += [pos, pos] if kind == 'B' else [pos]
+    idx += n
+    stones.sort()
 
-    rocks.sort()
+    # Alternate stones between the two trips: trip one takes even indices, trip two odd ones.
+    best = max(stones[i + 2] - stones[i] for i in range(len(stones) - 2))
+    print(f"Case {case}: {best}")
 
-    # All positions for going
-    all_pos = [0] + [p for p, _ in rocks] + [d]
-    # Big rocks only for return
-    big_pos = [0] + [p for p, t in rocks if t == 'B'] + [d]
-
-    max_go = max(all_pos[i] - all_pos[i-1] for i in range(1, len(all_pos)))
-    max_ret = max(big_pos[i] - big_pos[i-1] for i in range(1, len(big_pos)))
-
-    print(f"Case {case}: {max(max_go, max_ret)}")
 
 if __name__ == "__main__":
   solve()
@@ -350,7 +171,7 @@ if __name__ == "__main__":
 - **Space Complexity:** O(N)
 
 ##### Key Insight
-The frog uses all rocks going forward, but small rocks disappear after one use. On the return trip, only big rocks remain. The answer is the maximum of the largest gap in each direction. Going: gaps between consecutive rocks (including banks). Returning: gaps between consecutive big rocks only.
+Duplicate every stone that both trips may use, then let the trips alternate. The worst jump is the largest gap between list entries two apart.
 
 ---
 

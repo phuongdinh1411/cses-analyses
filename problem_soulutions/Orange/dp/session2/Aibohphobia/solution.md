@@ -88,64 +88,6 @@ if __name__ == "__main__":
   solve()
 ```
 
-### Alternative Solution - Direct DP
-
-```python
-def solve():
-  import sys
-  input = sys.stdin.readline
-
-  while True:
-    line = input()
-    if not line:
-      break
-    s = line.strip()
-    if not s:
-      continue
-
-    n = len(s)
-
-    # dp[i][j] = min insertions for s[i:j+1]
-    # Use only 2 rows since dp[i] depends on dp[i+1]
-    # Actually for gap-based DP:
-
-    # dp[length][start] but we can optimize
-    # Use dp[j] = min insertions for substring ending at j with some length
-
-    # Simpler: dp[i] = min insertions for s[i:] to be palindrome when matching with s[:n-i]
-
-    # Direct approach with LPS
-    # dp[i][j] = LPS of s[i:j+1]
-    # dp[i][i] = 1
-    # dp[i][j] = dp[i+1][j-1] + 2 if s[i] == s[j]
-    #          = max(dp[i+1][j], dp[i][j-1]) otherwise
-
-    if n <= 1:
-      print(0)
-      continue
-
-    # Space optimized: process by length
-    prev = [1] * n  # length 1 substrings
-    curr = [0] * n
-
-    for length in range(2, n + 1):
-      for i in range(n - length + 1):
-        j = i + length - 1
-        if s[i] == s[j]:
-          curr[i] = prev[i+1] + 2 if length > 2 else 2
-        else:
-          curr[i] = max(prev[i], prev[i+1] if i+1 < n else 0)
-          # Actually need different indexing
-
-      prev, curr = curr, [0] * n
-
-    lps = prev[0]
-    print(n - lps)
-
-if __name__ == "__main__":
-  solve()
-```
-
 ### Cleaner LCS Solution
 
 ```python

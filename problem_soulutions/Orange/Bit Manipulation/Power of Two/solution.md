@@ -35,9 +35,9 @@ Input:
 
 Output:
 YES
-NO
+YES
 ```
-First case: {6, 7} gives AND = 6 & 7 = 6, not power of 2. But numbers with bit 1 set: {3, 6, 7}, AND = 3 & 6 & 7 = 2, which is 2^1. YES. Second case: 12 = 1100, 8 = 1000. AND = 8 (power of 2), so YES... Actually let's verify: for bit 3, numbers with it set: {12, 8}, AND = 8. That's 2^3. So the answer should be YES.
+First case: the numbers with bit 1 set are {3, 6, 7}, and 3 & 6 & 7 = 2 = 2^1, so YES. Second case: the single-element subset {8} already has AND = 8 = 2^3, so YES.
 
 ## Solution
 

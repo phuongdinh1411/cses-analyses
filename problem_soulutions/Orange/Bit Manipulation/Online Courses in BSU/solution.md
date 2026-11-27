@@ -26,18 +26,20 @@ Polycarp needs to pass k main online courses to get a diploma. There are n cours
 ## Example
 ```
 Input:
-5 2
-1 5
-1 2
-1 3
-2 2 3
+6 2
+5 3
 0
+0
+0
+2 2 1
+1 4
+1 5
 
 Output:
-4
-3 2 1 5
+5
+1 2 4 5 3
 ```
-Main courses are 1 and 5. Course 1 requires course 2, course 2 requires courses 2 and 3, course 3 has no prerequisites, course 5 requires course 1. Valid order: take 3 first, then 2, then 1, finally 5. Total 4 courses needed.
+Main courses are 5 and 3. Course 5 needs 4, and course 4 needs 2 and 1. Course 6 is never required, so 5 courses are taken. Any order that respects the prerequisites is accepted.
 
 ## Solution
 

@@ -28,11 +28,10 @@ Input:
 7 4
 
 Output:
-5 0
+-5 5
 -7 7
 ```
-For x=5, k=3: floor(5/3)=1, ceil(5/3)=2. Since 5 = 1x5 + 2x0, p=5, q=0 works. Alternatively, 5 = 1x(-7) + 2x7 = -7 + 14 = 7... actually 5 = 5x1 + 0x2 = 5.
-For x=7, k=4: floor(7/4)=1, ceil(7/4)=2. 7 = 1x(-7) + 2x7 = -7 + 14 = 7.
+Any valid (p, q) is accepted. For x = 5, k = 3: floor = 1 and ceil = 2, and -5·1 + 5·2 = 5. When k divides x, floor = ceil and p = 0, q = k works. Otherwise ceil = floor + 1, so p = -x, q = x gives x·(ceil - floor) = x.
 
 ## Solution
 

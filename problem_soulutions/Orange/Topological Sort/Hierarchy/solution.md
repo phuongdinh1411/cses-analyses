@@ -29,13 +29,13 @@ Input:
 1 5
 
 Output:
+5
 0
 1
+3
 2
-2
-1
 ```
-Student 1 wants to be superior to students 3, 4. Student 2 wants to be superior to student 5. A valid hierarchy: Student 1 is the main boss (0), Student 2's boss is Student 1, Students 3 and 4 report to Student 2, and Student 5 reports to Student 1.
+Any valid hierarchy is accepted. This one is the chain 2 → 5 → 1 → 3 → 4, where student 2 is the main boss. Here 1 is above 3 and 4, and 2 is above 5, so both wishes hold. A topological order of the wish graph always works as such a chain: each student's boss is the previous student in the order.
 
 ## Solution
 
