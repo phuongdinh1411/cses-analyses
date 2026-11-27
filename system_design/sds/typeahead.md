@@ -9,6 +9,12 @@ permalink: /system_design/sds/typeahead
 **Difficulty:** Easy  
 **Topics:** Caching · Precomputation · Sharding · Async processing · Trie
 
+## Summary
+
+- **Key challenge:** Return the top-K popular completions within a per-keystroke budget at ~500K suggest QPS over ~100M queries.
+- **Core design:** Hot path: client → hot-prefix cache → router → prefix shard holding an in-memory trie with top-K per node. Offline: events → pub-sub → aggregate → build → load a fresh trie on a schedule.
+- **Techniques:** Per-node precomputed top-K (rank at build, not read); bottom-up merge of children's lists (cheap build); time decay (fads fade); skew-aware prefix range sharding (one-shard lookups); debounce + hot-prefix cache (cut traffic); immutable trie, atomic swap (lock-free reads).
+
 ## Problem statement
 
 Build the suggestion service behind a search box. As a user types a prefix, the service

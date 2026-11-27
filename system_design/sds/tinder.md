@@ -9,6 +9,12 @@ permalink: /system_design/sds/tinder
 **Difficulty:** Medium  
 **Topics:** Geospatial indexing · Sharding · Idempotency · Bloom filters · Availability
 
+## Summary
+
+- **Key challenge:** Absorb 5B swipes/day (~58K/s average, ~174K/s peak) while two near-simultaneous likes yield exactly one match.
+- **Core design:** A candidate service serves precomputed per-user queues built from a geo index, filtered by a Bloom seen filter. A swipe service writes to swiper-sharded storage and point-reads the reverse like on the other user's shard.
+- **Techniques:** Geo cell + neighbors (no full scan); shard by swiper_id (spread writes); reverse-key point read (no scan); deterministic match_id + insert-if-absent (one match); Bloom seen filter (~12 KB/user, never re-show); cheap-to-expensive filter order (latency).
+
 ## Problem statement
 
 Design the core of a location-based dating app: a user sees a feed of nearby candidate profiles, swipes like or pass on each one, and when two people like each other they match and can start talking.

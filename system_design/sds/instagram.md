@@ -9,6 +9,12 @@ permalink: /system_design/sds/instagram
 **Difficulty:** Hard  
 **Topics:** Object storage · CDN & delivery economics · Async processing · Fan-out · Erasure coding · Hot key
 
+## Summary
+
+- **Key challenge:** Durably store and globally serve photos: media outweighs metadata ~4,200× (~420 TB/day) and peak reads hit ~250K GETs/s.
+- **Core design:** Clients upload bytes straight to an object store via pre-signed URLs; an upload event queues transcode workers that write variants and mark the post visible, triggering post_id fan-out to timelines; a CDN serves images.
+- **Techniques:** metadata/media split (DB vs object store); pre-signed upload (bypass app tier); idempotent async transcode (safe retries); content-hashed immutable URLs (dedup, long CDN cache); erasure coding 10+4 (1.4× vs 3×); hybrid push/pull fan-out (celebrities).
+
 ## Problem statement
 
 Design a photo-sharing service: users upload images, follow other users, and see a timeline of recent posts from the people they follow. It must ingest a high write volume of large binary objects, serve images at low latency worldwide, and assemble personalized feeds at scale.
@@ -183,7 +189,7 @@ Origin reads after CDN
 
 media 420M MB/day vs metadata 100K MB/day → media ≈ 4200× larger
 
-Media outweighs metadata by roughly 1000×, and the CDN absorbs the reads so the origin sees a trickle. Almost every later decision traces to that split.
+Media outweighs metadata by roughly 4,200×, and the CDN absorbs the reads so the origin sees a trickle. Almost every later decision traces to that split.
 
 ### 2.1 Uploads
 
@@ -195,7 +201,7 @@ Each photo is about 2 MB original plus ~1 MB of variants. So 100M/day × 3 MB = 
 
 ### 2.3 Reads
 
-Reads run far ahead of writes — assume about 50× the upload rate. That is 1,200 uploads/sec × 50 ≈ 250,000 image GETs/sec at peak. With a CDN hit rate around 95%, only 250,000 × 0.05 ≈ 12,000 GETs/sec reach the origin. The vast majority are served from the edge and never touch the blob store.
+Reads run far ahead of writes — assume about 50× the upload rate. That is ~5,000 peak uploads/sec × 50 ≈ 250,000 image GETs/sec at peak. With a CDN hit rate around 95%, only 250,000 × 0.05 ≈ 12,000 GETs/sec reach the origin. The vast majority are served from the edge and never touch the blob store.
 
 Key idea. Media is ~4,200× metadata and the binding storage cost; the CDN turns 250K reads/sec into ~12K origin reads/sec.
 

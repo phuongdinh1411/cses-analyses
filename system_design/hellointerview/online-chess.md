@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/online-chess
 
 ---
 
+## Summary
+
+- **Key challenge:** Hosting 500K concurrent games (1M WebSockets, ~333K moves/sec) with server-validated moves under 50ms and fair, server-owned clocks.
+- **Core design:** A matchmaking worker pairs queued players by rating; a router assigns each game to one stateful Game Server that both players connect to, which validates moves, runs clocks, persists to PostgreSQL, and triggers Elo updates to PostgreSQL and a Redis leaderboard.
+- **Techniques:** FOR UPDATE SKIP LOCKED or Redis Lua (no double matching); expanding Elo tolerance (fast matches); game-to-server routing (no cross-server traffic); authoritative clocks with bounded lag compensation; Redis sorted set (O(log N) rank); PostgreSQL as truth, Redis rebuildable.
+
 ## Understanding the Problem
 
 ♟️ **What is Chess.com / Lichess?**  
@@ -54,7 +60,7 @@ Online chess platforms let players find an opponent of similar skill, play real-
 ### Constraints & Estimates
 
 - 500K concurrent games × 2 players = **1M concurrent WebSocket connections**
-- Move rate: ~1 move per 3 seconds per game → 500K × (2/3) ≈ **333K moves/sec** peak
+- Move rate: ~1 move per 3 seconds per player → 500K × (2/3) ≈ **333K moves/sec** peak
 - Each move event: ~100 bytes
 - Leaderboard: 10M players, updated after every game finish
 - Rating updates: 500K games/day × 2 players = 1M rating updates/day → ~12 updates/sec (easy)
@@ -205,7 +211,7 @@ At very high scale (millions of players queueing simultaneously), Postgres scann
 
 **Alternative: Redis-based matching queue**
 - Players join via `ZADD matchmaking_queue {rating} {player_id}`
-- Matchmaking Worker: `ZRANGE matchmaking_queue {rating-50} {rating+50}` → find candidates
+- Matchmaking Worker: `ZRANGE matchmaking_queue {rating-50} {rating+50} BYSCORE` → find candidates
 - Use `Lua script` for atomic match-and-remove (prevents race conditions without DB locks):
   ```lua
   local candidates = redis.call('ZRANGEBYSCORE', 'matchmaking_queue', min_rating, max_rating)
@@ -224,7 +230,7 @@ At very high scale (millions of players queueing simultaneously), Postgres scann
 **Game Server Fleet:**
 
 ```
-Players → Load Balancer (consistent hash by game_id) → Game Server Pool (100 servers × 10K games each)
+Players → Load Balancer (consistent hash by game_id) → Game Server Pool (100 servers × 5K games each)
 ```
 
 **Assignment:**
@@ -259,7 +265,7 @@ Client stamps the move with its local clock:
 
 Server approach:
 1. Record **server receipt time**: `server_ts = now`
-2. Network latency estimate: `latency = (server_ts - client_ts) / 2` (approximate, one-way is half RTT)
+2. Network latency estimate: `latency = server_ts - client_ts` (one-way delay; assumes the client clock offset is corrected, otherwise use measured RTT / 2)
 3. Clock deduction: `white_remaining -= (server_ts - last_move_ts) - latency`
 
 This compensates for one-way network delay, making clocks fairer.

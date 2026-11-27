@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/fb-post-search
 
 ---
 
+## Summary
+
+- **Key challenge:** Keyword search over ~3.6T posts (3.6PB) in <500ms median without Elasticsearch, while absorbing 10k posts/s and 100k likes/s and indexing new posts within 1 minute.
+- **Core design:** A Kafka-fed Ingestion Service tokenizes posts into a Redis inverted index (per keyword: creation list + likes sorted set); a Search Service reads it behind a Redis cache and CDN.
+- **Techniques:** Inverted index with separate creation/likes indexes for sorting; cache + CDN with <1 min TTL (no personalization); bigrams for phrases; keyword-sharded Redis for writes; index likes only at powers of 2, then re-rank with fresh counts; capped indexes, cold keywords on S3.
+
 ## Understanding the Problem
 
 🔍 What is Facebook?
@@ -179,7 +185,7 @@ The Index is doing a lot of the work for search here. Let's talk about that a bi
 
 ##### Approach
 
-The naive solution to this problem is to keep all of the posts in a relational database and use a query like SELECT * FROM Posts LIKE '%$keyword%';. This would technically return the correct results for a given query!
+The naive solution to this problem is to keep all of the posts in a relational database and use a query like SELECT * FROM Posts WHERE content LIKE '%$keyword%';. This would technically return the correct results for a given query!
 
 Single Node MySQL
 
@@ -409,7 +415,7 @@ Two Stage
 
 - This approach is more complex than the others and will require more engineering effort to implement.
 
-- This necessarily changes the semantics of the like counts within Elasticsearch. We might name them "logLikes" or "approxLikes" to make this clear to developers.
+- This necessarily changes the semantics of the like counts within our likes index. We might name them "logLikes" or "approxLikes" to make this clear to developers.
 
 ### 4) How can we optimize storage of our system?
 

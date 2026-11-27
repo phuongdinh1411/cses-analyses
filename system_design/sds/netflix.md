@@ -9,6 +9,12 @@ permalink: /system_design/sds/netflix
 **Difficulty:** Medium  
 **Topics:** Video streaming · CDN & delivery economics · Adaptive bitrate · Pre-positioning · Object storage · Async processing
 
+## Summary
+
+- **Key challenge:** Serve terabits per second of egress to tens of millions of concurrent viewers; no origin can, so almost every byte must come from a nearby cache.
+- **Core design:** Studio masters are transcoded offline into an encoding ladder, sliced into short segments listed in a manifest; players fetch segments over HTTP from edge caches into a buffer.
+- **Techniques:** encoding ladder for every device/network; segments + HLS/DASH manifest as cacheable units; client-side ABR to avoid rebuffering; efficient codecs to cut egress; pre-positioning predictable popular titles at the edge.
+
 ## Problem statement
 
 Design a service that streams a curated catalog of movies and shows to a global audience, smoothly, on any device and any connection. A studio delivers a high-quality master file for each title; the service transcodes it, stores it, and plays it back on demand. Viewers expect playback to start within a second or two, to stay smooth as bandwidth changes, to seek anywhere in a title, and to resume on a television where they left off on a phone.

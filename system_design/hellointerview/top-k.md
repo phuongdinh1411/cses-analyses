@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/top-k
 
 ---
 
+## Summary
+
+- **Key challenge:** Return precise top-K (≤ 1k) videos for 1h/1d/1mo/all-time windows over ~700K views/sec (70B/day) in tens of ms, with ≤ 1 min lag.
+- **Core design:** Kafka view events (by video ID) → Flink aggregates per-video counts → sharded Postgres window tables; a cron precomputes top-K per window into a cache the Top-K service reads.
+- **Techniques:** Shard by video ID (merge per-shard top-K); Flink tumbling windows + watermarks (batched writes, late events); per-window tables with views index (fast reads); precompute + cache (latency); minute-grain increment/decrement (sliding windows); Count-Min Sketch + heap (approximation).
+
 ## Understanding the Problem
 
 Top-K is a classic system design problem which has a ton (!) of different variants. As such, each interview can be a little unique. In this writeup, we'll walk through the problem of designing a top-K system for YouTube video views. In our deep dives, we'll talk through some of the variants and alternatives that interviewers might guide you toward.

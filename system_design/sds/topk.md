@@ -9,6 +9,12 @@ permalink: /system_design/sds/topk
 **Difficulty:** Medium  
 **Topics:** Stream processing · Probabilistic data structures · Sharding
 
+## Summary
+
+- **Key challenge:** Keep memory bounded over billions of distinct items while ingesting ~116K events/s and answering top-K in milliseconds.
+- **Core design:** Events go to a log partitioned by item_id; shards keep per-minute count-min sketches plus heaps; a coordinator merges them into a cached top-K list. A batch job recomputes closed windows exactly.
+- **Techniques:** Count-min sketch (fixed ~40 MB, never underestimates); size-K min-heap (query-ready); shards report top m·K (merge keeps leaders); additive minute buckets (rolling windows, no recount); speed/batch split (exact closed windows); key-salting (hot items).
+
 ## Problem statement
 
 Design a system that surfaces the top K items from a continuous stream of events — the most-played songs, the most-viewed videos, the most-frequent search queries — over rolling time windows like the last hour, the last day, or the last 7 days.
@@ -199,7 +205,7 @@ An exact map needs one entry per distinct item. At billions of items and tens of
 
 ### 2.3 Raw retention is a separate, large cost
 
-If each raw event is roughly 200 bytes, a day of events is about 10e9 × 200 ≈ 2 TB, and a year of retention approaches 700 TB. That volume never sits in memory; it lives in cheap object storage and is read only by the batch path that recomputes exact numbers for closed windows.
+If each raw event is roughly 200 bytes, a day of events is about 10e9 × 200 ≈ 2 TB, and a year of retention is about 730 TB. That volume never sits in memory; it lives in cheap object storage and is read only by the batch path that recomputes exact numbers for closed windows.
 
 Key idea. Writes (~116K/s) dwarf reads (~2.3K/s), and exact-map memory scales with billions of items while a sketch stays in fixed tens of megabytes — the number that justifies approximate counting.
 

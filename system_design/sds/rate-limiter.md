@@ -9,6 +9,12 @@ permalink: /system_design/sds/rate-limiter
 **Difficulty:** Medium  
 **Topics:** Rate limiting · Atomic counters · Sliding window · Token bucket · Availability · Hot key
 
+## Summary
+
+- **Key challenge:** Every server must agree on one shared counter atomically, adding under 1 ms p99 at ~1M decisions/s.
+- **Core design:** The gateway calls a stateless limiter, which runs one atomic script on a sharded, replicated in-memory counter store; the gateway turns a deny into 429 + Retry-After.
+- **Techniques:** Sliding window counter (O(1), near-exact); atomic INCR+EXPIRE script (no race); shard by key (~20 shards for 2M ops/s); fail-open with in-process backstop (stay up); jittered Retry-After (no retry storm); token leasing (microsecond decisions, bounded overshoot).
+
 ## Distributed rate limiter system design problem statement
 
 Design a service that decides, for each incoming API request, whether to allow it or reject it because the caller has exceeded a configured rate. The limiter sits in front of an API gateway or an internal RPC fabric, must answer in single-digit milliseconds, and must keep working when individual nodes — or an entire datacenter — fail.

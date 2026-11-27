@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/metrics-monitoring
 
 ---
 
+## Summary
+
+- **Key challenge:** Ingesting 5M metrics/sec (750MB/s) from 500K servers while answering multi-week dashboard queries in seconds and firing alerts within 1 minute.
+- **Core design:** Agents batch-push protobuf metrics to a stateless Ingest API → Kafka; consumers write raw data and rollups to TimescaleDB, while streaming Alert Evaluators keep sliding windows in Redis and send fired alerts via Kafka to notification workers.
+- **Techniques:** Kafka partitioned by series (durable buffer, ordering); multi-resolution rollups + hot/warm/cold tiers (fast wide queries, cheap retention); rollup routing + Redis result cache; streaming alert evaluation (seconds latency); watermarking (late data); tag allow-lists (cardinality control).
+
 ## Understanding the Problem
 
 📊 **What is a Metrics Monitoring Platform?**  
@@ -55,8 +61,8 @@ A metrics monitoring platform (like Datadog, Prometheus/Grafana, or CloudWatch) 
 - 500K × 100 / 10 = **5M metrics/sec**
 - Each metric: `{ timestamp, service, host, metric_name, tags, value }` ≈ 150 bytes
 - 5M × 150B = **750MB/sec** ingestion
-- Storage: 5M × 150B × 86,400 sec/day = **~62TB/day** raw (before compression)
-- With 10× compression (time-series compress well): ~6TB/day
+- Storage: 5M × 150B × 86,400 sec/day = **~65TB/day** raw (before compression)
+- With 10× compression (time-series compress well): ~6.5TB/day
 - 1 year retention: ~2PB (need tiered storage)
 
 ---

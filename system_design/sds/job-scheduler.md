@@ -9,6 +9,12 @@ permalink: /system_design/sds/job-scheduler
 **Difficulty:** Hard  
 **Topics:** Async processing · Availability · Rate limiting
 
+## Summary
+
+- **Key challenge:** Survive the midnight herd (~3M jobs/s, ~250× the ~12K/s average) and run each job effectively once despite crashes.
+- **Core design:** Jobs and Schedules sit in a durable store; stateless dispatchers poll a time-bucketed due index, lease due jobs, and queue them to workers.
+- **Techniques:** per-minute buckets sharded by hash(job_id) for cheap due reads; atomic lease + heartbeat for crash recovery; idempotency key with atomic check-and-record for effectively-once; jitter + rate limiter to smooth the herd; backoff + dead-letter queue for failures; time-zone-aware cron with idempotent spawn.
+
 ## Distributed job scheduler system design problem statement
 
 Design a system that runs jobs at a chosen time: "run job X at time T" once, or on a recurring schedule like "every day at 09:00." The work must run reliably at scale, even when the machines running it crash, and it must run effectively once — never silently skipped, never harmfully duplicated.

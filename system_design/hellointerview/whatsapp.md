@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/whatsapp
 
 ---
 
+## Summary
+
+- **Key challenge:** Guarantee < 500ms delivery for billions of users (~200M connected at once), including to offline users for up to 30 days.
+- **Core design:** Clients hold WebSockets to Chat Servers (L4 load balancer); messages are written to DynamoDB Message + per-recipient Inbox tables, then published via Redis Pub/Sub to recipients' servers; client ACKs clear the Inbox; media uses pre-signed blob URLs.
+- **Techniques:** Inbox + client ACK (durable delivery); Pub/Sub channel per user (cross-server routing); per-client inboxes (multi-device); heartbeats with sequence numbers (dead sockets, missed messages); server timestamps (ordering); disconnect-time table (last seen).
+
 ## Understanding the Problem
 
 🚗 What is Whatsapp?

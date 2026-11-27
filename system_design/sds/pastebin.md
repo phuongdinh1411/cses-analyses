@@ -9,6 +9,12 @@ permalink: /system_design/sds/pastebin
 **Difficulty:** Easy  
 **Topics:** Object storage · CDN · Caching · Sharding
 
+## Summary
+
+- **Key challenge:** Mint unique, non-enumerable 7-char keys without DB probes, under a 100:1 read skew (~116 writes/s vs ~11,600 reads/s).
+- **Core design:** App servers pop pre-generated keys from a KGS batch, write the body to object storage, then insert a ~100-byte row into a hash-sharded DB; reads go CDN → cache → DB → object storage.
+- **Techniques:** KGS pool claimed via `SKIP LOCKED` for collision-free keys; metadata/blob split for small rows; CDN `max-age` since pastes are immutable; request coalescing for viral pastes; per-shard Bloom filter against random-key probes; lazy expiry + capped max-age + sweeper.
+
 ## Problem statement
 
 Design a service where a user submits a block of plain text — an error log, a configuration file, or a code snippet — and receives a short link (pb.example/a7x3kLm) that anyone can open to read that text later, optionally with an expiration time. Users can also propose a custom alias for their link if it is not already taken, and owners or moderators can delete a paste early.

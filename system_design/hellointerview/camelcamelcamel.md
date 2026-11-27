@@ -11,6 +11,12 @@ permalink: /system_design/hellointerview/camelcamelcamel
 
 ---
 
+## Summary
+
+- **Key challenge:** Track prices for 500M Amazon products (~580 changes/s) without being blocked by Amazon, and send price-drop alerts within 1 hour.
+- **Core design:** Extension reports, the Amazon API and crawlers feed Ingest API → Kafka → Price Processor, which updates PostgreSQL, appends to TimescaleDB and publishes drops; a Notification Dispatcher matches subscriptions and fans out to email/push/SMS workers.
+- **Techniques:** Extension users as free crawlers; crawl priority (hourly if subscribed, daily long-tail); consensus, trust scores and own-crawler checks against fake prices; (product_id, threshold) index with batched fan-out; continuous aggregates + Redis for <500ms charts; hot/warm/cold storage.
+
 ## Understanding the Problem
 
 📈 **What is CamelCamelCamel?**  
@@ -253,7 +259,7 @@ For 100K subscribers per popular product: this query returns a large result set.
 
 ### 4) How do we serve fast price history queries for chart generation?
 
-**Challenge:** 500M products × years of price history = petabytes. Can't query raw data for every chart render.
+**Challenge:** 500M products × years of price history = tens of terabytes (~3.5TB/year). Can't query raw data for every chart render.
 
 **Pre-aggregated rollups (TimescaleDB continuous aggregates):**
 

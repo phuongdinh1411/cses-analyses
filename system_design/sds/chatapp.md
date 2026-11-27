@@ -9,6 +9,12 @@ permalink: /system_design/sds/chatapp
 **Difficulty:** Hard  
 **Topics:** Real-time · Connection registry · Durability · Fan-out · Per-conversation ordering · Availability
 
+## Summary
+
+- **Key challenge:** Deliver messages in under a second to recipients on any of ~1,000 gateways, or offline, without losing an acked message.
+- **Core design:** Clients hold WebSockets to gateways; the message service persists each message with a server_seq before acking, finds the recipient's gateway in a registry, and publishes to that gateway's topic; offline users get a push and sync on reconnect.
+- **Techniques:** persist before ack (durability); per-conversation server_seq (ordering); client_msg_id dedup (exactly-once feel); topic per gateway (routing); shared log for large groups (cheap fan-out); TTL-heartbeat presence (ephemeral).
+
 ## Chat app system design problem statement
 
 Design a real-time messaging service: users exchange 1:1 and group messages that arrive within milliseconds, in order, exactly once to the eye, and survive the recipient being offline.

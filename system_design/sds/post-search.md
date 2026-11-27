@@ -9,6 +9,12 @@ permalink: /system_design/sds/post-search
 **Difficulty:** Hard  
 **Topics:** Inverted index · Sharding · Ranking
 
+## Summary
+
+- **Key challenge:** Low-p99 ranked search over billions of posts (~50 TB index, ~1,000 shards, ~30M sub-queries/s), with new posts searchable in seconds.
+- **Core design:** An async pipeline builds a document-partitioned inverted index; a coordinator scatters each query to all shards, each returns its local top-K, and the coordinator merges; a cache absorbs hot queries.
+- **Techniques:** posting lists instead of text scans; document partitioning for cheap, balanced writes; per-shard top-K + K-way merge to bound traffic; in-memory segment + immutable flush/merge for freshness; tombstones for deletes; replicas, hedging, partial results against stragglers.
+
 ## Problem statement
 
 Design search over a social product's posts: a user types a multi-word query and gets back the most relevant posts, ranked, out of a corpus of billions that grows every second.

@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/yelp
 
 ---
 
+## Summary
+
+- **Key challenge:** Search businesses by keyword, category and location in < 500ms for 100M DAU over 10M businesses (~100K peak search QPS, read-heavy).
+- **Core design:** Search Service queries Elasticsearch (text + geo_distance); Business Service reads PostgreSQL behind Redis; Review Service inserts a review and updates avg_rating in one transaction, syncing Elasticsearch via Kafka.
+- **Techniques:** Elasticsearch geo_point bool query (text + geo together); precomputed avg_rating/review_count (O(1) reads); incremental rating update in one transaction (consistency); UNIQUE(business_id, user_id) (one review per user); Redis cache (read load); geocoding place names (location-name search).
+
 ## Understanding the Problem
 
 🍽️ **What is Yelp?**  

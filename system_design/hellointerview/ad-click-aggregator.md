@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/ad-click-aggregator
 
 ---
 
+## Summary
+
+- **Key challenge:** Ingest a 10k clicks/s peak (~100M/day) without losing or double-counting clicks, while advertisers get sub-second, near-real-time 1-minute metrics.
+- **Core design:** Click Processor logs the click and 302-redirects the user, writing events to Kafka/Kinesis; Flink aggregates per AdId per minute into an OLAP DB that advertisers query.
+- **Techniques:** Server-side redirect so clicks can't bypass tracking; shard stream by AdId for parallelism; AdId:N suffix to split hot ads; HMAC-signed impression ID + Redis check to dedup before the stream; stream retention + S3 dump + Spark reconciliation for accuracy; daily/weekly rollup tables for long ranges.
+
 ## Understanding the Problem
 
 🖱️ What is an Ad Click Aggregator

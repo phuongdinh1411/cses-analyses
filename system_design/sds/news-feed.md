@@ -9,6 +9,12 @@ permalink: /system_design/sds/news-feed
 **Difficulty:** Hard  
 **Topics:** Fan-out · Feed ranking · Celebrity problem · Async processing · Caching · Availability
 
+## Summary
+
+- **Key challenge:** Serve a ranked feed in ~200ms p99 at ~100K reads/s, when pure push means ~1M timeline writes/s and 50M per celebrity post.
+- **Core design:** New posts queue to fan-out workers that push ids into per-user sorted-set timelines for authors below threshold T; reads merge the timeline with a cached celebrity pull, then rank.
+- **Techniques:** hybrid push/pull at T ≈ 100K followers; replicated celebrity cache + request coalescing for hot keys; two-stage ranking (cheap recall, heavy model) on read; capped, rebuildable timelines; at-least-once fan-out with immutable scores; degradation ladder for availability.
+
 ## Problem statement
 
 Design the home feed for a social product. When a user opens the app, they see a ranked, near-real-time stream of posts from the accounts they follow. The scope here is producing posts, assembling each reader's timeline, following and unfollowing, and recording engagement. Profile timelines, notifications, search, ads, comment threads, and stories are separate problems and out of scope.

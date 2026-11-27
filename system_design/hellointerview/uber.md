@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/uber
 
 ---
 
+## Summary
+
+- **Key challenge:** Absorb ~2M driver location updates/sec (10M drivers every 5s) and match in < 1 minute, never offering one driver two rides.
+- **Core design:** Ride Service creates fares and rides; Location Service keeps driver positions in Redis geo sets; Ride Matching Service pulls requests from a queue and notifies nearby drivers one at a time via APNs/FCM until one accepts.
+- **Techniques:** Redis GEOADD/GEOSEARCH (proximity search); adaptive update intervals (fewer pings); per-driver Redis lock, 10s TTL (one request at a time); Kafka offset committed after match (no dropped requests); Temporal workflow (driver timeouts); geo-sharding (scale, latency).
+
 ## Understanding the Problem
 
 🚗 What is Uber?

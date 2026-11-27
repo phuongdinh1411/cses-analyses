@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/ticketmaster
 
 ---
 
+## Summary
+
+- **Key challenge:** Never double-book a seat under extreme contention (10M users on one event), while view/search stay highly available and fast (< 500ms, 100:1 reads).
+- **Core design:** API Gateway → Event, Search and Booking services over PostgreSQL; Booking holds the seat with a 10-minute Redis lock, then a Stripe webhook transactionally marks the ticket sold and booking confirmed.
+- **Techniques:** Redis SET NX EX lock (auto-expiring holds); DB transaction with OCC/row locks (final double-booking guard); caching + horizontal scaling (read spikes); virtual waiting queue (hot-event admission); Elasticsearch via CDC (full-text, fuzzy search); query/CDN caching (repeated searches).
+
 ## Understanding the Problem
 
 🎟️ What is Ticketmaster?

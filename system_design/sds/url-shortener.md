@@ -9,6 +9,12 @@ permalink: /system_design/sds/url-shortener
 **Difficulty:** Easy  
 **Topics:** Unique IDs · Caching · Sharding
 
+## Summary
+
+- **Key challenge:** Generate globally unique 5–8 character aliases and redirect in milliseconds at 100:1 read:write (1M new URLs/day, 5-year retention).
+- **Core design:** An API gateway sends POSTs to the shortening service (writes DynamoDB/Cassandra) and GETs to a redirect handler (read-through cache, 302). An analytics service counts clicks in Redis and flushes to the DB.
+- **Techniques:** Machine ID + sequence number (uncoordinated unique IDs); Base62 (URL-safe, 62^6 ≈ 56B IDs); machine-ID prefix as shard key (independent writes, prefix routes reads); read-through cache (low latency); in-memory counters, periodic flush (cheap analytics).
+
 ## Introduction
 
 A URL Shortener is a service that takes a long URL and generates a shorter, unique alias that redirects users to the original URL. Popular examples include bit.ly, TinyURL, and Twitter's t.co.
@@ -220,7 +226,7 @@ Mid-Level
 
 There are several options for generating unique integer IDs:
 
-Note that when we say "integer" in programming and computer science, we typically mean a whole number that can be represented in different number systems. For example, 123456 in decimal is 123456 in decimal, 123456 in hexadecimal is 0x1e240, and 123456 in binary is 0b1111000100100000.
+Note that when we say "integer" in programming and computer science, we typically mean a whole number that can be represented in different number systems. For example, 123456 in decimal is 123456 in decimal, 123456 in hexadecimal is 0x1e240, and 123456 in binary is 0b11110001001000000.
 
 ### Option 1: Hash Functions
 

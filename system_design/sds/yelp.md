@@ -9,6 +9,12 @@ permalink: /system_design/sds/yelp
 **Difficulty:** Medium  
 **Topics:** Geospatial indexing · Search · Caching
 
+## Summary
+
+- **Key challenge:** Serve geo + text + filter search over 200M businesses at 50K peak QPS with p95 under 200 ms (1000:1 read:write).
+- **Core design:** A Search Service queries Elasticsearch, synced from the Business DB by CDC. Business pages combine cached metadata, precomputed aggregates, and paginated reviews. Reviews commit to the DB, then publish an event for async updates.
+- **Techniques:** Search index (geo + text in one query); CDC (fresh index); precomputed rating_sum/count (no AVG on read); queue fanout (reviews survive index outages); read-your-writes (author sees own review); two-stage retrieval with smoothed ratings (ranking).
+
 ## Introduction
 
 Yelp connects users with local businesses through search and reviews. A user searches "pizza near me, open now" and gets a ranked list of nearby pizzerias. They tap a result to see the business page with hours, photos, and reviews. After dining, they leave a 4-star review with a photo of their margherita.
@@ -121,13 +127,13 @@ AND name ILIKE '%pizza%'
 ORDER BY distance
 LIMIT 20;
 
-At 200M businesses, this query scans millions of rows. The distance calculation runs for every row. The ILIKE '%pizza%' can't use a B-tree index. Response time: 2-3 seconds. At 5,800 peak QPS, queries queue faster than they complete, exhausting connections and timing out.
+At 200M businesses, this query scans millions of rows. The distance calculation runs for every row. The ILIKE '%pizza%' can't use a B-tree index. Response time: 2-3 seconds. At 50,000 peak QPS, queries queue faster than they complete, exhausting connections and timing out.
 
 Step 1: Add a Search Index
 
 Move geo+text queries to a dedicated search index like Elasticsearch. The Search Service sits between the API Gateway and the index. On the write side, the Business Service handles updates to the Business Database — hours changes, new listings, closures.
 
-Elasticsearch provides geo queries (geohash-based spatial filtering), text search (inverted indexes for fast keyword matching), and combined queries (efficient intersection of geo + text + filters). Search now returns in 50ms.
+Elasticsearch provides geo queries (BKD-tree-based spatial filtering), text search (inverted indexes for fast keyword matching), and combined queries (efficient intersection of geo + text + filters). Search now returns in 50ms.
 
 But there's a problem. The Business Service writes to the database, not the search index. A restaurant updated their hours yesterday. The database shows "closes at 10pm" but the search index still shows "closes at 9pm." A user filters for "open now" at 9:30pm and the restaurant doesn't appear. The index is stale.
 

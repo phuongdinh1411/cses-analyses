@@ -9,6 +9,12 @@ permalink: /system_design/sds/google-docs
 **Difficulty:** Hard  
 **Topics:** Conflict resolution · Real-time · Async processing
 
+## Summary
+
+- **Key challenge:** Converge concurrent edits to identical text with no lost keystroke, within tens of ms (~5M ops/s, ~15M deliveries/s).
+- **Core design:** Editors hold WebSockets to gateways; each document hashes (with a lease) to one session server that transforms each op against its base_revision, assigns a revision, logs it durably before ack, and broadcasts it.
+- **Techniques:** insert/delete ops (no whole-doc writes); OT with one serializer per doc (preserve intent); op log + snapshots (bounded replay); persist-before-ack (durability); ephemeral transformed cursors (presence); CRDTs when no central server (peer-to-peer).
+
 ## Problem statement
 
 Design a collaborative document editor: many people open the same document and type into it at once, every keystroke shows up for the others within a moment, and everyone's screen converges to the identical text with no edit ever silently lost.

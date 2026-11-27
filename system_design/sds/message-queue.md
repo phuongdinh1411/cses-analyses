@@ -9,6 +9,12 @@ permalink: /system_design/sds/message-queue
 **Difficulty:** Hard  
 **Topics:** Async processing · Append-only log · Ordering · Replication · Consumer groups
 
+## Summary
+
+- **Key challenge:** Sustain ~1M msgs/s (1 GB/s) without losing committed messages, while many consumer groups read and replay independently.
+- **Core design:** Topics split into partitions, each an append-only log on brokers; producers hash keys to partitions; consumers pull and commit their own offsets; leaders replicate to an ISR.
+- **Techniques:** key-hash partitioning for per-key order + parallelism; consumer-side offsets for replay, fan-out, backpressure; acks=all + ISR-only election for durability; commit-after-processing + idempotent consumers for at-least-once; idempotent producer + transactions for in-broker exactly-once; tiered storage/compaction for retention.
+
 ## Problem statement
 
 Design a durable, high-throughput message system that decouples producers from consumers: producers append events; many independent consumer groups read them at their own pace, replay history, and survive each other's failures.
@@ -49,7 +55,7 @@ A topic is a named stream split into N partitions, each an ordered, append-only 
 
 ### Offsets and consumer groups
 
-Each message has an offset — a monotonic position within a partition. A consumer group divides the partitions among its members (one partition per consumer), and each group tracks its own offset per partition, so the broker stores no per-reader state and many groups read independently.
+Each message has an offset — a monotonic position within a partition. A consumer group divides the partitions among its members (each partition is read by exactly one consumer in the group), and each group tracks its own offset per partition, so the broker stores no per-reader state and many groups read independently.
 
 ### Producers and pull-based consumers
 

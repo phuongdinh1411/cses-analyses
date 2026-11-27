@@ -9,6 +9,12 @@ permalink: /system_design/sds/local-delivery
 **Difficulty:** Hard  
 **Topics:** Consistency · Geospatial indexing · Real-time
 
+## Summary
+
+- **Key challenge:** Never oversell the last unit on a hot (store, item) row while browse (~12K/s peak) stays cached and fast.
+- **Core design:** Browse hits a store geo-index and cached availability; an order atomically reserves stock with a TTL, then confirms; a fulfillment service matches a nearby courier; tracking streams over SSE.
+- **Techniques:** on_hand vs reserved split for available-to-promise; atomic conditional UPDATE to prevent oversell; TTL + sweeper for leak-proof expiry; reserve-charge-dispatch saga with release compensation; geohash cells + atomic courier lock for matching; SSE for one-way tracking.
+
 ## Problem statement
 
 Design local, on-demand delivery of physical goods: a shopper opens the app, sees what they can get in under an hour, orders it, and watches a courier bring it.
@@ -127,7 +133,7 @@ Inventory rows
 
 1K stores × 10K items
 
-browse = 1K/s reserves × 10 ≈ 12K/s — read-heavy and cacheable
+browse = 1.16K/s reserves × 10 ≈ 12K/s — read-heavy and cacheable
 
 Browse reads dwarf reserve writes, and the total inventory data is modest. The constraint is contention on a single hot (store, item) row, not raw volume.
 

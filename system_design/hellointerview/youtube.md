@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/youtube
 
 ---
 
+## Summary
+
+- **Key challenge:** Upload and stream videos up to tens of GB (~1M uploads, 100M views/day) with resumable uploads and smooth playback on low bandwidth.
+- **Core design:** Video Service issues pre-signed multipart-upload URLs to S3 and stores metadata in Cassandra; an S3 event triggers a DAG pipeline that segments, transcodes and writes manifests; players fetch the manifest and segments via CDN.
+- **Techniques:** Pre-signed multipart upload (bypass servers); per-chunk status (resume); parallel segment transcoding DAG via Temporal (speed); adaptive bitrate streaming (varying bandwidth); Cassandra by videoId + cache (metadata scale); CDN (latency).
+
 ## Understand the Problem
 
 📹 What is YouTube?
@@ -323,7 +329,7 @@ If you've read our Dropbox guide, you'll recognize this deep dive has strong ove
 
 - When S3 acknowledges a part upload it returns the part number and an ETag. The client relays that response to the backend (e.g. PATCH /videos/{id}/chunks) so the server can verify the fingerprint/ETag via S3 APIs and then update the matching chunk record to Uploaded.
 
-- Once the client calls CompleteMultipartUpload, S3 emits an object-level notification (e.g. ObjectCreated:CompleteMultipartUpload) exactly once per object. That single event can kick off downstream processing, but chunk-level progress tracking remains client-driven as described above.
+- Once the client calls CompleteMultipartUpload, S3 emits an object-level notification (e.g. ObjectCreated:CompleteMultipartUpload) for the completed object (delivered at least once, so the handler should be idempotent). That single event can kick off downstream processing, but chunk-level progress tracking remains client-driven as described above.
 
 - If the client stops uploading, it can resume by fetching the VideoMetadata to see the uploaded chunks and to skip chunks that had been uploaded already.
 

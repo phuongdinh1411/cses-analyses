@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/fb-news-feed
 
 ---
 
+## Summary
+
+- **Key challenge:** Serve reverse-chronological feeds in <500ms for 2B users with unlimited follows and followers (90M+ for celebrities), allowing ≤1 minute staleness.
+- **Core design:** Post, Follow and Feed services on DynamoDB (Post GSI on creatorId+createdAt, Follow table with reverse GSI); async workers fan new posts into a PrecomputedFeed table that the Feed Service reads.
+- **Techniques:** Precomputed feed of ~200 post IDs per user (~4TB) to avoid fan-out on read; SQS workers for fan-out on write; hybrid feeds that skip celebrities and merge their posts at read time; timestamp cursor for paging; replicated (not sharded) post cache to spread hot posts.
+
 ## Understanding the Problem
 
 📰 What is Facebook's News Feed

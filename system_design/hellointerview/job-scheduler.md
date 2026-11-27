@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/job-scheduler
 
 ---
 
+## Summary
+
+- **Key challenge:** Running jobs within 2s of their scheduled time at 10K jobs/sec (864M/day) with at-least-once execution and no single point of failure.
+- **Core design:** The API stores jobs with `next_run_at` in PostgreSQL; schedulers pick due jobs (via a Redis lookahead buffer) and dispatch them to Kafka; autoscaled workers execute, heartbeat, and record status, while a reaper re-queues stalled jobs.
+- **Techniques:** partial index on next_run_at (fast due-job query); FOR UPDATE SKIP LOCKED (concurrent schedulers, no duplicates); Redis sorted set of next 5 min (100ms polling); Kafka + lag-based autoscaling (throughput); heartbeat + reaper (recover crashed workers); idempotent handlers (safe re-runs).
+
 ## Understanding the Problem
 
 ⏰ **What is a Job Scheduler?**  
@@ -55,7 +61,7 @@ A job scheduler automatically executes jobs at specified times or intervals. It'
 - 10K jobs/sec at peak
 - 10K × 86,400 sec/day = **864M jobs/day**
 - Each job record: ~1KB → 864M × 1KB = **~864GB/day** of job records
-- Status updates: each job writes ~3–5 status transitions → 2.5B writes/day → ~29K writes/sec
+- Status updates: each job writes ~3–5 status transitions → ~2.6–4.3B writes/day → ~30–50K writes/sec
 
 ---
 

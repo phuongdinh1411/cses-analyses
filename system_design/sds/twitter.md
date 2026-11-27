@@ -10,6 +10,12 @@ permalink: /system_design/sds/twitter
 
 We aim to design a simplified version of Twitter, a popular social media platform where users can post tweets, follow or unfollow other users, and view the tweets of the people they follow. The platform also includes a recommendation algorithm that suggests content to users based on their preferences and interactions.
 
+## Summary
+
+- **Key challenge:** Serve timeline reads at a 100:1 read-write ratio for 300M DAU (~3,500 tweets/s, ~153 TB over five years) with low latency.
+- **Core design:** Tweet and Follow services enqueue writes. A Database Updater writes Cassandra and fans tweets into per-user cache inboxes. The Timeline Service merges the inbox with precomputed recommendations.
+- **Techniques:** Async queue writes (fast ack; idempotent on tweet ID); fan-out-on-write inboxes (cheap reads); candidate generation → ranking → fixed-ratio merge (recommendations); Cassandra LSM writes (sequential, append-only); leaderless quorum replication (writable through node failure); one table per query (no joins).
+
 ## Functional Requirements
 
 - Tweeting: Users should be able to write and post new tweets.

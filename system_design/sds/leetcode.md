@@ -9,6 +9,12 @@ permalink: /system_design/sds/leetcode
 **Difficulty:** Medium  
 **Topics:** Sandboxed execution · Async jobs · Leaderboards
 
+## Summary
+
+- **Key challenge:** Safely run hostile code through a contest-start spike of ~670 submissions/s (~2,000 concurrent sandboxes, ~250 workers).
+- **Core design:** Submit returns 202 and enqueues a job; autoscaled sandboxed workers run it against hidden tests and write the verdict; accepted contest submissions update an in-memory sorted-set leaderboard.
+- **Techniques:** layered sandbox (seccomp, cgroups, gVisor/micro-VM, no network) for isolation; resource limits mapped to verdicts; backlog-age autoscaling + warm pools for the spike; per-user caps for fairness; first-write-wins verdict for idempotent grading; packed sorted-set score for fast ranking.
+
 ## LeetCode system design problem statement
 
 Design an online judge like LeetCode: a user submits source code for a coding problem, the system runs it against a set of hidden test cases under strict limits, and returns a verdict — Accepted, Wrong Answer, Time Limit Exceeded, and so on.

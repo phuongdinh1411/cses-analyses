@@ -9,6 +9,12 @@ permalink: /system_design/sds/robinhood
 **Difficulty:** Hard  
 **Topics:** Real-time fan-out · Ledger consistency · Sagas
 
+## Summary
+
+- **Key challenge:** Move cash and shares exactly once via an exchange outside your transactions, while streaming ~40M quote messages/s at the open.
+- **Core design:** Two subsystems. Quotes: feed → per-symbol pub-sub → streaming gateways. Orders: idempotency gate → reservation → router → exchange; each fill writes a ledger pair; reconciliation checks against the exchange.
+- **Techniques:** Conflation (bounds push rate); idempotency keys (safe retries); atomic conditional reservation (no overspend); saga with compensation (no distributed transaction); double-entry ledger with fill dedup (auditable, exactly-once); in-doubt state + reconciliation (never guess).
+
 ## Problem statement
 
 Design a retail stock-trading app: users watch live prices for the symbols they follow, place buy and sell orders, and see their cash and share balances change as those orders execute.

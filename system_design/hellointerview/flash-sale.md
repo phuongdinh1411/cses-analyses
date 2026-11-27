@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/flash-sale
 
 ---
 
+## Summary
+
+- **Key challenge:** Sell 10,000 units to 10–50M users arriving within seconds without ever overselling, while staying fair and online.
+- **Core design:** CDN serves the sale page; a virtual queue releases users in batches to the reserve API, which atomically decrements a Redis counter (Lua) and writes a 10-minute reservation to PostgreSQL; users pay via Stripe within that window.
+- **Techniques:** Redis Lua decrement as an atomic gate against overselling; 10-min reservations instead of long DB transactions; sorted-set expiry sweeper returns unpaid units; virtual waiting room (INCR positions, SSE notify) for fairness and herd control; CDN pre-warming; PostgreSQL source of truth + periodic reconciliation.
+
 ## Understanding the Problem
 
 👟 **What is a Flash Sale?**  
@@ -198,7 +204,7 @@ Since Redis is **single-threaded**, `DECR` is atomic — no two users can decrem
 - If Redis fails or is out of sync: DB is the fallback
   
 **Layer 3: Reconciliation**
-- Background job every 5 minutes: compare Redis inventory count with `total_inventory - COUNT(active reservations)` from PostgreSQL
+- Background job every 5 minutes: compare Redis inventory count with `total_inventory - COUNT(active + completed reservations)` from PostgreSQL
 - If mismatch (Redis says 50 remaining but DB says 100 reserved out of 10,000): reset Redis from DB
 - This handles Redis crash/restart scenarios
 
@@ -226,12 +232,12 @@ On reservation creation: add to this sorted set with expiry timestamp.
 ```python
 expired = redis.zrangebyscore('reservations:expiry', 0, time.time())
 for reservation_id in expired:
-    # Atomically:
+    # Not atomic across DB + Redis: the status='active' guard prevents double-restore; reconciliation repairs partial failures
     db.execute("UPDATE reservations SET status='expired' WHERE id=? AND status='active'", reservation_id)
     if rows_affected > 0:
         redis.incr(f'sale:{sale_id}:inventory')  # restore inventory
     redis.zrem('reservations:expiry', reservation_id)
-    redis.srem(f'reservations:{sale_id}', reservation_id)  # allow user to try again
+    redis.srem(f'reservations:{sale_id}', user_id)  # allow user to try again (set holds user IDs)
 ```
 
 **Why not rely on Redis TTL alone?** Redis key expiry is approximate (can be delayed). We need precise expiry for inventory accounting. The sorted set approach gives exact control.
@@ -265,7 +271,7 @@ User arrives → POST /sales/{id}/queue
   → WebSocket/SSE connection: server pushes "it's your turn" when queue_pos ≤ released_count
 
 Queue Manager (runs every 1 second):
-  → Redis INCR sale:{id}:released_count BY 1000
+  → Redis INCRBY sale:{id}:released_count 1000
   → Notify users with queue_pos ≤ released_count: "Proceed to checkout"
 ```
 
@@ -358,4 +364,4 @@ Queue Manager (every 1s)
 - Redis crash recovery path (AOF persistence + restore from DB)
 - Bot detection (rate limiting, device fingerprint, CAPTCHA)
 - Lottery system for extreme demand scenarios
-- Discusses CAP theorem: AP system (availability over consistency) with Redis as the fast gate
+- Discusses CAP theorem: consistency over availability for inventory (pause the sale rather than oversell) with Redis as the fast gate

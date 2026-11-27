@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/bitly
 
 ---
 
+## Summary
+
+- **Key challenge:** Redirect in <100ms for 100M DAU (~5.8k/s average, ~600k/s at peak) while guaranteeing unique short codes for 1B URLs.
+- **Core design:** Write Service takes a Redis counter value, base62-encodes it and stores short_code → long_url in Postgres; Read Service checks Redis cache, falls back to the DB, and returns a 302.
+- **Techniques:** Redis INCR counter + base62 for collision-free 6–7 char codes; counter batching to cut Redis calls; short code as primary key for indexed lookups; cache/CDN for hot links; separate read/write services scaled independently; 302 (not 301) to keep control of expiry.
+
 ## Understanding the Problem
 
 🔗 What is Bit.ly?
@@ -447,7 +453,7 @@ To ensure high availability of our counter service, we can use Redis Sentinel or
 
 For multi-region deployment, allocate disjoint counter ranges to each region (e.g., region A gets 0-1B, region B gets 1B-2B) to avoid cross-region coordination. Writes go to the local region's Redis, while reads can be served globally via distributed caches.
 
-If Redis fails before replicating the latest counter, you might lose a few values, but since we only need uniqueness (not continuity), this is acceptable. The database's UNIQUE constraint on short_code provides the ultimate safety net.
+If Redis fails over before replicating the latest counter, the new primary may re-issue values that were already handed out, producing duplicate codes. The database's UNIQUE constraint on short_code provides the ultimate safety net: the insert fails and the writer retries with a fresh value.
 
 ### Final Design
 

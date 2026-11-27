@@ -9,6 +9,12 @@ permalink: /system_design/sds/youtube
 **Difficulty:** Hard  
 **Topics:** Video streaming · CDN & delivery economics · Transcoding pipeline · Adaptive bitrate · Object storage · Async processing
 
+## Summary
+
+- **Key challenge:** Egress dominates cost (~1,350 PB/day served vs ~1 PB/day stored), yet playback must start in 1–2 s and stay smooth.
+- **Core design:** Clients upload chunks directly to blob storage via pre-signed URLs, then commit. A queue triggers parallel transcoding into a segmented rendition ladder. Players fetch the manifest, then immutable segments from the CDN (edge → shield → origin).
+- **Techniques:** Resumable chunked upload (no restart); chunk-parallel transcode keyed by (video, rendition, segment) (fast, retryable); client-side ABR (smooth playback); immutable URLs + origin shield (high hit rate); popularity tiering + on-demand rare rungs (cost).
+
 ## Problem statement
 
 Design a service where users upload videos and a global audience watches them on any device and any connection. Uploads can be several gigabytes, and viewers expect playback to begin within a second or two and remain smooth as available bandwidth changes. The scope here is upload and delivery; browse, search, and recommendations are treated as a separate ranking problem.
@@ -353,7 +359,7 @@ This is the dominant cost. From about 1 billion watch-hours per day at an averag
 
 ### 2.3 Metadata — a rounding error
 
-Video records are about 1 KB each, so a sharded database handles them easily. Media exceeds metadata by roughly 1000×, which is the quantitative basis for separating metadata from media.
+Video records are about 1 KB each, so a sharded database handles them easily. Media exceeds metadata by many orders of magnitude (tens of MB to GB per video versus ~1 KB), which is the quantitative basis for separating metadata from media.
 
 Key idea. Exabytes served per month dwarf petabytes stored per day, so the design optimizes delivery.
 

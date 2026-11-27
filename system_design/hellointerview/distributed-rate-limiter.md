@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/distributed-rate-limiter
 
 ---
 
+## Summary
+
+- **Key challenge:** Enforce per-client limits consistently across many gateways at 1M req/s (100M DAU) while adding <10ms per request.
+- **Core design:** The API gateway identifies the client (user ID, IP or API key), runs a token-bucket check against Redis sharded by that key, and forwards the request or returns 429 with rate-limit headers.
+- **Techniques:** Token bucket for bursts plus steady rate; Lua script for atomic read-modify-write (MULTI/EXEC alone races); consistent hashing/Redis Cluster to spread load; replicas with auto-failover, fail-closed to protect backends; connection pooling + regional deployment for latency; push config (ZooKeeper) for instant rule changes.
+
 ## Understanding the Problem
 
 🚦 What is a Rate Limiter?
@@ -255,7 +261,7 @@ Here's exactly how the Token Bucket algorithm works with Redis:
 
 - A request arrives at Gateway A for user Alice with a user ID of alice.
 
-- The gateway calls Redis to fetch Alice's current bucket state using HMGET alice:bucket tokens last_refill. The HMGET command retrieves the values of multiple keys from a Redis hash. In this case, we're getting the current tokens count and the last_refill timestamp for Alice's bucket.
+- The gateway calls Redis to fetch Alice's current bucket state using HMGET alice:bucket tokens last_refill. The HMGET command retrieves the values of multiple fields from a Redis hash. In this case, we're getting the current tokens count and the last_refill timestamp for Alice's bucket.
 
 - The gateway calculates how many tokens to add to Alice's bucket based on the time elapsed since her last refill. If Alice's bucket was last updated 30 seconds ago and her refill rate is 1 token per second, the gateway adds 30 tokens to her current count, up to the bucket's maximum capacity.
 
@@ -293,7 +299,7 @@ Why Redis works perfectly for this:
 
 - High availability - Can be replicated across multiple Redis instances
 
-- Atomic operations - The MULTI/EXEC transaction ensures no race conditions between gateways
+- Atomic operations - A Lua script makes the whole read-calculate-update step atomic, so there are no race conditions between gateways
 
 The end result is precise, consistent rate limiting across all gateway instances. Whether Alice's 100th request goes to Gateway A, B, or C, they all see the same token bucket state and enforce the same limit.
 
@@ -345,7 +351,7 @@ As far as the interview goes, you'll typically just want to callout that you kno
 
 ## Potential Deep Dives
 
-Up until this point we've designed a simple, single-node (meaning one Redis instance) rate limiter. But now we need to discuss how to scale it to handle 1M requests/second across 10M users while maintaining high availability and low latency.
+Up until this point we've designed a simple, single-node (meaning one Redis instance) rate limiter. But now we need to discuss how to scale it to handle 1M requests/second across 100M users while maintaining high availability and low latency.
 
 For these distributed system challenges, you should try to lead the conversation toward deep dives that address your non-functional requirements. However, interviewers will likely jump in with probing questions, so be prepared to be flexible.
 
@@ -369,7 +375,7 @@ Redis Sharding
 
 Each API gateway needs routing logic to determine which Redis shard to query. When a request arrives, the gateway extracts the appropriate identifier (user ID, IP, or API key), applies the distribution algorithm, and routes the rate limit check to the correct Redis instance. The Token Bucket algorithm remains exactly the same, we're just talking to different Redis instances instead of one.
 
-With 10 Redis shards, each handling ~100k operations/second, we should be able to handle our 1M request/second target.
+With 10-20 Redis shards, each handling ~50-100k rate limit checks/second, we should be able to handle our 1M request/second target.
 
 In production, you'd likely use Redis Cluster rather than managing individual Redis instances yourself. Redis Cluster automatically handles the data sharding we just described by dividing keys across 16,384 hash slots and distributing those slots across multiple Redis nodes. When you store a rate limit key like alice:bucket, Redis Cluster automatically determines which node should store it based on the key's hash slot. This way instead of building custom consistent hashing logic in your API gateways, you just connect to the Redis Cluster and it handles routing automatically.
 
@@ -411,7 +417,7 @@ Of course, choosing a failure mode is just damage control. The better approach i
 
 Redis Failover
 
-While we don't tend to talk about it much in our breakdowns (simply because there are usually most interesting things to mention), monitoring and alerting are important for maintaining our high availability. We'll want to track Redis health metrics like CPU usage, memory consumption, and network connectivity across all shards. We also need application-level monitoring of rate limiting success rates, response latencies, and alerts that trigger when we enter fail-open mode. The goal is detecting and responding to issues quickly enough that users don't experience degraded service.
+While we don't tend to talk about it much in our breakdowns (simply because there are usually most interesting things to mention), monitoring and alerting are important for maintaining our high availability. We'll want to track Redis health metrics like CPU usage, memory consumption, and network connectivity across all shards. We also need application-level monitoring of rate limiting success rates, response latencies, and alerts that trigger when we enter fail-closed mode. The goal is detecting and responding to issues quickly enough that users don't experience degraded service.
 
 ### 3) How do we minimize latency overhead?
 
@@ -503,7 +509,7 @@ A mid-level candidate will focus mostly on breadth (80% vs 20%) and should be ab
 
 ### Senior
 
-As a senior candidate, expectations shift toward more technical depth (60% breadth, 40% depth) where you should confidently discuss trade-offs between different rate limiting algorithms and explain your choices. You should understand distributed systems concepts like consistent hashing, Redis Cluster, and connection pooling without much guidance, know that Redis operations need to be atomic, and suggest MULTI/EXEC transactions. You're expected to clearly explain trade-offs between fail-open vs fail-closed strategies, discuss pros and cons of different rate limiter placements, and proactively identify potential issues like hot keys, Redis availability concerns, and latency optimization opportunities. For rate limiting specifically, E5 candidates should move quickly through basic algorithm discussion to spend time on distributed systems challenges, confidently discuss Redis sharding strategies and failover scenarios, and have opinions about configuration management approaches.
+As a senior candidate, expectations shift toward more technical depth (60% breadth, 40% depth) where you should confidently discuss trade-offs between different rate limiting algorithms and explain your choices. You should understand distributed systems concepts like consistent hashing, Redis Cluster, and connection pooling without much guidance, know that Redis operations need to be atomic, and suggest Lua scripts (MULTI/EXEC alone leaves the read outside the transaction). You're expected to clearly explain trade-offs between fail-open vs fail-closed strategies, discuss pros and cons of different rate limiter placements, and proactively identify potential issues like hot keys, Redis availability concerns, and latency optimization opportunities. For rate limiting specifically, E5 candidates should move quickly through basic algorithm discussion to spend time on distributed systems challenges, confidently discuss Redis sharding strategies and failover scenarios, and have opinions about configuration management approaches.
 
 ### Staff+
 

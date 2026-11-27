@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/leetcode
 
 ---
 
+## Summary
+
+- **Key challenge:** Running untrusted user code safely and returning results within 5s, even during 100K-user competitions (~10K concurrent submissions ≈ 1M test cases).
+- **Core design:** A simple API server backed by DynamoDB serves problems; submissions go through a queue (SQS) to per-language containers running a test harness, and results land in the DB and a Redis leaderboard that clients poll.
+- **Techniques:** Docker containers (lightweight isolation); read-only FS, CPU/memory limits, 5s timeout, no network, seccomp (sandboxing); autoscaling + queue (absorb spikes, enable retries); client polls `GET /check/:id`; Redis sorted-set leaderboard polled every 5s; serialized language-agnostic test cases.
+
 ## Understanding the Problem
 
 🧑‍💻 What is LeetCode?
@@ -283,7 +289,7 @@ The easiest thing we can do when users request the leaderboard via /leaderboard/
 In a SQL database, this would be a query like:
 
 ```
-SELECT userId, COUNT(DISTINCT problemId) as numSolvedProblems, MIN(submittedAt) as lastSolveTime
+SELECT userId, COUNT(DISTINCT problemId) as numSolvedProblems, MAX(submittedAt) as lastSolveTime
 FROM submissions
 WHERE competitionId = :competitionId AND passed = true
 GROUP BY userId
@@ -302,7 +308,7 @@ Tying it all together:
 
 - The API server initiates a query to the submission table in our database to get all successful submissions for the competition.
 
-- Whether via the query itself, or in memory, we'll create the leaderboard by ranking users by the number of distinct problems solved, with ties broken by earliest solve time.
+- Whether via the query itself, or in memory, we'll create the leaderboard by ranking users by the number of distinct problems solved, with ties broken by the earliest time of the user's last solve.
 
 - Return the leaderboard to the client.
 

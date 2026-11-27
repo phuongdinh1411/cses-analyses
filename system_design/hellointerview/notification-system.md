@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/notification-system
 
 ---
 
+## Summary
+
+- **Key challenge:** Never dropping an accepted notification while delivering OTPs within 5s, even during campaign blasts of 5,000/sec.
+- **Core design:** The Notification API validates, dedupes, persists to PostgreSQL, and publishes to high- or normal-priority Kafka topics; delivery workers check Redis-cached preferences and call FCM/SendGrid/Twilio; a campaign worker expands segments into 1,000-user batches.
+- **Techniques:** separate priority topics + dedicated workers (OTP SLA isolation); idempotency key with UNIQUE constraint (no duplicates); backoff retries, DLQ, provider failover (at-least-once); batched campaign fan-out with lag-based autoscaling; cached preferences with timezone-aware quiet hours.
+
 ## Understanding the Problem
 
 🔔 **What is a Notification System?**  
@@ -195,7 +201,7 @@ The key insight: once we write the notification to our DB with `status=pending`,
 1. `POST /notifications` → write to DB (status=pending) → publish to Kafka → return `accepted`
 2. Kafka retains messages until consumer commits offset → no loss from consumer crash
 3. Delivery worker: process → call provider → on success: commit Kafka offset + update status to `sent`
-4. On provider failure: **don't commit offset** → Kafka re-delivers to another worker
+4. On provider failure: publish to a delayed retry topic, then commit the offset (Kafka has no per-message redelivery; an uncommitted offset is only re-read after a crash/rebalance)
 
 **Retry with exponential backoff:**
 ```
@@ -237,7 +243,7 @@ High-priority workers are never congested by campaigns. OTP notification → `no
 - Campaign batch messages on `notifications-normal` have many partitions (100+)
 - Autoscale workers: Kubernetes HPA based on consumer lag
 - Target: drain 1M notifications in < 5 min → need 3,333/sec throughput
-- Assuming 10ms per send: 1 worker handles 100 sends/sec → need 33 workers minimum → autoscale up to 200 workers during blasts
+- Assuming 10ms per send: 1 worker handles 100 sends/sec → need 34 workers minimum → autoscale up to 200 workers during blasts
 
 ### 3) How do we prevent duplicate notifications on top of at-least-once delivery?
 

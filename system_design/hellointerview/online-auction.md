@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/online-auction
 
 ---
 
+## Summary
+
+- **Key challenge:** Accepting only strictly higher bids under heavy contention (up to 10K bids/sec on one hot auction, ~167K/sec overall) without losing bids, with <1s live updates.
+- **Core design:** Bids flow through Kafka partitioned by auction_id to one Bid Processor per partition, which validates against in-memory state, writes to PostgreSQL, and publishes to Redis Pub/Sub; SSE servers push new bids to viewers.
+- **Techniques:** optimistic locking with version column (conditional update); pessimistic FOR UPDATE (alternative); single writer per auction (no contention); checkpoint + Kafka replay (recovery); Redis Pub/Sub + SSE (live fan-out); idempotent expiry jobs; shard by auction_id.
+
 ## Understanding the Problem
 
 🛍️ **What is an Online Auction?**  
@@ -224,7 +230,7 @@ This is essentially the **actor model** (Erlang/Akka) or **Kafka Streams statefu
 - On restart: load last checkpoint from DB, replay Kafka messages since checkpoint
 
 **Auction expiry reliability:**
-- Don't rely on a single cron job — use a distributed scheduler (Kafka delayed messages, or a job queue like BullMQ/Sidekiq)
+- Don't rely on a single cron job — use a distributed scheduler (a delayed job queue like BullMQ/Sidekiq; Kafka has no native delayed messages)
 - Auction expiry worker: at `end_time`, mark auction `status=ended`, declare winner, trigger notification
 - Idempotent: even if fired multiple times, only transition from `active → ended` once (compare-and-swap on status)
 
@@ -265,7 +271,7 @@ Bid accepted
 **Redis for hot auction state:**
 - Cache `current_highest_bid` per auction in Redis
 - Reduces DB reads for GET auction requests
-- Write-through cache: update Redis + DB atomically
+- Write-through cache: update DB, then Redis (not atomic across the two; short TTL bounds staleness)
 
 **Kafka partitioning for bid processing:**
 - Partition Kafka by `auction_id`

@@ -9,6 +9,12 @@ permalink: /system_design/sds/distributed-cache
 **Difficulty:** Hard  
 **Topics:** Caching · Consistent hashing · Hot key · Availability · Cache invalidation
 
+## Summary
+
+- **Key challenge:** Serve sub-ms reads at ~1M ops/s while shielding the DB; losing one of 100 shards doubles DB load (10K → ~20K QPS).
+- **Core design:** A routing layer sends keys to shards on a consistent hash ring tracked by a membership service; each shard has an async replica; the app reads cache-aside, filling on miss and deleting on write.
+- **Techniques:** virtual nodes (even load, ~1/N remap); size for working set (~100 GB, not 1 TB); delete-on-write + TTL + leases (stale-fill race); singleflight + jittered TTL (stampedes); salted copies + L1 cache (hot keys); W-TinyLFU (scan-resistant eviction).
+
 ## Problem statement
 
 Design an in-memory caching layer that sits in front of a primary data store and serves reads at sub-millisecond latency for tens of millions of requests per second. The cache must shard across many nodes, survive individual node loss without taking the database down with it, and offer a defensible answer to "what happens when a stale value is served."
@@ -129,9 +135,9 @@ of 1.0 TB dataset
 
 Per-shard memory
 
-~1.3 GB
+~1.4 GB
 
-working set ÷ 100 + 30%
+working set ÷ 100 + 40%
 
 DB load (steady)
 

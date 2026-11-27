@@ -9,6 +9,12 @@ permalink: /system_design/sds/web-crawler
 **Difficulty:** Hard  
 **Topics:** Sharding · Async processing · Bloom filters · Object storage
 
+## Summary
+
+- **Key challenge:** Never overload or get banned by a host while crawling billions of URLs at ~10K fetches/s (~500 MB/s).
+- **Core design:** A sharded, disk-backed two-level frontier feeds workers, which store bytes in an object store and metadata in a DB, then normalize, Bloom-dedup, and enqueue new links. A recrawl scheduler re-enqueues by change rate.
+- **Techniques:** Bloom seen-set (~12.5 GB vs ~400 GB exact, safe-direction errors); Mercator front/back queues (priority + per-host politeness); robots.txt + crawl-delay (no bans); content hash + simhash (duplicate content); depth, size, timeout, redirect caps (traps); conditional GET (cheap recrawl).
+
 ## Problem statement
 
 Design a system that crawls the web: start from a set of seed URLs, fetch each page, extract its links, and keep going — billions of pages deep — so a downstream system (a search index, an archive, a training corpus) has the content.

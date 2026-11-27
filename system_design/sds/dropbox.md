@@ -9,6 +9,12 @@ permalink: /system_design/sds/dropbox
 **Difficulty:** Hard  
 **Topics:** Object storage · Conflict resolution · Async processing
 
+## Summary
+
+- **Key challenge:** (Source page shows only the intro article.) It frames Dropbox as sync: send only changed bytes to every device within seconds and reconcile concurrent edits.
+- **Core design:** Only concepts appear: content-addressed blocks, a metadata service as the authority on current version, and push notifications prompting devices to pull; then a generic building-blocks guide.
+- **Techniques:** block hashes (delta sync + dedup); versions with parent_version (conflict detection); push + poll fallback (fast, never wrong); load balancing, replication/caching, sharding, queues (core scaling blocks).
+
 ## Problem statement
 
 Design a file-sync service like Dropbox: a folder of files lives on many devices, and when a user edits a file on one device, the change appears on every other device within seconds.

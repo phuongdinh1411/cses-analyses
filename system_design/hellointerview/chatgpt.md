@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/chatgpt
 
 ---
 
+## Summary
+
+- **Key challenge:** Stream LLM tokens with <1s time-to-first-token for 200M DAU (~12K prompts/s, ~120K concurrent generations) on scarce, expensive GPUs.
+- **Core design:** Chat API saves the message, builds the prompt from history and enqueues a Kafka job; GPU workers write tokens to a Redis Stream that a stateless Streaming Gateway pushes over SSE; finished replies go to PostgreSQL.
+- **Techniques:** SSE for simple one-way streaming; Redis Stream buffer + Last-Event-ID to resume without re-running the model; Kafka queue whose lag drives autoscaling; paid/free topics + per-user token quotas for fairness; heartbeat reaper re-queues stalled jobs; truncation/summarization to cap context cost.
+
 ## Understanding the Problem
 
 💬 **What is ChatGPT?**  
@@ -42,7 +48,7 @@ ChatGPT is a conversational AI where users send prompts and get responses stream
 
 - **Low time-to-first-token** (< 1 second from submit to first token appearing)
 - Responses should be streamed token-by-token (not all-at-once at the end)
-- The system should scale to **200M DAU** (~20K prompts/sec peak, ~120K concurrent streaming responses)
+- The system should scale to **200M DAU** (~12K prompts/sec average, ~20K peak; ~120K concurrent streaming responses at average load)
 - GPU resources are expensive and limited — must be **efficiently scheduled**
 - Streams must survive **client reconnects** (browser refresh, mobile background)
 
@@ -254,9 +260,9 @@ Each GPU worker:
 
 ### 4) How do we keep heavy users from taking over GPU pools while giving paid tiers better experience?
 
-**Token bucket rate limiting:**
+**Token quota rate limiting (fixed-window counter):**
 
-Per user, track tokens consumed in a rolling window:
+Per user, track tokens consumed in a fixed window:
 - Free tier: 100K tokens/day, 10K tokens/hour
 - Plus tier: 1M tokens/day, 100K tokens/hour
 - Team tier: unlimited
@@ -264,8 +270,8 @@ Per user, track tokens consumed in a rolling window:
 Implementation:
 ```
 Redis:
-  INCR user:{id}:tokens_hour  → atomic increment
-  EXPIRE user:{id}:tokens_hour 3600  → auto-reset hourly
+  INCRBY user:{id}:tokens_hour {tokens_used}  → atomic increment
+  EXPIRE user:{id}:tokens_hour 3600 NX  → TTL set only on first write; auto-reset hourly
   If value > limit: HTTP 429 (rate limited)
 ```
 
@@ -336,7 +342,7 @@ Chat API Server
   ├─ Persist user message → PostgreSQL
   ├─ Load conversation history → PostgreSQL
   ├─ Build prompt (context assembly)
-  ├─ Rate limit check → Redis (token bucket)
+  ├─ Rate limit check → Redis (token quota counter)
   └─ Enqueue → Kafka("jobs-paid" or "jobs-free")
                       ↓
                 GPU Workers (12K pods, one job at a time)

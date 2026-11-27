@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/payment-system
 
 ---
 
+## Summary
+
+- **Key challenge:** Charging exactly once at 10K TPS despite slow, unreliable card-network calls (2–5s), while staying PCI-compliant and never losing transaction data.
+- **Core design:** Merchants create PaymentIntents; Stripe.js sends card data directly to an HSM-backed vault; the Payment Processor scores fraud, authorizes via the card network through an outbox poller, updates PostgreSQL, and publishes events to Kafka for webhooks, audit, and analytics.
+- **Techniques:** tokenization + HSM vault (no raw card storage); idempotency keys (no double charges); transactional outbox (safe external calls); authorize-then-capture (hold before charge); append-only audit log / event sourcing (auditability); synchronous replication (zero loss); shard by merchant_id.
+
 ## Understanding the Problem
 
 💳 **What is Stripe?**  
@@ -241,7 +247,7 @@ If authorization succeeds but capture fails: funds are automatically released af
 
 #### Servers
 
-- **Stateless API servers**: auto-scale behind load balancer; 10K TPS at 50ms avg → 500 concurrent requests → ~10 servers (50 req/sec each) + headroom
+- **Stateless API servers**: auto-scale behind load balancer; 10K TPS at 50ms avg → 500 concurrent requests → ~10 servers (~50 concurrent ≈ 1K req/sec each) + headroom
 - Each payment path: DB write + external card network call (2–5s) → real bottleneck is external call latency, not our compute
 
 #### Kafka

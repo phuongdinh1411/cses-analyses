@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/gopuff
 
 ---
 
+## Summary
+
+- **Key challenge:** Returning availability across DCs within a 1-hour drive in <100ms (~20K queries/sec) while orders stay strongly consistent so no item is sold twice.
+- **Core design:** The Availability Service asks the Nearby Service for reachable DCs, then sums their inventory via Redis cache and Postgres read replicas; the Orders Service writes order + inventory to the Postgres leader in one transaction.
+- **Techniques:** single SERIALIZABLE Postgres transaction (no double booking); radius prune then travel-time service (real drive time, fewer calls); Redis cache, 1-min TTL (read scaling); partition by zip-prefix region (1–2 partitions per query); read replicas (offload reads).
+
 ## Understanding the Problem
 
 ‍💨 What is Gopuff?

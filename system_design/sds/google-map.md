@@ -10,6 +10,12 @@ permalink: /system_design/sds/google-map
 
 Designing a mapping service like Google Maps involves integrating multi-source data — road geometry, landmarks, and live traffic — and processing location updates from 100M daily active users at roughly 41,667 writes per second. The service should be able to load specified areas' streets and buildings, display real-time traffic conditions, search for streets, buildings, and landmarks, and plan navigation routes (providing both the shortest and fastest routes).
 
+## Summary
+
+- **Key challenge:** Turn a location stream from 100M DAU (~41,667 writes/s, rush-hour spikes) into live traffic for a read-heavy (~10:1, ~417K reads/s) map service.
+- **Core design:** Clients stream locations over WebSocket into a message queue; a Real-time Traffic Service stores and analyzes them and caches traffic conditions; a Search Service queries a derived geospatial index; a Routing Service returns shortest and fastest routes.
+- **Techniques:** message queue (absorb rate gaps, failures); geohash prefix cells + 8 neighbours (2-D search on a B-tree); geographic sharding (locality); TTL + event-driven cache invalidation (fresh, fast); Flink/Kafka streaming (traffic within seconds).
+
 ## Functional Requirements
 
 - Real-Time Traffic Information: The service should provide real-time traffic information and adjust routes based on traffic conditions.
@@ -38,7 +44,7 @@ Designing a mapping service like Google Maps involves integrating multi-source d
 
 ## Resource Estimation
 
-Assuming an average usage of 30 minutes per user per day, with a read request made every 5 seconds, the service handles far more read requests than writes. Given this usage pattern, each user would make approximately 360 read requests daily. This translates to approximately 4,166,667 read requests and 41,667 write requests per second.
+Assuming an average usage of 30 minutes per user per day, with a read request made every 5 seconds, the service handles far more read requests than writes. Given this usage pattern, each user would make approximately 360 read requests daily. This translates to approximately 416,667 read requests (360 × 100M ÷ 86,400) and 41,667 write requests per second, about 10:1.
 
 The storage requirement, considering that each entry is 1KB and data is retained for 5 years, is approximately 6 PB.
 

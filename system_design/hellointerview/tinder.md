@@ -11,6 +11,12 @@ permalink: /system_design/hellointerview/tinder
 
 ---
 
+## Summary
+
+- **Key challenge:** Detect mutual matches consistently across ~2B swipes/day (20M DAU × 100) while loading a profile stack in < 300ms that never reshows swiped profiles.
+- **Core design:** Feeds are precomputed cached stacks backed by Elasticsearch geo/filter queries; a Swipe Service records swipes, checks the reciprocal swipe atomically, persists to Cassandra, and notifies matches via APNS/FCM.
+- **Techniques:** Redis Lua script on sorted-pair key (atomic record + match check); Cassandra (durable, write-heavy swipe history); Elasticsearch geo index fed by CDC (fast filtering); precomputed feeds, < 1h TTL (instant load); client swipe cache + Bloom filter (no reshows).
+
 ## Understand the Problem
 
 ❤️ What is Tinder
@@ -219,7 +225,7 @@ My justification here would be that profile view and creation happens far less f
 
 Separating isn't the right choice for all systems, but for this one the pros outweigh the cons.
 
-Given that the swipe interaction is so effortless, we can assume we're going to get a lot of writes to the DB. Additionally, there is going to be a lot of swipe data. If we assume 20M daily active users doing 200 swipes a day on average, that nets us 4B swipes a day. This certainly means we'll need to partition the data.
+Given that the swipe interaction is so effortless, we can assume we're going to get a lot of writes to the DB. Additionally, there is going to be a lot of swipe data. If we assume 20M daily active users doing 100 swipes a day on average, that nets us 2B swipes a day. This certainly means we'll need to partition the data.
 
 Cassandra is a good fit as a database here. We can partition by swiping_user_id. This means an access pattern to see if user A swiped on user B will be fast, because we can predictably query a single partition for that data. Additionally, Cassandra is extremely capable of massive writes, due to its write-optimized storage engine (CommitLog + Memtables + SSTables). A con of using Cassandra here is the element of eventual consistency of swipe data we inherit from using it. We'll discuss ways to avoid this con in later deep dives.
 

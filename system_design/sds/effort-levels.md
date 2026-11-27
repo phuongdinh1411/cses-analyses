@@ -9,6 +9,12 @@ permalink: /system_design/sds/effort-levels
 **Difficulty:** Hard  
 **Topics:** LLM serving · Scheduling & fairness · Admission control · Graceful degradation · Cost accounting
 
+## Summary
+
+- **Key challenge:** Keep low-effort requests fast beside high-effort ones costing 17× more; a 10% high-effort slice uses ~65% of GPU time.
+- **Core design:** A resolver maps each level to a tier policy (thinking-token ceiling, latency target); effort-weighted admission feeds per-tier queues and pools; workers enforce the ceiling; a load controller caps effort; usage goes to accounting.
+- **Techniques:** discrete enum (poolable, billable); budget forcing at ceiling (shallower answer, no hang); slot-weighted admission (KV memory-time); per-tier pools + min share (no starvation); cheap upward-biased router; serve min(router, load ceiling) (degrade, don't drop).
+
 ## Problem statement
 
 Design the serving layer that lets one LLM assistant answer at different reasoning-effort levels: low, medium, high, and max. Effort is the number of internal thinking tokens the model spends before it writes the final answer. A caller picks a level per request, and the system honors it.

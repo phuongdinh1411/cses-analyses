@@ -9,6 +9,12 @@ permalink: /system_design/sds/ad-click-aggregator
 **Difficulty:** Hard  
 **Topics:** Stream processing · Sharding · Availability · Async processing
 
+## Summary
+
+- **Key challenge:** Count each click exactly once for billing at ~10M clicks/s, despite retries and one campaign taking up to 20% (2M/s).
+- **Core design:** The API appends clicks with a client event_id to a durable log; a stream processor dedups and aggregates event-time windows for dashboards, and a batch job recomputes from the log for billing.
+- **Techniques:** event_id idempotency (retries are no-ops); atomic offset+aggregate commit (exactly-once replay); speed + batch layers (fresh vs exact); key salting + pre-shuffle combining (hot campaigns); watermarks (late events).
+
 ## Problem statement
 
 Design a system that records ad clicks and gives advertisers near-real-time aggregates — clicks per campaign, sliced by country or device, over a time window — while also feeding the numbers that go on an advertiser's bill.

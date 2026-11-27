@@ -9,6 +9,12 @@ permalink: /system_design/sds/news-aggregator
 **Difficulty:** Hard  
 **Topics:** Near-duplicate detection · Clustering · Web crawling
 
+## Summary
+
+- **Key challenge:** Group ~1M articles/day from ~50K sources into stories within minutes, avoiding all-pairs comparison (~1T/day vs ~10M with LSH).
+- **Core design:** A crawler frontier recrawls feeds; each parsed article is fingerprinted, looked up in an LSH index, and joined to a cluster or opens one; a ranker writes per-slice feeds to a shared cache.
+- **Techniques:** SimHash/MinHash so near-duplicates get close fingerprints; LSH banding for cheap candidates; incremental assign-or-open clustering for freshness; change-rate recrawl + conditional GET; Bloom-filter URL dedup; recency + importance + diversity ranking.
+
 ## Problem statement
 
 Design a news aggregator: crawl thousands of news sources continuously, then present a fresh, ranked feed of what's happening.

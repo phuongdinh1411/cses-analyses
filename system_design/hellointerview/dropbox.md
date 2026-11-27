@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/dropbox
 
 ---
 
+## Summary
+
+- **Key challenge:** Upload, download and sync files up to 50GB (~1.1 hours at 100Mbps) quickly and resumably, with secure sharing.
+- **Core design:** A File Service stores metadata and issues presigned URLs so clients upload chunks straight to S3 and download via CDN signed URLs; a sync agent pushes local changes and gets remote ones via WebSocket plus polling.
+- **Techniques:** Presigned URLs keep the backend out of the data path; client-side chunking + S3 multipart for progress and resume; SHA-256 fingerprints + ETag/ListParts checks; content-defined chunking for delta sync; SharedFiles (userId → fileId) table for "shared with me"; short-lived signed URLs for access.
+
 ## Understanding the Problem
 
 ☁️ What is Dropbox

@@ -9,6 +9,12 @@ permalink: /system_design/sds/distributed-kv-store
 **Difficulty:** Hard  
 **Topics:** Consistent hashing · Quorum · Replication · Conflict resolution · Availability
 
+## Summary
+
+- **Key challenge:** Stay writable through partitions and node loss (500K puts/s × N=3 = 1.5M physical writes/s), which makes replica divergence inevitable.
+- **Core design:** A consistent hash ring with virtual nodes places each key on N replicas; any node coordinates, waiting for W write acks or R reads; nodes gossip membership and store data in LSM trees.
+- **Techniques:** R + W > N (tunable overlap); vector clocks + sibling merge (concurrent writes); sloppy quorum + hinted handoff (transient failures); Merkle anti-entropy (repair only diffs); gossip (no central config); LSM + Bloom filters (fast writes, cheap reads).
+
 ## Problem statement
 
 Design a horizontally-scalable key-value store — get(key) / put(key, value) — that stays available and low-latency while spread across hundreds of nodes and multiple datacenters. It must survive node and network failures without downtime, scale storage and throughput by adding machines, and offer a defensible answer to "what does a read return after a write that raced a partition?"

@@ -9,6 +9,12 @@ permalink: /system_design/sds/deep-research
 **Difficulty:** Hard  
 **Topics:** AI agents · Async processing · Context management · Caching · Checkpointing
 
+## Summary
+
+- **Key challenge:** Write a fully cited report from ~50 sources (~500K raw tokens vs a 200K window) within a budget of ~1M tokens and minutes.
+- **Core design:** The API returns a job id; queue workers plan sub-questions, search, dedup and summarize each source once, then reduce into findings, sections and report, checkpointing every step and streaming progress over SSE.
+- **Techniques:** async job (minutes-long work); map-reduce with source ids (fit window, keep citations); dedup + cross-job cache (no repeat spend); budget with reserved synthesis (graceful stop); idempotent checkpoints (resume); citation verification (grounding).
+
 ## Problem statement
 
 Design a deep-research feature on top of a chat assistant. A user asks one hard question, such as "How do the leading solid-state battery designs compare on cost and cycle life?" The system plans an investigation, runs many web searches, and reads dozens of sources. After several minutes and many model and tool calls, it returns a long report with citations.

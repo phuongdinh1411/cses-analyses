@@ -11,6 +11,12 @@ permalink: /system_design/hellointerview/web-crawler
 
 ---
 
+## Summary
+
+- **Key challenge:** Crawl 10B pages (~2MB each) in under 5 days, politely (robots.txt, 1 request/sec per domain) and without losing progress.
+- **Core design:** SQS frontier → URL Fetchers (DNS, HTML to S3) → processing queue → parser workers (text to S3, new URLs to frontier), with a Metadata DB tracking URLs, domains and blob links.
+- **Techniques:** Pipelined stages (isolate failures, scale independently); SQS visibility timeout + DLQ (backoff retries); per-domain Redis lock/rate limit with jitter (politeness); ~8 crawlers at ~3,750 pages/s (meets 5 days); DNS caching + multiple providers (DNS bottleneck); URL/content-hash dedup + max depth (waste, traps).
+
 ## Understanding the Problem
 
 🕸️ What is a Web Crawler
@@ -280,7 +286,7 @@ To make this clear, the steps would be:
 
 What about rate limiting?
 
-We also need to respect the rate limit of 1 domain a second. With multiple crawlers, this can get a little trickier since, in theory, all N crawlers could be hitting a single domain at the same time.
+We also need to respect the rate limit of 1 request per second per domain. With multiple crawlers, this can get a little trickier since, in theory, all N crawlers could be hitting a single domain at the same time.
 
 We can implement a global, domain-specific rate limiting mechanism using a centralized data store (like Redis) to track request counts per domain per second. Each crawler, before making a request, checks this store to ensure the rate limit has not been exceeded. We'll use a sliding window algorithm to track the number of requests per domain per second. If the rate limit has been exceeded, the crawler will wait until the next second to make the request.
 

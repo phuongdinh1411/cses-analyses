@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/distributed-cache
 
 ---
 
+## Summary
+
+- **Key challenge:** Serve get/set in <10ms over 1TB (~1B 1KB entries) at 100K RPS, staying available when nodes fail.
+- **Core design:** Each node is a HashMap + doubly linked list (O(1) LRU) with TTL expiry; clients route keys over a consistent-hash ring (topology in ZooKeeper/etcd) to sharded primaries with async replicas.
+- **Techniques:** Consistent hashing + vnodes to limit remapping and balance load; async primary-replica with auto-promotion for HA; lazy + sampled active expiry to bound memory; client L1 cache and key#N copies for hot reads; sharded counters/write coalescing for hot writes; pipelining + connection pools for latency.
+
 ## Understanding the Problem
 
 💾 **What is a Distributed Cache?**  
@@ -187,7 +193,7 @@ Distribute keys across N cache nodes. Naive approach: `node = hash(key) % N` —
 **Consistent hashing solution:**
 - Place nodes on a virtual ring (hash ring 0 to 2^32)
 - Each key maps to the first node clockwise on the ring
-- Adding/removing a node only re-maps keys from its neighbor → average N/total_keys keys move
+- Adding/removing a node only re-maps keys from its neighbor → average total_keys/N keys move
 - Use **virtual nodes** (vnodes): each physical node is represented by K virtual nodes (e.g., K=150) for even key distribution
 
 ```

@@ -9,6 +9,12 @@ permalink: /system_design/sds/online-auction
 **Difficulty:** Hard  
 **Topics:** Fan-out · Consistency · Real-time
 
+## Summary
+
+- **Key challenge:** One hot item is a write hotspot (bids must serialize for one winner) and a read hotspot (~100K watchers × 10 bids/s ≈ 1M updates/s).
+- **Core design:** Bids pass an atomic conditional accept and append to a sequenced bid log; each new price publishes once to a per-auction topic relayed by WebSocket gateways; a scheduler closes from the log.
+- **Techniques:** atomic `amount > current_price` update against lost updates; append-only log as provable truth; latest-wins pub-sub fan-out for cheap broadcast; anti-sniping extension inside the accept step; idempotent close guarded on `status = 'open'`.
+
 ## Problem statement
 
 Design a real-time auction: many bidders compete on an item, each bid must beat the current high, the price climbs live in front of thousands of watchers, and the auction closes at a hard deadline with an unambiguous winner.

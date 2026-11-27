@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/google-news
 
 ---
 
+## Summary
+
+- **Key challenge:** Serving ~12K feed reads/sec (up to 100× during breaking news) in <200ms while new articles appear within 30 minutes.
+- **Core design:** A crawl scheduler polls 10K publisher RSS feeds and pushes new articles to Kafka; an indexer writes PostgreSQL, Elasticsearch, and Redis; the Feed Service serves cursor-paginated feeds via CDN → Redis → PostgreSQL read replicas.
+- **Techniques:** (published_at, id) cursor pagination (stable, O(log N)); 60s CDN cache for first pages (absorbs spikes); Redis sorted-set feed (fast pages); adaptive crawl intervals (freshness vs. load); URL-hash dedupe (idempotent inserts); lock or early refresh (prevents cache stampede).
+
 ## Understanding the Problem
 
 📰 **What is Google News?**  
@@ -179,7 +185,7 @@ Using the compound cursor `(published_at DESC, id DESC)` ensures:
   Score: published_at unix timestamp
   Members: article_id
   ```
-- Pagination: `ZREVRANGEBYSCORE feed:global +inf {cursor_ts} LIMIT 0 20`
+- Pagination: `ZREVRANGEBYSCORE feed:global ({cursor_ts} -inf LIMIT 0 20`
 - Consistent pagination even as new articles arrive (snapshot doesn't change between user's scrolling session)
 
 ### 2) How do we achieve low latency (< 200ms) feed requests?
@@ -276,7 +282,7 @@ Crawl Scheduler (every 15 min per feed)
 
 **Cache stampede prevention:**
 - When a popular cache key expires, many requests simultaneously try to rebuild it
-- Use **probabilistic early expiration** (extend TTL slightly before it expires based on request rate)
+- Use **probabilistic early expiration** (a request randomly recomputes the value shortly before the TTL expires, with probability rising as expiry nears)
 - Or use **Redis distributed lock**: only one request rebuilds the cache at a time; others wait
 
 ---

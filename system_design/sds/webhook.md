@@ -9,6 +9,12 @@ permalink: /system_design/sds/webhook
 **Difficulty:** Easy  
 **Topics:** Async processing · Retries · Idempotency
 
+## Summary
+
+- **Key challenge:** Never lose an accepted event (at-least-once) despite failures, with end-to-end latency under 200 ms at 1M events/day and 5× peaks.
+- **Core design:** The request handler enqueues each event into a durable, replicated queue and returns 200; consumers process it, persist event and result to a replicated DB, then ack.
+- **Techniques:** Enqueue-then-200 (provider retries on failure); ack after DB write (survives consumer crash); backoff retries (transient DB failures); HMAC, IP allowlist, rate limiting (security); 30-day event_id idempotency table (duplicates); fetch latest state + timestamps (out-of-order events).
+
 ## Introduction
 
 Webhooks allow systems to send real-time notifications triggered by specific events. Unlike traditional APIs, which rely on polling, webhooks push data immediately when an event occurs, making them highly efficient and real-time.

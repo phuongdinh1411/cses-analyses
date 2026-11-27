@@ -9,6 +9,12 @@ permalink: /system_design/sds/uber
 **Difficulty:** Hard  
 **Topics:** Geospatial indexing · Write-heavy · Hot key · Availability · Consistency
 
+## Summary
+
+- **Key challenge:** Absorb ~1.25M location updates/s from 5M drivers (~25× reads) yet never assign one driver to two riders.
+- **Core design:** A gateway routes updates to an in-memory, geo-cell-sharded index (~500 MB, no durability). A matching service queries cell + neighbors, refines by distance/ETA, atomically reserves a driver, and writes a durable trip.
+- **Techniques:** Cells sized near match radius (cheap proximity); neighbor ring (no boundary misses); dual maps cell→drivers, driver→location (cheap reads/updates); update coalescing + load-shedding (firehose); per-driver CAS (no double-booking); split hot cells (downtown density).
+
 ## Problem statement
 
 Design the core of a ride-hailing service: drivers continuously report their location, and when a rider requests a ride, the system finds nearby available drivers and matches one.

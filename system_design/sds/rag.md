@@ -9,6 +9,12 @@ permalink: /system_design/sds/rag
 **Difficulty:** Hard  
 **Topics:** Vector search · Embeddings · Hybrid retrieval · Multi-tenancy · Async processing
 
+## Summary
+
+- **Key challenge:** Search ~1B chunk vectors (~3 TB raw) in tens of ms at 10K QPS, with strict tenant/ACL isolation and immediate deletes.
+- **Core design:** Queued ingestion workers chunk, embed, and upsert into sharded ANN and keyword indexes; queries search both with tenant/ACL filters, fuse, re-rank, and return sourced chunks.
+- **Techniques:** HNSW or IVF-PQ trading recall, latency, memory; scatter-gather with replicas; BM25 + vectors fused by RRF; cross-encoder re-rank on a short list; in-traversal filtering + per-tenant indexes for isolation; fresh segment + tombstones for updates; shadow index for model changes.
+
 ## Problem statement
 
 Design a retrieval-augmented generation (RAG) system for "chat with your data." A user asks a question in natural language. The system finds the passages in a private corpus that answer it and hands them, with their sources, to a language model that writes the answer. The corpus belongs to many tenants (customer organizations), holds on the order of 100 million documents, and changes all the time.

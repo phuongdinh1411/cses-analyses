@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/strava
 
 ---
 
+## Summary
+
+- **Key challenge:** Ingest GPS from 10M concurrent activities (~2M points/sec, ~100MB/s) while the app keeps working fully offline.
+- **Core design:** The app records GPS and computes stats on-device, batch-uploading to a stateless GPS Ingest Service → Kafka (by activity_id) → TimescaleDB/Cassandra; activity metadata lives in PostgreSQL.
+- **Techniques:** Offline-first client with SQLite (device is source of truth); idempotent batches on (activity_id, batch_id) (safe retries); Kafka buffer (bursts, replay); time-series store keyed activity_id + timestamp (write throughput); Redis Pub/Sub + WebSocket (live sharing); Redis sorted set per segment (leaderboards).
+
 ## Understanding the Problem
 
 🏃‍♂️🚴‍♀️ **What is Strava?**  

@@ -9,6 +9,12 @@ permalink: /system_design/sds/metrics-monitoring
 **Difficulty:** Hard  
 **Topics:** Time-series storage · Cardinality · Alerting
 
+## Summary
+
+- **Key challenge:** Keep ingest available for ~10M points/s (100M series) while one bad label can explode cardinality and exhaust memory.
+- **Core design:** Agents push batches onto a partitioned log; writers append to a series-sharded time-series store and an inverted label index; rollup jobs build coarser tiers; sharded evaluators run alert rules.
+- **Techniques:** durable log to decouple ingest; type-aware rollups + retention tiers to bound storage and query cost; hard cardinality budgets + relabeling against series explosion; HyperLogLog to estimate cardinality; for-duration + hysteresis to debounce alerts; dead-man's-switch for missing data.
+
 ## Problem statement
 
 Design a metrics monitoring system. Millions of hosts and services emit numeric measurements — request rates, latencies, queue depth, error counts — and engineers watch them on dashboards and get paged when something breaks.
@@ -135,7 +141,7 @@ Raw volume tracks the firehose forever; a 1-day rollup answers the same long-ran
 
 Using the scale in the widget above as a working example: 1 million hosts, each emitting 100 metrics sampled every 10 seconds, is 100 million active series. At one sample every 10 seconds that's 6 points/minute per series, so 100M × 6 / 60 ≈ 10M points/sec — a firehose on the order of ten million points every second.
 
-Assume roughly 2 bytes per compressed raw point. Facebook's Gorilla time-series compression paper reports about 1.37 bytes/point in production, using delta-of-delta timestamps and XOR'd value compression; real ratios vary by encoding and data shape. At 2 bytes/point that's about 10M × 86400 × 2 bytes ≈ 1.7 TB/day of raw data. Keeping raw for a year would be around 620 TB and a single long-range dashboard panel would scan billions of raw points. A 1-day rollup answers the same year-long query by reading one point per series per day instead — 365 points per series over the year, versus roughly 3.15 million raw points each.
+Assume roughly 2 bytes per compressed raw point. Facebook's Gorilla time-series compression paper reports about 1.37 bytes/point in production, using delta-of-delta timestamps and XOR'd value compression; real ratios vary by encoding and data shape. At 2 bytes/point that's about 10M × 86400 × 2 bytes ≈ 1.7 TB/day of raw data. Keeping raw for a year would be around 630 TB and a single long-range dashboard panel would scan billions of raw points. A 1-day rollup answers the same year-long query by reading one point per series per day instead — 365 points per series over the year, versus roughly 3.15 million raw points each.
 
 Read load has a less obvious source: it's not mostly dashboards. A hundred thousand alert rules, each evaluated every 15 seconds, is 100,000 / 15 ≈ 6,700 rule-evaluations per second — often more read pressure on the store than humans looking at panels ever generate.
 

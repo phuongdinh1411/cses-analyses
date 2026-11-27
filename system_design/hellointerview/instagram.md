@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/instagram
 
 ---
 
+## Summary
+
+- **Key challenge:** Serving a chronological feed in <500ms for 500M DAU (~29K feed reads/sec) while ingesting 100M posts/day with photos up to 8MB and videos up to 4GB.
+- **Core design:** Clients upload media straight to S3; the Post Service stores metadata in PostgreSQL and emits Kafka jobs to media workers and a Fan-out Service that fills per-user Redis feed caches, which the Feed Service reads and hydrates.
+- **Techniques:** pre-signed S3 uploads (bypass API servers); async multi-resolution transcoding (fast delivery); CDN, 1-year TTL (immutable media); fan-out on write to Redis sorted sets (cheap reads); pull for >1M-follower accounts (avoid fan-out storms).
+
 ## Understanding the Problem
 
 📸 **What is Instagram?**  
@@ -52,7 +58,7 @@ Instagram is a social media platform primarily focused on visual content, allowi
 - 500M DAU, 100M posts/day → ~1,200 posts/sec writes
 - Feed reads: each user checks feed ~5x/day → ~29K feed reads/sec
 - Storage: 100M posts × avg 2MB photo = 200TB/day new media
-- Read:write ratio ~40:1 (feed dominated)
+- Read:write ratio ~25:1 (feed dominated)
 
 ---
 
@@ -127,7 +133,7 @@ CREATE INDEX idx_follower ON follows(follower_id);
 CREATE INDEX idx_followee ON follows(followee_id);
 ```
 
-For 500M users, the follows table can reach billions of rows. Shard by `follower_id` for fan-out reads.
+For 500M users, the follows table can reach billions of rows. Shard by `follower_id` for pull-model reads ("who do I follow"); fan-out on write needs the reverse lookup, keyed by `followee_id`.
 
 ### 3) Users should be able to see a chronological feed of posts from the users they follow
 

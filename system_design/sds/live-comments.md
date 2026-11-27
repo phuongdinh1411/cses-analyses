@@ -9,6 +9,12 @@ permalink: /system_design/sds/live-comments
 **Difficulty:** Hard  
 **Topics:** Real-time fan-out · Pub-sub · Sampling
 
+## Summary
+
+- **Key challenge:** Reach ~10M viewers of one broadcast within a second or two, when delivering every comment (2,000/s) would be 20B deliveries/s.
+- **Core design:** Comments publish to a per-broadcast pub-sub channel; a sampler caps the stream at ~10/s; a relay tree feeds WebSocket gateways (~100K connections each) that push to viewers.
+- **Techniques:** ranked per-window sampling to bound delivered rate; hierarchical relays for bounded out-degree; no connection registry since delivery is one-to-all; client-side echo of own comment; bounded per-connection buffers + heartbeats; jittered reconnect with best-effort catch-up.
+
 ## Problem statement
 
 Design live comments on a live broadcast: viewers type short comments, and every viewer watching sees new comments stream in near-real-time.

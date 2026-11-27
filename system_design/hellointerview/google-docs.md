@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/google-docs
 
 ---
 
+## Summary
+
+- **Key challenge:** Merging concurrent edits without losing changes and propagating them in <500ms, at ~5M ops/sec across 1M concurrently edited documents.
+- **Core design:** Clients send insert/delete ops over WebSocket to the one stateful Document Server owning that doc (found via a Redis-backed Document Router); its in-process OT Engine transforms, versions, and broadcasts each op, persisting ops to PostgreSQL and snapshots to S3.
+- **Techniques:** Operational Transformation (merge concurrent ops); single Document Server per doc (serialize edits); consistent hashing by doc_id (co-locate collaborators); snapshot every 100 ops + recent op log (fast reload, bounded storage); client pending-ops state machine (responsive local edits).
+
 ## Understanding the Problem
 
 📄 **What is Google Docs?**  

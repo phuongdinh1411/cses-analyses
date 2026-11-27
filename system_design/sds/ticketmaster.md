@@ -9,6 +9,12 @@ permalink: /system_design/sds/ticketmaster
 **Difficulty:** Hard  
 **Topics:** Consistency · Reservation holds · Waiting room · Rate limiting · Async processing
 
+## Summary
+
+- **Key challenge:** Never sell a seat twice while ~1M buyers stampede 50K seats in the first minute (~20 contenders per seat).
+- **Core design:** A waiting room admits users with tokens; browsing reads a cache; a hold is an expiring in-memory key; purchase charges payment, then runs one conditional write in a strongly consistent seat DB.
+- **Techniques:** SET NX EX hold (one winner, auto-expiry); 409 to losers (fail fast); conditional UPDATE WHERE status='available' (final oversell guard); waiting room with signed admission token (absorbs spike); idempotent reserve-charge-confirm saga (survives payment failures, crashes).
+
 ## Ticketmaster and ticket booking system design problem statement
 
 Design a system that sells tickets to events with assigned seats: users browse what's available, pick a seat, and buy it. The same seat must never sell twice.

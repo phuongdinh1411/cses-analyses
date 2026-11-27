@@ -9,6 +9,12 @@ permalink: /system_design/sds/google-calendar
 **Difficulty:** Medium  
 **Topics:** Recurrence rules · Timezones · Fan-out · Caching · Availability
 
+## Summary
+
+- **Key challenge:** Recurring series are unbounded, yet every view (~11,600 reads/s) must show timezone-correct occurrences across daylight-saving changes.
+- **Core design:** A DB sharded by calendar_id stores one event row with an RRULE plus exceptions, attendees and reminders; reads expand rules only within [from, to] into a rendered-view cache; reminders feed a job scheduler.
+- **Techniques:** store rule, expand per window (finite work); EXDATE/overrides + series split (edits); local time + zone id (DST-safe); merge busy, intersect free gaps (free-or-busy); per-attendee projections (single-shard reads); idempotency keys (reminders fire once).
+
 ## Problem statement
 
 Design a calendar service where people create events, repeat them on a schedule, invite others, and see when a group is free. An event has a title, a start, an end, and a timezone. It can repeat — daily, weekly, on weekdays, on the third Thursday of the month. Attendees are invited and respond yes, no, or maybe. Users open a day, week, or month view and expect everything on it, and they can ask "when are these eight people all free next week?" Reminders fire a chosen interval before an event.

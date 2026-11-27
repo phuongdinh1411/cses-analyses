@@ -9,6 +9,12 @@ permalink: /system_design/sds/claude-code-cli
 **Difficulty:** Hard  
 **Topics:** LLM agents · Tool-use loop · Context management · Caching · Sandboxing and permissions
 
+## Summary
+
+- **Key challenge:** A remote model must work on a local repo far bigger than its window (~5M tokens) without damaging the machine; a 15-step task re-sends ~360K tokens.
+- **Core design:** A local CLI loops: call a stateless model API with the full conversation, run requested tools locally behind a permission gate, append results, repeat until end_turn; a context manager compacts and logs sessions.
+- **Techniques:** search/read retrieval (small working set); local tool runtime (act where data lives); deny/allow rules + modes (safety); sandbox + git (limit blast radius); prefix caching (~22% of uncached cost); compaction + step caps (bounded loops).
+
 ## Problem statement
 
 Design a coding agent that runs in a developer's terminal, like Claude Code. The user types a task such as "fix the failing auth test". A local program then drives a large language model (LLM) to read the code, edit files, and run commands until the task is done.

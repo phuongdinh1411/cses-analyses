@@ -9,6 +9,12 @@ permalink: /system_design/sds/payment-system
 **Difficulty:** Hard  
 **Topics:** Consistency · Deduplication · Event sourcing · Async processing · Availability
 
+## Summary
+
+- **Key challenge:** An exactly-once money effect (no double charge, no lost payment) at ~10K payments/s, though the provider can't join your DB transaction.
+- **Core design:** An idempotency gate creates a pending payment; a saga worker authorizes then captures via the provider, writing the debit/credit entries and captured status in one transaction; daily reconciliation follows.
+- **Techniques:** idempotency keys at gate and provider for safe retries; immutable double-entry ledger for derived, auditable balances; saga compensation (void/refund) for observed failures; in_doubt on timeout; settlement-report reconciliation as ground truth; per-account lock or SERIALIZABLE for overdraft checks.
+
 ## Problem statement
 
 Design a system that moves money: a payer is charged, a payee is credited, and the balances are always right — even though every step runs over networks that fail, and an external payment provider (a card network, a bank) that cannot participate in your database transaction.

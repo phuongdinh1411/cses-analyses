@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/fb-live-comments
 
 ---
 
+## Summary
+
+- **Key challenge:** Broadcast comments to every viewer in <200ms across millions of concurrent live videos, some with thousands of comments/s.
+- **Core design:** Comment Management Service writes to DynamoDB and publishes to pub/sub; Realtime Messaging Servers (viewers of one video co-located via an L7 load balancer) push comments over SSE; history loads via cursor-paginated GET.
+- **Techniques:** SSE over WebSockets for read-heavy one-way push; partitioned pub/sub (hash(liveVideoId) % N) + consistent-hash routing so servers get only relevant comments; cursor pagination for stable history; sampling or CDN snapshots for mega-streams; Last-Event-ID + bounded replay for reconnects.
+
 ## Understanding the Problem
 
 📹 What are Facebook Live Comments?

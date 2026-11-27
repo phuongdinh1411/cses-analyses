@@ -12,6 +12,12 @@ permalink: /system_design/hellointerview/robinhood
 
 ---
 
+## Summary
+
+- **Key challenge:** Fan out live prices to 5M concurrent users (~10K trades/sec → ~10M pushes/sec) in < 1s, while orders stay strongly consistent and durable.
+- **Core design:** Price Feed Service caches exchange trades in Redis and publishes to per-symbol Pub/Sub channels that WebSocket servers push to clients; Order Service writes orders to PostgreSQL, calls the exchange synchronously, and applies async fills.
+- **Techniques:** Per-symbol Pub/Sub (servers subscribe only to watched symbols); ~500 WebSocket servers × 10K connections (fan-out); idempotency key (no double orders); DB-write-first + recovery worker (no lost orders); reconciliation job (exchange/DB drift).
+
 ## Understanding the Problem
 
 📈 **What is Robinhood?**  
@@ -56,7 +62,7 @@ Robinhood is a commission-free brokerage that lets users see live stock prices a
 - Peak trade events: ~10K trades/sec across all symbols
 - 5M users × avg 3 symbols watched = 15M subscriptions
 - Price updates to push: 10K trades/sec × avg 1,000 watchers/symbol = 10M pushes/sec (needs fan-out)
-- Orders: retail users → ~100K orders/day at peak → ~2 orders/sec average (easy)
+- Orders: retail users → ~100K orders/day at peak → ~1.2 orders/sec average (easy)
 
 ---
 
@@ -142,7 +148,7 @@ Client → POST /orders → Order Service
   → Write order to DB (status=pending, idempotency_key=unique)
   → Call Exchange API (synchronous): POST /exchange/orders
   → Exchange returns: { exchange_order_id, status }
-  → Update order: status=pending, external_order_id={exchange_order_id}
+  → Update order: status=submitted, external_order_id={exchange_order_id}
   → Return order_id to client
 
 Exchange pushes trade fill event (async):

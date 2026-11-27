@@ -9,6 +9,12 @@ permalink: /system_design/sds/image-generation
 **Difficulty:** Hard  
 **Topics:** GPU serving · Batching · Async processing · Object storage · CDN & delivery economics · Caching
 
+## Summary
+
+- **Key challenge:** Maximize images per GPU-second without skipping safety: 50M images/day × 1.2 GPU-s ≈ 700 busy GPUs (~1,400 at 50% utilization).
+- **Core design:** The API filters the prompt, checks a request-hash cache, and enqueues a job; a scheduler batches same-shape jobs onto GPU workers that stream previews, run an output classifier, and write images to object storage behind a CDN.
+- **Techniques:** async job + progress (seconds-long work); size menu + bounded fill wait (full batches); steps dial + admission control (cost, degradation); request-hash cache (skip repeats); two fail-closed safety gates; regenerate cold tail (deterministic output).
+
 ## Problem statement
 
 Design a service that turns a text prompt into an image. A user submits a prompt plus parameters: the image size, the number of denoising steps, a random seed, and how many images to make. The user gets back one or more generated images.
