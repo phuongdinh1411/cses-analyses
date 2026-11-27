@@ -52,7 +52,7 @@ Input:
 1 2 1 2 3
 
 Output:
-10
+12
 ```
 
 **Explanation:** The valid subarrays with at most 2 distinct values:
@@ -62,7 +62,7 @@ Output:
 - Length 4: [1,2,1,2] = 1 subarray (only values {1,2})
 - INVALID: [1,2,3], [2,1,2,3], [1,2,1,2,3] have 3 distinct values
 
-Total = 5 + 4 + 2 + 1 = 12. (Note: The example output 10 may vary based on problem version.)
+Total = 5 + 4 + 2 + 1 = 12. (The official CSES sample is `1 2 3 1 1` with answer 10; this page uses a different array so the walkthrough shows a window that must shrink.)
 
 ---
 
@@ -294,6 +294,7 @@ while distinct > k:
 ### Mistake 3: Wrong Window Update Order
 
 ```python
+# fragment
 # WRONG - Shrinking before adding
 while distinct > k:
   # shrink

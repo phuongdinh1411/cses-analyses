@@ -49,13 +49,13 @@ After solving this problem, you will be able to:
 ```
 Input:
 8
-1 2 1 3 2 7 4 5
+1 2 1 3 2 7 4 2
 
 Output:
 5
 ```
 
-**Explanation:** The longest subarray with distinct elements is [2, 7, 4, 5] or [3, 2, 7, 4, 5] with length 5. Starting from index 3 (value 3) to index 7 (value 5), all elements are unique.
+**Explanation:** The longest run of distinct songs is `[1, 3, 2, 7, 4]` (indices 2–6), length 5. Extending it to index 7 would repeat song 2.
 
 ---
 
@@ -142,7 +142,7 @@ We exhaustively check every subarray, guaranteeing we find the longest valid one
 
 ### Dry Run Example
 
-Let's trace through with input `n = 8, arr = [1, 2, 1, 3, 2, 7, 4, 5]`:
+Let's trace through with input `n = 8, arr = [1, 2, 1, 3, 2, 7, 4, 2]`:
 
 ```
 Initial: left = 0, seen = {}, max_length = 0
@@ -186,10 +186,13 @@ Step 7: right = 6, arr[6] = 4
   Add 4: seen = {1, 3, 2, 7, 4}
   max_length = max(4, 6-2+1) = 5
 
-Step 8: right = 7, arr[7] = 5
-  5 not in seen
-  Add 5: seen = {1, 3, 2, 7, 4, 5}
-  max_length = max(5, 7-2+1) = 6
+Step 8: right = 7, arr[7] = 2
+  2 IS in seen!
+  Remove arr[2]=1: seen = {3, 2, 7, 4}, left = 3
+  Remove arr[3]=3: seen = {2, 7, 4}, left = 4
+  Remove arr[4]=2: seen = {7, 4}, left = 5
+  Add 2: seen = {7, 4, 2}
+  max_length = max(5, 7-5+1) = 5
 
 Final answer: 5
 ```
@@ -197,7 +200,7 @@ Final answer: 5
 ### Visual Diagram
 
 ```
-Array: [1, 2, 1, 3, 2, 7, 4, 5]
+Array: [1, 2, 1, 3, 2, 7, 4, 2]
 Index:  0  1  2  3  4  5  6  7
 
 Step-by-step window movement:
@@ -208,7 +211,7 @@ Step-by-step window movement:
       [1, 3, 2]              len=3  seen={1,3,2}   (removed 2, added 2)
       [1, 3, 2, 7]           len=4  seen={1,3,2,7}
       [1, 3, 2, 7, 4]        len=5  seen={1,3,2,7,4}
-      [1, 3, 2, 7, 4, 5]     len=6  seen={1,3,2,7,4,5}
+               [7, 4, 2]     len=3  seen={7,4,2}   (removed 1, 3, 2; added 2)
 ```
 
 ### Code

@@ -38,7 +38,7 @@ After solving this problem, you will be able to:
 - Line 2: n integers representing the array elements
 
 **Output:**
-- Four distinct indices (1-indexed) whose values sum to x
+- Four distinct indices (1-indexed) whose values sum to x; any valid answer is accepted
 - Print "IMPOSSIBLE" if no such quadruplet exists
 
 **Constraints:**
@@ -56,6 +56,8 @@ Input:
 Output:
 1 2 3 4
 ```
+
+Any valid quadruplet is accepted. Here `2 + 7 + 5 + 1 = 15`; the solution below prints `1 4 5 6` (`2 + 1 + 9 + 3 = 15`), which is equally correct.
 
 **Explanation:** arr[1] + arr[2] + arr[3] + arr[4] = 2 + 7 + 5 + 1 = 15 (using 1-indexed values)
 
