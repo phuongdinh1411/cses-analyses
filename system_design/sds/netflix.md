@@ -4,55 +4,10 @@ title: "Design Netflix — System Design School"
 permalink: /system_design/sds/netflix
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Netflix
 
-mediumVideo streamingCDN & delivery economicsAdaptive bitratePre-positioningObject storageAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Video streaming · CDN & delivery economics · Adaptive bitrate · Pre-positioning · Object storage · Async processing
 
 ## Problem statement
 
@@ -362,58 +317,4 @@ On top of these, there are ad hoc knowledge you would want to know tailored to c
 
 Finally, we have a series of practical problems for you to work through. You can find the problem in /problems. This hands-on practice will not only help you apply the principles learned but will also enhance your understanding of how to use the building blocks to construct effective solutions. The list of questions grow. We are actively adding more questions to the list.
 
-Read the rest of this article and practice this problem with a FREE account
-
-Login
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Matheus da Silva Belo
-
-Excelente! gostei muito. System Design da Netflix é direto ao ponto e eficaz em sua funcionalidade.
-
-Mon Feb 23 2026
-
-Saddique Khan
-
-A great post. However I thought the Netflix entire architect would be unfold here.
-
-Sun Oct 05 2025
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsRenditionCodecEncoding ladderSegments and the manifestAdaptive bitrate (ABR)Rebuffering1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint versus the non-negotiable property2. Back-of-the-envelope estimation2.1 Peak egress2.2 The fallback is still enormous2.3 Catalog storage — large but bounded3. API design3.1 Ingest a master3.2 Fetch the manifest3.3 Fetch the segments3.4 Save the resume position3.5 Browse the catalog4. Data model4.1 Start with one entity: the title4.2 One title plays at many qualities: the rendition4.3 A rendition isn't one file: the segment4.4 Licensing is regional: availability4.5 Resume is per-profile: the playback position4.6 Where each entity lives5. High-level design5.1 The naive version5.2 Fix 1: transcode into a ladder of segments5.3 Fix 2: run transcoding on an async fleet5.4 Fix 3: serve playback from edge caches5.5 Fix 4: pre-position the catalog into ISP-embedded caches5.6 Fix 5: keep resume off the byte path5.7 The composed design6. Deep dives6.1 The transcode pipeline and per-title encoding6.2 Delivery economics and pre-positioning6.3 ABR playback, fast start, and resume7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback
+*(The rest of this article is behind a login on the source site.)*

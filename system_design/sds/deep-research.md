@@ -4,55 +4,10 @@ title: "Design Deep Research Agent — System Design School"
 permalink: /system_design/sds/deep-research
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Deep Research
 
-hardAI agentsAsync processingContext managementCachingCheckpointing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** AI agents · Async processing · Context management · Caching · Checkpointing
 
 ## Problem statement
 
@@ -126,8 +81,6 @@ Key idea. The window limits what one call can see; map-reduce compresses sources
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements. Then name the one property you will not trade away and the one constraint that shapes the design.
 
 ### 1.1 Functional requirements
@@ -163,8 +116,6 @@ Groundedness is the non-negotiable property. A shorter report is acceptable; an 
 Key idea. Protect groundedness; design around the budget; the collision point is how many sources to read and how much to compress them.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 A research job is sized in tokens, not requests. The calculator uses the illustrative inputs below; move the sliders to see when the raw text and the summaries stop fitting in one window.
 
@@ -219,8 +170,6 @@ With sequential model calls and page fetches, a job takes on the order of 5 minu
 Key idea. The binding numbers are about a million tokens and minutes of wall-clock per job; raw sources overflow the window by more than 2×, and per-source summaries shrink them about 20×.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -298,8 +247,6 @@ Key idea. Each entity exists because the previous one could not hold it; source 
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Reading the diagrams. Components added in each step have a dashed pink outline and a NEW badge.
 
 ### 5.1 One synchronous request
@@ -341,8 +288,6 @@ The sequence below shows one job from submission to report.
 Key idea. Each component answers one failure: the queue answers request timeouts, checkpoints answer crashes, map-reduce answers the window, the cache answers duplicate spend, and the budget guard answers runaway loops.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The agent loop and context management
 
@@ -506,27 +451,15 @@ Hide AllReveal All
 
 1)Why must a deep-research job run asynchronously instead of inside one HTTP request?
 
-Show Answer
-
 2)Why can't the system paste all fetched pages into the synthesis prompt?
-
-Show Answer
 
 3)How do citations survive several levels of summarization?
 
-Show Answer
-
 4)Why does this design not need compensating transactions on resume?
-
-Show Answer
 
 5)What happens when a job hits its token cap with sub-questions left?
 
-Show Answer
-
 6)When does a multi-agent orchestrator-worker setup pay off?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -535,43 +468,3 @@ Show Answer
 - Introducing deep research — OpenAI — the product this problem models, and its o3-based agent trained with reinforcement learning on browsing.
 
 - How we built our multi-agent research system — Anthropic — the orchestrator-worker variant, its 90.2% eval gain, about 15× token use, and the 80% token-variance finding.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe context windowThe agent loop (ReAct)Map-reduce summarizationCheckpointingGrounding1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Tokens per job2.2 Sources and the window2.3 Wall-clock time3. API design3.1 Submit a question3.2 Read status3.3 Stream progress3.4 Cancel3.5 Fetch the report4. Data model4.1 The research job4.2 The plan4.3 The source4.4 The finding4.5 The report and how they relate4.6 Where each entity lives5. High-level design5.1 One synchronous request5.2 Fix 1: run the research as a background job5.3 Fix 2: checkpoint each step and stream progress5.4 Fix 3: compress with map-reduce, store raw text separately5.5 Fix 4: dedup and cache sources5.6 Fix 5: enforce an effort budget5.7 The composed design6. Deep dives6.1 The agent loop and context management6.2 Cost and latency budgeting6.3 Reliability and grounding7. Variants7.1 10× scale7.2 Multi-agent orchestrator-worker7.3 Private corpus7.4 Conversational refinement8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

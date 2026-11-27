@@ -4,55 +4,10 @@ title: "Design Effort Levels in System Design — System Design School"
 permalink: /system_design/sds/effort-levels
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Reasoning Effort Levels
 
-hardLLM servingScheduling & fairnessAdmission controlGraceful degradationCost accounting
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** LLM serving · Scheduling & fairness · Admission control · Graceful degradation · Cost accounting
 
 ## Problem statement
 
@@ -140,8 +95,6 @@ Key idea. Effort is a thinking-token ceiling, and its true cost is KV memory hel
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the one property that must not break and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -175,8 +128,6 @@ Isolation is the non-negotiable property. A user who asks a quick question must 
 Key idea. Protect low-effort responsiveness; size and schedule by effort mix, not request count.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 All inputs below are illustrative assumptions. The goal is to find which quantity actually shapes the fleet.
 
@@ -256,8 +207,6 @@ Key idea. A 10% high-effort slice can use about 65% of the GPU time, so fleet si
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 Should the API take effort as an enum (low, medium, high, max) or as a raw thinking-token count?
@@ -306,8 +255,6 @@ Key idea. Separate the policy (tier), the placement (pool), the transient work (
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Reading the diagrams. Components added in each step have a dashed pink outline and a NEW badge.
 
 ### 5.1 One fixed generation path
@@ -349,8 +296,6 @@ This is the composed design. The request path for one high-effort call is below.
 Key idea. Each component answers one failure: a tier policy for choice, weighted admission for true cost, per-tier pools for isolation, a router for selection, and a load controller for saturation.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Effort as a thinking-token budget
 
@@ -552,27 +497,15 @@ Hide AllReveal All
 
 1)Why should fleet capacity be measured in effort-weighted GPU-seconds instead of requests per second?
 
-Show Answer
-
 2)Why is a high-effort request expensive in memory, not only in compute?
-
-Show Answer
 
 3)What happens when a request reaches its thinking budget?
 
-Show Answer
-
 4)Why does a minimum share per pool protect both tiers?
-
-Show Answer
 
 5)Why should an auto-router bias toward higher effort?
 
-Show Answer
-
 6)Under saturation, how is the served effort level computed, and why not reject requests?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -587,49 +520,3 @@ Show Answer
 - Self-Consistency Improves Chain of Thought Reasoning in Language Models — sampling several reasoning chains and taking a majority vote.
 
 - Introducing GPT-5 — OpenAI — a real-time router that chooses between a fast model and a deeper reasoning model.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Suryaprakash Senthil Kumar
-
-Great article! However, I was unable to understand why an auto-router should bias towards an "higher-effort" . Any pointers on this would be greatly appreciated
-
-Sun Nov 01 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThinking tokens and the answerThe thinking budgetKV cache and memory-timeEffort-weighted capacity1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimationCost per requestDaily decode loadFleet sizeLatency per request3. API design4. Data model5. High-level design5.1 One fixed generation path5.2 Resolve effort to a tier policy5.3 Effort-weighted admission5.4 Per-effort queues and pools5.5 Explicit effort or an auto-router5.6 Degrade by lowering effort, then account6. Deep dives6.1 Effort as a thinking-token budget6.2 Scheduling and fairness6.3 Auto-effort routing and degradation6.4 Failure modes7. Variants10× scaleA heavier max tierPer-user or per-plan caps8. The transferable patternReviewQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

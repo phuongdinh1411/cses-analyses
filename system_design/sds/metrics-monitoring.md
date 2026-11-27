@@ -4,55 +4,10 @@ title: "Design Metrics Monitoring System — System Design School"
 permalink: /system_design/sds/metrics-monitoring
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Metrics Monitoring System
 
-hardTime-series storageCardinalityAlerting
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Time-series storage · Cardinality · Alerting
 
 ## Problem statement
 
@@ -112,8 +67,6 @@ Key idea. A metric point's type (counter, gauge, histogram) decides how it rolls
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Ingest metric points — (name, labels, timestamp, value) — for counters, gauges, and histograms, from many hosts. A histogram travels as multiple series: one counter per bucket plus a sum and a count.
@@ -141,8 +94,6 @@ Practice this problem: Requirements
 Ingest availability is non-negotiable — a system that drops metrics is most likely to drop them exactly when something is on fire and they matter most. But storing every raw point forever, and tracking every series a bad label ever produces, would make storage and memory both unbounded. The resolution is the trade named earlier: downsample and age out data by retention tier, and cap the number of series with hard cardinality limits. That trade is available here because this is monitoring — a rounded-off answer to "is the system healthy?" is acceptable — and it is exactly the trade a billing-grade system like Ad Click Aggregator cannot make.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Hosts (millions)1.0M
 
@@ -192,8 +143,6 @@ Key idea. Rollups and retention bound this system: without them, storage tracks 
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A synchronous POST per metric point would need to handle ten million requests a second. What does the write endpoint need that a normal create endpoint doesn't?
@@ -240,8 +189,6 @@ Key idea. The point defines what a single sample is; the series index defines ho
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest thing that could work: one database, written to directly, queried directly.
 
 Four problems break this the moment it faces real load: millions of points per second overwhelm one database's write path; long-range queries over raw data are slow and raw storage grows forever; a single bad label can explode the series count and blow out memory; and nothing here evaluates alert rules continuously. Fix them one at a time.
@@ -269,8 +216,6 @@ These boxes are the data model's homes made concrete. Raw points and rollups liv
 Key idea. Each of the four fixes traces back to a concrete failure of the naive single-database design — the write firehose, unbounded raw storage, cardinality blowup, and the missing evaluation loop — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Time-series storage: rollups and retention tiers
 
@@ -392,27 +337,15 @@ Hide AllReveal All
 
 1)Why does a rollup job need to know a metric's type (counter, gauge, or histogram)?
 
-Show Answer
-
 2)What is cardinality, and why does it threaten memory before raw point volume does?
-
-Show Answer
 
 3)Why is ingest a batched, fire-and-forget POST rather than one synchronous call per point?
 
-Show Answer
-
 4)What does the query 'step' parameter actually control, and why does it matter for cost?
-
-Show Answer
 
 5)Two evaluator workers could both fire a rule's transition on the same tick after a rebalance. How is a duplicate page avoided?
 
-Show Answer
-
 6)Why must 'no data at all' be independently alertable, separate from threshold rules?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -421,43 +354,3 @@ Show Answer
 - HyperLogLog — original paper — the distinct-value-counting sketch used here to estimate active series cardinality without tracking every series exactly.
 
 - Gorilla: A Fast, Scalable, In-Memory Time Series Database — Facebook — reports ~1.37 bytes/point using delta-of-delta timestamp and XOR value compression, the source for the compression-ratio estimate used above.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsMetric types: counters, gauges, histogramsSeries and cardinalityRollups and retention tiers1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: an ingestion pipelineFix 2: rollup jobs and retention tiersFix 3: a series index with cardinality limitsFix 4: an alert-evaluation engine6. Deep dives6.1 Time-series storage: rollups and retention tiers6.2 High cardinality — the failure mode that actually breaks this system6.3 Alert evaluation at scale7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,61 +4,13 @@ title: "Design Twitter — System Design School"
 permalink: /system_design/sds/twitter
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Twitter
 
-Fan-outCachingCelebrity problem
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Topics:** Fan-out · Caching · Celebrity problem
 
 We aim to design a simplified version of Twitter, a popular social media platform where users can post tweets, follow or unfollow other users, and view the tweets of the people they follow. The platform also includes a recommendation algorithm that suggests content to users based on their preferences and interactions.
 
 ## Functional Requirements
-
-Practice this problem: Functional Requirements
 
 - Tweeting: Users should be able to write and post new tweets.
 
@@ -67,8 +19,6 @@ Practice this problem: Functional Requirements
 - Timeline: Users should be able to view a list of tweets from the people they follow, as well as content recommended by the recommendation algorithm.
 
 ## Non-Functional Requirements
-
-Practice this problem: Non-Functional Requirements
 
 - 300M DAUs
 
@@ -87,8 +37,6 @@ Practice this problem: Non-Functional Requirements
 - Security
 
 ## Resource Estimation
-
-Practice this problem: Resource Estimation
 
 Assuming a read-write ratio of 100:1.
 
@@ -113,8 +61,6 @@ The API endpoints could include:
 - GET /timeline?last={timestamp} for retrieving timeline tweets.
 
 ## High-Level Design
-
-Practice this problem: High-Level Design
 
 This design applies the system design template.
 
@@ -257,63 +203,3 @@ Unlock 100+ lessons with full course access
 Access to all future content while subscribed
 
 Upgrade
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Michał Dobrzański
-
-You're missing an arrow from Read service to the Database. As some timeline might not be prepared yet.
-
-Also this happens for the celebrity hybrid fan-out case, when users have not been active.
-
-Mon Sep 22 2025
-
-Jean-Christian Imbeault
-
-For the timeline cache, mow many tweets does it hold? Is it able to go back years? Asking as this sounds like the timeline service will work well for going back days or weeks, but I can't imagine that it work if I wanted to go back 10 years ...
-
-Fri Oct 18 2024
-
-Sheldon Chi
-
-Great question. If a user doesn't login for a while and becomes "dormant", the timeline cache may evict the entry. If it does become online again, we can do a pull to get his latest timeline.
-
-Sat Oct 19 2024
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Functional RequirementsNon-Functional RequirementsResource EstimationAPI Endpoint DesignHigh-Level DesignFan-out-on-writeRecommended ContentThe Composed DesignDetailed DesignDatabase TypeData SchemaDatabase PartitioningDatabase ReplicationData Retention and CleanupCacheAnalyticsSecurityFollow Up Detailed Design Questions and AnswersReferences
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageFunctional Requirements0%
-
-Send feedback

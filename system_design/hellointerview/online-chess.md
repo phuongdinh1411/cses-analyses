@@ -278,26 +278,25 @@ As described in HLD:
 - Top-100 query: O(log N + 100) → microseconds
 
 **Rating update atomicity:**
-Both players' ratings update after a game. Must be atomic to avoid inconsistency:
+Both players' ratings change together after a game. Redis and PostgreSQL cannot share one transaction, so commit to the source of truth first and treat Redis as a rebuildable cache:
 
 ```python
-# After game finishes:
-white_new_rating, black_new_rating = compute_elo(white_old, black_old, result)
+# fragment: after a game finishes
+white_new, black_new = compute_elo(white_old, black_old, result)
 
-# Atomic multi-key update in Redis:
-pipe = redis.pipeline()
-pipe.zadd("leaderboard", {white_id: white_new_rating})
-pipe.zadd("leaderboard", {black_id: black_new_rating})
-pipe.execute()
+with pg.transaction():  # source of truth: both rows or neither
+    pg.execute("UPDATE players SET rating = %s WHERE id = %s", (white_new, white_id))
+    pg.execute("UPDATE players SET rating = %s WHERE id = %s", (black_new, black_id))
 
-# Also update PostgreSQL (source of truth):
-UPDATE players SET rating = :new_rating WHERE id = :id;
+pipe = redis.pipeline(transaction=True)  # MULTI/EXEC: both ZADDs apply together
+pipe.zadd("leaderboard", {white_id: white_new, black_id: black_new})
+pipe.execute()  # if this fails, a reconciler re-syncs from PostgreSQL
 ```
 
 **Redis as a cache for leaderboard display:**
-- PostgreSQL is source of truth
-- Redis sorted set is rebuilt from PostgreSQL on startup
-- If Redis crashes: rebuild from PostgreSQL in ~5 min (10M rows × 1μs insert = 10 seconds for Redis; reading from PG takes longer)
+- PostgreSQL is the source of truth.
+- The Redis sorted set is rebuilt from PostgreSQL on startup or after a crash.
+- The rebuild is dominated by scanning 10M rows from PostgreSQL. The ZADDs themselves, pipelined in batches, take seconds.
 
 **Near-rank queries ("who's around me?"):**
 ```

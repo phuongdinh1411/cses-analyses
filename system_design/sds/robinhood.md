@@ -4,55 +4,10 @@ title: "Design Robinhood (Stock Trading) — System Design School"
 permalink: /system_design/sds/robinhood
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Robinhood (Stock Trading)
 
-hardReal-time fan-outLedger consistencySagas
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Real-time fan-out · Ledger consistency · Sagas
 
 ## Problem statement
 
@@ -112,8 +67,6 @@ Key idea. Idempotency keys make retries safe, a double-entry ledger makes every 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Stream live quotes for the symbols a user follows, updating in real time.
@@ -141,8 +94,6 @@ Practice this problem: Requirements
 Correctness on the order and ledger path is non-negotiable — money and shares must move exactly once and remain auditable. But the property that actually shapes the architecture is that this is really two subsystems with opposite properties. Execution happens on an external exchange that can't share a transaction with anything in this system, and fills arrive back asynchronously. The read subsystem is huge, soft-real-time, and tolerates loss; the write subsystem is comparatively modest in volume but tolerates nothing at all. The two collide exactly at the trade: a decision made on a best-effort streamed price must produce an exactly-once, strongly-consistent change to cash and shares. That collision is why the two halves are built as genuinely separate subsystems, and why the order path carries idempotency, a state machine, and reconciliation.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Daily active users (millions)10M
 
@@ -185,8 +136,6 @@ The order path is far smaller but far spikier. Suppose 5% of users place about 1
 Key idea. The read (price) subsystem runs orders of magnitude higher in raw message volume than the write (order/ledger) subsystem, yet the write side carries all of the correctness cost — the two halves have completely different scaling drivers, which is exactly why they're built as separate systems.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -238,8 +187,6 @@ Key idea. Four of the five entities need strong consistency because they represe
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest thing that could work: one database, and the buy button writes a row.
 
 Four things break the moment this faces real trading: millions of clients want live prices that change many times a second, and a database read per viewer for a broadcast value is the wrong shape entirely; placing an order must not oversell cash or shares and must survive retries, yet concurrent orders on one account and a retried submit both threaten that; orders don't execute inside this database at all — they route to an external exchange and fill asynchronously, sometimes in pieces; and balances must be provable and reconcilable, since a lost or double-applied fill is someone's real money. Fix them one at a time.
@@ -267,8 +214,6 @@ These stores are the data model's homes made concrete. Account, Position, Order,
 Key idea. Each fix traces to a concrete failure of the naive single-database design — broadcast reads on the wrong shape, unsafe concurrent writes, an un-transactable external exchange, and unprovable balances — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Market-data fan-out
 
@@ -418,66 +363,16 @@ Hide AllReveal All
 
 1)Why are market-data fan-out and the order/ledger path built as two separate subsystems instead of one unified system?
 
-Show Answer
-
 2)What does conflation do, and why is dropping intermediate price ticks safe here but dropping an order update would not be?
-
-Show Answer
 
 3)A buy order's exchange call times out. Why is it wrong to either resubmit it or assume it filled?
 
-Show Answer
-
 4)How does the system prevent two concurrent orders on the same account from both spending the same dollars?
 
-Show Answer
-
 5)Why does a double-entry ledger make balances more trustworthy than directly updating a cash_balance column?
-
-Show Answer
 
 ## Sources and further reading
 
 - Idempotent requests — Stripe API docs — the idempotency-key contract behind retry-safe order submission, where the same key always returns the same order.
 
 - Sagas — Garcia-Molina & Salem, SIGMOD 1987 — the original paper on long-lived transactions as local steps plus compensations, the model behind the order lifecycle (reserve → route → fill, with compensation on cancel).
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsIdempotency keys for safe retriesDouble-entry ledgers as the source of truthSagas for multi-step operations without a distributed transaction1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: a market-data fan-out subsystem, separate from the transactional pathFix 2: an order service behind an idempotency gate, writing a strongly-consistent storeFix 3: an order router and an order state machineFix 4: the ledger as source of truth, plus reconciliation6. Deep dives6.1 Market-data fan-out6.2 The order lifecycle and the exactly-once ledger6.3 Concurrency on the account and the exchange round-trip7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

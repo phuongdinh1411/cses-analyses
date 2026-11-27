@@ -4,55 +4,10 @@ title: "Design Distributed Cache — System Design School"
 permalink: /system_design/sds/distributed-cache
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Distributed Cache
 
-hardCachingConsistent hashingHot keyAvailabilityCache invalidation
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Caching · Consistent hashing · Hot key · Availability · Cache invalidation
 
 ## Problem statement
 
@@ -118,8 +73,6 @@ Key idea. A distributed cache is a counter-free hash table made fault-tolerant: 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the property you would never compromise and the constraint that drives the design. They are different here.
 
 ### 1.1 Functional requirements
@@ -153,8 +106,6 @@ Correctness within the contract is the property to protect: a cache may be stale
 Key idea. Protect correctness-within-contract; design around hit rate, because hit rate decides how much load reaches the store.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers size three things: the working set (so the cache is cheap), per-shard memory, and the database load a miss creates — especially the cold-start load when a shard dies. The figures are illustrative anchors.
 
@@ -214,8 +165,6 @@ Key idea. The binding number is cold-start database load — a dead shard's keys
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A caller needs to increment a shared counter held in the cache from many app servers at once. Should they do GET then SET, or is a single operation needed?
@@ -272,8 +221,6 @@ Key idea. The value is opaque bytes; the key's shape decides its shard, its card
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is built incrementally; each failure mode motivates the next component.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -307,8 +254,6 @@ The application owns the fill on a miss — the cache server never talks to the 
 Key idea. Each component answers one failure: shard for capacity, routing + membership so a request finds its key, a replica so a node death is survivable — and the app, not the cache, fills on a miss.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The routing topology
 
@@ -430,27 +375,15 @@ Hide AllReveal All
 
 1)Why size the cache for the working set rather than the full dataset?
 
-Show Answer
-
 2)What is the cache-aside race, and how do you defend against it?
-
-Show Answer
 
 3)Why does a dead shard threaten the database, and how do you size for it?
 
-Show Answer
-
 4)Why does replicating a hot key's shard not help, while replicating the key does?
-
-Show Answer
 
 5)Why is asynchronous replication the default for a cache, unlike for a database?
 
-Show Answer
-
 6)Why prefer delete-on-write over updating the cache in place?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -463,43 +396,3 @@ Show Answer
 - Caching patterns (read-through / write-through / write-behind / refresh-ahead) — Oracle Coherence docs — precise definitions of the write-path strategies.
 
 - Consistent hashing and libketama — metabrew — virtual nodes and the ring used by Memcached clients.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsSharding and routingHit rate and the working setReplication and failoverInvalidationHot keys and stampedes1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Working set, not dataset2.2 Per-shard throughput2.3 Database load, steady versus cold3. API design3.1 Core operations3.2 The operations that define a distributed cache4. Data model4.1 The cache entry4.2 Where each key lives5. High-level design5.1 A single cache box5.2 Fix 1: shard the keyspace5.3 Fix 2: a routing layer and a membership service5.4 Fix 3: replicate each shard5.5 The composed read path6. Deep dives6.1 The routing topology6.2 Invalidation correctness6.3 Cold start and shard loss6.4 Hot keys and stampedes7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

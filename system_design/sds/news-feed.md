@@ -4,55 +4,10 @@ title: "Design News Feed — System Design School"
 permalink: /system_design/sds/news-feed
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a News Feed
 
-hardFan-outFeed rankingCelebrity problemAsync processingCachingAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Fan-out · Feed ranking · Celebrity problem · Async processing · Caching · Availability
 
 ## Problem statement
 
@@ -120,8 +75,6 @@ Key idea. Push and pull trade write cost for read cost; the celebrity tail break
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design. They are different here.
 
 ### 1.1 Functional requirements
@@ -159,8 +112,6 @@ Two distinct things deserve a sentence each. Availability is the non-negotiable 
 Key idea. Availability is the property you protect; read latency is the constraint you design around; fan-out amplification is the load you must bound.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The estimate exists to show, with numbers, that fan-out amplification — not raw post volume — is the load that shapes the design. The figures are illustrative anchors derived from the scale assumptions, not measured values. The calculator shows how reads, writes, and amplification respond to the inputs.
 
@@ -209,8 +160,6 @@ Posts at about 500 bytes each accumulate on the order of tens of terabytes per y
 Key idea. The load that matters is fan-out amplification — a million timeline writes per second, spiking 50× on a single celebrity post.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -282,8 +231,6 @@ Key idea. Posts and the graph are sources of truth; the timeline is derived stat
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Rather than present the final system, build it from the simplest design that works and let each failure introduce the next component.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge, so you can see what changed from the step before.
@@ -351,8 +298,6 @@ Strong-answer criteria. Deriving each component from a specific failure, splitti
 Key idea. Each component answers one failure of the naive design: push for cheap reads, a threshold for the celebrity write spike, a fronting cache for the celebrity read hot key, and read-path ranking for relevance.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Four topics are central: why fan-out and ranking are coupled, how ranking scores the candidate set, the celebrity problem, and managing the derived timeline cache.
 
@@ -522,72 +467,18 @@ Hide AllReveal All
 
 1)Why are fan-out and ranking treated as one coupled decision rather than two independent ones?
 
-Show Answer
-
 2)Why does a single celebrity post break pure fan-out-on-write (push)?
-
-Show Answer
 
 3)Why is the materialized timeline cache not a data-loss risk when a shard dies?
 
-Show Answer
-
 4)Why can the fan-out queue be at-least-once rather than exactly-once?
-
-Show Answer
 
 5)What keeps thousands of simultaneous misses on a fresh celebrity post from stampeding the post store?
 
-Show Answer
-
 6)Why does the read path run timeline reads and celebrity pulls in parallel?
 
-Show Answer
-
 7)What does the threshold T control, and what happens to it at larger scale?
-
-Show Answer
 
 ## Sources and further reading
 
 - Fan-out: building a scalable feed — Stream — the hybrid push/pull model, and why skipping inactive followers cuts fan-out work substantially.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes a feed hardKey conceptsPush versus pullThe materialized timelineThe celebrity problemTwo-stage rankingAvailability over consistency1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Reads2.2 Writes and fan-out amplification2.3 Storage3. API design3.1 Create a post3.2 Read the home feed3.3 Follow and unfollow3.4 Record engagement4. Data model4.1 The post4.2 The follow edge4.3 The materialized timeline4.4 Where each entity lives5. High-level design5.1 Pure pull5.2 Fix 1: pre-assemble timelines with push5.3 Fix 2: split push and pull at a threshold5.4 Fix 3: front celebrity reads with a replicated cache5.5 Fix 4: rank the candidate set on the read path5.6 The read path and its latency budget5.7 The composed design6. Deep dives6.1 Fan-out and ranking are coupled6.2 Ranking the candidate set6.3 The celebrity problem6.4 Managing the timeline cache7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

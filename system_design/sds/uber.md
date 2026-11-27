@@ -4,55 +4,10 @@ title: "Design Uber / Nearby Drivers — System Design School"
 permalink: /system_design/sds/uber
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Uber / Nearby Drivers
 
-hardGeospatial indexingWrite-heavyHot keyAvailabilityConsistency
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Geospatial indexing · Write-heavy · Hot key · Availability · Consistency
 
 ## Problem statement
 
@@ -116,8 +71,6 @@ Key idea. A geo-cell index makes proximity a cell-plus-neighbors lookup; locatio
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the property you would never compromise and the constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -149,8 +102,6 @@ Match exclusivity is the property to protect: a driver must never be assigned to
 Key idea. Protect match exclusivity with strong per-driver consistency; design the index around a write firehose of ephemeral data.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers establish that writes dominate and the index is small enough to live in memory. Illustrative anchors.
 
@@ -202,8 +153,6 @@ Key idea. ~1.25M writes/sec versus ~50K reads/sec; ~500 MB of live state — wri
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 findNearby can return the same available driver to two riders at the same instant. How do you stop both rides from taking that driver?
@@ -240,8 +189,6 @@ Key idea. The trip is durable; the live location and its inverted cell index are
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design evolves by addressing each failure mode in sequence.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -267,8 +214,6 @@ A matching service runs findNearby, refines by distance/ETA, atomically reserves
 Key idea. Each component answers one failure: an in-memory geo-sharded index for the firehose, dual cell views for cheap reads and updates, and a matching service with an atomic reserve over a durable trip store.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Absorbing the write firehose
 
@@ -346,23 +291,13 @@ Hide AllReveal All
 
 1)Why is this a write-heavy system, and what does that force?
 
-Show Answer
-
 2)Why does the live location index not need durability?
-
-Show Answer
 
 3)Why search neighboring cells, not just the rider's cell?
 
-Show Answer
-
 4)Why must matching use an atomic reserve even though the index is eventually consistent?
 
-Show Answer
-
 5)How do you handle a downtown cell packed with thousands of drivers?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -371,66 +306,3 @@ Show Answer
 - H3 documentation — h3geo.org — cell resolutions, neighbor traversal, and the trade-offs in choosing a cell size near the match radius.
 
 - Geospatial indexing explained — Ben Feifke — geohash and grid indexing, the boundary problem, and why proximity becomes a cell lookup.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Adriano Quast
-
-I just watched the video and read the article, and I’m very thankful for the effort put into this subject!
-
-In a design interview, we might be asked to choose a database type—such as SQL or NoSQL—and justify our choice. Since the video highlights two key services—one for finding a ride and another for tracking a driver's location—a common follow-up question would be how to scale the in-memory database or prove that the current choice is sufficient for a larger scale.
-
-The article mentions 1000 QPS, which seems reasonable for a Redis database, and the Ride component handles 100 QPS for writes. This makes it safe to assume that even a simple SQL database could manage the workload.
-
-Even when considering Uber’s recent figures of 31M trips per day—roughly 350 trips per second—the read QPS would increase to about 3500, with writes at around 350 QPS. Assuming each location read involves a geohash string with 5-character precision and a driver ID as a 32-byte UUID, the throughput would be approximately:
-
-3500 × (32 + 5) = 129,500 bytes per second (roughly 126.5 KBps)
-A single instance of Redis should still be capable of handling that load.
-
-So, where is the catch regarding scaling issues? While it’s clear that 10 million WebSockets wouldn’t fit into a single server—necessitating horizontal scaling—the database itself doesn’t seem to be a bottleneck. However, I have a feeling that I might be missing something.
-
-My main point is to explore how we can deep dive into each part of the solution to confidently prove that it works.
-
-Thanks again for the great content!
-
-Fri Feb 07 2025
-
-4
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsGeospatial indexingDriver location updatesNearby searchMatchingHot cells1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 The write firehose2.2 Reads and memory3. API design4. Data model4.1 Trip, location, and the inverted cell index5. High-level design5.1 Locations in a database5.2 Fix 1: an in-memory, geo-sharded index5.3 Fix 2: the dual cell views5.4 Fix 3: matching and the durable trip store6. Deep dives6.1 Absorbing the write firehose6.2 Nearby search and matching6.3 Hot cells and match consistency7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

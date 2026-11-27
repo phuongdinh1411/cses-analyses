@@ -4,55 +4,10 @@ title: "Design Coding Agent CLI (Claude Code) — System Design School"
 permalink: /system_design/sds/claude-code-cli
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Coding Agent CLI (Claude Code)
 
-hardLLM agentsTool-use loopContext managementCachingSandboxing and permissions
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** LLM agents · Tool-use loop · Context management · Caching · Sandboxing and permissions
 
 ## Problem statement
 
@@ -144,8 +99,6 @@ Key idea. The model only sees what fits in its window and only acts by naming to
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements. Then name the one resource to size first. If it is not tokens per task, the design is being modeled as a single question and answer.
 
 ### 1.1 Functional requirements
@@ -185,8 +138,6 @@ These are two different things. Safety is the non-negotiable property: the agent
 Key idea. Safety is the property to protect; the repository-to-window gap is the constraint that drives the architecture.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers below are illustrative anchors, not measurements. The resource to size first is tokens per task, because the loop turns one task into many model calls, and each call re-sends the conversation so far.
 
@@ -244,8 +195,6 @@ Most of those 360,000 tokens are bytes the service already processed on the prev
 Key idea. Tokens per task — prefix times iterations, plus a history term that grows with the square of the loop length — is the number that shapes the design, and prefix caching is the lever on it.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -319,8 +268,6 @@ Key idea. The durable records are small and local; the large "data" is the user'
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Build the system from the simplest version that could work, and let each failure add the next component.
 
 Reading the diagrams. Each step marks the components added at that step with a dashed outline and a NEW badge.
@@ -368,8 +315,6 @@ The sequence below follows one iteration in which the model asks to edit a file.
 Key idea. Each component comes from one failure: tools and a loop for size, a local runtime for action, a gate for safety, a context manager for long tasks, and MCP for extension.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The agent loop and context over a repository bigger than the window
 
@@ -549,35 +494,19 @@ Hide AllReveal All
 
 1)Why can a coding agent not send the whole repository to the model, and what does it do instead?
 
-Show Answer
-
 2)The model runs on a remote server. What actually stops it from deleting files on the user's machine?
-
-Show Answer
 
 3)Why does the cost of a task grow faster than linearly with the number of loop iterations?
 
-Show Answer
-
 4)Why is prefix caching correct across the steps of a loop, and what event breaks it?
-
-Show Answer
 
 5)What are the two separate pressures on the context window, and which mechanism handles each?
 
-Show Answer
-
 6)Why is there almost no server-side database in this design?
-
-Show Answer
 
 7)How does the permission model change when the agent runs in a CI pipeline?
 
-Show Answer
-
 8)What is confirmation fatigue, and how does the design reduce it?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -588,43 +517,3 @@ Show Answer
 - Tool use overview — Anthropic docs — the tool_use and tool_result message protocol and the stop_reason values that drive the loop.
 
 - Model Context Protocol specification — the open standard for exposing external tools and data to an agent.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe context window as a hard ceilingTool use: the model names, the client runsThe agent loopRetrieval instead of ingestionPrefix cachingCompactionBlast radiusThe Model Context Protocol (MCP)1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 The re-sent prefix2.2 The growing history2.3 Daily volume and where compute runs2.4 The caching lever3. API design3.1 The remote inference call3.2 The local tool interface3.3 Resume4. Data model4.1 The message4.2 The session4.3 The codebase is not an entity4.4 The summary4.5 The permission rule4.6 Where each record lives5. High-level design5.1 Send the whole repository5.2 Fix 1: give the model tools and run a loop5.3 Fix 2: a client-side tool runtime5.4 Fix 3: a permission gate in front of the runtime5.5 Fix 4: a context manager with compaction and a session log5.6 Fix 5: pluggable tools through MCP5.7 The flow of one tool call6. Deep dives6.1 The agent loop and context over a repository bigger than the window6.2 Client-side tool execution and permissions6.3 Cost and latency: prompt caching and compaction7. Variants7.1 10× scale7.2 Non-interactive, CI, and headless7.3 Multiple surfaces: IDE and web8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design Web Crawler — System Design School"
 permalink: /system_design/sds/web-crawler
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Web Crawler
 
-hardShardingAsync processingBloom filtersObject storage
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Sharding · Async processing · Bloom filters · Object storage
 
 ## Problem statement
 
@@ -108,8 +63,6 @@ Key idea. A Bloom filter makes "have I seen this URL" cheap at billions of entri
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -141,8 +94,6 @@ The property never to compromise is politeness: a crawler that overloads or gets
 Key idea. Politeness is the property that can't bend; sustaining it at billions of URLs and thousands of fetches a second is the constraint the frontier design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Target fetch rate10K/s
 
@@ -196,8 +147,6 @@ Key idea. The seen-set stays in the gigabytes even at billions of URLs; content 
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 The outward API only needs to accept seed URLs and serve fetched content. Where does the actual design work happen — in the public API, or somewhere else?
@@ -248,8 +197,6 @@ Key idea. Four entities, each forced by the one before it: a page needs a fronti
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have Bloom-filter dedup and the two-level priority/politeness queue from Key concepts. Sketch what happens from "seed URL" to "new links back in the queue," and where each of those two mechanisms plugs in.
 
 ### 5.1 A queue and a worker pool
@@ -293,8 +240,6 @@ Each fix answers one failure of the naive queue: dedup fixes re-discovery loops,
 Key idea. Every component traces to one concrete failure of "a queue and workers" — re-discovery, host overload, frontier scale, and staleness — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The URL frontier
 
@@ -442,66 +387,16 @@ Hide AllReveal All
 
 1)Why does a single shared queue of URLs fail even before considering scale?
 
-Show Answer
-
 2)Why does the URL frontier need two levels — front queues and back queues — instead of one?
-
-Show Answer
 
 3)Why is pinning exactly one host to exactly one back queue essential, not just a convenient implementation detail?
 
-Show Answer
-
 4)A Bloom filter can produce a false positive. Why is that an acceptable trade here, when a false negative would not be?
 
-Show Answer
-
 5)Why are URL dedup and content dedup treated as two separate mechanisms rather than one?
-
-Show Answer
 
 ## Sources and further reading
 
 - Introduction to Information Retrieval, Ch. 20: Web crawling and indexes — Manning, Raghavan & Schütze — the Mercator-style frontier design and the politeness and dedup problems it solves.
 
 - Robots Exclusion Protocol — RFC 9309, IETF (2022) — the standardized format for robots.txt User-agent, Allow, and Disallow rules; Crawl-delay remains a non-standard extension.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsBloom filters for URL dedupPer-host politenessTwo-level queue: priority versus per-host orderContent versus metadata split1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Fetch throughput2.2 The seen-set2.3 The frontier itself3. API design3.1 Submit seed URLs3.2 Read fetched content4. Data model4.1 Page4.2 Frontier entry4.3 Seen (dedup state)4.4 Host4.5 Where each entity lives5. High-level design5.1 A queue and a worker pool5.2 Fix 1: dedup before enqueue5.3 Fix 2: route by host, enforce crawl-delay5.4 Fix 3: a sharded, persisted frontier5.5 Fix 4: split content from metadata, recrawl by policy5.6 The composed design6. Deep dives6.1 The URL frontier6.2 Dedup at scale6.3 Politeness, robots, and traps7. Variants10× scaleFresh-focused crawling (news, prices)JavaScript rendering8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

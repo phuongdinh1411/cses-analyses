@@ -4,55 +4,10 @@ title: "Design ChatGPT — System Design School"
 permalink: /system_design/sds/chatgpt
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design ChatGPT
 
-hardLLM inference servingGPU schedulingToken streamingRetrieval-augmented generationAsync processingCaching
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** LLM inference serving · GPU scheduling · Token streaming · Retrieval-augmented generation · Async processing · Caching
 
 ## Problem statement
 
@@ -166,8 +121,6 @@ Key idea. A reply is a token-by-token loop on a GPU. Prefill sets the first-toke
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 The functional requirements come from the verbs in the problem statement:
@@ -209,8 +162,6 @@ The two collide at one place. Putting more requests into each GPU step raises th
 Key idea. Responsiveness is the property; tokens per GPU-second is the constraint. They meet at the batch scheduler.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Size the system from usage assumptions, and count tokens rather than requests. All figures below are illustrative anchors, not measurements. (For the method, see Back-of-the-envelope Calculation.)
 
@@ -289,8 +240,6 @@ Each message is small text. If a stored message takes about 2 KB, 100M users × 
 Key idea. Size the fleet by tokens per day divided by tokens per GPU-day. Thousands of GPUs, not the database, set the cost.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -388,8 +337,6 @@ Key idea. Four entities, each forced by what the one before it could not hold. T
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Rather than present the final system, build it from the simplest design that works and let each failure introduce the next component.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge, so you can see what changed from the step before.
@@ -457,8 +404,6 @@ Strong-answer criteria. Each box is justified by a constraint: the model is spli
 Key idea. Five failures pull in five components: a separate GPU fleet, token streaming, batching with admission control, an orchestrator, and a gateway-based conversation surface.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Five topics carry the design. On the serving side: the batch scheduler with its KV cache, and the TTFT budget. On the orchestration side: retrieval and the agent loop. Around both: the conversation surface.
 
@@ -806,35 +751,19 @@ Hide AllReveal All
 
 1)Why is the fleet sized by tokens per day rather than requests per second?
 
-Show Answer
-
 2)Why does KV-cache memory, rather than raw compute, usually cap the batch size?
-
-Show Answer
 
 3)What problem does a paged KV cache solve, and how?
 
-Show Answer
-
 4)Name the three components of time-to-first-token, and which one prefix caching reduces.
-
-Show Answer
 
 5)Under heavy load, why does the system let TTFT rise instead of admitting every request into the batch?
 
-Show Answer
-
 6)Why can retrieving more chunks make the assistant slower, even when each chunk is relevant?
-
-Show Answer
 
 7)What keeps the agent loop from running away or wasting GPUs?
 
-Show Answer
-
 8)A user's connection drops mid-reply and they reopen the app on another device. Why is the generation not restarted?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -845,67 +774,3 @@ Show Answer
 - Attention Is All You Need — Vaswani et al., 2017 — the transformer and the attention keys and values that the KV cache stores.
 
 - Fast Inference from Transformers via Speculative Decoding — Leviathan et al., 2023 — the draft-and-verify method behind the speculative-decoding lever in the variants.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Tushar Sappal
-
-The above illustration is very simplified version of incorporating slight tint of LLMs - I agree it will require everyone who is designing to think about how to persist the context , RAG, how abuse prevention , inference , filtering etc .
-
-Wed Dec 31 2025
-
-Ethan Wu
-
-Also the RAG...as I'm thinking through this, designing ChatGPT is no way just at easy level, dude.
-
-Thu Dec 11 2025
-
-Ethan Wu
-
-I would typically envision that interviewers may be interested about how you would manage in-conversation context and cross-conversation context. This is, I think, a major feature of ChatGPT.
-
-Thu Dec 11 2025
-
-Karthik Thatipalli
-
-How does the schema and database choice look like?
-
-Fri Nov 14 2025
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsAutoregressive generationPrefill, decode, and time-to-first-tokenThe KV cacheBatching on a GPUEmbeddings and vector searchTool calls1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 The model does not fit on one GPU2.2 GPU-seconds are the budget2.3 The KV cache competes with the weights2.4 Conversation storage is small3. API design3.1 Create and list conversations3.2 Send a message and stream the reply3.3 Cancel a generation3.4 Resume a stream4. Data model4.1 The message4.2 The conversation4.3 The rolling summary4.4 The document chunk4.5 Tool results need no new entity4.6 Where each entity lives5. High-level design5.1 One server with the model inside5.2 Fix 1: split the GPU fleet from the stateless tier5.3 Fix 2: stream tokens as they are generated5.4 Fix 3: batch on the workers and admit carefully5.5 Fix 4: an orchestrator for context and tools5.6 Fix 5: the conversation surface5.7 The send-message flow5.8 The composed design6. Deep dives6.1 Continuous batching and the KV cache6.2 Streaming and the time-to-first-token budget6.3 Retrieval-augmented generation6.4 Tool calling and the agent loop6.5 The conversation surface: history, delivery, and multiple devices7. Variants7.1 Ten times the scale7.2 Multi-model routing7.3 Tighter latency or longer context8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

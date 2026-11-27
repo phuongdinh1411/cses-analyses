@@ -4,55 +4,10 @@ title: "Design Top K (Trending) — System Design School"
 permalink: /system_design/sds/topk
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Top K (Trending)
 
-mediumStream processingProbabilistic data structuresSharding
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Stream processing · Probabilistic data structures · Sharding
 
 ## Problem statement
 
@@ -170,8 +125,6 @@ Key idea. A count-min sketch counts in fixed memory that ignores cardinality; a 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -199,8 +152,6 @@ The property never to compromise is bounded memory — the system must scale wit
 Key idea. Bounded memory is the property to protect; holding it at 100K events/second over an unbounded catalog with millisecond reads is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Daily active users100M
 
@@ -254,8 +205,6 @@ Key idea. Writes (~116K/s) dwarf reads (~2.3K/s), and exact-map memory scales wi
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A top-K query must return in milliseconds, but the stream never stops. Should GET /v1/top-k compute the ranking on demand from the counters, or read a list the system already keeps current?
@@ -301,8 +250,6 @@ Event rows live on a durable, partitioned ingest log, then age into object stora
 Key idea. The log is the durable fact; the sketches are the bounded-memory working set; the top-K result is a tiny derived list built for millisecond reads.
 
 ## 5. High-level design
-
-Practice this problem: High-level design
 
 Before reading on. You have the sketch, the heap, bucketed windows, and heavy-hitter skew from Key concepts. Sketch how an event flows from ingest to a queryable top-K list, and where the design must shard.
 
@@ -351,8 +298,6 @@ Each piece answers one failure of the naive map: the sketch and heap fix memory,
 Key idea. Every component is forced by a concrete failure of the one-node map — memory, throughput, single-node limits, windows, and closed-window accuracy — not drawn in up front.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Sizing the sketch and its error
 
@@ -510,23 +455,13 @@ Hide AllReveal All
 
 1)Why can't an exact hash map of item to count satisfy the requirements, even sharded across machines?
 
-Show Answer
-
 2)A count-min sketch can report a count higher than the truth. Why is that acceptable for top-K trending?
-
-Show Answer
 
 3)Why does each shard report its top m·K instead of its top K, and why is the merge a selection rather than a sum?
 
-Show Answer
-
 4)How does keeping one sketch per minute bucket answer 'top K in the last hour' without recounting raw events?
 
-Show Answer
-
 5)A closed window like 'all of yesterday' must be accurate, but the fast path only produced approximate counts. How does the system deliver an exact number?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -535,149 +470,3 @@ Show Answer
 - Efficient Computation of Frequent and Top-k Elements in Data Streams — Metwally, Agrawal & El Abbadi, 2005 — the Space-Saving algorithm behind the guaranteed-heavy-hitters variant.
 
 - Top-K — Redis probabilistic data types — a production top-K structure with the exponential-decay option described in the recency deep dive.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-pavan kumar Ganguru
-
-what if top k videos deleted by the uploaders? for example - we calculated top K from hour 1:00 to 2:00 and stored in DB using Hashmap + Heap and now the uploader deleted them and we queried "hey get me the top k from 1:00 to 2:00", those videos are not there now, neither the top k videos after the top k for that hour because we have not stored them. can any one answer this? does this make sense?
-
-Thu Nov 27 2025
-
-Arian Jafari
-
-Then we might need another microserver to remove the deleted hash from the heap or set their counts to zero.
-
-Sat Dec 06 2025
-
-Load More
-
-Harley Pasoz
-
-How do the aggregator service get the data from the other instances state? Just curious
-
-Tue Nov 11 2025
-
-Raj Nagulapalle
-
-this does not talk about "reconciliation" and we can do we can do source->kafka->1/flink/ss 2/s3 (Raw)->pinot-with-upserts-with-5min/timebased-segmentts(assuming 15 min prod requirements) .. So we will have 15 mins segments sharded automatedly with upserts enabled? in general tumbling for structured reports, sliding for fluid analytics
-
-Mon Oct 27 2025
-
-Mayank Pant
-
-I think there is more to this question. The solution you provided will work for fixed time range. What if we require top k songs for whole day, for 9 mins, between 10:01:03 and 10:03:04. We will not able to get the top k between arbitrary timestamp with above approach. We can solve this by using tumbling window of 1 min and then aggregating result given the time range. but because the lowest granularity is of 1min, we cannot find the top k for any range which is less than 1min. optimizing the approach would be to cache the frequently fetched aggregation and use those result wherever we can.
-
-This is just what has come to mind. Pls reply if there is any documented solution with defined trade-offs to find top k between a arbitrary time range
-
-Sun Sep 07 2025
-
-1
-
-vaibhav k.
-
-yeah here i am also confused what if user asks for near 1 year data does kafka stores that long data
-also one more thing for each user are we calculating ? shouldn't we cache some results
-,each time query is hit `for some time window` how will that offset of consumer in kafka change
-
-Sun Sep 07 2025
-
-1
-
-Joshua Goon
-
-wouldn’t aggregating local top k heaps (in the 2. Global Window Top K, High QPS solution) be potentially ignorant of the accurate count? or is the count retrieved separately?
-
-Wed Jun 25 2025
-
-2
-
-Joo Kang
-
-Are calls to the endpoint with different k values (e.g. /top-k?k=100 or /top-k?k=500 or /top-k?k=800) supposed to use the same maximum k list (in this case max k is 1000) and take the best k values from it? In other words, for /top-k requests for any value of k within the defined limit (100 ~ 1000 in this case), is the logic simply to use the answer from the top-1000 and then taking top k from there?
-
-I feel like in the solution the time-window param was well explained but not the k param. Thank you.
-
-Mon Jun 23 2025
-
-1
-
-Ravi training
-
-Isn't the event in Global Window Top K, Low QPS, just eventId, rather
-event(videoId_X, viewCountsTotal_Y)
-
-Tue May 13 2025
-
-akash goyal
-
-how Count-Min Sketch count reset the counter if we choose sliding window?
-
-Mon Mar 31 2025
-
-1
-
-he she
-
-For saving the heap index along with counter in the hash map. I understand the benefit is to locate the element in heap much faster, however every time when we do reheapify, the index could change right? We also need some mechanism to keep heap and hash map index in sync? I think it is non-trivial, which will take O(k) time?
-
-Thu Mar 20 2025
-
-2
-
-Siddhartha Jain
-
-Correct. But O(k) seems to be fine here as k generally be max 1000.
-No one seems to care about k's in 10k etc.
-
-Fri Apr 18 2025
-
-1
-
-Load More
-
-Bhargav Gohil
-
-Please Design Google Calendar.
-
-Tue Feb 25 2025
-
-Load More
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsHeavy hitters and the long tailCount-min sketchA min-heap for the top KRolling windows from bucketed sketches1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Write volume dominates2.2 Memory is the real constraint2.3 Raw retention is a separate, large cost3. API design3.1 Record an event3.2 Query the top K4. Data model4.1 Event4.2 Bucket sketch4.3 Top-K result4.4 Where each entity lives5. High-level design5.1 One node with an exact map5.2 Fix 1: sketch plus heap for bounded memory5.3 Fix 2: a log-based queue buffers the firehose5.4 Fix 3: shard by item, merge for the global top K5.5 Fix 4: bucketed windows on each shard5.6 Fix 5: a batch path for exact closed-window counts5.7 The composed design5.8 Sequence: an event and a query6. Deep dives6.1 Sizing the sketch and its error6.2 Sharded aggregation and the K-way merge6.3 Rolling windows and recency6.4 Approximate now, exact later7. Variants10× scaleExact top KGuaranteed heavy hitters8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

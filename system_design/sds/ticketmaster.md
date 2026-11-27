@@ -4,55 +4,10 @@ title: "Design Ticketmaster — System Design School"
 permalink: /system_design/sds/ticketmaster
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Ticketmaster
 
-hardConsistencyReservation holdsWaiting roomRate limitingAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Consistency · Reservation holds · Waiting room · Rate limiting · Async processing
 
 ## Ticketmaster and ticket booking system design problem statement
 
@@ -116,8 +71,6 @@ Key idea. A hold is a temporary, expiring reservation kept in an in-memory store
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -147,8 +100,6 @@ The property never to compromise is no overselling: a seat sells once, no matter
 Key idea. No overselling is the property that can't bend; surviving a demand spike that dwarfs supply, without bending it, is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Seats for sale50K
 
@@ -199,8 +150,6 @@ Contention doesn't spread evenly across the venue — it concentrates on the goo
 Key idea. The 20-to-1 (or worse) contenders-per-seat ratio, not the raw request volume, is the number that sizes this system — and it lands unevenly, on individual hot seats.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -258,8 +207,6 @@ Key idea. Seat, Hold, and Order form one lifecycle — available → held → so
 
 ## 5. Ticket booking system architecture and high-level design
 
-Practice this problem: Ticket booking system architecture and high-level design
-
 Before reading on. You already have the hold, atomic compare-and-set, the waiting room, and the cache/consistency split from Key concepts. Sketch what happens from "user clicks a seat" to "seat is sold," and where each of those four mechanisms plugs in.
 
 ### 5.1 Mark the seat sold on click
@@ -309,8 +256,6 @@ Each component answers one failure of the naive version. The in-memory hold stop
 Key idea. Browsing, holding, and buying are different consistency guarantees living side by side: a stale browse view at worst causes a 409 that the hold catches, and a lost hold at worst causes a refund that the conditional write catches, so neither cache staleness nor a lost hold key can cause an oversell.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The hold and no oversell
 
@@ -456,31 +401,17 @@ Hide AllReveal All
 
 1)Why does a naive 'mark the seat sold on click' design fail even without considering scale?
 
-Show Answer
-
 2)A thousand requests try to hold the same seat in the same millisecond. Why does a set-if-absent produce one winner, when a read-then-write approach does not?
-
-Show Answer
 
 3)The in-memory store loses a hold key during a failover, and two buyers pay for the same seat. What happens, and why is the hold not enough on its own?
 
-Show Answer
-
 4)What does keeping the hold in the database (an available → held update with an expires_at column) gain and lose, compared with an in-memory hold?
-
-Show Answer
 
 5)Why doesn't sharding inventory by event help with contention on a single hot seat?
 
-Show Answer
-
 6)Why is a user being admitted from the waiting room not a guarantee that a seat is still available, and why does the booking API check an admission token?
 
-Show Answer
-
 7)Why does converting a hold to a sale need to be idempotent, given that a hold has already reserved the seat for one buyer?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -493,59 +424,3 @@ Show Answer
 - How Queue-it works — Queue-it — overflow visitors are redirected with an HTTP 302 to a waiting room and sent back to the site in order.
 
 - Virtual Waiting Room on AWS — AWS Solutions — tokens admit users in controlled waves, with queue state kept in an in-memory cache and a database.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-___
-
-what is the purpose of BOOKING TABLE ? We track our actual BOOKING in EVENT SEATS TABLE.
-
-Wed Nov 12 2025
-
-Rashid Jaffar
-
-Think of the purpose,
-
-I personally concluded it should be the store were bookings are final and should save information with regards to booking i.e event details, owner details etc.
-
-Sat Jun 20 2026
-
-Load More
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Ticketmaster and ticket booking system design problem statementTicket booking system design interview questionsWhat makes this problem distinctiveKey conceptsThe holdAtomic compare-and-setThe waiting roomCached browse, fast hold, consistent sale1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Demand dwarfs supply2.2 Reads overwhelm writes2.3 The write hotspot is per-seat3. API design3.1 Browse availability3.2 Hold a seat3.3 Purchase a held seat4. Data model4.1 Seat4.2 Hold4.3 Order4.4 Where each entity lives5. Ticket booking system architecture and high-level design5.1 Mark the seat sold on click5.2 Fix 1: an atomic hold in an in-memory store5.3 Fix 2: a hold expiry and a final write at purchase5.4 Fix 3: a waiting room5.5 Fix 4: a cached browse path5.6 The composed design5.7 Sequence: browse, hold, and purchase6. Deep dives6.1 The hold and no oversell6.2 The waiting room6.3 The purchase-to-payment seam7. Variants10× scaleGeneral admission (no assigned seats)Resale / transfer8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageTicketmaster and ticket booking system design problem statement0%
-
-Send feedback

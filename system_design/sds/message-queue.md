@@ -4,55 +4,10 @@ title: "Design Pub-Sub / Message Queue — System Design School"
 permalink: /system_design/sds/message-queue
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Pub-Sub / Message Queue
 
-hardAsync processingAppend-only logOrderingReplicationConsumer groups
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Async processing · Append-only log · Ordering · Replication · Consumer groups
 
 ## Problem statement
 
@@ -112,8 +67,6 @@ Key idea. Partitions give parallelism and per-key order; the per-reader offset g
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the property you would never compromise and the constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -145,8 +98,6 @@ Durability of a committed message is the property to protect: once acked under a
 Key idea. Protect committed-message durability via replication; design around throughput, which forces partitioning and the append-only log.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers size the partition count (from throughput) and storage (from retention × replication) — and partition count is also the ceiling on consumer parallelism. Illustrative anchors.
 
@@ -200,8 +151,6 @@ Key idea. Throughput sets a partition floor, but consumer parallelism sets the r
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A consumer reads a message, processes it, then crashes before committing its offset. On restart, what should it do — and what does that tell you about exactly-once?
@@ -248,8 +197,6 @@ Key idea. Immutable partitioned log on disk as segments; per-reader cursors; the
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is derived incrementally, each problem pulling in the next piece.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -273,8 +220,6 @@ A single-broker partition is vulnerable. Each partition gets a leader (all reads
 Key idea. Each piece answers one need: an append-only log for durability, partitions for parallelism, per-reader offsets for independence and replay, leader/ISR replication for fault tolerance.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Partitioning and ordering
 
@@ -360,23 +305,13 @@ Hide AllReveal All
 
 1)Why is a topic a partitioned log rather than a single stream?
 
-Show Answer
-
 2)Why move the read cursor from the broker to the consumer?
-
-Show Answer
 
 3)Why is exactly-once delivery hard, and how is it approximated?
 
-Show Answer
-
 4)What does acks=all guarantee, and what's the tradeoff?
 
-Show Answer
-
 5)Why can't partition count be freely increased later, and what operational issue appears under load?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -385,43 +320,3 @@ Show Answer
 - Exactly-once semantics in Kafka — Confluent — why exactly-once is hard and how the idempotent producer plus transactions deliver it within the broker.
 
 - The Log: what every software engineer should know about real-time data — Jay Kreps (LinkedIn Engineering) — the append-only log and per-reader cursor as a unifying abstraction.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe partitioned append-only logOffsets and consumer groupsProducers and pull-based consumersDelivery semanticsReplication, ISR, and acks1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Throughput and partitions2.2 Storage and retention3. API design4. Data model4.1 The log, the offset, the cursor, the segment5. High-level design5.1 Durability via an append-only log5.2 Fix 1: partitions for parallelism5.3 Fix 2: consumer independence via offsets5.4 Fix 3: fault tolerance via replication6. Deep dives6.1 Partitioning and ordering6.2 Delivery semantics6.3 Replication, durability, and rebalancing7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

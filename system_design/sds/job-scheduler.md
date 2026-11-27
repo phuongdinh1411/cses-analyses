@@ -4,55 +4,10 @@ title: "Design Distributed Job Scheduler — System Design School"
 permalink: /system_design/sds/job-scheduler
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Distributed Job Scheduler
 
-hardAsync processingAvailabilityRate limiting
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Async processing · Availability · Rate limiting
 
 ## Distributed job scheduler system design problem statement
 
@@ -104,8 +59,6 @@ Key idea. Time-bucketing makes "what's due right now" a cheap, bounded read; a l
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements, then name the one property you would never compromise.
 
 ### 1.1 Functional requirements
@@ -137,8 +90,6 @@ The property never to compromise is effectively-once execution: a job never sile
 Key idea. Effectively-once execution is the property that can't bend; surviving the peak-versus-average gap at a hot instant is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Jobs executed / day1.0B
 
@@ -189,8 +140,6 @@ Assume roughly 180 million daily cron jobs are all scheduled for midnight, firin
 Key idea. The daily average (thousands a second) is a rounding error next to the midnight peak (millions a second) — the peak-to-average ratio is the number that actually drives the design.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -243,8 +192,6 @@ Job and Schedule live in a durable, authoritative store — the source of truth,
 Key idea. A job can't hold a recurring definition, which forces a separate Schedule entity; a job can't safely track "who's running this," which forces the lease fields onto Job; and the store's write pattern (by job_id) differs enough from the dispatch read pattern (by due time) to warrant a separate due index.
 
 ## 5. High-level design
-
-Practice this problem: High-level design
 
 Before reading on. You already have time-bucketed dispatch, the lease, and effectively-once execution from Key concepts. Sketch what happens from "a job's time arrives" to "it runs exactly the right number of times," and where each mechanism plugs in.
 
@@ -299,8 +246,6 @@ Each fix answers one failure of the naive cron process: the durable store and st
 Key idea. Every component traces to one concrete failure of "a cron process and a table" — single point of failure, scan cost, double-claiming, the herd, and unbounded retries — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Time-based dispatch and the thundering herd
 
@@ -438,74 +383,16 @@ Hide AllReveal All
 
 1)Why does scanning the entire job table on every tick fail at scale, and what fixes it?
 
-Show Answer
-
 2)Why does an atomic lease claim, rather than a simple 'running' status flag, prevent two dispatchers from executing the same job?
-
-Show Answer
 
 3)A lease is well-tuned — long enough to cover typical run time, short enough to recover quickly from a real crash. Why can a job still execute twice?
 
-Show Answer
-
 4)Why is 'skip' versus 'catch-up' for missed schedule fires exposed as a per-schedule policy instead of one global default?
 
-Show Answer
-
 5)Why does jitter alone (without a rate limiter) not fully solve the midnight-herd problem, and what does the rate limiter add?
-
-Show Answer
 
 ## Sources and further reading
 
 - Distributed locks with Redis — Redis docs — the SET if-not-exists-plus-expiry mechanism behind a time-bounded job lease.
 
 - Exactly-once semantics in Kafka — Conduktor — why cross-machine delivery is fundamentally at-least-once, and how idempotency turns it into an effectively-once outcome.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Cattaby
-
-Great write-up! The breakdown of the peak-to-average ratio (the 'midnight herd') really highlights the actual scaling bottleneck.
-
-In a real interview setting, one area that always makes for a rich deep dive is Worker Fencing Tokens alongside Leases. When a worker suffers a GC pause, loses its lease, but wakes up mid-execution, having monotonic fencing tokens ensures stale writes get rejected downstream. Combining that with the distinction between Redis ZSETs vs time-bucketed Cassandra tables for the due-index makes for a super practical engineering discussion.
-
-Thu Aug 13 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Distributed job scheduler system design problem statementJob scheduler system design interview questionsWhat makes this problem distinctiveKey conceptsTime-bucketed dispatchThe leaseEffectively-once, not exactly-once1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 The daily average is easy2.2 The midnight bucket is the real number2.3 Peak, not average, sizes the design3. API design3.1 Submit a job3.2 Check job status3.3 Cancel a job or schedule4. Data model4.1 Job4.2 Schedule4.3 Where each entity lives5. High-level design5.1 One cron process, one table5.2 Fix 1: a durable store and several stateless dispatchers5.3 Fix 2: a time-partitioned due index5.4 Fix 3: an atomic lease claim5.5 Fix 4: jitter and rate-limited dispatch5.6 Fix 5: retries, backoff, and a dead-letter queue5.7 The composed design6. Deep dives6.1 Time-based dispatch and the thundering herd6.2 Crash recovery with leases6.3 Effectively-once execution6.4 Recurring schedules and catch-up7. Variants10× scaleHigher-precision schedulingWorkflow dependencies8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageDistributed job scheduler system design problem statement0%
-
-Send feedback

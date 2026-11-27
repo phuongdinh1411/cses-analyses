@@ -4,55 +4,10 @@ title: "Design Tinder — System Design School"
 permalink: /system_design/sds/tinder
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Tinder
 
-mediumGeospatial indexingShardingIdempotencyBloom filtersAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Geospatial indexing · Sharding · Idempotency · Bloom filters · Availability
 
 ## Problem statement
 
@@ -112,8 +67,6 @@ Key idea. A match is derived from two directed likes, never scanned for; a Bloom
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Design Reflection
 
 Tinder's load is the exact reverse of typical web applications. While most sites are read-heavy (with a 100:1 read-to-write ratio), why is Tinder uniquely write-heavy, and how does this shape our requirements?
@@ -151,8 +104,6 @@ The property never to compromise is match correctness under a race: two near-sim
 Key idea. Match correctness is the property to protect; swipe write throughput is the constraint everything else is designed around.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Daily active users50M
 
@@ -213,8 +164,6 @@ A match needs both users to like each other, so matches are a small fraction of 
 Key idea. The system must absorb roughly 58,000 swipe writes a second on average and 174,000 at peak — several times the candidate-feed read rate. Matches are a trickle by comparison; size for the writes.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design Reflection
 
@@ -286,8 +235,6 @@ Key idea. One user forces a geo index; one swipe forces a swiper-keyed table; on
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Design Reflection
 
 In a naive design, a single database handles everything. When a user requests a feed, why does executing a live 'find nearby users who haven't been swiped' query fail catastrophically at scale?
@@ -351,8 +298,6 @@ Each component answers one failure of the naive design: the geo index and candid
 Key idea. Every fix derives from one failure of the naive design — full-scan search, write overload, match scans, re-shows, and live-assembly latency — not from a pre-known list of components.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Mutual-match detection
 
@@ -478,70 +423,18 @@ Hide AllReveal All
 
 1)Why does sizing this system around the candidate-feed read miss the real load?
 
-Show Answer
-
 2)Why is a match detected with a reverse-key read instead of a scan over the swipes table?
-
-Show Answer
 
 3)Two users like each other within the same second. What guarantees exactly one match row instead of zero or two?
 
-Show Answer
-
 4)A profile with an unusually large number of admirers creates no write hotspot, since likes are keyed by the admirer's own id. What load does it create instead, and how is that fixed?
-
-Show Answer
 
 5)Why is a Bloom filter the right structure for 'never re-show a swiped profile,' rather than merely an acceptable one?
 
-Show Answer
-
 6)Why does the candidate pipeline apply geo, then preferences, then the seen-filter, in that order?
-
-Show Answer
 
 ## Sources and further reading
 
 - Geospatial indexing explained — Ben Feifke — geohash bit-interleaving and S2's Hilbert-curve cells, and why proximity search is cell-plus-neighbors-plus-exact-distance-refine.
 
 - H3: Uber's hexagonal hierarchical spatial index — Uber Engineering — the hexagonal cell grid, its resolutions, and the k-ring neighbor lookup the candidate search reuses.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsGeospatial indexingLikes and derived matchesThe seen filter: a Bloom filterShard keys and access patterns1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Writes: the swipe firehose2.2 Reads: the candidate feed2.3 Storage and the seen filter3. API design3.1 Get the candidate feed3.2 Swipe3.3 List matches4. Data model4.1 User and geo index4.2 Swipe4.3 Match4.4 Seen filter4.5 Where each entity lives5. High-level design5.1 One database5.2 Fix 1: a geo index and a candidate service5.3 Fix 2: a swipe service sharded by swiper5.4 Fix 3: detect the match with a reverse-key read5.5 Fix 4: a per-user seen filter5.6 Fix 5: precompute a candidate queue5.7 The composed design5.8 Sequence: swipe with an immediate match6. Deep dives6.1 Mutual-match detection6.2 The swipe firehose and hot profiles6.3 Candidate generation7. Variants10× scaleGlobal distributionRecommendation quality8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design RAG System — System Design School"
 permalink: /system_design/sds/rag
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a RAG System
 
-hardVector searchEmbeddingsHybrid retrievalMulti-tenancyAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Vector search · Embeddings · Hybrid retrieval · Multi-tenancy · Async processing
 
 ## Problem statement
 
@@ -132,8 +87,6 @@ Key idea. RAG retrieval is approximate search over chunk vectors, sharpened by k
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Ingest documents. Accept a document, then chunk, embed, and index it asynchronously.
@@ -167,8 +120,6 @@ The binding constraint is memory: billions of vectors must sit where an ANN inde
 Key idea. Memory bounds what the index can hold; isolation bounds how it may be shared.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The defaults below are illustrative assumptions: 100M documents, about 10 chunks each, 768-dimension float32 embeddings, 10,000 queries per second, about 1,000 chunks per second of embedding throughput per GPU, and 1% of documents changing each day.
 
@@ -240,8 +191,6 @@ Key idea. Memory for about 3 TB of raw vectors, not compute or document bytes, i
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 Embedding and indexing a document takes seconds to minutes. What should POST /documents return?
@@ -300,8 +249,6 @@ Key idea. Documents are the truth; chunks and both indexes are derived, denormal
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Build from the simplest design and let each failure introduce the next component.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -351,8 +298,6 @@ A document edit must be retrievable within minutes, and a delete must vanish now
 Key idea. Ingest offline, search a sharded filtered ANN index plus a keyword index, fuse, re-rank, and hand a short sourced list to generation.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The ANN index
 
@@ -614,31 +559,17 @@ Hide AllReveal All
 
 1)Why can't a RAG system put the whole corpus into the model's prompt?
 
-Show Answer
-
 2)What dominates the infrastructure cost of the index, and why?
-
-Show Answer
 
 3)Why does filtering after an ANN search fail for a small tenant in a shared index?
 
-Show Answer
-
 4)Why fuse vector and keyword results by rank instead of by score?
-
-Show Answer
 
 5)Why use a cross-encoder only on a short list?
 
-Show Answer
-
 6)How does a delete become invisible immediately when the ANN graph cannot be changed cheaply?
 
-Show Answer
-
 7)What must happen when the embedding model changes?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -655,49 +586,3 @@ Show Answer
 - The Probabilistic Relevance Framework: BM25 and Beyond — Robertson and Zaragoza — the BM25 keyword-scoring function.
 
 - Sentence-BERT — Reimers and Gurevych, 2019 — bi-encoder versus cross-encoder trade-offs.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Suryaprakash Senthil Kumar
-
-Great article!
-
-Mon Nov 02 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsChunking and embeddingApproximate nearest neighbor searchKeyword search and BM25Bi-encoders and cross-encodersMetadata filtering1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Index size2.2 Query load2.3 Ingestion3. API design3.1 Ingest a document3.2 Check indexing status3.3 Delete a document3.4 Query4. Data model4.1 The document4.2 The chunk4.3 The index entries4.4 Where each entity lives5. High-level design5.1 Embed and scan at query time5.2 Fix 1: ingest offline5.3 Fix 2: an ANN index, sharded5.4 Fix 3: add keyword search and fusion5.5 Fix 4: re-rank with a cross-encoder5.6 Fix 5: filter by tenant and ACL in both indexes5.7 Fix 6: keep the indexes fresh5.8 The query flow5.9 The composed design6. Deep dives6.1 The ANN index6.2 Retrieval quality6.3 Freshness7. Variants7.1 10× scale7.2 Per-tenant versus shared index7.3 Structured filters7.4 Multimodal corpora8. The transferable patternReviewQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design Image Generation Service — System Design School"
 permalink: /system_design/sds/image-generation
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews Feed
-
-Show all 35 →
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)Deep ResearchReasoning Effort Levels
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design an Image Generation Service
 
-hardGPU servingBatchingAsync processingObject storageCDN & delivery economicsCaching
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** GPU serving · Batching · Async processing · Object storage · CDN & delivery economics · Caching
 
 ## Problem statement
 
@@ -156,8 +111,6 @@ Key idea. A diffusion image is a fixed number of same-cost GPU steps from a seed
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements. Then name the one resource to size first.
 
 ### 1.1 Functional requirements
@@ -195,8 +148,6 @@ They collide at the output gate. The image classifier is itself model inference 
 Key idea. Safety is the property you protect; images per GPU-second is the constraint you design around.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The estimate shows that GPU-seconds, not the request rate, size the system. All inputs are illustrative anchors. The calculator recomputes each figure as you move the inputs.
 
@@ -263,8 +214,6 @@ A burst at several times the average fills the queue. Because each image has a f
 Key idea. Size the fleet by GPU-seconds: 50M images × 1.2 GPU-seconds ≈ 700 busy GPUs, about 1,400 at half utilization. Storage and request rate are secondary.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -348,8 +297,6 @@ Key idea. The job is a small row; the image is a row plus a blob; the cache is a
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest design that could work. Each failure adds one component.
 
 Reading the diagrams. Each step marks the components added at that step with a dashed outline and a NEW badge.
@@ -409,8 +356,6 @@ The boxes are the data model's homes. The API tier writes the job. The GPU worke
 Key idea. Each component answers one failure of the single-server design: the async split for GPU-bound work, batching for GPU cost, object storage and CDN for the binary, two gates for safety, streaming for the wait, and the cache for repeats.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The GPU serving profile: batching a fixed-step model
 
@@ -614,31 +559,17 @@ Hide AllReveal All
 
 1)Why is the GPU fleet sized from GPU-seconds per image rather than from requests per second?
 
-Show Answer
-
 2)Why does batching an image model need a simpler scheduler than batching a language model?
-
-Show Answer
 
 3)What is shape fragmentation, and how is it fixed?
 
-Show Answer
-
 4)What can an image generation service avoid storing that a photo-sharing service cannot?
-
-Show Answer
 
 5)Why can the seed policy decide the request-hash cache hit rate?
 
-Show Answer
-
 6)Why is the output classifier needed when the prompt already passed the input filter?
 
-Show Answer
-
 7)The output classifier saturates at peak. Why must jobs wait instead of being delivered?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -651,43 +582,3 @@ Show Answer
 - Progressive Distillation for Fast Sampling of Diffusion Models — Salimans, Ho (2022) — distilling a model to need fewer steps, a lever for 10× scale.
 
 - Server-sent events — MDN Web Docs — the one-way streaming transport used for progress and previews.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsDiffusion and denoising stepsSeeds and reproducibilityBatching on a GPUAsynchronous jobsObject storage and a CDNSafety classifiers1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Cost per image2.2 The GPU fleet2.3 Storage and delivery2.4 Queue wait at peak3. API design3.1 Submit a generation3.2 Watch the job3.3 Fetch the image3.4 Cancel4. Data model4.1 The generation job4.2 The image4.3 The safety result4.4 The request-hash cache4.5 Where each entity lives5. High-level design5.1 One server runs the model5.2 Fix 1: an async job and a GPU worker fleet5.3 Fix 2: batch same-shape requests5.4 Fix 3: object storage and a CDN for the images5.5 Fix 4: a safety gate on both ends5.6 Fix 5: stream progress and a preview5.7 Fix 6: a request-hash cache in front5.8 The composed design6. Deep dives6.1 The GPU serving profile: batching a fixed-step model6.2 Storage and delivery of generated media6.3 The safety pipeline7. Variants7.1 10× scale7.2 Video generation7.3 A prompt-rewriting model in front8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -143,7 +143,7 @@ OpenTelemetry (OTel) is the **vendor-neutral instrumentation standard** — writ
 
 ### Auto-instrumentation (zero code change)
 
-```python
+```bash
 # Install once per service; instruments FastAPI, SQLAlchemy, aiohttp automatically
 pip install opentelemetry-distro opentelemetry-exporter-otlp
 opentelemetry-bootstrap -a install

@@ -4,55 +4,10 @@ title: "Design Google Calendar — System Design School"
 permalink: /system_design/sds/google-calendar
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Google Calendar
 
-mediumRecurrence rulesTimezonesFan-outCachingAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Recurrence rules · Timezones · Fan-out · Caching · Availability
 
 ## Problem statement
 
@@ -178,8 +133,6 @@ Key idea. Four concepts carry the rest of the article: the recurrence rule and i
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, and name the one thing to size first — the path each read must expand on the fly.
 
 ### 1.1 Functional requirements
@@ -221,8 +174,6 @@ Two things to state separately. Time correctness is the non-negotiable property:
 Key idea. Time correctness is non-negotiable; the read/expand asymmetry is what the architecture is built around.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The point of this estimate is to show that reads dominate, that the per-read cost is expansion rather than I/O, and that storage is not the constraint. The figures are illustrative anchors derived from usage.
 
@@ -285,8 +236,6 @@ A repeating event is one row however many times it fires, so a heavy user with ~
 Key idea. Reads dominate writes several-fold, expansion is the per-read cost to cache and bound, and rule compression keeps storage small.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -378,8 +327,6 @@ Key idea. One Event row carries the rule; exceptions, attendees, and reminders h
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is presented incrementally: start with the simplest thing that works and let each failure introduce the next component.
 
 Reading the diagrams. Each step outlines the components newly added at that step in pink, so you can see at a glance what changed.
@@ -421,8 +368,6 @@ Strong-answer criteria. A complete answer derives each component from a constrai
 Key idea. Each component answers one failure of the naive table: rule storage, windowed expansion, exceptions, fan-out, scheduled reminders, and a rendered-view cache.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Three deep dives carry the design: the recurrence model and expansion, timezones and daylight saving, and free-or-busy with invitation fan-out and reminder firing.
 
@@ -554,35 +499,19 @@ Hide AllReveal All
 
 1)Why store a recurrence rule instead of one row per occurrence?
 
-Show Answer
-
 2)Why does expansion happen per query window rather than all at once?
-
-Show Answer
 
 3)How are 'cancel this one occurrence' and 'change this and all following' stored differently?
 
-Show Answer
-
 4)Why store a recurring event as local-time-plus-timezone instead of a UTC instant?
-
-Show Answer
 
 5)Why recompute future occurrences instead of precomputing and storing their UTC instants?
 
-Show Answer
-
 6)What does a 'find a time for everyone' query actually compute?
-
-Show Answer
 
 7)When is an invited event a shared reference versus a copy?
 
-Show Answer
-
 8)Why does each reminder firing carry an idempotency key of (event, occurrence, attendee, offset)?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -591,69 +520,3 @@ Show Answer
 - RFC 5546 — iTIP (IETF) — scheduling messages (REQUEST, REPLY, CANCEL) and sequence numbers for cross-system invitations and RSVPs.
 
 - Time Zone Database — IANA — the canonical source of timezone and daylight-saving rules, updated as governments change them.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-rocky learn
-
-In Check if two events overlap,
-sql query, can sql query be able to scale with users?
-
-Sun Oct 26 2025
-
-SystemDesignSchool
-
-Checking overlap is not a high frequency operation, and we can shard (by calendar_id) to spread the load
-
-Mon Apr 06 2026
-
-Rishi Prakash
-
-How would OCC be applied at distributed scale? even if when we say to modified details of a particular event we will go to just on partition and that partition+replicas can be in Master-Slave with raft like state machine replication but there could be a possibility when we need to write/read in other partitions then we will need 2PC + 2PL.
-Using OCC might not be future proof here?
-
-Thu Aug 28 2025
-
-SystemDesignSchool
-
-AFAIU, 2PC is rarely used in practice due to blocking and latency. It's rare for two people to edit the exact same event at the exact same millisecond so OCC works better in practice
-
-Mon Apr 06 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsRecurrence rules and windowed expansionLocal time versus a UTC instantFree-or-busy as an overlap queryInvitation fan-out and RSVP1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint versus the non-negotiable property2. Back-of-the-envelope estimation2.1 Reads dominate2.2 Expansion is the per-read cost2.3 Storage is not the constraint3. API design3.1 Create an event3.2 Edit an event, with scope3.3 Read a range — the hot path3.4 Query free-or-busy3.5 Respond to an invitation4. Data model4.1 Start with one entity: the event4.2 Repeating events can't be one row per occurrence: the rule4.3 One occurrence can diverge: the exception4.4 Events involve other people: the attendee4.5 Reminders are independent timed facts: the reminder4.6 Where each entity lives5. High-level design5.1 The naive version5.2 Fix 1: store the rule, expand per window5.3 Fix 2: layer single-occurrence exceptions5.4 Fix 3: fan out to attendees with per-attendee RSVP5.5 Fix 4: reminders as scheduled jobs, computed per occurrence5.6 Fix 5: cache rendered views5.7 The composed design6. Deep dives6.1 Recurrence model and expansion6.2 Timezones and daylight saving6.3 Free-or-busy, invitation fan-out, and reminders7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

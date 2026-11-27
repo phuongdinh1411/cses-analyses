@@ -4,55 +4,10 @@ title: "Design Online Auction — System Design School"
 permalink: /system_design/sds/online-auction
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design an Online Auction
 
-hardFan-outConsistencyReal-time
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Fan-out · Consistency · Real-time
 
 ## Problem statement
 
@@ -108,8 +63,6 @@ Key idea. Serializing writes per item makes the winner well-defined even under a
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -139,8 +92,6 @@ The property never to compromise is bid correctness: the winner is always well-d
 Key idea. Bid correctness is the property that can't bend; satisfying it while also serving a live crowd on the same item is the constraint that splits the design into a serialized write path and a fanned-out read path.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Watchers on a hot item100K
 
@@ -189,8 +140,6 @@ Bidding concentrates in the final seconds before a deadline, producing a burst o
 Key idea. Accepted writes stay small and bounded per item; fan-out multiplies that one write by the watcher count, and the close moment concentrates both into a synchronized spike.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -244,8 +193,6 @@ Key idea. Bid is the source of truth; Auction's current_price and high_bidder ar
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have serialized writes, the append-only log, fan-out, and the authoritative idempotent close from Key concepts. Sketch what happens from "a bid arrives" to "every watcher sees the new price," and where each mechanism plugs in.
 
 ### 5.1 Read the price, compare, write if higher
@@ -285,8 +232,6 @@ Each fix answers one failure of the naive version: serialization fixes lost upda
 Key idea. Every component traces to one concrete failure of "read, compare, write" — lost updates, polling load, and an undefined close — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Bid concurrency and the correct winner
 
@@ -400,64 +345,14 @@ Hide AllReveal All
 
 1)Why is one auctioned item both a write hotspot and a read hotspot, and why does that force two different design treatments?
 
-Show Answer
-
 2)Two bids of $101 arrive on a $100 item in the same instant. Why does a 'read the price, compare, write if higher' approach fail, when an atomic conditional accept does not?
-
-Show Answer
 
 3)Why does the current price and high bidder get derived from an append-only bid log, rather than stored directly as the source of truth?
 
-Show Answer
-
 4)Why is a 'latest-wins' tolerance what makes fan-out cheap, and what would it cost to remove that tolerance?
 
-Show Answer
-
 5)Why must the auction close be both authoritative and idempotent, and what specifically breaks if it's only one of the two?
-
-Show Answer
 
 ## Sources and further reading
 
 - The WebSocket Protocol — RFC 6455 — the full-duplex connection specification behind pushing live price updates to watchers instead of polling.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsSerializing writes per itemThe append-only bid logFan-out for live pricesAuthoritative, idempotent close1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Writes stay small2.2 Fan-out dominates2.3 The close is a synchronized spike3. API design3.1 Place a bid3.2 View the current state3.3 Watch live4. Data model4.1 Auction4.2 Bid4.3 Watch registry4.4 Where each entity lives, and what's derived5. High-level design5.1 Read the price, compare, write if higher5.2 Fix 1: serialize the accept decision5.3 Fix 2: fan out the price via pub-sub5.4 Fix 3: an authoritative, extending close5.5 The composed design6. Deep dives6.1 Bid concurrency and the correct winner6.2 Real-time price fan-out6.3 The close: sniping and exactly one winner7. Variants10× scaleSealed-bid / second-priceProxy / automatic bidding8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

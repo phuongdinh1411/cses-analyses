@@ -368,6 +368,6 @@ CREATE TABLE [related_entity] (
 
 ## References
 
-- [Relevant paper or blog post](URL)
-- [Related system design](URL)
-- [Official documentation](URL)
+- Relevant paper or blog post: `<link>`
+- Related system design: `<link>`
+- Official documentation: `<link>`

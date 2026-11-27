@@ -4,55 +4,10 @@ title: "Design Dropbox — System Design School"
 permalink: /system_design/sds/dropbox
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Dropbox
 
-hardObject storageConflict resolutionAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Object storage · Conflict resolution · Async processing
 
 ## Problem statement
 
@@ -146,46 +101,4 @@ On top of these, there are ad hoc knowledge you would want to know tailored to c
 
 Finally, we have a series of practical problems for you to work through. You can find the problem in /problems. This hands-on practice will not only help you apply the principles learned but will also enhance your understanding of how to use the building blocks to construct effective solutions. The list of questions grow. We are actively adding more questions to the list.
 
-Read the rest of this article and practice this problem with a FREE account
-
-Login
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsContent-addressed blocksThe metadata service as authorityVersions, not overwritesPush notification with a poll fallback1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Raw storage, and what dedup buys back2.2 The metadata rate is what's hot2.3 Bytes are the bulk; metadata is the center3. API design3.1 Check which blocks are missing3.2 Upload a block3.3 Commit a new version3.4 Catch up on missed changes3.5 Watch for changes4. Data model4.1 Block4.2 Version4.3 File and namespace4.4 Change log and cursor4.5 Where each entity lives5. High-level design5.1 One server, whole files5.2 Fix 1: client-side chunking and a content-addressed block store5.3 Fix 2: a metadata service as the authority5.4 Fix 3: a notification service5.5 Fix 4: conflict detection at commit5.6 The composed design6. Deep dives6.1 Delta sync: moving only what changed6.2 Conflict resolution for concurrent edits6.3 Change notification at scale6.4 Scaling the metadata store7. Variants10× scaleA large shared namespaceSelective sync and offline8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback
+*(The rest of this article is behind a login on the source site.)*

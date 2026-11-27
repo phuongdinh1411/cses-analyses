@@ -4,55 +4,10 @@ title: "Design YouTube — System Design School"
 permalink: /system_design/sds/youtube
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design YouTube
 
-hardVideo streamingCDN & delivery economicsTranscoding pipelineAdaptive bitrateObject storageAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Video streaming · CDN & delivery economics · Transcoding pipeline · Adaptive bitrate · Object storage · Async processing
 
 ## Problem statement
 
@@ -316,8 +271,6 @@ Key idea. Playback is a client-driven loop: read the manifest, fill a buffer, sw
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List three functional and three non-functional requirements, and identify the resource to size first. The resource that dominates is egress bandwidth, which is the main respect in which video differs from most systems.
 
 ### 1.1 Functional requirements
@@ -347,8 +300,6 @@ Two distinct things should be stated: the property that must not be compromised,
 Key idea. Egress, not storage, is the quantity to size first; it justifies most later decisions.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The purpose of this estimate is not precision but to establish, with numbers, that egress dominates all other costs. The figures are illustrative anchors, not measured values, and they rest on a few base assumptions, each derived from usage rather than asserted:
 
@@ -407,8 +358,6 @@ Video records are about 1 KB each, so a sharded database handles them easily. Me
 Key idea. Exabytes served per month dwarf petabytes stored per day, so the design optimizes delivery.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -500,8 +449,6 @@ Key idea. One Video fans out to many Renditions and Segments, with metadata and 
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Rather than presenting the final system, construct it incrementally: begin with the simplest design that works and let each failure introduce the next component.
 
 Reading the diagrams. Each step's diagram outlines the components newly added at that step in pink, so you can see at a glance what changed from the step before.
@@ -543,8 +490,6 @@ Strong-answer criteria. A complete answer derives each component from a specific
 Key idea. Each component answers one failure of the naive server: direct upload, async transcode, CDN delivery.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Three topics are central: the transcode pipeline, ABR and CDN delivery, and delivery economics with storage tiering.
 
@@ -742,94 +687,17 @@ Hide AllReveal All
 
 1)Why is egress bandwidth, not storage, the quantity to size first?
 
-Show Answer
-
 2)Why does the client, not the server, select the bitrate for each segment?
-
-Show Answer
 
 3)Why must segment URLs be immutable?
 
-Show Answer
-
 4)Why doesn't a newly viral video overwhelm the origin?
-
-Show Answer
 
 5)Why is transcoding run asynchronously off the upload request, and split into parallel chunks?
 
-Show Answer
-
 6)Why key each unit of transcode work by (video_id, rendition, segment)?
-
-Show Answer
 
 7)Why separate metadata from media into different stores?
 
-Show Answer
-
 8)Why tier storage by popularity instead of keeping everything on fast storage?
 
-Show Answer
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Sayantini Banerjee
-
-Please explain the read path in depth for streaming
-
-Fri Oct 17 2025
-
-1
-
-franklin delbo
-
-Is there any blog that discusses the compression of the videos please ??
-
-Mon Apr 14 2025
-
-Excellent Writers
-
-Is there any blog that discusses the compression of the vids
-
-Mon Jul 08 2024
-
-2
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhy video is its own problemKey conceptsRenditionCodecEncoding ladderSegments and the manifestAdaptive bitrate (ABR)Rebuffering1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 Durability versus egress2. Back-of-the-envelope estimation2.1 Ingest — what we store2.2 Delivery — what we serve2.3 Metadata — a rounding error3. API design3.1 Open an upload session3.2 Upload the chunks3.3 Commit the upload3.4 Fetch the manifest3.5 Fetch the segments4. Data model4.1 Start with one entity: the video4.2 One video plays at many qualities: the rendition4.3 A rendition isn't one file: the segment4.4 Where each entity lives5. High-level design5.1 The naive version5.2 Fix 1: get the upload off the app server5.3 Fix 2: transcode into a ladder, off the request path5.4 Fix 3: serve playback from the CDN, not the origin5.5 The composed design6. Deep dives6.1 The transcode pipeline6.2 ABR delivery and the CDN6.3 Delivery economics and storage tiering7. Variants8. The transferable patternReview: the 30-second answerQuiz
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design Instagram — System Design School"
 permalink: /system_design/sds/instagram
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Instagram
 
-hardObject storageCDN & delivery economicsAsync processingFan-outErasure codingHot key
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Object storage · CDN & delivery economics · Async processing · Fan-out · Erasure coding · Hot key
 
 ## Problem statement
 
@@ -148,8 +103,6 @@ Key idea. Because media is separate, the feed moves only small ids — fan-out s
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the one property you would never compromise and the one fact that drives every later decision. They are different here.
 
 ### 1.1 Functional requirements
@@ -187,8 +140,6 @@ Durability is the non-negotiable property: lose a user's photo and there is no r
 Key idea. Durability is the property you protect; the ~4,200× media-over-metadata asymmetry is the fact that forces direct upload, async transcode, and CDN delivery.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The estimate exists to show two things with numbers: media dwarfs metadata, and the CDN absorbs nearly all reads. The figures are illustrative anchors derived from the assumptions.
 
@@ -250,8 +201,6 @@ Key idea. Media is ~4,200× metadata and the binding storage cost; the CDN turns
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A client wants to upload a 4 MB photo. Should the bytes flow through your app servers to the object store, or should the client upload them directly?
@@ -310,8 +259,6 @@ Key idea. Small structured records go in the sharded database; opaque bytes go i
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is easiest to follow built up from one server and one database, with each failure pulling in the next box.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge marking what changed from the previous step.
@@ -345,8 +292,6 @@ Each component answers a concrete failure: the blob store because images are hug
 Key idea. Each component answers one failure of the naive design: the blob store and pre-signed upload for the bytes, the queue for slow resizing, the CDN for global reads, and fan-out for cheap id-only feeds.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Three topics carry the design: the upload-and-transcode pipeline, feed generation, and media delivery and storage economics.
 
@@ -460,78 +405,18 @@ Hide AllReveal All
 
 1)Why split metadata from media instead of storing images in the database?
 
-Show Answer
-
 2)Why upload bytes directly to the object store via a pre-signed URL?
-
-Show Answer
 
 3)Why is transcoding done asynchronously, and what does the user see meanwhile?
 
-Show Answer
-
 4)Why must transcode jobs be idempotent, and how is that achieved?
-
-Show Answer
 
 5)How does the CDN keep a viral photo from overwhelming the origin?
 
-Show Answer
-
 6)Why is fan-out cheap here compared to a text feed, and what does the timeline store?
 
-Show Answer
-
 7)How does erasure coding help media storage, and why does it matter here?
-
-Show Answer
 
 ## Sources and further reading
 
 - Sharding & IDs at Instagram — Instagram Engineering — how Instagram shards its metadata store and generates sortable, time-ordered ids across shards (the post_id and sharded-DB choices in the data model).
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Daniel
-
-Hello there! I was reading through the post and I am missing the follow/unfollow API endpoint with its definition. Apart from that, thank you for the well explained post!
-
-Wed Sep 30 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsMetadata and media, splitPre-signed direct uploadAsynchronous transcodeDurability with erasure codingCDN deliveryFeed fan-out of references1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Uploads2.2 Media storage2.3 Reads3. API design3.1 Request an upload URL3.2 Create the post3.3 Read the feed and a profile4. Data model4.1 The post4.2 The media4.3 The follow edge and placement5. High-level design5.1 One server, one database5.2 Fix 1: split metadata from media, upload direct5.3 Fix 2: transcode asynchronously5.4 Fix 3: CDN delivery and feed fan-out5.5 The composed upload-to-visible path6. Deep dives6.1 The upload and transcode pipeline6.2 Feed generation6.3 Media delivery and storage economics7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

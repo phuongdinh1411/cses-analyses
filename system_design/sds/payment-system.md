@@ -4,55 +4,10 @@ title: "Design Payment System — System Design School"
 permalink: /system_design/sds/payment-system
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Payment System
 
-hardConsistencyDeduplicationEvent sourcingAsync processingAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Consistency · Deduplication · Event sourcing · Async processing · Availability
 
 ## Problem statement
 
@@ -104,8 +59,6 @@ Key idea. Idempotency keys make retries safe; the double-entry ledger makes ever
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements, then name the one property you'd refuse to compromise.
 
 ### 1.1 Functional requirements
@@ -135,8 +88,6 @@ The property never to compromise is correctness: a payment counted exactly once,
 Key idea. Correctness is the property that can't bend; doing it without a shared transaction across an external provider is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Peak payments / sec10K/s
 
@@ -189,8 +140,6 @@ A payment record and its ledger entries are well under a kilobyte combined; the 
 Key idea. Payment volume itself is modest; the design optimizes for correctness under failure, not for absorbing a high write rate.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -246,8 +195,6 @@ Key idea. Payment and ledger_entry are written by different actors at different 
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have idempotency keys, the double-entry ledger, sagas, and reconciliation from Key concepts. Sketch what happens from "client calls POST /payments" to "money has moved," and where each of those four mechanisms plugs in.
 
 ### 5.1 Charge the card, update a balance
@@ -293,8 +240,6 @@ Each fix answers one failure of the naive version: the idempotency gate fixes do
 Key idea. Every component traces to one concrete failure of "charge the card, update a balance" — double-charging, uncertainty, lost updates, and the un-transactable provider — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Idempotency and the in-doubt problem
 
@@ -410,66 +355,16 @@ Hide AllReveal All
 
 1)Why can't 'charge the card, then update a balance' be made correct just by adding a database transaction around both steps?
 
-Show Answer
-
 2)A client's request times out and it retries with the same idempotency key. Walk through why this is safe.
-
-Show Answer
 
 3)Why is 'in_doubt' a necessary third state, rather than just choosing between 'succeeded' and 'failed' when a capture call times out?
 
-Show Answer
-
 4)Why does a double-entry ledger derive balances instead of storing them directly, and what does that buy you?
 
-Show Answer
-
 5)Why do sagas and reconciliation both need to exist, rather than one replacing the other?
-
-Show Answer
 
 ## Sources and further reading
 
 - Idempotent requests — Stripe API docs — the canonical idempotency-key contract for retry-safe payments: the key is stored, and a retry returns the same result rather than repeating the effect.
 
 - Sagas — Garcia-Molina & Salem, SIGMOD 1987 — long-lived transactions modeled as local steps plus compensations, the paper behind the payment saga.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsIdempotency keysThe double-entry ledgerSagas and compensationReconciliation1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Payment throughput2.2 Ledger writes2.3 Storage and reconciliation3. API design3.1 Initiate a payment3.2 Check payment status3.3 Refund a payment4. Data model4.1 Payment4.2 Ledger entry4.3 Idempotency mapping4.4 Where each entity lives, and what's atomic5. High-level design5.1 Charge the card, update a balance5.2 Fix 1: an idempotency gate5.3 Fix 2: an async state machine5.4 Fix 3: a double-entry ledger5.5 Fix 4: a saga with compensation, backstopped by reconciliation5.6 The composed design6. Deep dives6.1 Idempotency and the in-doubt problem6.2 The double-entry ledger6.3 Sagas and reconciliation7. Variants10× scaleInternal wallet transfersMulti-currency8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

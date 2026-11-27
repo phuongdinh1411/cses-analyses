@@ -4,55 +4,10 @@ title: "Design Local Delivery (GoPuff / DoorDash) — System Design School"
 permalink: /system_design/sds/local-delivery
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Local Delivery (Gopuff)
 
-hardConsistencyGeospatial indexingReal-time
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Consistency · Geospatial indexing · Real-time
 
 ## Problem statement
 
@@ -104,8 +59,6 @@ Key idea. Splitting stock into on_hand and reserved is what makes available-to-p
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements, then name the one thing that, done wrong, promises a unit you can't deliver.
 
 ### 1.1 Functional requirements
@@ -139,8 +92,6 @@ The property never to compromise is no overselling: a confirmed order's items ar
 Key idea. No overselling is the property that can't bend; keeping that guarantee cheap and fast under contention, while browse stays cached and eventually consistent, is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Orders / day (network-wide)10M
 
@@ -195,8 +146,6 @@ Roughly 1,000 stores × 10,000 items each is about 10 million inventory rows —
 Key idea. Order volume and inventory data are both modest; the real constraint is serialized contention on a single hot (store, item) row during a sellout, and browse traffic that dwarfs the reserve rate but never needs the same consistency.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -258,8 +207,6 @@ Key idea. Inventory needed a reserved column to avoid the oversell-versus-freeze
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have available-to-promise, the atomic reservation, the two-sided match, and the reserve-as-saga idea from Key concepts. Sketch what happens from "shopper opens the app" to "courier arrives," and where each mechanism plugs in.
 
 ### 5.1 One store, one database
@@ -305,8 +252,6 @@ Each component answers one failure of the naive version: the geo-index and cache
 Key idea. Every component traces to one concrete failure — no proximity awareness, overselling, stock disconnected from dispatch, and no visibility — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 The atomic reservation and no oversell
 
@@ -446,66 +391,16 @@ Hide AllReveal All
 
 1)Why is this problem harder than plain courier dispatch, and where does that extra difficulty actually live?
 
-Show Answer
-
 2)Why does splitting inventory into on_hand and reserved avoid both overselling and stranding stock, when a single count can't do both?
-
-Show Answer
 
 3)A hundred shoppers race for the last six units of one item, each wanting one unit. Why does an atomic conditional update guarantee exactly six succeed, rather than more or fewer?
 
-Show Answer
-
 4)Why must a failed courier match trigger the same compensation as an expired reservation, rather than simply retrying dispatch forever?
 
-Show Answer
-
 5)Why is Server-Sent Events, not a bidirectional WebSocket, the right transport for delivery tracking?
-
-Show Answer
 
 ## Sources and further reading
 
 - Distributed locks with Redis — Redis docs — the atomic set-with-expiry primitive behind a time-bounded claim, generalized here to a guarded quantity decrement.
 
 - Geospatial indexing explained — Ben Feifke — cell-plus-neighbors proximity search, the mechanism behind both the nearby-store and nearby-courier lookups.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsAvailable-to-promise: on_hand versus reservedThe atomic reservation, generalized to countsThe two-sided matchReserve-then-commit as a saga1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Orders are modest; browse is not2.2 The hotspot is one row, not the whole system2.3 Total data is modest3. API design3.1 Browse nearby availability3.2 Place an order (reserve)3.3 Confirm the order3.4 Track the delivery4. Data model4.1 Store4.2 Inventory4.3 Reservation4.4 Order4.5 Where each entity lives5. High-level design5.1 One store, one database5.2 Fix 1: a store geo-index and cached availability5.3 Fix 2: an atomic reservation with a TTL5.4 Fix 3: a fulfillment service for the two-sided match5.5 Fix 4: a real-time tracking channel5.6 The composed design6. Deep dives6.1 The atomic reservation and no oversell6.2 The two-sided match: a store with stock and a courier6.3 Real-time tracking and the ETA7. Variants10× scaleMulti-store orders and substitutionsBatched courier trips8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

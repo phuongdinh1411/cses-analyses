@@ -4,61 +4,13 @@ title: "Design Google Maps — System Design School"
 permalink: /system_design/sds/google-map
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Google Maps
 
-Geospatial indexingRoute planningCDN
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Topics:** Geospatial indexing · Route planning · CDN
 
 Designing a mapping service like Google Maps involves integrating multi-source data — road geometry, landmarks, and live traffic — and processing location updates from 100M daily active users at roughly 41,667 writes per second. The service should be able to load specified areas' streets and buildings, display real-time traffic conditions, search for streets, buildings, and landmarks, and plan navigation routes (providing both the shortest and fastest routes).
 
 ## Functional Requirements
-
-Practice this problem: Functional Requirements
 
 - Real-Time Traffic Information: The service should provide real-time traffic information and adjust routes based on traffic conditions.
 
@@ -69,8 +21,6 @@ Practice this problem: Functional Requirements
 - Geo-based Search: Refer to Yelp System Design.
 
 ## Non-Functional Requirements
-
-Practice this problem: Non-Functional Requirements
 
 - 100M Daily Active Users
 
@@ -87,8 +37,6 @@ Practice this problem: Non-Functional Requirements
 - Security
 
 ## Resource Estimation
-
-Practice this problem: Resource Estimation
 
 Assuming an average usage of 30 minutes per user per day, with a read request made every 5 seconds, the service handles far more read requests than writes. Given this usage pattern, each user would make approximately 360 read requests daily. This translates to approximately 4,166,667 read requests and 41,667 write requests per second.
 
@@ -136,8 +84,6 @@ ws://location, the message is in JSON format:
 }
 
 ## High-Level Design
-
-Practice this problem: High-Level Design
 
 Real-time traffic conditions and the calculation of the shortest time for navigation both require the user's real-time location. This is the data that is updated most frequently. The client maintains a websocket connection, periodically sending location information to the server.
 
@@ -394,46 +340,4 @@ On top of these, there are ad hoc knowledge you would want to know tailored to c
 
 Finally, we have a series of practical problems for you to work through. You can find the problem in /problems. This hands-on practice will not only help you apply the principles learned but will also enhance your understanding of how to use the building blocks to construct effective solutions. The list of questions grow. We are actively adding more questions to the list.
 
-Read the rest of this article and practice this problem with a FREE account
-
-Login
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Functional RequirementsNon-Functional RequirementsResource EstimationAPI Endpoint DesignHigh-Level DesignDetailed DesignData StoreReal-time Traffic ServiceRouting ServiceFollow up detailed design questions and answers
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageFunctional Requirements0%
-
-Send feedback
+*(The rest of this article is behind a login on the source site.)*

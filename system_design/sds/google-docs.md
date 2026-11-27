@@ -4,55 +4,10 @@ title: "Design Google Docs — System Design School"
 permalink: /system_design/sds/google-docs
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Google Docs
 
-hardConflict resolutionReal-timeAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Conflict resolution · Real-time · Async processing
 
 ## Problem statement
 
@@ -108,8 +63,6 @@ Key idea. Operations, not snapshots, are what gets recorded and reasoned about; 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name three functional and three non-functional requirements, then name the one property you would never compromise.
 
 ### 1.1 Functional requirements
@@ -141,8 +94,6 @@ The property never to compromise is convergence: every editor ends at the identi
 Key idea. Convergence is the property that can't bend; reconciling concurrent edits fast enough to feel instant is the constraint the rest of the design answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Concurrent editors10M
 
@@ -197,8 +148,6 @@ Each operation is delivered to every other editor of that document — say 3 on 
 Key idea. Bytes are cheap here — an operation is a position and a character. Live connections and op fan-out are what actually have to scale.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -256,8 +205,6 @@ Key idea. The document's text is never authoritative as a stored value — the o
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have operations, Operational Transformation, the op log, and the durable/ephemeral presence split from Key concepts. Predict the services: who orders and transforms concurrent edits, who pushes a committed edit to the other editors, and what survives a crash?
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge, so you can see what changed from the step before.
@@ -303,8 +250,6 @@ Each fix answers one failure of the naive version: the per-document serializer w
 Key idea. Every component traces to one concrete failure — divergence, slow propagation, volatile state, and a single global bottleneck — not a pre-known architecture diagram.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Convergence: Operational Transformation versus CRDTs
 
@@ -420,66 +365,16 @@ Hide AllReveal All
 
 1)Why does modeling an edit as a whole-document write fail, even before considering scale?
 
-Show Answer
-
 2)Editor A inserts a character at the very start of a document; Editor B, at the same instant, issues a delete targeting a later position. Why does applying B's operation exactly as authored produce the wrong result, and what does Operational Transformation do about it?
-
-Show Answer
 
 3)Why does this design choose server-authoritative Operational Transformation instead of a CRDT, given that CRDTs need no central coordinator at all?
 
-Show Answer
-
 4)A session server crashes while dozens of editors are connected to one document. Why does persist-before-ack mean nothing acknowledged is lost, and what does recovery actually replay?
 
-Show Answer
-
 5)Why are cursor positions kept out of the durable op log, yet still passed through the same transform machinery used for edits?
-
-Show Answer
 
 ## Sources and further reading
 
 - Concurrency control in groupware systems — Ellis & Gibbs, SIGMOD 1989 — the original paper introducing Operational Transformation for reconciling concurrent edits.
 
 - A comprehensive study of Convergent and Commutative Replicated Data Types — Shapiro, Preguiça, Baquero, Zawirski, INRIA 2011 — the formal treatment of CRDTs and the commutativity property that lets replicas converge without a central coordinator.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsEdits as operations, not document snapshotsOperational Transformation (OT)The op log as source of truthEphemeral presence versus durable edits1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Connections, not storage, set the gateway count2.2 Ops entering the system2.3 Fan-out multiplies it3. API design3.1 Open a document3.2 Submit an operation3.3 Receive committed operations and presence4. Data model4.1 Document4.2 Op-log entry4.3 Snapshot4.4 Where each entity lives, and what's the source of truth5. High-level design5.1 One server, apply edits as they arrive5.2 Fix 1: a per-document serializer with transformation5.3 Fix 2: a persistent broadcast channel5.4 Fix 3: a durable op log with snapshots5.5 Fix 4: route each document to one session server5.6 The composed design6. Deep dives6.1 Convergence: Operational Transformation versus CRDTs6.2 The document session: ordering, the log, and failure6.3 Presence, cursors, and offline edits7. Variants10× scaleRich text and formattingPeer-to-peer / offline-first8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design Chat App (WhatsApp / Messenger) — System Design School"
 permalink: /system_design/sds/chatapp
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Chat App (WhatsApp / Messenger)
 
-hardReal-timeConnection registryDurabilityFan-outPer-conversation orderingAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Real-time · Connection registry · Durability · Fan-out · Per-conversation ordering · Availability
 
 ## Chat app system design problem statement
 
@@ -136,8 +91,6 @@ Key idea. Persist before you deliver; order per conversation with a monotonic se
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the property you would never compromise and the constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -169,8 +122,6 @@ Durability is the property to protect: once a message is acked, it is not lost, 
 Key idea. Protect durability (acked means stored); design around real-time delivery to a possibly-offline recipient.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers size the gateway fleet (from concurrent connections) and the delivery and write rates (from the message rate and fan-out). Illustrative anchors.
 
@@ -226,8 +177,6 @@ Key idea. Concurrent connections size the gateway fleet; message rate × fan-out
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A client sends a message, the network drops the ack, and the client retries. How do you keep the recipient from seeing two copies?
@@ -270,8 +219,6 @@ Key idea. Messages are a durable per-conversation log; routing and presence are 
 
 ## 5. Chat server architecture and high-level design
 
-Practice this problem: Chat server architecture and high-level design
-
 The design is built up from the simplest version, each failure pulling in the next box.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -301,8 +248,6 @@ The message service persists to a durable store (assigning server_seq) before ac
 Key idea. Each component answers one failure: a gateway fleet for connection scale, a registry to find the recipient, a bus to cross gateways, and a durable store so an acked message survives the recipient being offline.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Delivery and the connection registry
 
@@ -386,27 +331,15 @@ Hide AllReveal All
 
 1)Why must a message be persisted before it is delivered or acked?
 
-Show Answer
-
 2)What is the role of the connection registry, and why is it kept in memory?
-
-Show Answer
 
 3)How does the system achieve an exactly-once experience without exactly-once delivery?
 
-Show Answer
-
 4)Why is per-conversation ordering enough, and why not global ordering?
-
-Show Answer
 
 5)When should a group switch from fan-out-on-write to a shared log?
 
-Show Answer
-
 6)Why is presence kept separate from the durable message path?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -415,73 +348,3 @@ Show Answer
 - How Discord stores trillions of messages — Discord Engineering — partitioning a durable message store by conversation and the storage-engine tradeoffs.
 
 - The Log: what every software engineer should know about real-time data — Jay Kreps (LinkedIn Engineering) — the append-only log and per-reader cursor underneath the durable-log-plus-replay model.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Sayantini Banerjee
-
-I think there should be some service (connection manager) which can maintain connection list i.e which client is connected to which server.
-
-Sun Aug 31 2025
-
-2
-
-nageswar nandyala
-
-How Session Service are handled how request are redirected ???????
-
-Fri Aug 29 2025
-
-1
-
-Mukhtar Kussaiynbekov
-
-Where to read more about security aspect of using client-side ID? I don't understand how client-side ID helps to mitigate a potential threat from malicious actors.
-
-Fri Aug 22 2025
-
-dzemil dupljak
-
-Maybe I missed it in the article, but I didn't find an explanation on how to recover from a cache failure or error—specifically, how to deliver undelivered messages to a user who just came online. How can I know whether the cache failed and if all undelivered messages are still in the "inbox" cache, or if I need to retrieve them from the message database?
-
-Sun May 25 2025
-
-6
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Chat app system design problem statementChat application system design interview questionsWhat makes this problem distinctiveKey conceptsPersistent connections and the registryDurability before deliveryAt-least-once and dedupPer-conversation orderingFan-out for groupsPresence1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Connections and gateways2.2 Messages and deliveries3. API design4. Data model4.1 Message and conversation4.2 Where each piece lives5. Chat server architecture and high-level design5.1 One server5.2 Fix 1: a gateway fleet and a connection registry5.3 Fix 2: a message service and an internal bus5.4 Fix 3: a durable store and offline delivery5.5 The composed delivery path6. Deep dives6.1 Delivery and the connection registry6.2 Ordering and delivery guarantees6.3 Group chat and presence7. VariantsWhatsApp-scale mobile delivery8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageChat app system design problem statement0%
-
-Send feedback

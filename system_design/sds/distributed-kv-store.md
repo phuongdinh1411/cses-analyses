@@ -4,55 +4,10 @@ title: "Design Distributed Key-Value Store — System Design School"
 permalink: /system_design/sds/distributed-kv-store
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Distributed Key-Value Store
 
-hardConsistent hashingQuorumReplicationConflict resolutionAvailability
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Consistent hashing · Quorum · Replication · Conflict resolution · Availability
 
 ## Problem statement
 
@@ -146,8 +101,6 @@ Key idea. Consistent hashing places and replicates keys; R + W > N tunes consist
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the requirements, then name the property you would never compromise and the constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -180,8 +133,6 @@ Key idea. Protect write availability under partition; design around reconciling 
 
 ## 2. Back-of-the-envelope estimation
 
-Practice this problem: Back-of-the-envelope estimation
-
 The numbers set storage per node and the physical read/write amplification from replication and quorum. Illustrative anchors.
 
 ### 2.1 Storage
@@ -195,8 +146,6 @@ A target of 500K put/sec fans out to N=3 replicas — 1.5M physical writes/sec, 
 Key idea. Replication multiplies physical writes by N and quorum multiplies reads by R; size per-node for that amplification plus hot-key skew.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -232,8 +181,6 @@ Key idea. Opaque key/value plus a vector-clock version and a tombstone; the key 
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is built up incrementally: each step below fixes a concrete failure of the one before it.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge.
@@ -265,8 +212,6 @@ It works by never updating data in place. A put appends to a write-ahead log and
 Key idea. Each decision serves the write-available-under-partition goal: ring placement and replication, leaderless coordination, quorum overlap for consistency, and gossip + LSM for membership and storage with no central point.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Quorum and tunable consistency
 
@@ -344,23 +289,13 @@ Hide AllReveal All
 
 1)What does R + W > N guarantee, and what does it not guarantee?
 
-Show Answer
-
 2)Why does a leaderless store distribute keys with consistent hashing and virtual nodes?
-
-Show Answer
 
 3)Why prefer vector clocks over last-write-wins for some data?
 
-Show Answer
-
 4)How do hinted handoff and Merkle anti-entropy differ in what they repair?
 
-Show Answer
-
 5)Why is this store kept available for writes under a partition rather than strongly consistent?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -371,43 +306,3 @@ Show Answer
 - Impacts of changing the number of vnodes — The Last Pickle — practical effects of virtual-node count on load distribution and repair.
 
 - PACELC — Daniel Abadi — the consistency-vs-latency trade even in the absence of a partition, the framing behind the quorum knobs.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsPartitioning and consistent hashingQuorum: R, W, and NVector clocks and conflictHinted handoffMerkle-tree anti-entropyGossip membership1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Storage2.2 Read and write amplification3. API design4. Data model4.1 The stored record5. High-level design5.1 Partitioning and replication5.2 Fix 1: leaderless coordination5.3 Fix 2: quorum reads and writes5.4 Fix 3: membership and storage6. Deep dives6.1 Quorum and tunable consistency6.2 Conflict resolution6.3 Failure handling7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

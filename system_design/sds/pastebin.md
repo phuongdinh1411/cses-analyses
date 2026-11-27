@@ -4,55 +4,10 @@ title: "Design Pastebin — System Design School"
 permalink: /system_design/sds/pastebin
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Pastebin
 
-easyObject storageCDNCachingSharding
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Easy  
+**Topics:** Object storage · CDN · Caching · Sharding
 
 ## Problem statement
 
@@ -114,8 +69,6 @@ Key idea. Base-62 encoding packs 3.52 trillion URL-safe identifiers into seven c
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. Name the core functional and non-functional requirements, then identify the one correctness property that must not fail on the write path and the load pattern that drives the read path.
 
 ### 1.1 Functional requirements
@@ -161,8 +114,6 @@ GreatPairs key uniqueness with read/write asymmetry, sizes reads and key space, 
 Key idea. Key uniqueness is the correctness invariant that cannot bend; the 100:1 read/write asymmetry over immutable blobs is the load constraint that drives every storage and caching layer.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Capacity estimation here verifies three facts: write throughput is modest, read throughput dominates by two orders of magnitude, and a seven-character base-62 key space dwarfs multi-year paste volume. The numbers below follow from four baseline assumptions:
 
@@ -244,8 +195,6 @@ Key idea. At ~116 writes/s versus ~11,600 reads/s, the read path dominates by tw
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 Writes and reads have a 1:100 volume asymmetry, and a paste never changes after creation. How should that change the read API compared to the create API?
@@ -325,8 +274,6 @@ Key idea. Large immutable bodies are separated from the 100-byte lookup row so m
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. Starting from one application server and one database, identify the four bottlenecks that appear under real traffic and predict which component resolves each one.
 
 Reading the diagrams. Each step marks the newly added components with a dashed outline so the diff from the previous step is clear at a glance.
@@ -386,8 +333,6 @@ GreatDerives each component from a failure mode and orders writes for crash safe
 Key idea. Each component in the high-level design answers one bottleneck of the single-database baseline: the key pool eliminates collision probes, object storage removes body bloat, the CDN and metadata cache absorb the 100:1 read skew, and lazy expiry plus a sweeper reclaims past-due pastes.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Short unique key generation and KGS internals
 
@@ -607,23 +552,13 @@ Hide AllReveal All
 
 1)Why is read latency — rather than write throughput — the primary number to design around in Pastebin, and what property of a paste makes optimizing reads straightforward?
 
-Show Answer
-
 2)What makes the GET /{key} read endpoint directly cacheable at the CDN edge, and what serves as the cache key?
-
-Show Answer
 
 3)In the data model, what forced the paste body out of the Paste database record, and why does supporting a custom_alias require no new table?
 
-Show Answer
-
 4)How does the Key-Generation Service (KGS) hand out keys without per-write database queries or duplicate assignments across concurrent application servers?
 
-Show Answer
-
 5)Why expire pastes lazily on read instead of scheduling a deletion job for each paste's exact expiration second, and why must CDN max-age be capped at (expires_at - now)?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -634,51 +569,3 @@ Show Answer
 - Ticket Servers: Distributed Unique Primary Keys on the Cheap — Flickr Engineering — early production write-up on distributed counter generation and why naive single-counter sequences become a bottleneck and leak order.
 
 - Amazon S3 Object Expiration and Lifecycle Management — how object stores implement asynchronous background expiration rules to reclaim expired objects at scale.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Wojciech Chuchro
-
-Thanks for great page for learning system designs :-)
-
-Tue May 27 2025
-
-2
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsBase-62 encoding and the short key spaceHTTP `Cache-Control: max-age` on immutable content1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint versus the non-negotiable property2. Back-of-the-envelope estimation2.1 Writes are modest; reads dominate2.2 Storage is bounded by expiry2.3 The key space dwarfs demand3. API design3.1 Create a paste3.2 Read a paste record3.3 Read the raw paste body3.4 Delete a paste4. Data model4.1 First cut: a single paste record4.2 Splitting the paste record from the body4.3 Custom aliases need no new entity4.4 Where each entity lives5. High-level design5.1 One server and one database5.2 Fix 1: a key-generation service with a pre-filled pool5.3 Fix 2: move paste bodies to object storage5.4 Fix 3: serve reads through a CDN and an in-memory cache5.5 Fix 4: lazy expiry on read and a background sweeper5.6 The composed design6. Deep dives6.1 Short unique key generation and KGS internals6.2 The read-heavy serving path6.3 Expiration and storage reclamation7. Variants10× scalePrivate and unguessable pastesAnalytics and view countsAbuse and moderation8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

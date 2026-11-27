@@ -4,55 +4,10 @@ title: "Design Ad Click Aggregator — System Design School"
 permalink: /system_design/sds/ad-click-aggregator
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design an Ad Click Aggregator
 
-hardStream processingShardingAvailabilityAsync processing
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Stream processing · Sharding · Availability · Async processing
 
 ## Problem statement
 
@@ -110,8 +65,6 @@ Key idea. A durable, replayable log plus an idempotency key turns "delivered twi
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design.
 
 ### 1.1 Functional requirements
@@ -139,8 +92,6 @@ The property never to compromise is accuracy: every click counted exactly once, 
 Key idea. Accuracy is the property to protect; doing it without a per-click transaction, under retries and skew, is the constraint everything else answers.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Peak clicks / sec10M/s
 
@@ -194,8 +145,6 @@ Key idea. The raw click log, not the aggregate store, is what must absorb roughl
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A click should never be lost, but the aggregate it feeds may take seconds to update. Should POST /v1/clicks block until the click is reflected in aggregates, or return as soon as the event is durably logged?
@@ -242,8 +191,6 @@ Key idea. The log is the durable fact table; the aggregate store is small and de
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Before reading on. You already have the durable log, idempotency, windowing, and the speed/batch split from Key concepts. Sketch how a single click flows from the API to a queryable aggregate, and where duplicate detection happens.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge, so you can see what changed from the step before.
@@ -285,8 +232,6 @@ Each piece answers one failure of the naive counter: the durable log fixes write
 Key idea. Every fix answers one concrete failure of the counter — write overload, duplicate counting, and the speed layer's own blind spots — not a pre-known list of components.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Exactly-once counting
 
@@ -404,84 +349,16 @@ Hide AllReveal All
 
 1)Why can't a database counter, incremented on every click, satisfy the accuracy requirement here?
 
-Show Answer
-
 2)Why does making the offset commit and the aggregate update atomic fix exactly-once counting, when dedup by event_id alone does not?
-
-Show Answer
 
 3)A campaign goes viral and takes 20% of all clicks. Why does salting its key fix the hot-partition problem without losing per-campaign accuracy?
 
-Show Answer
-
 4)Why does aggregating by event time instead of processing time matter for correctness, and what does a watermark actually decide?
 
-Show Answer
-
 5)Why does removing the billing requirement change the right design so much, per the 'approximate is good enough' variant?
-
-Show Answer
 
 ## Sources and further reading
 
 - Exactly-once semantics in Kafka — Conduktor — the idempotent producer (producer id plus sequence number) and transactions, the mechanism behind atomic offset-and-aggregate commits.
 
 - Photon: Fault-tolerant and Scalable Joining of Continuous Data Streams — Google, SIGMOD 2013 — Google's production exactly-once ad-click joining pipeline, the reference design for accurate counting at ad scale.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Cattaby
-
-Great write-up overall, but there are two critical architectural details left vague that are often key evaluation points in system design interviews:
-
-1. Data Retention & Tiering Strategy (86 TB/day on Stream Storage)
-
-The Gap: The back-of-the-envelope calculation rightly notes that raw click logs accumulate ~86 TB/day (~2.5 PB/month), but the design keeps them abstractly on the "Durable Log."
-
-Why it matters: Retaining petabytes on high-cost messaging streams (Kafka/Kinesis) is economically non-viable. The design should explicitly define a tiering strategy: offloading raw streams continuously to cold object storage (S3/GCS) in compressed columnar formats (e.g., Apache Parquet) partitioned as /year/month/day/hour/. This enables cost-effective long-term retention while making the batch recomputation layer significantly faster via query/partition pruning.
-
-2. Concrete OLAP Database & Schema Design
-
-The Gap: Storing aggregates in a generic "small, read-optimized time-series store" glosses over the actual engine dynamics required to serve dashboards at scale.
-
-Why it matters: Serving high-concurrency dashboard reads with sub-second latency across multi-dimensional slices (campaign, country, device) requires a dedicated OLAP engine like ClickHouse, Apache Pinot, or SingleStore. Specifying the primary/sorting key—such as (campaign_id, window_start, country, device)—and leverage techniques like materialized views or sparse indexing would make the aggregate storage section complete.
-
-Sun Aug 16 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe durable log as source of truthIdempotency and delivery guaranteesWindowed aggregation and event timeSpeed layer and batch layerSharding and hot-key skew1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Ingest volume2.2 Aggregates are tiny by comparison2.3 Skew, not raw volume, sizes the hot path3. API design3.1 Record a click3.2 Query aggregates4. Data model4.1 Click4.2 Aggregate4.3 Seen (dedup state)4.4 Where each entity lives5. High-level design5.1 A counter in the database5.2 Fix 1: an idempotent append to a durable log5.3 Fix 2: a stream processor with windowed dedup5.4 Fix 3: a batch layer recomputes from the log5.5 The composed design5.6 Sequence: a click, end to end6. Deep dives6.1 Exactly-once counting6.2 Hot-key skew6.3 Late and out-of-order events7. Variants10× scaleApproximate is good enoughReal-time-only (kappa architecture)8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

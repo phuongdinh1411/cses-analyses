@@ -4,55 +4,10 @@ title: "Design Distributed Rate Limiter — System Design School"
 permalink: /system_design/sds/rate-limiter
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a Distributed Rate Limiter
 
-mediumRate limitingAtomic countersSliding windowToken bucketAvailabilityHot key
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Rate limiting · Atomic counters · Sliding window · Token bucket · Availability · Hot key
 
 ## Distributed rate limiter system design problem statement
 
@@ -186,8 +141,6 @@ Key idea. Choose an algorithm for how you count and a coordination strategy for 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 Before reading on. List the functional and non-functional requirements, then name the one property you would never compromise and the one constraint that drives the design. They are different here.
 
 ### 1.1 Functional requirements
@@ -221,8 +174,6 @@ Availability is the property to protect: the limiter fronts every request, so it
 Key idea. Availability is the property to protect; the per-decision latency budget is the constraint to design around; accuracy is what is traded against it.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers exist to size two things: how many shards the counter store needs, and how much a hybrid design over-allows. The figures are illustrative anchors, not measured values.
 
@@ -270,8 +221,6 @@ Key idea. The two numbers that shape the design are the shard count (decision ra
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A limiter decides allow-or-deny. When it denies, should the limiter service itself return HTTP 429, or return 200 with a verdict the gateway acts on?
@@ -314,8 +263,6 @@ Key idea. The counter's shape follows the algorithm, and a per-window TTL bounds
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 The design is easiest to follow when built from the smallest version that could work, letting each failure pull in the next box.
 
 Reading the diagrams. Each step marks the components newly added at that step with a dashed outline and a NEW badge, so you can see what changed from the step before.
@@ -351,8 +298,6 @@ The whole decision is one in-datacenter round-trip — roughly half a millisecon
 Key idea. Each component answers one failure of the naive design: a shared store for many servers, an atomic script for the race, a replica for the single point of failure, and config and telemetry kept off the hot path.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 Four decisions shape the limiter: which window algorithm to count with, whether to keep the counter central or go hybrid, how to behave when things fail, and how to observe what the limiter is doing.
 
@@ -468,31 +413,17 @@ Hide AllReveal All
 
 1)Why does a per-server in-process counter fail behind a load balancer?
 
-Show Answer
-
 2)Why must the read-modify-write be a single atomic operation?
-
-Show Answer
 
 3)What is the boundary burst problem, and which algorithm avoids it?
 
-Show Answer
-
 4)What does a hybrid (local + periodic sync) counter trade away, and how much?
-
-Show Answer
 
 5)Why do most production limiters fail open, and how do you make that safe?
 
-Show Answer
-
 6)Why return Retry-After with jitter instead of a fixed delay on a 429?
 
-Show Answer
-
 7)What changes for a billing-critical limit where overage costs money?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -501,43 +432,3 @@ Show Answer
 - EVAL / Lua scripting — Redis docs — how scripts execute atomically and serially on an instance, the read-modify-write primitive for counters.
 
 - Redis benchmarks — Redis docs — the ~100K ops/sec single-instance throughput ceiling that forces sharding at scale.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Distributed rate limiter system design problem statementRate limiter system design interview questionsWhat makes a rate limiter hardKey conceptsCounting a windowThe shared counterCentral versus hybrid coordinationFail-open versus fail-closed1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The constraint versus the property2. Back-of-the-envelope estimation2.1 Throughput and shards2.2 Memory2.3 Over-allowance under hybrid3. API design3.1 Check a limit3.2 Configure a limit4. Data model4.1 The counter, shaped by algorithm4.2 Lifetime and placement5. High-level design5.1 A counter in the app server5.2 Fix 1: move the counter to a shared store5.3 Fix 2: make the read-modify-write atomic5.4 Fix 3: remove the single point of failure5.5 The composed design and its latency budget6. Deep dives6.1 Choosing the window algorithm6.2 Central versus hybrid counting6.3 Failure: atomicity, fail-open, and the retry storm6.4 Observability and safe rollout7. Variants8. The transferable patternReview: the 30-second answerQuizSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageDistributed rate limiter system design problem statement0%
-
-Send feedback

@@ -4,55 +4,10 @@ title: "Design Live Comments (Real-Time Fan-Out) — System Design School"
 permalink: /system_design/sds/live-comments
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Live Comments (Real-Time Fan-Out)
 
-hardReal-time fan-outPub-subSampling
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Real-time fan-out · Pub-sub · Sampling
 
 ## Problem statement
 
@@ -126,8 +81,6 @@ Key idea. A pub-sub channel and hierarchical fan-out solve reaching millions of 
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Post a comment on a live broadcast (short text).
@@ -153,8 +106,6 @@ Practice this problem: Requirements
 Near-real-time delivery to the whole audience is non-negotiable — the system favors freshness and availability over durability. But the property that actually organizes the architecture is that the delivered stream must stay bounded. Viewers times arrival rate is both physically impossible to serve and unreadable to a human, so a sampler capping the delivered rate is the central constraint every other piece serves. The two collide directly at that sampler: cap too aggressively and viewers miss the moment's best comments; cap too loosely and the fan-out tree and the clients drown. That collision is why sampling earns its own deep dive.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Concurrent viewers (millions)10M
 
@@ -196,8 +147,6 @@ Key idea. Delivering every comment scales with arrival rate, something nobody co
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A viewer's client needs to know about new comments the instant they're posted, without asking. What shape does that read path take, compared to a normal GET request?
@@ -233,8 +182,6 @@ This inverts a chat system's usual shape: there, the durable message store is th
 Key idea. The reframing from "comment as a row" to "comment as an event on a subscribed channel" is forced by the read pattern — millions tailing one stream, not one client looking up one row — and it's what makes the sampler a natural next piece rather than a bolt-on.
 
 ## 5. High-level design
-
-Practice this problem: High-level design
 
 Start with the simplest thing that could work: one server holding every viewer's connection and looping over them on every new comment.
 
@@ -275,8 +222,6 @@ These boxes are the data model's homes made concrete. Comment events are appende
 Key idea. Each of the four fixes traces to a concrete failure of the single-server design — connection limits, connection scale, arrival rate, and a single hot broadcast — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Fan-out to millions of connections
 
@@ -388,66 +333,16 @@ Hide AllReveal All
 
 1)Why does live comments need hierarchical fan-out instead of one relay pushing directly to every gateway?
 
-Show Answer
-
 2)Why is sampling structural to this design rather than an optional tuning knob?
-
-Show Answer
 
 3)Why does broadcast delivery need no connection registry, unlike a one-to-one chat system?
 
-Show Answer
-
 4)What two kinds of comments bypass the sampler's rate cap, and why?
 
-Show Answer
-
 5)Why does reconnecting after a dropped connection get a best-effort recent window instead of an exact replay of missed comments?
-
-Show Answer
 
 ## Sources and further reading
 
 - The WebSocket Protocol — RFC 6455 — the persistent, full-duplex connection standard that carries the delivered comment stream to each viewer.
 
 - Fan-out: building a scalable feed — Stream — fan-out strategies for pushing updates to many subscribers; live comments applies the same push shape synchronously and adds sampling to bound the delivered rate.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsPersistent connections and pub-sub channelsHierarchical fan-outSampling: delivering less than what arrives1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: a fan-out layer — channel, then gatewaysFix 2: shard the gateway tier by connection countFix 3: a sampler between the channel and the gatewaysFix 4: hierarchical fan-out for the biggest broadcasts6. Deep dives6.1 Fan-out to millions of connections6.2 The delivered-rate and sampling problem6.3 Connection management and failure7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

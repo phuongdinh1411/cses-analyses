@@ -4,55 +4,10 @@ title: "Design URL Shortener — System Design School"
 permalink: /system_design/sds/url-shortener
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design URL Shortener
 
-easyUnique IDsCachingSharding
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Easy  
+**Topics:** Unique IDs · Caching · Sharding
 
 ## Introduction
 
@@ -61,8 +16,6 @@ A URL Shortener is a service that takes a long URL and generates a shorter, uniq
 This alias is often a fixed-length string of characters. The system should be able to handle millions of URLs, allowing users to create, store, and retrieve shortened URLs efficiently. Each shortened URL needs to be unique and persistent. Additionally, the service should be able to handle high traffic, with shortened URLs redirecting to the original links in near real-time. In some cases, the service may include analytics to track link usage, such as click counts and user locations.
 
 ## Functional Requirements
-
-Practice this problem: Functional Requirements
 
 We extract verbs from the problem statement to identify core operations:
 
@@ -101,8 +54,6 @@ Scale Requirements
 - Assuming each entry is about 500 bytes
 
 ## Non-Functional Requirements
-
-Practice this problem: Non-Functional Requirements
 
 We extract adjectives and descriptive phrases from the problem statement to identify quality constraints:
 
@@ -189,8 +140,6 @@ Request & response
 
 ## High Level Design
 
-Practice this problem: High Level Design
-
 ### 1. URL Shortening
 
 Users should be able to input a long URL and receive a unique, shortened alias. The shortened URL should use a compact format with English letters and digits to save space and ensure uniqueness.
@@ -250,8 +199,6 @@ This architecture enables efficient, real-time analytics collection, combining t
 Got a question? Discuss this section with AI tutor
 
 ## Deep Dive Questions
-
-Practice this problem: Deep Dive Questions
 
 ### What are the two properties we need for the IDs?
 
@@ -364,168 +311,3 @@ Encoding StrategyExplain Base62 encoding and calculate ID space (62^6 ≈ 56B)Di
 Scaling StrategyUnderstand sharding concept and why it enables horizontal scalingDesign shard key strategy; explain write path independence and read routingHandle shard rebalancing, hot shards, and consistent hashing alternatives
 
 Caching & PerformanceInclude cache layer in design; explain read-through patternCalculate cache hit ratios; design cache invalidation strategyDesign multi-tier caching; handle cache stampede and thundering herd
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-M Inshal
-
-Guys what are you talking about, i can't understand
-
-Thu Jul 30 2026
-
-1
-
-SystemDesignSchool
-
-Which part do you not understand? We are happy to clarify for you
-
-Sat Nov 07 2026
-
-Mosharaf Hossain
-
-1. URL Redirection Request Handler is an independent service. So why we don't explicitly call it a service instead of Request Handler. I prefer explicit intentional name like URL Redirection Service.
-
-2. The Cache after the URL Redirection Request Handler is actually not a DB as per the description. I think neither Redis nor Memcached supports auto refresh for cache miss. So this DB symbol here is misleading - it could be a box like a service. I think, it's a Cache Layer which has cache management (reload from original DB in case of cache miss) code logic (or third party scripts) and an in-memory DB for Cache like Redis or Memcached.
-
-Sat Jan 31 2026
-
-2
-
-SystemDesignSchool
-
-1. The naming is a personal preference. We use handler here to be consistent with the pattern of web server for handling raw traffic.
-
-2. You are right a box would be more appropriate here. Thanks
-
-Mon Apr 06 2026
-
-2
-
-Rishi Prakash
-
-We can also take Hash of the short url generated and use consistent hashing as partition scheme. Why not?
-
-Mon Aug 25 2025
-
-1
-
-Akshat Agarwal
-
-I think using the concept of consisting hashing is typically good, Because when nodes are added or removed, only a small subset of keys need to move, avoiding a full rehash. This will leads minimal reorganization
-
-Sun Sep 28 2025
-
-3
-
-Rishi Prakash
-
-What happens when a shard becomes full? Say ID generator machine 1 -> Shard 1; Now with time this shard will go full; But the ID genertor has been appending 1 as prefix, but now it needs more shards (which will have different partition key?)
-
-Mon Aug 25 2025
-
-2
-
-Sayantini Banerjee
-
-Can you please elaborate why did you create a separate service for id generators? Cant it be clubbed with request handler? does request handler have other responsibilities than sending request to id generator?
-
-Sat Aug 23 2025
-
-Rishi Prakash
-
-For resiliency - If Handler service goes down, all the requests will get lost and so we need to dump them in a Queue, from which there "would be" another service consuming and generating shorter urls.
-
-Mon Aug 25 2025
-
-1
-
-Ajay Edupuganti
-
-how and why did you select a nosql db, is the infinite partitioning the main reason? if i have to chose or make decision how can i go about tradeoffs?
-
-And the drawbacks of pregeneration does not sound like drawbacks, as it can help save infra costs and the time aswell. And we can a cronjob every day that runs and generates number of ids based on number of ids currently available.
-
-And if we want to include custome ids for the clients, what is the best way to implement it? now since we are using shardid alphabet as the first character of the id, we can just check if that particular id has been already used or not in that shard and allocate it. is that it? or anything else?
-
-Wed Jun 18 2025
-
-2
-
-jugpreet singh
-
-If there’s a 1:1 mapping between id generator and the db shard, what if a id generator goes down. Since the id is used to find the db, what happens to the writes. Does it now go to a different shard. Same for if a db shard goes down. Don’t we lose the 1:1 mapping in such cases?
-
-Sat Jun 07 2025
-
-3
-
-SystemDesignSchool
-
-The ID Generator is a stateless service, and achieving high availability for stateless services is a well-solved problem in modern systems. Most cloud providers offer battle-tested infrastructure to handle this. For example, we can deploy multiple instances behind a load balancer to ensure fault tolerance and zero downtime, or use a serverless approach like AWS Lambda, which offloads the HA responsibilities entirely to the platform.
-
-Tue Jul 01 2025
-
-Load More
-
-Pavan Kumar
-
-Question : Is each id generator has its own incrementing sequence number
-
-Fri May 23 2025
-
-1
-
-Jorge Allwin
-
-I’ve built lightweight tools that run alongside browser-based platforms like this, and I’ve found that minimizing memory usage on long sessions (especially with multiple tabs open) helps keep latency low when handling frequent redirects or analytics. A compact memory optimizer quietly running in the background makes a noticeable difference during high traffic spikes.
-https://memoryreduct.com/mem-reduct-download/
-
-Tue May 20 2025
-
-shivadeepthi toopran
-
-would this ID generator service be situated in between URL shorteneing service and nosql db ?? Could have been more clear on where this places in
-
-Thu Apr 17 2025
-
-1
-
-Load More
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-IntroductionFunctional RequirementsNon-Functional RequirementsData ModelAPI EndpointsHigh Level Design1. URL Shortening2. URL Redirection3. Link AnalyticsDeep Dive QuestionsWhat are the two properties we need for the IDs?How can we generate unique IDs for each URL?Option 1: Hash FunctionsOption 2: UUIDOption 3: Snowflake IDsOption 4: Machine ID + Sequence Number (Chosen Solution)How can we encode the unique IDs into short, user-friendly URLs?Option 1: Hexadecimal (Base16)Option 2: Base64Option 3: Base62 (Chosen Solution)How can we scale the system to handle high traffic?Staff-Level Discussion TopicsLevel Expectations
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageIntroduction0%
-
-Send feedback

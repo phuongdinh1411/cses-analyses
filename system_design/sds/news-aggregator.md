@@ -4,55 +4,10 @@ title: "Design News Aggregator — System Design School"
 permalink: /system_design/sds/news-aggregator
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design a News Aggregator
 
-hardNear-duplicate detectionClusteringWeb crawling
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Near-duplicate detection · Clustering · Web crawling
 
 ## Problem statement
 
@@ -112,8 +67,6 @@ Key idea. A similarity fingerprint turns "same story?" into a distance check; LS
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Ingest articles from many sources (RSS/Atom feeds and crawled pages) continuously.
@@ -139,8 +92,6 @@ Practice this problem: Requirements
 Freshness is non-negotiable — a news feed running an hour behind is worthless. But the property that actually shapes the architecture is the cost of clustering: deciding, for every one of millions of daily articles, which existing story it belongs to. The two collide directly: the fresher the feed needs to be, the more often clustering has to run, and naively comparing each article against every other article gets more hopeless the more the system ingests. The resolution is fingerprints plus LSH plus incremental clustering — assigning each new article to a story in near-constant time as it streams in, so freshness and scale stop fighting each other.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Sources (thousands)50K
 
@@ -179,8 +130,6 @@ On the read side, assume roughly 10 million daily readers each checking the feed
 Key idea. The expensive resource here is the clustering compute, not the read rate. All-pairs comparison is quadratic in article count; fingerprints plus LSH bring it down to near-linear, which is what makes clustering affordable at crawl scale.
 
 ## 3. API design
-
-Practice this problem: API design
 
 Design checkpoint
 
@@ -222,8 +171,6 @@ Key idea. The cluster is forced by the article entity's inability to express "th
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest thing that could work: one server polls each source's feed and lists the items sorted by time.
 
 Four things break the moment this faces real traffic: one fetcher can't keep up with tens of thousands of sources and millions of articles a day, and polling every source blindly hammers them while wasting work on unchanged feeds; when a story breaks, the same event arrives from twenty sources and the time-sorted list shows it twenty times; a raw time sort isn't a useful feed on its own, since readers want the important stories, fresh, without any one publisher dominating; and articles arrive continuously with a freshness budget measured in minutes, so reprocessing the whole corpus on every update is out of the question. Fix them one at a time.
@@ -253,8 +200,6 @@ These boxes are the data model's homes made concrete. Articles land in the artic
 Key idea. Each of the four fixes traces to a concrete failure of the naive poll-and-sort design — ingest scale, duplicate stories, feed usefulness, and freshness under continuous arrival — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Near-duplicate detection and clustering
 
@@ -364,64 +309,14 @@ Hide AllReveal All
 
 1)Why does an exact content hash fail to detect that a syndicated, reworded article is a duplicate of the original?
 
-Show Answer
-
 2)Why is comparing every new article against every existing article infeasible at this scale, and what makes LSH avoid that cost?
-
-Show Answer
 
 3)What does loosening the similarity threshold too far do to the feed, and what does tightening it too far do?
 
-Show Answer
-
 4)Why does the ingest pipeline need two separate deduplication steps — URL dedup and content-fingerprint dedup — instead of just one?
 
-Show Answer
-
 5)Why does this feed cache far more effectively than a per-user social feed like News Feed?
-
-Show Answer
 
 ## Sources and further reading
 
 - Introduction to Information Retrieval, Ch. 20: Web crawling and indexes — Manning, Raghavan & Schütze (Stanford NLP) — crawler architecture and the URL frontier that the ingest pipeline reuses.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsSimilarity fingerprints (SimHash / MinHash)Locality-sensitive hashing (LSH)Incremental clustering1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: a crawl/ingest pipelineFix 2: fingerprint, then LSH, then clusterFix 3: categorize, rank, and cache the feedFix 4: incremental clustering6. Deep dives6.1 Near-duplicate detection and clustering6.2 The ingest pipeline, tuned for freshness6.3 Ranking and feed generation7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

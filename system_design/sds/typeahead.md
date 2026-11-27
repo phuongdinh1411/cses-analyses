@@ -4,55 +4,10 @@ title: "Design Typeahead / Autocomplete — System Design School"
 permalink: /system_design/sds/typeahead
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Typeahead / Autocomplete
 
-easyCachingPrecomputationShardingAsync processingTrie
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Easy  
+**Topics:** Caching · Precomputation · Sharding · Async processing · Trie
 
 ## Problem statement
 
@@ -151,8 +106,6 @@ node turns ranking into a lookup, provided the ranking is computed before the re
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Suggest. Given a prefix, return its top-K completions (default K = 10) ranked by
@@ -187,8 +140,6 @@ Key idea. Latency forbids ranking at read time; relevance forbids skipping ranki
 Ranking ahead of time, offline, is what lets a design honor both at once.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 The numbers decide one thing: whether the index fits in memory, and how much read traffic the
 serving tier must absorb. (For the method, see
@@ -246,8 +197,6 @@ precompute-and-serve-from-memory the right shape.
 
 ## 3. API design
 
-Practice this problem: API design
-
 Two calls serve different paths. One is the entire hot path and must be a cached lookup; the
 other is a fire-and-forget write.
 
@@ -294,8 +243,6 @@ Key idea. The same query exists as an event, an aggregate score, and a cached ra
 each form tuned for write, build, or read, and physically separated so the write, build, and read paths do not compete for the same resources.
 
 ## 5. High-level design
-
-Practice this problem: High-level design
 
 The design starts from the naive version and removes one failure at a time.
 
@@ -349,8 +296,6 @@ sort, memory removes the disk, sharding removes the size ceiling, the cache remo
 walks, and the offline pipeline removes the build from the request path.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### Building the ranked trie
 
@@ -546,72 +491,16 @@ Hide AllReveal All
 
 1)Why does ranking at request time fail the latency budget as the corpus grows?
 
-Show Answer
-
 2)How is a node's top-K computed without scanning its whole subtree?
-
-Show Answer
 
 3)Why swap the rebuilt trie in atomically as an immutable structure?
 
-Show Answer
-
 4)What is the cheapest way to cut suggest traffic, and why first?
 
-Show Answer
-
 5)How do you surface a term that starts trending between rebuilds?
-
-Show Answer
 
 ## Sources and further reading
 
 - Using Finite State Transducers in Lucene — Michael McCandless — the compressed in-memory automaton behind Lucene's suggesters, the production form of a radix-compressed prefix structure.
 
 - Search suggesters — Elasticsearch reference — the completion suggester loads a finite-state structure into memory to return prefix completions on the hot path, mirroring the in-memory trie here.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Rakesh Hotker
-
-how is this easy?
-
-Wed Oct 21 2026
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe triePrecomputed top-K per nodeRank when data changes, not when it is read1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint vs the non-negotiable property2. Back-of-the-envelope estimationQuery volumeCorpus and memoryBuild cost3. API design4. Data model5. High-level designFix 1: precompute the ranked answer in memoryFix 2: shard the trie by prefixFix 3: cache hot prefixes and debounce the clientFix 4: build the index offline6. Deep divesBuilding the ranked trieServing within the latency budgetFreshness and trending7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

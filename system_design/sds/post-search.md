@@ -4,55 +4,10 @@ title: "Design Post Search (Full-Text Search) — System Design School"
 permalink: /system_design/sds/post-search
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Post Search (Full-Text Search)
 
-hardInverted indexShardingRanking
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Hard  
+**Topics:** Inverted index · Sharding · Ranking
 
 ## Problem statement
 
@@ -142,8 +97,6 @@ Key idea. Scanning text is replaced by walking an inverted index; the index is s
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Index a post: tokenize its text and add it to the inverted index so it becomes searchable.
@@ -169,8 +122,6 @@ Practice this problem: Requirements
 Query latency and relevance are non-negotiable — results must come back fast and be genuinely good, or nobody trusts the search box again. But the property that actually drives the architecture is corpus scale and its constant growth: billions of posts that can't be scanned, forcing a sharded inverted index that some background process must keep current forever. Those two pull against each other most sharply at freshness. Making a brand-new post searchable within seconds works against the efficiency of building large, well-merged, immutable index segments — which is exactly why near-real-time indexing (deep dive 2) is the hardest part of the write path.
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Searches / day (millions)500M
 
@@ -212,8 +163,6 @@ Key idea. The index size forces sharding; the shard count then forces a fan-out 
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 A generic REST resource has one job: fetch by ID. What does the search endpoint's input and output actually look like instead?
@@ -250,8 +199,6 @@ Key idea. The inverted index is forced by the impossibility of scanning text; sh
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest thing that could work: one search service running a text query against a posts database.
 
 Four things break the moment this faces real traffic: a leading-wildcard text match can't use an index and scans every row; even a proper inverted index is too big for one machine; new posts must be searchable within seconds, but posts never stop arriving; and a query can match millions of posts, so returning all of them is not an option. Fix them one at a time.
@@ -279,8 +226,6 @@ These boxes are the data model's homes made concrete. The sharded inverted index
 Key idea. Each of the four fixes traces to a concrete failure of the naive single-database design — impossible text scans, index size, freshness, and match volume — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Sharding the inverted index: document vs. term partitioning
 
@@ -424,64 +369,14 @@ Hide AllReveal All
 
 1)Why can't the design scan post text directly, even with a database index?
 
-Show Answer
-
 2)Why does document-partitioning win over term-partitioning for this system, despite causing more fan-out per query?
-
-Show Answer
 
 3)How does a new post become searchable within seconds without rebuilding the whole index?
 
-Show Answer
-
 4)Why does each shard return only its top-K matches instead of everything it found?
 
-Show Answer
-
 5)Why might per-shard relevance scoring not be globally accurate, and what are the two ways to handle it?
-
-Show Answer
 
 ## Sources and further reading
 
 - Introduction to Information Retrieval — Manning, Raghavan & Schütze (Stanford NLP) — inverted indexes and index construction, the foundation behind the data model and indexing pipeline in this article.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-Problem statementClarifying questionsWhat makes this problem distinctiveKey conceptsThe inverted index and posting listsDocument-partitioned shardingScatter-gather and top-K1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: build the index off the query pathFix 2: shard the index and scatter-gatherFix 3: near-real-time indexingFix 4: rank on each shard, merge top-K6. Deep dives6.1 Sharding the inverted index: document vs. term partitioning6.2 Near-real-time indexing6.3 Ranking and the top-K merge7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageProblem statement0%
-
-Send feedback

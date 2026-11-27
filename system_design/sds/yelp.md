@@ -4,55 +4,10 @@ title: "Design Yelp — System Design School"
 permalink: /system_design/sds/yelp
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Yelp
 
-mediumGeospatial indexingSearchCaching
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Geospatial indexing · Search · Caching
 
 ## Introduction
 
@@ -61,8 +16,6 @@ Yelp connects users with local businesses through search and reviews. A user sea
 The system handles three core flows: searching businesses by location and keywords, viewing business details with reviews, and writing reviews that update ratings.
 
 ## Functional Requirements
-
-Practice this problem: Functional Requirements
 
 Three core functional requirements map to the user journey:
 
@@ -101,8 +54,6 @@ Scale Requirements
 - Peak search QPS: 50,000
 
 ## Non-Functional Requirements
-
-Practice this problem: Non-Functional Requirements
 
 The NFRs shape our architecture choices:
 
@@ -153,8 +104,6 @@ Create a review. Include idempotency key header to prevent duplicates.
 Request & response
 
 ## High Level Design
-
-Practice this problem: High Level Design
 
 ### 1. Search Businesses
 
@@ -306,8 +255,6 @@ Got a question? Discuss this section with AI tutor
 
 ## Deep Dive Questions
 
-Practice this problem: Deep Dive Questions
-
 ### How does ranking and relevance work for search results?
 
 Senior
@@ -372,46 +319,4 @@ On top of these, there are ad hoc knowledge you would want to know tailored to c
 
 Finally, we have a series of practical problems for you to work through. You can find the problem in /problems. This hands-on practice will not only help you apply the principles learned but will also enhance your understanding of how to use the building blocks to construct effective solutions. The list of questions grow. We are actively adding more questions to the list.
 
-Read the rest of this article and practice this problem with a FREE account
-
-Login
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-IntroductionFunctional RequirementsNon-Functional RequirementsAPI EndpointsHigh Level Design1. Search BusinessesSearch Backend OptionsHow Index Updates Work2. View Business DetailsReview Storage Options3. Write a ReviewReview Database: Relational vs NoSQLIdempotency and Duplicate PreventionDeep Dive QuestionsRanking & RelevanceGeo IndexingCaching StrategyHotspot HandlingCDC Trade-offsStaff-Level Discussion TopicsLevel ExpectationsInterview Cheatsheet
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageIntroduction0%
-
-Send feedback
+*(The rest of this article is behind a login on the source site.)*

@@ -4,55 +4,10 @@ title: "Design Webhook — System Design School"
 permalink: /system_design/sds/webhook
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design Webhook
 
-easyAsync processingRetriesIdempotency
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Easy  
+**Topics:** Async processing · Retries · Idempotency
 
 ## Introduction
 
@@ -71,8 +26,6 @@ Here are some real-world examples:
 - GitHub: https://docs.github.com/en/developers/webhooks-and-events/about-webhooks
 
 ## Functional Requirements
-
-Practice this problem: Functional Requirements
 
 -
 
@@ -96,8 +49,6 @@ Scale Requirements
 
 ## Non-Functional Requirements
 
-Practice this problem: Non-Functional Requirements
-
 - High availability: The system should be highly available and resilient to failures.
 
 - Low latency: As mentioned in the scale requirement, end-to-end latency should be under 200 milliseconds.
@@ -113,8 +64,6 @@ Receive webhooks from external systems, returns 200 OK if the event is accepted.
 Request & response
 
 ## High Level Design
-
-Practice this problem: High Level Design
 
 ### 1. Accept API Calls to Receive Event Notifications
 
@@ -218,8 +167,6 @@ Got a question? Discuss this section with AI tutor
 
 ## Deep Dive Questions
 
-Practice this problem: Deep Dive Questions
-
 ### How to secure the webhook service?
 
 #### 1. HMAC Signatures
@@ -291,100 +238,3 @@ To do that, we can:
 - Utilize event IDs and timestamps to determine if an event is outdated and should be skipped.
 
 Got a question? Discuss this section with AI tutor
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Kasa Sunil
-
-1. How are we ensuring fairness if multiple clients are present. If one client has highest traffic then it will delay other client webhooks.
-2. If we need to do retries for 24 hrs with exponential backoff then sqs queues provides only 15 minutes of delay ? How do we handle this ?
-
-Wed Jul 15 2026
-
-smallbird
-
-would it make more sense to return a 202 error code if we just have accepted the message for processing, instead of a 200?
-
-Sun Feb 08 2026
-
-2
-
-SystemDesignSchool
-
-Good point. 202 would actually be a *success* code since it's specifically for indicating asynchronous tasks running in the background
-
-Mon Apr 06 2026
-
-Rashid Salim
-
-would the message queue storing the messages in the queue lead to not meeting the latency constraint in the non functional requirements?
-
-Mon Dec 15 2025
-
-SystemDesignSchool
-
-A response is actually sent back to the client immediately after messages are enqueued (step 3).
-
-Mon Apr 06 2026
-
-2
-
-Load More
-
-he she
-
-I think this doc missing some important parts in webhook design.
-
-1 How webhook service endpoints can register themselves with webhook provider.
-2 How the webhook provider processes and stores the registration.
-3 How the webhook provider relays the related events to the right webhook services based on the registration.
-
-Fri Mar 21 2025
-
-11
-
-himansu joshi
-
-load balancers maintain a pool and can randomly handle addition or failure of nodes. kafka has consumer handling in a robust way
-
-Sat Aug 30 2025
-
-2
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-IntroductionBackgroundFunctional RequirementsNon-Functional RequirementsAPI EndpointsHigh Level Design1. Accept API Calls to Receive Event Notifications2. High Availability and ResilienceBuffering with Message QueueHandling Failure in Each Component1. Request Handler Failures2. Message Queue Failures3. Queue Consumer Failures4. Database FailuresDeep Dive QuestionsHow to secure the webhook service?How to handle duplicate requests?How to handle out-of-order requests?
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageIntroduction0%
-
-Send feedback

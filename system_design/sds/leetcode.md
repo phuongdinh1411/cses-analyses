@@ -4,55 +4,10 @@ title: "Design LeetCode (Online Judge) — System Design School"
 permalink: /system_design/sds/leetcode
 ---
 
-System Design School
-
-- Learn
-
-- Practice
-
-- Primer
-
-- Roadmap
-
-- Pricing
-
-Ask AI TutorStart learning
-
-System Design Primer12
-
-★The TemplateIntroductionWhat Is System Design?What Are System Design Interviews?Level Expectations
-
-Show all 12 →
-
-Design Solutions35
-
-LeetCode (Online Judge)Typeahead / AutocompleteDistributed Rate LimiterTicketmasterNews FeedUber / Nearby DriversYouTubeNetflixChat App (WhatsApp / Messenger)TinderGoogle CalendarInstagramGoogle DocsDropboxLocal Delivery (Gopuff)Live Comments (Real-Time Fan-Out)News AggregatorDistributed CachePub-Sub / Message QueueTop K (Trending)Web CrawlerPost Search (Full-Text Search)Distributed Job SchedulerDistributed Key-Value StoreMetrics Monitoring SystemPayment SystemRobinhood (Stock Trading)Online AuctionAd Click AggregatorURL ShortenerPastebinYelpTwitterGoogle MapsWebhook
-
-AI System Design6
-
-RAG SystemChatGPTImage Generation ServiceCoding Agent CLI (Claude Code)
-
-Show all 6 →
-
-Patterns5
-
-The 10 PatternsScaling Reads & WritesAsynchronous JobsReal-Time Transport
-
-Show all 5 →
-
-Key Technologies5
-
-Networking EssentialsTechnology ChoicesRedisTries & Prefix Search
-
-Show all 5 →
-
 # Design LeetCode (Online Judge)
 
-mediumSandboxed executionAsync jobsLeaderboards
-
-Practice this problem
-
-ScopeHLDE2EScalingCapacity
+**Difficulty:** Medium  
+**Topics:** Sandboxed execution · Async jobs · Leaderboards
 
 ## LeetCode system design problem statement
 
@@ -122,8 +77,6 @@ Key idea. A sandbox stops untrusted code from reaching anything outside it; reso
 
 ## 1. Requirements
 
-Practice this problem: Requirements
-
 ### 1.1 Functional requirements
 
 - Submit a solution (problem ID, language, source code) and receive a verdict once it has run against the hidden test cases.
@@ -147,8 +100,6 @@ Practice this problem: Requirements
 Isolation is non-negotiable — one piece of untrusted code escaping the sandbox to read the hidden tests or another user's data ends the product's usefulness outright. But the property that actually drives the architecture is the contest spike: a synchronized start floods the system with far more submissions than the daily average, so the queue, worker autoscaling, and fairness controls all exist to keep verdicts flowing under that burst. The two collide directly at the sandbox itself: isolation costs startup time and CPU per run, and the spike is exactly the moment that overhead is least affordable. That is why warm sandbox pools and reuse matter here (deep dive 1).
 
 ## 2. Back-of-the-envelope estimation
-
-Practice this problem: Back-of-the-envelope estimation
 
 Contestants100K
 
@@ -192,8 +143,6 @@ Key idea. The contest start, not the daily average, is the number that sizes thi
 
 ## 3. API design
 
-Practice this problem: API design
-
 Design checkpoint
 
 Running a submission takes several seconds. What should the submit endpoint return, given that it can't wait for a verdict?
@@ -236,8 +185,6 @@ Key idea. Execution is the one piece of this model that deliberately isn't a sto
 
 ## 5. High-level design
 
-Practice this problem: High-level design
-
 Start with the simplest thing that could work: one server that runs the submitted code inline.
 
 Four things break the instant this faces real submissions: running in-process, a submission inherits the server's own privileges and can read secrets or hidden tests, open outbound connections, fork-bomb the machine, or loop forever; execution takes seconds and a contest starts thousands of them at once, so doing it inline ties the server's own threads to the slowest, spikiest work in the system; a synchronized contest start floods the system, and with no fairness control a few users spamming submissions can starve everyone else; and a contest leaderboard rebuilt from raw submissions on every page view can't keep up with live viewers. Fix them one at a time.
@@ -267,8 +214,6 @@ These boxes are the data model's homes made concrete. Problem and Submission liv
 Key idea. Each of the four fixes traces to a concrete failure of the naive inline design — untrusted code with server privileges, slow bursty runs blocking the request path, an unfair contest flood, and a leaderboard that can't keep up — not to a feature checklist.
 
 ## 6. Deep dives
-
-Practice this problem: Deep dives
 
 ### 6.1 Secure sandboxed execution
 
@@ -472,23 +417,13 @@ Hide AllReveal All
 
 1)Why can't a submission's code simply run on the same app server that accepted it?
 
-Show Answer
-
 2)Why does a wall-clock timeout alone not fully solve the 'infinite loop' problem, and what does a separate CPU-time limit add?
-
-Show Answer
 
 3)Why does the submit endpoint return 202 Accepted with a submission ID instead of waiting for a verdict?
 
-Show Answer
-
 4)Why should the worker autoscaler watch queue backlog age instead of worker CPU utilization?
 
-Show Answer
-
 5)Why does the leaderboard's tie-break need to be encoded directly inside the score, rather than handled separately during a read?
-
-Show Answer
 
 ## Sources and further reading
 
@@ -497,145 +432,3 @@ Show Answer
 - Firecracker: Lightweight Virtualization for Serverless Applications (NSDI 2020) — the micro-VM design AWS built for Lambda and Fargate, cited for the strongest-isolation-with-fast-startup tradeoff.
 
 - seccomp(2) — Linux manual page — the syscall-filtering mechanism referenced as the lightest isolation layer in Key Concepts and deep dive 1.
-
-Explain
-
-Add to Chat
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-Was this lesson clear?
-
-👍👎
-
-### How to Solve Any System Design Interview
-
-#### Comments
-
-Join the Discussion
-
-Gagan Khurana
-
-Really helpful, Great Content !!
-
-Fri Jan 16 2026
-
-2
-
-Giorgio Pea
-
-"Note that most system design questions requires microservices. For a simpler problem like this, we can use a single service to handle both problem service and code evaluation. However, code submission can be compute heavy and we do not want to bring down the entire service when handling a large number of submissions. Therefore, we opt to separate the two service". Solutions evaluation is part of the business logic of a problem so it is reasonable to put it within a "Problems" service, but the statement "code submission can be compute heavy and we do not want to bring down ..." contradicts whats mentioned in the previous paragraph and should not be an argument to state that we should not use a single service; the "Problems" service itself containing the logic for submissions can make use of a message queue to delegate code execution to workers
-
-Fri Dec 05 2025
-
-1
-
-SystemDesignSchool
-
-Nice catch. The reason for separation is more on loose coupling, security isolation and independent scaling. The message queue doesn't remove the risk completely, someone has to handle things like rate limits/quotas and result integrity and ops like backpressure handling. For larger scale, it's better to have a service handling that.
-
-Tue Dec 23 2025
-
-1
-
-Arian Jafari
-
-Even for partial evaluation, we can execute the code on the top 10% trickiest test cases to increase the consistency of the partial and final results.
-
-Fri Dec 05 2025
-
-Ankit Jain
-
-I think leaderboard should be a separate service. Contest should just handle showing and creating contest.
-
-Leaderboard service should independently get called from Evaluation service if the problem is part of a contest and the leaderboard should be calcualted accordingly.
-
-Mon Aug 18 2025
-
-4
-
-Harley Pasoz
-
-yeah but what might be the improvement with this? I believe a simple check inside the worker execution to use Leaderboard DB can avoid overwhelm the system at the beginning with one more service.
-
-Fri Oct 17 2025
-
-Joe Mcerlane
-
-One thing that seems missing is how the client gets the results from a submission how do we return the payload (see below) when we have now given the submission to an async process?
-
-{
-status: success | fail
-test_cases: [
-{ status: success | fail | timeout }
-]
-}
-
-Mon Jun 23 2025
-
-SystemDesignSchool
-
-After a user submits their solution, the system returns a submission ID, which the client uses to poll the backend periodically (e.g., every second) for the result.
-
-If the submission is still being processed, the polling endpoint returns a status like "pending". Once the execution is complete, the endpoint responds with the final result, including the overall status and individual test case outcomes in the payload.
-
-Thu Jun 26 2025
-
-4
-
-Jorge Allwin
-
-Interesting setup — I’ve noticed during online contests that high memory usage from browser tabs and IDEs can throttle performance, especially on mid-range systems. Before contests, I clear out background memory load with a small footprint RAM cleaner, which helps avoid lag during rapid code submissions and keeps things smoother overall.
-https://memoryreduct.com/mem-reduct-download/
-
-Tue May 20 2025
-
-2
-
-Prakash Prabhu.M
-
-Since we're using 2 phase processing technique, does that mean the leaderboard we display realtime has the possibility to change at the end when all test cases are evaluated?
-
-Thu May 15 2025
-
-3
-
-Kshitij Sabale
-
-yes
-
-Sat May 17 2025
-
-1
-
-pankaj Modi
-
-Skip list requires O(M+logK) time complexity and not O(M(logK))
-
-Mon May 12 2025
-
-2
-
-Practice this problem
-
-The System Design Courses
-
-Go beyond memorizing solutions to specific problems. Learn the core concepts, patterns and templates to solve any problem.
-
-Start Learning
-
-On this page
-
-LeetCode system design problem statementLeetCode system design interview questionsWhat makes this problem distinctiveKey conceptsSandboxing untrusted codeResource limits as the enforcement mechanism1. Requirements1.1 Functional requirements1.2 Non-functional requirements1.3 The binding constraint2. Back-of-the-envelope estimation3. API design4. Data model5. High-level designFix 1: isolate execution in a sandbox on separate workersFix 2: a submission queue and a worker poolFix 3: autoscaling and fair dispatch for the spikeFix 4: a verdict store and a fast leaderboard6. Deep dives6.1 Secure sandboxed execution6.2 The execution queue and worker autoscaling6.3 The contest leaderboard at scale7. Variants8. The transferable patternReviewSources and further reading
-
-Read0%
-
-Need help?Ask about this section
-
-On this pageLeetCode system design problem statement0%
-
-Send feedback
