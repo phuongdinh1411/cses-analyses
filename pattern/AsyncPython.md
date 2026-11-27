@@ -459,6 +459,7 @@ async def main():
 ## Quick Reference
 
 ```python
+# sketch: snippet collection — async with/for require an enclosing async def
 # Run async function from sync context
 asyncio.run(main())
 

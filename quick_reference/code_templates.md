@@ -878,6 +878,7 @@ def nCr(n, r, fact, inv_fact, mod=MOD):
 ## I/O Template
 
 ```python
+# sketch: competitive-programming template — requires stdin input
 import sys
 from collections import defaultdict, deque
 from heapq import heappush, heappop

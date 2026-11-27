@@ -628,6 +628,8 @@ def evaluate(expression):
                 apply_op(ops, vals)
             ops.pop()  # remove '('
         else:
+            if tokens[i] == '-' and (i == 0 or tokens[i - 1] == '('):
+                vals.append(0)              # unary minus: "-x" is "0 - x"
             while ops and ops[-1] != '(' and precedence(ops[-1]) >= precedence(tokens[i]):
                 apply_op(ops, vals)
             ops.append(tokens[i])
@@ -1310,7 +1312,7 @@ class MinStack:
     def top(self):
         return self.stack[-1][0]
 
-    def get_min(self):
+    def getMin(self):
         return self.stack[-1][1]
 ```
 
@@ -1341,7 +1343,7 @@ class MinQueue:
                 self.pop_stack.append((val, curr_min))
         return self.pop_stack.pop()[0]
 
-    def get_min(self):
+    def getMin(self):
         if self.push_stack and self.pop_stack:
             return min(self.push_stack[-1][1], self.pop_stack[-1][1])
         elif self.push_stack:

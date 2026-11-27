@@ -588,8 +588,9 @@ def minimumDistance(points):
 
 ```python
 # 2459. Sort Array by Moving Items to Empty Space
-# Count cycles in the permutation. Minimum swaps = n - num_cycles.
-# (Special case if 0 is in a cycle.)
+# Every move swaps an item with 0. Per unsorted cycle of length L:
+# the cycle holding 0 costs L-1; any other costs L+1 (0 must enter, then leave).
+# Try both targets (0 first, 0 last) and take the min.
 def sortArray(nums):
     def count_swaps(arr, target):
         visited = [False] * len(arr)
@@ -597,13 +598,14 @@ def sortArray(nums):
         swaps = 0
         for i in range(len(arr)):
             if not visited[i] and arr[i] != target[i]:
-                cycle = 0
+                cycle, has_zero = 0, False
                 j = i
                 while not visited[j]:
                     visited[j] = True
+                    has_zero |= arr[j] == 0
                     j = pos[target[j]]
                     cycle += 1
-                swaps += cycle + 1   # extra swap to move 0 in
+                swaps += cycle - 1 if has_zero else cycle + 1
         return swaps
     n = len(nums)
     return min(count_swaps(nums, list(range(n))),

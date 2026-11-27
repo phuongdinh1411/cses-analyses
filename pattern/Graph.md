@@ -671,7 +671,7 @@ def shortest_path_dag(adj, n, start):
 | Algorithm | Time | Space | Weights | Negative cycle? |
 |-----------|------|-------|---------|----------------|
 | BFS | O(V+E) | O(V) | Unweighted | N/A |
-| Dijkstra | O((V+E)log V) | O(V) | Non-negative | N/A |
+| Dijkstra | O((V+E)log V) | O(V+E) (lazy heap) | Non-negative | N/A |
 | Bellman-Ford | O(VE) | O(V) | Any | Detects |
 | Floyd-Warshall | O(V^3) | O(V^2) | Any | Detects |
 | 0-1 BFS | O(V+E) | O(V) | 0 or 1 | N/A |
@@ -683,7 +683,7 @@ The whole family answers "cheapest way from A to B when edges cost different amo
 
 - **All weights `≥ 0`, want single-source distances** → **Dijkstra** → LC **743** Network Delay Time, LC 1631 Path With Minimum Effort, LC 1514 Path with Max Probability, LC 778 Swim in Rising Water.
 - **A hard cap on number of edges/stops**, or negative weights → **Bellman-Ford** (bounded rounds) → LC **787** Cheapest Flights Within K Stops.
-- **All-pairs distances, tiny V (≤ ~400)** → **Floyd-Warshall** → LC 1334 City With Smallest Number of Neighbors.
+- **All-pairs distances, tiny V (≤ ~500)** → **Floyd-Warshall** → LC 1334 City With Smallest Number of Neighbors.
 - **Weights are only 0 or 1** → **0-1 BFS** (deque) → LC 1368 Min Cost to Make at Least One Valid Path.
 
 ### B.1 — Problem 743: Network Delay Time
@@ -855,12 +855,14 @@ def prim(adj, n, start=0):
 
 ### Kruskal vs Prim
 
-| | Kruskal | Prim |
-|--|---------|------|
-| Time | O(E log E) | O((V+E) log V) |
-| Best for | Sparse graphs (E ~ V) | Dense graphs (E ~ V^2) |
-| Data structure | Union-Find | Priority Queue |
-| Edge list needed | Yes | No (adjacency list) |
+| | Kruskal | Prim (heap, above) | Prim (array, no heap) |
+|--|---------|------|------|
+| Time | O(E log E) | O((V+E) log V) | O(V^2) |
+| Best for | Sparse graphs (E ~ V), edge list given | Sparse graphs, adjacency list given | Dense / complete graphs (E ~ V^2) |
+| Data structure | Union-Find | Priority Queue | `dist[]` array, scan for the min each round |
+| Edge list needed | Yes | No (adjacency list) | No (weights can be computed on the fly) |
+
+On a dense graph heap Prim is no better than Kruskal (both ~V² log V); only the array version drops the log.
 
 ### MST Properties
 
@@ -1787,7 +1789,7 @@ min cost = 20
 
 `★ Insight ─────────────────────────────────────`
 - **Kruskal = sort edges + Union-Find, nothing more.** The `if ri != rj` cycle check is the identical guard from LC 547 (D.1). "Add the cheapest edge that doesn't create a cycle, `n-1` times" is the entire greedy — recognizing MST as *Union-Find with sorted edges* means D.1 and D.2 collapse to one idea.
-- **Complete graph → `O(n²)` edges → Kruskal's sort dominates at `O(n² log n)`.** For dense graphs like this, **Prim with a heap** (§3.2) is often preferred since it never materializes all `n²` edges. Same MST, different edge-selection engine — pick by density.
+- **Complete graph → `O(n²)` edges → Kruskal's sort dominates at `O(n² log n)`.** For dense graphs like this, **array Prim** (§3.2 table) is the asymptotic winner: `O(n²)`, no heap, and each point's distance is computed on the fly so the `n²` edges are never stored. Heap Prim would still push `O(n²)` entries, so it is no better than Kruskal here.
 `─────────────────────────────────────────────────`
 
 ---
@@ -2197,8 +2199,9 @@ from collections import deque
 def count_paths(adj, n, src, dst):
     # adj[u] = [v, ...] — unweighted, unlike longest_path above.
     # Assumes topological processing order (Kahn's below guarantees it);
-    # dp[src]=1 seeds the source. Counts paths in a DAG — a cycle would
-    # loop forever (its nodes never reach in-degree 0, so Kahn's skips them).
+    # dp[src]=1 seeds the source. DAG only: cyclic nodes never reach
+    # in-degree 0, so they are never processed and the result is silently
+    # wrong; check processed == n if cycles are possible.
     in_deg = [0] * n
     for u in range(n):
         for v in adj[u]:
@@ -2286,7 +2289,7 @@ If the graph has cycles, condense SCCs into a DAG first, then run DP on the DAG.
 | Algorithm | Time | Space |
 |-----------|------|-------|
 | BFS / DFS | O(V + E) | O(V) |
-| Dijkstra | O((V + E) log V) | O(V) |
+| Dijkstra | O((V + E) log V) | O(V + E) |
 | Bellman-Ford | O(VE) | O(V) |
 | Floyd-Warshall | O(V^3) | O(V^2) |
 | 0-1 BFS | O(V + E) | O(V) |
@@ -2373,7 +2376,7 @@ Work these in order — each adds exactly one new idea on top of the last.
 Start here
     │
     ▼
-  LC 200  Number of Islands        (Easy)   ── plain BFS/DFS flood fill over a grid
+  LC 200  Number of Islands        (Medium) ── plain BFS/DFS flood fill over a grid
     │
     ▼
   LC 994  Rotting Oranges          (Medium) ── multi-source BFS: seed the queue with ALL sources
@@ -2441,8 +2444,9 @@ rather than a crash:
   its list, and it genuinely is a cycle. The trap is a semantic one — if your input duplicates each
   undirected edge by accident rather than by intent, that "cycle" is an artefact of the input. When
   parallel edges are real data but must not count, skip by edge id instead of by node.
-- **Union-Find without both path compression and union by rank/size.** You lose the
-  near-constant amortized bound and can degrade to O(n) per operation.
+- **Union-Find without path compression or union by rank/size.** Either one alone still gives
+  O(log n) amortized; only both together give near-constant α(n). Without *either*, unions can
+  build a chain and each operation degrades to O(n).
 
 ## Self-Test
 
@@ -2483,7 +2487,7 @@ After `V−1` relaxation rounds, every shortest path with no cycle is final (a s
 <details markdown="1">
 <summary>Answer</summary>
 
-`dp[k][i][j]` is the shortest path from `i` to `j` using only nodes `0..k` as intermediates. It is defined in terms of `dp[k−1]`, so every `(i,j)` pair must be updated for intermediate `k` before moving to `k+1`. Any other nesting reads a half-built layer.
+`dp[k][i][j]` is the shortest path from `i` to `j` using only nodes `0..k−1` as intermediates. Layer `k+1` is built entirely from layer `k`, so every `(i,j)` pair must be updated for intermediate `k` before moving to `k+1`. Any other nesting reads a half-built layer.
 
 </details>
 
@@ -2528,7 +2532,7 @@ All weights equal → BFS, O(V+E). Weights only 0 and 1 → 0-1 BFS with a deque
 <details markdown="1">
 <summary>Answer</summary>
 
-Build the implication graph: each clause `(a ∨ b)` adds `¬a → b` and `¬b → a`. A solution exists iff no variable shares an SCC with its own negation. When one exists, read it off by setting each variable according to which of `x`, `¬x` comes later in reverse topological order.
+Build the implication graph: each clause `(a ∨ b)` adds `¬a → b` and `¬b → a`. A solution exists iff no variable shares an SCC with its own negation. When one exists, read it off by picking whichever of `x`, `¬x` has its SCC later in topological order. Tarjan emits SCCs in reverse topological order, so that is the smaller Tarjan id: `x = comp[x] < comp[¬x]`.
 
 </details>
 

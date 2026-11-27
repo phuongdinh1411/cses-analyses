@@ -1080,7 +1080,6 @@ This pattern works for any operation where you can combine left and right parts:
 
 ```python
 from math import gcd
-from functools import reduce
 
 def gcd_except_self(a):
     n = len(a)
@@ -1097,16 +1096,10 @@ def gcd_except_self(a):
 
     result = [0] * n
     for i in range(n):
-        # Use None (not 0) as "no neighbor" — a real element can be 0,
-        # and gcd(0, x) == x would silently corrupt the answer.
-        left = prefix_gcd[i-1] if i > 0 else None
-        right = suffix_gcd[i+1] if i < n-1 else None
-        if left is None:
-            result[i] = right
-        elif right is None:
-            result[i] = left
-        else:
-            result[i] = gcd(left, right)
+        # 0 is gcd's identity (gcd(0, x) == x), so it is the "no neighbor" value.
+        left = prefix_gcd[i-1] if i > 0 else 0
+        right = suffix_gcd[i+1] if i < n-1 else 0
+        result[i] = gcd(left, right)
     return result
 ```
 
@@ -1704,7 +1697,7 @@ def subarray_with_sum(a, target):
         while current > target and left <= right:
             current -= a[left]
             left += 1
-        if current == target:
+        if current == target and left <= right:   # target 0 can empty the window
             return (left, right)
     return None
 ```

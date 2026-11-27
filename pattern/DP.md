@@ -1402,7 +1402,7 @@ def knapsack_bounded(weights, values, counts, W):
 
 | Problem | Knapsack form |
 |---------|--------------|
-| Subset Sum | 0/1 knapsack, values = weights, check dp[target] > 0 |
+| Subset Sum | 0/1 knapsack, values = weights, check dp[target] == target |
 | Partition Equal Subset | 0/1 knapsack with target = total_sum / 2 |
 | Coin Change (min coins) | Unbounded, minimize count instead of maximize value |
 | Coin Change (count ways) | Unbounded, count instead of max |
@@ -1538,7 +1538,7 @@ Note: `tails` is NOT the actual LIS. It's a working structure. To reconstruct th
 
 #### Walkthrough — LC 300 Longest Increasing Subsequence
 
-**This template solves: LC 300 (Longest Increasing Subsequence), LC 673 (Number of LIS — carry a count per length), LC 354 (Russian Doll Envelopes — sort by width then LIS on height), LC 646 (Maximum Length of Pair Chain).**
+**This template solves: LC 300 (Longest Increasing Subsequence), LC 673 (Number of LIS — carry a count per length), LC 354 (Russian Doll Envelopes — sort by width, ties by height descending, then LIS on height), LC 646 (Maximum Length of Pair Chain).**
 
 > Given an integer array `nums`, return the length of the longest **strictly increasing subsequence** (elements need not be contiguous, but must keep their original order).
 

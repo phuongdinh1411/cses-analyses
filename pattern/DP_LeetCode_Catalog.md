@@ -15,21 +15,21 @@ permalink: /pattern/dp-leetcode-catalog
 | # | Technique | Problems | Core recurrence |
 |---|-----------|:--------:|-----------------|
 | 1 | [Linear Sequence DP (1D)](#linear-sequence-dp-1d) | 172 | `dp[i] = f(dp[i-1], dp[i-2], ...)` |
-| 2 | [Grid / Matrix Path DP (2D)](#grid-matrix-path-dp-2d) | 53 | `dp[i][j] = grid[i][j] + best(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])` |
-| 3 | [Knapsack / Subset-Sum](#knapsack-subset-sum) | 58 | 0/1: `dp[c] = max(dp[c], dp[c-w]+v)` iterate capacity **descending**. Unbounded: iterate **ascending**. |
+| 2 | [Grid / Matrix Path DP (2D)](#grid--matrix-path-dp-2d) | 53 | `dp[i][j] = grid[i][j] + best(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])` |
+| 3 | [Knapsack / Subset-Sum](#knapsack--subset-sum) | 58 | 0/1: `dp[c] = max(dp[c], dp[c-w]+v)` iterate capacity **descending**. Unbounded: iterate **ascending**. |
 | 4 | [Longest Increasing Subsequence (LIS)](#longest-increasing-subsequence-lis) | 24 | `dp[i] = 1 + max(dp[j] for j<i if a[j]<a[i])`; or maintain `tails[]` + `bisect`. |
-| 5 | [Two-Sequence / String-Edit DP](#two-sequence-string-edit-dp) | 29 | `dp[i][j] = dp[i-1][j-1]+1` on match, else `combine(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`. |
+| 5 | [Two-Sequence / String-Edit DP](#two-sequence--string-edit-dp) | 29 | `dp[i][j] = dp[i-1][j-1]+1` on match, else `combine(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`. |
 | 6 | [Palindrome DP](#palindrome-dp) | 18 | `dp[i][j] = (s[i]==s[j]) && dp[i+1][j-1]`; longest-pal-subseq `dp[i][j]=dp[i+1][j-1]+2` on match. |
-| 7 | [Interval / Range DP](#interval-range-dp) | 39 | `dp[i][j] = min/max over k in (i,j) of dp[i][k] + dp[k][j] + cost(i,k,j)` |
-| 8 | [Stock / State-Machine DP](#stock-state-machine-dp) | 10 | `hold[i]=max(hold[i-1], cash[i-1]-price)`, `cash[i]=max(cash[i-1], hold[i-1]+price-fee)` |
+| 7 | [Interval / Range DP](#interval--range-dp) | 39 | `dp[i][j] = min/max over k in (i,j) of dp[i][k] + dp[k][j] + cost(i,k,j)` |
+| 8 | [Stock / State-Machine DP](#stock--state-machine-dp) | 10 | `hold[i]=max(hold[i-1], cash[i-1]-price)`, `cash[i]=max(cash[i-1], hold[i-1]+price-fee)` |
 | 9 | [Tree DP](#tree-dp) | 36 | `dfs(node) -> (take, skip)`; `take = node.val + sum(skip_child)`, `skip = sum(max(take,skip)_child)`. |
 | 10 | [Digit DP](#digit-dp) | 28 | `dp[pos][tight][state]` = sum over next digit `d in [0 .. (tight? N[pos]:9)]`. |
 | 11 | [Bitmask DP](#bitmask-dp) | 44 | `dp[mask] = best over i in mask of dp[mask ^ (1<<i)] + cost(...)` |
-| 12 | [Counting / Combinatorial DP](#counting-combinatorial-dp) | 85 | `dp[i] = sum of dp[j]` over valid predecessors; combine with multiplication for independent choices. |
-| 13 | [Kadane / Max-Subarray DP](#kadane-max-subarray-dp) | 15 | `cur = max(a[i], cur + a[i]); best = max(best, cur)` (track min too for products). |
+| 12 | [Counting / Combinatorial DP](#counting--combinatorial-dp) | 85 | `dp[i] = sum of dp[j]` over valid predecessors; combine with multiplication for independent choices. |
+| 13 | [Kadane / Max-Subarray DP](#kadane--max-subarray-dp) | 15 | `cur = max(a[i], cur + a[i]); best = max(best, cur)` (track min too for products). |
 | 14 | [Game Theory (Minimax) DP](#game-theory-minimax-dp) | 15 | `dp[i][j] = max(a[i]-dp[i+1][j], a[j]-dp[i][j-1])` (current player maximizes own margin). |
-| 15 | [DP on Graphs (shortest-path / DAG)](#dp-on-graphs-shortest-path-dag) | 22 | `dp[v] = combine over edges (u->v) of dp[u] + w(u,v)`; process in topo order for DAGs. |
-| 16 | [Probability / Expectation DP](#probability-expectation-dp) | 8 | `E[state] = sum over outcomes p(outcome) · (reward + E[next])` |
+| 15 | [DP on Graphs (shortest-path / DAG)](#dp-on-graphs-shortest-path--dag) | 22 | `dp[v] = combine over edges (u->v) of dp[u] + w(u,v)`; process in topo order for DAGs. |
+| 16 | [Probability / Expectation DP](#probability--expectation-dp) | 8 | `E[state] = sum over outcomes p(outcome) · (reward + E[next])` |
 | 17 | [Other DP](#other-dp) | 20 | Varies. |
 
 ---
@@ -382,7 +382,7 @@ permalink: /pattern/dp-leetcode-catalog
 | 2501 | [Longest Square Streak in an Array](https://leetcode.com/problems/longest-square-streak-in-an-array/) | Medium | dp[x]=1+dp[sqrt x] chain via map |
 | 2826 | [Sorting Three Groups](https://leetcode.com/problems/sorting-three-groups/) | Medium | min changes to non-decreasing 3-value |
 | 3409 | [Longest Subsequence With Decreasing Adjacent Difference](https://leetcode.com/problems/longest-subsequence-with-decreasing-adjacent-difference/) | Medium | dp longest decreasing-adjacent-diff subseq |
-| 354 | [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) | Hard | sort width, LIS on heights |
+| 354 | [Russian Doll Envelopes](https://leetcode.com/problems/russian-doll-envelopes/) | Hard | sort width asc, height desc on ties; LIS on heights |
 | 1671 | [Minimum Number of Removals to Make Mountain Array](https://leetcode.com/problems/minimum-number-of-removals-to-make-mountain-array/) | Hard | LIS both directions, mountain peak |
 | 1691 | [Maximum Height by Stacking Cuboids](https://leetcode.com/problems/maximum-height-by-stacking-cuboids/) | Hard | sort dims then LIS of cuboids |
 | 2407 | [Longest Increasing Subsequence II](https://leetcode.com/problems/longest-increasing-subsequence-ii/) | Hard | LIS with segment-tree range max query |

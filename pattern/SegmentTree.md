@@ -200,22 +200,22 @@ performance.
 
 The recursion tree is not perfectly balanced when `n` is not a power of two, and with heap indexing
 (`node`, `2*node`, `2*node+1`) an unbalanced tree leaves *gaps* in the index space. Make it concrete
-with `n = 5`, splitting each range at its midpoint:
+with `n = 6`, splitting each range at its midpoint:
 
 ```
-                    node 1  [0,4]
+                    node 1  [0,5]
              /                          \
-      node 2 [0,2]                  node 3 [3,4]
+      node 2 [0,2]                  node 3 [3,5]
       /          \                  /          \
-node 4 [0,1]  node 5 [2,2]   node 6 [3,3]  node 7 [4,4]
-   /     \
-node 8   node 9
- [0,0]   [1,1]
+node 4 [0,1]  node 5 [2,2]   node 6 [3,4]  node 7 [5,5]
+   /     \                    /     \
+node 8   node 9          node 12   node 13
+ [0,0]   [1,1]            [3,3]     [4,4]
 ```
 
-Only 9 nodes are actually used, but the largest index reached is **9**, already past `2n = 10`'s
-comfortable margin — and a less even split pushes it higher. The worst case is bounded by
-`2 * next_power_of_two(n)`, which for `n = 5` is `2 * 8 = 16`. Since `next_power_of_two(n) < 2n`,
+Only 11 nodes are actually used, but the largest index reached is **13**, already past `2n = 12`
+(indices 10 and 11 are gaps). The worst case is bounded by
+`2 * next_power_of_two(n)`, which for `n = 6` is `2 * 8 = 16`. Since `next_power_of_two(n) < 2n`,
 the bound `4 * n` always covers it, which is why `4 * n` is the standard allocation.
 
 If you round `n` up to a power of two before building, the tree is perfect, no gaps appear, and
@@ -447,7 +447,8 @@ Assignment overwrites rather than accumulates, so you need a sentinel meaning "n
 > **Note — this is a patch on top of `LazySegTree` above, not standalone code.** It replaces `_apply`/`_push_down` and additionally requires a `self.has_lazy = [False] * (4 * self.n)` array added in `__init__` (the assign-marker). Pasting these two methods alone will `AttributeError` on `self.has_lazy`.
 
 ```python
-    def _apply_assign(self, node, lo, hi, val):
+# fragment: methods replacing those in LazySegTree
+    def _apply(self, node, lo, hi, val):
         self.tree[node] = val * (hi - lo + 1)
         self.lazy[node] = val
         self.has_lazy[node] = True
@@ -455,8 +456,8 @@ Assignment overwrites rather than accumulates, so you need a sentinel meaning "n
     def _push_down(self, node, lo, hi):
         if self.has_lazy[node]:
             mid = (lo + hi) // 2
-            self._apply_assign(2 * node, lo, mid, self.lazy[node])
-            self._apply_assign(2 * node + 1, mid + 1, hi, self.lazy[node])
+            self._apply(2 * node, lo, mid, self.lazy[node])
+            self._apply(2 * node + 1, mid + 1, hi, self.lazy[node])
             self.has_lazy[node] = False
 ```
 
@@ -946,7 +947,7 @@ The only things that change between variants:
 Start here
     │
     ▼
-  307  (Easy)   ──── Range Sum Query Mutable: the basic point-update + range-sum tree (§2)
+  307  (Medium) ──── Range Sum Query Mutable: the basic point-update + range-sum tree (§2)
     │
     ▼
   RMQ  build/query ── Range Minimum Query: same skeleton, combine=min, identity=+inf (§4)

@@ -1231,11 +1231,11 @@ dp[node][c] = product(sum(dp[child][c'] for valid c') for each child)
 
 ### Pattern 5: Path Through Node
 
-Track the two longest paths through each node to find diameter or similar.
+Track the two longest downward branches at each node: joined, they form the longest path whose **highest** vertex is that node, and the max over all nodes is the diameter. The longest path merely *passing through* every node also needs the upward side — a rerooting pass ([Edge Contribution & Rerooting](/pattern/edge-contribution)).
 
 ```python
 def paths_through_node(n, adj, root=0):
-    """For each node, find the longest path passing through it."""
+    """For each node, the longest path whose highest vertex is that node (max = diameter)."""
     best = [0] * n
 
     def dfs(node, par):
@@ -1248,7 +1248,7 @@ def paths_through_node(n, adj, root=0):
                 first, second = d, first
             elif d > second:
                 second = d
-        best[node] = first + second  # longest path through this node
+        best[node] = first + second  # longest path peaking at this node
         return first  # longest downward path
 
     dfs(root, -1)

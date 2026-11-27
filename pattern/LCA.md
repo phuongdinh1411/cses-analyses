@@ -491,6 +491,7 @@ class BinaryLifting:
 > convert `_dfs` to an explicit stack:
 >
 > ```python
+> # sketch: iterative DFS replacing the recursive _dfs above
 > def _dfs_iter(self, root):
 >     stack = [(root, -1)]
 >     while stack:
@@ -1062,10 +1063,10 @@ When you have Q queries on specific nodes, build a **virtual tree** containing o
 Start here
     │
     ▼
-  236  (Easy)   ──── LCA of a Binary Tree: recursive "found u/v below me?" — no preprocessing
+  236  (Medium) ──── LCA of a Binary Tree: recursive "found u/v below me?" — no preprocessing
     │
     ▼
-  235  (Easy)   ──── LCA of a BST: exploit ordering — walk down until u,v split
+  235  (Medium) ──── LCA of a BST: exploit ordering — walk down until u,v split
     │
     ▼
   build up[][] ──── Binary-lifting table: DFS for parent/depth, then double each level

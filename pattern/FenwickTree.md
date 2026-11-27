@@ -38,9 +38,9 @@ A Fenwick tree — also called a **Binary Indexed Tree (BIT)** — gives prefix 
 7. [Binary Search on a BIT](#7-binary-search-on-a-bit)
 8. [2D Fenwick Tree](#8-2d-fenwick-tree)
 9. [Common Patterns Collection](#9-common-patterns-collection)
-10. [Worked LeetCode Problems](#95-worked-leetcode-problems)
-11. [Fenwick vs Segment Tree](#10-fenwick-vs-segment-tree)
-12. [Pattern Recognition Cheat Sheet](#11-pattern-recognition-cheat-sheet)
+9.5. [Worked LeetCode Problems](#95-worked-leetcode-problems)
+10. [Fenwick vs Segment Tree](#10-fenwick-vs-segment-tree)
+11. [Pattern Recognition Cheat Sheet](#11-pattern-recognition-cheat-sheet)
 
 ---
 
@@ -171,6 +171,7 @@ Naive build is N updates = O(N log N). Linear build: add each value to its paren
 > deliberate: paste it inside the class body.
 
 ```python
+# sketch: method on the BIT class — paste inside the class body
     @classmethod
     def from_array(cls, data):
         bit = cls(len(data))
@@ -357,7 +358,8 @@ Find the smallest index whose prefix sum reaches `k` in a single O(log N) descen
 
 ```python
 def find_kth(bit, k):
-    """Smallest 0-indexed i with prefix(i) >= k. Assumes non-negative values."""
+    """Smallest 0-indexed i with prefix(i) >= k. Assumes non-negative values.
+    Returns bit.n (out of range) when the total sum is < k: check before indexing."""
     pos = 0
     log = bit.n.bit_length()
     for b in range(log, -1, -1):
@@ -683,8 +685,9 @@ invertibility:
 - **Non-invertible aggregates.** Min, max, and gcd cannot be recovered by subtraction. A
   "max BIT" exists but only supports prefix maxima with increase-only updates — it cannot do
   arbitrary range max. Use a [segment tree](/pattern/segment-tree).
-- **Zero-indexing.** The `i & -i` walk requires 1-based indices; index 0 makes `lowbit` zero and
-  the loop never terminates. Always offset by one internally.
+- **Zero-indexing.** The `i & -i` walk requires 1-based indices; index 0 makes `lowbit` zero, so
+  `update` never advances and hangs, while `prefix` exits at once and silently drops element 0.
+  Always offset by one internally.
 - **Value-indexed use without compression.** Indexing by raw value needs an array the size of the
   value range. Compress to ranks first.
 - **No updates at all.** A [prefix sum](/pattern/prefix-sum) is O(1) per query. Do not build a
@@ -723,7 +726,7 @@ Update climbs to the ancestors that include `i`: `i += i & -i`. Query descends t
 <details markdown="1">
 <summary>Answer</summary>
 
-`0 & -0 == 0`, so both loops would fail to advance and spin forever. Store data at internal index `i + 1` and translate at the boundary.
+`0 & -0 == 0`, so at index 0 the update loop (`while i <= n`) never advances and hangs. The query loop (`while i > 0`) is the sneakier failure: it exits immediately and silently leaves element 0 out of every prefix. Store data at internal index `i + 1` and translate at the boundary.
 
 </details>
 

@@ -703,6 +703,7 @@ def chinese_remainder_theorem(remainders, moduli):
 
 ### ⚡ Fast I/O
 ```python
+# sketch: competitive-programming I/O template — requires stdin input
 import sys
 input = sys.stdin.readline
 print = sys.stdout.write

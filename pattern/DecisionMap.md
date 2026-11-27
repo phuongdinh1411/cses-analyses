@@ -6,7 +6,7 @@ permalink: /pattern/decision-map
 
 # Pattern Decision Map — Which Technique Do I Use?
 
-You have 18 technique guides in this folder. This page is the **router** you read *before* them. Each guide answers "how does this technique work"; this page answers the earlier question: **"which one do I even reach for?"**
+You have 18 core technique guides in this folder, plus [Sorting](/pattern/sorting) and two DP problem catalogs. This page is the **router** you read *before* them. Each guide answers "how does this technique work"; this page answers the earlier question: **"which one do I even reach for?"**
 
 The core skill of a strong problem-solver is not memorizing algorithms — it is reading a fresh problem, spotting a few **surface cues** (the shape of the input, the exact thing being asked, the size of `n`), and mapping those cues to a technique family in seconds. This page makes that mapping explicit.
 
@@ -94,6 +94,7 @@ graph TD
     A --> A5["Need nearest greater/<br/>smaller element,<br/>or 'next warmer day'?"]
     A --> A6["Sum a quantity over<br/>ALL subarrays / pairs?"]
     A --> A7["Repeatedly need the<br/>smallest/largest, or<br/>streaming top-k?"]
+    A --> A8["Intervals / events:<br/>merge, schedule,<br/>max overlap?"]
 
     A1 --> TP["Two Pointers"]
     A2 --> SW["Sliding Window"]
@@ -102,6 +103,7 @@ graph TD
     A5 --> MS["Monotonic Stack / Queue"]
     A6 --> CC["Contribution Counting"]
     A7 --> HP["Heap / Priority Queue"]
+    A8 --> SG["Sort, then Greedy /<br/>Sweep Line"]
 ```
 
 | You see... | Technique | Guide |
@@ -113,6 +115,7 @@ graph TD
 | Next greater element, stock span, largest rectangle, sliding-window max | Monotonic Stack / Queue | [Stack & Queue](/pattern/stack-queue) |
 | "Sum of min over all subarrays", "total pairs where...", per-element contribution | Contribution Counting | [Contribution Counting](/pattern/contribution-counting) |
 | "Top-k largest", "k closest", merge k sorted lists, running median, repeated extract-min | Heap / Priority Queue | [Heap / Priority Queue](/pattern/heap) |
+| Merge intervals, fewest removals/arrows (LC 56, 435, 452), max simultaneous meetings (LC 253) | Sort by start/end, then greedy or sweep line | [Sorting §1](/pattern/sorting#1-sort--greedy-exchange-argument), [§5](/pattern/sorting#5-sweep-line--sort); [Heap §8](/pattern/heap#8-problem-253--meeting-rooms-ii) for 253 |
 
 ---
 
@@ -153,7 +156,7 @@ graph TD
     G1 --> W0["Unweighted<br/>(or all weight 1)"]
     G1 --> W1["Non-negative<br/>weights"]
     G1 --> W2["Negative<br/>weights allowed"]
-    G1 --> W3["All-pairs,<br/>small V (≤ 400)"]
+    G1 --> W3["All-pairs,<br/>small V (≤ 500)"]
 
     W0 --> BFS["BFS"]
     W1 --> DIJ["Dijkstra"]
@@ -162,7 +165,8 @@ graph TD
 
     G2 --> C1["Cheapest set of edges<br/>connecting all nodes → MST"]
     G2 --> C2["Order respecting deps → Topo sort"]
-    G2 --> C3["Groups reachable both ways → SCC / Union-Find"]
+    G2 --> C3["Directed: groups reachable both ways → SCC"]
+    G2 --> C4["Undirected connectivity,<br/>edges added online → Union-Find"]
 ```
 
 All graph shortest-path, connectivity, MST, topological-sort, and SCC material lives in one guide:
@@ -175,7 +179,8 @@ All graph shortest-path, connectivity, MST, topological-sort, and SCC material l
 | All-pairs shortest path, dense small graph | Floyd-Warshall | [Graph Patterns](/pattern/graph) |
 | Cheapest connecting tree | Kruskal / Prim (MST) | [Graph Patterns](/pattern/graph) |
 | Dependency ordering, DAG | Topological sort | [Graph Patterns](/pattern/graph) |
-| Mutually reachable groups / connectivity queries | SCC / Union-Find | [Graph Patterns](/pattern/graph) |
+| Directed graph: groups where every node reaches every other | SCC (Tarjan / Kosaraju) | [Graph Patterns](/pattern/graph) |
+| Undirected connectivity / components merging as edges arrive | Union-Find | [Graph Patterns](/pattern/graph) |
 
 ---
 
@@ -200,6 +205,7 @@ graph TD
 | You see... | Technique | Guide |
 |------------|-----------|-------|
 | Overlapping subproblems, "ways to", knapsack, LIS, edit distance, interval DP | Dynamic Programming | [Dynamic Programming](/pattern/dp) |
+| Pick items under a budget: 0/1, bounded, unbounded knapsack, subset sum | Knapsack DP | [DP §5](/pattern/dp#5-knapsack-family); drill: [Knapsack Variants](/pattern/knapsack-dp-youknowwho), [LeetCode DP Catalog](/pattern/dp-leetcode-catalog) |
 | "How many integers in `[L,R]` with digit property", huge upper bound | Digit DP | [Digit DP](/pattern/digit-dp) |
 | Assign/permute a small set, TSP, "state = used mask", `n ≤ 20` | Bitmask DP | [Bitmask DP — Subset Partition](/pattern/bitmask-dp-subset-partition) |
 | List all permutations/combinations/board fillings, prune infeasible paths | Backtracking | [Backtracking](/pattern/backtracking) |
@@ -215,7 +221,9 @@ Cue: a mostly-fixed array plus **many** `query(l,r)` and/or `update(i)`. The dec
 graph TD
     R["Array + many range queries"]
     R --> R1["Any point/range UPDATES<br/>between queries?"]
-    R1 -->|"No updates"| PSX["Prefix Sum"]
+    R1 -->|"No updates"| R3["Is the op invertible?<br/>(sum / xor / count)"]
+    R3 -->|"Invertible"| PSX["Prefix Sum"]
+    R3 -->|"Not invertible<br/>(min, max, gcd)"| SPT["Sparse Table"]
     R1 -->|"Yes, updates too"| R2["Is the op invertible?<br/>(sum / xor / count)"]
     R2 -->|"Invertible<br/>(sum, xor)"| FEN["Fenwick Tree (BIT)"]
     R2 -->|"Not invertible<br/>(min, max, gcd, assign)"| SEG["Segment Tree"]
@@ -224,13 +232,14 @@ graph TD
 | You see... | Technique | Guide |
 |------------|-----------|-------|
 | Range sums, **no updates** after building | Prefix Sum | [Prefix Sum](/pattern/prefix-sum) |
+| Range **min/max/gcd**, **no updates** | Sparse Table: O(n log n) build, O(1) query | [LCA — `SparseTable`](/pattern/lca#technique-3-euler-tour-with-backtracking-2n1-visits--sparse-table-rmq) |
 | Range **sum/xor** with point updates; simplest code | Fenwick Tree (BIT) | [Fenwick Tree (BIT)](/pattern/fenwick-tree) |
 | Range **add** *and* range **sum** — still no min/max | Fenwick, two-BIT trick | [Fenwick Tree §6](/pattern/fenwick-tree) |
 | Range **min/max/gcd/assign**, lazy propagation, non-invertible ops | Segment Tree | [Segment Tree](/pattern/segment-tree) |
 
 `★ Insight ─────────────────────────────────────`
 - The Fenwick-vs-Segment fork is entirely about **invertibility**. Fenwick answers `query(l,r)` as `prefix(r) − prefix(l−1)` — subtraction *requires* an inverse, so it works for sum and xor but not min/max. Segment Tree stores each node's answer directly and never subtracts, so it handles any associative op at the cost of ~2× the code.
-- No updates at all? Don't build a tree. Prefix Sum is O(1) per query after O(n) setup — strictly simpler, strictly faster.
+- No updates at all? Don't build a tree. Prefix Sum is O(1) per query after O(n) setup — strictly simpler, strictly faster. It needs an inverse too, so static min/max/gcd goes to a sparse table instead.
 `─────────────────────────────────────────────────`
 
 ---
@@ -271,14 +280,14 @@ When two techniques both seem to fit, these are the *predictable* confusions and
 | **Heap** vs **Sort** vs **BST** | Do I need the *top-k / streaming min* repeatedly, or the *whole thing sorted once*? | Repeated extract-min / running top-k → Heap. One-shot full order → Sort. Ordered + dynamic membership → balanced BST / ordered set. |
 | **BFS** vs **Dijkstra** | Do the edges have weights? | All weights equal (or unweighted) → BFS, O(V+E). Weights only 0 and 1 → 0-1 BFS with a deque. Arbitrary non-negative weights → Dijkstra. Running Dijkstra on an unweighted graph is not wrong, just a needless log factor. |
 | **Dijkstra** vs **Bellman-Ford** | Any negative edge weights, or a cap on the *number* of edges used? | Non-negative weights → Dijkstra. Any negative edge, or "at most k stops" (LC 787) → Bellman-Ford, whose round-by-round relaxation is exactly an edge-count bound. Dijkstra's greedy finalisation is what negative edges break. |
-| **Kruskal** vs **Prim** | Is the graph sparse or dense? | Sparse (E ≈ V) → Kruskal: sort edges, union-find. Dense (E ≈ V²) → Prim with a heap. Both give a correct MST; this is purely a constant-factor call. |
+| **Kruskal** vs **Prim** | Is the graph sparse or dense? | Sparse (E ≈ V) → Kruskal (sort edges + union-find) or heap Prim; both O(E log V). Dense (E ≈ V², e.g. all pairs of points) → array Prim, O(V²), no heap and no edge list. All give a correct MST. |
 | **Position-indexed** vs **value-indexed** range structure | Is the index axis "where in the array" or "which value"? | Range sums over positions → index by position. "How many values less than x so far" (inversions, LC 315/493) → compress values and index by *rank*. Getting this backwards is the single most common range-structure bug. |
 
 ---
 
 ## 9. Constraint-Size Cheat Sheet
 
-The `n` bound in the problem statement quietly announces the intended complexity. Read it backwards: pick the loosest algorithm whose cost fits ~10⁸ operations.
+The `n` bound in the problem statement quietly announces the intended complexity. Read it backwards: pick the loosest algorithm whose cost fits ~10⁸ operations. Pure Python manages closer to ~10⁷ simple operations per second, so in Python treat each row as roughly one notch tighter.
 
 | `n` bound | Budget you can afford | Techniques it points to |
 |-----------|-----------------------|-------------------------|
@@ -287,7 +296,7 @@ The `n` bound in the problem statement quietly announces the intended complexity
 | `n ≤ 500` | `O(n³)` | Floyd-Warshall, interval DP, DP with 3 nested states |
 | `n ≤ 5000` | `O(n²)` | Classic 2-D DP, `O(n²)` graph algorithms |
 | `n ≤ 10⁵` | `O(n log n)` | Sort, Binary Search, Dijkstra, Segment/Fenwick Tree, Sliding Window |
-| `n ≤ 10⁶` | `O(n)` / `O(n log log n)` | Two Pointers, Prefix Sum, single-pass DP, sieve |
+| `n ≤ 10⁶` | `O(n)` / `O(n log n)` | Two Pointers, Prefix Sum, single-pass DP, sieve, sort |
 | `n ≤ 10¹⁸` | `O(log n)` / closed form | Binary search on answer, matrix exponentiation, Digit DP, math |
 
 `★ Insight ─────────────────────────────────────`
@@ -330,7 +339,7 @@ The router only pays off if you can *run it* on a cold problem. Here are five, e
 
 ## 11. Full Technique Index
 
-All 18 guides, with the one-line cue that should make you reach for each.
+All 18 core guides plus Sorting, with the one-line cue that should make you reach for each.
 
 | Technique | Reach for it when... | Guide |
 |-----------|----------------------|-------|
@@ -352,6 +361,7 @@ All 18 guides, with the one-line cue that should make you reach for each.
 | Segment Tree | range min/max/assign with updates, lazy propagation | [Segment Tree](/pattern/segment-tree) |
 | Fenwick Tree (BIT) | range sum/xor with point updates, minimal code | [Fenwick Tree (BIT)](/pattern/fenwick-tree) |
 | Heap / Priority Queue | repeated extract-min, top-k, merge k lists, running median | [Heap / Priority Queue](/pattern/heap) |
+| Sorting | intervals, scheduling, sweep line; sorting unlocks greedy/DP/binary search | [Sorting](/pattern/sorting) |
 
 ---
 
@@ -405,7 +415,7 @@ Nothing that touches every element. Only `O(log n)` or closed form: [binary sear
 <details markdown="1">
 <summary>Answer</summary>
 
-`O((n + q) log n)`. A [Fenwick tree](/pattern/fenwick-tree) or [segment tree](/pattern/segment-tree). The presence of *updates* alongside many queries is the specific cue — without updates, [prefix sums](/pattern/prefix-sum) suffice.
+`O((n + q) log n)`. A [Fenwick tree](/pattern/fenwick-tree) or [segment tree](/pattern/segment-tree). The presence of *updates* alongside many queries is the specific cue — without updates, [prefix sums](/pattern/prefix-sum) suffice for sum/xor, and a [sparse table](/pattern/lca#technique-3-euler-tour-with-backtracking-2n1-visits--sparse-table-rmq) for min/max/gcd.
 
 </details>
 
@@ -423,7 +433,7 @@ Is the aggregate **invertible**? A Fenwick answers `query(l,r)` as `prefix(r) - 
 <details markdown="1">
 <summary>Answer</summary>
 
-Do both pointers move forward, and do you care about the *region between* them? Sliding window. Do the pointers converge from opposite ends, or are you after a *pair* rather than a region? Two pointers. See [Sliding Window §11](/pattern/sliding-window).
+Do both pointers move forward, and do you care about the *region between* them? Sliding window. Do the pointers converge from opposite ends, or are you after a *pair* rather than a region? Two pointers. See [Sliding Window §15](/pattern/sliding-window#sliding-window-vs-the-alternatives).
 
 </details>
 

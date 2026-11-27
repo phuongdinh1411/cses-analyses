@@ -1092,7 +1092,7 @@ Sanity check on the merged sort [1,2,3,5,6,7,8,9,10]: median = 6 ✓
 
 > Given two sorted arrays `nums1`, `nums2`, return the median of the combined set in **O(log(min(m,n)))**. (Merging is O(m+n) — too slow for the required bound.)
 
-**This template solves: LC 4 (Median of Two Sorted Arrays). The partition idea also underlies LC 1439 (Kth smallest in a sorted matrix of rows) and any "find the split that balances two sorted halves" problem.**
+**This template solves: LC 4 (Median of Two Sorted Arrays), and any "find the split that balances two sorted halves" problem.**
 
 The pattern-focused view (uses the `find_median` code in §7): don't search for the median *value* — search for a **partition** of the shorter array. Cut `nums1` after `i` elements and `nums2` after `j = half - i`. The cut is correct when everything on the left is ≤ everything on the right, which reduces to two cross-checks: `left1 <= right2` and `left2 <= right1`. That correctness condition is **monotonic in `i`** (too-large `left1` means shrink `i`; too-small means grow it), so binary search finds the right cut.
 
@@ -1106,7 +1106,7 @@ too big left1 -> move i left (hi=i-1);  too small -> move i right (lo=i+1)
 ```
 
 ```
-nums1 = [1, 3],  nums2 = [2]        m=1 after swap? no, nums1 shorter stays
+nums1 = [1, 3],  nums2 = [2]        nums1 is longer -> swap
 (swap so nums1 is shorter: nums1=[2], nums2=[1,3]);  m=1 n=2  half=(3+1)//2=2
 
 lo=0 hi=1:
