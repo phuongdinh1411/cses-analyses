@@ -109,7 +109,7 @@ Hottest campaign's share20%
 
 Raw ingest / sec
 
-1.0BB/s
+1.0 GB/s
 
 10M × 100B
 
@@ -127,11 +127,11 @@ Hottest campaign's clicks / sec
 
 Ratio: raw log vs. aggregates
 
-1.0BB vs 1.4B rows
+1.0 GB/s vs 1.4B rows/day
 
 raw events dwarf the aggregates
 
-ingest = 10M × 100B ≈ 1.0BB/s; one campaign alone can be 2.0M/s
+ingest = 10M × 100B ≈ 1.0 GB/s; one campaign alone can be 2.0M/s
 
 Aggregates are small — one counter row per campaign per minute. The volume to size for is the raw click log, and skew means one campaign's traffic can rival the entire system's average.
 

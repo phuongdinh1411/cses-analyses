@@ -458,6 +458,7 @@ The four golden signals (Google SRE):
 
 ### Prometheus alert rules
 
+{% raw %}
 ```yaml
 # alerts.yml
 groups:
@@ -498,6 +499,7 @@ groups:
         annotations:
           summary: "Consumer group {{ $labels.group }} is {{ $value }} messages behind"
 ```
+{% endraw %}
 
 ---
 

@@ -256,6 +256,7 @@ flowchart TB
 ### Neo4j Schema (Cypher)
 
 ```cypher
+// Separate statements: each ends with ';' (run one at a time, or via cypher-shell)
 // Create constraints
 CREATE CONSTRAINT skill_id IF NOT EXISTS FOR (s:Skill) REQUIRE s.id IS UNIQUE;
 CREATE CONSTRAINT profession_id IF NOT EXISTS FOR (p:Profession) REQUIRE p.id IS UNIQUE;
@@ -283,13 +284,13 @@ CREATE (ml:Skill {
     description: 'Building systems that learn from data',
     popularity: 88,
     growth_rate: 0.25
-})
+});
 
 // Example: Create relationships
 MATCH (python:Skill {id: 'skill_python'})
 MATCH (ml:Skill {id: 'skill_ml'})
 CREATE (python)-[:PREREQUISITE_FOR]->(ml)
-CREATE (python)-[:SIMILAR_TO {score: 0.7}]->(ml)
+CREATE (python)-[:SIMILAR_TO {score: 0.7}]->(ml);
 
 // Example: Profession with required skills
 CREATE (ds:Profession {
@@ -298,13 +299,13 @@ CREATE (ds:Profession {
     industry: 'Technology',
     seniority: 'mid',
     avg_salary: 120000
-})
+});
 
 MATCH (ds:Profession {id: 'prof_data_scientist'})
 MATCH (python:Skill {id: 'skill_python'})
 MATCH (ml:Skill {id: 'skill_ml'})
 CREATE (ds)-[:REQUIRES {importance: 'must', weight: 0.9}]->(python)
-CREATE (ds)-[:REQUIRES {importance: 'must', weight: 0.95}]->(ml)
+CREATE (ds)-[:REQUIRES {importance: 'must', weight: 0.95}]->(ml);
 ```
 
 ---

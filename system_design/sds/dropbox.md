@@ -83,7 +83,7 @@ At the bare minimum you should know the core building blocks of system design
 
 ### System Design Template
 
-With these building blocks, you will be able to apply our template to solve many system design problems. We will dive into the details in the Design Template section. Here’s a sneak peak:
+With these building blocks, you will be able to apply our template to solve many system design problems. We will dive into the details in the Design Template section. Here’s a sneak peek:
 
 ### Additional Building Blocks
 
@@ -93,7 +93,7 @@ Additionally, you will want to understand these concepts
 
 - Particularly useful for solving data-intensive problems such as designing an analytics app
 
-- Achieving consistency across services using distribution transaction or event sourcing
+- Achieving consistency across services using distributed transaction or event sourcing
 
 - Particularly useful for solving problems that require strict transactions such as designing financial apps
 

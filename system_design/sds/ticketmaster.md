@@ -37,9 +37,9 @@ Each answer fixes an assumption the design leans on.
 
 ## What makes this problem distinctive
 
-The difficulty isn't browsing. It's that a popular on-sale is a synchronized stampede — on the order of a hundred thousand people trying to grab the same few thousand seats in the same few seconds — and inventory correctness must hold exactly under that contention.
+The difficulty isn't browsing. It's that a popular on-sale is a synchronized stampede — on the order of a million people trying to grab the same 50,000 or so seats in the first minute — and inventory correctness must hold exactly under that contention.
 
-A naive "mark the seat sold on click" design fails in two directions at once. Read it as one operation and two clicks on the same seat both succeed, selling it twice. Slow it down with a lock held until checkout completes and one abandoned cart freezes a seat forever. The system needs a temporary, expiring reservation — a hold — that lets exactly one buyer through per seat, and a way to absorb a hundred-thousand-person spike without the inventory service failing under the load.
+A naive "mark the seat sold on click" design fails in two directions at once. Read it as one operation and two clicks on the same seat both succeed, selling it twice. Slow it down with a lock held until checkout completes and one abandoned cart freezes a seat forever. The system needs a temporary, expiring reservation — a hold — that lets exactly one buyer through per seat, and a way to absorb a million-person spike without the inventory service failing under the load.
 
 Key idea. A popular on-sale is a synchronized stampede against a small, fixed inventory — the design needs exactly one winner per seat and a way to survive the spike that produces that winner.
 
@@ -73,7 +73,7 @@ When a user's turn comes, the waiting room issues a short-lived admission token,
 
 Browsing, holding, and buying have different consistency needs, and the design gives each one a different store. Availability views come from an eventually consistent cache. A stale view at worst shows a seat that was just taken, and the hold catches that when the user tries to claim the seat. The hold goes to the in-memory store, which gives fast claims and a built-in expiry. The sale is the one write that must be exactly correct, so it goes to a strongly consistent database as a conditional update.
 
-Key idea. A hold is a temporary, expiring reservation kept in an in-memory store; set-if-absent and the conditional update are two forms of compare-and-set that let one contender win; a waiting room throttles the stampede and issues the token the booking API checks; and only the final sale needs a strongly consistent write.
+Key idea. A hold is a temporary, expiring reservation kept in an in-memory store; set-if-absent and the conditional update are two forms of compare-and-set that let one contender win; a waiting room throttles the stampede and issues the token the booking API checks; the hold must never double-allocate a seat, so it is an atomic set-if-absent; and only the final sale needs a strongly consistent write.
 
 ## 1. Requirements
 
@@ -133,13 +133,13 @@ orders of magnitude above hold attempts
 
 What must be exact
 
-the hold
+hold + sale
 
-a small, atomic write path — not the read volume
+hold: atomic set-if-absent; sale: strongly consistent conditional write
 
 1.0M buyers ÷ 50K seats ≈ 20× contenders per seat — the crush the design exists to resolve
 
-Reads (browsing) dwarf writes (holds) — holds are capped by seat count. The read path scales with caching; the hold path must be small and exactly correct.
+Reads (browsing) dwarf writes (holds) — holds are capped by seat count. The read path scales with caching; a hold must never double-allocate a seat (atomic set-if-absent), and the final sale is a strongly consistent conditional write.
 
 ### 2.1 Demand dwarfs supply
 

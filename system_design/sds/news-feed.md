@@ -157,13 +157,13 @@ From 300M daily active users loading the feed about 10 times a day, that is 3 bi
 
 ### 2.2 Writes and fan-out amplification
 
-Posts themselves are modest: at peak, on the order of 5,000 posts per second. The amplification is the story. Under pure push, each post is copied to every follower, so 5,000 posts/sec × 200 followers ≈ 1,000,000 timeline writes/sec. A single post from a 50M-follower celebrity is 50 million writes on its own — a spike roughly 50× the steady-state average. That asymmetry is why pure push cannot stand alone.
+Posts themselves are modest: at peak, on the order of 5,000 posts per second. The amplification is the story. Under pure push, each post is copied to every follower, so 5,000 posts/sec × 200 followers ≈ 1,000,000 timeline writes/sec. A single post from a 50M-follower celebrity is 50 million writes on its own — a spike roughly 50× the steady-state average if those writes had to land within about a second (spread over a minute, still ~80% extra load). That asymmetry is why pure push cannot stand alone.
 
 ### 2.3 Storage
 
 Posts at about 500 bytes each accumulate on the order of tens of terabytes per year. The materialized timelines are 300M users × 1,000 entries × ~50 bytes ≈ 15 TB, which fits in a sharded in-memory store. The follow graph at 300M × 200 edges × ~30 bytes ≈ 2 TB is comparably small. Storage is not the binding constraint; amplification and read latency are.
 
-Key idea. The load that matters is fan-out amplification — a million timeline writes per second, spiking 50× on a single celebrity post.
+Key idea. The load that matters is fan-out amplification — a million timeline writes per second, with a single celebrity post adding ~50 seconds' worth of that load in one burst.
 
 ## 3. API design
 
@@ -291,15 +291,15 @@ The ranker's features come from the engagement store — the counter service fed
 
 ### 5.6 The read path and its latency budget
 
-The feed read fans out internally and must stay within roughly 200ms. The sequence below shows the path; the parallel branches are what make the budget achievable.
+The feed read fans out internally and must stay within roughly 200ms. The sequence below shows the path; the parallel branches are what give the budget headroom.
 
-The budget, stage by stage at p99: network in 5ms, timeline read 10ms, celebrity pull 30ms (in parallel with the timeline read), merge 5ms, feature fetch 30ms, heavy ranker 50ms, candidate-body prefetch 30ms (in parallel with ranking, so the top posts are already hydrated when ranking returns), response out 10ms, plus slack — about 200ms total. The parallelism is not optional; without it the stages sum past budget.
+The budget, stage by stage at p99: network in 5ms, timeline read 10ms, celebrity pull 30ms (in parallel with the timeline read), merge 5ms, feature fetch 30ms, heavy ranker 50ms, candidate-body prefetch 30ms (in parallel with ranking, so the top posts are already hydrated when ranking returns), response out 10ms, plus slack — about 200ms total. Run serially, the listed stages sum to ~170ms (~200ms with slack), right at the budget; the two overlaps save ~40ms (10ms by hiding the timeline read under the celebrity pull, 30ms by hiding the prefetch under ranking), which is the headroom p99 tails need when any single stage runs slow.
 
 ### 5.7 The composed design
 
 Combining the fixes yields the system: a write path that pushes below T and skips above it, and a read path that merges the materialized timeline with a cache-served celebrity pull, ranks the candidates in two stages while their bodies prefetch in parallel, and returns the top few dozen.
 
-Strong-answer criteria. Deriving each component from a specific failure, splitting push and pull at a tunable threshold, fronting celebrity reads with a replicated cache, ranking the candidate set on the read path, and naming the read-path parallelism that meets the latency budget.
+Strong-answer criteria. Deriving each component from a specific failure, splitting push and pull at a tunable threshold, fronting celebrity reads with a replicated cache, ranking the candidate set on the read path, and naming the read-path parallelism that keeps headroom in the latency budget for p99 tails.
 
 Key idea. Each component answers one failure of the naive design: push for cheap reads, a threshold for the celebrity write spike, a fronting cache for the celebrity read hot key, and read-path ranking for relevance.
 
@@ -361,7 +361,7 @@ Run serially~200 ms
 
 Run with parallelism~160 ms
 
-Overlapping the timeline read with the celebrity pull, and prefetching candidate bodies while the ranker runs, is what creates the headroom under budget. Run serially, the same stages have no margin.
+Overlapping the timeline read with the celebrity pull, and prefetching candidate bodies while the ranker runs, is what creates the headroom under budget. Run serially, the same stages leave almost no margin for a slow tail on any one stage.
 
 Design checkpoint
 
@@ -383,7 +383,7 @@ GreatThree feature families, rank-time cross-features, recency fallback▾
 
 Before reading on. A celebrity posts and millions of readers request that post within the same second, all missing the same cold cache key. What stops them from stampeding the post store?
 
-A 50M-follower post is 50 million writes under push — about 50× the average write rate — so celebrities are pulled, not pushed, above the threshold T. The read-side cost is small: a median reader follows roughly 200 accounts, of which well under a percent are celebrities, so the pull adds about one read per feed load. The harder issue is the read hot key. The fix is a dedicated cache in front of the post store, keyed by celebrity_posts:{author_id}, holding each celebrity's last ~100 posts, with a replication factor that scales with follower count — a few replicas for a one-million-follower account, dozens for a hundred-million-follower one — so reads spread across nodes.
+A 50M-follower post is 50 million writes under push — about 50 seconds of the average write rate, a 50× spike if delivered within ~1s — so celebrities are pulled, not pushed, above the threshold T. The read-side cost is small: a median reader follows roughly 200 accounts, of which well under a percent are celebrities, so the pull adds about one read per feed load. The harder issue is the read hot key. The fix is a dedicated cache in front of the post store, keyed by celebrity_posts:{author_id}, holding each celebrity's last ~100 posts, with a replication factor that scales with follower count — a few replicas for a one-million-follower account, dozens for a hundred-million-follower one — so reads spread across nodes.
 
 Design checkpoint
 

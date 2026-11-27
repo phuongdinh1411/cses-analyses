@@ -81,7 +81,7 @@ Size for a 10-min clip
 
 Typical use
 
-1080p / broadband
+between 720p (~2.5 Mbps) and 1080p (~4.5 Mbps)
 
 ### Codec
 

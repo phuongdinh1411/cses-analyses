@@ -175,7 +175,7 @@ LEFT JOIN reviews r ON b.id = r.business_id
 WHERE b.id = 'joes-pizza'
 GROUP BY b.id;
 
-This calculates the average from all 234 reviews on every page load. A popular restaurant with 5,000 reviews makes this query slow. At 1,700 page views per second, the database struggles.
+This calculates the average from all 234 reviews on every page load. A popular restaurant with 5,000 reviews makes this query slow. At roughly 1,700 page views per second (assuming each of the 10M DAU views ~15 business pages a day: 150M ÷ 86,400 s ≈ 1,700/s on average, higher at meal-time peaks), the database struggles.
 
 Step 1: Separate Business and Review Queries
 

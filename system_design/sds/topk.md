@@ -201,7 +201,7 @@ With 100M daily active users generating about 100 events each, that is 100,000,0
 
 ### 2.2 Memory is the real constraint
 
-An exact map needs one entry per distinct item. At billions of items and tens of bytes per entry — a key string plus a counter — the map runs to hundreds of gigabytes and grows with every new item. A count-min sketch is a fixed grid: a few million columns across a handful of rows, at 4 bytes a cell, is on the order of tens of megabytes and never grows. That gap — hundreds of gigabytes that scale with the catalog versus tens of fixed megabytes — is why the design accepts approximation.
+An exact map needs one entry per distinct item. At a billion items and ~60 bytes per entry — a key string plus a counter — the map runs to ~60 GB and grows with every new item. A count-min sketch is a fixed grid: a few million columns across a handful of rows, at 4 bytes a cell, is on the order of tens of megabytes and never grows. That gap — tens of gigabytes that scale with the catalog versus tens of fixed megabytes — is why the design accepts approximation.
 
 ### 2.3 Raw retention is a separate, large cost
 
@@ -321,11 +321,11 @@ GoodSize width and depth to a target error▾
 
 GreatSize to error, exploit skew, and monitor drift▾
 
-### 6.2 Sharded aggregation and the K-way merge
+### 6.2 Sharded aggregation and the N-way merge
 
 Before reading on. A shard holds the complete count for each of its own items, but only as a sketch estimate. Overestimated tail items crowd the top of that shard's local ranking and push a true top-K item to local rank K+1. If the shard reports only its local top K, that genuine leader is dropped. How do you keep it?
 
-Partitioning by item_id means every event for one item lands on the same shard, so that shard already holds the item's complete count — the merge never sums partial counts. The danger is the cutoff. Those counts are sketch estimates, and overestimation is uneven: an inflated tail item can outrank a true top-K item inside a shard's own local ordering, pushing it to rank K+1. If a shard sends only its local top K, that leader vanishes before the coordinator sees it. The fix is to widen each shard's report to its top m·K (for a small multiplier m), giving the coordinator margin to recover an item the local sketch noise mis-ranked. The coordinator then does a K-way merge over the candidate lists and takes the global top K.
+Partitioning by item_id means every event for one item lands on the same shard, so that shard already holds the item's complete count — the merge never sums partial counts. The danger is the cutoff. Those counts are sketch estimates, and overestimation is uneven: an inflated tail item can outrank a true top-K item inside a shard's own local ordering, pushing it to rank K+1. If a shard sends only its local top K, that leader vanishes before the coordinator sees it. The fix is to widen each shard's report to its top m·K (for a small multiplier m), giving the coordinator margin to recover an item the local sketch noise mis-ranked. The coordinator then does an N-way merge over the N shards' candidate lists and takes the global top K.
 
 Because partitioning is by item, each item's count comes from exactly one shard, so the merge is a selection over already-complete (if approximate) counts, not a sum of partial ones. A sketch stays additive within a shard's own buckets, which is what lets a window sum them; the cross-shard merge composes shards, not counts.
 
@@ -363,7 +363,7 @@ P404 — 70
 
 P266 — 52
 
-global top-5 (coordinator's K-way merge)
+global top-5 (coordinator's N-way merge)
 
 Coordinator holds each shard's local top-3, ready to merge.
 
@@ -447,7 +447,7 @@ Key idea. The architecture holds at 10× by making salting and a merge tree the 
 
 - A log-based queue decouples ingest from aggregation and lets a slower exact consumer replay the same events.
 
-- Shard by item_id; each shard reports its top m·K, and a coordinator K-way merges into the global top K.
+- Shard by item_id; each shard reports its top m·K, and a coordinator N-way merges the N shard lists into the global top K.
 
 - Per-minute bucket sketches make a rolling window a sum of buckets, sliding forward without recounting.
 

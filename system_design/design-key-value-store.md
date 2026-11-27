@@ -1364,7 +1364,7 @@ sequenceDiagram
 │   Consistency│ Eventual/│ Tunable   │ Event.│Strong│           │
 │              │ Strong   │           │       │      │           │
 │   ───────────┼──────────┼───────────┼───────┼──────┤           │
-│   Partitions │ Auto     │ Consistent│ Hash  │ Raft │           │
+│   Partitions │ Auto     │ Consistent│ Hash  │ None*│           │
 │              │          │ Hash      │ Slots │      │           │
 │   ───────────┼──────────┼───────────┼───────┼──────┤           │
 │   Replication│ Multi-AZ │ Multi-DC  │ Async │ Raft │           │
@@ -1374,6 +1374,8 @@ sequenceDiagram
 │   Use Case   │ General  │ Time-     │ Cache │Config│           │
 │              │          │ series    │       │      │           │
 │                                                                 │
+│   * etcd does not partition: a single Raft group                │
+│     replicates the whole keyspace to every member               │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

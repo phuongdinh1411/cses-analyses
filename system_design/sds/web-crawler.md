@@ -297,7 +297,7 @@ ready
 
 fetched: 0
 
-Front queues assign new URLs by host; back queues fetch one URL per host, respecting crawl-delay.
+Front queues order new URLs by priority; back queues group them by host and fetch one URL per host at a time, respecting crawl-delay.
 
 Because the frontier holds billions of pending URLs, it's disk-backed, with only the ready head of each host's queue kept in memory; it's checkpointed so a crash doesn't force re-deriving pending work from the seen-set. A slow or unresponsive host stalls only its own back queue — other hosts keep fetching — and a host that suddenly floods the frontier with URLs has its queue capped, shedding low-priority entries rather than growing without bound. Per-host queue depth and fetch-rate dashboards are the signal: a deep queue with zero fetches means that host's crawl-delay (or a stall) is throttling it.
 

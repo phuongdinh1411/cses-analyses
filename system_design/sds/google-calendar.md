@@ -35,13 +35,13 @@ Each question below fixes an assumption the rest of the design leans on.
 
 - What is out of scope? Collaborative editing of the event body (the Google Docs problem), smart scheduling suggestions, and search.
 
-- What sizes the system? The read path. Calendar views and free-or-busy queries vastly outnumber event creates.
+- What sizes the system? The read path. Calendar views and free-or-busy queries outnumber event creates roughly 3:1, and each read costs more (rule expansion).
 
 ## What makes this problem distinctive
 
 A naive answer is an events table: one row per event, a start and an end timestamp, times in UTC, read by a range query. That model breaks the moment an event repeats, and the way it breaks shapes the rest of the design.
 
-A recurring event cannot be stored as one row per occurrence. "Every weekday forever" has no last row to write; even a finite weekly series over several years is thousands of rows for one logical event. A practical model stores the rule — the generator — and computes occurrences within a requested window on read. That single choice cascades. Editing one occurrence becomes an exception layered over the rule. Keeping a 9 a.m. meeting at 9 a.m. across a daylight-saving change becomes a timezone computation done per occurrence. Finding a slot for a group becomes an overlap query over each person's expanded occurrences. And because a view is read far more often than an event is written, the cost that matters is expansion on read, not storage.
+A recurring event cannot be stored as one row per occurrence. "Every weekday forever" has no last row to write; even a finite weekly series over several years is thousands of rows for one logical event. A practical model stores the rule — the generator — and computes occurrences within a requested window on read. That single choice cascades. Editing one occurrence becomes an exception layered over the rule. Keeping a 9 a.m. meeting at 9 a.m. across a daylight-saving change becomes a timezone computation done per occurrence. Finding a slot for a group becomes an overlap query over each person's expanded occurrences. And because a view is read about 3× as often as an event is written, and every read must expand rules, the cost that matters is expansion on read, not storage.
 
 Rule versus occurrence. A recurring event is a rule — a compact generator like "weekly on weekdays at 9 a.m." An occurrence is one concrete firing of that rule on a specific date. Occurrences are derived data: not stored as rows in the event model, but computed for a query window when a view asks for them. The whole design follows from treating occurrences as computed, not stored.
 

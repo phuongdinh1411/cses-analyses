@@ -397,7 +397,7 @@ CREATE TABLE consumer_offsets (
 |----------|-----|-----------|
 | **At-most-once** | Commit offset before processing | Fast, but messages may be lost on consumer crash |
 | **At-least-once** | Commit offset after processing | No loss, but duplicates on crash (consumer retries) |
-| **Exactly-once** | Idempotent producer + transactional writes + consume-transform-produce atomically | Strongest, but only for Kafka→Kafka pipelines (external side effects still need idempotent sinks); ~20% throughput overhead |
+| **Exactly-once** | Idempotent producer + transactional writes + consume-transform-produce atomically | Strongest, but only for Kafka→Kafka pipelines (external side effects still need idempotent sinks); throughput overhead is typically a few percent at normal commit intervals, higher with very frequent transaction commits |
 
 **We chose at-least-once as default because**: Most use cases can tolerate and handle duplicates (idempotent consumers). Exactly-once is available as an opt-in for critical workflows (e.g., financial transactions).
 
@@ -564,7 +564,7 @@ Producer                    Broker
 | "How do you handle message ordering?" | Per-partition ordering via partition key. Global ordering requires single partition (limits throughput). |
 | "What if a consumer is stuck?" | Consumer lag monitoring, dead letter queue for poison messages, max retry count then skip. |
 | "How do you handle backpressure?" | Pull model inherently handles it. Producers can be rate-limited. Quotas per client at broker level. |
-| "What about exactly-once?" | Idempotent producer (dedup) + transactional writes + read-committed consumers. ~20% overhead. |
+| "What about exactly-once?" | Idempotent producer (dedup) + transactional writes + read-committed consumers. Overhead is a few percent at typical commit intervals; higher with very frequent commits. |
 | "What if scale increases 10x?" | Add brokers and partitions. Move cold data to tiered storage (S3). Compress more aggressively. |
 
 ---

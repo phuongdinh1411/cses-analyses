@@ -698,6 +698,8 @@ flowchart LR
 
 **Key principle**: Never lose track of a payment. If you don't know the state, mark it for reconciliation.
 
+**Atomicity of step 3**: If payment, ledger and wallet share one PostgreSQL database, write the payment status, the balanced double-entry ledger rows (debits = credits) and the wallet balance in a single ACID transaction, so none can be updated without the others. If they are separate services, the payment service commits its status change plus an outbox event in one local transaction; a saga then applies the ledger and wallet updates idempotently, reversing a failed step with compensating ledger entries rather than edits. Either way, nightly reconciliation against PSP settlement files catches anything that slipped through.
+
 ---
 
 ## Key Takeaways

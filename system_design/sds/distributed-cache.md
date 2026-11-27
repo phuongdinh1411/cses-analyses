@@ -157,7 +157,7 @@ Size for the working set, not the dataset. And size the DB for the cold case —
 
 ### 2.1 Working set, not dataset
 
-Assume 1 billion keys at ~1 KB each — a 1 TB dataset. Under skewed access where ~10% of keys serve ~90% of traffic, the working set at a 90%+ hit rate is closer to 100 GB. Spread across 100 shards that is ~1 GB per shard, and ~40% headroom for entry overhead, eviction structures, and replication buffers makes each shard want ~1.4 GB resident. Size for the working set, not the dataset.
+Assume 1 billion keys at ~1 KB each — a 1 TB dataset. Under steeply skewed (Zipfian) access where ~10% of keys serve ~99% of traffic, the working set needed for the 99% hit rate assumed here is closer to 100 GB. Spread across 100 shards that is ~1 GB per shard, and ~40% headroom for entry overhead, eviction structures, and replication buffers makes each shard want ~1.4 GB resident. Size for the working set, not the dataset.
 
 ### 2.2 Per-shard throughput
 
@@ -167,7 +167,7 @@ At 1M cluster ops/sec across 100 shards, the average shard sees ~10K ops/sec, we
 
 The cache's purpose is to keep load off the store. At a 99% hit rate and 1M ops/sec, steady-state database load is 1% × 1M = 10K QPS. The number that actually sizes the database is the cold case: when one of 100 shards dies, its keys (another ~10K QPS) fall through at a 0% hit rate until a replica warms — so the database briefly sees ~20K QPS, double steady-state. Size for the cold case, not the average.
 
-Key idea. The binding number is cold-start database load — a dead shard's keys hit the store at full rate, several times the steady miss rate.
+Key idea. The binding number is cold-start database load — a dead shard's keys hit the store at full rate, adding as much load as the entire steady miss rate (2× steady with 100 shards at a 99% hit rate).
 
 ## 3. API design
 

@@ -549,6 +549,8 @@ flowchart LR
 | Folder structure | 10 minutes | On folder change |
 | Sharing permissions | 1 minute | On permission change |
 
+Permission revocations publish an invalidation event that evicts the cached entry immediately, so the 1-minute TTL is only a backstop if an event is lost — not the revocation latency.
+
 ### 4.4 Block Storage
 
 > "Let's discuss how we store the actual file content."
@@ -831,8 +833,8 @@ flowchart TB
 flowchart TB
     subgraph Write["Write Path"]
         BLOCK[New Block] --> W1[Write to Primary]
-        W1 --> W2[Sync to Replica 1]
-        W1 --> W3[Sync to Replica 2]
+        W1 --> W2[Sync to Replica 1 - same region]
+        W1 --> W3[Sync to Replica 2 - same region]
         W2 --> ACK{All replicas ACK?}
         W3 --> ACK
         ACK -->|Yes| SUCCESS[Return success]
@@ -840,11 +842,15 @@ flowchart TB
     end
 
     subgraph Distribution["Geographic Distribution"]
-        PRIMARY[Primary: US-West]
-        REP1[Replica 1: US-East]
-        REP2[Replica 2: EU-West]
+        PRIMARY[Primary: US-West AZ-a]
+        REP1[Replica 1: US-West AZ-b]
+        REP2[Replica 2: US-West AZ-c]
+        XREG[Async copy: US-East / EU-West]
+        PRIMARY -.->|async| XREG
     end
 ```
+
+The write ACKs once the in-region replicas (separate AZs/racks) confirm; the cross-region copy is asynchronous to keep upload latency low, which is why cross-region replication lag is monitored and alerted on.
 
 ### Durability Guarantees
 

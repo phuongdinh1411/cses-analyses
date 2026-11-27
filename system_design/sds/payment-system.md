@@ -183,7 +183,7 @@ Key idea. Every write-side endpoint carries its own idempotency key, because eve
 
 The record of one payment's lifecycle, tracked through an explicit saga state.
 
-saga_state moves through authorizing → authorized → capturing → captured, with compensating and in_doubt as the two paths a failure can take (the idempotency deep dive covers in_doubt in full).
+saga_state starts at pending (set by the idempotency gate) and moves through authorizing → authorized → capturing → captured, with compensating and in_doubt as the two paths a failure can take (the idempotency deep dive covers in_doubt in full).
 
 ### 4.2 Ledger entry
 

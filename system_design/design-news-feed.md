@@ -281,9 +281,16 @@ CREATE TABLE posts (
     content     TEXT,
     media_ids   LIST<UUID>,
     created_at  TIMESTAMP,
-    likes_count INT,
     PRIMARY KEY (user_id, created_at, post_id)
 ) WITH CLUSTERING ORDER BY (created_at DESC, post_id DESC);
+
+-- Likes: a read-modify-write on an INT races under concurrent likes, so use a
+-- counter column (Cassandra requires counters in their own table)
+CREATE TABLE post_likes (
+    post_id     UUID PRIMARY KEY,
+    likes_count COUNTER
+);
+-- UPDATE post_likes SET likes_count = likes_count + 1 WHERE post_id = ?;
 ```
 
 ### Feed Table (Redis)

@@ -169,7 +169,7 @@ Ranked trie in RAM
 
 12 GB
 
-100M nodes × 120B
+~100M nodes (radix-compressed ≈ string count) × 120B
 
 suggest QPS = 100K searches/s × 5 debounced calls = 500K/s
 
@@ -187,6 +187,9 @@ and any cache in front of it must handle.
 Assume around 100M distinct popular query strings, averaging about 20 characters. A trie with
 a small top-K cached per node lands in the range of a few to tens of gigabytes — large, but
 RAM-resident on the serving tier, and split across shards if one machine cannot hold it.
+The ~100M-node figure assumes compression: an uncompressed trie has one node per character
+not shared with another query's prefix — shared prefixes help, but that can still be up to
+~20× the string count — while radix compression brings it near one node per string.
 Collapsing the many single-child chains — the long unique tails of queries — shrinks it further
 (shown in the deep dive). The point of the estimate is the conclusion: the whole index fits in
 memory, so the hot path never touches disk.
@@ -348,7 +351,7 @@ Radix compression collapses each single-child chain into one edge labelled with 
 substring, so a node remains only where the path actually branches or a word ends.
 
 Consider the queries cardigan and cardigans. A plain trie spells cardigan as eight chained
-nodes before the final s branches off — eight nodes that only pass the walk forward.
+nodes before the final s branches off — the first seven only pass the walk forward.
 Compression replaces that chain with a single edge labelled cardigan, then keeps the branch
 for s.
 

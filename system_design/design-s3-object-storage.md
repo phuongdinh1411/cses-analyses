@@ -72,6 +72,10 @@ Traffic:
   PUT QPS:         100K (average), 500K (peak)
   GET QPS:         1M (average), 5M (peak)
   GET:PUT ratio:   ~10:1 (read-heavy)
+  Note: 100K PUT/s × 1 MB would add ~8.6 PB/day (100 PB in ~12 days). PUT
+        traffic is dominated by small, often short-lived objects (avg PUT
+        payload ~100 KB, many later overwritten/deleted), so net growth is
+        ≲1 PB/day; the 1 MB average reflects long-lived large objects.
 
 Metadata:
   Per object:      ~500 bytes (key, size, checksum, location, timestamps)
@@ -272,11 +276,14 @@ Cluster Topology (Failure Domains):
 │  └────────────────┘ └────────────────┘ └──────────┘  │
 └──────────────────────────────────────────────────────┘
 
-CRUSH Rule for Standard storage class:
+CRUSH Rule for Standard storage class (EC 6+3 = 9 chunks):
   1. Select 3 distinct AZs
-  2. Within each AZ, select 1 rack
-  3. Within each rack, select 1 node with available capacity
-  → Guarantees survival of any single AZ failure
+  2. Within each AZ, select 3 nodes, each in a distinct rack where
+     possible (else distinct hosts) — one chunk per failure domain
+  3. Each node must have available capacity
+  → 9 chunks, 3 per AZ: losing an AZ loses 3 chunks ≤ 3 parity, so
+    any single AZ failure is survivable
+  (3x-replicated small objects: 1 node per AZ)
 ```
 
 ### Rebalancing on Node Add/Remove
@@ -466,8 +473,9 @@ Can lose: Any 3 of 9 chunks and still recover
 │    • Massive storage savings at scale              │
 │    • 11 nines durability                           │
 │                                                    │
-│  Storage class "REDUCED_REDUNDANCY"  →  (4+2) EC  │
-│    • 1.5x overhead, ~9 nines durability            │
+│  Storage class "REDUCED_REDUNDANCY" → (10+2) EC   │
+│    • 1.2x overhead, lower durability (~9 nines);   │
+│      does not survive a full AZ loss               │
 │    • For reproducible data                         │
 └──────────────────────────────────────────────────┘
 ```

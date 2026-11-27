@@ -21,7 +21,7 @@ Generating globally unique IDs in distributed systems is challenging because mul
 7. [ULID (Universally Unique Lexicographically Sortable Identifier)](#ulid)
 8. [Other Approaches](#other-approaches)
 9. [Comparison](#comparison)
-10. [Implementation](#implementation)
+10. [Interview Tips](#interview-tips)
 11. [Real-World Systems](#real-world-systems)
 12. [Key Takeaways](#key-takeaways)
 

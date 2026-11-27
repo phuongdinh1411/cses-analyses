@@ -121,7 +121,7 @@ Quote messages / sec (read)
 
 Orders / sec at the open (write)
 
-11K/s
+10.7K/s
 
 50× the average of 214/s
 
@@ -137,7 +137,7 @@ The read firehose runs orders of magnitude higher than the write path, yet the w
 
 Assume roughly 10 million daily active users, with about 20% streaming quotes concurrently at the market open — illustrative anchors, not measured facts. That's 10M × 0.20 = 2M concurrent connections. If each client watches about 20 symbols, updated on average once a second, the push firehose peaks around 2M × 20 × 1 = 40M quote messages a second.
 
-The order path is far smaller but far spikier. Suppose 5% of users place about 10 orders on an active day: 10M × 0.05 × 10 = 5M orders a day. Spread over a 6.5-hour session, that's only about 210 orders a second on average — but the open is bursty, so assume, as another illustrative anchor, roughly a 50x peak multiplier — real market-open spikes vary by venue and aren't published — giving around 10,500 orders a second at the actual peak. Each execution writes an immutable matched ledger pair — a cash leg and a position leg — so the peak ledger write rate is at least 10,500 × 2 = 21,000 writes a second, comfortably within reach of a sharded transactional store.
+The order path is far smaller but far spikier. Suppose 5% of users place about 10 orders on an active day: 10M × 0.05 × 10 = 5M orders a day. Spread over a 6.5-hour session, that's only about 214 orders a second on average — but the open is bursty, so assume, as another illustrative anchor, roughly a 50x peak multiplier — real market-open spikes vary by venue and aren't published — giving around 10,700 orders a second at the actual peak. Each execution writes an immutable matched ledger pair — a cash leg and a position leg — so the peak ledger write rate is at least 10,700 × 2 ≈ 21,000 writes a second, comfortably within reach of a sharded transactional store.
 
 Key idea. The read (price) subsystem runs orders of magnitude higher in raw message volume than the write (order/ledger) subsystem, yet the write side carries all of the correctness cost — the two halves have completely different scaling drivers, which is exactly why they're built as separate systems.
 
