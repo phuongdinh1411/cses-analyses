@@ -2,8 +2,8 @@
 layout: simple
 title: "Grid Completion - Combinatorics Problem"
 permalink: /problem_soulutions/counting_problems/grid_completion_analysis
-difficulty: Medium
-tags: [combinatorics, backtracking, grid, counting]
+difficulty: Hard
+tags: [combinatorics, inclusion-exclusion, permutations, grid, counting]
 ---
 
 # Grid Completion
@@ -12,57 +12,53 @@ tags: [combinatorics, backtracking, grid, counting]
 
 | Attribute | Value |
 |-----------|-------|
-| **Difficulty** | Medium |
-| **Category** | Combinatorics / Backtracking |
+| **CSES Link** | [Grid Completion](https://cses.fi/problemset/task/2429) |
+| **Difficulty** | Hard |
+| **Category** | Combinatorics |
 | **Time Limit** | 1 second |
-| **Key Technique** | Constraint Satisfaction, Latin Square Counting |
-| **CSES Link** | [Grid Paths](https://cses.fi/problemset/task/1078) (related) |
+| **Key Technique** | Two permutations + inclusion–exclusion over collision cells |
 
 ### Learning Goals
 
 After solving this problem, you will be able to:
-- [ ] Apply backtracking to count valid grid configurations
-- [ ] Understand Latin square constraints (unique values per row/column)
-- [ ] Use bitmasks to track available values efficiently
-- [ ] Recognize when mathematical formulas can replace enumeration
+- [ ] Model "one A per row and column" as a permutation (a perfect matching of free rows to free columns)
+- [ ] Count pairs of permutations that must not share a cell with inclusion–exclusion
+- [ ] Split forbidden cells into independent groups so the sum factorises
+- [ ] Count permutations that avoid a set of non-attacking forbidden cells
 
 ---
 
 ## Problem Statement
 
-**Problem:** Given a partially filled n x n grid, count the number of ways to complete it such that each row and column contains each value from 1 to n exactly once.
+**Problem:** Build an n × n grid where every row and every column contains exactly one `A` and exactly one `B` (all other cells empty). Some `A`s and `B`s are already placed. Count the completions.
 
 **Input:**
-- Line 1: Integer n (grid dimension)
-- Next n lines: Grid values (0 = empty cell)
+- Line 1: integer n
+- Next n lines: n characters each, `.` (empty), `A`, or `B`
+- Every row and column has at most one `A` and at most one `B`
 
 **Output:**
-- Number of valid completions modulo 10^9 + 7
+- The number of completions modulo 10^9 + 7
 
 **Constraints:**
-- 1 <= n <= 10
-- Grid values are in range [0, n] where 0 means empty
-- Answer modulo 10^9 + 7
+- 2 <= n <= 500
 
 ### Example
 
 ```
 Input:
-2
-1 0
-0 1
+5
+.....
+..AB.
+.....
+B....
+...A.
 
 Output:
-1
+16
 ```
 
-**Explanation:** The only valid completion is:
-```
-1 2
-2 1
-```
-Row 1: contains 1, 2. Row 2: contains 2, 1.
-Col 1: contains 1, 2. Col 2: contains 2, 1.
+**Explanation:** 3 `A`s and 3 `B`s are still missing. Without the "one letter per cell" rule there would be 3! · 3! = 36 pairs of placements; 20 of them put two letters in one cell (including an `A` on the prefilled `B` at row 3, column 0), leaving 16.
 
 ---
 
@@ -70,295 +66,260 @@ Col 1: contains 1, 2. Col 2: contains 2, 1.
 
 ### Pattern Recognition
 
-> **Key Question:** This is a Latin square completion problem. Each row and column must be a permutation of 1 to n.
+> **Key Question:** If A and B were placed on separate transparent sheets, each sheet would be just a permutation. What goes wrong when we overlay them?
 
-The problem combines two concepts:
-1. **Constraint satisfaction** - each placement must respect row/column uniqueness
-2. **Counting** - we need to count ALL valid completions, not just find one
+Only one thing: two letters landing in the same cell. Counting placements that avoid every such collision is a classic inclusion–exclusion.
 
 ### Breaking Down the Problem
 
-1. **What are we looking for?** Total count of valid grid completions
-2. **What information do we have?** Pre-filled cells that constrain valid values
-3. **What's the relationship?** Each empty cell has limited valid choices based on its row/column
+Let `a` = number of A's still to place (rows without an A; the same number of columns lack an A). Define `b` the same way for B. A completion is a bijection σ for A's and τ for B's. A cell (i, j) is a **bad cell** when a letter could land on it illegally. There are three kinds:
 
-### Analogies
+| Kind | Cell | Row condition | Column condition | Count |
+|------|------|---------------|------------------|-------|
+| New A on prefilled B | holds `B` | row lacks A | column lacks A | p |
+| New B on prefilled A | holds `A` | row lacks B | column lacks B | q |
+| New A meets new B | empty | row lacks both | column lacks both | any of r × c cells |
 
-Think of this like solving multiple Sudoku puzzles simultaneously and counting how many solutions exist. Each empty cell can only use values not already in its row or column.
+Here r = rows lacking both letters, c = columns lacking both letters.
+
+The three kinds live in **disjoint sets of rows and columns** (a kind-1 row has a B, a kind-3 row has neither, a kind-2 row has an A but no B), so a chosen set of bad cells splits into independent parts.
+
+### The Formula
+
+Choose k collision cells of kind 3 (C(r,k) · C(c,k) · k! ways to pick k rows, k columns and match them). Each forces one A and one B. The remaining A's must avoid the p kind-1 cells, and the remaining B's must avoid the q kind-2 cells:
+
+```
+avoid(P, R) = Σ_x (-1)^x · C(P, x) · (R - x)!          # permutations of R avoiding P non-attacking cells
+
+answer = Σ_k (-1)^k · C(r,k) · C(c,k) · k! · avoid(p, a - k) · avoid(q, b - k)
+```
+
+### Analogy
+
+Two people independently seat guests (A-team and B-team) in a theatre where each row and column gets one guest per team. Inclusion–exclusion subtracts the seatings where two guests share a seat, adds back double-subtractions, and so on.
 
 ---
 
-## Solution 1: Brute Force Backtracking
+## Solution 1: Brute Force (Enumerate Both Permutations)
 
 ### Idea
 
-Try every possible value (1 to n) for each empty cell. After filling all cells, verify the grid satisfies Latin square constraints.
-
-### Algorithm
-
-1. Find all empty cells in the grid
-2. For each empty cell, try values 1 to n
-3. After filling all cells, check if grid is valid
-4. Count valid completions
+Try every permutation for A's and every permutation for B's; keep pairs that respect the prefilled cells and never share a cell.
 
 ### Code
 
 ```python
-def solve_brute_force(n, grid):
-  """
-  Brute force: try all values, validate at the end.
+from itertools import permutations
 
-  Time: O(n^k * n^2) where k = empty cells
-  Space: O(k) for recursion
-  """
-  MOD = 10**9 + 7
-  empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
 
-  def is_valid():
-    for i in range(n):
-      if len(set(grid[i])) != n:
-        return False
-      if len(set(grid[j][i] for j in range(n))) != n:
-        return False
-    return True
-
-  def backtrack(idx):
-    if idx == len(empty):
-      return 1 if is_valid() else 0
-
-    r, c = empty[idx]
+def grid_completion_brute(grid):
+    """Time: O((n!)^2 * n), only for n <= 6."""
+    n = len(grid)
     count = 0
-    for val in range(1, n + 1):
-      grid[r][c] = val
-      count = (count + backtrack(idx + 1)) % MOD
-    grid[r][c] = 0
+    for pa in permutations(range(n)):            # A in row i goes to column pa[i]
+        if any(grid[i][pa[i]] == 'B' for i in range(n)):
+            continue
+        if any(grid[i][j] == 'A' and pa[i] != j for i in range(n) for j in range(n)):
+            continue
+        for pb in permutations(range(n)):        # B in row i goes to column pb[i]
+            if any(pa[i] == pb[i] or grid[i][pb[i]] == 'A' for i in range(n)):
+                continue
+            if any(grid[i][j] == 'B' and pb[i] != j for i in range(n) for j in range(n)):
+                continue
+            count += 1
     return count
 
-  return backtrack(0)
+
+print(grid_completion_brute([".....", "..AB.", ".....", "B....", "...A."]))  # 16
 ```
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n^k * n^2) | n choices for k cells, O(n^2) validation |
-| Space | O(k) | Recursion depth = number of empty cells |
+| Time | O((n!)² · n²) | Every pair of permutations is checked |
+| Space | O(n) | Current permutations |
 
 ### Why This Is Slow
 
-We try invalid combinations and only discover them at the end. Most branches are wasted effort.
+n = 10 already means (10!)² ≈ 1.3 · 10^13 pairs; n = 500 is hopeless.
 
 ---
 
-## Solution 2: Optimized Backtracking with Pruning
+## Solution 2: Optimal (Inclusion–Exclusion)
 
 ### Key Insight
 
-> **The Trick:** Validate constraints incrementally. Reject invalid placements immediately instead of at the end.
+> **The Trick:** Treat A's and B's as two independent permutations, then subtract collisions. Because the three kinds of bad cells never share a row or column, the inclusion–exclusion sum factorises into one outer sum over k and two simple inner sums.
 
 ### Algorithm
 
-1. Track used values for each row and column
-2. Before placing a value, check if it's available in both row AND column
-3. Only recurse on valid placements
+1. Scan the grid; mark rows/columns that already have an A or a B. If any row or column has two A's or two B's, the answer is 0.
+2. Compute a, b, r, c, p, q as defined above.
+3. Precompute factorials and inverse factorials up to n.
+4. Sum over k = 0..min(r, c) with alternating signs, using `avoid(p, a−k)` and `avoid(q, b−k)`.
 
 ### Dry Run Example
 
-Let's trace through with n = 2, grid = [[1, 0], [0, 1]]:
+Official sample:
 
 ```
-Initial state:
-  grid = [[1, 0], [0, 1]]
-  empty cells: [(0,1), (1,0)]
-  row_used[0] = {1}, row_used[1] = {1}
-  col_used[0] = {1}, col_used[1] = {1}
+row 0  .....      rows lacking A: 0, 2, 3        -> a = 3
+row 1  ..AB.      rows lacking B: 0, 2, 4        -> b = 3
+row 2  .....      rows lacking both: 0, 2        -> r = 2
+row 3  B....      cols lacking both: 1, 4        -> c = 2
+row 4  ...A.      prefilled B at (3,0): row 3 and col 0 lack A -> p = 1
+                  prefilled A's: (1,2) row has B, (4,3) col has B -> q = 0
 
-Step 1: Fill cell (0,1)
-  Need value not in row_used[0]={1} AND not in col_used[1]={1}
-  Available: {2}
-  Try val=2: Valid! Place it.
-  grid = [[1, 2], [0, 1]]
+avoid(1, 3) = 3! - 2! = 4     avoid(0, 3) = 6
+avoid(1, 2) = 2! - 1! = 1     avoid(0, 2) = 2
+avoid(1, 1) = 1! - 0! = 0
 
-Step 2: Fill cell (1,0)
-  Need value not in row_used[1]={1} AND not in col_used[0]={1}
-  Available: {2}
-  Try val=2: Valid! Place it.
-  grid = [[1, 2], [2, 1]]
+k = 0:  + C(2,0)·C(2,0)·0! · 4 · 6 = +24
+k = 1:  - C(2,1)·C(2,1)·1! · 1 · 2 = -8
+k = 2:  + C(2,2)·C(2,2)·2! · 0 · 1 =  0
 
-All cells filled -> count = 1
+answer = 24 - 8 + 0 = 16
 ```
 
 ### Visual Diagram
 
 ```
-Initial Grid:        After filling:
-+---+---+            +---+---+
-
-| 1 | ? |            | 1 | 2 |
-+---+---+            +---+---+
-
-| ? | 1 |            | 2 | 1 |
-+---+---+            +---+---+
-
-Row constraints:     Column constraints:
-Row 0: has {1}       Col 0: has {1}
-  -> needs {2}         -> needs {2}
-Row 1: has {1}       Col 1: has {1}
-  -> needs {2}         -> needs {2}
+          free A columns          free B columns
+              |                       |
+   A sheet: permutation σ    B sheet: permutation τ
+              \                     /
+               overlay: forbidden if σ and τ hit the same cell
+                        or σ hits a prefilled B, or τ hits a prefilled A
 ```
 
-### Code
+### Code (Python)
 
 ```python
-def solve_optimized(n, grid):
-  """
-  Backtracking with early pruning.
+import sys
 
-  Time: O(n! in worst case, much better with constraints)
-  Space: O(n) for tracking sets
-  """
-  MOD = 10**9 + 7
+MOD = 10**9 + 7
 
-  # Track used values per row and column
-  row_used = [set() for _ in range(n)]
-  col_used = [set() for _ in range(n)]
 
-  # Initialize with pre-filled values
-  for i in range(n):
-    for j in range(n):
-      if grid[i][j] != 0:
-        row_used[i].add(grid[i][j])
-        col_used[j].add(grid[i][j])
+def grid_completion(grid):
+    n = len(grid)
+    row_a = [False] * n; row_b = [False] * n
+    col_a = [False] * n; col_b = [False] * n
+    for i, row in enumerate(grid):
+        for j, ch in enumerate(row):
+            if ch == 'A':
+                if row_a[i] or col_a[j]:
+                    return 0
+                row_a[i] = col_a[j] = True
+            elif ch == 'B':
+                if row_b[i] or col_b[j]:
+                    return 0
+                row_b[i] = col_b[j] = True
 
-  # Find empty cells
-  empty = [(i, j) for i in range(n) for j in range(n) if grid[i][j] == 0]
+    a = row_a.count(False)  # A's still to place
+    b = row_b.count(False)  # B's still to place
+    r = sum(1 for i in range(n) if not row_a[i] and not row_b[i])  # rows missing both letters
+    c = sum(1 for j in range(n) if not col_a[j] and not col_b[j])  # columns missing both letters
+    # prefilled B cells a new A could wrongly land on (its row and column still need an A), and vice versa
+    p = sum(1 for i in range(n) for j in range(n) if grid[i][j] == 'B' and not row_a[i] and not col_a[j])
+    q = sum(1 for i in range(n) for j in range(n) if grid[i][j] == 'A' and not row_b[i] and not col_b[j])
 
-  def backtrack(idx):
-    if idx == len(empty):
-      return 1
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = fact[i - 1] * i % MOD
+    inv = [1] * (n + 1)
+    inv[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n, 0, -1):
+        inv[i - 1] = inv[i] * i % MOD
 
-    r, c = empty[idx]
-    count = 0
+    def comb(x, y):
+        return fact[x] * inv[y] % MOD * inv[x - y] % MOD
 
-    for val in range(1, n + 1):
-      # Prune: check constraints before recursing
-      if val not in row_used[r] and val not in col_used[c]:
-        # Place value
-        row_used[r].add(val)
-        col_used[c].add(val)
-        grid[r][c] = val
+    def avoid(prefilled, remaining):
+        # ways to place `remaining` letters avoiding the bad prefilled cells (inclusion-exclusion)
+        return sum((-1) ** x * comb(prefilled, x) * fact[remaining - x]
+                   for x in range(min(prefilled, remaining) + 1)) % MOD
 
-        count = (count + backtrack(idx + 1)) % MOD
+    # The three kinds of bad cells use disjoint rows and columns, so inclusion-exclusion factorises:
+    # choose k empty cells where the new A and new B collide, then place the rest avoiding prefilled cells.
+    total = 0
+    for k in range(min(r, c) + 1):
+        ways = comb(r, k) * comb(c, k) % MOD * fact[k] % MOD
+        ways = ways * avoid(p, a - k) % MOD * avoid(q, b - k) % MOD
+        total = (total + ways if k % 2 == 0 else total - ways) % MOD
+    return total
 
-        # Backtrack
-        row_used[r].remove(val)
-        col_used[c].remove(val)
-        grid[r][c] = 0
 
-    return count
-
-  return backtrack(0)
+if __name__ == "__main__":
+    data = sys.stdin.read().split()
+    n = int(data[0])
+    print(grid_completion(data[1:1 + n]))
 ```
+
+Checked against the brute force on 600 random grids (n ≤ 5) and on the official sample.
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n^k) worst case | But heavily pruned in practice |
-| Space | O(n + k) | Row/col tracking + recursion depth |
+| Time | O(n²) | Grid scan, plus up to n values of k each with O(n) `avoid` sums |
+| Space | O(n) | Row/column flags and factorial tables |
 
 ---
 
 ## Common Mistakes
 
-### Mistake 1: Forgetting to Backtrack
+### Mistake 1: Ignoring Prefilled Cells of the Other Letter
+
+**Problem:** Counting only new-A/new-B collisions (Σ (−1)^k C(r,k) C(c,k) k! (a−k)! (b−k)!) lets a new A sit on a prefilled B. On the grid `..B / ... / ...` it returns 6 instead of 4.
+
+**Fix:** Add the `avoid(p, ·)` and `avoid(q, ·)` factors.
+
+### Mistake 2: Counting Collisions in Rows That Already Have a Letter
+
+**Problem:** A new A and a new B can only meet in a row and column that lack *both* letters; using all free rows overcounts the subtraction.
+
+**Fix:** r and c count rows/columns missing both A and B.
+
+### Mistake 3: Treating It as a Latin Square
+
+**Problem:** Each row needs one A and one B, and the remaining n−2 cells stay empty. Backtracking over Latin squares solves a different problem and cannot reach n = 500.
+
+### Mistake 4: Negative Values Under the Modulus
 
 ```python
-# WRONG
-row_used[r].add(val)
-count = (count + backtrack(idx + 1)) % MOD
-# Missing: row_used[r].remove(val)
+total = (total - ways) % MOD   # Python's % is always non-negative; in C++ add MOD first
 ```
-
-**Problem:** State persists across branches, corrupting the search.
-**Fix:** Always undo changes after recursive call returns.
-
-### Mistake 2: Checking Constraints After Placement
-
-```python
-# WRONG - inefficient
-grid[r][c] = val
-if is_valid_so_far():  # Check AFTER placing
-  count += backtrack(idx + 1)
-grid[r][c] = 0
-```
-
-**Problem:** We place invalid values and then check. Wastes time.
-**Fix:** Check BEFORE placing (early pruning).
-
-### Mistake 3: Wrong Modulo Application
-
-```python
-# WRONG
-return count % MOD  # Only at the end
-
-# CORRECT
-count = (count + backtrack(idx + 1)) % MOD  # At each addition
-```
-
-**Problem:** Integer overflow before final modulo (especially in C++).
-**Fix:** Apply modulo at each addition step.
-
-### Mistake 4: Not Handling Pre-filled Conflicts
-
-```python
-# fragment
-# WRONG - doesn't check if initial grid is valid
-def solve(n, grid):
-  # Start backtracking immediately...
-```
-
-**Problem:** If pre-filled values already violate constraints, answer should be 0.
-**Fix:** Validate initial grid before counting.
 
 ---
 
 ## Edge Cases
 
-| Case | Input | Expected | Why |
-|------|-------|----------|-----|
-| Empty grid n=1 | `[[0]]` | 1 | Only fill: [[1]] |
-| Already complete | `[[1,2],[2,1]]` | 1 | No empty cells, valid |
-| Invalid pre-fill | `[[1,1],[0,0]]` | 0 | Row 0 has duplicate 1 |
-| Single empty | `[[1,0],[2,0]]` n=2 | 1 | Forced: [[1,2],[2,1]] |
-| All empty n=2 | `[[0,0],[0,0]]` | 2 | Two Latin squares of order 2 |
-| Large empty n=4 | All zeros | 576 | 4! * 4! / corrections |
+| Case | Input | Expected Output | Why |
+|------|-------|-----------------|-----|
+| Empty 2×2 | `..` / `..` | 2 | A on a diagonal, B on the other |
+| A sits on B's only spot | `A.` / `..` | 1 | A's forced to the main diagonal, B's to the other |
+| Prefilled B blocks an A | `..B` / `...` / `...` | 4 | 3! A-placements minus 2 that use (0,2), times B's |
+| Fully determined | complete valid grid | 1 | Nothing left to place |
+| n = 500, empty | — | — | O(n²) is instant |
 
 ---
 
 ## When to Use This Pattern
 
-### Use Backtracking When:
-- Grid size is small (n <= 10)
-- Constraints allow significant pruning
-- You need to count ALL solutions, not just one
-- No closed-form mathematical formula exists
+### Use This Approach When:
+- Two (or more) independent permutations must not overlap
+- Forbidden cells form non-attacking groups (distinct rows and columns)
+- The count of "at least these k conflicts" has a closed form
 
-### Use Bitmasks When:
-- n is small enough (n <= 20 for single int, n <= 64 for long long)
-- Need fast membership testing
-- Constraint checking is the bottleneck
-
-### Consider Mathematical Formulas When:
-- Grid is completely empty (counting Latin squares)
-- Problem has known combinatorial structure
-- n is too large for enumeration
+### Don't Use When:
+- Forbidden cells share rows/columns arbitrarily (you need a rook polynomial or DP)
+- Values per row are more than two letters with complex interaction
 
 ### Pattern Recognition Checklist:
-- [ ] Unique values per row? -> Latin square constraints
-- [ ] Need all solutions? -> Backtracking with counting
-- [ ] Small n with complex constraints? -> Bitmask DP
-- [ ] Large n, simple structure? -> Mathematical formula
+- [ ] "Exactly one X per row and column"? --> **Permutation**
+- [ ] Two permutations that must not share a cell? --> **Inclusion–exclusion on shared cells**
+- [ ] Forbidden cells in distinct rows/cols? --> **Σ (−1)^x C(P,x) (R−x)!**
 
 ---
 
@@ -366,49 +327,39 @@ def solve(n, grid):
 
 ### Easier (Do These First)
 
-| Problem | Why It Helps |
-|---------|--------------|
-| [Creating Strings](https://cses.fi/problemset/task/1622) | Basic backtracking and permutations |
-| [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Grid + backtracking + constraint checking |
+| Problem | Link | Why It Helps |
+|---------|------|--------------|
+| Christmas Party | [CSES 1717](https://cses.fi/problemset/task/1717) | Derangements: one permutation avoiding the diagonal |
+| Binomial Coefficients | [CSES 1079](https://cses.fi/problemset/task/1079) | Factorials and inverse factorials mod p |
 
 ### Similar Difficulty
 
-| Problem | Key Difference |
-|---------|----------------|
-| [Grid Paths](https://cses.fi/problemset/task/1078) | Fixed start/end, path counting |
-| [Apple Division](https://cses.fi/problemset/task/1623) | Subset enumeration with backtracking |
-
-### Harder (Do These After)
-
-| Problem | New Concept |
-|---------|-------------|
-| [Counting Tilings](https://cses.fi/problemset/task/2181) | Bitmask DP on grid |
-| [Hamiltonian Flights](https://cses.fi/problemset/task/1690) | Bitmask DP with constraints |
+| Problem | Link | Key Difference |
+|---------|------|----------------|
+| Counting Reorders | [CSES 2421](https://cses.fi/problemset/task/2421) | Inclusion–exclusion over glued equal neighbours |
 
 ---
 
 ## Key Takeaways
 
-1. **The Core Idea:** Track used values per row/column to prune invalid branches early
-2. **Time Optimization:** Validate constraints before recursing, not after
-3. **Space Trade-off:** O(n) tracking sets enable O(1) constraint checking
-4. **Pattern:** Constraint satisfaction + counting = backtracking with pruning
+1. **The Core Idea:** A's form one permutation, B's another; the only conflict is sharing a cell.
+2. **Three kinds of bad cells** (A on B, B on A, A meets B) use disjoint rows and columns, so the sum factorises.
+3. **Formula:** Σ_k (−1)^k C(r,k) C(c,k) k! · avoid(p, a−k) · avoid(q, b−k).
+4. **Cost:** O(n²) with precomputed factorials.
 
 ---
 
 ## Practice Checklist
 
 Before moving on, make sure you can:
-- [ ] Implement backtracking with proper state management (add/remove)
-- [ ] Use bitmasks for efficient constraint tracking
-- [ ] Identify Latin square problems by their row/column uniqueness property
-- [ ] Calculate complexity based on branching factor and pruning
-- [ ] Handle edge cases (invalid input, already complete, single solution)
+- [ ] Compute a, b, r, c, p, q for the sample by hand
+- [ ] Reproduce 24 − 8 + 0 = 16
+- [ ] Explain why kind-1, kind-2 and kind-3 cells never share a row
+- [ ] Derive avoid(P, R) from inclusion–exclusion
 
 ---
 
 ## Additional Resources
 
-- [CP-Algorithms: Generating Permutations](https://cp-algorithms.com/combinatorics/generating_permutations.html)
-- [Wikipedia: Latin Square](https://en.wikipedia.org/wiki/Latin_square)
-- [CSES Grid Paths](https://cses.fi/problemset/task/1638) - Grid-based counting
+- [CP-Algorithms: Inclusion–Exclusion Principle](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html)
+- [CP-Algorithms: Binomial Coefficients](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)

@@ -23,13 +23,13 @@ One row per problem: the technique, the one-line insight, and the time complexit
 | [Counting Bishops](counting_bishops_analysis) | Diagonal Independence + DP Convolution | Solve for black and white diagonals separately, then combine using the formula | O(n^2) |
 | [Binomial Coefficients](counting_combinations_analysis) | Modular Inverse + Precomputation | Precompute all factorials and their modular inverses once, then answer each query in O(1) | O(MAX_N + q) |
 | [Counting Permutations](counting_permutations_analysis) | Factorial with Modular Arithmetic | Apply modulo at each multiplication step to prevent overflow while maintaining correctness | O(n) |
-| [Creating Strings / Counting Reorders](counting_reorders_analysis) | Multinomial Coefficient / Factorial with Division | Distinct orderings of a multiset = n! / ∏ cᵢ!, computed mod p with precomputed factorials and inverse factorials | O(n + k log MOD) |
+| [Counting Reorders](counting_reorders_analysis) | Inclusion–exclusion over glued blocks, polynomial multiplication | Inclusion–exclusion over glued equal letters: per letter Σ (−1)^(c−k) C(c−1,k−1) x^k/k!; multiply, answer = Σ coef[K]·K! | O(n²) |
 | [Counting Sequences](counting_sequences_analysis) | Modular Exponentiation | The answer is simply n^k mod (10^9+7) | O(log k) |
 | [Empty String](empty_string_analysis) | Interval DP for removing matching pairs | Use interval DP where `dp[i][j]` = number of ways to empty substring `s[i..j]` | O(n^3) |
 | [Filled Subgrid Count I](filled_subgrid_count_i_analysis) | 2D Prefix Sums / Early Termination | If all k^2 cells have value v, then sum of subgrid = k^2 * v | O(n * m) average |
 | [Filled Subgrid Count II](filled_subgrid_count_ii_analysis) | 2D Prefix Sum | Precompute a 2D prefix sum array to answer "sum of rectangle" queries in O(1) | O(n^2 * m^2) |
 | [Functional Graph Distribution](functional_graph_distribution_analysis) | Modular Exponentiation | Since each of n nodes independently chooses from n targets, the total count is simply n^n | O(log n) |
-| [Grid Completion](grid_completion_analysis) | Constraint Satisfaction, Latin Square Counting | Count Latin-square completions consistent with the fixed cells (backtracking with row/column constraints) | O(n^k) worst case |
+| [Grid Completion](grid_completion_analysis) | Two permutations + inclusion–exclusion over collision cells | A and B are two permutations; inclusion–exclusion over collision cells and prefilled-letter cells (independent rows/cols) | O(n²) |
 | [Grid Paths II](grid_paths_ii_analysis) | Grid DP with Obstacles | The number of paths to cell (i,j) only depends on paths to (i-1,j) and (i,j-1) | O(n^2) |
 | [Mobius Function and Inversion](mobius_function_analysis) | Mobius Function, Linear Sieve, Inclusion-Exclusion | The Mobius function encodes inclusion-exclusion coefficients for divisibility problems | O(n) |
 | [Permutation Inversions](permutation_inversions_analysis) | DP with Prefix Sum Optimization | The inner sum `dp[i-1][j] + dp[i-1][j-1] +  | O(n * k) |

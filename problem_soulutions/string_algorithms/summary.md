@@ -26,7 +26,7 @@ One row per problem: the technique, the one-line insight, and the time complexit
 | [Pattern Positions](pattern_positions_analysis) | Aho-Corasick Automaton | Build a trie of all patterns, add failure links (like KMP's LPS), then scan text ONCE while tracking all pattern matches simultaneously | O(n + m + z) |
 | [Repeating Substring](repeating_substring_analysis) | Binary Search + Hashing / Suffix Array | Binary search on the answer length, and use rolling hash to check if any substring of that length repeats in O(n) time | O(n log n) |
 | [String Matching](string_matching_analysis) | KMP Algorithm / Z-Algorithm | Preprocess the pattern to build an LPS (Longest Proper Prefix which is also Suffix) array | O(n + m) |
-| [String Transformation](string_transformation_analysis) | BFS / Dynamic Programming | BFS naturally finds the shortest path in an unweighted graph | O(S * R * L) |
+| [String Transformation (Inverse Burrows–Wheeler)](string_transformation_analysis) | Inverse BWT via the LF (last-to-first) mapping | LF[i] = (number of characters in L smaller than L[i]) + (occurrences of L[i] in L before position i) | O(n + σ) |
 | [Substring Order I](substring_order_i_analysis) | Suffix Array + LCP Array | Use suffix array for sorted order and LCP to skip duplicates | O(n log n) |
 | [Substring Order II](substring_order_ii_analysis) | Suffix Automaton + occurrence counts, greedy letter-by-letter walk | A suffix automaton groups substrings into states that share the same set of end positions, so every string in a state has the same occurrence count `occ` | O(n log n) |
 | [Suffix Automaton](suffix_automaton_analysis) | Suffix Automaton (SAM) | SAM compresses all substrings into O(n) equivalence classes based on ending positions | O(n · Σ) build |

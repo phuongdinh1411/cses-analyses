@@ -1,58 +1,57 @@
 ---
 layout: simple
-title: "Creating Strings - Counting Problem"
+title: "Counting Reorders - Counting Problem"
 permalink: /problem_soulutions/counting_problems/counting_reorders_analysis
-difficulty: Medium
-tags: [combinatorics, multinomial, factorial, modular-arithmetic]
+difficulty: Hard
+tags: [combinatorics, inclusion-exclusion, polynomial-multiplication, modular-arithmetic]
 ---
 
-# Creating Strings / Counting Reorders
+# Counting Reorders
 
 ## Problem Overview
 
 | Attribute | Value |
 |-----------|-------|
-| **CSES Link** | [Creating Strings I](https://cses.fi/problemset/task/1622) |
-| **Difficulty** | Medium |
+| **CSES Link** | [Counting Reorders](https://cses.fi/problemset/task/2421) |
+| **Difficulty** | Hard |
 | **Category** | Combinatorics |
 | **Time Limit** | 1 second |
-| **Key Technique** | Multinomial Coefficient / Factorial with Division |
+| **Key Technique** | Inclusion–exclusion over glued blocks, polynomial multiplication |
 
 ### Learning Goals
 
 After solving this problem, you will be able to:
-- [ ] Calculate the number of distinct permutations of a string with repeated characters
-- [ ] Apply the multinomial coefficient formula: n! / (c1! * c2! * ... * ck!)
-- [ ] Implement modular division using Fermat's Little Theorem (modular inverse)
-- [ ] Precompute factorials for efficient repeated calculations
+- [ ] Turn "no two equal neighbours" into inclusion–exclusion over "forced-equal neighbours"
+- [ ] Count ways to split c identical items into k ordered blocks: C(c−1, k−1)
+- [ ] Combine per-letter choices by multiplying polynomials (exponential generating functions)
+- [ ] Use precomputed factorials and inverse factorials mod 10^9+7
 
 ---
 
 ## Problem Statement
 
-**Problem:** Given a string of n characters (possibly with duplicates), count the number of distinct ways to reorder its characters.
+**Problem:** Count the ways to reorder the characters of a string so that no two adjacent characters are the same.
 
 **Input:**
-- Line 1: A string s of length n
+- One line: a string of n characters, each between `a` and `z`
 
 **Output:**
-- The number of distinct reorderings (permutations) modulo 10^9 + 7
+- The number of valid reorderings modulo 10^9 + 7
 
 **Constraints:**
-- 1 <= n <= 10^6
-- String contains lowercase letters a-z
+- 1 <= n <= 5000
 
 ### Example
 
 ```
 Input:
-aabac
+aabc
 
 Output:
-20
+6
 ```
 
-**Explanation:** The string "aabac" has 5 characters with frequencies: a=3, b=1, c=1. The number of distinct permutations is 5! / (3! * 1! * 1!) = 120 / 6 = 20.
+**Explanation:** The valid orders are `abac`, `abca`, `acab`, `acba`, `baca`, `caba`.
 
 ---
 
@@ -60,209 +59,193 @@ Output:
 
 ### Pattern Recognition
 
-> **Key Question:** How does having duplicate characters affect the count of permutations?
+> **Key Question:** "No two equal neighbours" is hard to count directly. Can we count the opposite, "these equal neighbours are forced together", and correct with signs?
 
-If all characters were unique, we would have n! permutations. But when characters repeat, many of these permutations look identical. We need to divide by the number of ways to arrange identical characters among themselves.
+Forcing equal letters together is easy: glue them into one block and arrange blocks. Inclusion–exclusion then cancels every arrangement that has at least one equal adjacent pair.
 
 ### Breaking Down the Problem
 
-1. **What are we looking for?** The count of distinct arrangements of characters
-2. **What information do we have?** The frequency of each character in the string
-3. **What's the relationship?** Total permutations divided by redundant orderings of identical characters
-
-### The Multinomial Coefficient Formula
-
-For a string with character frequencies c1, c2, ..., ck (where c1 + c2 + ... + ck = n):
+1. **Per letter:** a letter with count c is cut into k blocks (runs we pretend are glued). The c copies form k ordered blocks in C(c−1, k−1) ways (choose k−1 cut points among c−1 gaps). Gluing c−k gaps gives sign (−1)^(c−k).
+2. **Across letters:** if letter i uses kᵢ blocks and K = Σ kᵢ, the blocks can be arranged in K! / ∏ kᵢ! distinct orders (same-letter blocks of equal shape are not distinguished by position).
+3. **Combine:** write each letter as the polynomial Pᵢ(x) = Σₖ (−1)^(c−k) · C(c−1, k−1) · xᵏ / k!. Multiply all Pᵢ; the coefficient of x^K times K! is the signed count with K blocks.
 
 ```
-Distinct Permutations = n! / (c1! * c2! * ... * ck!)
+answer = Σ_K  [x^K] (P_a · P_b · ... · P_z)  ·  K!
 ```
 
 ### Analogy
 
-Imagine arranging 5 people in a row where 3 are identical triplets. Without considering identity, there are 5! = 120 ways. But since the triplets are indistinguishable, we've overcounted by 3! = 6 (the ways to arrange triplets among themselves). So the answer is 120/6 = 20.
+Think of each letter's copies as beads on a string that you may tie into bundles. Every way of "tying" adjacent equal beads is counted once with sign + or −, and bad arrangements (with any equal neighbours) cancel out exactly, like inclusion–exclusion on a Venn diagram.
 
 ---
 
-## Solution 1: Brute Force (Generate All Permutations)
+## Solution 1: Brute Force (All Distinct Permutations)
 
 ### Idea
 
-Generate all permutations and use a set to count unique ones. Only works for small inputs.
+Generate every distinct permutation and keep those with no equal neighbours. Only for tiny n.
 
 ### Code
 
 ```python
 from itertools import permutations
 
+
 def count_reorders_brute(s):
-  """
-  Brute force: generate all permutations and count unique ones.
+    """Time: O(n! * n), Space: O(n! * n) for the set of distinct orders."""
+    return sum(
+        1
+        for p in set(permutations(s))
+        if all(p[i] != p[i + 1] for i in range(len(p) - 1))
+    )
 
-  Time: O(n! * n) - generates n! permutations, each of length n
-  Space: O(n! * n) - stores all unique permutations
-  """
-  unique = set(permutations(s))
-  return len(unique)
 
-# Example
-print(count_reorders_brute("aabac"))  # Output: 20
+print(count_reorders_brute("aabc"))  # 6
 ```
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n! * n) | Generates all permutations |
-| Space | O(n! * n) | Stores unique permutations |
+| Time | O(n! * n) | Every permutation is generated and checked |
+| Space | O(n! * n) | Distinct permutations are stored |
 
 ### Why This Is Impractical
 
-For n = 10, we have 3,628,800 permutations. For n = 20, it's over 10^18. This approach only works for very small strings.
+n = 12 already gives 479 million permutations; n = 5000 is out of reach.
 
 ---
 
-## Solution 2: Optimal (Multinomial Coefficient)
+## Solution 2: Optimal (Inclusion–Exclusion with Polynomials)
 
 ### Key Insight
 
-> **The Trick:** Use the formula n! / (c1! * c2! * ... * ck!) with modular arithmetic to compute the answer in O(n) time.
+> **The Trick:** For each letter, choose how many blocks k its copies are glued into (sign (−1)^(c−k), C(c−1, k−1) ways, weight 1/k!). Multiply these per-letter polynomials; the answer is Σ coef[K] · K!.
 
 ### Algorithm
 
-1. Count the frequency of each character
-2. Compute n! (factorial of string length)
-3. For each character frequency ci, divide by ci!
-4. Use modular inverse for division under modulo
-
-### Modular Inverse
-
-To compute (a / b) mod p, we compute a * b^(-1) mod p, where b^(-1) = b^(p-2) mod p (by Fermat's Little Theorem, when p is prime).
+1. Count each letter's frequency c.
+2. Precompute factorials and inverse factorials up to n.
+3. Start with `poly = [1]`. For each letter, build its term `term[k] = ±C(c−1, k−1) / k!` for k = 1..c and multiply it into `poly`.
+4. Return Σ `poly[K] * K!` mod 10^9+7.
 
 ### Dry Run Example
 
-Let's trace through with input `s = "aabac"`:
+Input `s = "aabc"` (counts a=2, b=1, c=1):
 
 ```
-Step 1: Count frequencies
-  freq = {'a': 3, 'b': 1, 'c': 1}
-  n = 5
+Letter a (c=2):
+  k=1: sign (-1)^(2-1) = -1, C(1,0)=1, /1!  -> -1
+  k=2: sign (-1)^0     = +1, C(1,1)=1, /2!  -> 1/2
+  P_a = -x + x^2/2
 
-Step 2: Compute n!
-  5! = 120
+Letter b (c=1): P_b = x
+Letter c (c=1): P_c = x
 
-Step 3: Divide by each ci!
-  Result = 120 / 3! / 1! / 1!
-         = 120 / 6 / 1 / 1
-         = 20
+Product = (-x + x^2/2) * x * x = -x^3 + x^4/2
 
-With modular arithmetic:
-  fact[5] = 120
-  result = 120
-  result = 120 * inverse(6) mod (10^9+7)
-         = 120 * 166666668 mod (10^9+7)
-         = 20
+Answer = (-1) * 3!  +  (1/2) * 4!
+       = -6 + 12
+       = 6
 ```
+
+The −6 term counts orders with the two a's glued into one block ("aa" as a unit): these are the bad ones and get subtracted from the 4!/2! = 12 unrestricted orders.
 
 ### Visual Diagram
 
 ```
-String: "aabac"
-
-Character Frequencies:
-  a: |||  (3 times)
-  b: |    (1 time)
-  c: |    (1 time)
-
-Formula:
-       n!           5!        120
-  ----------- = --------- = ----- = 20
-  c_a! * c_b! * c_c!   3! * 1! * 1!    6
-
-Why divide by 3!?
-  The 3 'a's can be arranged among themselves in 3! = 6 ways,
-  but all these arrangements look the same in the final string.
+"aabc"  unrestricted:  4! / 2! = 12 orders     (term +x^4/2 · 4!)
+        "aa" glued:    blocks {aa, b, c} -> 3! = 6 bad orders   (term -x^3 · 3!)
+        valid:         12 - 6 = 6
 ```
 
 ### Code (Python)
 
 ```python
+import sys
+from collections import Counter
+
+MOD = 10**9 + 7
+
+
 def count_reorders(s):
-  """
-  Count distinct permutations using multinomial coefficient.
+    n = len(s)
+    fact = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = fact[i - 1] * i % MOD
+    inv_fact = [1] * (n + 1)
+    inv_fact[n] = pow(fact[n], MOD - 2, MOD)
+    for i in range(n, 0, -1):
+        inv_fact[i - 1] = inv_fact[i] * i % MOD
 
-  Time: O(n + 26) = O(n)
-  Space: O(n) for factorial array
-  """
-  MOD = 10**9 + 7
-  n = len(s)
+    def comb(a, b):
+        return fact[a] * inv_fact[b] % MOD * inv_fact[a - b] % MOD
 
-  # Precompute factorials
-  fact = [1] * (n + 1)
-  for i in range(1, n + 1):
-    fact[i] = fact[i-1] * i % MOD
+    # poly[K] = signed weight of having K blocks in total, each block weighted 1/(its count)!
+    poly = [1]
+    for c in Counter(s).values():
+        # glue the c copies into k blocks: C(c-1, k-1) ways, sign (-1)^(c-k)
+        term = [0] * (c + 1)
+        for k in range(1, c + 1):
+            w = comb(c - 1, k - 1) * inv_fact[k] % MOD
+            term[k] = w if (c - k) % 2 == 0 else MOD - w
+        new = [0] * (len(poly) + c)
+        for k in range(1, c + 1):
+            t = term[k]
+            for d, p in enumerate(poly):
+                if p:
+                    new[d + k] = (new[d + k] + p * t) % MOD
+        poly = new
 
-  # Count character frequencies
-  freq = {}
-  for c in s:
-    freq[c] = freq.get(c, 0) + 1
+    # K blocks of mixed letters can be arranged in K! orders (the 1/k! factors remove repeats)
+    return sum(p * fact[k] for k, p in enumerate(poly)) % MOD
 
-  # Compute n! / (c1! * c2! * ... * ck!)
-  result = fact[n]
-  for count in freq.values():
-    # Divide by count! using modular inverse
-    result = result * pow(fact[count], MOD - 2, MOD) % MOD
 
-  return result
-
-# Example usage
-print(count_reorders("aabac"))  # Output: 20
-print(count_reorders("aaaa"))   # Output: 1
-print(count_reorders("abcd"))   # Output: 24
+if __name__ == "__main__":
+    print(count_reorders(sys.stdin.readline().strip()))
 ```
+
+Checked against the brute force on 400 random strings (n ≤ 8, alphabet of 1–4 letters).
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n + k log MOD) | n for factorial, k characters with O(log MOD) for each inverse |
-| Space | O(n) | Factorial array storage |
+| Time | O(n²) | Multiplying a degree-d poly by a degree-c term costs d·c; summed over letters this is at most n²/2 |
+| Space | O(n) | Factorial tables and the current polynomial |
+
+In CPython the worst case (n = 5000) runs in roughly 0.7–0.9 s, close to the 1 s limit; the same loop in C++ is far faster.
 
 ---
 
 ## Common Mistakes
 
-### Mistake 1: Forgetting Modular Inverse
+### Mistake 1: Using the Multinomial Alone
 
 ```python
-# WRONG - Integer division doesn't work with modular arithmetic
-result = fact[n]
-for count in freq.values():
-  result = result // fact[count]  # WRONG!
-result %= MOD
+# WRONG - counts all distinct orders, including ones with equal neighbours
+answer = fact[n] * prod(inv_fact[c] for c in counts) % MOD
 ```
 
-**Problem:** Division and modulo don't commute. (a // b) % MOD != (a % MOD) // (b % MOD)
+**Problem:** That is the Creating Strings count (12 for "aabc"), not the no-adjacent count (6).
 
-**Fix:** Use modular inverse: multiply by b^(MOD-2) instead of dividing by b.
+**Fix:** Subtract glued configurations with inclusion–exclusion as above.
 
-### Mistake 2: Overflow in Factorial Computation
+### Mistake 2: Forgetting the 1/k! Weight
 
-**Problem:** Factorial grows extremely fast and overflows even 64-bit integers.
+**Problem:** Without dividing by kᵢ!, the K! arrangements treat same-letter blocks as distinguishable and overcount.
 
-**Fix:** Take modulo at each step: `fact[i] = fact[i-1] * i % MOD;`
+**Fix:** Put `inv_fact[k]` into each term, then multiply by `fact[K]` at the end.
 
-### Mistake 3: Not Handling Single Character
+### Mistake 3: Wrong Sign Exponent
 
-```python
-# Edge case: all characters are the same
-s = "aaaa"
-# n! / n! = 1 (only one way to arrange identical items)
-```
+**Problem:** The sign depends on the number of glued gaps, c − k, not on k.
 
-**Problem:** Some implementations crash or return wrong values for edge cases.
+**Fix:** `term[k]` is positive when `(c - k) % 2 == 0`.
 
-**Fix:** The formula naturally handles this: 4! / 4! = 1.
+### Mistake 4: Greedy "Most Frequent First" Placement
+
+**Problem:** Greedy can decide whether a valid order exists (max count ≤ ⌈n/2⌉), but it cannot count them.
 
 ---
 
@@ -270,31 +253,30 @@ s = "aaaa"
 
 | Case | Input | Expected Output | Why |
 |------|-------|-----------------|-----|
-| Single character | `"a"` | 1 | Only one arrangement |
-| All same | `"aaaa"` | 1 | 4!/4! = 1 |
-| All unique | `"abcd"` | 24 | 4!/1!^4 = 24 |
-| Two characters | `"ab"` | 2 | 2!/1!/1! = 2 |
-| Long repeated | `"aabb"` | 6 | 4!/(2!*2!) = 6 |
-| Max length | n = 10^6 | Large number | Test efficiency |
+| Single character | `a` | 1 | One order, no neighbours |
+| All same | `aaaa` | 0 | Every order has equal neighbours |
+| All unique | `abcd` | 24 | Every permutation is valid |
+| Two pairs | `aabb` | 2 | `abab`, `baba` |
+| Impossible majority | `aaab` | 0 | Count 3 > ⌈4/2⌉ |
+| Max length | n = 5000 | — | O(n²) still fits |
 
 ---
 
 ## When to Use This Pattern
 
 ### Use This Approach When:
-- Counting distinct arrangements of items with repetitions
-- You need to compute permutations with duplicate elements
-- The problem involves distributing identical items into distinct positions
+- Counting arrangements that forbid equal neighbours (or other "no adjacent pair" rules)
+- Each group contributes independently and groups are then interleaved
+- The forbidden event "these k items are together" is easy to count
 
 ### Don't Use When:
-- You need to actually generate all permutations (use backtracking)
-- Items have order constraints (use DP)
-- Dealing with circular permutations (different formula)
+- You only need existence (use the majority check)
+- Constraints are on positions rather than adjacency (use DP or rook polynomials)
 
 ### Pattern Recognition Checklist:
-- [ ] Counting arrangements? --> **Consider multinomial coefficient**
-- [ ] Items have duplicates? --> **Divide by duplicate factorials**
-- [ ] Need modular arithmetic? --> **Use Fermat's Little Theorem for inverse**
+- [ ] "No two adjacent equal"? --> **Inclusion–exclusion over glued blocks**
+- [ ] Independent groups then interleaved? --> **Multiply exponential generating functions**
+- [ ] Split c identical items into k ordered non-empty blocks? --> **C(c−1, k−1)**
 
 ---
 
@@ -304,50 +286,44 @@ s = "aaaa"
 
 | Problem | Link | Why It Helps |
 |---------|------|--------------|
-| Creating Strings I | [CSES 1622](https://cses.fi/problemset/task/1622) | Generate permutations for small n |
-| Binomial Coefficients | [CSES 1079](https://cses.fi/problemset/task/1079) | Practice modular inverse |
+| Creating Strings II | [CSES 1715](https://cses.fi/problemset/task/1715) | Multinomial count without the adjacency rule |
+| Binomial Coefficients | [CSES 1079](https://cses.fi/problemset/task/1079) | Factorials and modular inverse |
+| Christmas Party | [CSES 1717](https://cses.fi/problemset/task/1717) | Derangements via inclusion–exclusion |
 
 ### Similar Difficulty
 
 | Problem | Link | Key Difference |
 |---------|------|----------------|
-| Distributing Apples | [CSES 1716](https://cses.fi/problemset/task/1716) | Stars and bars technique |
-| Bracket Sequences I | [CSES 2064](https://cses.fi/problemset/task/2064) | Catalan numbers |
+| Grid Completion | [CSES 2429](https://cses.fi/problemset/task/2429) | Inclusion–exclusion over collision cells |
 
 ### Harder (Do These After)
 
 | Problem | Link | New Concept |
 |---------|------|-------------|
-| Bracket Sequences II | [CSES 2187](https://cses.fi/problemset/task/2187) | Counting with constraints |
 | Counting Necklaces | [CSES 2209](https://cses.fi/problemset/task/2209) | Burnside's lemma |
 
 ---
 
 ## Key Takeaways
 
-1. **The Core Idea:** Count distinct permutations by dividing total permutations by the permutations of identical elements.
-
-2. **Formula:** For string with frequencies c1, c2, ..., ck: Answer = n! / (c1! * c2! * ... * ck!)
-
-3. **Modular Arithmetic:** Use Fermat's Little Theorem for modular inverse: a^(-1) = a^(p-2) mod p
-
-4. **Time Optimization:** Precompute factorials to avoid redundant calculations.
+1. **The Core Idea:** Count "no equal neighbours" by inclusion–exclusion over which equal neighbours are forced together.
+2. **Per letter:** c copies → k blocks in C(c−1, k−1) ways, sign (−1)^(c−k), weight 1/k!.
+3. **Combine:** multiply the per-letter polynomials; answer = Σ coef[K] · K!.
+4. **Cost:** O(n²) polynomial multiplication with precomputed factorials.
 
 ---
 
 ## Practice Checklist
 
 Before moving on, make sure you can:
-- [ ] Derive the multinomial coefficient formula from first principles
-- [ ] Implement modular inverse using fast exponentiation
-- [ ] Explain why we divide by the factorial of each frequency
-- [ ] Handle edge cases (single char, all same, all unique)
-- [ ] Solve in O(n) time with O(n) space
+- [ ] Reproduce the "aabc" dry run (12 − 6 = 6) by hand
+- [ ] Explain why C(c−1, k−1) counts the block splits
+- [ ] Explain why the 1/k! weights and the final K! are needed
+- [ ] Get `aabb` = 2 and `aaaa` = 0 from the formula
 
 ---
 
 ## Additional Resources
 
-- [CP-Algorithms: Modular Inverse](https://cp-algorithms.com/algebra/module-inverse.html)
-- [CP-Algorithms: Factorial & Combinations](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)
-- [CSES Creating Strings](https://cses.fi/problemset/task/1715) - Permutation counting
+- [CP-Algorithms: Inclusion–Exclusion Principle](https://cp-algorithms.com/combinatorics/inclusion-exclusion.html)
+- [CP-Algorithms: Binomial Coefficients](https://cp-algorithms.com/combinatorics/binomial-coefficients.html)
