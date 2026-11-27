@@ -378,6 +378,7 @@ periods.append(n)
 ### Mistake 4: Off-by-One in LPS Building
 
 ```python
+# fragment
 # WRONG - starting from i=0
 for i in range(n):
   # lps[0] should be 0 by definition

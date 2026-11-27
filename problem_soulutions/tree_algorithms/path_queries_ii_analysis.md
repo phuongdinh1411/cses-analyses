@@ -482,6 +482,7 @@ while head[a] != head[b]:
 ### Mistake 2: Forgetting Final Same-Chain Query
 
 ```python
+# fragment
 # WRONG - missing the final segment
 while head[a] != head[b]:
   # ... process chains

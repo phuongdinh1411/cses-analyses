@@ -313,6 +313,7 @@ for j in range(start, end + 1):  # Include sentinel
 ### Mistake 3: Integer Overflow
 
 ```python
+# fragment
 # WRONG (in languages with fixed-size integers)
 count += width * (width + 1) / 2 * height
 

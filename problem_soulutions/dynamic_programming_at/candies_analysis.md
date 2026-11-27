@@ -326,6 +326,7 @@ new_dp[j] = (prefix[j + 1] - prefix[left] + MOD) % MOD
 ### Mistake 2: Off-by-One in Prefix Sum
 
 ```python
+# fragment
 # WRONG - using 0-indexed prefix incorrectly
 prefix[j] = sum of dp[0..j-1]  # excludes dp[j]
 

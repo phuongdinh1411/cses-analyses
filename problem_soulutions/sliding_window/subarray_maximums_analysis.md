@@ -263,6 +263,7 @@ if __name__ == "__main__":
 ### Mistake 1: Using Values Instead of Indices
 
 ```python
+# fragment
 # WRONG - Cannot track when elements leave the window
 dq.append(arr[i])  # Stores value
 while dq and dq[0] < ???:  # How do we know if it's out of window?

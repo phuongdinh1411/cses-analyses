@@ -259,6 +259,7 @@ if __name__ == "__main__":
 **Bit Operation Pitfalls:**
 
 ```python
+# fragment
 # WRONG: Operator precedence issue
 if mask & (1 << u) == 0:    # Evaluates as: mask & ((1 << u) == 0)
 

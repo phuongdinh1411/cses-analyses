@@ -315,6 +315,7 @@ if __name__ == "__main__":
 | Direct child access without check | KeyError when character not in trie | Follow failure links until found or root |
 
 ```python
+# fragment
 # WRONG: Only current node    |  # CORRECT: Follow failure chain
 for idx in out[node]: ...     |  temp = node
               |  while temp:

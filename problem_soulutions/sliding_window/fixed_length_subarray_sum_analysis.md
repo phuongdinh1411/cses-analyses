@@ -255,6 +255,7 @@ for i in range(k, n):  # stops at n - 1
 ### Mistake 2: Forgetting Initial Window
 
 ```python
+# fragment
 # WRONG - starts max_sum at 0
 max_sum = 0
 for i in range(k, n):

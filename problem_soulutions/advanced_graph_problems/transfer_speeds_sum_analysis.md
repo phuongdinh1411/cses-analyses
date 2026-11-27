@@ -298,6 +298,7 @@ capacity[a][b] += c
 ### Mistake 4: Not Resetting Parent Array
 
 ```python
+# fragment
 # WRONG - Reuses stale parent information
 while bfs(source, sink, parent):
   # ... process path ...

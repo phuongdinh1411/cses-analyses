@@ -275,6 +275,7 @@ for k in range(1, n):
 ### Mistake 3: Wrong Loop Bounds
 
 ```python
+# fragment
 # WRONG - goes out of bounds
 for k in range(1, n + 1):
   if pos[k + 1] < pos[k]:  # pos[n+1] doesn't exist!

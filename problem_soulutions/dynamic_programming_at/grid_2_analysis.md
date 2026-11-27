@@ -464,6 +464,7 @@ dp = [[0] * w for _ in range(h)]  # 10^10 cells!
 ### Mistake 3: Not Sorting Obstacles
 
 ```python
+# fragment
 # WRONG - Processing obstacles in arbitrary order
 for i, (ri, ci) in enumerate(obstacles):
   # Cannot guarantee earlier obstacles are "before" current one

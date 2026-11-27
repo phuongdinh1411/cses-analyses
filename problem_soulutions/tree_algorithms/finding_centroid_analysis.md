@@ -356,6 +356,7 @@ def is_centroid(node):
 ### Mistake 2: Wrong Subtree Size After Re-rooting
 
 ```python
+# fragment
 # WRONG - Using child's subtree size directly when node is not root
 if subtree_size[child] > n // 2:  # This is wrong if child was computed as descendant
 ```

@@ -307,6 +307,7 @@ dp[1][0] = 1
 ### Mistake 2: Checking Visited Incorrectly
 
 ```python
+# fragment
 # WRONG: Using subtraction
 if mask - (1 << j) >= 0:  # Doesn't check if j is actually in mask
 

@@ -328,6 +328,7 @@ dp[1][0] = 1  # mask = 0001 means vertex 0 is visited
 ### Mistake 3: Not Checking Vertex in Mask
 
 ```python
+# fragment
 # WRONG - processing dp[mask][i] even if i not in mask
 for i in range(n):
   if dp[mask][i] > 0:

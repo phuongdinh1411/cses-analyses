@@ -264,6 +264,7 @@ bfs()  # O(n * m) - all monsters at once
 ### 2. Wrong Time Comparison
 
 ```python
+# fragment
 # WRONG: Using <= allows monster to catch player
 if new_time <= monster_time[nr][nc]:  # Bug! Same time = caught
 

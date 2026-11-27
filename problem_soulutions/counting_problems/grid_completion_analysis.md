@@ -312,6 +312,7 @@ count = (count + backtrack(idx + 1)) % MOD  # At each addition
 ### Mistake 4: Not Handling Pre-filled Conflicts
 
 ```python
+# fragment
 # WRONG - doesn't check if initial grid is valid
 def solve(n, grid):
   # Start backtracking immediately...

@@ -337,6 +337,7 @@ for v in reversed(topo_order):
 ### Mistake 3: Recursion Limit in Python
 
 ```python
+# fragment
 # WRONG - default recursion limit is ~1000
 def dfs(v):
   # ... may hit RecursionError for large graphs

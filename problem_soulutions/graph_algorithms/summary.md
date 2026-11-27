@@ -212,7 +212,7 @@ Welcome to the Graph Algorithms section! This category covers fundamental and ad
 - [Shortest Routes II](shortest_routes_ii_analysis) - Floyd-Warshall algorithm
 - [Flight Discount](flight_discount_analysis) - Modified shortest path
 - [High Score](high_score_analysis) - Longest path with negative edges
-- [Flight Routes](flight_routes_analysis) - K shortest paths
+- Flight Routes (CSES 1196) - K shortest paths; Dijkstra that pops each node up to k times (no analysis page yet)
 
 ### Graph Cycles
 - [Round Trip](round_trip_analysis) - Finding cycles

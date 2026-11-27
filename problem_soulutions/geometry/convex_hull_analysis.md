@@ -276,6 +276,7 @@ if __name__ == "__main__":
 ### Mistake 2: Not Handling Collinear Points
 
 ```python
+# fragment
 # WRONG - excludes collinear boundary points
 while len(hull) >= 2 and cross(hull[-2], hull[-1], p) < 0:  # strict
 

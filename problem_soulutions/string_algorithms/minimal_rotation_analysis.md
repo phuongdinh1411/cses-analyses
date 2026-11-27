@@ -305,6 +305,7 @@ if a < b:
 ### Mistake 2: Using Wrong Loop Condition
 
 ```python
+# fragment
 # WRONG
 while k < n:  # May access out of bounds
 

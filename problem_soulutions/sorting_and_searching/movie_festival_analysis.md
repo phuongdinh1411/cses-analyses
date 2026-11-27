@@ -210,6 +210,7 @@ movies.sort(key=lambda x: x[1])  # Sort by end time
 ### 2. Using Strict Inequality Instead of >=
 
 ```python
+# fragment
 # WRONG - misses back-to-back movies
 if start > last_end:
 

@@ -283,6 +283,7 @@ start = max_center - max_len  # Should divide by 2!
 ### Mistake 3: Boundary Check Order
 
 ```python
+# fragment
 # WRONG - may access out of bounds before checking
 while t[i + p[i] + 1] == t[i - p[i] - 1] and i + p[i] + 1 < n:
 ```

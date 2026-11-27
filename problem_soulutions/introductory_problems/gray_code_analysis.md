@@ -270,6 +270,7 @@ print(format(gray, f'0{n}b'))  # Properly padded to n bits
 ### Mistake 3: Off-by-One in Loop Range
 
 ```python
+# fragment
 # WRONG
 for i in range(2**n - 1):  # Missing the last code
 

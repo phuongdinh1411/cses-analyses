@@ -266,6 +266,7 @@ for i, cmd in enumerate(commands):
 ### Mistake 3: Using List Instead of Set
 
 ```python
+# fragment
 # WRONG - O(n) lookup
 visited = [(0, 0)]  # List, not set
 if (x, y) in visited:  # Linear search!

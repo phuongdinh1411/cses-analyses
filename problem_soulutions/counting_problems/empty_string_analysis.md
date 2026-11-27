@@ -343,6 +343,7 @@ dp[i][j] += dp[i+1][k-1] * dp[k+1][j] * ways
 ### Mistake 2: Wrong Parity Check
 
 ```python
+# fragment
 # WRONG - checking all k
 for k in range(i + 1, j + 1):
 

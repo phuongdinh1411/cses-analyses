@@ -289,6 +289,7 @@ For n = 20: 2^20 * 20 = ~20 million operations - feasible!
 ### Mistake 1: Forgetting to Check Start/End Vertices
 
 ```python
+# fragment
 # WRONG - doesn't ensure path starts at vertex 0
 dp[1 << start][start] = 1 for all start
 
@@ -302,6 +303,7 @@ dp[1][0] = 1  # Only vertex 0 as starting point
 ### Mistake 2: Wrong Mask Check
 
 ```python
+# fragment
 # WRONG - checking if v is in mask incorrectly
 if mask & v:  # This checks if ANY bits overlap
 

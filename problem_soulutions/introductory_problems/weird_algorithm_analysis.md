@@ -260,6 +260,7 @@ print(' '.join(map(str, result)))
 ### Mistake 3: Forgetting to Print Initial Value
 
 ```python
+# fragment
 # WRONG
 while n != 1:
   if n % 2 == 0:

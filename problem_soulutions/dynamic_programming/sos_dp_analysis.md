@@ -353,6 +353,7 @@ if not (mask & (1 << i)):
 ### Mistake 3: Not Copying Input Array
 
 ```python
+# fragment
 # WRONG: Modifying input directly
 dp = A  # Reference, not copy!
 

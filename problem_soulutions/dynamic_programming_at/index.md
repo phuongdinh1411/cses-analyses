@@ -45,5 +45,5 @@ Welcome to the AtCoder Educational DP Contest section! This is a comprehensive c
 
 ---
 
-**Note**: Problem F (LCS - Longest Common Subsequence) is covered in the main [Dynamic Programming](dynamic_programming) section.
+**Note**: Problem F (LCS - Longest Common Subsequence) is covered in the main [Dynamic Programming — Longest Common Subsequence](../dynamic_programming/longest_common_subsequence_analysis) section.
 

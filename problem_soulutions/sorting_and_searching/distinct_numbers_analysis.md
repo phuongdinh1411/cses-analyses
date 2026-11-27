@@ -130,6 +130,7 @@ for i in range(1, n):
 
 2. **Off-by-one in loop bounds:**
    ```python
+   # fragment
 # WRONG: will cause index error
 for i in range(n):
   if arr[i] != arr[i-1]:  # arr[-1] when i=0!

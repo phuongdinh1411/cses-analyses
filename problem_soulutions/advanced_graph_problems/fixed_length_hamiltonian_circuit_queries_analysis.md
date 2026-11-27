@@ -319,6 +319,7 @@ if __name__ == "__main__":
 ### Mistake 1: Wrong Bit Indexing
 
 ```python
+# fragment
 # WRONG: Using 0-indexed cities with 1-indexed bit positions
 if mask & (1 << v):  # If cities are 1-indexed, this is off by one
 
@@ -332,6 +333,7 @@ if mask & (1 << (v - 1)):
 ### Mistake 2: Checking Visited After Adding
 
 ```python
+# fragment
 # WRONG: Update then check
 new_mask = mask | (1 << (u - 1))
 if new_mask & (1 << (u - 1)):  # Always true!

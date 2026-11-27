@@ -207,11 +207,13 @@ Squares require 0 cuts - they're already the goal state!
 
 **Wrong:**
 ```python
+# fragment
 for k in range(j):  # Includes k=0 which is invalid
 ```
 
 **Correct:**
 ```python
+# fragment
 for k in range(1, j):  # k from 1 to j-1
 ```
 

@@ -321,6 +321,7 @@ else:
 ### Mistake 2: Using Floating Point for Coordinates
 
 ```python
+# fragment
 # WRONG - floating point comparison issues
 if abs(p1[0] - p2[0]) < 1e-9 and abs(p1[1] - p2[1]) < 1e-9:
   # Points are "equal"

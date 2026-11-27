@@ -345,6 +345,7 @@ def get_suffix_link(node, pos, s):
 ### Mistake 2: Boundary Check Errors
 
 ```python
+# fragment
 # WRONG: Missing boundary check
 if s[pos - cur.length - 1] == s[pos]:  # May access negative index!
 

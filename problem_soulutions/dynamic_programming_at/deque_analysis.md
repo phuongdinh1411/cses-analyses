@@ -267,6 +267,7 @@ dp[i][j] = max(a[i] + dp[i+1][j], a[j] + dp[i][j-1])
 ### Mistake 3: Wrong Iteration Order
 
 ```python
+# fragment
 # WRONG - Iterating by i, j directly
 for i in range(n):
   for j in range(i, n):

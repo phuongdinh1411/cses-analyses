@@ -474,7 +474,7 @@ sys.setrecursionlimit(300000)
 |---------|--------------|
 | [Tree Diameter](https://cses.fi/problemset/task/1131) | Basic tree DFS, understanding distances |
 | [Tree Distances I](https://cses.fi/problemset/task/1132) | Max distance from each node, simpler rerooting |
-| [Subtree Sizes](practice) | Foundation for computing subtree_size array |
+| [Subordinates (subtree sizes)](subordinates_analysis) | Foundation for computing subtree_size array |
 
 ### Similar Difficulty
 

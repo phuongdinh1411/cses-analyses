@@ -258,6 +258,7 @@ if (x2 - x1) * (py - y1) > (px - x1) * (y2 - y1):
 ### Mistake 2: Double-Counting Vertices
 
 ```python
+# fragment
 # WRONG - counts vertex twice when ray passes through it
 if y1 <= py <= y2:  # Closed interval
   # ...
@@ -266,6 +267,7 @@ if y1 <= py <= y2:  # Closed interval
 **Problem:** When the ray passes exactly through a vertex, both adjacent edges count it.
 **Fix:** Use half-open interval `[y1, y2)`:
 ```python
+# fragment
 # CORRECT - vertex counted only once
 if y1 <= py < y2:  # Half-open interval
   # ...
@@ -274,6 +276,7 @@ if y1 <= py < y2:  # Half-open interval
 ### Mistake 3: Forgetting Boundary Check
 
 ```python
+# fragment
 # WRONG - jumps straight to ray casting
 crossings = 0
 for i in range(n):

@@ -286,6 +286,7 @@ new_dp[j] = (prefix[i-2] - prefix[j-1] + MOD) % MOD
 ### Mistake 3: Confusing Rank Shift Logic for '>'
 
 ```python
+# fragment
 # WRONG: Using k > j instead of k >= j for '>'
 if s[i-1] == '>':
   dp[i][j] = sum(dp[i-1][k] for k > j)  # Off by one!

@@ -246,13 +246,9 @@ Welcome to the Advanced Graph Problems section! This category covers complex gra
 
 ### Hamiltonian Problems
 - [Fixed Length Hamiltonian Path Queries](fixed_length_hamiltonian_path_queries_analysis) - Hamiltonian paths
-- [Fixed Length Hamiltonian Path Queries II](fixed_length_hamiltonian_path_queries_ii_analysis) - Advanced paths
 - [Fixed Length Hamiltonian Cycle Queries](fixed_length_hamiltonian_cycle_queries_analysis) - Hamiltonian cycles
-- [Fixed Length Hamiltonian Cycle Queries II](fixed_length_hamiltonian_cycle_queries_ii_analysis) - Advanced cycles
 - [Fixed Length Hamiltonian Tour Queries](fixed_length_hamiltonian_tour_queries_analysis) - Hamiltonian tours
-- [Fixed Length Hamiltonian Tour Queries II](fixed_length_hamiltonian_tour_queries_ii_analysis) - Advanced tours
 - [Fixed Length Hamiltonian Trail Queries](fixed_length_hamiltonian_trail_queries_analysis) - Hamiltonian trails
-- [Fixed Length Hamiltonian Trail Queries II](fixed_length_hamiltonian_trail_queries_ii_analysis) - Advanced trails
 
 ### Eulerian Problems
 - [Fixed Length Eulerian Circuit Queries](fixed_length_eulerian_circuit_queries_analysis) - Eulerian circuits

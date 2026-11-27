@@ -306,6 +306,7 @@ for j in range(weights[i], W + 1):  # Forward iteration
 ### Mistake 3: Off-by-One Indexing
 
 ```python
+# fragment
 # WRONG - accessing weights[i] when i goes from 1 to n
 for i in range(1, n + 1):
   if weights[i] <= j:  # IndexError! weights is 0-indexed

@@ -320,6 +320,7 @@ if A[i][k] and B[k][j]:
 ### Mistake 2: Forgetting Identity Matrix Base Case
 
 ```python
+# fragment
 # WRONG
 def matrix_power(M, k):
   if k == 1:

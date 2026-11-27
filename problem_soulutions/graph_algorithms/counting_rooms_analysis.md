@@ -199,6 +199,7 @@ print(count_rooms_dfs(n, m, grid))
 
 **Critical Bug:**
 ```python
+# fragment
 # WRONG                              # CORRECT
 queue.append((r, c))                 visited[r][c] = True
 visited[r][c] = True                 queue.append((r, c))

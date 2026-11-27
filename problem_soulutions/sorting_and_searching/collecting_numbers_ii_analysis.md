@@ -336,7 +336,7 @@ Pattern indicators:
 | Problem | Connection |
 |---------|------------|
 | [Longest Increasing Subsequence](https://leetcode.com/problems/longest-increasing-subsequence/) | Position-based analysis |
-| [Count Inversions](concept) | Similar break-counting idea |
+| Count Inversions ([Fenwick tree](/pattern/fenwick-tree)) | Similar break-counting idea |
 
 ---
 

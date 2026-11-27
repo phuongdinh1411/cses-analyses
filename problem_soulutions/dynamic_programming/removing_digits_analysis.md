@@ -234,6 +234,7 @@ The solution handles this automatically since dp[d-d] = dp[0] = 0, so dp[d] = 1.
 
 ### 4. Off-by-One in Loop Range
 ```python
+# fragment
 # WRONG: misses computing dp[n]
 for i in range(1, n):
 

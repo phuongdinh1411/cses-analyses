@@ -368,6 +368,7 @@ dp[0] = 0  # Cost to reach starting position is 0
 ### Mistake 3: Off-by-One in Loop Range
 
 ```python
+# fragment
 # WRONG
 for i in range(2, n - 1):  # Misses the last stone!
 

@@ -182,6 +182,7 @@ Suffix Links:
 ### Mistake 1: Forgetting to Clone
 
 ```python
+# fragment
 # WRONG: Assuming no clone is ever needed
 if p != -1 and trans[p][c] exists:
   link[cur] = trans[p][c]  # WRONG! May need clone

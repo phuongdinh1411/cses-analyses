@@ -295,6 +295,7 @@ if __name__ == "__main__":
 ### Mistake 1: Wrong Event Ordering
 
 ```python
+# fragment
 # WRONG: Using <= instead of <
 while occupied_rooms and occupied_rooms[0][0] <= arrival:
   # This frees a room ending on day 2 for someone arriving day 2
@@ -305,6 +306,7 @@ while occupied_rooms and occupied_rooms[0][0] <= arrival:
 
 **Fix:** Use strict less than (`<`) when comparing departure with arrival:
 ```python
+# fragment
 while occupied_rooms and occupied_rooms[0][0] < arrival:
 ```
 
@@ -321,6 +323,7 @@ customers.sort()  # Sorted, but lost original positions
 
 **Fix:** Store original index with each customer and use it for assignment:
 ```python
+# fragment
 customers = [(arrival, departure, original_index) for ...]
 # ...
 assignments[orig_idx] = room_id  # Use original index

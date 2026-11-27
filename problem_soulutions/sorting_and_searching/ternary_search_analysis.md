@@ -303,6 +303,7 @@ def ternary_search_max_iterations(lo: float, hi: float, f,
 ### Mistake 1: Wrong Termination Condition (Integers)
 
 ```python
+# fragment
 # WRONG - May infinite loop or miss candidates
 while lo < hi:
   m1 = lo + (hi - lo) // 3
@@ -323,6 +324,7 @@ while hi - lo > 2:
 ### Mistake 3: Floating-Point Precision Issues
 
 ```python
+# fragment
 # WRONG - May never terminate due to floating-point errors
 while lo != hi:
   # ...

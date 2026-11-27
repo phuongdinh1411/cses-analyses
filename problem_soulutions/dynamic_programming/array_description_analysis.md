@@ -234,6 +234,7 @@ for delta in [-1, 0, 1]:
 
 ### 2. Forgetting Modulo in Intermediate Sums
 ```python
+# fragment
 # Wrong: overflow before modulo
 new_dp[v] = (dp[v-1] + dp[v] + dp[v+1]) % MOD
 

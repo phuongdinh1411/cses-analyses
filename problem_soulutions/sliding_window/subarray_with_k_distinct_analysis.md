@@ -279,6 +279,7 @@ def longest_with_k_distinct(arr, k):
 ### Mistake 1: Forgetting to Handle k-1 Edge Case
 
 ```python
+# fragment
 # WRONG - crashes when k = 0
 def at_most(k):
   # ... code assumes k >= 0

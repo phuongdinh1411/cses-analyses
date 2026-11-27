@@ -283,6 +283,7 @@ if __name__ == "__main__":
 ### Mistake 2: Wrong Range for New Inversions
 
 ```python
+# fragment
 # WRONG - element i can add at most i inversions
 for add in range(i + 1):
 
