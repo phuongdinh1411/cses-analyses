@@ -85,9 +85,9 @@ A cloud file storage and synchronization service that allows users to store file
 
 | Direction | Calculation | Result |
 |-----------|-------------|--------|
-| Upload bandwidth | 200M × 1 MB / 86,400 | ~23 Gbps |
-| Download bandwidth | 500M × 1 MB / 86,400 | ~58 Gbps |
-| Peak bandwidth | 81 Gbps × 3 | ~240 Gbps |
+| Upload bandwidth | 200M × 1 MB / 86,400 ≈ 2.3 GB/s × 8 | ~18.5 Gbps |
+| Download bandwidth | 500M × 1 MB / 86,400 ≈ 5.8 GB/s × 8 | ~46 Gbps |
+| Peak bandwidth | 65 Gbps × 3 | ~195 Gbps |
 
 > **Key insight**: The sync check QPS (115K) is much higher than upload/download. We need to optimize sync operations heavily.
 
@@ -313,7 +313,7 @@ flowchart LR
 ```
 
 **Deduplication benefits**:
-- Same file uploaded by different users → stored once
+- Same file uploaded again by the same user → stored once (cross-user dedup saves more but leaks file existence; see Deduplication scope trade-off)
 - Modified file → only changed blocks uploaded
 - Backup copies → nearly free
 
@@ -560,10 +560,10 @@ flowchart TB
     subgraph Upload["Upload Path"]
         CLIENT[Client] --> UPLOAD[Upload Service]
         UPLOAD --> DEDUP{Deduplicate}
-        DEDUP -->|New block| ENCRYPT[Encrypt]
+        DEDUP -->|New block| COMPRESS[Compress]
         DEDUP -->|Exists| REF[Reference existing]
-        ENCRYPT --> COMPRESS[Compress]
-        COMPRESS --> STORE[Store]
+        COMPRESS --> ENCRYPT[Encrypt]
+        ENCRYPT --> STORE[Store]
     end
 
     subgraph Storage["Storage Tiers"]

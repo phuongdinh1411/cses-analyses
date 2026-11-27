@@ -82,7 +82,7 @@ A data pipeline moves, transforms, and delivers data from sources to consumers r
 Sources:        50 exchanges × 1,000 symbols × 1 tick/sec = 50,000 events/sec
 Event size:     ~200 bytes (symbol, timestamp, price, volume)
 Raw throughput: 50,000 × 200B = 10 MB/sec = 36 GB/hour ≈ 850 GB/day
-Kafka retention (7 days): ~6 TB
+Kafka retention (7 days): 850 GB × 7 ≈ 6 TB (× RF 3 ≈ 18 TB on broker disks)
 Processed store (10:1 Parquet compression): ~85 GB/day → ~30 TB/year
 
 Batch job example (end-of-day P&L):
@@ -335,8 +335,8 @@ Checkpoint N:
   4. On barrier complete → commit Kafka transaction
   5. If crash before commit → transaction aborted; replay from checkpoint N-1
 
-Result: each record written to sink exactly once,
-        even if Flink job crashes and restarts.
+Result: each record visible in the sink exactly once to read_committed
+        consumers (requires a transactional sink), even if Flink restarts.
 ```
 
 ### At-least-once + idempotent sink (practical alternative)
@@ -366,10 +366,10 @@ Schema changes (new fields, renamed fields, type changes) happen constantly. Pip
 | Change | Backward Compatible | Forward Compatible | Full Compatible |
 |--------|--------------------|--------------------|-----------------|
 | Add optional field with default | ✅ | ✅ | ✅ |
-| Delete optional field | ✅ | ❌ | ❌ |
+| Delete optional field | ✅ | ✅ | ✅ |
 | Add required field (no default) | ❌ | ✅ | ❌ |
 | Rename field | ❌ | ❌ | ❌ |
-| Change field type (int→long) | ✅ Avro | ✅ | ✅ |
+| Change field type (int→long) | ✅ Avro | ❌ | ❌ |
 
 **Rules:**
 - **Backward compatible**: new schema can read data written with old schema (safe to upgrade consumers first)
@@ -701,7 +701,7 @@ Problem: fast producer overflows slow consumer
 Kafka as buffer:
   Kafka decouples producer and consumer rates
   Consumer can fall behind (consumer lag) without affecting producer
-  Max lag = Kafka retention × partition size
+  Max tolerable lag = retention window (older unconsumed segments are deleted)
 
 Flink backpressure:
   Network buffer fills → upstream operator blocks
@@ -786,9 +786,9 @@ Downstream can rebuild silver from bronze; gold from silver
 | Bad data / schema mismatch | Schema Registry rejection | Dead-letter queue; human review |
 | Transform bug | Data quality check failure | Roll back load; page on-call; fix and backfill |
 | DB connection error | Connection timeout | Airflow retry; events buffered in Kafka |
-| Kafka broker failure | Consumer lag spike | Kafka auto-reassigns partitions; transparent to consumer |
+| Kafka broker failure | Consumer lag spike | Partition leadership fails over to an in-sync replica; clients retry transparently |
 | Flink job crash | Heartbeat missing | Flink restarts from last checkpoint; replays in-flight events |
-| Duplicate events | Downstream upsert | Idempotency key = `(source_id, event_timestamp)` |
+| Duplicate events | Downstream upsert | Idempotency key = `hash(source_system, event_id, event_timestamp)` |
 | Poison pill message | DLQ or parse error | Skip + DLQ; never block pipeline on single bad record |
 
 ### Dead-letter queue pattern
@@ -987,7 +987,7 @@ Tiered storage (Confluent/MSK):
 | **Kafka** | 100 MB/s+ per broker; 1M+ msg/sec per cluster |
 | **Kafka partition** | ~10-50 MB/s max throughput |
 | **Flink** | 10M+ events/sec per job; horizontal scale to 100s of nodes |
-| **TimescaleDB** | 10M+ rows/sec insert; 90%+ compression |
+| **TimescaleDB** | ~1M rows/sec batched insert (single node); 90%+ compression |
 | **S3** | 5500 GET/sec per prefix; 3500 PUT/sec per prefix |
 | **Parquet** | 10:1 vs CSV; column pruning makes queries 10–100× faster |
 | **Airflow** | 1,000+ concurrent tasks (Celery/K8s executor) |

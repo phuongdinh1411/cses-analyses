@@ -182,7 +182,7 @@ Keys are now evenly distributed because each server has many evenly-spaced "clai
 
 | System | Virtual Nodes per Physical Node |
 |--------|--------------------------------|
-| **Cassandra** | 256 (default) |
+| **Cassandra** | 256 (pre-4.0 default; 16 since 4.0) |
 | **Typical production** | 100-500 |
 
 ### Data Structure in Memory
@@ -295,7 +295,7 @@ flowchart LR
 | Question | Key Points |
 |----------|------------|
 | "Why virtual nodes?" | Even distribution with few servers, smoother rebalancing |
-| "How many virtual nodes?" | 100-500 typical, Cassandra uses 256 |
+| "How many virtual nodes?" | 100-500 typical; Cassandra used 256 (16 by default since 4.0) |
 | "What hash function?" | MD5 for simplicity, Murmur3 for performance |
 | "Hot spots?" | Virtual nodes help, but some keys are inherently hot |
 | "What about replication?" | Replicate to N successive distinct physical nodes |
@@ -306,7 +306,7 @@ flowchart LR
 
 > **Interview context**: Mentioning real systems shows practical knowledge.
 
-### Amazon DynamoDB
+### Amazon Dynamo (the 2007 paper; DynamoDB's predecessor)
 
 - Uses consistent hashing for **partitioning data** across storage nodes
 - Each partition key is hashed to determine which partition stores the data
@@ -320,10 +320,10 @@ Partition Key → MD5 Hash → Ring Position → N Replicas
 
 ### Apache Cassandra
 
-- Directly inspired by DynamoDB's design
+- Directly inspired by the Dynamo paper's design
 - Uses **Murmur3 hash** (faster than MD5) by default
 - **Token ranges**: Each node owns a range of hash values
-- **Virtual nodes (vnodes)**: Default 256 vnodes per physical node
+- **Virtual nodes (vnodes)**: Default 256 vnodes per physical node (16 since Cassandra 4.0)
 - **Replication factor**: Configurable per keyspace
 
 ```sql
@@ -355,7 +355,7 @@ Node C: slots 10923-16383
 | **Akamai CDN** | Pioneered consistent hashing for web caching (1997) |
 | **Discord** | Routes messages to Elixir processes |
 | **Riak** | Dynamo-inspired with hinted handoff and read repair |
-| **Apache Kafka** | Partition assignment for consumer groups |
+| **Apache Kafka** | Contrast case: `murmur2(key) % num_partitions` (modulo over a fixed partition count, not a ring) |
 | **Couchbase** | 1024 vBuckets (similar to Redis hash slots) |
 | **Netflix EVCache** | Memcached with zone-aware consistent hashing |
 
@@ -363,7 +363,7 @@ Node C: slots 10923-16383
 
 | System | Hash Function | Partitioning | Replication |
 |--------|---------------|--------------|-------------|
-| DynamoDB | MD5 | Continuous ring + vnodes | Quorum (N,R,W) |
+| Dynamo (paper) | MD5 | Continuous ring + vnodes | Quorum (N,R,W) |
 | Cassandra | Murmur3 | Token ranges + vnodes | Configurable RF |
 | Redis Cluster | CRC16 | 16384 hash slots | Primary + replicas |
 | Memcached | Ketama (MD5) | Client-side ring | None (cache only) |
@@ -375,7 +375,7 @@ Node C: slots 10923-16383
 
 | Variation | Used By | Benefit |
 |-----------|---------|---------|
-| **Virtual nodes** | Cassandra, DynamoDB, Riak | Better load balance |
+| **Virtual nodes** | Cassandra, Dynamo, Riak | Better load balance |
 | **Fixed slots/buckets** | Redis, Couchbase | Simpler resharding |
 | **Jump consistent hash** | Google | O(1) memory, no ring storage |
 | **Rendezvous hashing** | Microsoft, Twitter | Alternative to ring-based |

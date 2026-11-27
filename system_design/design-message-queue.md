@@ -257,7 +257,7 @@ Consumer Group A (Order Service):     Consumer Group B (Analytics):
 **Offset tracking**: Each consumer group tracks a **committed offset** per partition---the position of the last successfully processed message. Offsets are stored in a dedicated internal topic (`__consumer_offsets`) or in the metadata store.
 
 - **Auto-commit**: Offsets committed periodically (at-least-once, risk of re-processing on crash).
-- **Manual commit**: Consumer commits after processing (stronger exactly-once when combined with idempotent processing).
+- **Manual commit**: Consumer commits after processing (still at-least-once; effectively-once only when combined with idempotent processing).
 
 #### Rebalancing
 
@@ -397,7 +397,7 @@ CREATE TABLE consumer_offsets (
 |----------|-----|-----------|
 | **At-most-once** | Commit offset before processing | Fast, but messages may be lost on consumer crash |
 | **At-least-once** | Commit offset after processing | No loss, but duplicates on crash (consumer retries) |
-| **Exactly-once** | Idempotent producer + transactional writes + consume-transform-produce atomically | Strongest, but ~20% throughput overhead |
+| **Exactly-once** | Idempotent producer + transactional writes + consume-transform-produce atomically | Strongest, but only for Kafka→Kafka pipelines (external side effects still need idempotent sinks); ~20% throughput overhead |
 
 **We chose at-least-once as default because**: Most use cases can tolerate and handle duplicates (idempotent consumers). Exactly-once is available as an opt-in for critical workflows (e.g., financial transactions).
 
@@ -466,7 +466,7 @@ Consumer Groups (scale up to num_partitions)
 
 | Bottleneck | Symptom | Mitigation |
 |------------|---------|------------|
-| Hot partition | One partition has 10x traffic | Better partition key selection, add partitions |
+| Hot partition | One partition has 10x traffic | Better partition key selection, salt hot keys (adding partitions does not split a single hot key) |
 | Disk I/O saturation | High produce latency | Faster SSDs, spread partitions across disks, increase brokers |
 | Network bandwidth | Replication lag increases | Compression, dedicated replication network interface |
 | Consumer lag | Consumers can't keep up | Add consumers (up to partition count), optimize processing |
@@ -487,7 +487,7 @@ Consumer Groups (scale up to num_partitions)
 | **Disk failure** | Data on that disk lost | Replication ensures other brokers have copies; replace disk and re-replicate |
 | **Network partition** | Split brain: two leaders for same partition | Fencing: old leader detects it's no longer in coordination quorum and stops serving |
 | **Slow consumer** | Consumer lag grows, messages risk expiring | Monitoring + alerting on lag; scale consumers; increase retention |
-| **Producer failure** | Messages in-flight lost | Idempotent producer (dedup on retry via producer ID + sequence number) |
+| **Producer failure** | Unacked in-flight messages lost or retried | Idempotent producer dedups retries (producer ID + sequence number); app must re-send anything never acked (e.g., outbox) |
 | **Datacenter outage** | Regional unavailability | Multi-datacenter replication (async), MirrorMaker / geo-replication |
 
 ### Recovery Procedures

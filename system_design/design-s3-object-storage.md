@@ -57,7 +57,7 @@ A distributed object storage service that stores and retrieves any amount of dat
 |-------------|--------|-----------|
 | **Durability** | 99.999999999% (11 nines) | Primary value proposition — never lose data |
 | **Availability** | 99.99% | Business-critical storage |
-| **Consistency** | Read-after-write for new PUTs; eventual for overwrites/deletes | Strong enough for most use cases |
+| **Consistency** | Read-after-write for PUTs, including overwrites (atomic version swap in metadata, see §7); eventual for listings/cross-region | Matches S3's strong consistency (since 2020) |
 | **Latency** | First-byte < 100ms (p99) for GETs | Competitive with S3 |
 | **Scale** | 100B+ objects, exabytes of storage | Design for massive scale from day one |
 
@@ -117,7 +117,7 @@ Metadata:
    │  (Sharded DB)         │        │                            │
    │                        │        │  ┌──────┐ ┌──────┐        │
    │  Partition key:        │        │  │Node 1│ │Node 2│ ...    │
-   │  hash(bucket+key)     │        │  │ AZ-a │ │ AZ-b │        │
+   │  hash(bucket);sort=key│        │  │ AZ-a │ │ AZ-b │        │
    └──────────────────────┘        │  └──────┘ └──────┘        │
                                      │  ┌──────┐ ┌──────┐        │
                                      │  │Node 3│ │Node N│        │
@@ -162,7 +162,7 @@ We need to:
 
 ### Our Approach: Distributed KV Store with Prefix Index
 
-We use a DynamoDB-like distributed KV store (this is what real S3 uses — S3's metadata runs on an internal DynamoDB derivative).
+We use a DynamoDB-like distributed KV store (a common approach; AWS has not published S3's metadata internals in detail).
 
 **Partition key**: `hash(bucket_name)` — distributes buckets across shards
 **Sort key**: `object_key` — enables prefix listing within a bucket
@@ -406,7 +406,7 @@ GC runs when a data file has > 30% deleted space, during low-traffic hours.
 
 ### The Challenge
 
-11 nines durability means: of 1 trillion objects stored for a year, we lose at most 1. How?
+11 nines durability means: annual loss probability per object of 1e-11 — of 100 billion objects stored for a year, we expect to lose ~1. How?
 
 ### Option 1: Triple Replication
 
@@ -481,10 +481,13 @@ Assumptions:
   - Background repair detects and fixes within 6 hours
 
 P(losing one chunk in a year) = 0.02
-P(losing 4+ chunks before repair) = C(9,4) × (0.02)^4 × (repair_window)
-                                   ≈ 1e-11
+P(a chunk fails within one 6h window) = p = 0.02 × 6/8,760 ≈ 1.4e-5
+P(4+ of 9 fail in the same window) ≈ C(9,4) × p^4 ≈ 126 × 3.5e-20 ≈ 4.4e-18
+Per year (8,760/6 ≈ 1,460 windows)  ≈ 6.5e-15
 
-This gives us ~11 nines durability.
+Independent disk failures alone give far better than 11 nines; correlated
+failures (AZ events, bad disk batches, firmware/operator bugs) are what pull
+the realistic figure down, so ~11 nines is the advertised, conservative target.
 
 Key: fast repair time is critical. If repair takes days instead of hours,
 durability drops significantly.
@@ -527,7 +530,7 @@ Client                API Gateway         Metadata Svc      Data Service       S
   │                       │                    │                 │── Write chunk 3 ──▶│ Node-89 (AZ-c)
   │                       │                    │                 │   ... (9 parallel)  │
   │                       │                    │                 │                   │
-  │                       │                    │                 │◀── ACK (6 of 9) ──│
+  │                       │                    │                 │◀── ACK (8 of 9) ──│
   │                       │                    │                 │   (quorum write)    │
   │                       │                    │                 │                   │
   │                       │                    │◀── Store meta ──│                   │
@@ -540,7 +543,7 @@ Client                API Gateway         Metadata Svc      Data Service       S
 ```
 
 **Key details:**
-- **Quorum write**: We wait for 6 of 9 chunks to be acknowledged (not all 9). The remaining 3 are written asynchronously. This balances latency with durability.
+- **Quorum write**: We wait for 8 of 9 chunks to be acknowledged (not all 9); the last one is written/repaired asynchronously. This balances latency with durability — ACKing at only 6 of 9 would leave zero redundancy at acknowledgement time.
 - **Read-after-write consistency**: The metadata record is written *after* data chunks are durable. Any subsequent GET will find the metadata and locate the data.
 - **ETag**: The response includes a content-MD5/SHA256 so the client can verify end-to-end integrity.
 
@@ -624,11 +627,11 @@ Solution: Adaptive partition splitting
 
   Before: All of bucket "logs" on partition P1
 
-  After:  hash("logs" + key[0:2]) distributes across 256 partitions
+  After:  range-split on key[0:2] (676 two-letter prefixes, ~6 each) → ~113 partitions
           P1: keys aa-af
           P2: keys ag-al
           ...
-          P256: keys za-zz
+          P113: keys zw-zz
 
   The metadata service detects hot partitions and splits automatically.
 ```
@@ -816,13 +819,13 @@ Time to repair: ~minutes for a single PG, hours for full node recovery
 - Don't ignore the metadata scaling problem — it's the hardest part at 100B+ objects
 - Don't forget the math on erasure coding — interviewers love the durability calculation
 - Don't skip failure recovery — AZ-level failure handling shows real depth
-- Don't propose only replication — it wastes 2x more storage than erasure coding
+- Don't propose only replication — 3x replication needs 2x the raw storage of 6+3 erasure coding
 
 ---
 
 ## References
 
-- [Amazon S3 — Paper: Amazon DynamoDB (2022)](https://www.usenix.org/system/files/atc22-alhosni.pdf) — S3 metadata runs on DynamoDB
+- [Amazon DynamoDB (USENIX ATC 2022)](https://www.usenix.org/system/files/atc22-alhosni.pdf) — Design of a large-scale distributed KV store
 - [Facebook Haystack — Photo Storage](https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Beaver.pdf) — Append-only packed object storage
 - [Ceph CRUSH Algorithm](https://ceph.io/assets/pdfs/weil-crush-sc06.pdf) — Topology-aware data placement
 - [Reed-Solomon Erasure Coding Explained](https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction) — The math behind durability

@@ -211,8 +211,8 @@ The most intuitive approach - hash the URL and take the first N characters:
 
 ```
 Long URL: https://example.com/long/path
-MD5 Hash: 5d41402abc4b2a76b9719d911017c592
-Short Code: 5d4140 (first 6 characters)
+MD5 Hash: eac27daf793e7c3b724e8b9682cd1f0a
+Short Code: eac27d (first 6 characters)
 ```
 
 #### Why Not Just Use This?
@@ -237,7 +237,7 @@ URL B: example.com/page2 → hash → "abc123..." (collision!)
 Convert a unique integer ID to Base62:
 
 ```
-ID: 125,984,756  →  Base62: "B3k9Zt"
+ID: 125,984,756  →  Base62: "8wCoc"   (5 chars; 62^5 ≈ 916M)
 
 Encoding: 0-9 (digits), a-z (10-35), A-Z (36-61)
 ```
@@ -324,7 +324,7 @@ flowchart TB
 **Why this works well:**
 - Each server generates IDs locally within its range (no coordination)
 - Coordinator only contacted when range exhausted (~infrequently)
-- Base62 encoding adds slight randomness to appearance
+- Base62 of sequential IDs is still predictable; to meet the non-guessable requirement, permute each ID first (keyed bijection, e.g. a small Feistel cipher over the ID space) and Base62-encode the result
 - Scales horizontally by adding more servers with new ranges
 
 ---

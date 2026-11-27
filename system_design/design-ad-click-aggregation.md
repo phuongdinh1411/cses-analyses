@@ -67,8 +67,8 @@ An ad click event aggregation system ingests billions of click events per day, a
 ```
 Click events:
 - Daily clicks:          ~1 billion
-- Average QPS:           ~10,000 clicks/sec
-- Peak QPS:              ~50,000 clicks/sec (5x average)
+- Average QPS:           1B ÷ 86,400 ≈ 11,600 → ~10,000 clicks/sec
+- Peak QPS:              ~50,000 clicks/sec (5x rounded average)
 
 Per click event:          ~500 bytes
 - Raw storage/day:       1B × 500B = ~500 GB/day
@@ -76,8 +76,8 @@ Per click event:          ~500 bytes
 
 Aggregated data:
 - Unique ad_ids:          ~2 million
-- Aggregations/min:       2M ad_ids × 1 record = 2M rows/min
-- Aggregated storage/day: ~50 GB
+- Aggregations/min:       ≤ min(2M ad_ids, 10K × 60 = 600K clicks/min) → ≤ 600K rows/min
+- Aggregated storage/day: 600K × 1,440 min × ~50 B ≈ 43 GB → ~50 GB (upper bound)
 - Aggregated retention:   ~18 TB/year
 ```
 
@@ -228,7 +228,7 @@ GROUP BY campaign_id;
 
 > **Interviewer might ask**: "Why not store raw events and query them directly?"
 
-Querying 1B raw events per day is too slow for dashboards. Pre-aggregation reduces the query dataset by **~500x** (2M aggregated rows vs 1B raw events).
+Querying 1B raw events per day is too slow for dashboards. Pre-aggregation collapses every click for an (ad_id, minute) into one row, so a one-day query for an ad scans at most 1,440 rows (24 with hourly rollups) instead of all its raw clicks.
 
 ---
 
@@ -296,12 +296,12 @@ flowchart LR
 
 **Bloom Filter for Deduplication**:
 - In-memory, space-efficient probabilistic data structure
-- False positive rate of 0.1% at 1B elements ≈ 1.2 GB memory
+- False positive rate of 0.1% at 1B elements ≈ 1.8 GB memory (m/n = −ln(0.001)/(ln 2)² ≈ 14.4 bits/element)
 - Acceptable: A false positive means we discard a valid click (rare), but we **never** count a duplicate (critical)
 
 > **Interviewer might ask**: "Why a Bloom filter instead of a hash set?"
 
-A hash set storing 1B click_ids (each 36 bytes UUID) = **36 GB**. A Bloom filter at 0.1% false positive rate needs **~1.2 GB**. At this scale, the 30x memory reduction matters.
+A hash set storing 1B click_ids (each 36 bytes UUID) = **36 GB**. A Bloom filter at 0.1% false positive rate needs **~1.8 GB**. At this scale, the ~20x memory reduction matters.
 
 ---
 
@@ -371,8 +371,8 @@ flowchart LR
         Late["Late? event_time < watermark"]
     end
 
-    Late -->|"Within grace period (5 min)"| SideOutput["Side Output<br/>(Update aggregation)"]
-    Late -->|"Beyond grace period"| Drop["Drop + Log<br/>(Count for monitoring)"]
+    Late -->|"Within grace period (5 min)"| SideOutput["Re-fire window<br/>(Update aggregation)"]
+    Late -->|"Beyond grace period"| Drop["Side Output → Drop + Log<br/>(Count for monitoring)"]
 ```
 
 **Watermark + allowed lateness**:
@@ -424,9 +424,9 @@ Flink performs this continuously (stream MapReduce) rather than in batch. The `k
 
 | Granularity | Storage/day | Query Speed | Flexibility |
 |-------------|-------------|-------------|-------------|
-| Per-second | ~86M rows | Slow | Most flexible |
-| **Per-minute** | **~1.4M rows** | **Fast** | **Good balance** |
-| Per-hour | ~48K rows | Very fast | Limited drill-down |
+| Per-second | 86,400 rows per ad_id | Slow | Most flexible |
+| **Per-minute** | **1,440 rows per ad_id** | **Fast** | **Good balance** |
+| Per-hour | 24 rows per ad_id | Very fast | Limited drill-down |
 
 **We chose per-minute because**: It's a good balance — small enough for useful real-time monitoring, large enough that storage and query costs are manageable. Hourly/daily rollups are derived from minute-level data.
 
@@ -452,7 +452,7 @@ Flink performs this continuously (stream MapReduce) rather than in batch. The `k
 
 #### Why Not a General-Purpose RDBMS?
 
-At 2M aggregated rows per minute across multiple dimensions, the write volume (and the analytical query patterns) exceed what MySQL/PostgreSQL handle well. Columnar OLAP databases are purpose-built for this workload — they compress repeated values in columns (same ad_id across many minutes) and scan only the columns needed by each query.
+At up to ~600K aggregated rows per minute across multiple dimensions, the write volume (and the analytical query patterns) exceed what MySQL/PostgreSQL handle well. Columnar OLAP databases are purpose-built for this workload — they compress repeated values in columns (same ad_id across many minutes) and scan only the columns needed by each query.
 
 ### Design Decisions Summary
 
@@ -523,7 +523,7 @@ flowchart TD
 | **Local pre-aggregation** | Each receiver counts locally, sends partial sums | Slightly delayed, but distributes load |
 | **Dedicated partition** | Route hot ad_ids to dedicated workers | Operational complexity |
 
-**Recommended**: Local pre-aggregation in the Click Receiver. Each receiver maintains a 10-second in-memory counter per ad_id, then flushes partial aggregates to Kafka. This reduces Kafka message volume by ~100x and distributes the counting.
+**Recommended**: Local pre-aggregation in the Click Receiver. Each receiver maintains a 10-second in-memory counter per ad_id, then flushes partial aggregates to Kafka (raw events must still go to a separate raw topic for the S3/batch billing path and dedup/fraud filtering). This reduces Kafka message volume by ~100x and distributes the counting.
 
 ```
 Without pre-aggregation:
@@ -560,7 +560,7 @@ flowchart LR
 
 1. **Kafka**: Durable writes with replication factor 3. Consumer offsets committed after processing.
 2. **Flink checkpointing**: Periodically snapshots processing state + Kafka offsets. On failure, restores from last checkpoint and replays from Kafka.
-3. **Idempotent sink**: ClickHouse upsert with `(ad_id, click_minute)` as the key. Replaying the same window produces the same count → safe to retry.
+3. **Idempotent sink**: ClickHouse `ReplacingMergeTree` keyed on `(ad_id, click_minute)` (ClickHouse has no true upsert; duplicates collapse at merge time, so read with `FINAL`/`argMax`). Each write overwrites the full window count (never increments), so replaying the same window → same count → safe to retry.
 
 ### Failure Scenarios
 
@@ -615,22 +615,22 @@ flowchart TB
 
     Compare -->|"Match"| OK["OK ✓"]
     Compare -->|"Diff > threshold"| Alert["Alert +<br/>Auto-correct"]
-    Compare -->|"Small diff"| Log["Log +<br/>Accept stream count"]
+    Compare -->|"Small diff"| Log["Log only"]
 
     subgraph Billing["BILLING"]
         BillingDB["Billing Database"]
     end
 
     Alert -->|"Use batch count"| BillingDB
-    OK -->|"Use stream count"| BillingDB
-    Log -->|"Use stream count"| BillingDB
+    OK -->|"Use batch count"| BillingDB
+    Log -->|"Use batch count"| BillingDB
 ```
 
 ### Reconciliation Thresholds
 
 | Metric | Threshold | Action |
 |--------|-----------|--------|
-| Per-ad count diff | < 0.01% | Accept stream count |
+| Per-ad count diff | < 0.01% | No action (bill batch count) |
 | Per-ad count diff | 0.01% - 1% | Log, use batch count for billing |
 | Per-ad count diff | > 1% | Alert on-call, investigate |
 | Total daily diff | > 0.1% | Escalate, potential system issue |
@@ -682,7 +682,7 @@ flowchart TB
 | Instead of... | Say... |
 |---------------|--------|
 | "Use Kafka" | "Partition Kafka by ad_id so all clicks for the same ad land on one partition, enabling local aggregation without distributed coordination" |
-| "Count clicks" | "Use tumbling event-time windows in Flink with a 5-minute watermark grace period to handle late arrivals while keeping aggregation latency under 1 minute" |
+| "Count clicks" | "Use tumbling event-time windows in Flink with a 5-minute allowed-lateness grace period to handle late arrivals while keeping aggregation latency under 1 minute" |
 | "Store in database" | "Write to ClickHouse with idempotent upserts keyed on (ad_id, click_minute) so replayed data from checkpoint recovery doesn't double-count" |
 | "Handle hot keys" | "Pre-aggregate in the Click Receiver layer — each receiver holds a 10-second local counter per ad_id and flushes partial sums, reducing Kafka volume by ~100x" |
 | "Make it accurate" | "Lambda architecture: stream layer for real-time dashboards, batch layer reprocesses raw events from S3 daily as the billing source of truth" |
@@ -729,7 +729,7 @@ flowchart TB
 | **Stream processor** | Flink | Spark Streaming | True event-time semantics, exactly-once |
 | **Message queue** | Kafka | Pulsar, Kinesis | Durable, replayable, high throughput |
 | **OLAP database** | ClickHouse | Druid, Cassandra | Columnar compression, fast time-range queries |
-| **Deduplication** | Bloom filter | Redis set | 30x less memory at 1B scale |
+| **Deduplication** | Bloom filter | Redis set | ~20x less memory at 1B scale |
 | **Time granularity** | Per-minute | Per-second, per-hour | Balance storage vs dashboard utility |
 
 ### Red Flags to Avoid

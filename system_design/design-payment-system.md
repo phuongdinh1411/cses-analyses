@@ -43,7 +43,7 @@ A payment system handles the movement of money between parties in e-commerce tra
 | Requirement | Description |
 |-------------|-------------|
 | **Reliability** | Handle failed payments gracefully with retry mechanisms |
-| **Consistency** | Ensure exactly-once payment processing (no duplicate charges) |
+| **Consistency** | Effectively exactly-once payment processing (at-least-once retries + idempotency keys; no duplicate charges) |
 | **Fault tolerance** | System continues operating during partial failures |
 | **Reconciliation** | Internal records must match external PSP records |
 | **Security** | PCI DSS compliance for handling card data |
@@ -68,7 +68,7 @@ Assume an e-commerce platform with moderate scale:
 ```
 Daily transactions: 1 million
 Transactions per second: 1M / 86,400 = ~12 TPS (average)
-Peak TPS: ~100 TPS (10x average during sales)
+Peak TPS: ~100 TPS (~8x average during sales)
 ```
 
 **Note**: Payment systems prioritize **correctness over throughput**. Unlike social media feeds, even 10 TPS requires extreme reliability.
@@ -80,10 +80,10 @@ Transaction record size: ~1 KB
 Daily transactions: 1 million
 Daily storage: 1M × 1KB = 1 GB/day
 
-Ledger entries (double-entry): 2 GB/day
-Annual storage: ~1 TB/year
+Ledger entries (double-entry): 2 × 1M × 1KB = 2 GB/day
+Annual storage: (1 + 2) GB × 365 ≈ 1.1 TB → ~1 TB/year
 
-Keep 7 years for compliance: ~7 TB
+Keep 7 years for compliance: 1.1 TB × 7 ≈ 7.7 TB → ~8 TB
 ```
 
 ### Summary
@@ -246,7 +246,7 @@ CREATE TABLE payment_orders (
     seller_account VARCHAR(50) NOT NULL,
     amount DECIMAL(19, 4) NOT NULL,
     currency VARCHAR(3) NOT NULL,
-    status ENUM('PENDING', 'EXECUTING', 'SUCCESS', 'FAILED'),
+    status ENUM('PENDING', 'EXECUTING', 'SUCCESS', 'FAILED', 'UNKNOWN'),
     psp_reference VARCHAR(100),
     failure_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -411,7 +411,7 @@ Client ──► Retry ──► Duplicate charge!
 
 ```
 POST /v1/payments
-Idempotency-Key: order_123_attempt_1
+Idempotency-Key: order_123        (same key on every retry; never per-attempt)
 
 First request:  Process payment, store result with key
 Second request: Return cached result (no reprocessing)
@@ -422,6 +422,7 @@ Second request: Return cached result (no reprocessing)
 2. Server checks if key exists in database
 3. If exists → return cached result (no processing)
 4. If new → process payment, store result with key
+5. Forward a stable key (e.g., `payment_order_id`) as the PSP's idempotency key, so a retried PSP call after a timeout doesn't charge twice
 
 ### Database Constraint
 
@@ -439,7 +440,7 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 flowchart LR
     subgraph ExactlyOnce["Exactly-Once Delivery"]
         A["At-Least-Once (Retry)<br/>Keep retrying until success"]
-        B["At-Most-Once (Idempotency)<br/>Idempotency key prevents dupes"]
+        B["Idempotent processing<br/>Idempotency key → at-most-once effect"]
         A ---|+| B
         Result["= Exactly-Once Semantics"]
     end
@@ -586,8 +587,8 @@ flowchart TB
 
 | SAQ Level | Description | Requirements |
 |-----------|-------------|--------------|
-| **SAQ A** | Hosted payment page | Minimal (outsourced to PSP) |
-| **SAQ A-EP** | iFrame integration | More controls |
+| **SAQ A** | Hosted payment page or PSP-hosted iFrame fields | Minimal (outsourced to PSP) |
+| **SAQ A-EP** | Direct post / merchant-page JS form | More controls |
 | **SAQ D** | Direct card handling | Full compliance (~300 controls) |
 
 **Recommendation**: Use hosted payment page (SAQ A) unless you have specific requirements.
@@ -667,7 +668,7 @@ flowchart TB
     Primary -->|Async replication| Replicas["Replicas<br/>(Read-only)"]
 ```
 
-- **Pros**: Strong consistency, simple
+- **Pros**: Strong consistency (for reads served by the primary; async replicas can be stale), simple
 - **Cons**: Limited scalability
 
 **Option 2: Distributed Database (Recommended for scale)**

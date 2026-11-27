@@ -61,13 +61,14 @@ An observability platform collects, stores, correlates, and queries the three pi
 
 ```
 Instrumented services: 100 microservices
-Metrics per service:   ~100 metrics × 30s scrape interval = 200 data points/min/service
-Total metric ingestion: 100 × 200 = 20,000 data points/min = ~333/sec
+Series per service:    ~100 metrics × ~50 label combinations = ~5,000 active series
+Samples per service:   5,000 series × 2 scrapes/min (30s interval) = 10,000 data points/min
+Total metric ingestion: 100 × 10,000 = 1M data points/min ≈ 16,700/sec
 
 Logs per service:      ~1,000 lines/sec at peak
 Total log ingestion:   100 × 1,000 = 100,000 lines/sec
 Log line size:         ~500 bytes
-Log throughput:        50 MB/sec = 4.3 TB/day
+Log throughput:        100,000 × 500 B = 50 MB/sec × 86,400 = 4.3 TB/day
 
 Traces per service:    ~100 req/sec × 5 spans/req = 500 spans/sec
 Total trace ingestion: 100 × 500 = 50,000 spans/sec
@@ -158,6 +159,7 @@ opentelemetry-instrument \
 ### Manual instrumentation for custom spans
 
 ```python
+# sketch
 from opentelemetry import trace, metrics
 from opentelemetry.trace import SpanKind
 
@@ -238,7 +240,7 @@ service:
   pipelines:
     metrics:
       receivers: [otlp]
-      processors: [batch, memory_limiter]
+      processors: [memory_limiter, batch]
       exporters: [prometheusremotewrite]
     logs:
       receivers: [otlp]
@@ -281,7 +283,7 @@ rate(http_requests_total{service="prices-api"}[5m])
 
 # p99 latency (from histogram)
 histogram_quantile(0.99,
-  rate(http_request_duration_seconds_bucket{service="prices-api"}[5m])
+  sum by (le) (rate(http_request_duration_seconds_bucket{service="prices-api"}[5m]))
 )
 
 # Consumer lag across all partitions
@@ -312,15 +314,16 @@ Index strategy:
   logs-prices-api-2024.01.15   (daily indices, auto-rolled via ILM)
 
 Index Lifecycle Management (ILM):
-  Hot tier   (0–7 days):   SSD, full replica, frequent writes
-  Warm tier  (7–30 days):  HDD, read-only, compressed
-  Cold tier  (30–90 days): Frozen, on-demand retrieval
-  Delete     (90+ days):   Automatic deletion
+  Hot tier   (0–3 days):   SSD, full replica, frequent writes
+  Warm tier  (3–14 days):  HDD, read-only, compressed
+  Cold tier  (14–30 days): Frozen, on-demand retrieval
+  Delete     (30+ days):   Automatic deletion (30-day log retention)
 ```
 
 ### Structured logging (JSON)
 
 ```python
+# sketch
 import structlog
 import logging
 
@@ -478,7 +481,7 @@ groups:
       - alert: HighP99Latency
         expr: |
           histogram_quantile(0.99,
-            rate(http_request_duration_seconds_bucket{service="prices-api"}[5m])
+            sum by (le) (rate(http_request_duration_seconds_bucket{service="prices-api"}[5m]))
           ) > 0.5
         for: 10m
         labels:
@@ -507,7 +510,7 @@ Prometheus uses a custom TSDB (time-series database):
   - In-memory chunks (2 hours of data)
   - Periodically flushed to disk as compressed blocks
   - Each block: 2-hour window, immutable after sealing
-  - Compaction: merges small blocks, applies downsampling
+  - Compaction: merges small blocks into larger ones (no downsampling; Thanos/Mimir do that)
 
 For long-term storage:
   Thanos: uploads blocks to S3; global query layer across multiple Prometheus instances
@@ -590,7 +593,7 @@ Never let observability failure affect the instrumented service:
 
 ### Sampling trade-off
 
-| | 100% sampling | Tail-based 10% | Head-based 1% |
+| | 100% sampling | Tail-based (errors + slow + 1%) | Head-based 1% |
 |---|---|---|---|
 | **Coverage** | Complete | High (catches all errors) | Miss rare events |
 | **Cost** | Very high | Medium | Low |

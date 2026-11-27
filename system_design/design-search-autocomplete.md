@@ -86,7 +86,7 @@ Storage:
 - Avg query length:   20 bytes
 - Metadata per query: 50 bytes (count, timestamp, etc.)
 - Raw storage:        100M × 70 bytes ≈ 7 GB
-- With trie overhead: ~15-20 GB
+- With trie overhead: ~15-20 GB (excludes per-node top-K cache: 500M nodes × 10 × 4-byte IDs ≈ +20 GB, see §3.1)
 ```
 
 ---
@@ -531,7 +531,7 @@ With 2x headroom:    60 servers total
 |----------|--------|------------|
 | **Trie server crash** | Partial capacity loss | Replicas + auto-failover |
 | **Redis failure** | Increased trie load | Multiple Redis replicas, degrade gracefully |
-| **Kafka lag** | Stale suggestions | Acceptable for hours, alert on long lag |
+| **Kafka lag** | Stale suggestions | Tolerable within the 1-hour freshness target; alert before it is breached |
 | **Trie build failure** | No updates | Keep serving old trie, alert on failure |
 | **Network partition** | Regional unavailability | Multi-region deployment |
 
@@ -551,7 +551,7 @@ With 2x headroom:    60 servers total
 |--------|-----------|--------|
 | p99 latency | > 100ms | Page on-call |
 | Cache hit rate | < 60% | Investigate cache config |
-| Trie update lag | > 2 hours | Check pipeline |
+| Trie update lag | > 1 hour (freshness target) | Check pipeline |
 | Error rate | > 0.1% | Page on-call |
 
 ---

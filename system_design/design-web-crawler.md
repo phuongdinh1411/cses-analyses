@@ -456,7 +456,7 @@ With 10 billion URLs, storing them all in a hash set would require ~1TB of memor
 | Approach | Memory for 10B URLs | False Positives | False Negatives |
 |----------|---------------------|-----------------|-----------------|
 | Hash Set | ~1 TB | None | None |
-| Bloom Filter | ~10 GB | 1% (configurable) | None |
+| Bloom Filter | ~12 GB (9.6 bits/URL) | 1% (configurable) | None |
 
 A Bloom Filter trades a small false positive rate for massive memory savings. **False positives are acceptable**—we might skip a few URLs we haven't seen. **False negatives would be bad**—we'd crawl duplicates.
 
@@ -469,7 +469,7 @@ A Bloom Filter trades a small false positive rate for massive memory savings. **
 
 #### Why Not Just Hash the URL?
 
-A simple hash (MD5, SHA) per URL would still require 16+ bytes per URL = 160GB for 10B URLs. Bloom filter gets to ~10GB with 1% false positive rate.
+A simple hash (MD5, SHA) per URL would still require 16+ bytes per URL = 160GB for 10B URLs. Bloom filter gets to ~12GB (10B × 9.6 bits) with 1% false positive rate.
 
 ### URL Normalization
 
@@ -480,7 +480,7 @@ A simple hash (MD5, SHA) per URL would still require 16+ bytes per URL = 160GB f
 These URLs all point to the same content:
 - `http://Example.com/page`
 - `https://example.com/page/`
-- `https://example.com/PAGE`
+- `https://EXAMPLE.com/page`
 - `https://example.com:443/page?a=1&b=2`
 - `https://example.com/page?b=2&a=1`
 
@@ -520,7 +520,7 @@ How do you maximize throughput while being a good citizen?
 |------|---------------|-----|
 | Respect robots.txt | Check before crawling, cache 24h | Legal and ethical requirement |
 | Crawl delay per domain | Default 1 req/sec, respect Crawl-delay | Avoid overwhelming servers |
-| Max 1 connection per domain | Domain queue enforces this | Browsers do the same |
+| Max 1 connection per domain | Domain queue enforces this | Browsers also cap per-host connections (~6) |
 | Back-off on errors | Exponential backoff on 5xx/429 | Server is struggling |
 | Time-of-day awareness | Reduce during peak hours | Be extra polite to small sites |
 
@@ -777,7 +777,7 @@ s3://crawler-bucket/content/2024/01/15/a3f2/a3f2b7c4d5e6f789.gz
 | zstd | 6:1 | Fast | Better for large volumes |
 | None | 1:1 | Fastest | When CPU-bound |
 
-**Key insight**: HTML compresses very well (often 10:1). This turns 100TB of raw storage into ~10TB compressed.
+**Key insight**: HTML compresses very well (5:1 with gzip as assumed in §3 → ~20TB; often 10:1 with zstd/large windows → ~10TB from 100TB raw).
 
 ---
 
@@ -904,7 +904,7 @@ Without jitter, if 1000 requests fail simultaneously, they all retry at exactly 
 | 5xx errors | Yes | Server temporarily overloaded |
 | 429 Too Many Requests | Yes (with longer delay) | Rate limited |
 | DNS failure | Yes | DNS server might be temporarily down |
-| 4xx errors | No | Client error, won't change on retry |
+| 4xx errors (except 429) | No | Client error, won't change on retry |
 | Parse error | No | Content issue, not transient |
 
 ### Checkpointing
@@ -1174,7 +1174,7 @@ When a worker wants to crawl a domain:
 
 | Instead of... | Say... |
 |---------------|--------|
-| "We check for duplicates" | "We use a Bloom filter for URL deduplication—it's probabilistic but uses 10GB instead of 1TB for 10B URLs. For content deduplication, we use SimHash to detect near-duplicates with Hamming distance ≤ 3." |
+| "We check for duplicates" | "We use a Bloom filter for URL deduplication—it's probabilistic but uses ~12GB instead of 1TB for 10B URLs. For content deduplication, we use SimHash to detect near-duplicates with Hamming distance ≤ 3." |
 | "We limit crawl rate" | "We use a token bucket rate limiter per domain. Default is 1 request/sec, but we respect robots.txt Crawl-delay and adaptively slow down if response times increase." |
 | "We shard the work" | "We shard by domain using consistent hashing. This automatically enforces politeness—one node owns each domain—and minimizes rebalancing when scaling." |
 | "We handle failures" | "Transient errors get exponential backoff with jitter to avoid thundering herd. We checkpoint every 5 minutes so crash recovery loses at most 5 minutes of progress." |

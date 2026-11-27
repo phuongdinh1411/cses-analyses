@@ -203,7 +203,7 @@ SET auto_increment_offset = 2;
 | Pros | Cons |
 |------|------|
 | 64-bit IDs | Requires coordination service |
-| Strictly sortable | Single point of failure (coordinator) |
+| Sortable within a range (not globally time-ordered across servers) | Single point of failure (coordinator) |
 | Simple concept | IDs reveal business volume |
 
 ---
@@ -432,7 +432,7 @@ flowchart TB
 10-25 min: PRESENT OPTIONS
            UUID: simple, no coordination, 128-bit
            Snowflake: 64-bit, sortable, needs clock sync
-           Database ranges: strictly sequential, needs coordinator
+           Database ranges: sequential per range (not globally), needs coordinator
 
 25-35 min: DEEP DIVE ON CHOSEN APPROACH
            If interviewer asks for 64-bit sortable → Snowflake
@@ -456,7 +456,7 @@ flowchart TB
 |----------|------------|
 | "What if clock goes backward?" | Refuse to generate (safest), wait until clock catches up, or use last timestamp (risky) |
 | "How do you assign machine IDs?" | Zookeeper coordination, derive from IP/MAC, config files, or use container orchestration |
-| "What's the collision probability?" | UUID: 2^-122 per ID pair. Snowflake: zero if machine IDs are unique |
+| "What's the collision probability?" | UUID: 2^-122 per ID pair. Snowflake: zero if machine IDs are unique and the clock never moves backward |
 | "Why not use database?" | Single point of failure, network latency per ID, scalability bottleneck |
 | "When would you use UUID over Snowflake?" | When 128-bit is acceptable, no coordination desired, sortability not needed |
 
@@ -479,6 +479,7 @@ flowchart TB
 - Discord epoch: January 1, 2015
 
 ```python
+# fragment
 # Discord Snowflake structure
 # 42 bits: timestamp
 # 5 bits:  internal worker ID
@@ -521,7 +522,7 @@ pi_3MzNLY2eZvKYlo2C1IJCJQqA   # PaymentIntent
 | 64-bit, sortable | Snowflake | Compact, time-ordered |
 | No coordination, simple | UUID v4 | Standard, available everywhere |
 | Sortable, no coordination | ULID or UUID v7 | Modern, database-friendly |
-| Strictly sequential | Database ranges | Predictable order |
+| Strictly sequential | Single DB sequence / ticket server | Predictable order (ranges are only sequential per server) |
 | High throughput (>1M/s) | Snowflake | 4096 IDs/ms/node |
 
 ### Trade-offs to Discuss

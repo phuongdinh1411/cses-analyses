@@ -282,8 +282,8 @@ CREATE TABLE posts (
     media_ids   LIST<UUID>,
     created_at  TIMESTAMP,
     likes_count INT,
-    PRIMARY KEY (user_id, created_at)
-) WITH CLUSTERING ORDER BY (created_at DESC);
+    PRIMARY KEY (user_id, created_at, post_id)
+) WITH CLUSTERING ORDER BY (created_at DESC, post_id DESC);
 ```
 
 ### Feed Table (Redis)
@@ -425,7 +425,7 @@ A user might have 1000+ posts from friends. Which 50 do you show first? Chronolo
 score = (time_decay × 0.4) + (engagement_score × 0.3) + (relationship × 0.3)
 
 where:
-  time_decay = 1 / (1 + hours_old / 6)     # Half-life of 6 hours
+  time_decay = 1 / (1 + hours_old / 6)     # Hyperbolic: halves at 6h (not exponential half-life)
   engagement = log(1 + likes + comments×2 + shares×3)
   relationship = interaction_frequency with author
 ```
@@ -456,7 +456,7 @@ Feature categories:
 |----------|--------|-----|
 | **Feed generation** | Hybrid push/pull | Balance read latency and write cost |
 | **Post storage** | Cassandra | High write throughput, time-series optimized |
-| **Feed storage** | Redis Sorted Set | O(log n) insert, O(1) range query |
+| **Feed storage** | Redis Sorted Set | O(log n) insert, O(log n + M) range query |
 | **Celebrity handling** | Pure pull + cache | Avoids 10M write amplification |
 | **Media storage** | S3 + CDN | Cost-effective, edge caching |
 
@@ -515,7 +515,7 @@ flowchart TB
 | Instead of... | Say... |
 |---------------|--------|
 | "We push to followers" | "For users with <10K followers, we push to their followers' feeds. For celebrities, we pull at read time to avoid write amplification." |
-| "Store feed in Redis" | "Redis Sorted Set is perfect for feeds - we store (post_id, timestamp) with O(log n) insert and O(1) top-N retrieval." |
+| "Store feed in Redis" | "Redis Sorted Set is perfect for feeds - we store (post_id, timestamp) with O(log n) insert and O(log n + N) top-N retrieval." |
 | "Rank by time" | "Chronological is simple but engagement-based ranking keeps users scrolling longer. We use a score combining recency, engagement, and relationship strength." |
 
 ### Common Follow-up Questions

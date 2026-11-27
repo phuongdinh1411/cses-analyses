@@ -93,7 +93,8 @@ Storage:
 Bandwidth:
 - Views/day:             5 billion
 - Average bitrate:       5 Mbps
-- Peak concurrent:       ~50 million viewers
+- Avg concurrent:        5B × 5 min ÷ 1,440 min/day ≈ 17 million viewers
+- Peak concurrent:       ~3× avg ≈ 50 million viewers
 - Peak bandwidth:        50M × 5 Mbps = 250 Tbps
 ```
 
@@ -262,7 +263,7 @@ Upload State Machine:
 
 ```mermaid
 flowchart LR
-    Original["Original Video<br/>(1080p MOV, 2GB)"]
+    Original["Original Video<br/>(4K MOV, 2GB)"]
 
     Original --> Split["Split into<br/>segments"]
 
@@ -622,9 +623,9 @@ flowchart LR
 ```
 
 **Implementation:**
-1. **Immediate**: Increment Redis counter (approximate, fast)
-2. **Every minute**: Flush Redis counts to Kafka
-3. **Every 5 minutes**: Aggregate and update database
+1. **Immediate**: Publish view event to Kafka; consumers increment Redis counter (approximate, fast — at-least-once consumers can double-count on replay unless deduped by event ID)
+2. **Every minute**: Aggregator reads Redis deltas
+3. **Every 5 minutes**: Batch-update database (Redis and DB writes are not atomic together; DB is reconciled from Kafka if they diverge)
 4. **Display**: Show approximate count from Redis
 
 ### Search Architecture
@@ -957,7 +958,7 @@ Priority during outages:
 | "Store videos in the cloud" | "Use tiered storage—SSD for hot content, HDD for warm, Glacier for cold—based on view velocity" |
 | "Use a CDN" | "Multi-tier CDN with edge PoPs for popular content and regional caches for long-tail, with popularity-based cache admission" |
 | "Transcode to multiple qualities" | "Generate HLS/DASH manifests with segments for adaptive bitrate streaming, transcoding in parallel using GPU-accelerated encoding" |
-| "Handle lots of views" | "Aggregate view counts in Redis, flush to Kafka, batch update to database every 5 minutes to handle 5B views/day" |
+| "Handle lots of views" | "Publish view events to Kafka, aggregate counts in Redis, batch update to database every 5 minutes to handle 5B views/day" |
 
 ### Common Follow-up Questions
 
@@ -977,7 +978,7 @@ Priority during outages:
 | **Storage cost vs latency** | Hot (SSD, expensive) | Cold (Glacier, slow) |
 | **Cache hit rate vs freshness** | Long TTL (high hit rate) | Short TTL (fresh data) |
 | **Video quality vs bandwidth** | High quality (more bandwidth) | Adaptive (compromise) |
-| **Consistency vs availability** | Strong (slower) | Eventual (faster, CAP) |
+| **Consistency vs availability** | Strong (slower; unavailable during partitions) | Eventual (faster — PACELC latency trade-off; available under partition per CAP) |
 
 ---
 

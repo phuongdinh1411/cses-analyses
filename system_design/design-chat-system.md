@@ -376,7 +376,7 @@ TTL: Refreshed on heartbeat
 # Online status
 Key: presence:{user_id}
 Value: "online" | "away" | "offline"
-TTL: 5 minutes (refreshed by heartbeat)
+TTL: 60 seconds (refreshed by 30s heartbeat)
 ```
 
 ---
@@ -420,7 +420,7 @@ sequenceDiagram
 flowchart TB
     UserA["User A (sends)"] --> WS["WS Server"]
     WS --> CS["Chat Service"]
-    CS --> Kafka["Message Queue (Kafka)<br/>Topic: group-messages-{group_id}"]
+    CS --> Kafka["Message Queue (Kafka)<br/>Topic: group-messages (key = group_id)"]
 
     Kafka --> UserB["User B (WS 2)"]
     Kafka --> UserC["User C (WS 3)"]
@@ -433,7 +433,7 @@ flowchart TB
 - Decouples sender from delivery
 - Handles backpressure (slow consumers don't block sender)
 - Reliable delivery with retries
-- Partitioning by user_id for ordered delivery
+- Partitioning by chat_id/group_id for per-chat ordered delivery (Kafka orders only within a partition)
 
 ### 3. Online Presence System
 
@@ -528,7 +528,7 @@ flowchart LR
 | Guarantee | Challenge | Solution |
 |-----------|-----------|----------|
 | **At-least-once** | Network failures | Retry with exponential backoff |
-| **Ordering** | Concurrent messages | Sequential IDs per chat (TimeUUID) |
+| **Ordering** | Concurrent messages | Sequential IDs per chat (TimeUUID is only roughly ordered under clock skew; use a per-chat sequence for strict order) |
 | **No duplicates** | Retries cause duplicates | client_msg_id deduplication |
 
 ### Why Not Exactly-Once?
@@ -584,7 +584,7 @@ flowchart TB
 | **Protocol** | WebSocket | True real-time, bidirectional, low overhead |
 | **Message storage** | Cassandra | High write throughput, time-series optimized |
 | **Session storage** | Redis | Fast lookups, pub/sub for cross-server messaging |
-| **Message queue** | Kafka | Reliable fan-out, ordering guarantees |
+| **Message queue** | Kafka | Reliable fan-out, per-partition ordering |
 | **Presence** | Redis + TTL | Simple, automatic cleanup on disconnect |
 
 ### Trade-offs to Discuss

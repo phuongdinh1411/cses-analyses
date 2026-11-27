@@ -287,12 +287,12 @@ flowchart TB
 │   ┌─────────────┬─────┬─────┬─────┬───────────────────────┐    │
 │   │ Config      │  N  │  W  │  R  │ Use Case              │    │
 │   ├─────────────┼─────┼─────┼─────┼───────────────────────┤    │
-│   │ Strong      │  3  │  3  │  1  │ Write-heavy, strong   │    │
+│   │ Strong      │  3  │  3  │  1  │ Read-heavy, strong    │    │
 │   │ Consistency │     │     │     │ consistency           │    │
 │   ├─────────────┼─────┼─────┼─────┼───────────────────────┤    │
 │   │ Balanced    │  3  │  2  │  2  │ Default, good balance │    │
 │   ├─────────────┼─────┼─────┼─────┼───────────────────────┤    │
-│   │ Fast Reads  │  3  │  2  │  1  │ Read-heavy workloads  │    │
+│   │ Fast Reads  │  3  │  2  │  1  │ Read-heavy (stale OK) │    │
 │   ├─────────────┼─────┼─────┼─────┼───────────────────────┤    │
 │   │ Eventual    │  3  │  1  │  1  │ Max availability      │    │
 │   └─────────────┴─────┴─────┴─────┴───────────────────────┘    │
@@ -390,14 +390,14 @@ This leads to a fundamental trade-off in distributed systems: the **CAP Theorem*
 │                        \│                                       │
 │                                                                 │
 │   Key-Value Stores typically choose AP (DynamoDB, Cassandra)   │
-│   or CP (HBase, traditional RDBMS)                             │
+│   or CP (HBase, etcd); "CA" only without partitions            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ### Conflict Resolution
 
-When W + R ≤ N, concurrent writes can create conflicts. Resolution strategies:
+In leaderless replication, concurrent writes can conflict even when W + R > N (and with W + R ≤ N or sloppy quorums, reads can also be stale). Resolution strategies:
 
 #### 1. Last-Write-Wins (LWW)
 
@@ -678,7 +678,7 @@ Hinted handoff enables a **sloppy quorum** - writes succeed using *any* W health
 │   ─────────────────────────────                                │
 │   Preference list: [A, B, C]                                   │
 │   Must write to 2 of [A, B, C] only                           │
-│   If B is down → WRITE FAILS (only A, C available = 2, ok)    │
+│   If B is down → write OK (A, C available = 2 = W)            │
 │   If B and C down → WRITE FAILS (only A available = 1)        │
 │                                                                 │
 │   SLOPPY QUORUM (With Hinted Handoff):                         │
@@ -1056,7 +1056,7 @@ Let's summarize the complete failure handling strategy:
 | System | Temporary Failure | Permanent Failure |
 |--------|-------------------|-------------------|
 | **Cassandra** | Hinted handoff (3h default) | `nodetool removenode` + streaming |
-| **DynamoDB** | Sloppy quorum + hints | Managed by AWS automatically |
+| **Dynamo (2007 paper)** | Sloppy quorum + hints | Merkle-tree anti-entropy |
 | **Riak** | Hinted handoff | Automatic with Merkle trees |
 | **etcd** | Raft leader election | Membership reconfiguration |
 
@@ -1455,9 +1455,9 @@ The key is to **show your thought process**. Don't just list solutions - identif
 ```
 Typical performance targets:
 - Read latency: p50 < 1ms, p99 < 10ms
-- Write latency: p50 < 5ms, p99 < 50ms
+- Write latency: p50 < 5ms, p99 < 10ms
 - Availability: 99.99% (52 min downtime/year)
-- Replication factor: 3 (tolerates 1 failure)
+- Replication factor: 3 (W=R=2 quorum ops tolerate 1 failed replica)
 - Virtual nodes: 100-256 per physical node
 ```
 

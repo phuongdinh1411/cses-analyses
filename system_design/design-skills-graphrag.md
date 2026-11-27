@@ -343,7 +343,7 @@ MATCH (source:Profession {name: 'Python Developer'})-[:REQUIRES]->(s1:Skill)
 WITH collect(s1) as sourceSkills
 
 // Get target profession skills
-MATCH (target:Profession {name: 'ML Engineer'})-[:REQUIRES]->(s2:Skill)
+MATCH (target:Profession {name: 'Machine Learning Engineer'})-[:REQUIRES]->(s2:Skill)
 WITH sourceSkills, collect(s2) as targetSkills
 
 // Find gap skills (in target but not in source)
@@ -426,7 +426,7 @@ flowchart TB
 |--------|--------------|---------------|
 | **Skills Gap** | Compare skills between roles | `(CurrentRole)-[:REQUIRES]->() vs (TargetRole)-[:REQUIRES]->()` |
 | **Career Path** | Find progression routes | `(Start)-[:TRANSITIONS_TO*1..4]->(End)` |
-| **Recommendations** | Suggest related skills | `(UserSkill)-[:SIMILAR_TO|RELATED_TO]->(Recommended)` |
+| **Recommendations** | Suggest related skills | `(UserSkill)-[:SIMILAR_TO\|RELATED_TO]->(Recommended)` |
 | **Profession Skills** | List required skills | `(Profession)-[:REQUIRES]->(Skill)` |
 
 ### Intent Classification
@@ -725,6 +725,7 @@ flowchart TB
 
 ```
 score = (goal_relevance × 0.4) + (growth_rate × 0.3) + (popularity × 0.3)
+        # each factor min-max normalized to 0–1 first (raw popularity is 0–100, growth_rate ~0.15)
 ```
 
 | Factor | Weight | Why |
@@ -830,7 +831,7 @@ score = (goal_relevance × 0.4) + (growth_rate × 0.3) + (popularity × 0.3)
 
 | Decision | Option A | Option B |
 |----------|----------|----------|
-| **Graph DB** | Neo4j (mature, Cypher) | Amazon Neptune (managed, SPARQL) |
+| **Graph DB** | Neo4j (mature, Cypher) | Amazon Neptune (managed; openCypher, Gremlin, SPARQL) |
 | **Embeddings** | Pre-computed (fast) | On-demand (flexible) |
 | **Entity extraction** | LLM (flexible) | NER model (faster) |
 | **Response generation** | LLM (natural) | Template-based (predictable) |
