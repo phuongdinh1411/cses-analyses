@@ -70,7 +70,7 @@ Output:
 
 > **Key Question:** How can we efficiently count intersections without checking all O(n^2) pairs?
 
-Use a **sweep line** moving left to right. Track which vertical segments are "active" and count how many active verticals each horizontal segment crosses.
+Use a **sweep line** moving left to right. A horizontal segment is "active" while the line is between its two x endpoints. Each vertical segment, when the line reaches it, counts the active horizontals whose y lies in its y-range.
 
 ### Breaking Down the Problem
 
@@ -79,7 +79,7 @@ Use a **sweep line** moving left to right. Track which vertical segments are "ac
 
 ### Analogy
 
-Think of vertical segments as "bookmarks" inserted at their x-coordinate. When processing a horizontal segment, count bookmarks whose y-range includes the horizontal's y-value.
+Think of each horizontal segment as a wire stretched across the sweep line while the line is over it. A vertical segment at x is a probe: it counts how many wires currently cross the line between its bottom and top.
 
 ---
 
@@ -126,107 +126,92 @@ def solve_brute_force(n, segments):
 
 ### Key Insight
 
-> **The Trick:** Process events left-to-right. At each x: add vertical segments starting here, query for horizontal segments ending here, remove vertical segments ending here.
+> **The Trick:** Sweep x from left to right. A horizontal segment enters a Fenwick tree (indexed by compressed y) at its left end and leaves at its right end. A vertical segment queries the tree for the count of active y in [y1, y2].
 
 ### Event Types
 
 | Event | Type | Description |
 |-------|------|-------------|
-| Vertical Start | 0 | Add y-range to active set |
-| Horizontal Query | 1 | Count active verticals at this y |
-| Vertical End | 2 | Remove y-range from active set |
+| Horizontal start (x = left end) | 0 | Add its y to the Fenwick tree |
+| Vertical (x = its x) | 1 | Count active y in [y1, y2] |
+| Horizontal end (x = right end) | 2 | Remove its y |
+
+At equal x the order is add, query, remove, so a vertical touching a horizontal's endpoint still counts.
 
 ### Dry Run Example
 
 ```
 Segments:
-  H1: (0,2)-(4,2), H2: (0,1)-(3,1)
-  V1: (1,0)-(1,3), V2: (2,1)-(2,4), V3: (4,0)-(4,3)
+  H1: y=2, x in [0,4]     H2: y=1, x in [0,3]
+  V1: x=1, y in [0,3]     V2: x=2, y in [1,4]     V3: x=4, y in [0,3]
 
-Events sorted by x:
-x=1: V1 add [0,3]
-x=2: V2 add [1,4]
-x=3: H2 query y=1 -> V1[0,3] contains 1, V2[1,4] contains 1 -> +2
-x=4: V3 add [0,3], H1 query y=2 -> V1,V2,V3 all contain 2 -> +3
+Events sorted by (x, type):
+x=0: add H1 (y=2), add H2 (y=1)         active y = {1, 2}
+x=1: V1 query [0,3] -> y=1, y=2   +2    total 2
+x=2: V2 query [1,4] -> y=1, y=2   +2    total 4
+x=3: remove H2 (y=1)                    active y = {2}
+x=4: V3 query [0,3] -> y=2        +1    total 5
+x=4: remove H1 (y=2)                    active y = {}
 
 Total: 5
 ```
 
-### Visual Diagram
-
-```
-Y
-4 |     +---V2
-3 |   + | +---V3
-2 |---+-+-+---H1
-1 +---+-+-+---H2
-0 +---V1V2V3
-  0 1 2 3 4  X
-
-Intersections: (1,2), (2,2), (4,2), (1,1), (2,1) = 5
-```
+Intersections: (1,1), (1,2), (2,1), (2,2), (4,2).
 
 ### Python Solution
 
 ```python
 import sys
 from bisect import bisect_left, bisect_right
-input = sys.stdin.readline
+
 
 def main():
-  n = int(input())
-  events = []
-  all_y = set()
+  data = sys.stdin.buffer.read().split()
+  n = int(data[0])
+  events = []          # (x, type, ...) with type 0 = add, 1 = query, 2 = remove
+  hys = []
+  for i in range(n):
+    x1, y1, x2, y2 = map(int, data[1 + 4 * i: 5 + 4 * i])
+    if y1 == y2:                                  # horizontal: active on [x1, x2]
+      if x1 > x2:
+        x1, x2 = x2, x1
+      events.append((x1, 0, y1, 0))
+      events.append((x2, 2, y1, 0))
+      hys.append(y1)
+    else:                                         # vertical: query at its x
+      if y1 > y2:
+        y1, y2 = y2, y1
+      events.append((x1, 1, y1, y2))
 
-  for _ in range(n):
-    x1, y1, x2, y2 = map(int, input().split())
-    if y1 == y2:  # Horizontal
-      xmin, xmax = min(x1, x2), max(x1, x2)
-      events.append((xmax, 1, y1, y1))  # Query
-      all_y.add(y1)
-    else:  # Vertical
-      ymin, ymax = min(y1, y2), max(y1, y2)
-      events.append((x1, 0, ymin, ymax))  # Add
-      events.append((x1, 2, ymin, ymax))  # Remove
-      all_y.add(ymin)
-      all_y.add(ymax)
-
-  ys = sorted(all_y)
-  y_idx = {y: i for i, y in enumerate(ys)}
+  ys = sorted(set(hys))                           # compress only the y's we store
   m = len(ys)
-  tree = [0] * (m + 2)
+  tree = [0] * (m + 1)
 
-  def update(i, d):
+  def update(i, d):                               # Fenwick tree, 1-based inside
     i += 1
     while i <= m:
       tree[i] += d
-      i += i & (-i)
+      i += i & -i
 
-  def query(i):
-    i += 1
+  def prefix(i):                                  # sum of positions [0, i)
     s = 0
     while i > 0:
       s += tree[i]
-      i -= i & (-i)
+      i -= i & -i
     return s
 
-  events.sort()
+  # At equal x: add before query before remove, so touching endpoints count.
+  events.sort(key=lambda e: (e[0], e[1]))
   ans = 0
-
   for x, t, a, b in events:
-    if t == 0:  # Add vertical
-      ai, bi = y_idx[a], y_idx[b]
-      for yi in range(ai, bi + 1):
-        update(yi, 1)
-    elif t == 1:  # Query horizontal
-      yi = y_idx[a]
-      ans += query(yi) - (query(yi - 1) if yi > 0 else 0)
-    else:  # Remove vertical
-      ai, bi = y_idx[a], y_idx[b]
-      for yi in range(ai, bi + 1):
-        update(yi, -1)
-
+    if t == 0:
+      update(bisect_left(ys, a), 1)
+    elif t == 2:
+      update(bisect_left(ys, a), -1)
+    else:
+      ans += prefix(bisect_right(ys, b)) - prefix(bisect_left(ys, a))
   print(ans)
+
 
 main()
 ```
@@ -260,8 +245,8 @@ events.sort(key=lambda e: (e[0], e[1]))
 # WRONG: y can be 10^9
 tree[y] += 1
 
-# CORRECT: Compress first
-tree[y_idx[y]] += 1
+# CORRECT: Compress first (ys = sorted distinct y of horizontals)
+update(bisect_left(ys, y), 1)
 ```
 
 **Problem:** Cannot use 10^9 as array index.
@@ -269,11 +254,11 @@ tree[y_idx[y]] += 1
 ### Mistake 3: Off-by-One in Range Query
 
 ```python
-# WRONG: Excludes l
-return query(r) - query(l)
+# WRONG: bisect_right on the low end drops horizontals exactly at y1
+prefix(bisect_right(ys, y2)) - prefix(bisect_right(ys, y1))
 
-# CORRECT: Includes l
-return query(r) - query(l - 1)
+# CORRECT: prefix(i) sums positions [0, i), so take [first >= y1, first > y2)
+prefix(bisect_right(ys, y2)) - prefix(bisect_left(ys, y1))
 ```
 
 ---

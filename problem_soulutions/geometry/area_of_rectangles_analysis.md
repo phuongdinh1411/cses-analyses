@@ -53,24 +53,25 @@ Input:
 2 2 5 5
 
 Output:
-14
+13
 ```
 
 **Explanation:**
 - Rectangle 1: area = 3 * 2 = 6
 - Rectangle 2: area = 3 * 3 = 9
 - Overlap region: (2,2) to (4,3) = 2 * 1 = 2 (counted once)
-- Union area = 6 + 9 - 2 = 13... Wait, let's recalculate visually!
+- Union area = 6 + 9 - 2 = **13**
+
+Unit cells, labelled by which rectangle covers them (`#` = both):
 
 ```
-Y
-5 |     +-----+
-4 |     |     |
-3 | +---+--+  |
-2 | |   |##|  |
-1 | +---+--+--+
-0 +---------------> X
-  0 1 2 3 4 5
+y=4..5   .  2  2  2
+y=3..4   .  2  2  2
+y=2..3   1  #  #  2
+y=1..2   1  1  1  .
+        x=1  2  3  4   (each column is the cell from x to x+1)
+
+3 + 3 + 4 + 3 = 13 covered cells
 ```
 
 ---

@@ -58,14 +58,15 @@ Input:
 1 2
 
 Output:
-4
+5
 0 0
 2 0
 3 1
+2 2
 1 2
 ```
 
-**Explanation:** The convex hull forms a quadrilateral with vertices (0,0), (2,0), (3,1), and (1,2). Point (1,1) is inside the hull, and (2,2) lies on the edge between (1,2) and (3,1).
+**Explanation:** The hull is the pentagon (0,0) → (2,0) → (3,1) → (2,2) → (1,2). Point (1,1) is strictly inside. (2,2) is a vertex, not an interior point: the segment from (3,1) to (1,2) passes x = 2 at y = 1.5, below it.
 
 ---
 
@@ -145,54 +146,48 @@ cross(O, A, B) = (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x)
 
 Let's trace through with input points: `(0,0), (1,1), (2,2), (3,1), (2,0), (1,2)`
 
+`cross(o, a, b) > 0` means o → a → b turns left (counter-clockwise). Pop while `cross <= 0`.
+
 ```
 Step 1: Sort by x-coordinate (then y)
   Sorted: [(0,0), (1,1), (1,2), (2,0), (2,2), (3,1)]
 
-Step 2: Build Lower Hull (left to right)
-  Start: []
-  Add (0,0): [(0,0)]
-  Add (1,1): [(0,0), (1,1)]
-  Add (1,2): cross((0,0),(1,1),(1,2)) = 1 > 0 (left turn) -> keep
-             [(0,0), (1,1), (1,2)]
-  Add (2,0): cross((1,1),(1,2),(2,0)) = -2 < 0 (right turn) -> pop (1,2)
-             cross((0,0),(1,1),(2,0)) = -1 < 0 (right turn) -> pop (1,1)
-             [(0,0), (2,0)]
-  Add (2,2): cross((0,0),(2,0),(2,2)) = 4 > 0 (left turn) -> keep
-             [(0,0), (2,0), (2,2)]
-  Add (3,1): cross((2,0),(2,2),(3,1)) = -2 < 0 (right turn) -> pop (2,2)
-             cross((0,0),(2,0),(3,1)) = 2 > 0 (left turn) -> keep
-             Lower hull: [(0,0), (2,0), (3,1)]
+Step 2: Lower hull (left to right)
+  Add (0,0), (1,1)                                   [(0,0), (1,1)]
+  Add (1,2): cross((0,0),(1,1),(1,2)) =  1 > 0  keep  [(0,0), (1,1), (1,2)]
+  Add (2,0): cross((1,1),(1,2),(2,0)) = -1      pop (1,2)
+             cross((0,0),(1,1),(2,0)) = -2      pop (1,1)  [(0,0), (2,0)]
+  Add (2,2): cross((0,0),(2,0),(2,2)) =  4 > 0  keep  [(0,0), (2,0), (2,2)]
+  Add (3,1): cross((2,0),(2,2),(3,1)) = -2      pop (2,2)
+             cross((0,0),(2,0),(3,1)) =  2 > 0  keep  [(0,0), (2,0), (3,1)]
 
-Step 3: Build Upper Hull (right to left)
-  Start: []
-  Add (3,1): [(3,1)]
-  Add (2,2): [(3,1), (2,2)]
-  Add (2,0): cross((3,1),(2,2),(2,0)) = 2 > 0 -> keep
-             [(3,1), (2,2), (2,0)]
-  Add (1,2): cross((2,2),(2,0),(1,2)) = 4 > 0 -> keep...
-             But we need to pop (2,0) first: cross = -2 < 0 -> pop
-             [(3,1), (2,2), (1,2)]
-  ... continue until:
-             Upper hull: [(3,1), (1,2), (0,0)]
+Step 3: Upper hull (right to left)
+  Add (3,1), (2,2)                                   [(3,1), (2,2)]
+  Add (2,0): cross((3,1),(2,2),(2,0)) =  2 > 0  keep  [(3,1), (2,2), (2,0)]
+  Add (1,2): cross((2,2),(2,0),(1,2)) = -2      pop (2,0)
+             cross((3,1),(2,2),(1,2)) =  1 > 0  keep  [(3,1), (2,2), (1,2)]
+  Add (1,1): cross((2,2),(1,2),(1,1)) =  1 > 0  keep  [(3,1), (2,2), (1,2), (1,1)]
+  Add (0,0): cross((1,2),(1,1),(0,0)) = -1      pop (1,1)
+             cross((2,2),(1,2),(0,0)) =  2 > 0  keep  [(3,1), (2,2), (1,2), (0,0)]
 
-Step 4: Combine (remove duplicate endpoints)
-  Final hull: [(0,0), (2,0), (3,1), (1,2)]
+Step 4: Combine, dropping each chain's last point (it starts the other chain)
+  Final hull: [(0,0), (2,0), (3,1), (2,2), (1,2)]
 ```
 
 ### Visual Diagram
 
 ```
-       (1,2)
-        *---------* (2,2) <- not on hull
-       /           \
-      /    (1,1)    \
-     /      *        \
-    /                 \
-(0,0)*-------*--------*(3,1)
-            (2,0)
+y
+2 |    (1,2)*-----*(2,2)
+  |        /        \
+1 |       /   *(1,1)  *(3,1)
+  |      /           /
+0 |  (0,0)*-----*(2,0)
+  +----------------------- x
+       0     1     2     3
 
-Hull: (0,0) -> (2,0) -> (3,1) -> (1,2) -> back to (0,0)
+Hull (counter-clockwise): (0,0) -> (2,0) -> (3,1) -> (2,2) -> (1,2) -> (0,0)
+(1,1) is strictly inside.
 ```
 
 ### Code
