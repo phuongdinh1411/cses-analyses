@@ -8,6 +8,35 @@ permalink: /problem_soulutions/dynamic_programming/summary
 
 Welcome to the Dynamic Programming section! This category covers techniques for solving complex problems by breaking them down into simpler subproblems.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Array Description](array_description_analysis) | DP over (position, value) | dp[i][v] = ways with a[i] = v; each step comes from v−1, v, v+1, and fixed cells allow only their value | O(n * m) |
+| [Book Shop](book_shop_analysis) | 0/1 Knapsack | 0/1 knapsack: dp[c] = max pages with cost ≤ c; loop c downward so each book is used once | O(n * x) |
+| [Coin Combinations I](coin_combinations_i_analysis) | 1D DP counting permutations | Ordered ways: dp[x] = Σ dp[x − c]; loop sums outside, coins inside | O(n × x) |
+| [Coin Combinations II](coin_combinations_ii_analysis) | 1D DP counting combinations | Unordered ways: loop coins outside, sums inside, so each multiset is counted once | O(n * x) |
+| [Counting Towers](counting_towers_analysis) | State-based DP with transition counting | Each row ends in one of two states (one width-2 block or two width-1 blocks); a 2-state linear recurrence counts all towers | O(N) |
+| [Dice Combinations](dice_combinations_analysis) | 1D DP with counting | Instead of recomputing, store the number of ways to reach each sum from 0 to n | O(n) |
+| [Edit Distance (Levenshtein Distance)](edit_distance_analysis) | 2-D string DP | At each position when comparing characters from both strings, we have the following choices | O(n * m) |
+| [Grid Paths](grid_paths_analysis) | Grid DP | Paths into a free cell = paths from above + paths from the left; traps contribute 0 | O(n²) |
+| [Increasing Subsequence (Longest Increasing Subsequence)](increasing_subsequence_analysis) | Binary search optimization | Keep tails[k] = smallest tail of an increasing subsequence of length k+1; bisect each element into it | O(n log n) optimal, O(n^2) naive |
+| [Longest Common Subsequence (LCS)](longest_common_subsequence_analysis) | 2-D string DP | At each position when comparing characters | O(n * m) |
+| [Minimum Path Sum in Grid](minimal_grid_path_analysis) | Grid DP with min() optimization | Build the string diagonal by diagonal, keeping only cells that achieve the smallest letter so far | O(n * m) |
+| [Minimizing Coins](minimizing_coins_analysis) | 1D DP with unbounded choices | Unlike Coin Combinations I where we count ways using `sum()`, here we find the minimum using `min()` | O(n * x) |
+| [Money Sums](money_sums_analysis) | Subset-sum (0/1 knapsack, boolean) | Use a boolean DP array where `dp[s] = True` means sum `s` can be achieved | O(n * S) |
+| [Rectangle Cutting](rectangle_cutting_analysis) | Interval-style DP over dimensions | dp[a][b] = 0 if square, else min over every horizontal and vertical cut | O(a * b * (a + b)) |
+| [Removal Game](removal_game_analysis) | Interval DP with game theory (minimax) | dp[l][r] = best score difference for the player to move; answer = (sum + dp[0][n−1]) / 2 | O(n^2) - fill n^2 states, O(1) per state |
+| [Removing Digits](removing_digits_analysis) | Dynamic Programming / BFS | At each number, we have multiple choices (subtract any non-zero digit) | O(n * d) where d = number of digits in i (at most 7 for n <= 10^6) |
+| [SOS DP (Sum over Subsets)](sos_dp_analysis) | Sum over Subsets DP | Sum over subsets one bit at a time: after processing bit i, F[mask] includes every submask differing only in bits ≤ i | O(n * 2^n) |
+| [Two Sets II](two_sets_ii_analysis) | Counting knapsack | Count subsets of 1..n−1 with sum n(n+1)/4 (fixing n breaks the symmetry) | O(n * target) where target = n*(n+1)/4 |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### DP Fundamentals
@@ -107,8 +136,8 @@ Welcome to the Dynamic Programming section! This category covers techniques for 
 ### Basic DP Concepts
 - [Dice Combinations](dice_combinations_analysis) - Count ways to get sum with dice
 - [Minimizing Coins](minimizing_coins_analysis) - Coin change problem
-- [Coin Combinations I](coin_combinations_i_analysis) - Unordered combinations
-- [Coin Combinations II](coin_combinations_ii_analysis) - Ordered combinations
+- [Coin Combinations I](coin_combinations_i_analysis) - Ordered sequences (order of coins matters)
+- [Coin Combinations II](coin_combinations_ii_analysis) - Unordered combinations (multisets of coins)
 - [Removing Digits](removing_digits_analysis) - Minimize steps to zero
 
 ### Grid Problems

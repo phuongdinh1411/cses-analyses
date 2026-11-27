@@ -8,6 +8,39 @@ permalink: /problem_soulutions/counting_problems/summary
 
 Welcome to the Counting Problems section! This category covers combinatorics and mathematical counting techniques for solving complex enumeration problems.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [All Letter Subgrid Count I](all_letter_subgrid_count_i_analysis) | Subgrid Enumeration + Set Tracking | When expanding a subgrid to the right, only add the new column's letters instead of rescanning the entire subgrid | O(n^2 * m^2) |
+| [All Letter Subgrid Count II](all_letter_subgrid_count_ii_analysis) | Prefix Sums / Histogram Method | For each position, precompute the "height" of consecutive identical letters going upward | O(n * m) |
+| [Counting Subgrids](border_subgrid_count_i_analysis) | 2D Prefix Sums, Pairwise Row Comparison | For a fixed pair of rows, count column pairs where BOTH rows have '*' | O(n^3 / 64) |
+| [Border Subgrid Count II](border_subgrid_count_ii_analysis) | 2D Prefix Sum, Range Queries | Build two prefix sum arrays - one for border values, one for interior values | O(n^2 * m^2) |
+| [Collecting Numbers](collecting_numbers_distribution_analysis) | Position Tracking | Count how many times `position[k+1] < position[k]` for k from 1 to n-1 | O(n) |
+| [Counting Bishops](counting_bishops_analysis) | Diagonal Independence + DP Convolution | Solve for black and white diagonals separately, then combine using the formula | O(n^2) |
+| [Binomial Coefficients](counting_combinations_analysis) | Modular Inverse + Precomputation | Precompute all factorials and their modular inverses once, then answer each query in O(1) | O(MAX_N + q) |
+| [Counting Permutations](counting_permutations_analysis) | Factorial with Modular Arithmetic | Apply modulo at each multiplication step to prevent overflow while maintaining correctness | O(n) |
+| [Creating Strings / Counting Reorders](counting_reorders_analysis) | Multinomial Coefficient / Factorial with Division | Distinct orderings of a multiset = n! / ∏ cᵢ!, computed mod p with precomputed factorials and inverse factorials | O(n + k log MOD) |
+| [Counting Sequences](counting_sequences_analysis) | Modular Exponentiation | The answer is simply n^k mod (10^9+7) | O(log k) |
+| [Empty String](empty_string_analysis) | Interval DP for removing matching pairs | Use interval DP where `dp[i][j]` = number of ways to empty substring `s[i..j]` | O(n^3) |
+| [Filled Subgrid Count I](filled_subgrid_count_i_analysis) | 2D Prefix Sums / Early Termination | If all k^2 cells have value v, then sum of subgrid = k^2 * v | O(n * m) average |
+| [Filled Subgrid Count II](filled_subgrid_count_ii_analysis) | 2D Prefix Sum | Precompute a 2D prefix sum array to answer "sum of rectangle" queries in O(1) | O(n^2 * m^2) |
+| [Functional Graph Distribution](functional_graph_distribution_analysis) | Modular Exponentiation | Since each of n nodes independently chooses from n targets, the total count is simply n^n | O(log n) |
+| [Grid Completion](grid_completion_analysis) | Constraint Satisfaction, Latin Square Counting | Count Latin-square completions consistent with the fixed cells (backtracking with row/column constraints) | O(n^k) worst case |
+| [Grid Paths II](grid_paths_ii_analysis) | Grid DP with Obstacles | The number of paths to cell (i,j) only depends on paths to (i-1,j) and (i,j-1) | O(n^2) |
+| [Mobius Function and Inversion](mobius_function_analysis) | Mobius Function, Linear Sieve, Inclusion-Exclusion | The Mobius function encodes inclusion-exclusion coefficients for divisibility problems | O(n) |
+| [Permutation Inversions](permutation_inversions_analysis) | DP with Prefix Sum Optimization | The inner sum `dp[i-1][j] + dp[i-1][j-1] +  | O(n * k) |
+| [Raab Game II](raab_game_ii_analysis) | Modular Exponentiation | Each position independently has (n-1) choices, so total = n x (n-1)^k | O(log k) |
+| [Stirling Numbers (First and Second Kind)](stirling_numbers_analysis) | Dynamic Programming with Recurrence Relations | S(n, k) = k · S(n−1, k) + S(n−1, k−1): the new element joins an existing block or starts one | O(n · k) |
+| [Tournament Graph Count](tournament_graph_distribution_analysis) | Modular Exponentiation | Use binary exponentiation to compute 2^k mod m in O(log k) time | O(log n) |
+| [Tree Traversals (Counting)](tree_traversals_analysis) | Catalan Numbers, Tree DP, Factorial Counting | Instead of enumerating, multiply factorials of children counts | O(n) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Combinatorial Principles

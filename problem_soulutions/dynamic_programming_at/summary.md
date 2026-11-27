@@ -8,6 +8,42 @@ permalink: /problem_soulutions/dynamic_programming_at/summary
 
 Welcome to the AtCoder Educational DP Contest section! This comprehensive collection covers 26 dynamic programming problems designed to teach and reinforce various DP techniques from basic to advanced.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Candies](candies_analysis) | DP with Prefix Sum Optimization | dp[i][k] = sum of dp[i−1][k−a_i .. k]; a prefix sum makes each transition O(1) | O(N * K) |
+| [Coins](coins_analysis) | Probability DP | Track the probability distribution of the number of heads as we process coins one by one | O(N^2) |
+| [Deque (AtCoder DP Contest L)](deque_analysis) | Interval DP | Define `dp[i][j]` as the maximum score difference achievable by the **current player** for the interval [i, j] | O(N^2) |
+| [Digit Sum](digit_sum_analysis) | Digit DP with Tight Constraint | Build numbers digit by digit, tracking (position, is_tight, sum_mod_D) to count valid numbers without enumeration | O(n * D * 10) |
+| [Flowers](flowers_analysis) | Weighted LIS + Segment Tree | Use a segment tree indexed by height values to answer "maximum dp value for heights in range [0, h-1]" in O(log n) | O(n log n) |
+| [Frog 1](frog_1_analysis) | 1D DP with Linear Transitions | The minimum cost to reach stone i only depends on the costs to reach stones i-1 and i-2 | O(n) |
+| [Frog 2](frog_2_analysis) | 1D DP with K Transitions | For each stone i, the minimum cost is the best choice among all K possible previous stones | O(N*K) |
+| [Frog 3](frog_3_analysis) | Convex Hull Trick / Li Chao Tree | Transform the DP recurrence into line queries | O(N log N) |
+| [Grid 1](grid_1_analysis) | Grid DP with Obstacle Handling | `dp[i][j]` stores the count of paths to reach cell (i,j) | O(H * W) |
+| [Grid 2](grid_2_analysis) | Inclusion-Exclusion Principle | Instead of DP on every cell, do DP on only the N obstacles plus the destination | O(N^2 + H + W) |
+| [Grouping](grouping_analysis) | Subset DP with Bitmask Enumeration | For any subset represented by mask, either keep it as one group OR split into two non-empty submasks and combine their optimal solutions | O(3^N) |
+| [Independent Set](independent_set_analysis) | Tree DP with Binary State | For each node, track two values: count of valid subtree colorings when this node is white, and when this node is black | O(N) |
+| [Intervals](intervals_analysis) | DP with Segment Tree for Range Max Query | Use a segment tree to maintain `dp[i]` values and answer range max queries in O(log N) | O((N + M) log N) |
+| [Knapsack 1](knapsack_1_analysis) | 0/1 Knapsack DP | The maximum value achievable depends only on "which items remain" and "remaining capacity" - use DP to avoid recalculating these states | O(n * W) |
+| [Knapsack 2](knapsack_2_analysis) | Value-Based DP (State Inversion) | Since values are small (max 10^3) and N <= 100, total achievable value is at most 10^5 | O(N * V) |
+| [Longest Path](longest_path_analysis) | DP on DAG with Topological Order | Use DFS to explore paths lazily, caching results to avoid recomputation | O(V + E) |
+| [Matching](matching_analysis) | Bitmask DP, State Compression | Assign men in order; dp[mask] = ways where the women in mask are taken by the first popcount(mask) men | O(N * 2^N) |
+| [Permutation](permutation_analysis) | Insertion DP with Prefix Sum Optimization | Build the permutation element by element | O(N^2) |
+| [Slimes](slimes_analysis) | Interval DP + Prefix Sums | Process intervals in order of increasing length | O(N^3) |
+| [Stones](stones_analysis) | Win/Lose Position DP | Position 0 is always a Losing position (can't move) | O(N * K) |
+| [Subtree (AtCoder DP V)](subtree_analysis) | Rerooting DP | Compute dp_down[v] (ways when v is root of its subtree) and dp_up[v] (contribution from v's parent direction), then combine them | O(N) |
+| [Sushi](sushi_analysis) | Expected Value DP with State Compression | Individual plate identities do not matter | O(N^3) |
+| [Tower (DP X)](tower_analysis) | Sorting + DP (LIS-like) | Sort blocks by (w + s), then use DP where dp[i][j] = minimum weight to achieve value j using first i blocks | O(N * V) |
+| [Vacation](vacation_analysis) | State Machine DP | Track maximum happiness ending with each activity | O(n) |
+| [Walk](walk_analysis) | Matrix Exponentiation with Binary Exponentiation | Matrix multiplication directly encodes the DP transition | O(N^3 log K) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Overview
 
 The AtCoder Educational DP Contest is a curated set of problems that progressively build your understanding of dynamic programming. Each problem is labeled from A to Z and covers different DP patterns and techniques.

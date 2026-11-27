@@ -8,6 +8,33 @@ permalink: /problem_soulutions/string_algorithms/summary
 
 Welcome to the String Algorithms section! This category covers fundamental and advanced algorithms for text processing and pattern matching.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Distinct Substrings](distinct_strings_analysis) | Suffix Array + LCP Array | Each suffix of length k contributes k substrings (all its prefixes) | O(n log n) |
+| [Distinct Substrings](distinct_substrings_analysis) | Suffix Array + LCP Array | Each suffix contributes (length - LCP with previous suffix) new distinct substrings | O(n log n) |
+| [Finding Borders](finding_borders_analysis) | KMP Failure Function | Build the KMP failure function in O(n), then follow the chain from fail[n-1] to find all borders | O(n) |
+| [Finding Periods](finding_periods_analysis) | KMP Failure Function | Borders are nested! If `b` is a border, then all borders of the prefix s[0..b-1] are also borders of the original string | O(n) |
+| [Longest Palindrome](longest_palindrome_analysis) | Manacher's Algorithm | Transform the string to handle even/odd lengths uniformly, then use previously computed palindrome information to skip redundant expansions | O(n) |
+| [Minimal Rotation](minimal_rotation_analysis) | Booth's Algorithm | Use two pointers to compare rotations character-by-character, eliminating candidates efficiently without generating full rotation strings | O(n) |
+| [Palindrome Queries](palindrome_queries_analysis) | String Hashing + Segment Tree | Use two segment trees - one for forward hashes, one for reverse hashes | O((n + m) log n) |
+| [Palindromic Tree (Eertree)](palindromic_tree_analysis) | Suffix Links, Tree Construction | Palindromes can have odd or even length, requiring different "base cases." | O(n) amortized for construction |
+| [Pattern Positions](pattern_positions_analysis) | Aho-Corasick Automaton | Build a trie of all patterns, add failure links (like KMP's LPS), then scan text ONCE while tracking all pattern matches simultaneously | O(n + m + z) |
+| [Repeating Substring](repeating_substring_analysis) | Binary Search + Hashing / Suffix Array | Binary search on the answer length, and use rolling hash to check if any substring of that length repeats in O(n) time | O(n log n) |
+| [String Matching](string_matching_analysis) | KMP Algorithm / Z-Algorithm | Preprocess the pattern to build an LPS (Longest Proper Prefix which is also Suffix) array | O(n + m) |
+| [String Transformation](string_transformation_analysis) | BFS / Dynamic Programming | BFS naturally finds the shortest path in an unweighted graph | O(S * R * L) |
+| [Substring Order I](substring_order_i_analysis) | Suffix Array + LCP Array | Use suffix array for sorted order and LCP to skip duplicates | O(n log n) |
+| [Substring Order II](substring_order_ii_analysis) | Suffix Array + LCP Array + Binary Search | Use suffix array to get sorted suffix order | O(n log n) |
+| [Suffix Automaton](suffix_automaton_analysis) | Suffix Automaton (SAM) | SAM compresses all substrings into O(n) equivalence classes based on ending positions | O(n · Σ) build |
+| [Word Combinations](word_combinations_analysis) | Trie + DP | dp[i] = ways to build s[i:]; walk a trie from i to find every dictionary word that starts there | O(n^2) |
+<!-- cheatsheet:end -->
+
+---
+
 ## 🎯 Visual Example
 
 ### String Algorithm Techniques Overview

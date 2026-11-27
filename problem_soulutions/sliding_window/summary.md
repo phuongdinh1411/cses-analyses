@@ -8,6 +8,32 @@ permalink: /problem_soulutions/sliding_window/summary
 
 Welcome to the Sliding Window section! This category covers efficient techniques for solving problems involving contiguous subarrays and substrings.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Fixed Length Subarray Sum](fixed_length_subarray_sum_analysis) | Fixed-Size Sliding Window | When sliding the window by one position, update the sum by subtracting the element that left and adding the element that entered | O(n) |
+| [Longest Subarray with Sum](longest_subarray_with_sum_analysis) | Two Pointers (positive arrays) / Hash Map (general) | With positive numbers, window sum is monotonic - expanding increases sum, shrinking decreases sum | O(n) |
+| [Longest Substring Without Repeating Characters](longest_substring_without_repeating_analysis) | Sliding Window with Hash Set | Use two pointers to maintain a window of unique characters | O(n) |
+| [Maximum Subarray Sum](maximum_subarray_sum_analysis) | Kadane's Algorithm | Kadane: the best subarray ending at i is max(a[i], best ending at i−1 + a[i]) | O(n) |
+| [Minimum Subarray Sum](minimum_subarray_sum_analysis) | Modified Kadane's Algorithm | At each position, decide whether extending the current subarray or starting fresh gives a smaller sum | O(n) |
+| [Minimum Window Substring](minimum_window_substring_analysis) | Variable-size sliding window with frequency tracking | Expand right until the window covers every needed count, then shrink left while it still does | O(n + m) |
+| [Shortest Subarray with Sum at Least Target](shortest_subarray_with_sum_analysis) | Two Pointers with Variable Window | Since all elements are positive, we can maintain a window with two pointers | O(n) |
+| [Sliding Window Maximum](sliding_window_advertisement_analysis) | Monotonic Deque / Multiset | A decreasing deque of indices keeps the window maximum at the front; pop smaller values from the back | O(n log k) |
+| [Subarray Distinct Values](subarray_distinct_values_analysis) | Two Pointers + Hash Map | Maintain the largest window ending at each position with <= k distinct values | O(n log n) |
+| [Sliding Window Maximum](subarray_maximums_analysis) | Monotonic Deque | Maintain a deque of indices where values are in decreasing order | O(n) |
+| [Sliding Window Minimum](subarray_minimums_analysis) | Monotonic Deque | If we see a smaller element, all larger elements before it in the window can never be the minimum | O(n) |
+| [Subarray Sums I](subarray_sums_i_analysis) | Two Pointers on Positive Array | Since all elements are positive, we can use a sliding window | O(n) |
+| [Subarray Sums II](subarray_sums_ii_analysis) | Prefix Sum + Hash Map Counting | If prefix[j] - prefix[i] = x, then subarray (i, j] has sum x | O(n) |
+| [Subarray Sums I](subarray_with_given_sum_analysis) | Prefix Sum + Hash Map | Store prefix sum frequencies in a hash map | O(n) |
+| [Subarrays with K Distinct Values](subarray_with_k_distinct_analysis) | atMost(k) - atMost(k-1) Decomposition | Convert "exactly k" into "at most k" minus "at most k-1" | O(n) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Window Management

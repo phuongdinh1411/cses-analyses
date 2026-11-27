@@ -8,6 +8,35 @@ permalink: /problem_soulutions/tree_algorithms/summary
 
 Welcome to the Tree Algorithms section! This category covers algorithms and techniques for working with tree data structures.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Company Queries I](company_queries_i_analysis) | Binary Lifting | Any positive integer k can be represented as a sum of powers of 2 | O((n + q) log n) |
+| [Company Queries II](company_queries_ii_analysis) | Binary Lifting for LCA | Precompute the 2^k-th ancestor for every node | O((n + q) log n) |
+| [Counting Paths](counting_paths_analysis) | Difference Array on Tree + LCA | Difference on a tree: +1 at a and b, −1 at lca and at parent(lca), then sum subtrees bottom-up | O((n + m) log n) |
+| [Distance Queries](distance_queries_analysis) | LCA with Binary Lifting | Preprocess the tree to answer LCA queries in O(log n), then use the distance formula | O((n + q) log n) |
+| [Distinct Colors](distinct_colors_analysis) | Small-to-Large Merging (DSU on Tree) | Process children first, then merge their color sets into the parent | O(n log n) |
+| [DSU on Trees (Small-to-Large Merging / Sack)](dsu_on_tree_analysis) | Small-to-Large Merging (Heavy-Light Decomposition insight) | Keep data from the largest (heavy) child subtree; only re-add smaller subtrees | O(n log n) |
+| [Finding Centroid](finding_centroid_analysis) | Tree DP / Subtree Size Calculation | Root the tree at any node, compute subtree sizes once, then find the node where max(child subtree sizes, n - subtree_size[node]) <= n/2 | O(n) |
+| [Fixed Length Paths I](fixed_length_paths_i_analysis) | Centroid Decomposition | For any path in the tree, there exists exactly one centroid (in the centroid decomposition hierarchy) that the path passes through | O(n log n) |
+| [Fixed Length Paths II](fixed_length_paths_ii_analysis) | Centroid Decomposition + Fenwick Tree (BIT) | Use centroid decomposition to count each path exactly once when it passes through some centroid | O(n log^2 n) |
+| [Path Queries](path_queries_analysis) | Euler Tour + Segment Tree | Euler tour + Fenwick tree: add a node's value on its subtree range, so a point query at v gives the root-to-v sum | O((n + q) log n) |
+| [Path Queries II](path_queries_ii_analysis) | Heavy-Light Decomposition + Segment Tree | Decompose the tree into chains such that any path crosses O(log n) chains, then use a segment tree on the linearized nodes | O((n + q) log^2 n) |
+| [Rerooting Technique (All-Root DP)](rerooting_dp_analysis) | Two-Pass DFS (Down then Up) | Reuse subtree computations when changing root by tracking what to add/remove | O(n) |
+| [Subordinates](subordinates_analysis) | DFS / Subtree Counting | Use post-order DFS to compute subtree sizes bottom-up in a single pass | O(n) |
+| [Subtree Queries](subtree_queries_analysis) | Euler Tour + BIT/Segment Tree | Euler tour flattens the tree so each subtree becomes a contiguous range | O((n + q) log n) |
+| [Tree Diameter](tree_diameter_analysis) | Two-BFS / Tree DP | The farthest node from ANY starting node is always an endpoint of some diameter path | O(n) |
+| [Tree Distances I](tree_distances_i_analysis) | Tree Diameter + BFS/DFS | The farthest node from any node is always one of the two diameter endpoints | O(n) |
+| [Tree Distances II](tree_distances_ii_analysis) | Rerooting DP (Two-Pass DFS) | Compute the answer for root (node 1) first, then propagate to all other nodes by adjusting based on how subtree sizes affect distances | O(n) |
+| [Tree Matching](tree_matching_analysis) | Tree DP with matched/unmatched states | Greedy from the leaves: match a node with its parent if both are still free (or DP with matched/unmatched states) | O(n) |
+<!-- cheatsheet:end -->
+
+---
+
 ## 🎯 Visual Example
 
 ### Tree Algorithm Techniques Overview

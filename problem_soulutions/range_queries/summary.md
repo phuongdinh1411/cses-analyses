@@ -8,6 +8,37 @@ permalink: /problem_soulutions/range_queries/summary
 
 Welcome to the Range Queries section! This category covers efficient data structures and algorithms for handling queries on ranges of data.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Dynamic Range Sum Queries](dynamic_range_sum_queries_analysis) | Segment Tree / Fenwick Tree (BIT) | Use binary representation of indices to create a tree structure where each node stores a partial sum, enabling O(log n) updates and prefix queries | O((n + q) log n) |
+| [Forest Queries](forest_queries_analysis) | 2D Prefix Sum | Precompute cumulative sums so any rectangle sum can be calculated in O(1) using inclusion-exclusion | O(n^2 + q) |
+| [Hotel Queries](hotel_queries_analysis) | Segment Tree with Maximum + Descend Search | Build a segment tree storing maximum room count in each range | O((n + m) * log n) |
+| [Li Chao Tree](li_chao_tree_analysis) | Segment Tree with Line Storage | Li Chao Tree is a segment tree where each node stores the "winner" line for its interval's midpoint | O(n) total / O(log n) per query | O(log N) per operation |
+| [List Removals](list_removals_analysis) | Segment Tree for Order Statistics | Use a segment tree where each node stores the count of active elements in its range | O(n log n) |
+| [Pizzeria Queries](pizzeria_queries_analysis) | Two Segment Trees with Coordinate Transformation | Transform `min(p[j] + \|k-j\|)` by splitting absolute value into left/right cases | O((n + q) log n) |
+| [Prefix Sum Queries](prefix_sum_queries_analysis) | Segment Tree with Custom Merge Function | Store (sum, best prefix) per segment-tree node; merge as max(left.pre, left.sum + right.pre) | O((n + q) log n) |
+| [Range Interval Queries](range_interval_queries_analysis) | Segment Tree with Lazy Propagation | Lazy propagation: store a pending "assign v" on a node and push it to children only when you descend | O(n + q log n) |
+| [Range Update Queries](range_update_queries_analysis) | Difference Array / BIT for Range Updates | If we process all updates first, then all queries, we can use a difference array with O(1) updates and O(n) prefix sum computation | O((n + q) log n) |
+| [Range XOR Queries](range_xor_queries_analysis) | Prefix XOR | XOR is its own inverse, so xor(l..r) = prefix[r] ^ prefix[l−1] | O(n + q) |
+| [Salary Queries](salary_queries_analysis) | Coordinate Compression + Binary Indexed Tree (BIT) | Compress all unique salary values to a contiguous range, then use a BIT to track frequency of each compressed value | O((n+q) log(n+q)) |
+| [Static Range Minimum Queries](static_range_minimum_queries_analysis) | Sparse Table | Precompute minimums for all ranges of length 2^k | O(q * n) |
+| [Static Range Sum Queries](static_range_sum_queries_analysis) | Prefix Sums | Precompute cumulative sums so any range sum is just one subtraction | O(n + q) |
+| [Distinct Values Queries](subarray_distinct_values_queries_analysis) | Offline Processing + BIT / Mo's Algorithm | Process queries sorted by right endpoint | O((n + q) * sqrt(n)) |
+| [Static Range Maximum Queries](subarray_maximums_analysis) | Sparse Table | Precompute maximums for all ranges of length 2^k | O(n log n + q) |
+| [Static Range Minimum Queries](subarray_minimum_queries_analysis) | Sparse Table / RMQ | Precompute minimum for all ranges of power-of-2 lengths | O(n log n + q) |
+| [Subarray Mode Queries](subarray_mode_queries_analysis) | Mo's Algorithm / Sqrt Decomposition | Process queries offline in a special order that minimizes total pointer movements to O((n + q) * sqrt(n)) | O((n + q) * sqrt(n) * log(n)) |
+| [Subarray OR Queries](subarray_or_queries_analysis) | Segment Tree / Sparse Table | Build a segment tree where each node stores the OR of its range | O(q * n) |
+| [Subarray Sum Queries](subarray_sum_queries_analysis) | Segment Tree with Maximum Subarray Tracking | Store four values per node: (sum, prefix_max, suffix_max, max_sum) | O((n + q) log n) |
+| [Visible Buildings Queries](visible_buildings_queries_analysis) | Preprocessing / Monotonic Stack | Precompute visible counts from every position | Space |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Data Structures

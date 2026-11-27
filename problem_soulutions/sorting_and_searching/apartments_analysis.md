@@ -17,7 +17,7 @@ cses_link: https://cses.fi/problemset/task/1084
 | Category        | Sorting and Searching                                |
 | Technique       | Two Pointers, Greedy                                 |
 | Time Complexity | O(n log n + m log m)                                 |
-| Space Complexity| O(1) (in-place sorting)                              |
+| Space Complexity| O(n + m) for the input; Timsort may use O(n) extra   |
 | CSES Link       | [Apartments](https://cses.fi/problemset/task/1084)   |
 
 ## Learning Goals
@@ -194,9 +194,8 @@ solve()
 - Two-pointer traversal: O(n + m)
 - Total: O(n log n + m log m) (sorting dominates)
 
-**Space Complexity**: O(1)
-- In-place sorting (or O(n + m) if sort creates copies)
-- Only constant extra variables for pointers and count
+**Space Complexity**: O(n + m) to hold the two lists. Sorting in place adds no copies, but Timsort can use up to O(n) temporary memory, so "O(1) extra" is not accurate in Python.
+- The two pointers and the count are O(1)
 
 ## Why Greedy is Optimal
 

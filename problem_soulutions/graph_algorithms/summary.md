@@ -8,6 +8,55 @@ permalink: /problem_soulutions/graph_algorithms/summary
 
 Welcome to the Graph Algorithms section! This category covers fundamental and advanced algorithms for solving problems involving networks, paths, and connectivity.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Articulation Points (Cut Vertices)](articulation_points_analysis) | Tarjan's Algorithm with Low-Link Values | Non-root u is a cut vertex iff some child v has low[v] ≥ disc[u]; the root is one iff it has ≥ 2 DFS children | O(V + E) |
+| [Bridges (Cut Edges) in Graphs](bridges_analysis) | Tarjan's Algorithm with Low-Link Values | Tree edge (u, v) is a bridge iff low[v] > disc[u]: nothing in v's subtree reaches u or above | O(V + E) |
+| [Building Roads](building_roads_analysis) | Union-Find (Disjoint Set Union) | The minimum number of roads needed equals **(number of connected components - 1)** | O(n + m * alpha(n)) where alpha is inverse Ackermann |
+| [Building Teams](building_teams_analysis) | BFS 2-coloring (bipartite check) | Start from any uncolored vertex, assign it color 1, then assign the opposite color to all neighbors | O(n + m) |
+| [Coin Collector](coin_collector_analysis) | SCC Condensation + DP on DAG | Within a Strongly Connected Component (SCC), you can reach ANY node from ANY other node | O(n + m) |
+| [Coordinate Compression](coordinate_compression_analysis) | Map large/sparse values to small consecutive integers | Map each value to its rank among the sorted distinct values | O(n log n) for sorting + O(1) per lookup |
+| [Counting Rooms](counting_rooms_analysis) | Flood-fill / BFS / DFS | Each BFS/DFS flood fill from an unvisited floor cell marks one whole room | O(n * m) |
+| [Cycle Finding](cycle_finding_analysis) | Bellman-Ford with cycle extraction | Run n Bellman-Ford rounds; if round n still relaxes x, walk parents n times to land on the negative cycle | O(n * m) |
+| [De Bruijn Sequence](de_bruijn_sequence_analysis) | Eulerian circuit on (n−1)-bit states | Each n-bit string is an edge between (n−1)-bit states; an Euler circuit uses every edge once | O(2^n) |
+| [Distinct Routes](distinct_routes_analysis) | Ford-Fulkerson with BFS (Edmonds-Karp) | Max number of edge-disjoint paths = max flow; recover paths by walking saturated edges | O(V · E²) with Edmonds–Karp |
+| [Download Speed](download_speed_analysis) | Max flow (Edmonds–Karp / Dinic) | Repeatedly push flow along augmenting paths in the residual graph | O(VE^2) |
+| [Flight Discount](flight_discount_analysis) | State-space Dijkstra | Dijkstra on states (node, coupon used?); the coupon edge goes from state 0 to state 1 with cost w/2 | O((n + m) log n) |
+| [Giant Pizza](giant_pizza_analysis) | 2-SAT via SCC | A 2-SAT formula is satisfiable if and only if no variable x and its negation NOT x belong to the same Strongly Connected Component | O(n + m) |
+| [Hamiltonian Flights](hamiltonian_flights_analysis) | Bitmask Dynamic Programming | dp[mask][v] = paths from 1 that visit exactly mask and end at v; extend by one unvisited neighbor | O(2^n * n * m) or O(2^n * n^2) |
+| [High Score](high_score_analysis) | Modified Bellman-Ford for longest path | Convert to shortest path by negating, or modify Bellman-Ford to maximize | O(n * m) |
+| [Knight's Tour](knights_tour_analysis) | Backtracking + Warnsdorff heuristic | While worst-case is still exponential, Warnsdorff's heuristic is so effective that it typically finds a solution on the first try without any backtracking! | O(64 · 8) in practice |
+| [Labyrinth](labyrinth_analysis) | BFS on grid + parent reconstruction | BFS gives the shortest path; store the move used to reach each cell and walk back from B | O(n * m) |
+| [Mail Delivery](mail_delivery_analysis) | Hierholzer's Algorithm | Build the circuit by following edges until stuck, then backtrack and insert sub-circuits | O(n + m) |
+| [Message Route](message_route_analysis) | Parent tracking for path reconstruction | Unweighted shortest path; reconstruct by following parents from n | O(n + m) |
+| [Monsters](monsters_analysis) | Multi-source BFS + Standard BFS | Multi-source BFS gives each cell's monster arrival time; you may step on a cell only if you arrive strictly earlier | O(n * m) |
+| [Planets and Kingdoms](planets_and_kingdoms_analysis) | Kosaraju/Tarjan | Kosaraju/Tarjan | Kingdoms are strongly connected components; label nodes with Kosaraju or Tarjan | O(n + m) |
+| [Planets Cycles](planets_cycles_analysis) | Functional graph: cycle detection with path marking | Walk until a visited node; cycle nodes get the cycle length, tail nodes get their distance to the cycle plus its length | O(n) |
+| [Planets Queries I](planets_queries_i_analysis) | Binary lifting | Precompute `jump[i][j]` = planet reached from planet i after exactly 2^j teleports | O(n log k) preprocessing, O(log k) per query |
+| [Planets Queries II](planets_queries_ii_analysis) | Functional graph + binary lifting | Split into tail and cycle parts; use depth to cycle and cycle positions | O(n log n) preprocess, O(log n) per query |
+| [Police Chase](police_chase_analysis) | Min cut via max flow | After max flow, edges from the residual-reachable side to the rest form a minimum cut | O(V * E^2) using Edmonds-Karp |
+| [Prefix Sum Queries](prefix_sum_queries_analysis) | Segment Tree with prefix sum tracking | Store (sum, best prefix) per segment-tree node; merge as max(left.pre, left.sum + right.pre) | O((n + q) log n) |
+| [Road Construction](road_construction_analysis) | Union-Find with size tracking | Union-Find with sizes: every successful union lowers the component count and may raise the largest size | O(m * alpha(n)) approximately O(m) |
+| [Road Construction II](road_construction_ii_analysis) | Union-Find with size tracking | Standard Union-Find tracks connectivity, but we also need to track component sizes and maintain the maximum | O(m · α(n)) |
+| [Road Construction III](road_construction_iii_analysis) | Union-Find with component counting | Track the number of connected components | O(m · α(n)) |
+| [Road Construction IV](road_construction_iv_analysis) | Union-Find for connectivity queries | After building all roads, connectivity queries reduce to checking if two nodes have the same root in Union-Find | O((m + q) · α(n)) |
+| [Road Reparation](road_reparation_analysis) | Greedy edge selection + cycle detection | Sort edges by cost and add those that join two components | O(m log m) |
+| [Round Trip](round_trip_analysis) | DFS cycle detection (undirected) + parent tracking | A back edge to a non-parent vertex closes a cycle; walk parents to print it | O(n + m) |
+| [School Dance](school_dance_analysis) | Reduction to Max Flow / Hopcroft-Karp | Maximum bipartite matching is equivalent to maximum flow in a specially constructed network | O(V * E) with Ford-Fulkerson, O(E * sqrt(V)) with Hopcroft-Karp |
+| [Shortest Routes I](shortest_routes_i_analysis) | Dijkstra with a binary heap | Dijkstra: pop the closest unsettled node and skip stale heap entries | O((n + m) log n) |
+| [Shortest Routes II](shortest_routes_ii_analysis) | Dynamic Programming on graphs | Floyd–Warshall: allow intermediate nodes 1..k one at a time; dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]) | O(n^3) |
+| [Strongly Connected Components](strongly_connected_components_analysis) | Kosaraju / Tarjan SCC | Finish time ordering + graph reversal isolates SCCs | O(V + E) |
+| [Teleporters Path](teleporters_path_analysis) | Hierholzer's Algorithm for Eulerian Path | Needs out−in = 1 at node 1, in−out = 1 at node n, balance elsewhere, and all edges reachable | O(n + m) |
+| [Topological Sorting](topological_sorting_analysis) | Kahn's Algorithm (BFS) / DFS Post-order | Repeatedly output a node with in-degree 0; leftovers mean a cycle | O(n + m) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Graph Representation

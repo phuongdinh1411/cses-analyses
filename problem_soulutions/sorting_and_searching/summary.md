@@ -8,6 +8,53 @@ permalink: /problem_soulutions/sorting_and_searching/summary
 
 Welcome to the Sorting and Searching section! This category covers fundamental algorithms for organizing and finding data efficiently.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Apartments](apartments_analysis) | Two Pointers, Greedy | Sort both lists; match the smallest applicant with the smallest apartment that fits, otherwise advance whichever side is too small | O(n log n + m log m) |
+| [Array Division](array_division_analysis) | Binary Search on Answer + Greedy Check | Instead of finding the optimal division directly, binary search on the answer M and check if division is possible with maximum sum <= M using a greedy approach | O(n log S) |
+| [Collecting Numbers](collecting_numbers_analysis) | Position Tracking / Inversion Counting | Count position inversions instead of simulating | O(n) |
+| [Collecting Numbers II](collecting_numbers_ii_analysis) | Position Tracking + Delta Calculation | A swap at positions a and b only affects breaks involving values arr[a], arr[b], and their neighbors (arr[a]-1, arr[a]+1, arr[b]-1, arr[b]+1) | O(n + m) |
+| [Concert Tickets](concert_tickets_analysis) | Sorted multiset (bisect / SortedList) | For each customer, take the largest remaining price ≤ their max (sorted list + bisect, or a multiset) | O((n + m) log n) |
+| [Distinct Numbers](distinct_numbers_analysis) | Set or Sorting | Count distinct values with a set, or sort and count changes | O(n) average |
+| [Distinct Values Subarrays](distinct_values_subarrays_analysis) | Sliding Window with Hash Set | Maintain a window [left, right] where all elements are distinct | O(n) |
+| [Distinct Values Queries II](distinct_values_subarrays_ii_analysis) | Segment Tree / Sqrt Decomposition | Transform "all distinct" into "range max of prev[] < a" and use segment tree for efficient range max queries with point updates | O((n + q) log n) |
+| [Distinct Values Subsequences](distinct_values_subsequences_analysis) | Frequency count + product rule | A valid subsequence never uses the same value twice, so it is fully described by choosing, independently for each distinct value, "skip" or "which occurrence" | O(n) |
+| [Factory Machines](factory_machines_analysis) | Binary Search on Answer | Instead of searching linearly, binary search on the answer space | O(n log(answer)) |
+| [Ferris Wheel](ferris_wheel_analysis) | Sort + two pointers (greedy) | Always try to pair the heaviest remaining child with the lightest remaining child | O(n log n) |
+| [Josephus Problem I](josephus_problem_i_analysis) | Circular Array Simulation | Use a dynamic list and remove elements directly | O(n log n) |
+| [Josephus Problem II](josephus_problem_ii_analysis) | Indexed Set (Order Statistics Tree) | Use a balanced BST that supports O(log n) rank queries and deletions - the "indexed set" or "order statistics tree." | O(n log n) |
+| [Maximum Subarray Sum](maximum_subarray_sum_analysis) | Kadane's algorithm | Kadane: the best subarray ending at i is max(a[i], best ending at i−1 + a[i]) | O(n) |
+| [Maximum Subarray Sum II](maximum_subarray_sum_ii_analysis) | Prefix Sums + Multiset / Monotonic Deque | Transform the problem from "find max subarray sum" to "find max difference of prefix sums" where `prefix[j] - prefix[i]` is maximized with `a <= j - i <= b` | O(n) |
+| [Missing Coin Sum](missing_coin_sum_analysis) | Greedy Invariant | Sort coins and maintain the invariant: "We can make all sums 1 to current_sum." If the next coin exceeds current_sum + 1, we found our answer | O(n log n) |
+| [Movie Festival](movie_festival_analysis) | Greedy Algorithm | Duration doesn't account for *where* the movie sits on the timeline | O(n log n) |
+| [Movie Festival II](movie_festival_ii_analysis) | Greedy + Multiset | Use a multiset (ordered set with duplicates) to store member end times | O(n log n + n log k) |
+| [Nearest Smaller Values](nearest_smaller_values_analysis) | Monotonic Stack (Increasing) | Maintain a stack of (index, value) pairs in strictly increasing order of values | O(n) |
+| [Nested Ranges Check](nested_ranges_check_analysis) | Sorting + Min/Max Tracking | Sort by start ascending (tie-break by end descending) | O(n log n) |
+| [Nested Ranges Count](nested_ranges_count_analysis) | Coordinate Compression + Fenwick Tree (BIT) | Sort by start point, then use BIT to count valid end points we have seen | O(n log n) |
+| [Playlist](playlist_analysis) | Sliding Window with Hash Set | Use two pointers to maintain a window of unique elements | O(n) |
+| [Reading Books](reading_books_analysis) | Mathematical Analysis | The answer is simply `max(2 * max_time, total_time)` - no complex algorithm needed | O(n) |
+| [Restaurant Customers](restaurant_customers_analysis) | Sweep line over events | Turn stays into +1 arrival / −1 departure events, sort them, and track the running maximum | O(n log n) |
+| [Room Allocation](room_allocation_analysis) | Sweep Line with Event Processing / Priority Queue | Use a min-heap to efficiently find the room that becomes free earliest | O(n log n) |
+| [Stick Lengths](stick_lengths_analysis) | Median / Sorting | The median minimizes the sum of absolute deviations | O(n log n) |
+| [Subarray Divisibility](subarray_divisibility_analysis) | Prefix Sums + Modular Arithmetic | If `prefix[i] % n == prefix[j] % n`, then the subarray sum from i+1 to j is divisible by n | O(n) |
+| [Subarray Sums I](subarray_sums_i_analysis) | Prefix Sum + Hash Map | Instead of checking all subarrays, maintain a hash map of prefix sum frequencies and look up complements in O(1) | O(n) |
+| [Subarray Sums II](subarray_sums_ii_analysis) | Prefix Sum + Hash Map | For each prefix sum, count how many previous prefix sums equal `current_prefix - target` using a hash map | O(n) |
+| [Sum of Four Values](sum_of_four_values_analysis) | Sorting + Two Pointers (Reduce 4Sum to 3Sum to 2Sum) | Fix the first two elements with nested loops O(n^2), then use two pointers to find the remaining pair in O(n) | O(n^3) |
+| [Sum of Three Values](sum_of_three_values_analysis) | Sorting + Two Pointers | Sort the array, fix each element as the "first" of the triplet, then use two pointers to find the other two elements in O(n) time | O(n^2) |
+| [Sum of Two Values](sum_of_two_values_analysis) | Hash map of seen values | For each element look up target − value among earlier elements | O(n) | O(n log n) |
+| [Tasks And Deadlines](tasks_and_deadlines_analysis) | Greedy (Sort by Duration) | Sort tasks by duration in ascending order | O(n log n) |
+| [Ternary Search](ternary_search_analysis) | Divide and Conquer on Unimodal Functions | In a unimodal function, if we probe two points m1 < m2, we can eliminate one-third of the search space based on which point has a better value | O(log n) or O(log((R-L)/epsilon)) |
+| [Towers](towers_analysis) | Greedy + Binary Search (Multiset) | Always place a cube on the tower with the **smallest top that is still strictly greater** than the cube | O(n log n) |
+| [Traffic Lights](traffic_lights_analysis) | Set + Multiset for Dynamic Maximum Tracking | Use a **set** to find neighbors in O(log n) and a **multiset** to track all segment lengths and find maximum in O(1) | O(n log n) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Sorting Techniques

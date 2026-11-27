@@ -8,6 +8,42 @@ permalink: /problem_soulutions/introductory_problems/summary
 
 Welcome to the Introductory Problems section! This category contains fundamental algorithmic problems that serve as an excellent starting point for learning competitive programming concepts.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Apple Division](apple_division_analysis) | Bitmask Subset Enumeration | Enumerate all 2^n subsets using integers 0 to 2^n - 1 as bitmasks | O(2^n * n) |
+| [Bit Strings](bit_strings_analysis) | Modular Exponentiation | Use binary exponentiation to compute 2^n in O(log n) time by repeatedly squaring | O(log n) |
+| [Chessboard and Queens](chessboard_and_queens_analysis) | Backtracking with Pruning | Backtrack row by row, tracking used columns and both diagonals in sets; skip reserved squares | O(8!) |
+| [Coin Piles](coin_piles_analysis) | Linear Diophantine Equations | Each operation removes exactly 3 coins total | O(1) per test |
+| [Creating Strings](creating_strings_analysis) | Backtracking with Frequency Counting | Instead of tracking which positions we've used, track how many of each character we've used | O(k * P) where P = n!/(f1!*...*fk!) |
+| [Digit Queries](digit_queries_analysis) | Digit Counting by Range | Group numbers by digit length, skip entire groups, then pinpoint the exact number and digit | O(log k) |
+| [Gray Code](gray_code_analysis) | XOR Formula / Recursive Construction | Gray code for integer i is simply `i ^ (i >> 1)` | O(2^n * n) |
+| [Grid Coloring I](grid_coloring_i_analysis) | Backtracking with Constraint Checking | Check constraints immediately when placing a color | O(k^(n^2)) |
+| [Grid Paths](grid_path_description_analysis) | Backtracking with Aggressive Pruning | Prune paths that cannot possibly visit all remaining cells | ~O(exponential, heavily pruned) |
+| [Increasing Array](increasing_array_analysis) | Greedy, Single Pass | Instead of modifying the array, track the running maximum | O(n) |
+| [Knight Moves Grid](knight_moves_grid_analysis) | Breadth-First Search | BFS explores all positions at distance k before any position at distance k+1, guaranteeing the first path found to target is shortest | O(n^2) |
+| [MEX Grid Construction](mex_grid_construction_analysis) | Constraint Satisfaction + MEX Properties | If m <= n, place {0, 1, ..., m-1} in each row and fill remaining cells with values > m | O(n^2) |
+| [MEX Grid Construction II](mex_grid_construction_ii_analysis) | Dual Constraint Satisfaction + MEX Properties | Use cyclic Latin square-style patterns for symmetric cases, and careful value exclusion for asymmetric cases | O(n^2) |
+| [Missing Number](missing_number_analysis) | Sum Formula / XOR | XOR of a number with itself is 0, and XOR is both commutative and associative | O(n) |
+| [Number Spiral](number_spiral_analysis) | Layer-based O(1) formula | Every position (y, x) lies on layer `k = max(y, x)` | O(1) per query |
+| [Palindrome Reorder](palindrome_reorder_analysis) | Character Frequency + Palindrome Construction | At most one character may have an odd count; put half of each count on the left, the odd one in the middle, then mirror | O(n) |
+| [Permutations](permutations_analysis) | Even-Odd Separation | Print all even numbers first, then all odd numbers (or vice versa) | O(n) |
+| [Raab Game I](raab_game_i_analysis) | Winning/Losing Position Analysis | Build the solution from position 0 upward | O(n * k) |
+| [Repetitions](repetitions_analysis) | Single Pass with Tracking | One pass: extend the current run when s[i] == s[i−1], otherwise reset it to 1; track the max | O(n) |
+| [String Reorder](string_reorder_analysis) | Character Frequency Counting / Sorting | Since we only have 26 possible characters (a-z), we can count frequencies and rebuild the string in O(n) time | O(n) |
+| [Tower of Hanoi](tower_of_hanoi_analysis) | Recursive Decomposition | Recursively define the problem in terms of a smaller version of itself | O(2^n) |
+| [Trailing Zeros](trailing_zeros_analysis) | Legendre's Formula (Prime Factorization) | In any factorial, there are always more factors of 2 than factors of 5 | O(log n) |
+| [Two Knights](two_knights_analysis) | Combinatorial Counting (Total - Invalid) | Count 2x3 and 3x2 rectangles on the board | O(n) |
+| [Two Sets](two_sets_analysis) | Mathematical analysis + Greedy construction | Greedily assign numbers from largest to smallest to Set 1 until we reach exactly half the total sum | O(n) |
+| [Weird Algorithm](weird_algorithm_analysis) | Simulation / Sequence Generation | Simulate n → n/2 or 3n+1 until 1; Python ints never overflow | O(?) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Problem-Solving Techniques

@@ -8,6 +8,34 @@ permalink: /problem_soulutions/geometry/summary
 
 Welcome to the Geometry section! This category covers computational geometry algorithms and techniques for solving geometric problems.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Minimum Euclidean Distance](all_manhattan_distances_analysis) | Sorting + Prefix Sums | Separate x and y contributions, then solve the 1D problem: "sum of pairwise absolute differences" using sorting | O(n log n) |
+| [Area of Rectangles](area_of_rectangles_analysis) | Sweep Line + Coordinate Compression | Only ~2n distinct x-coordinates and ~2n y-coordinates matter | O(n log n) |
+| [Convex Hull](convex_hull_analysis) | Andrew's Monotone Chain / Cross Product | Sort points by x-coordinate, then build upper and lower hulls separately by maintaining the "turn left" property | O(n log n) |
+| [Half-Plane Intersection](half_plane_intersection_analysis) | Incremental Algorithm with Deque | Process half-planes in angular order, maintaining the boundary in a deque | O(n log n) |
+| [Intersection Points](intersection_points_analysis) | Sweep Line + Fenwick Tree | Sweep x: horizontal segments enter/leave a Fenwick tree over y; each vertical segment counts active y in its range | O(n log n) |
+| [Line Segment Intersection](line_segment_intersection_analysis) | Cross Product / Orientation Test | Two segments intersect if their endpoints have opposite orientations relative to each other | O(1) |
+| [Line Segment Tracing](line_segments_trace_analysis) | Graph Traversal + Hashing | Use a hash map keyed by coordinates to find connected segments in O(1) instead of O(n) | O(n) |
+| [Line Segment Intersection (Convex Hull Trick)](lines_and_queries_i_analysis) | Convex Hull Trick | Maintain only the lines that form the lower envelope | O(n log n + q log n) |
+| [Line Segment Intersection Queries II](lines_and_queries_ii_analysis) | Li Chao Tree (Dynamic CHT) | A Li Chao tree keeps, per x-interval, the line that is best at its midpoint; insert and query in O(log C) | O((n + q) log C) |
+| [Maximum Manhattan Distance](maximum_manhattan_distance_analysis) | Rotated Coordinates (x+y, x-y) | Transform to rotated coordinates (u, v) = (x+y, x-y) | O(n) |
+| [Minimum Euclidean Distance](minimum_euclidean_distance_analysis) | Divide and Conquer (Closest Pair Algorithm) | After finding the minimum distance d in left and right halves, we only need to check points within distance d of the dividing line | O(n log^2 n) |
+| [Point in Polygon](point_in_polygon_analysis) | Ray Casting Algorithm | Cast a horizontal ray to the right from the query point | O(n * m) |
+| [Point Location Test](point_location_test_analysis) | Cross Product | Compute the cross product of vectors (P1->P2) and (P1->P3) | O(t) |
+| [Polygon Area](polygon_area_analysis) | Shoelace Formula | Sum cross products of consecutive vertices in a cyclic manner | O(n) |
+| [Polygon Lattice Points](polygon_lattice_points_analysis) | Pick's Theorem + Shoelace Formula | Pick's Theorem relates three quantities for any simple polygon with vertices at lattice points | O(n log(max_coord)) |
+| [Robot Path](robot_path_analysis) | Coordinate Simulation + Cycle Detection | Use a hash set for O(1) position lookup instead of O(n) linear search | O(n) |
+| [Rotating Calipers](rotating_calipers_analysis) | Two-Pointer on Convex Hull | The "opposite" vertex (the one furthest from a given edge) changes monotonically as we traverse the hull | O(n) after convex hull |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Basic Geometry Operations

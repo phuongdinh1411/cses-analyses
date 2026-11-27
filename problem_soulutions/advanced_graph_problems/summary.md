@@ -8,6 +8,43 @@ permalink: /problem_soulutions/advanced_graph_problems/summary
 
 Welcome to the Advanced Graph Problems section! This category covers complex graph algorithms and techniques for solving challenging network problems.
 
+<!-- cheatsheet:start -->
+## Cheat Sheet
+
+One row per problem: the technique, the one-line insight, and the time complexity of the optimal solution. Generated from each analysis page, so fix the page if a row looks wrong.
+
+| Problem | Technique | Key insight | Time |
+|---|---|---|---|
+| [Acyclic Graph Edges](acyclic_graph_edges_analysis) | DFS Ordering / Edge Orientation | Orient each edge from the node with smaller DFS discovery time to the node with larger discovery time | O(n + m) |
+| [Course Schedule II](course_schedule_ii_analysis) | Kahn's Algorithm / DFS | Start with courses that have no prerequisites (in-degree = 0) | O(n + m) |
+| [Creating Offices](creating_offices_analysis) | Greedy BFS/DFS Selection | Always find the farthest uncovered node from any office, then place a new office exactly d steps toward the root from that node | O(n log n) |
+| [Even Outdegree Edges](even_outdegree_edges_analysis) | DFS Tree + Parity-Based Edge Orientation | Possible iff every component has an even edge count; on a DFS tree, orient non-tree edges freely, then fix parities bottom-up with each tree edge | O(n + m) |
+| [Fixed Length Circuit Queries](fixed_length_circuit_queries_analysis) | Matrix Exponentiation with Binary Exponentiation | Use binary exponentiation to compute A^k in O(n^3 * log k) time instead of O(n^3 * k) | O(n^3 log k * q) |
+| [Fixed Length Cycle Queries](fixed_length_cycle_queries_analysis) | Matrix Exponentiation, Binary Exponentiation | Raise the adjacency matrix to power k using binary exponentiation in O(n^3 log k) time | O(n^3 log k) per query |
+| [Mail Delivery (Eulerian Circuit)](fixed_length_eulerian_circuit_queries_analysis) | Hierholzer's Algorithm, Degree Analysis | Start from any vertex, follow edges (removing them as you go), and when stuck, backtrack while building the circuit | O(n + m) |
+| [Fixed Length Eulerian Trail Queries](fixed_length_eulerian_trail_queries_analysis) | Matrix Exponentiation, Eulerian Path Theory | The number of paths of length k from node i to j equals `(A^k)[i][j]` where A is the adjacency matrix | O(n^3 log k) |
+| [Hamiltonian Flights](fixed_length_hamiltonian_circuit_queries_analysis) | Bitmask DP for subset enumeration | Use a bitmask to represent visited cities, converting the exponential backtracking into polynomial DP | O(2^n * n^2) |
+| [Hamiltonian Flights](fixed_length_hamiltonian_cycle_queries_analysis) | Bitmask DP with State Compression | Represent the set of visited cities as a bitmask, and track counts for each (mask, current_city) pair | O(2^n * n^2) |
+| [Hamiltonian Flights](fixed_length_hamiltonian_path_queries_analysis) | Bitmask DP | Use a bitmask to represent the set of visited vertices, and DP to count paths reaching each (mask, vertex) state | O(2^n * n^2) |
+| [Hamiltonian Flights](fixed_length_hamiltonian_tour_queries_analysis) | Bitmask Dynamic Programming | Use bitmask to represent visited vertices and memoize states | O(2^n * n^2) |
+| [Hamiltonian Flights](fixed_length_hamiltonian_trail_queries_analysis) | Bitmask Dynamic Programming | Use a bitmask to represent the set of visited vertices, enabling memoization of subproblems | O(2^n * n * m) |
+| [Fixed-Length Paths](fixed_length_path_queries_analysis) | Centroid Decomposition | Decompose the tree by repeatedly finding and removing centroids | O(n log n) |
+| [Fixed Length Tour Queries](fixed_length_tour_queries_analysis) | Matrix Exponentiation with Binary Exponentiation | A^k[i][j] counts paths of length exactly k from i to j | O(n^3 log k) |
+| [Fixed-Length Path Queries I](fixed_length_trail_queries_analysis) | Matrix Exponentiation | A^k[i][j] counts paths of exactly k edges from i to j | O(n^3 log k_max * unique_k + q) |
+| [Fixed Length Walk Queries](fixed_length_walk_queries_analysis) | Matrix Exponentiation | Use binary exponentiation to compute A^k in O(n^3 log k) time | O(n^3 log k + q) |
+| [Graph Girth](graph_girth_analysis) | BFS from each node | BFS from every vertex; a non-tree edge (u, v) closes a cycle of length dist[u] + dist[v] + 1 | O(n * (n + m)) |
+| [Minimum Cost Maximum Flow (MCMF)](minimum_cost_max_flow_analysis) | Successive Shortest Paths + SPFA/Bellman-Ford | Always augment along minimum cost path to guarantee optimal cost | O(V * E * F) |
+| [New Roads Queries (MST Edge Check)](mst_edge_check_analysis) | Kruskal's + Union-Find / LCA on MST | Edge (u, v, w) is in some MST iff u and v are not already connected using only edges lighter than w | O(m log n) |
+| [Nearest Shops](nearest_shops_analysis) | Multi-Source BFS / Dijkstra | Start Dijkstra from ALL shops simultaneously with distance 0 | O((n + m) log n + q) |
+| [New Flight Routes](new_flight_routes_analysis) | SCC Condensation + Source/Sink Counting | Once we condense SCCs, we get a DAG (Directed Acyclic Graph) | O(n + m) |
+| [Prufer Code](prufer_code_analysis) | Degree Tracking, Leaf Removal | A Prufer sequence uniquely encodes a labeled tree | O(n) |
+| [Strongly Connected Edges](strongly_connected_edges_analysis) | Bridge Finding + DFS Edge Orientation | A strong orientation exists iff the graph is connected and bridgeless; orient DFS tree edges down and back edges up | O(n + m) |
+| [Download Speed (Maximum Flow)](transfer_speeds_sum_analysis) | Edmonds-Karp (BFS-based Max Flow) | Use BFS to find augmenting paths in the residual graph | O(V * E^2) |
+| [Tree Traversals](tree_traversals_analysis) | DFS, Recursion, Tree Reconstruction | Use an explicit stack with state tracking to avoid recursion limits | O(n) |
+<!-- cheatsheet:end -->
+
+---
+
 ## Key Concepts & Techniques
 
 ### Advanced Graph Theory
