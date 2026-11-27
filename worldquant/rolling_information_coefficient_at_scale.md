@@ -22,6 +22,14 @@ tags: [statistics, rolling-window, correlation, worldquant, finance]
 - [ ] Understand why Spearman IC requires rank transformation first
 - [ ] Handle NaN values in rolling correlation
 
+### In 60 seconds
+- **Pattern:** Per-date correlation + rolling mean
+- **Key insight:** Standard IC is the cross-sectional correlation per date, averaged over the window; pooling the whole W×N block also rewards market-wide co-movement.
+- **Complexity:** O(T·N) time, O(W) extra space
+- **Trap:** Reporting a pooled IC as if it were the standard one (Example 1: 0.5 vs 0.886).
+
+> **Say this in the interview:** "IC measures ranking skill each day, so I compute it per date and smooth it, not pool across time."
+
 ---
 
 ## Problem Statement
@@ -33,13 +41,18 @@ Given:
 - `returns`: a 2D array of shape `(T, N)` — forward returns for `N` assets over `T` time steps
 - `window`: rolling window size `W`
 
-For each time step `t >= W - 1`, compute the **rolling IC** over the past `W` time steps:
+For each time step `t >= W - 1`, compute the **rolling IC** over the past `W` time steps. There are two definitions; be explicit about which one you implement:
 
 ```
-IC[t] = pearson_corr(factors[t-W+1:t+1].flatten(), returns[t-W+1:t+1].flatten())
+Standard (per-date):  IC_t = corr(factors[t], returns[t])               # across N assets
+                      rolling_IC[t] = mean(IC_{t-W+1} .. IC_t)
+Pooled (this page's   rolling_IC[t] = corr(factors[t-W+1:t+1].flatten(),
+ streaming exercise):                     returns[t-W+1:t+1].flatten())
 ```
 
-Return the array `IC` of length `T - W + 1`.
+The standard definition is what research teams report: it measures cross-sectional ranking skill each day. The pooled one also rewards the factor for tracking *market-wide* moves over time, which inflates it (see Example 1).
+
+Return an array of length `T - W + 1`.
 
 **Constraints:**
 - `1 <= W <= T <= 10^4`
@@ -58,11 +71,14 @@ factors = [[1, 2, 3], [4, 5, 6]]
 returns = [[0.1, 0.3, 0.2], [0.5, 0.4, 0.6]]
 window  = 2
 
-Step t=1 uses all 6 paired values:
-  f = [1,2,3,4,5,6], r = [0.1,0.3,0.2,0.5,0.4,0.6]
-  IC[0] = pearson_corr(f, r) ≈ 0.828
+Standard: IC_0 = corr([1,2,3], [0.1,0.3,0.2]) = 0.5
+          IC_1 = corr([4,5,6], [0.5,0.4,0.6]) = 0.5
+          rolling_IC = mean(0.5, 0.5) = 0.5          → Output: [0.5]
 
-Output: [0.828]
+Pooled:   corr([1,2,3,4,5,6], [0.1,0.3,0.2,0.5,0.4,0.6]) ≈ 0.886  → Output: [0.886]
+
+The pooled value is higher only because day 2 has both higher factors
+and higher returns overall — not because the ranking within each day is better.
 ```
 
 ### Example 2 — With NaN
@@ -99,7 +115,47 @@ This form is useful for incremental updates.
 
 ---
 
-## Approach: Sliding Window with Running Sums
+## Approach (standard definition): per-date IC, then a rolling mean
+
+1. For each date, compute the cross-sectional correlation over valid pairs: O(N).
+2. Keep a running sum of the last `W` daily ICs (skipping NaN days) to get the rolling mean: O(1) per step.
+
+Total O(T × N) time, O(W) extra space.
+
+```python
+import math
+from collections import deque
+
+def daily_ic(f_row: list[float], r_row: list[float]) -> float:
+    pairs = [(f, r) for f, r in zip(f_row, r_row) if not (math.isnan(f) or math.isnan(r))]
+    m = len(pairs)
+    if m < 2:
+        return float("nan")
+    mf = sum(f for f, _ in pairs) / m
+    mr = sum(r for _, r in pairs) / m
+    cov = sum((f - mf) * (r - mr) for f, r in pairs)
+    vf = sum((f - mf) ** 2 for f, _ in pairs)
+    vr = sum((r - mr) ** 2 for _, r in pairs)
+    return cov / math.sqrt(vf * vr) if vf > 0 and vr > 0 else float("nan")
+
+def rolling_mean_ic(factors: list[list[float]], returns: list[list[float]], window: int) -> list[float]:
+    ics: deque[float] = deque()
+    total, valid, out = 0.0, 0, []
+    for f_row, r_row in zip(factors, returns):
+        ic = daily_ic(f_row, r_row)
+        ics.append(ic)
+        if not math.isnan(ic):
+            total += ic; valid += 1
+        if len(ics) > window:
+            old = ics.popleft()
+            if not math.isnan(old):
+                total -= old; valid -= 1
+        if len(ics) == window:
+            out.append(total / valid if valid else float("nan"))
+    return out
+```
+
+## Approach (pooled definition): sliding window with running sums
 
 For each window of W rows, maintain running sums:
 - `S_x`, `S_y`, `S_xx`, `S_yy`, `S_xy`, `count` (excluding NaN pairs)
@@ -189,18 +245,16 @@ Spearman IC = Pearson correlation of the **ranks** rather than raw values.
 ```python
 from scipy.stats import rankdata
 
-def spearman_ic_row(f_row, r_row):
+def spearman_ic_row(f_row: list[float], r_row: list[float]) -> float:
     valid = [(f, r) for f, r in zip(f_row, r_row)
              if not math.isnan(f) and not math.isnan(r)]
     if len(valid) < 2:
         return float('nan')
     f_vals, r_vals = zip(*valid)
-    f_ranks = rankdata(f_vals)
-    r_ranks = rankdata(r_vals)
-    return pearson(f_ranks, r_ranks)
+    return daily_ic(list(rankdata(f_vals)), list(rankdata(r_vals)))   # Pearson of ranks
 ```
 
-For rolling Spearman IC, the rank transformation must be recomputed each window slide (no simple O(1) update), making it O(T × W × N log N).
+With the standard definition, ranks are computed once per date: O(T × N log N) total, then the same O(1) rolling mean. A *pooled* rolling Spearman must re-rank all `W × N` values in every window, O(T × W·N log(W·N)), unless you use an order-statistics structure.
 
 ---
 
@@ -211,8 +265,10 @@ For rolling Spearman IC, the rank transformation must be recomputed each window 
 | 1.0 | Perfect positive prediction |
 | 0.0 | No predictive power |
 | -1.0 | Perfect inverse prediction |
-| > 0.05 | Considered "good" in practice |
-| > 0.10 | Considered "excellent" in practice |
+| > 0.05 | Rule of thumb: useful for a daily cross-sectional IC |
+| > 0.10 | Rule of thumb: very strong (check for look-ahead bias) |
+
+These thresholds depend on horizon, universe breadth, and turnover; a small but *stable* IC across many assets can be valuable.
 
 ---
 

@@ -21,13 +21,21 @@ tags: [sliding-window, sorted-container, fenwick-tree, worldquant]
 - [ ] Compute rank (position) of each new element within the current window
 - [ ] Apply this to cross-sectional ranking in finance
 
+### In 60 seconds
+- **Pattern:** Sorted window (SortedList / Fenwick tree)
+- **Key insight:** Keep the window sorted; today's rank is `bisect_left(window, x) + 1`.
+- **Complexity:** O(n log k) with `SortedList`; O(n·k) worst case with `list` + `insort`
+- **Trap:** Calling `bisect_left + 1` "dense" rank — it is min rank; dense needs distinct counts.
+
+> **Say this in the interview:** "A sorted window turns rank into a binary search, and removals keep it O(log k) per step."
+
 ---
 
 ## Problem Statement
 
 Given an integer array `nums` and a window size `k`, for each position `i >= k - 1`, return the **1-based rank** of `nums[i]` within the window `nums[i-k+1 .. i]`.
 
-The rank of a value is its position in the sorted (ascending) order of the window. Ties receive the same rank (dense ranking).
+The rank of a value is `1 + (number of window elements strictly less than it)`. Ties share the lowest rank ("min" or competition ranking, `pandas.rank(method="min")`).
 
 **Input:**
 - An integer array `nums` of length `n`
@@ -47,58 +55,43 @@ The rank of a value is its position in the sorted (ascending) order of the windo
 ### Example 1
 ```
 Input:  nums = [3, 1, 4, 1, 5, 9, 2, 6], k = 3
-Output: [2, 1, 2, 3, 1, 2]
-
-Window [3,1,4] → sorted [1,3,4] → rank of 4 = 3
-Window [1,4,1] → sorted [1,1,4] → rank of 1 = 1 (dense, ties share rank)
-Window [4,1,5] → sorted [1,4,5] → rank of 5 = 3... 
-
-Wait, re-reading: rank of the LAST element (nums[i]) in window:
-i=2: window=[3,1,4], nums[2]=4 → rank 3 → output[0]=3
-i=3: window=[1,4,1], nums[3]=1 → rank 1 → output[1]=1
-i=4: window=[4,1,5], nums[4]=5 → rank 3 → output[2]=3
-i=5: window=[1,5,9], nums[5]=9 → rank 3 → output[3]=3
-i=6: window=[5,9,2], nums[6]=2 → rank 1 → output[4]=1
-i=7: window=[9,2,6], nums[7]=6 → rank 2 → output[5]=2
-
 Output: [3, 1, 3, 3, 1, 2]
+
+i=2: window [3,1,4], today 4 → 2 smaller → rank 3
+i=3: window [1,4,1], today 1 → 0 smaller → rank 1 (ties with the other 1)
+i=4: window [4,1,5], today 5 → rank 3
+i=5: window [1,5,9], today 9 → rank 3
+i=6: window [5,9,2], today 2 → rank 1
+i=7: window [9,2,6], today 6 → rank 2
 ```
 
 ### Example 2
 ```
 Input:  nums = [5, 3, 1, 2, 4], k = 3
-Output: [1, 1, 3]
-
-i=2: window=[5,3,1], nums[2]=1 → rank 1
-i=3: window=[3,1,2], nums[3]=2 → rank 2
-i=4: window=[1,2,4], nums[4]=4 → rank 3
-
 Output: [1, 2, 3]
 ```
 
 ---
 
-## Approach: SortedList
+## Approach: sorted window
 
-Use a sorted container that supports O(log k) insert, delete, and `bisect_left` for rank lookup.
+Brute force re-sorts each window: O(n·k log k). Instead keep the window in a sorted container that supports O(log k) insert, delete, and binary search.
 
 ### Algorithm
 
 ```
-1. Initialise an empty SortedList.
-2. For each i from 0 to n-1:
-   a. Insert nums[i] into SortedList.
-   b. If i >= k, remove nums[i - k] (sliding out).
-   c. If i >= k-1, rank = bisect_right(SortedList, nums[i]).
-      (rank = number of elements <= nums[i] = 1-based rank under dense scheme)
+For each i:
+  1. add nums[i]
+  2. if i >= k: remove nums[i - k]
+  3. if i >= k - 1: rank = bisect_left(window, nums[i]) + 1
 ```
 
 ### Complexity
 
-| | Complexity |
-|---|---|
-| **Time** | O(n log k) |
-| **Space** | O(k) |
+| | `SortedList` | `list` + `bisect.insort` (stdlib only) |
+|---|---|---|
+| **Time** | O(n log k) | O(n·k) worst case (insert/delete shift elements) |
+| **Space** | O(k) | O(k) |
 
 ---
 
@@ -106,41 +99,50 @@ Use a sorted container that supports O(log k) insert, delete, and `bisect_left` 
 
 ```python
 from sortedcontainers import SortedList
-from bisect import bisect_right
 
 def rolling_rank(nums: list[int], k: int) -> list[int]:
     sl = SortedList()
     result = []
-
     for i, val in enumerate(nums):
         sl.add(val)
         if i >= k:
-            sl.remove(nums[i - k])  # O(log k)
+            sl.remove(nums[i - k])
         if i >= k - 1:
-            # 1-based dense rank: count of elements <= val
-            rank = sl.bisect_right(val)  # O(log k)
-            result.append(rank)
-
+            result.append(sl.bisect_left(val) + 1)
     return result
 ```
 
----
-
-## Handling Ties — Dense Rank vs Standard Rank
-
-| Rank type | Formula |
-|---|---|
-| Dense rank (ties share lowest rank) | `bisect_left(sl, val) + 1` |
-| Standard rank (ties share average) | `(bisect_left + bisect_right) / 2 + 0.5` |
-| "Count ≤ val" rank | `bisect_right(sl, val)` |
-
-For the WorldQuant cross-sectional ranking context, **average rank** for ties is most common:
+If `sortedcontainers` is not allowed, a stdlib version is short and fast enough for moderate `k`:
 
 ```python
-lo = sl.bisect_left(val)
-hi = sl.bisect_right(val)
-rank = (lo + hi + 1) / 2  # average rank, 1-based
+from bisect import bisect_left, insort
+
+def rolling_rank_stdlib(nums: list[int], k: int) -> list[int]:
+    window: list[int] = []
+    result = []
+    for i, val in enumerate(nums):
+        insort(window, val)
+        if i >= k:
+            del window[bisect_left(window, nums[i - k])]
+        if i >= k - 1:
+            result.append(bisect_left(window, val) + 1)
+    return result
 ```
+
+For large `k` without third-party packages, use a Fenwick tree over coordinate-compressed values: O(n log n).
+
+---
+
+## Handling Ties
+
+With `lo = bisect_left(sl, val)` and `hi = bisect_right(sl, val)`:
+
+| Tie method (pandas name) | Formula |
+|---|---|
+| `min` (this problem) | `lo + 1` |
+| `max` | `hi` |
+| `average` (common for factor ranks) | `(lo + 1 + hi) / 2` |
+| `dense` | `1 + number of distinct values < val` (needs a sorted set of distinct keys plus a counter) |
 
 ---
 
@@ -153,7 +155,7 @@ In quantitative finance, this problem appears as:
 This is the basis of **time-series momentum** and **mean-reversion** signals.
 
 ```
-percentile = rank / k  # normalised to [1/k, 1]
+percentile = rank / k  # in [1/k, 1]; use (rank - 1) / (k - 1) for [0, 1]
 ```
 
 ---

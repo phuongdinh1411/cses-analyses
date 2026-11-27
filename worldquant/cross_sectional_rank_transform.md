@@ -22,6 +22,14 @@ tags: [array, sorting, ranking, nan-handling, worldquant, finance]
 - [ ] Correctly exclude or assign NaN values during ranking
 - [ ] Normalise ranks to [-1, 1] or [0, 1] as used in alpha research
 
+### In 60 seconds
+- **Pattern:** Sort indices, then group ties
+- **Key insight:** Sort valid (non-NaN) values once; each run of equal values gets one rank chosen by the tie method (average, min, max, dense, first).
+- **Complexity:** O(n log n) per date
+- **Trap:** Ranking NaNs as values; using the wrong denominator when normalising to percentiles.
+
+> **Say this in the interview:** "Rank removes scale and outliers, which is why factor pipelines rank before combining signals."
+
 ---
 
 ## Problem Statement
@@ -121,6 +129,7 @@ def cross_sectional_rank(
 
     # Compute ranks
     ranks = [0.0] * m
+    dense = 0                      # number of distinct values seen so far
     i = 0
     while i < m:
         j = i
@@ -128,6 +137,7 @@ def cross_sectional_rank(
         while j < m and valid_sorted[j][0] == valid_sorted[i][0]:
             j += 1
         # i..j-1 are tied (1-indexed positions: i+1 .. j)
+        dense += 1
         if method == "min":
             r = i + 1
         elif method == "max":
@@ -135,11 +145,11 @@ def cross_sectional_rank(
         elif method == "average":
             r = (i + 1 + j) / 2
         elif method == "dense":
-            r = len(set(v for v, _ in valid_sorted[:j]))
+            r = dense
         else:
             raise ValueError(f"Unknown method: {method}")
         for k in range(i, j):
-            ranks[k] = r
+            ranks[k] = float(r)
         i = j
 
     # Place back

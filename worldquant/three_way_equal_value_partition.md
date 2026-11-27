@@ -22,23 +22,26 @@ tags: [string, greedy, math, binary, worldquant]
 - [ ] Handle leading zeros correctly (the value, not the representation, must be equal)
 - [ ] Use total 1-count to determine if a valid partition exists
 
+### In 60 seconds
+- **Pattern:** Count 1s, then pattern match
+- **Key insight:** Equal values need equal counts of 1s; part 3 fixes the bit pattern (including trailing zeros), and parts 1 and 2 must copy it from their first 1.
+- **Complexity:** O(n) time, O(n) space (O(1) possible)
+- **Trap:** All-zero input (return `[0, n-1]`) and the LeetCode 927 return convention.
+
+> **Say this in the interview:** "The last part has no freedom, so it defines the pattern the other two must match."
+
 ---
 
 ## Problem Statement
 
-Given a binary string `s` of length `n`, partition it into **three non-empty parts** `s[0..i]`, `s[i+1..j]`, `s[j+1..n-1]` such that all three parts represent the **same binary value**.
+Given a binary string `s` of length `n`, split it into **three non-empty parts** with the **same binary value** (leading zeros allowed, so `"011"` equals `"11"`).
 
-Return any valid `[i, j]` such that:
-- `0 <= i < j < n - 1` (all three parts are non-empty)
-- `binary_value(s[0..i]) == binary_value(s[i+1..j]) == binary_value(s[j+1..n-1])`
+Return `[i, j]` using the LeetCode 927 convention:
+- part 1 = `s[0..i]`
+- part 2 = `s[i+1..j-1]`
+- part 3 = `s[j..n-1]`
 
-If no valid partition exists, return `[-1, -1]`.
-
-**Input:**
-- A binary string `s` (only `'0'` and `'1'`)
-
-**Output:**
-- A pair `[i, j]` (0-indexed, inclusive cut points), or `[-1, -1]`
+and `i + 1 < j`. If no split exists, return `[-1, -1]`.
 
 **Constraints:**
 - `3 <= n <= 3 * 10^4`
@@ -50,84 +53,59 @@ If no valid partition exists, return `[-1, -1]`.
 
 ### Example 1
 ```
-Input:  s = "0 0 1 1 0 0 1 1 1 0 0 0"
-           indices: 0 1 2 3 4 5 6 7 8 9 10 11
-Output: [3, 8]
+Input:  s = "10101"
+Output: [0, 3]
 
-s[0..3]  = "0011"  → value 3
-s[4..8]  = "00111" → value 7? No...
-
-Let's use LeetCode's array form:
-s = [0,0,1,1,0,0,1,1,1,0,0,0]
-i=3, j+1=9 means j=8:
-Part 1: [0,0,1,1]         = binary 0011 = 3
-Part 2: [0,0,1,1,1]       = binary 00111 = 7? 
-
-Actually LeetCode 927 uses arr of 0/1:
-arr=[0,0,1,1,0,0,1,1,1,0,0,0]
-Answer: [3,8] means:
-  Part 1 = arr[0..3]  = [0,0,1,1]   → 3
-  Part 2 = arr[4..8]  = [0,1,1,1]   → 7? 
-
-Let me use the actual LeetCode example:
-arr=[1,0,1,0,1], answer=[0,3]
-Part 1: [1]    = 1
-Part 2: [0,1]  = 1
-Part 3: [0,1]  = 1 ✅
+Part 1: s[0..0] = "1"  → 1
+Part 2: s[1..2] = "01" → 1
+Part 3: s[3..4] = "01" → 1
 ```
 
 ### Example 2
 ```
-Input:  s = "1 1 0 1 1"
-Output: [-1, -1]
-
-Total 1s = 4, not divisible by 3 → impossible.
+Input:  s = "11011"
+Output: [-1, -1]      # 4 ones cannot be split into 3 equal groups
 ```
 
 ### Example 3
 ```
-Input:  s = "1 1 0 0 0"
-Output: [0, 2]
+Input:  s = "1001001"
+Output: [0, 4]
 
-Part 1: "1"   = 1
-Part 2: "1"   = 1
-Part 3: "000" = 0 ❌ — invalid
+Part 1: s[0..0] = "1"   → 1
+Part 2: s[1..3] = "001" → 1   (leading zeros are free)
+Part 3: s[4..6] = "001" → 1
 ```
 
 ---
 
-## Approach: Count 1s + Find Suffix Match
+## Approach: Count 1s, then match the last part's pattern
 
-### Key Observations
+### Key observations
 
-1. Each part must have **the same number of 1s**. If `total_ones % 3 != 0` → impossible.
-2. If `total_ones == 0` → any split works, return `[0, 1]`.
-3. Each part = `total_ones // 3` ones.
-4. The **last part's bit pattern** (including trailing zeros) determines the target. Find where the 1st, 2nd, 3rd groups of `ones_per_part` 1s start and verify the patterns match.
+1. Equal values ⇒ equal numbers of 1s. If `ones % 3 != 0` → impossible.
+2. If `ones == 0` → every part is 0; return `[0, n - 1]`.
+3. **Part 3 is fixed**: it runs from the first 1 of the last group to the end of the string, so its trailing zeros are known. Parts 1 and 2 must reproduce that exact pattern (starting at their own first 1); any zeros before their first 1 are free leading zeros.
 
 ### Algorithm
 
 ```
-1. ones = count of 1s in s
-   If ones % 3 != 0: return [-1, -1]
-   If ones == 0:     return [0, 1]
-
-2. k = ones // 3
-3. Find the indices of the 1st, (k+1)-th, (2k+1)-th ones.
-   These are the starting positions of part1, part2, part3.
-
-4. Walk all three parts simultaneously from their starts.
-   If all characters match, the three suffixes are equal.
-
-5. The cut points i and j are determined by where part2 and part3 start.
+k = ones // 3
+p1, p2, p3 = index of the 1st, (k+1)-th, (2k+1)-th '1'
+while p3 < n:
+    if s[p1] != s[p2] or s[p2] != s[p3]: return [-1, -1]
+    p1, p2, p3 += 1
+return [p1 - 1, p2]       # p1-1 = end of part 1; p2 = start of part 3
 ```
+
+If the walk succeeds, part 1's pattern ends at `p1 - 1`. Part 2 starts at `p1` (leading zeros allowed) and its pattern ends at `p2 - 1`, so part 3 starts at `p2`.
 
 ### Complexity
 
 | | Complexity |
 |---|---|
 | **Time** | O(n) |
-| **Space** | O(1) extra (or O(n) if storing indices) |
+| **Space** | O(n) for the list of 1-positions (O(1) if you scan for the three starts) |
 
 ---
 
@@ -142,46 +120,25 @@ def three_equal_parts(s: str) -> list[int]:
     if total % 3 != 0:
         return [-1, -1]
     if total == 0:
-        return [0, 1]
+        return [0, n - 1]
 
     k = total // 3
-    # Starting indices of the three groups of 1s
-    i1 = ones_pos[0]
-    i2 = ones_pos[k]
-    i3 = ones_pos[2 * k]
-
-    # Walk all three parts simultaneously
-    while i3 < n:
-        if s[i1] == s[i2] == s[i3]:
-            i1 += 1; i2 += 1; i3 += 1
-        else:
+    p1, p2, p3 = ones_pos[0], ones_pos[k], ones_pos[2 * k]
+    while p3 < n:
+        if s[p1] != s[p2] or s[p2] != s[p3]:
             return [-1, -1]
-
-    # i1, i2, i3 are now the ends+1 of the three parts
-    # cut1 = i1 - 1 (end of part 1, inclusive)
-    # cut2 = i2 - 1 (end of part 2, inclusive)
-    return [i1 - 1, i2]
+        p1 += 1; p2 += 1; p3 += 1
+    return [p1 - 1, p2]
 ```
 
 ---
 
-## Dry Run
+## Dry Run — `s = "1001001"`
 
-`s = "10101"`, total 1s = 3, k = 1
-
-- `i1 = 0` (1st one), `i2 = 2` (2nd one), `i3 = 4` (3rd one)
-
-Walk:
-- s[0]='1', s[2]='1', s[4]='1' → match, advance: i1=1, i2=3, i3=5
-- i3=5 = n → stop
-
-Return `[i1-1, i2] = [0, 3]`
-
-Check:
-- Part 1: s[0..0] = "1" = 1
-- Part 2: s[1..3] = "010" = wait... cut1=0 means part1 = s[0..0], part2 = s[1..3] = "010"?
-
-Actually LeetCode 927 returns `[i, j+1]` style — verify against the specific version you're solving. The key idea is identical.
+- ones = 3, k = 1 → `p1 = 0`, `p2 = 3`, `p3 = 6`
+- Compare `s[0], s[3], s[6]` = `1, 1, 1` → advance to `p1 = 1`, `p2 = 4`, `p3 = 7 = n` → stop
+- Return `[p1 - 1, p2] = [0, 4]`
+- Parts: `"1"`, `"001"`, `"001"` → 1, 1, 1 ✅
 
 ---
 
@@ -189,9 +146,10 @@ Actually LeetCode 927 returns `[i, j+1]` style — verify against the specific v
 
 | Pitfall | Fix |
 |---|---|
-| Forgetting trailing zeros in parts 1 and 2 | The simultaneous walk naturally handles this |
-| Off-by-one in cut indices | Walk until `i3 == n`, use `i1-1` as the inclusive end |
-| Total 1s = 0 edge case | Return `[0, 1]` immediately (any split gives value 0) |
+| Ignoring part 3's trailing zeros | Part 3 fixes them; the walk forces parts 1 and 2 to copy them |
+| Treating leading zeros as significant | Start each walk at the part's first `1` |
+| All-zero string | Return `[0, n - 1]`; `[0, 1]` would leave part 2 empty |
+| Off-by-one in the return value | `p1 - 1` is the inclusive end of part 1; `p2` is the start of part 3 |
 
 ---
 

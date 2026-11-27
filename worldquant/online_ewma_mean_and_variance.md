@@ -22,6 +22,14 @@ tags: [statistics, streaming, ewma, worldquant, finance]
 - [ ] Understand the difference between EWMA and simple rolling average
 - [ ] Handle the warm-up period and bias correction
 
+### In 60 seconds
+- **Pattern:** Online recurrence (Finch 2009)
+- **Key insight:** `diff = x - mean; incr = alpha·diff; mean += incr; var = (1 - alpha)·(var + diff·incr)` updates both in O(1) without storing history.
+- **Complexity:** O(1) per update, O(1) space
+- **Trap:** Mixing pandas `adjust=True` with this recurrence; RiskMetrics λ = 0.94 means `alpha = 0.06`.
+
+> **Say this in the interview:** "EWMA forgets geometrically, so the state is just mean and variance — ideal for streaming risk."
+
 ---
 
 ## Problem Statement
@@ -34,7 +42,7 @@ The EWMA (Exponentially Weighted Moving Average) assigns **exponentially decreas
 mean_t = alpha * x_t + (1 - alpha) * mean_{t-1}
 ```
 
-For **EWMA variance** (using Welford-style update):
+For **EWMA variance** (the incremental update from Finch, "Incremental calculation of weighted mean and variance", 2009):
 ```
 delta  = x_t - mean_{t-1}
 mean_t = mean_{t-1} + alpha * delta
@@ -62,11 +70,10 @@ var_t  = (1 - alpha) * (var_{t-1} + alpha * delta^2)
 Input:  stream = [2.0, 4.0, 6.0, 8.0], alpha = 0.5
 Output:
   means:     [2.0, 3.0, 4.5, 6.25]
-  variances: [0.0, 0.5, 1.375, 2.359]
+  variances: [0.0, 1.0, 2.75, 4.4375]
 
 Step 1: mean=2.0 (first value), var=0.0
-Step 2: delta=4-2=2, mean=2+0.5*2=3.0, var=0.5*(0+0.5*4)=1.0
-  Actually: var = (1-0.5)*(0 + 0.5*2^2) = 0.5*(0 + 2) = 1.0
+Step 2: delta=4-2=2, mean=2+0.5*2=3.0, var=(1-0.5)*(0+0.5*2^2)=1.0
 Step 3: delta=6-3=3, mean=3+0.5*3=4.5, var=0.5*(1+0.5*9)=0.5*5.5=2.75
 Step 4: delta=8-4.5=3.5, mean=4.5+0.5*3.5=6.25, var=0.5*(2.75+0.5*12.25)=0.5*8.875=4.4375
 ```
@@ -159,16 +166,17 @@ def alpha_from_span(span: float) -> float:
 
 ---
 
-## Bias Correction (Pandas-style)
+## Matching pandas
 
-Early estimates are biased because the weight hasn't "summed to 1" yet. Pandas `ewm(adjust=True)` corrects this:
+Starting from `mean = x_0`, this recurrence is exactly pandas `ewm(alpha=alpha, adjust=False)`: the means equal `.mean()` and the variances equal `.var(bias=True)` (checked numerically).
+
+pandas' default `adjust=True` instead normalizes the weights at every step:
 
 ```
-effective_weight_t = sum of alpha*(1-alpha)^k for k=0..t-1
-mean_corrected_t   = raw_ewma_t / effective_weight_t
+mean_t = Σ_{i=0..t} (1-alpha)^i · x_{t-i}  /  Σ_{i=0..t} (1-alpha)^i
 ```
 
-For most production use with `n >> 1/alpha`, the bias is negligible.
+The two differ only while `(1 - alpha)^t` is not negligible, i.e. for roughly the first few multiples of `1/alpha` observations. `.var()` without `bias=True` also applies a small-sample correction.
 
 ---
 
@@ -177,7 +185,7 @@ For most production use with `n >> 1/alpha`, the bias is negligible.
 EWMA is used for:
 - **Volatility estimation**: `ewma_std(returns, alpha)` gives a rolling vol estimate that reacts faster to recent shocks than a simple window
 - **Signal smoothing**: smooth noisy factor values before computing IC
-- **Risk models**: JP Morgan's RiskMetrics model uses EWMA with `alpha = 0.94` for daily returns
+- **Risk models**: RiskMetrics uses a decay factor `λ = 0.94` for daily returns, i.e. weight `1 - λ` on the newest squared return, so `alpha = 0.06` in this page's notation
 
 ---
 

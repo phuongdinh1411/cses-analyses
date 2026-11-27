@@ -21,6 +21,14 @@ tags: [array, permutation, cycle-detection, worldquant]
 - [ ] Count the minimum swaps needed using cycle lengths
 - [ ] Handle duplicate popularity scores correctly
 
+### In 60 seconds
+- **Pattern:** Cycle decomposition of a permutation
+- **Key insight:** With distinct values, each cycle of length `L` in the target permutation needs exactly `L - 1` swaps.
+- **Complexity:** O(n log n) time (sort), O(n) space
+- **Trap:** Applying the formula to duplicate values: it is no longer exact (`[2,1,2,1]` needs 1 swap, not 3).
+
+> **Say this in the interview:** "Sorting is a permutation; cycles are independent and each costs its length minus one."
+
 ---
 
 ## Problem Statement
@@ -38,7 +46,7 @@ A swap is defined as exchanging the values at any two indices.
 **Constraints:**
 - `1 <= n <= 10^5`
 - `0 <= popularity[i] <= 10^9`
-- Values may contain duplicates
+- Values are **distinct** (see "Handling Duplicates" for why this matters)
 
 ---
 
@@ -140,11 +148,15 @@ Swaps = 4 - 1 = **3** ✅
 
 ## Handling Duplicates
 
-When values repeat, multiple valid sorted orders exist. Break ties by **original index** to guarantee a consistent permutation:
+With repeated values the cycle formula is **no longer exact**, because many target permutations are valid and the answer depends on which one you pick. Fixing ties by original index gives *a* valid number of swaps, not the minimum:
 
-```python
-indexed = sorted(enumerate(popularity), key=lambda x: (x[1], x[0]))
 ```
+popularity = [2, 1, 2, 1]   → sorted [1, 1, 2, 2]
+Tie-break by index: one 4-cycle → 3 swaps
+Optimal: swap index 0 and 3 → [1, 1, 2, 2] in 1 swap
+```
+
+The true minimum needs the target assignment that *maximizes the number of cycles*, which is NP-hard for arbitrary repeated values. In an interview: ask whether values are distinct (the usual case). If not, say the cycle method gives an upper bound, and that greedily resolving 2-cycles first (pairs of positions that each hold the other's value) gives the exact answer when there are at most 3 distinct values.
 
 ---
 
@@ -152,5 +164,6 @@ indexed = sorted(enumerate(popularity), key=lambda x: (x[1], x[0]))
 
 | Problem | Link |
 |---|---|
-| Minimum Swaps to Sort (LeetCode 2459) | Classic variant |
+| Minimum Number of Operations to Sort a Binary Tree by Level (LeetCode 2471) | Same cycle counting per tree level (distinct values) |
+| Couples Holding Hands (LeetCode 765) | Cycle / union-find counting of swaps |
 | Rolling Rank in a Sliding Window | Rank maintenance |

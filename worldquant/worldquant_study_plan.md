@@ -12,16 +12,24 @@ permalink: /worldquant/worldquant_study_plan
 
 ---
 
-## Table of Contents
+## In 60 seconds
 
-1. [Priority Stack](#priority-stack)
-2. [Week 1–2: DSA Fluency](#week-12-dsa-fluency)
-3. [Week 3–4: System Design (HLD)](#week-34-system-design-hld)
-4. [Week 5: Python Deep Dive](#week-5-python-deep-dive)
-5. [Week 6: Data Pipelines & Databases](#week-6-data-pipelines--databases)
-6. [Week 7: Low-Level Design & Software Architecture](#week-7-low-level-design--software-architecture)
-7. [Week 8: Mock Interviews & Behavioral](#week-8-mock-interviews--behavioral)
-8. [New Pages to Build](#new-pages-to-build)
+- **One schedule, two repos.** The main track is the [python-books eight-week route](https://github.com/phuongdinh1411/python-books#eight-week-route) (Python → SQL → Kafka → ETL → financial system design → security → mocks). This repo supplies the **daily DSA track** and the system-design pages.
+- **Daily rhythm:** 60–90 min main track + 1–2 DSA problems (≤ 25 min each) + 10 min reviewing yesterday's mistakes.
+- **This page** holds the topic notes for each track. [WorldQuant Senior SWE Prep](/worldquant/worldquant_senior_swe_prep) holds the job research, question bank, and progress tracker.
+
+## Unified 8-week schedule
+
+| Week | Main track (python-books) | DSA track (this repo, daily) | System design (this repo) |
+|---|---|---|---|
+| 1 | Python internals + asyncio | Arrays, hashing, two pointers; [Counting Pairs](/worldquant/counting_pairs), [Degree of an Array](/worldquant/degree_of_an_array) | — |
+| 2 | FastAPI + async SQLAlchemy + pytest | Sliding window + monotonic deque; [Sliding Window Minimum](/worldquant/sliding_window_minimum), [Rolling Rank](/worldquant/rolling_rank_in_a_sliding_window) | — |
+| 3 | SQL + PostgreSQL | Binary search on answer, heaps; [Top-K Portfolio](/worldquant/top_k_portfolio_selection_with_stability_constraint) | [Key-value store](/system_design/design-key-value-store) |
+| 4 | Kafka + idempotent ingestion | Graphs (BFS/DFS, union-find, topological sort); [Longest Increasing Path](/worldquant/longest_consecutive_increasing_path_in_a_grid) | [Message queue](/system_design/design-message-queue) |
+| 5 | ETL/Airflow + backfills | DP (knapsack, intervals); [Biological Hazards](/worldquant/biological_hazards) | [Data pipeline](/system_design/design-data-pipeline) |
+| 6 | Financial system design | Quant-flavoured streaming stats; [Online EWMA](/worldquant/online_ewma_mean_and_variance), [Rolling Correlation](/worldquant/rolling_correlation_with_missing_values), [Rolling IC](/worldquant/rolling_information_coefficient_at_scale) | [Payment system](/system_design/design-payment-system), [Observability](/system_design/design-observability-platform) |
+| 7 | Network/security + low-level design | Segment/Fenwick tree; [Cross-Sectional Rank](/worldquant/cross_sectional_rank_transform), [Min Swaps](/worldquant/minimum_swaps_to_sort_by_popularity) | Low-level design pages below |
+| 8 | Mocks + behavioral | Timed mixed sets: 2 mediums in 45 min | Timed 45-min mocks (topics below) |
 
 ---
 
@@ -40,9 +48,9 @@ If time is limited, study in this order — each row is a bigger differentiator 
 
 ---
 
-## Week 1–2: DSA Fluency
+## DSA Track (daily, weeks 1–8)
 
-**Goal:** Solve any LeetCode medium in ≤ 20 minutes. Focus on speed and correctness, not new concepts.
+**Goal:** Solve any LeetCode medium in ≤ 20–25 minutes. Focus on speed and correctness, not new concepts.
 
 | Topic | Resource | Target |
 |-------|----------|--------|
@@ -63,7 +71,7 @@ Heap:      215 (Kth Largest), 295 (Median from Stream)
 
 ---
 
-## Week 3–4: System Design (HLD)
+## System Design (HLD)
 
 **Goal:** Fluently walk through a distributed system design with trade-offs, failure modes, and scaling strategies.
 
@@ -76,14 +84,14 @@ Heap:      215 (Kth Largest), 295 (Median from Stream)
 | Distributed object storage | [`design-s3-object-storage.md`](/system_design/design-s3-object-storage) | Review consistent hashing |
 | Payment / financial systems | [`design-payment-system.md`](/system_design/design-payment-system) | Emphasize idempotency, exactly-once delivery |
 
-### New guides to create (highest-leverage gaps)
+### WorldQuant-specific guides
 
 | Guide | Why it matters for WorldQuant |
 |-------|-------------------------------|
 | [`design-data-pipeline.md`](/system_design/design-data-pipeline) | WorldQuant runs large-scale financial data pipelines; this is likely to come up |
 | [`design-observability-platform.md`](/system_design/design-observability-platform) | OpenTelemetry/Grafana/ELK are explicitly listed in the JD |
 
-### System design interview framework (20/20/5 split)
+### System design interview framework (40-minute timeline)
 
 ```
 0–5 min   Clarify scope: scale, consistency requirements, read/write ratio
@@ -95,13 +103,14 @@ Heap:      215 (Kth Largest), 295 (Median from Stream)
 
 ---
 
-## Week 5: Python Deep Dive
+## Python Deep Dive (main track weeks 1–2)
 
 **Goal:** Demonstrate senior-level Python knowledge — not just "Python works" but *why* it works and where it breaks.
 
 ### asyncio internals
 
 ```python
+# sketch: fetch() and aiohttp are assumed
 import asyncio
 
 # Event loop runs ONE coroutine at a time — no parallelism, only concurrency
@@ -114,33 +123,35 @@ async def fetch_all(urls: list[str]) -> list[str]:
         return await asyncio.gather(*[fetch(session, url) for url in urls])
 
 # TaskGroup (Python 3.11+) — cancels siblings on first failure
-async def safe_fetch_all(urls: list[str]) -> list[str]:
-    results = []
+async def safe_fetch_all(session, urls: list[str]) -> list[str]:
     async with asyncio.TaskGroup() as tg:
-        tasks = [tg.create_task(fetch(url)) for url in urls]
+        tasks = [tg.create_task(fetch(session, url)) for url in urls]
     return [t.result() for t in tasks]
 ```
 
 | Concept | Key point |
 |---------|-----------|
 | Event loop | Single-threaded; runs coroutines cooperatively via `await` yield points |
-| `gather()` vs `wait()` | `gather` cancels all on error; `wait` lets you handle partial results |
-| `TaskGroup` | Structured concurrency (Python 3.11+); preferred over bare `gather` |
-| GIL impact | asyncio avoids GIL issues because it's single-threaded; use `ProcessPoolExecutor` for CPU work |
-| Deadlock pitfall | Calling blocking code inside `async def` starves the event loop — always use `run_in_executor` |
+| `gather()` vs `wait()` | `gather` raises the first error but does **not** cancel the other awaitables (or collects errors with `return_exceptions=True`); `wait` returns `(done, pending)` sets so you handle partial results |
+| `TaskGroup` | Structured concurrency (Python 3.11+): cancels siblings on first failure and raises an `ExceptionGroup`; preferred over bare `gather` |
+| GIL impact | asyncio overlaps I/O waits on one thread, so the GIL is not the bottleneck; for CPU work use `ProcessPoolExecutor` |
+| Blocking-call pitfall | Blocking code inside `async def` stalls every coroutine; use an async library, or offload with `asyncio.to_thread` / `run_in_executor` |
 
 ### FastAPI patterns
 
 ```python
+# sketch: User model and async_session come from the SQLAlchemy block below
+from collections.abc import AsyncIterator
 from fastapi import FastAPI, Depends
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 app = FastAPI()
 
 # Dependency injection: DB session per request, auto-closed
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncIterator[AsyncSession]:
     async with async_session() as session:
-        yield session  # yields to route handler; finally block closes session
+        yield session  # `async with` closes the session after the response
 
 @app.get("/users/{user_id}")
 async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
@@ -151,6 +162,8 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
 ### SQLAlchemy async patterns
 
 ```python
+# fragment: User, user_id, and data are assumed
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import selectinload
 
@@ -171,6 +184,7 @@ stmt = insert(User).values(**data).on_conflict_do_update(
 ### pytest patterns
 
 ```python
+# sketch: needs pytest-asyncio (asyncio_mode = "auto") or @pytest.mark.anyio
 import pytest
 from httpx import AsyncClient
 
@@ -200,13 +214,13 @@ async def test_get_user(client: AsyncClient):
 | What is the GIL? | Global Interpreter Lock — only one thread runs Python bytecode at a time |
 | When does asyncio help? | I/O-bound: DB, HTTP, file. Not CPU-bound. |
 | `threading` vs `asyncio` | threading for legacy blocking libs; asyncio for modern async-native code |
-| `__slots__` | Replaces `__dict__` on instances — reduces memory ~40% for many small objects |
+| `__slots__` | Replaces the per-instance `__dict__` with fixed slots — saves memory when you have many small instances; measure with `tracemalloc` |
 | Descriptor protocol | How `@property`, `@classmethod` work — `__get__/__set__/__delete__` |
 | `functools.cache` vs `lru_cache` | `cache` = unbounded `lru_cache`; use `lru_cache(maxsize=N)` for bounded caching |
 
 ---
 
-## Week 6: Data Pipelines & Databases
+## Data Pipelines & Databases (main track weeks 3–5)
 
 **Goal:** Design, build, and diagnose production data pipelines — the core of WorldQuant's engineering work.
 
@@ -253,7 +267,8 @@ Topic partitioning:
 Delivery semantics:
   at-most-once   → commit before processing (may lose messages)
   at-least-once  → commit after processing (may duplicate — handle with idempotency)
-  exactly-once   → Kafka transactions + idempotent producer (highest cost)
+  exactly-once   → Kafka transactions + idempotent producer, Kafka-to-Kafka only;
+                   external sinks still need idempotent writes (upsert by key)
 ```
 
 | Setting | Purpose |
@@ -266,15 +281,15 @@ Delivery semantics:
 ### Airflow DAG patterns
 
 ```python
+# sketch: fetch_from_source_api, normalize, upsert_to_postgres are assumed
 from airflow.decorators import dag, task
 from datetime import datetime, timedelta
 
 @dag(
-    schedule="0 6 * * *",          # daily at 6am
+    schedule="0 6 * * *",          # daily at 06:00 (scheduler timezone, UTC by default)
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    retries=2,
-    retry_delay=timedelta(minutes=5),
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
 )
 def prices_pipeline():
 
@@ -299,7 +314,7 @@ prices_pipeline()
 |---------|---------|
 | `@task` decorator (TaskFlow API) | Clean Python tasks with automatic XCom passing |
 | Sensor operators | Wait for file/DB condition before proceeding |
-| `depends_on_past=True` | Prevents running if previous day failed |
+| `depends_on_past=True` | A task instance runs only if the same task succeeded in the previous run |
 | External task sensor | Cross-DAG dependencies |
 
 ### Batch vs streaming decision matrix
@@ -314,7 +329,7 @@ prices_pipeline()
 
 ---
 
-## Week 7: Low-Level Design & Software Architecture
+## Low-Level Design & Software Architecture (week 7)
 
 **Goal:** Design clean, extensible systems — demonstrate senior judgment on trade-offs.
 
@@ -340,16 +355,22 @@ prices_pipeline()
 ### Circuit breaker implementation sketch
 
 ```python
+import time
+
+class ServiceUnavailableError(Exception):
+    pass
+
 class CircuitBreaker:
     def __init__(self, failure_threshold=5, reset_timeout=60):
-        self.state = "CLOSED"   # CLOSED → OPEN → HALF_OPEN
+        self.state = "CLOSED"   # CLOSED → OPEN → HALF_OPEN → CLOSED or OPEN
         self.failures = 0
         self.threshold = failure_threshold
-        self.reset_at = None
+        self.reset_timeout = reset_timeout
+        self.reset_at = 0.0
 
     async def call(self, func, *args):
         if self.state == "OPEN":
-            if time.time() < self.reset_at:
+            if time.monotonic() < self.reset_at:
                 raise ServiceUnavailableError()
             self.state = "HALF_OPEN"
 
@@ -363,9 +384,9 @@ class CircuitBreaker:
 
     def _on_failure(self):
         self.failures += 1
-        if self.failures >= self.threshold:
+        if self.state == "HALF_OPEN" or self.failures >= self.threshold:
             self.state = "OPEN"
-            self.reset_at = time.time() + self.reset_timeout
+            self.reset_at = time.monotonic() + self.reset_timeout
 
     def _on_success(self):
         self.failures = 0
@@ -374,7 +395,7 @@ class CircuitBreaker:
 
 ---
 
-## Week 8: Mock Interviews & Behavioral
+## Mock Interviews & Behavioral (week 8)
 
 ### System design mock topics (most likely for WorldQuant)
 
@@ -400,7 +421,7 @@ class CircuitBreaker:
 
 ---
 
-## New Pages to Build
+## Pages Built for This Plan
 
 | Page | Status | Why |
 |------|--------|-----|

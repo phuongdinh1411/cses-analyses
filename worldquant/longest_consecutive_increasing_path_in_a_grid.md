@@ -21,6 +21,14 @@ tags: [dfs, memoization, grid, dp, worldquant]
 - [ ] Recognise that the DAG structure (strictly increasing) prevents cycles
 - [ ] Find the longest path in a DAG efficiently
 
+### In 60 seconds
+- **Pattern:** DFS + memoization on a DAG
+- **Key insight:** Edges only go to a neighbour with value + 1, so the grid is a DAG and `best[cell] = 1 + max(best[next])` can be cached.
+- **Complexity:** O(R·C) time and space
+- **Trap:** Deep recursion on long paths: use the iterative value-descending version or raise the recursion limit.
+
+> **Say this in the interview:** "Strictly increasing edges mean no cycles, so memoized DFS visits each cell once."
+
 ---
 
 ## Problem Statement
@@ -61,27 +69,14 @@ Path: 1→2→3→4→5→6→7→8→9 (snake through the grid)
 ### Example 2
 ```
 Input:
-grid = [[9, 9, 4],
-        [6, 6, 8],
-        [2, 1, 1]]
-
-Output: 4
-
-Path: 1→2 is one option, or 6→... no 7.
-Best: 1(2,1)→2(2,0)→6(1,0)→... 6+1=7 not in grid.
-Or: 4(0,2)→8(1,2)→... 9 is adjacent? (0,0)=9 not adjacent to (1,2).
-Best path of length 4: [4,6,... no], actually: 6(1,0)→... 
-Revisit: value 4 at (0,2), value 8 at (1,2) — diff=4, not consecutive.
-Path: (2,1)=1 → (2,0)=2 → (1,0)=6? diff=4, not consecutive.
-Best: length 4 not reachable here.
-Actual best: values 6→... need value 7, not present. 1→... need 2. 2→... need 3, not present.
-Answer for example 2 with stricter "exactly +1": 2 (just 1→2).
-
-Revised example 2 for clarity:
 grid = [[3, 4, 5],
         [3, 2, 6],
         [2, 2, 1]]
-Output: 4  (path: 3→4→5→6)
+
+Output: 4
+
+Path: (0,0)=3 → (0,1)=4 → (0,2)=5 → (1,2)=6
+The 2 at (1,1) reaches the 3 at (1,0), but that 3 has no adjacent 4, so that path stops at length 2.
 ```
 
 ### Example 3
@@ -129,7 +124,7 @@ Base case: if no valid neighbour exists, `dp[r][c] = 1`.
 | | Complexity |
 |---|---|
 | **Time** | O(m × n) — each cell computed once |
-| **Space** | O(m × n) memo table + O(m × n) recursion stack |
+| **Space** | O(m × n) memo table + up to O(m × n) recursion depth |
 
 ---
 
@@ -159,6 +154,26 @@ def longest_consecutive_path(grid: list[list[int]]) -> int:
     return max(dfs(r, c) for r in range(m) for c in range(n))
 ```
 
+**Recursion depth:** a snake-shaped path can be `m × n = 40,000` cells long, far beyond Python's default recursion limit (1000). Either raise it with `sys.setrecursionlimit` (and risk the C stack) or use the iterative version below.
+
+### Iterative version (no recursion)
+
+Every step goes from value `v` to `v + 1`, so processing cells in **decreasing** value order guarantees each neighbour's answer is ready.
+
+```python
+def longest_consecutive_path_iter(grid: list[list[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    dp = [[1] * n for _ in range(m)]
+    cells = sorted(((grid[r][c], r, c) for r in range(m) for c in range(n)), reverse=True)
+    for v, r, c in cells:
+        for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
+            if 0 <= nr < m and 0 <= nc < n and grid[nr][nc] == v + 1:
+                dp[r][c] = max(dp[r][c], 1 + dp[nr][nc])
+    return max(map(max, dp))
+```
+
+Time O(mn log mn) for the sort, space O(mn).
+
 ---
 
 ## Dry Run — Example 1
@@ -181,7 +196,8 @@ Starting at (0,0)=1:
 If the constraint is `grid[next] > grid[curr]` (not necessarily +1), the same DFS + memo approach works. This is LeetCode 329.
 
 ```python
-if grid[nr][nc] > grid[r][c]:   # replace == grid[r][c]+1
+# fragment: inside dfs, replace the == grid[r][c] + 1 test with
+if grid[nr][nc] > grid[r][c]:
     best = max(best, 1 + dfs(nr, nc))
 ```
 

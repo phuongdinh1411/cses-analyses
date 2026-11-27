@@ -7,7 +7,7 @@ permalink: /worldquant/worldquant_senior_swe_prep
 # 🏦 WorldQuant Senior SWE — 2-Month Interview Prep Plan
 
 > **Target Role:** Senior Software Engineer @ WorldQuant  
-> **Timeline:** 8 Weeks  
+> **Timeline:** 8 Weeks — follow the [unified 8-week schedule](/worldquant/worldquant_study_plan#unified-8-week-schedule); this page holds the checklists, research, question bank, and tracker  
 > **Start Date:** ___________  
 > **Interview Date:** ___________
 
@@ -15,7 +15,7 @@ permalink: /worldquant/worldquant_senior_swe_prep
 
 ## 🔍 What WorldQuant Actually Tests
 
-WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at the intersection of **high-performance engineering + quant finance**.
+WorldQuant is a **quantitative investment management firm**. Their SWE roles sit at the intersection of **high-performance engineering + quant finance**.
 
 > ⚡ **Based on actual job descriptions scraped Nov 2025** — see Research Findings section below for full JD details.
 
@@ -35,9 +35,11 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 
 ---
 
-## 📅 Month 1 — Foundations & Core Skills
+## ✅ Topic Checklists
 
-### ✅ Week 1–2: Python Mastery (Senior Level)
+> Tick these off as the [unified schedule](/worldquant/worldquant_study_plan#unified-8-week-schedule) reaches each topic. Week numbers below refer to that schedule.
+
+### Python Mastery (Senior Level) — weeks 1–2
 
 > Based on JD: _"Mastery of Python internals, concurrency, performance profiling, packaging, FastAPI/Flask, SQLAlchemy, pytest, mypy"_
 
@@ -57,9 +59,9 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 
 ---
 
-### ✅ Week 3–4: Data Structures & Algorithms
+### Data Structures & Algorithms — daily, weeks 1–8
 
-**Target:** 3–5 LeetCode problems/day — Medium focus, mix in Hard  
+**Target:** 1–2 problems/day (Medium focus, ≤ 25 min each) + one timed mixed set per week  
 **LeetCode lists:** Blind 75 → NeetCode 150
 
 | Topic | Status | Key Problems Solved |
@@ -83,9 +85,7 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 
 ---
 
-## 📅 Month 2 — System Design + Quant Domain + Mock Interviews
-
-### ✅ Week 5–6: System Design (Quant-Finance Flavor)
+### System Design (Quant-Finance Flavor) — weeks 3–6
 
 #### Core Concepts to Master (aligned with real JDs):
 - [ ] **ETL/ELT pipeline design** — this is the #1 system design topic in their JDs
@@ -116,7 +116,7 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 
 ---
 
-### ✅ Week 7: Quant Finance Fundamentals
+### Quant Finance Fundamentals — alongside week 6 (light, 2–3 hours/week)
 
 - [ ] **Alpha factors**: what they are, how they're researched (WorldQuant Brain platform)
 - [ ] **Backtesting concepts**: look-ahead bias, overfitting, Sharpe ratio, drawdown
@@ -131,7 +131,7 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 
 ---
 
-### ✅ Week 8: Mock Interviews + Behavioral
+### Mock Interviews + Behavioral — week 8 (draft STAR stories from week 4)
 
 #### Behavioral (STAR Format) — Senior-Level Themes:
 - [ ] Describe a system you designed from scratch under constraints
@@ -160,13 +160,11 @@ WorldQuant is a **quantitative hedge fund** (~$90B AUM). Their SWE roles sit at 
 ## 🗂️ Weekly Study Schedule
 
 ```
-Mon  → LeetCode (2 problems) + Python deep-dive
-Tue  → LeetCode (2 problems) + System Design reading
-Wed  → LeetCode (2 problems) + Quant finance concept
-Thu  → System Design practice (design one full system)
-Fri  → LeetCode hard problem + mock interview
-Sat  → WorldQuant Brain platform / project work
-Sun  → Review week's notes + behavioral prep
+Mon–Wed → 1–2 DSA problems + main-track reading for the week
+Thu     → 1 DSA problem + design one full system (45 min, timed)
+Fri     → Timed mixed DSA set (2 mediums in 45 min)
+Sat     → Main-track hands-on lab / WorldQuant Brain
+Sun     → Review mistakes log + one STAR story
 ```
 
 ---
@@ -388,8 +386,7 @@ Step 4: Onsite / Final Interview (reported as 4–9 hours, multiple interviewers
 | 4 | There are 5 points in an equilateral triangle of side 1. Prove there exist 2 points with distance < 1/2. (Pigeonhole Principle) | Combinatorics / Proof |
 | 5 | A calculator has all digit keys and arithmetic operators disabled. Only scientific functions (exp, log, sin, cos, arctan) work. It shows 0. Convert it to 2, then 3. | Math / Creativity |
 | 6 | Given a random number from a **uniform distribution**, produce a random variable that is **normally distributed**. | Statistics / Simulation |
-| 7 | Suppose expected coin tosses for N consecutive heads is p(n). Find the relationship between p(n) and p(n+1). | Probability / Recurrence |
-| 8 | With your wildest imagination — give 3 things that can predict the stock price. | Domain / Creativity |
+| 7 | With your wildest imagination — give 3 things that can predict the stock price. | Domain / Creativity |
 
 ---
 
@@ -475,11 +472,17 @@ Step 4: Onsite / Final Interview (reported as 4–9 hours, multiple interviewers
 #### 🔑 Must-Know Code Patterns
 
 ```python
+# sketch: signals_pb2*, token, and the URLs are placeholders
 # ── Secure HTTPS request with timeout + retry ──────────────────────
 import httpx
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+# Retry only transient transport errors; a 4xx from raise_for_status should fail fast.
+@retry(
+    retry=retry_if_exception_type(httpx.TransportError),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(min=1, max=10),
+)
 def fetch_signal(url: str, api_key: str) -> dict:
     with httpx.Client(timeout=5.0, verify=True) as client:
         response = client.get(
@@ -504,8 +507,12 @@ with grpc.secure_channel(
 import jwt  # PyJWT
 
 SECRET = "from-vault-not-hardcoded"
-payload = jwt.decode(token, SECRET, algorithms=["HS256"])
-# Always verify: exp, iss, aud claims
+payload = jwt.decode(
+    token, SECRET,
+    algorithms=["HS256"],                     # pin the algorithm list
+    audience="signals-api", issuer="https://auth.example.com",
+    options={"require": ["exp", "iss", "aud"]},
+)   # PyJWT checks exp automatically; aud/iss only when you pass them
 
 # ── Rate limiter (token bucket) ─────────────────────────────────────
 import time
@@ -552,7 +559,7 @@ class TokenBucket:
 | 4 | What is the difference between OLTP and OLAP? | DB Design |
 | 5 | Design a schema for storing financial tick data (OHLCV) at scale. | Schema Design |
 | 6 | What is query plan analysis? How do you use EXPLAIN in PostgreSQL? | Performance |
-| 7 | What is the difference between a clustered and non-clustered index? | Indexing |
+| 7 | What is the difference between a clustered and non-clustered index? (PostgreSQL has no maintained clustered index — `CLUSTER` is a one-time reorder; MySQL InnoDB clusters by primary key.) | Indexing |
 | 8 | Write a SQL query to find the top 3 most traded stocks by volume in the last 7 days. | SQL |
 
 ---
@@ -631,14 +638,14 @@ Format: Practical coding + multiple choice + short answer
 
 | Week | Focus | LeetCode Solved | Mock Interviews | Key Win | Blocker |
 |---|---|---|---|---|---|
-| 1 | Python Advanced | | | | |
-| 2 | Python + DSA start | | | | |
-| 3 | DSA intensive | | | | |
-| 4 | DSA intensive | | | | |
-| 5 | System Design | | | | |
-| 6 | System Design | | | | |
-| 7 | Quant Finance | | | | |
-| 8 | Mock Interviews | | | | |
+| 1 | Python internals + asyncio | | | | |
+| 2 | FastAPI + SQLAlchemy + pytest | | | | |
+| 3 | SQL + PostgreSQL | | | | |
+| 4 | Kafka + idempotent ingestion | | | | |
+| 5 | ETL/Airflow + backfills | | | | |
+| 6 | Financial system design + quant basics | | | | |
+| 7 | Network/security + low-level design | | | | |
+| 8 | Mocks + behavioral | | | | |
 
 ---
 

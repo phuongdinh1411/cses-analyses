@@ -21,6 +21,14 @@ tags: [sliding-window, monotonic-deque, array, worldquant]
 - [ ] Produce the minimum of every window in O(n) total time
 - [ ] Distinguish from the "Maximum of Sliding Window Minimums" variant
 
+### In 60 seconds
+- **Pattern:** Monotonic increasing deque
+- **Key insight:** Pop larger values from the back before pushing; the front is always the window minimum once out-of-window indices are evicted.
+- **Complexity:** O(n) time, O(k) space
+- **Trap:** Storing values instead of indices, which makes eviction impossible.
+
+> **Say this in the interview:** "Anything larger than a newer value can never be a minimum again, so I drop it."
+
 ---
 
 ## Problem Statement
@@ -124,7 +132,7 @@ def sliding_window_minimum(nums: list[int], k: int) -> list[int]:
 | 1 | 1 | [1] | — |
 | 2 | 4 | [1,2] | **1** |
 | 3 | 5 | [1,2,3] | **1** |
-| 4 | 3 | [1→evict,4] wait: 1 out? i-k=1, dq[0]=1 ≤ 1 → evict → [4] | **3** |
+| 4 | 3 | pop 3, 2 (≥ 3) → [1,4]; front 1 ≤ i−k = 1 → evict → [4] | **3** |
 | 5 | 4 | [4,5] | **3** |
 | 6 | 1 | [6] | **1** |
 | 7 | 2 | [6,7] | **1** |

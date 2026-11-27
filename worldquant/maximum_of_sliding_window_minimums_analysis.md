@@ -25,6 +25,14 @@ After solving this problem, you will be able to:
 - [ ] Track a running maximum over a stream of computed values
 - [ ] Recognise "max of mins" / "min of maxs" patterns in interview problems
 
+### In 60 seconds
+- **Pattern:** Monotonic deque + running max
+- **Key insight:** An increasing deque gives each window's minimum in amortised O(1); keep the max of those minimums.
+- **Complexity:** O(n) time, O(k) space
+- **Trap:** Evicting by value instead of by index.
+
+> **Say this in the interview:** "Each index enters and leaves the deque once, so all window minimums cost O(n) total."
+
 ---
 
 ## Problem Statement
@@ -207,9 +215,10 @@ Final answer: **3** ✅
 
 | Problem | Relationship |
 |---|---|
-| [Sliding Window Minimum](/problem_soulutions/sliding_window/subarray_minimums_analysis) | Core building block of this problem |
+| [Sliding Window Minimum](sliding_window_minimum) | Core building block of this problem |
+| [Sliding Window Minimum (CSES-style analysis)](/problem_soulutions/sliding_window/subarray_minimums_analysis) | Same deque technique, full walkthrough |
 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Symmetric — flip deque to decreasing order |
-| [Subarray Minimums](/problem_soulutions/sliding_window/subarray_minimums_analysis) | Sum of all subarray minimums (different direction) |
+| [Sum of Subarray Minimums (LeetCode 907)](https://leetcode.com/problems/sum-of-subarray-minimums/) | All subarrays, not fixed k: monotonic stack |
 | Min of Sliding Window Maximums | Flip both steps: per-window max → global min |
 
 ---

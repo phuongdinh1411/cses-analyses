@@ -21,6 +21,14 @@ tags: [array, two-pointers, sorting, hash-map, worldquant]
 - [ ] Choose between two-pointer (sorted) and hash-map approaches
 - [ ] Handle the WorldQuant variant: pairs where absolute return difference ≤ threshold
 
+### In 60 seconds
+- **Pattern:** Sort + two pointers (or binary search)
+- **Key insight:** After sorting, for each `i` the valid partners form a contiguous range, so a pointer that only moves forward counts them all.
+- **Complexity:** O(n log n) time, O(n) space for the sorted copy
+- **Trap:** Double counting `(i, j)` and `(j, i)`; the `k == 0` case with duplicates.
+
+> **Say this in the interview:** "Sorting turns a pair condition into a moving boundary, so the count is linear after the sort."
+
 ---
 
 ## Problem Statement
@@ -81,9 +89,11 @@ Output: 3  (all three pairs have difference 0)
 
 After sorting, for each right pointer `r`, use a left pointer `l` to find the leftmost index where `nums[r] - nums[l] <= k`. All indices between `l` and `r-1` form valid pairs with `r`.
 
+Sorting is allowed because the condition `|nums[i] - nums[j]| <= k` is symmetric: the count of unordered pairs does not depend on positions.
+
 ```python
 def count_pairs(nums: list[int], k: int) -> int:
-    nums.sort()
+    nums = sorted(nums)          # copy: don't mutate the caller's list
     n = len(nums)
     count = 0
     l = 0
@@ -104,7 +114,7 @@ For each `r`, binary search for the leftmost `l` such that `nums[r] - nums[l] <=
 from bisect import bisect_left
 
 def count_pairs(nums: list[int], k: int) -> int:
-    nums.sort()
+    nums = sorted(nums)
     count = 0
     for r in range(1, len(nums)):
         l = bisect_left(nums, nums[r] - k, 0, r)
@@ -135,13 +145,9 @@ from collections import Counter
 
 def count_pairs_exact(nums: list[int], k: int) -> int:
     freq = Counter(nums)
-    count = 0
-    for val in freq:
-        if val + k in freq:
-            count += freq[val] * freq[val + k]
-    if k == 0:
-        count = sum(v * (v - 1) // 2 for v in freq.values())
-    return count
+    if k == 0:                                   # pairs of equal values: C(v, 2)
+        return sum(v * (v - 1) // 2 for v in freq.values())
+    return sum(c * freq[val + k] for val, c in freq.items() if val + k in freq)
 ```
 
 ---
@@ -150,8 +156,8 @@ def count_pairs_exact(nums: list[int], k: int) -> int:
 
 | Approach | Time | Space | Best for |
 |---|---|---|---|
-| Sort + Two Pointers | O(n log n) | O(1) | Range condition `\|diff\| <= k` |
-| Binary Search | O(n log n) | O(1) | Same, slightly different code flow |
+| Sort + Two Pointers | O(n log n) | O(n) for the sorted copy | Range condition `\|diff\| <= k` |
+| Binary Search | O(n log n) | O(n) for the sorted copy | Same, slightly different code flow |
 | Hash Map | O(n) | O(n) | Exact difference `diff == k` |
 
 ---

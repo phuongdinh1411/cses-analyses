@@ -22,6 +22,14 @@ tags: [statistics, rolling-window, correlation, nan-handling, worldquant, financ
 - [ ] Use running sums to make each step O(N) instead of O(W)
 - [ ] Return NaN when fewer than 2 valid pairs exist in a window
 
+### In 60 seconds
+- **Pattern:** Sliding window with running sums
+- **Key insight:** Keep Σx, Σy, Σx², Σy², Σxy and a count over valid pairs; add the entering pair and subtract the leaving one.
+- **Complexity:** O(n) time, O(1) extra space
+- **Trap:** Catastrophic cancellation in `Σx² - (Σx)²/n`: centre the data and recompute from scratch every K steps.
+
+> **Say this in the interview:** "Correlation is five running sums, so each slide is O(1) — but I'd guard the numerics in production."
+
 ---
 
 ## Problem Statement
@@ -168,7 +176,7 @@ def stable_pearson(xs, ys):
     return cov / den if den > 0 else float('nan')
 ```
 
-For very large windows, consider using `numpy` or `pandas` which implement numerically stable rolling correlation.
+Two more practical fixes: **center the data** (subtract a rough mean such as the first valid value) before accumulating, which removes most of the cancellation; and **recompute the six sums from scratch every K steps**, because millions of add/remove updates accumulate floating-point drift. Also treat a tiny positive `den_sq` (e.g. below `1e-12 · S1²`) as a constant window.
 
 ---
 

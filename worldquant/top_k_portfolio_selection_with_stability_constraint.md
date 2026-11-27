@@ -21,6 +21,14 @@ tags: [greedy, sets, sorting, worldquant, finance]
 - [ ] Minimise turnover (number of trades) while maximising signal
 - [ ] Understand the stability-return tradeoff in quantitative strategies
 
+### In 60 seconds
+- **Pattern:** Greedy pairwise swaps with an exchange argument
+- **Key insight:** Pair the i-th best outsider with the i-th worst holding; gains only shrink, so swap while the gain is positive, up to `t` times.
+- **Complexity:** O(n log n) time, O(n) space
+- **Trap:** Swapping when the gain is zero or negative.
+
+> **Say this in the interview:** "Swap gains are non-increasing, so taking the best swaps first is optimal under a turnover cap."
+
 ---
 
 ## Problem Statement
@@ -33,7 +41,7 @@ Given the current portfolio `prev` (set of `k` asset indices) and the new expect
 1. Maximise total expected return
 2. Replace **at most `t` assets** from `prev`
 
-Return the set of selected asset indices. If multiple optimal sets exist, prefer lower indices.
+Return the selected asset indices (any optimal set if there are ties).
 
 **Input:**
 - `n`: total number of assets
@@ -77,63 +85,39 @@ prev    = [0, 1, 2]   (returns = [5, 8, 3])
 
 Output: [1, 3, 5]
 
-Explanation:
-Top-3 globally: {1, 3, 5}. Diff from prev {0,1,2}: remove {0,2}, add {3,5} = 2 changes > t=1.
-With t=1 we can make only 1 swap. Best single swap: drop index 2 (return 3), add index 3 (return 9).
-New portfolio: {0, 1, 3} with total return 5+8+9=22. 
-Or drop index 0 (return 5), add index 3: {1, 2, 3} total = 8+3+9=20.
-Best single swap → {0,1,3} with total 22.
 Output: [0, 1, 3]
+
+Explanation:
+Unconstrained top-3 is {1, 3, 5}, but reaching it from {0, 1, 2} needs 2 swaps > t = 1.
+One swap: drop the worst holding (index 2, return 3), add the best outsider (index 3, return 9).
+New portfolio {0, 1, 3}, total 5 + 8 + 9 = 22.
 ```
 
 ---
 
-## Approach: Greedy with Turnover Budget
+## Approach: Greedy pairwise swaps
+
+Brute force tries every set reachable with ≤ t swaps: O(C(k, t) · C(n-k, t)), which is hopeless.
 
 ### Algorithm
 
 ```
-1. Keep all prev assets that are in the global top-(k+t) by return.
-   (These are "safe" to retain — they won't be wastefully held.)
-2. Sort non-prev assets by return descending.
-3. Greedily add the best non-prev assets until we've made t additions.
-4. Drop the t worst assets from prev to make room.
+held      = prev sorted by return ascending    (worst first)
+outsiders = non-prev sorted by return descending (best first)
+for i in 0 .. t-1:
+    if returns[outsiders[i]] > returns[held[i]]: swap them
+    else: stop
 ```
 
-More precisely:
+### Why greedy is optimal
 
-```
-prev_set = set(prev)
-all_sorted = sorted(range(n), key=lambda i: -returns[i])
-
-# Assets already in prev, sorted by return ascending (worst first)
-prev_by_return_asc = sorted(prev_set, key=lambda i: returns[i])
-
-# Best assets NOT in prev
-candidates = [i for i in all_sorted if i not in prev_set]
-
-# Greedily swap: replace worst prev with best candidate, up to t times
-swaps = 0
-result = set(prev_set)
-for cand in candidates:
-    if swaps >= t:
-        break
-    worst = prev_by_return_asc[swaps]
-    if returns[cand] > returns[worst]:
-        result.remove(worst)
-        result.add(cand)
-        swaps += 1
-    else:
-        break  # No more beneficial swaps
-
-return sorted(result)
-```
+The gain of the i-th swap, `returns[outsiders[i]] - returns[held[i]]`, is non-increasing in `i`: outsiders get worse and holdings get better. Any optimal answer that makes `s` swaps can be exchanged, one pair at a time, into "the `s` best outsiders for the `s` worst holdings" without lowering the total. So the best plan is to take the first `s` swaps while their gain is positive.
 
 ### Complexity
 
 | | Complexity |
 |---|---|
-| **Time** | O(n log n) |
+| **Time** | O(n log n) — or O(n + t log n) with `heapq.nlargest`/`nsmallest(t, ...)` |
 | **Space** | O(n) |
 
 ---

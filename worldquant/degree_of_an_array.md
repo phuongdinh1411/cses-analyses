@@ -22,6 +22,14 @@ tags: [array, hash-map, sliding-window, worldquant]
 - [ ] Find the shortest subarray matching the degree in one pass
 - [ ] Use hash maps to track first occurrence, last occurrence, and frequency
 
+### In 60 seconds
+- **Pattern:** One-pass hash maps
+- **Key insight:** The shortest subarray with the array's degree for value `x` runs from its first to its last occurrence; track count, first index, and last index per value.
+- **Complexity:** O(n) time, O(u) space for u distinct values
+- **Trap:** Picking the first value with max count instead of the shortest span among all values that tie on degree.
+
+> **Say this in the interview:** "Degree is decided by the most frequent value, and its shortest span is just first-to-last occurrence."
+
 ---
 
 ## Problem Statement
