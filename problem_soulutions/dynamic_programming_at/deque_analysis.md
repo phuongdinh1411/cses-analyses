@@ -55,22 +55,14 @@ Output:
 10
 ```
 
-**Explanation:**
-- Taro takes 10 (left), score: Taro=10, Jiro=0
-- Jiro takes 30 (right), score: Taro=10, Jiro=30
-- Taro takes 90 (right), score: Taro=100, Jiro=30
-- Jiro takes 80 (remaining), score: Taro=100, Jiro=110
-- Final difference: 100 - 110 = -10?
+**Explanation** (optimal play for both):
+- Taro takes 30 (right): Taro = 30
+- Jiro takes 90 (right): Jiro = 90
+- Taro takes 80 (right): Taro = 110
+- Jiro takes 10: Jiro = 100
+- Difference: 110 - 100 = **10**
 
-Wait, let's reconsider with optimal play:
-- Taro takes 90 (right), score: Taro=90
-- Jiro takes 80 (right), score: Jiro=80
-- Taro takes 30 (right), score: Taro=120
-- Jiro takes 10 (remaining), score: Jiro=90
-- Final difference: 120 - 90 = 30?
-
-Actually optimal: Taro=90, Jiro=80, Taro=30, Jiro=10 gives 120-90=30, but answer is 10. Let me trace correctly with minimax:
-The answer 10 comes from optimal play where Jiro also plays to maximize their score.
+Grabbing 10 first is worse for Taro: it exposes 80 and 90 to Jiro, and the best Taro can then reach is a difference of -10. The 90 is not available on move one because it is not at an end.
 
 ---
 

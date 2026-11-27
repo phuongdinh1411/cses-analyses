@@ -55,15 +55,14 @@ Output:
 5
 ```
 
-**Explanation:** The valid colorings for a path of 3 nodes (1-2-3) are:
-- WWW (all white)
-- BWW (node 1 black)
-- WBW (node 2 black) - NOT valid, since if 2 is black, 1 and 3 must be white
-- WWB (node 3 black)
-- BWB (nodes 1 and 3 black)
-- WBW is actually valid (only node 2 is black)
+**Explanation:** No two adjacent nodes may both be black. For the path 1-2-3 the 5 valid colorings are (listed as node 1, 2, 3):
+- WWW
+- BWW
+- WBW
+- WWB
+- BWB
 
-Wait, let me recalculate: WWW, BWW, WBW, WWB, BWB = 5 colorings. Correct!
+The other three, BBW, WBB and BBB, put two black nodes next to each other.
 
 ---
 

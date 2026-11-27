@@ -48,9 +48,9 @@ After solving this problem, you will be able to:
 ```
 Input:
 3 4
-..#.
+...#
+.#..
 ....
-#...
 
 Output:
 3
@@ -58,15 +58,17 @@ Output:
 
 **Explanation:** The grid looks like:
 ```
-. . # .
+. . . #
+. # . .
 . . . .
-# . . .
 ```
 
-Three valid paths exist:
-1. Right -> Down -> Right -> Right -> Down
-2. Down -> Right -> Right -> Right -> Down
-3. Down -> Right -> Down -> Right -> Right
+Three valid paths exist (R = right, D = down):
+1. R R D R D
+2. R R D D R
+3. D D R R R
+
+Every other order of 3 R's and 2 D's passes through the wall at row 2, column 2, or at row 1, column 4.
 
 ---
 

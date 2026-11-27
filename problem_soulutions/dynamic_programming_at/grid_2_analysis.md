@@ -53,24 +53,24 @@ After solving this problem, you will be able to:
 Input:
 3 4 2
 2 2
-3 3
+1 4
 
 Output:
 3
 ```
 
 **Explanation:**
-The grid is 3x4 with obstacles at (2,2) and (3,3):
+The grid is 3x4 with obstacles at (2,2) and (1,4):
 ```
-S . . .     (S = start)
-. X . .     (X = obstacle)
-. . X E     (E = end)
+S . . X     (S = start, X = obstacle)
+. X . .
+. . . E     (E = end)
 ```
 
 Valid paths (R=right, D=down):
-1. R -> R -> R -> D -> D  (avoids both obstacles)
-2. R -> R -> D -> D -> R  (avoids both obstacles)
-3. D -> D -> R -> R -> R  (avoids both obstacles)
+1. R R D R D
+2. R R D D R
+3. D D R R R
 
 Total: 3 paths
 
@@ -199,144 +199,37 @@ dp[i] = paths(start, obstacle[i]) - sum(dp[j] * paths(obstacle[j], obstacle[i]))
 
 ### Dry Run Example
 
-Let's trace through with `H=3, W=4, obstacles=[(2,2), (3,3)]`:
+Sample input: `H=3, W=4`, obstacles at (2,2) and (1,4) (1-indexed).
+
+`paths(a -> b)` = C(dr + dc, dr) counts monotone paths ignoring obstacles.
+`dp[i]` = paths from the start to point i that hit **no earlier obstacle**.
 
 ```
-Grid (0-indexed internally):
-  0 1 2 3
-0 S . . .
-1 . X . .     X at (1,1)
-2 . . X E     X at (2,2), E at (2,3)
+Sorted by r + c, as in the code (destination last): (2,2), (1,4), (3,4)
 
-Sorted obstacles + destination: [(1,1), (2,2), (2,3)]
-  - (1,1): distance 2 from start
-  - (2,2): distance 4 from start
-  - (2,3): distance 5 from start (destination)
+dp[(2,2)] = paths(start -> (2,2)) = C(1+1, 1) = 2
+            nothing earlier to subtract
 
-Step 1: Compute dp[0] for obstacle at (1,1)
-  Total paths from (0,0) to (1,1):
-    dr=1, dc=1, paths = C(2,1) = 2
-  No previous obstacles to subtract.
-  dp[0] = 2
+dp[(1,4)] = paths(start -> (1,4)) = C(0+3, 0) = 1
+            (2,2) is not above-left of (1,4) (row 2 > 1), nothing to subtract
 
-Step 2: Compute dp[1] for obstacle at (2,2)
-  Total paths from (0,0) to (2,2):
-    dr=2, dc=2, paths = C(4,2) = 6
-
-  Can obstacle[0]=(1,1) reach (2,2)?
-    Yes: 1<=2 and 1<=2
-  Paths through obstacle[0]:
-    dp[0] * paths((1,1) to (2,2)) = 2 * C(2,1) = 2 * 2 = 4
-
-  dp[1] = 6 - 4 = 2
-
-Step 3: Compute dp[2] for destination (2,3)
-  Total paths from (0,0) to (2,3):
-    dr=2, dc=3, paths = C(5,2) = 10
-
-  Subtract paths through obstacle[0]=(1,1):
-    dp[0] * paths((1,1) to (2,3)) = 2 * C(3,1) = 2 * 3 = 6
-
-  Subtract paths through obstacle[1]=(2,2):
-    dp[1] * paths((2,2) to (2,3)) = 2 * C(1,0) = 2 * 1 = 2
-
-  dp[2] = 10 - 6 - 2 = 2... wait, let's recalculate.
+dp[(3,4)] = paths(start -> (3,4))              = C(2+3, 2) = 10
+          - dp[(1,4)] * paths((1,4) -> (3,4))   = 1 * C(2, 2) = 1
+          - dp[(2,2)] * paths((2,2) -> (3,4))   = 2 * C(1+2, 1) = 6
+          = 3
 ```
 
-Let me recalculate more carefully:
-```
-Using 1-indexed coordinates as in the problem:
-
-Obstacles: [(2,2), (3,3)], Destination: (3,4)
-Sorted by (r+c): [(2,2), (3,3), (3,4)]
-
-paths(r1,c1,r2,c2) = C((r2-r1)+(c2-c1), r2-r1)
-
-Step 1: dp[0] for (2,2)
-  paths((1,1) to (2,2)) = C(2, 1) = 2
-  dp[0] = 2
-
-Step 2: dp[1] for (3,3)
-  paths((1,1) to (3,3)) = C(4, 2) = 6
-  Subtract: dp[0] * paths((2,2) to (3,3)) = 2 * C(2,1) = 4
-  dp[1] = 6 - 4 = 2
-
-Step 3: dp[2] for (3,4) - destination
-  paths((1,1) to (3,4)) = C(5, 2) = 10
-  Subtract through (2,2): dp[0] * paths((2,2) to (3,4)) = 2 * C(3,1) = 6
-  Subtract through (3,3): dp[1] * paths((3,3) to (3,4)) = 2 * C(1,0) = 2
-  dp[2] = 10 - 6 - 2 = 2...
-
-Hmm, expected answer is 3. Let me verify:
-  - (3,3) is an obstacle, so paths TO (3,4) shouldn't subtract it twice.
-
-Actually dp[1]=2 represents paths that HIT obstacle (3,3) first.
-These are BAD paths we want to exclude.
-dp[2] = 10 - 6 - 2 = 2? But answer should be 3.
-
-Rechecking: C(5,2) = 10, C(3,1) = 3, so 2*3=6
-10 - 6 = 4, then -2 = 2. Hmm.
-
-Wait - paths((2,2) to (3,4)): dr=1, dc=2, C(3,1)=3. Correct.
-2 * 3 = 6.
-10 - 6 - 2 = 2.
-
-Let me enumerate manually:
-Paths from (1,1) to (3,4): RRRD D, RRD RD, RRD DR, RD RRD, etc.
-Using R=right, D=down, need 3 R's and 2 D's.
-
-RRRDD - goes through (1,2),(1,3),(1,4),(2,4),(3,4) - VALID
-RRDRD - (1,2),(1,3),(2,3),(2,4),(3,4) - VALID
-RRDDR - (1,2),(1,3),(2,3),(3,3)=obstacle! - INVALID
-RDRRD - (1,2),(2,2)=obstacle! - INVALID
-RDRDR - (1,2),(2,2)=obstacle! - INVALID
-RDDRR - (1,2),(2,2)=obstacle! - INVALID
-DRRRD - (2,1),(2,2)=obstacle! - INVALID
-DRRDR - (2,1),(2,2)=obstacle! - INVALID
-DRDRR - (2,1),(2,2)=obstacle! - INVALID
-DDRRR - (2,1),(3,1),(3,2),(3,3)=obstacle! - INVALID
-
-Valid: RRRDD, RRDRD = 2 paths... but problem says 3!
-
-Re-reading problem: (2,2) is second obstacle.
-Let me re-enumerate:
-Start at (1,1), end at (3,4).
-Obstacles at (2,2) and (3,3).
-
-Actually DDRRR: (1,1)->(2,1)->(3,1)->(3,2)->(3,3) hits obstacle!
-
-What about DRRRD: (1,1)->(2,1)->(2,2) hits obstacle!
-
-So only RRRDD and RRDRD are valid? That's 2, matching our calculation.
-
-The example output of 3 might be using different interpretation. Let me re-read...
-
-Actually the example in problem might use different test case.
-Our calculation logic is CORRECT: dp gives 2 for this specific input.
-```
-
-The algorithm is correct. The discrepancy is likely due to example interpretation.
+Each bad path is subtracted exactly once, at the **first** obstacle it hits. That is why `dp` counts paths that avoid all earlier obstacles, not all paths to the obstacle.
 
 ### Visual Diagram
 
 ```
-Grid with obstacles marked:
-
     col: 1   2   3   4
-row 1:  S ---> . ---> . ---> .
-        |           |       |
-row 2:  v     X     v       v
-        |           |       |
-row 3:  . ---> . --> X     [E]
+row 1:   S   .   .   X      1 path reaches (1,4) first: R R R
+row 2:   .   X   .   .      2 paths reach (2,2) first: R D, D R
+row 3:   .   .   .   E
 
-Legend: S=start, E=end, X=obstacle
-Arrows show possible moves (right/down only)
-
-Inclusion-Exclusion Idea:
-  Total paths to E: C(5,2) = 10
-  - Paths through obstacle 1: dp[0] * paths(obs1 -> E)
-  - Paths through obstacle 2: dp[1] * paths(obs2 -> E)
-  = Valid paths avoiding all obstacles
+10 total - 1 * 1 (via (1,4)) - 2 * 3 (via (2,2)) = 3
 ```
 
 ### Code (Python)
