@@ -28,7 +28,7 @@ One row per problem: the technique, the one-line insight, and the time complexit
 | [String Matching](string_matching_analysis) | KMP Algorithm / Z-Algorithm | Preprocess the pattern to build an LPS (Longest Proper Prefix which is also Suffix) array | O(n + m) |
 | [String Transformation](string_transformation_analysis) | BFS / Dynamic Programming | BFS naturally finds the shortest path in an unweighted graph | O(S * R * L) |
 | [Substring Order I](substring_order_i_analysis) | Suffix Array + LCP Array | Use suffix array for sorted order and LCP to skip duplicates | O(n log n) |
-| [Substring Order II](substring_order_ii_analysis) | Suffix Array + LCP Array + Binary Search | Use suffix array to get sorted suffix order | O(n log n) |
+| [Substring Order II](substring_order_ii_analysis) | Suffix Automaton + occurrence counts, greedy letter-by-letter walk | A suffix automaton groups substrings into states that share the same set of end positions, so every string in a state has the same occurrence count `occ` | O(n log n) |
 | [Suffix Automaton](suffix_automaton_analysis) | Suffix Automaton (SAM) | SAM compresses all substrings into O(n) equivalence classes based on ending positions | O(n · Σ) build |
 | [Word Combinations](word_combinations_analysis) | Trie + DP | dp[i] = ways to build s[i:]; walk a trie from i to find every dictionary word that starts there | O(n^2) |
 <!-- cheatsheet:end -->

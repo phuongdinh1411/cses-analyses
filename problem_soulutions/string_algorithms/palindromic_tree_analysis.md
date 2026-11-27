@@ -107,217 +107,45 @@ Current suffix node: Node 1 (odd root)
 String processed: ""
 ```
 
-### Step 1: Add 'a' (index 0)
+### The one rule used at every step
 
-```
-Current: Node 1 (odd root, length=-1)
-Check: Can we extend? Position 0 - (-1) - 1 = 0 >= 0? Yes
-       s[0] == s[0]? 'a' == 'a'? Yes (trivially, single char)
+To add `s[i]`, start at `last` (the longest palindrome ending at `i-1`) and follow suffix links until you reach a node `X` of length `L` with `s[i-L-1] == s[i]`. Then `s[i] + X + s[i]` is the longest palindrome ending at `i`. The odd root (length -1) always matches, because the check becomes `s[i] == s[i]`.
 
-Create Node 2: length = -1 + 2 = 1, represents "a"
-Find suffix link: Follow from odd root -> odd root
-                  Node 1 is odd root, suffix_link = Node 1
-                  New palindrome suffix link -> Node 1
+### Trace
 
-Tree state:
-  Odd Root (1) --'a'--> Node 2 ("a")
-  Node 2.suffix_link -> Node 1
+Node numbers match the code below: 0 = even root (length 0), 1 = odd root (length -1).
 
-Current suffix: Node 2
-```
+| i | char | Suffix-link chain tried (✗ fails, ✓ extends) | Result | Suffix link of new node |
+|---|------|----------------------------------------------|--------|-------------------------|
+| 0 | a | odd root ✓ | **new** node 2 `a` | even root (single chars always do) |
+| 1 | b | `a` ✗ (s[-1] is out of range) → even root ✗ (s[0]=a) → odd root ✓ | **new** node 3 `b` | even root |
+| 2 | a | `b` ✓ (s[0]=a) | **new** node 4 `aba` | `a` |
+| 3 | a | `aba` ✗ (out of range) → `a` ✗ (s[1]=b) → even root ✓ (s[2]=a) | **new** node 5 `aa` | `a` |
+| 4 | b | `aa` ✓ (s[1]=b) | **new** node 6 `baab` | `b` |
+| 5 | a | `baab` ✓ (s[0]=a) | **new** node 7 `abaaba` | `aba` |
 
-### Step 2: Add 'b' (index 1)
-
-```
-Current: Node 2 ("a", length=1)
-Check: Position 1 - 1 - 1 = -1 < 0? Yes, cannot extend
-Follow suffix_link: Node 2 -> Node 1 (odd root)
-
-Current: Node 1 (odd root, length=-1)
-Check: Position 1 - (-1) - 1 = 1 >= 0? Yes
-       s[1] == s[1]? 'b' == 'b'? Yes
-
-Create Node 3: length = -1 + 2 = 1, represents "b"
-Suffix link -> Node 1 (odd root)
-
-Tree state:
-  Odd Root (1) --'a'--> Node 2 ("a")
-  Odd Root (1) --'b'--> Node 3 ("b")
-
-Current suffix: Node 3
-```
-
-### Step 3: Add 'a' (index 2)
-
-```
-Current: Node 3 ("b", length=1)
-Check: Position 2 - 1 - 1 = 0 >= 0? Yes
-       s[0] == s[2]? 'a' == 'a'? Yes!
-
-Create Node 4: length = 1 + 2 = 3, represents "aba"
-Find suffix link: Follow Node 3.suffix_link -> Node 1
-                  From Node 1, can we extend with 'a'?
-                  Node 1 already has child 'a' -> Node 2
-                  Suffix link -> Node 2 ("a")
-
-Tree state:
-  Node 3 ("b") --'a'--> Node 4 ("aba")
-  Node 4.suffix_link -> Node 2 ("a")
-
-Current suffix: Node 4
-```
-
-### Step 4: Add 'a' (index 3)
-
-```
-Current: Node 4 ("aba", length=3)
-Check: Position 3 - 3 - 1 = -1 < 0? Yes, cannot extend
-Follow suffix_link: Node 4 -> Node 2 ("a")
-
-Current: Node 2 ("a", length=1)
-Check: Position 3 - 1 - 1 = 1 >= 0? Yes
-       s[1] == s[3]? 'b' != 'a'? No
-Follow suffix_link: Node 2 -> Node 1 (odd root)
-
-Current: Node 1 (odd root, length=-1)
-Check: s[3] == s[3]? 'a' == 'a'? Yes
-       Node 1 already has child 'a' -> Node 2
-
-Current suffix: Node 2 (no new node created, "a" exists)
-```
-
-### Step 5: Add 'b' (index 4)
-
-```
-Current: Node 2 ("a", length=1)
-Check: Position 4 - 1 - 1 = 2 >= 0? Yes
-       s[2] == s[4]? 'a' != 'b'? No
-Follow suffix_link: Node 2 -> Node 1 (odd root)
-
-Current: Node 1 (odd root)
-Node 1 has child 'b' -> Node 3
-
-Current suffix: Node 3 (no new node)
-```
-
-### Step 6: Add 'a' (index 5)
-
-```
-Current: Node 3 ("b", length=1)
-Check: Position 5 - 1 - 1 = 3 >= 0? Yes
-       s[3] == s[5]? 'a' == 'a'? Yes!
-       Node 3 already has child 'a' -> Node 4 ("aba")
-
-But wait - we need to check for longer palindrome first!
-
-From Node 4 ("aba"): Position 5 - 3 - 1 = 1 >= 0
-       s[1] == s[5]? 'b' != 'a'? No
-
-From Node 2 ("a"): Position 5 - 1 - 1 = 3 >= 0
-       s[3] == s[5]? 'a' == 'a'? Yes!
-       Check even: Can we create "aa"?
-
-From Even Root (0): Position 5 - 0 - 1 = 4 >= 0
-       s[4] == s[5]? 'b' != 'a'? No
-
-Create Node 5: From Node 4, extend to get "abaaba" (length 6)
-Wait - let me recalculate properly...
-
-Actually from current suffix Node 3:
-- Node 3 has child 'a' -> Node 4 ("aba")
-- From Node 4: check s[5-3-1]=s[1]='b' vs s[5]='a' -> No match
-- Follow Node 4.suffix_link -> Node 2
-- From Node 2: check s[5-1-1]=s[3]='a' vs s[5]='a' -> Match!
-- Node 2 has child 'a'? No -> Create Node 5 ("aa", length 2)
-
-Create Node 5: length=2, represents "aa"
-Suffix link for "aa" -> Node 2 ("a")
-
-Continue checking for longer:
-From Node 5 ("aa"): check s[5-2-1]=s[2]='a' vs s[5]='a' -> Match!
-Check if Node 5 has child 'a'? No -> Create Node 6
-
-Create Node 6: length=4, represents "aaa"...
-
-Wait, that's wrong. Let me redo this more carefully.
-```
-
-### Corrected Step 6: Add 'a' (index 5)
-
-```
-String so far: "abaab" + "a" = "abaaba"
-Current suffix: Node 3 ("b")
-
-Find longest palindrome ending at position 5:
-1. Start from last suffix node: Node 3 ("b", length=1)
-2. Check if we can extend: s[5-1-1]=s[3]='a', s[5]='a' -> Match!
-3. Does Node 3 have edge 'a'? Yes -> Node 4 ("aba")
-4. From Node 4 (length=3): s[5-3-1]=s[1]='b', s[5]='a' -> No match
-5. Follow suffix link: Node 4 -> Node 2 ("a", length=1)
-6. From Node 2: s[5-1-1]=s[3]='a', s[5]='a' -> Match!
-7. Does Node 2 have edge 'a'? No
-
-Create Node 5: length = 1 + 2 = 3... wait that creates "aaa"
-
-Let me reconsider. Node 2 is "a". Adding 'a' to both sides of "a"
-gives "aaa" which doesn't match our string.
-
-Going to Even Root (length=0):
-From Even Root: s[5-0-1]=s[4]='b', s[5]='a' -> No match
-
-Back to Odd Root (length=-1):
-From Odd Root: always matches (single char)
-Create child 'a' if not exists -> Node 2 exists
-
-So current suffix = Node 2, and we found "abaaba"!
-
-Actually for "abaaba", the longest palindrome ending at index 5 IS "abaaba".
-Let me trace finding it:
-
-From Node 3 -> extend with 'a' -> Node 4 ("aba")
-From Node 4 -> can we extend with 'a'?
-  s[5-3-1]=s[1]='b' vs s[5]='a' -> No
-
-Hmm, but "abaaba" IS a palindrome. The issue is we haven't created it yet.
-
-Actually starting fresh from Node 4's suffix link:
-Node 4.suffix_link = Node 2 ("a")
-From Node 2: s[3]='a' == s[5]='a' -> can extend!
-Node 2 has no child 'a' yet for even extension...
-
-Create Node 5: from EVEN ROOT with 'a'
-  Check: s[4]='b' != s[5]='a' -> cannot create "aa"
-
-So we go back and the longest new palindrome ending at 5 is just "a" (reusing Node 2).
-
-Then we must build "abaaba" differently. From Node 4 ("aba"):
-We need to find if "abaaba" can be formed.
-From Even Root: s[4]='b' != s[5]='a', cannot extend
-From Node 4's parent edge...
-
-The key is: From Node 4 ("aba"), s[1] != s[5], so we cannot extend.
-Current suffix becomes Node 2 after following links.
-```
+A new node's suffix link is found the same way: start from the suffix link of `X` (not from `X`), find the next node that extends with `s[i]`, and take its child.
 
 ### Final Tree Structure for "abaaba"
 
 ```
-          Odd Root (-1)
-          /         \
-       'a'           'b'
-        |             |
-    Node 2 "a"    Node 3 "b"
-        |             |
-       'a'           'a'
-        |             |
-   Node 5 "aa"   Node 4 "aba"
-                      |
-                     'a'
-                      |
-                Node 6 "abaaba"
+     Odd Root (len -1)              Even Root (len 0)
+       /        \                         |
+     'a'        'b'                       'a'
+      |          |                         |
+  node 2 "a"  node 3 "b"              node 5 "aa"
+                 |                         |
+                'a'                       'b'
+                 |                         |
+            node 4 "aba"             node 6 "baab"
+                                           |
+                                          'a'
+                                           |
+                                    node 7 "abaaba"
 
-Distinct palindromes: "a", "b", "aa", "aba", "abaaba"
-Total: 5 distinct palindromic substrings
+Edges add the same letter on both sides: "aa" --b--> "baab".
+Distinct palindromes: a, b, aba, aa, baab, abaaba
+Total: 6 (number of nodes minus the two roots)
 ```
 
 ---

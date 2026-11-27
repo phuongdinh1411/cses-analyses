@@ -222,7 +222,9 @@ def build_suffix_array(s):
       if key(sa[i]) != key(sa[i-1]):
         tmp[sa[i]] += 1
     rank = tmp[:]
-    k *= 1
+    if rank[sa[-1]] == n - 1:  # all ranks distinct: fully sorted
+      break
+    k *= 2
 
   return sa
 

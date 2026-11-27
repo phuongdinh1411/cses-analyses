@@ -54,21 +54,23 @@ Input:
 7 5
 aybabtu
 2 3 5
-1 3 b
+1 3 x
 2 3 5
-1 5 a
+1 5 x
 2 3 5
 
 Output:
-NO
 YES
+NO
 YES
 ```
 
 **Explanation:** (1-indexed)
-- Initial: "aybabtu", s[3..5]="bab" - checking reveals NO
-- Update s[3]='b': "ayabbtu", s[3..5]="abb" - wait, let's trace carefully
-- The key insight: algorithm compares forward and reverse hashes
+- `aybabtu`: s[3..5] = "bab" is a palindrome, YES
+- Set s[3] = 'x': `ayxabtu`, s[3..5] = "xab", NO
+- Set s[5] = 'x': `ayxaxtu`, s[3..5] = "xax", YES
+
+The solution never rebuilds the substring: it compares the forward hash of s[a..b] with the hash of the same range in the reversed string.
 
 ---
 

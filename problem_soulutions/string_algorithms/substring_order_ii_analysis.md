@@ -3,7 +3,7 @@ layout: simple
 title: "Substring Order II - String Algorithms Problem"
 permalink: /problem_soulutions/string_algorithms/substring_order_ii_analysis
 difficulty: Hard
-tags: [suffix-array, lcp-array, binary-search, string-algorithms]
+tags: [suffix-automaton, counting, string-algorithms]
 ---
 
 # Substring Order II
@@ -16,16 +16,14 @@ tags: [suffix-array, lcp-array, binary-search, string-algorithms]
 | **Difficulty** | Hard |
 | **Category** | String Algorithms |
 | **Time Limit** | 1 second |
-| **Key Technique** | Suffix Array + LCP Array + Binary Search |
+| **Key Technique** | Suffix Automaton + occurrence counts, greedy letter-by-letter walk |
 
 ### Learning Goals
 
 After solving this problem, you will be able to:
-- [ ] Build suffix arrays efficiently using the doubling algorithm
-- [ ] Compute LCP arrays using Kasai's algorithm
-- [ ] Count substrings (with repetitions) using suffix array and LCP
-- [ ] Apply binary search on cumulative substring counts
-- [ ] Extract the k-th lexicographically smallest substring
+- [ ] Explain why "k-th substring with repetitions" is NOT "k-th prefix of the sorted suffixes"
+- [ ] Build the answer letter by letter from prefix counts
+- [ ] Use a suffix automaton to get occurrence counts and prefix counts in O(n)
 
 ---
 
@@ -52,21 +50,15 @@ baabaa
 10
 
 Output:
-baa
+ab
 ```
 
-**Explanation:**
-Substrings in lexicographical order (with repetitions):
-1. "a" (position 2)
-2. "a" (position 3)
-3. "a" (position 5)
-4. "aa" (position 2)
-5. "aa" (position 4 - note: only one 'a' follows, so this might vary)
-6. "aab" (position 2)
-7. "aabaa" (position 2)
-8. "abaa" (position 3)
-9. "b" (position 0)
-10. "baa" (position 0) <-- Answer
+**Explanation:** the 21 substrings of `baabaa` in order, with repeats:
+
+```
+ 1-4  a a a a        5-6  aa aa      7 aab    8 aaba    9 aabaa
+ 10   ab   <- answer 11   aba       12 abaa  13-14 b b  15-16 ba ba ...
+```
 
 ---
 
@@ -74,24 +66,20 @@ Substrings in lexicographical order (with repetitions):
 
 ### Pattern Recognition
 
-> **Key Question:** How can we enumerate all substrings in sorted order without generating them explicitly?
+> **Key Question:** How do we find the k-th item of a sorted list of ~n²/2 strings without building the list?
 
-The suffix array gives us all suffixes in sorted order. Each suffix starting at position `i` contributes `(n - i)` substrings (all prefixes of that suffix). These prefixes are automatically sorted because the suffixes are sorted.
+Build the answer **one letter at a time**, the way you would find the k-th word in a dictionary. Let `cnt(p)` be the number of substrings (with repeats) that start with `p`. From the current answer `p`:
 
-### Breaking Down the Problem
+1. The `occ(p)` copies of `p` itself come first. If `k <= occ(p)`, the answer is `p`.
+2. Otherwise skip them (`k -= occ(p)`) and try letters `c = a, b, ...`: if `k <= cnt(p + c)`, extend to `p + c`; else `k -= cnt(p + c)`.
 
-1. **What are we looking for?** The k-th substring in lexicographical order (counting duplicates)
-2. **What information do we have?** The sorted order of suffixes (via suffix array) and shared prefixes between adjacent suffixes (via LCP array)
-3. **What's the relationship?** Each suffix contributes substrings; LCP tells us how many are duplicates with the previous suffix
+### Why the "sorted suffixes" shortcut fails
+
+It is tempting to list every prefix of every suffix in suffix-array order. That works for Substring Order I (distinct substrings), but not with repeats: in `baabaa` the suffix order lists `a, ab, aba, abaa` before the second `a`, yet `a < ab`. Every copy of `a` must come before `ab`.
 
 ### Key Insight
 
-For suffix at position `sa[i]` with length `len = n - sa[i]`:
-- It contributes `len` total substrings (all prefixes)
-- But `lcp[i]` of them are duplicates of the previous suffix's prefixes
-- **New substrings contributed = len - lcp[i]**
-
-However, for Substring Order II we count WITH repetitions, so each suffix contributes ALL its `(n - sa[i])` substrings.
+A suffix automaton groups substrings into states that share the same set of end positions, so every string in a state has the same occurrence count `occ`. Two DP passes over the states, longest first, give `occ` and `cnt` for every state in O(n), and the letter-by-letter walk follows the automaton's transitions.
 
 ---
 
@@ -135,176 +123,101 @@ Correctness is guaranteed since we enumerate everything. But with n = 10^5, we'd
 
 ---
 
-## Solution 2: Optimal - Suffix Array + Binary Search
+## Solution 2: Optimal - Suffix Automaton + Counting
 
-### Key Insight
+### Algorithm
 
-> **The Trick:** Use suffix array to get sorted suffix order. Each suffix contributes substrings in sorted order. Binary search to find which suffix contains the k-th substring.
+1. Build the suffix automaton of `s`. New (non-clone) states start with `occ = 1`, clones with 0.
+2. Process states by decreasing `length`: `occ[link[v]] += occ[v]`. Now `occ[v]` is how often each string of `v` occurs.
+3. Again by decreasing `length`: `cnt[v] = occ[v] + Σ cnt[u]` over transitions `v -> u`. Set `cnt[root] = 0`, since the empty string is not a substring.
+4. Walk from the root: try letters in order; enter `u` if `k <= cnt[u]`, then `k -= occ[u]`; otherwise `k -= cnt[u]`. Stop when `k <= 0`.
 
-### Algorithm Overview
+Decreasing `length` is a valid order for both passes: a suffix link points to a shorter state, and a transition `v -c-> u` always has `length[u] >= length[v] + 1`.
 
-1. Build suffix array (sorted positions of all suffixes)
-2. For each suffix at `sa[i]`, it contributes `(n - sa[i])` substrings
-3. Compute prefix sums of substring counts
-4. Binary search to find which suffix contains substring k
-5. Extract the appropriate prefix of that suffix
-
-### Dry Run Example
-
-Let's trace through with `s = "baa"`:
+### Dry Run: `baabaa`, k = 10
 
 ```
-String: "baa" (n = 3)
-
-Step 1: Build Suffix Array
-  Suffixes:
-    Position 0: "baa"
-    Position 1: "aa"
-    Position 2: "a"
-
-  Sorted order: "a" < "aa" < "baa"
-  Suffix Array: sa = [2, 1, 0]
-
-Step 2: Count substrings per suffix
-  sa[0] = 2: suffix "a"   -> contributes 1 substring:  "a"
-  sa[1] = 1: suffix "aa"  -> contributes 2 substrings: "a", "aa"
-  sa[2] = 0: suffix "baa" -> contributes 3 substrings: "b", "ba", "baa"
-
-Step 3: Prefix sums
-  cumulative = [1, 3, 6]
-
-  Substring mapping:
-    k=1: "a"    (from sa[0])
-    k=2: "a"    (from sa[1], length 1)
-    k=3: "aa"   (from sa[1], length 2)
-    k=4: "b"    (from sa[2], length 1)
-    k=5: "ba"   (from sa[2], length 2)
-    k=6: "baa"  (from sa[2], length 3)
-
-Step 4: Query k=4
-  Binary search: cumulative[2] = 6 >= 4, cumulative[1] = 3 < 4
-  So k=4 falls in suffix sa[2] = 0 ("baa")
-  Offset within this suffix: 4 - 3 = 1
-  Length = 1
-  Answer: s[0:1] = "b"
-```
-
-### Visual Diagram
-
-```
-Suffix Array for "baabaa":
-
-Position:  0    1    2    3    4    5
-String:    b    a    a    b    a    a
-
-Sorted Suffixes:
-Rank | SA[i] | Suffix        | Substrings (count = n - SA[i])
------|-------|---------------|--------------------------------
-  0  |   5   | "a"           | 1: "a"
-  1  |   2   | "abaa"        | 4: "a", "ab", "aba", "abaa"
-  2  |   4   | "aa"          | 2: "a", "aa"
-  3  |   1   | "aabaa"       | 5: "a", "aa", "aab", "aaba", "aabaa"
-  4  |   3   | "baa"         | 3: "b", "ba", "baa"
-  5  |   0   | "baabaa"      | 6: "b", "ba", "baa", "baab", "baaba", "baabaa"
-
-Cumulative: [1, 5, 7, 12, 15, 21]
-
-To find k=10:
-- Binary search finds index 4 (cumulative[3]=12 < 10... wait, 12 >= 10)
-- Actually: cumulative = [1, 5, 7, 12, 15, 21]
-- k=10: cumulative[2]=7 < 10 <= cumulative[3]=12
-- Falls in suffix sa[3]=1 ("aabaa")
-- Offset = 10 - 7 = 3, so length = 3
-- Answer = s[1:1+3] = "aab"
+At root (answer ""), k = 10
+  'a': cnt = 12 (substrings starting with "a")  10 <= 12 -> take 'a'
+       occ("a") = 4 copies of "a" come first     k = 10 - 4 = 6
+At "a", k = 6
+  'a': cnt("aa") = 5     6 > 5  -> skip,  k = 1
+  'b': cnt("ab") = 3     1 <= 3 -> take 'b'
+       occ("ab") = 1                         k = 1 - 1 = 0  -> stop
+Answer: "ab"
 ```
 
 ### Code (Python)
 
 ```python
-def build_suffix_array(s):
-  """
-  Build suffix array using doubling algorithm.
-  Time: O(n log n)
-  """
-  n = len(s)
-  sa = list(range(n))
-  rank = [ord(c) for c in s]
-  tmp = [0] * n
-  k = 1
-
-  while k < n:
-    def key(i):
-      r1 = rank[i]
-      r2 = rank[i + k] if i + k < n else -1
-      return (r1, r2)
-
-    sa.sort(key=key)
-
-    tmp[sa[0]] = 0
-    for i in range(1, n):
-      tmp[sa[i]] = tmp[sa[i-1]]
-      if key(sa[i]) != key(sa[i-1]):
-        tmp[sa[i]] += 1
-
-    rank = tmp[:]
-    if rank[sa[n-1]] == n - 1:
-      break
-    k *= 2
-
-  return sa
-
-def solve(s, k):
-  """
-  Find k-th lexicographically smallest substring (with repetitions).
-
-  Time: O(n log n)
-  Space: O(n)
-  """
-  n = len(s)
-  sa = build_suffix_array(s)
-
-  # Compute prefix sums of substring counts
-  # Each suffix sa[i] contributes (n - sa[i]) substrings
-  cumulative = []
-  total = 0
-  for i in range(n):
-    total += n - sa[i]
-    cumulative.append(total)
-
-  # Binary search for which suffix contains k-th substring
-  left, right = 0, n - 1
-  while left < right:
-    mid = (left + right) // 2
-    if cumulative[mid] < k:
-      left = mid + 1
-    else:
-      right = mid
-
-  # Suffix at sa[left] contains our answer
-  idx = left
-  prev_count = cumulative[idx - 1] if idx > 0 else 0
-  offset = k - prev_count  # Which prefix of this suffix (1-indexed)
-
-  start = sa[idx]
-  length = offset
-
-  return s[start:start + length]
-
-# Read input and solve
 import sys
-input = sys.stdin.readline
 
-s = input().strip()
-k = int(input())
-print(solve(s, k))
+
+def kth_substring(s: str, k: int) -> str:
+  # Suffix automaton: state 0 is the root (empty string).
+  link, length, nxt, occ = [-1], [0], [{}], [0]
+  last = 0
+  for ch in s:
+    cur = len(length)
+    length.append(length[last] + 1); link.append(-1); nxt.append({}); occ.append(1)
+    p = last
+    while p != -1 and ch not in nxt[p]:
+      nxt[p][ch] = cur
+      p = link[p]
+    if p == -1:
+      link[cur] = 0
+    else:
+      q = nxt[p][ch]
+      if length[p] + 1 == length[q]:
+        link[cur] = q
+      else:
+        clone = len(length)
+        length.append(length[p] + 1); link.append(link[q]); nxt.append(dict(nxt[q])); occ.append(0)
+        while p != -1 and nxt[p].get(ch) == q:
+          nxt[p][ch] = clone
+          p = link[p]
+        link[q] = link[cur] = clone
+    last = cur
+
+  # Longer states first: suffix links and transitions both respect this order.
+  order = sorted(range(len(length)), key=length.__getitem__, reverse=True)
+  for v in order:
+    if link[v] > 0:
+      occ[link[v]] += occ[v]          # occ[v] = occurrences of v's strings
+  cnt = occ[:]                        # cnt[v] = substrings (with repeats) starting with v's string
+  cnt[0] = 0
+  for v in order:
+    for u in nxt[v].values():
+      cnt[v] += cnt[u]
+
+  out, v = [], 0
+  while k > 0:
+    for ch in sorted(nxt[v]):
+      u = nxt[v][ch]
+      if k <= cnt[u]:
+        out.append(ch)
+        k -= occ[u]                   # the occ[u] copies of the current answer come first
+        v = u
+        break
+      k -= cnt[u]
+  return ''.join(out)
+
+
+def main():
+  data = sys.stdin.read().split()
+  print(kth_substring(data[0], int(data[1])))
+
+
+if __name__ == "__main__":
+  main()
 ```
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n log n) | Suffix array construction dominates |
-| Space | O(n) | Store suffix array and cumulative counts |
+| Time | O(n log n) | Automaton is O(n) states and transitions (alphabet of 26); the sort by length could be a counting sort for O(n) |
+| Space | O(n) | At most 2n states |
 
 ---
 
@@ -312,40 +225,25 @@ print(solve(s, k))
 
 ### Mistake 1: Using 32-bit integers for k
 
-**Problem:** With n = 10^5, total substrings = ~5 * 10^9, exceeding int range.
-**Fix:** Use `long long` for k and cumulative counts.
+**Problem:** With n = 10^5 there are about 5 * 10^9 substrings, which overflows 32-bit ints.
+**Fix:** In C++ use `long long` for `k`, `occ` and `cnt`. Python ints are unbounded.
 
-### Mistake 2: Confusing with Substring Order I (distinct)
+### Mistake 2: Reusing the Substring Order I method
 
-```python
-# WRONG - This counts DISTINCT substrings (Substring Order I)
-new_substrings = n - sa[i] - lcp[i]
+**Problem:** Walking the suffix array and taking prefixes in that order gives the right answer only for *distinct* substrings. With repeats, all copies of "a" must come before "ab", even copies that come from later suffixes.
+**Fix:** Count by prefix (`cnt`) and build the answer letter by letter.
 
-# CORRECT for Substring Order II - count ALL substrings (with repetitions)
-all_substrings = n - sa[i]
-```
-
-**Problem:** Substring Order I counts distinct substrings (subtract LCP), Order II counts with repetitions.
-**Fix:** For Order II, each suffix contributes `(n - sa[i])` substrings without LCP subtraction.
-
-### Mistake 3: Off-by-one in binary search
+### Mistake 3: Forgetting to subtract the copies of the current answer
 
 ```python
-# WRONG - Wrong boundary condition
-while left <= right:
-  mid = (left + right) // 2
-  if cumulative[mid] < k:
-    left = mid + 1
-  else:
-    right = mid - 1  # May skip the correct answer
+# fragment
+# WRONG - jumps straight to the children
+if k <= cnt[u]:
+  out.append(ch); v = u          # k still includes the occ[u] copies of out itself
 
 # CORRECT
-while left < right:
-  mid = (left + right) // 2
-  if cumulative[mid] < k:
-    left = mid + 1
-  else:
-    right = mid  # Keep mid as potential answer
+if k <= cnt[u]:
+  out.append(ch); k -= occ[u]; v = u
 ```
 
 ---
@@ -364,7 +262,7 @@ while left < right:
 
 ## When to Use This Pattern
 
-### Use Suffix Array + Counting When:
+### Use Suffix Automaton + Counting When:
 - Finding k-th smallest/largest substring
 - Problems involving lexicographical ordering of substrings
 - Counting substrings with specific properties
@@ -373,13 +271,12 @@ while left < right:
 ### Don't Use When:
 - Simple string matching (use KMP or Z-algorithm)
 - Only need to check substring existence (use hashing)
-- Working with multiple separate strings (consider suffix automaton)
+- Only distinct substrings matter: the suffix array + LCP method of Substring Order I is simpler
 
 ### Pattern Recognition Checklist:
-- [ ] Need to order ALL substrings? -> **Suffix Array**
-- [ ] Need to count distinct substrings? -> **Suffix Array + LCP** (Substring Order I)
-- [ ] Need to count with repetitions? -> **Suffix Array only** (Substring Order II)
-- [ ] Need k-th element? -> **Binary search on prefix sums**
+- [ ] k-th distinct substring? -> **Suffix array + LCP** (Substring Order I)
+- [ ] k-th substring with repetitions? -> **Suffix automaton occ + cnt, greedy walk** (Substring Order II)
+- [ ] k-th of a huge implicit sorted set? -> **Count by prefix, choose letter by letter**
 
 ---
 
@@ -410,26 +307,24 @@ while left < right:
 
 ## Key Takeaways
 
-1. **The Core Idea:** Suffix array gives sorted order of all suffixes; each suffix's prefixes are substrings in sorted order
-2. **Time Optimization:** From O(n^3) brute force to O(n log n) via suffix array
-3. **Key Difference from Order I:** Order II counts with repetitions (no LCP subtraction)
-4. **Pattern:** Binary search on cumulative counts to find k-th element
+1. **The Core Idea:** Build the answer letter by letter; at each step skip whole groups of substrings by their prefix count `cnt(p + c)`
+2. **Why a suffix automaton:** All strings in one state share an occurrence count, so `occ` and `cnt` take two linear passes
+3. **Key Difference from Order I:** with repeats, sorted-suffix order is not substring order; every copy of "a" precedes "ab"
+4. **Don't forget:** subtract `occ` of the current answer before moving on to longer strings
 
 ---
 
 ## Practice Checklist
 
 Before moving on, make sure you can:
-- [ ] Build a suffix array in O(n log n) time
-- [ ] Explain why suffix array gives lexicographically sorted substrings
-- [ ] Distinguish between Substring Order I (distinct) and II (with repetitions)
-- [ ] Implement binary search on cumulative substring counts
+- [ ] Show with `baabaa` why prefixes of sorted suffixes are out of order when repeats count
+- [ ] Build a suffix automaton and compute `occ` via suffix links
+- [ ] Compute `cnt` over transitions and run the greedy walk
 - [ ] Handle large k values with appropriate data types
 
 ---
 
 ## Additional Resources
 
-- [CP-Algorithms: Suffix Array](https://cp-algorithms.com/string/suffix-array.html)
-- [CP-Algorithms: Kasai's LCP Algorithm](https://cp-algorithms.com/string/suffix-array.html#finding-the-longest-common-prefix-of-two-substrings-without-additional-memory)
+- [CP-Algorithms: Suffix Automaton](https://cp-algorithms.com/string/suffix-automaton.html) (see "Number of occurrences" and "Lexicographically k-th substring")
 - [CSES Substring Order II](https://cses.fi/problemset/task/2109) - K-th smallest substring

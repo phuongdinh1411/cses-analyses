@@ -29,6 +29,8 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
+> **Note:** this is a general rewriting problem, not CSES "String Transformation" ([task 1113](https://cses.fi/problemset/task/1113)), which asks you to invert the Burrows–Wheeler transform.
+
 **Problem:** Given two strings `s` and `t`, and a set of transformation rules, find the minimum number of transformations needed to convert `s` into `t`.
 
 **Input:**
@@ -52,19 +54,18 @@ Input:
 abc
 def
 3
-ab cd
+ab de
+c f
 bc ef
-cd de
 
 Output:
 2
 ```
 
 **Explanation:**
-- Start: "abc"
-- Apply "ab" -> "cd": "abc" -> "cdc"
-- Apply "cd" -> "de": "cdc" -> "dec" (or use different path)
-- Minimum steps to reach "def": 2
+- "abc" -> "dec" (rule `ab -> de`) -> "def" (rule `c -> f`): 2 steps
+- The other first move, "abc" -> "aef" (rule `bc -> ef`), is a dead end: no rule touches "a"
+- With the rules `ab cd`, `bc ef`, `cd de` the answer would be `-1`: "abc" only reaches "cdc", "dec" and "aef"
 
 ---
 

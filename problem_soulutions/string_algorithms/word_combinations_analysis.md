@@ -50,24 +50,22 @@ After solving this problem, you will be able to:
 
 ```
 Input:
-ababab
+ababc
 4
 ab
 abab
-b
-bab
+c
+cb
 
 Output:
-6
+2
 ```
 
-**Explanation:** The six ways to form "ababab" are:
-1. "ab" + "ab" + "ab"
-2. "ab" + "abab"
-3. "abab" + "ab"
-4. "ab" + "b" + "ab" + "ab" (invalid - "b" alone doesn't work here)
+**Explanation:** the two ways to form "ababc" are:
+1. "ab" + "ab" + "c"
+2. "abab" + "c"
 
-Wait - let's verify: The valid combinations are based on how dictionary words can concatenate to form "ababab".
+"cb" never fits, because the string ends right after "c".
 
 ---
 
@@ -373,7 +371,7 @@ for j in range(i, n):
 | Empty match only | `s=""` | 1 | Empty string has one way (use nothing) |
 | No valid segmentation | `s="abc"`, words=`["ab","cd"]` | 0 | Cannot form "abc" |
 | Single character | `s="a"`, words=`["a"]` | 1 | One way |
-| Overlapping words | `s="aa"`, words=`["a","aa"]` | 3 | "a"+"a", "aa" wait... |
+| Overlapping words | `s="aa"`, words=`["a","aa"]` | 2 | "a" + "a" and "aa" |
 | Large repeated pattern | `s="aaa...a"` (5000 a's), words=`["a"]` | 1 | Only one way |
 
 ---
