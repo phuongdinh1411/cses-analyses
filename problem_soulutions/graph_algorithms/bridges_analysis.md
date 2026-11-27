@@ -72,6 +72,8 @@ Output:
 4 5
 ```
 
+Any order of the bridges is accepted; the code below finds `4 5` before `3 4`.
+
 **Explanation:** Removing edge (3,4) or (4,5) disconnects vertex 4 (and beyond) from the rest. The triangles {1,2,3} and {5,6,7} have no bridges since alternate paths exist.
 
 ---
@@ -188,13 +190,9 @@ Final: No bridges found (graph is 2-edge-connected)
 
 ```
 Graph: 1---2---3---4
-              |   |
-              +---+
-
-Edges: (1,2), (2,3), (3,4), (4,3) -- wait, let's use:
-       1---2---3---4
-                  /|
-                 5-+
+                \  |
+                 \ |
+                  5
 
 Edges: (1,2), (2,3), (3,4), (4,5), (3,5)
 ```

@@ -33,15 +33,17 @@ Find the minimum cost to travel from city 1 to every other city.
 
 ```
 Input:
-3 4           # 3 cities, 4 flights
-1 2 6         # flight from 1 to 2, cost 6
-1 3 2         # flight from 1 to 3, cost 2
-3 2 3         # flight from 3 to 2, cost 3
-1 2 4         # flight from 1 to 2, cost 4
+3 4
+1 2 6
+1 3 2
+3 2 3
+1 2 4
 
 Output:
-0 5 2         # cost to reach city 1, 2, 3 from city 1
+0 4 2
 ```
+
+3 cities and 4 one-way flights `a b cost`. City 2 has three routes: direct for 6, direct for 4, or 1 → 3 → 2 for 2 + 3 = 5. The cheapest is 4, so parallel edges matter.
 
 ## Why BFS Doesn't Work Here
 
@@ -99,51 +101,28 @@ This greedy choice works because:
 ## Visual Diagram: Algorithm Progression
 
 ```
-Example Graph:
-    1 -----(6)-----> 2
-    |                ^
-   (2)              (3)
-    |                |
-    v                |
-    3 ---------------+
+Example graph (the sample above; 1 -> 2 has two parallel flights):
 
-Step 0: Initialize
-+-------+-------+-------+
+    1 --(6)--> 2
+    1 --(4)--> 2
+    1 --(2)--> 3 --(3)--> 2
 
-| Node  |   1   |   2   |   3   |
-+-------+-------+-------+-------+
+Step 0: dist = [0, INF, INF]          heap = [(0, 1)]
 
-| dist  |   0   |  INF  |  INF  |
-+-------+-------+-------+-------+
-Priority Queue: [(0, 1)]
+Step 1: pop (0, 1)
+  relax 1->2 (6): dist[2] = 6         push (6, 2)
+  relax 1->3 (2): dist[3] = 2         push (2, 3)
+  relax 1->2 (4): dist[2] = 4         push (4, 2)
+  dist = [0, 4, 2]                    heap = [(2, 3), (4, 2), (6, 2)]
 
-Step 1: Process node 1 (dist=0)
-- Relax edge 1->2: dist[2] = min(INF, 0+6) = 6
-- Relax edge 1->3: dist[3] = min(INF, 0+2) = 2
-+-------+-------+-------+-------+
+Step 2: pop (2, 3)
+  relax 3->2 (3): 2 + 3 = 5 > 4       no change
+  heap = [(4, 2), (6, 2)]
 
-| dist  |   0   |   6   |   2   |
-+-------+-------+-------+-------+
-Priority Queue: [(2, 3), (6, 2)]
+Step 3: pop (4, 2): no outgoing edges
+Step 4: pop (6, 2): 6 > dist[2] = 4, stale entry -> skip
 
-Step 2: Process node 3 (dist=2) <- smallest!
-- Relax edge 3->2: dist[2] = min(6, 2+3) = 5  <- improved!
-+-------+-------+-------+-------+
-
-| dist  |   0   |   5   |   2   |
-+-------+-------+-------+-------+
-Priority Queue: [(5, 2), (6, 2)]
-
-Step 3: Process node 2 (dist=5)
-- No outgoing edges
-+-------+-------+-------+-------+
-
-| dist  |   0   |   5   |   2   |  <- FINAL
-+-------+-------+-------+-------+
-
-Step 4: Pop (6, 2) - already processed, skip!
-
-Final Answer: [0, 5, 2]
+Final answer: 0 4 2
 ```
 
 ## Detailed Dry Run

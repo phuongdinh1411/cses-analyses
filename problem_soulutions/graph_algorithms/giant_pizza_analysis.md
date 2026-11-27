@@ -30,33 +30,34 @@ By completing this problem, you will learn:
 
 ## Problem Statement
 
-Uolevi wants to order a giant pizza with `n` toppings. There are `m` family members, each with exactly **two wishes** about the toppings. Each wish specifies whether a particular topping should be included (+) or excluded (-).
+Uolevi's family is ordering a giant pizza with `m` possible toppings. Each of the `n` family members has exactly **two wishes**, and each wish says a topping should be included (+) or excluded (-).
 
-**Goal**: Determine if there exists a valid topping selection where every family member has **at least one** of their two wishes satisfied.
+**Goal**: Choose the toppings so that every family member gets **at least one** of their two wishes.
 
 **Input**:
-- Line 1: `n m` (n = number of toppings, m = number of family members)
-- Next m lines: Two wishes per person, e.g., `+ 1 - 3` means "include topping 1 OR exclude topping 3"
+- Line 1: `n m` (n = number of family members, m = number of toppings)
+- Next n lines: two wishes per person, e.g. `+ 1 - 3` means "include topping 1 OR exclude topping 3"
 
 **Output**:
-- If possible: Print selection for each topping (+ for include, - for exclude)
-- If impossible: Print "IMPOSSIBLE"
+- If possible: one symbol per topping (+ include, - exclude). Any valid selection is accepted.
+- If impossible: `IMPOSSIBLE`
 
 **Constraints**:
 - 1 <= n, m <= 10^5
 
-**Example**:
+**Example** (CSES sample):
 ```
 Input:
-3 4
+3 5
 + 1 + 2
-- 1 + 2
-+ 1 - 2
-- 1 - 2
+- 1 + 3
++ 4 - 2
 
-Output:
-- + -
+Output (one valid answer):
++ + + + +
 ```
+
+Any selection that satisfies everyone is accepted. The code below prints `+ + + + +`, which works: wish 1 gets topping 1, wish 2 gets topping 3, wish 3 gets topping 4.
 
 ## 2-SAT Basics
 
@@ -178,110 +179,54 @@ Assignment (if scc[x] > scc[NOT_x], then x = TRUE):
 Result: + - +
 ```
 
-## Visual Diagram: Complete Implication Graph
+## Visual Diagram: Implication Graph
+
+For the three wishes in the dry run below, `(x1 OR x2)`, `(NOT_x1 OR x2)` and `(x1 OR NOT_x2)`:
 
 ```
-Example: n=3 toppings, m=4 wishes
-Wishes:
-  1. + 1 + 2  ->  (x1 OR x2)
-  2. - 1 + 2  ->  (NOT_x1 OR x2)
-  3. + 1 - 2  ->  (x1 OR NOT_x2)
-  4. - 1 - 2  ->  (NOT_x1 OR NOT_x2)
+   SCC 0                       SCC 1
+ +-------------------+      +-------------+
+ | NOT_x1 <-> NOT_x2 | ---> |  x1 <-> x2  |
+ +-------------------+      +-------------+
 
-Implication Graph:
-
-        +-------+                    +-------+
-        |  x1   |<-------------------|NOT_x2 |
-        +-------+                    +-------+
-           |  ^                         ^  |
-           |  |                         |  |
-           v  |                         |  v
-        +-------+                    +-------+
-        |NOT_x1 |------------------->|  x2   |
-        +-------+                    +-------+
-              \                        /
-               \                      /
-                v                    v
-              +------------------------+
-              |     (other edges)      |
-              +------------------------+
-
-From clause (x1 OR x2):
-  NOT_x1 -> x2 (edge 1)
-  NOT_x2 -> x1 (edge 2)
-
-From clause (NOT_x1 OR x2):
-  x1 -> x2 (edge 3)
-  NOT_x2 -> NOT_x1 (edge 4)
-
-From clause (x1 OR NOT_x2):
-  NOT_x1 -> NOT_x2 (edge 5)
-  x2 -> x1 (edge 6)
-
-From clause (NOT_x1 OR NOT_x2):
-  x1 -> NOT_x2 (edge 7)
-  x2 -> NOT_x1 (edge 8)
+Every literal sits in a different SCC from its negation -> satisfiable.
+The "true" side of each variable is the SCC that comes later in topological order.
 ```
 
 ## Dry Run
 
-**Input**:
+**Input** (3 family members, 2 toppings):
 ```
-3 4
+3 2
 + 1 + 2
 - 1 + 2
 + 1 - 2
-- 1 - 2
 ```
 
-**Step 1: Parse wishes into clauses**
+**Step 1: Wishes become clauses, clauses become two implications each**
+
+Node numbering matches the code: x1 = 0, x2 = 1, NOT_x1 = 2, NOT_x2 = 3.
 ```
-Wish 1: + 1 + 2  ->  (x1 OR x2)
-Wish 2: - 1 + 2  ->  (NOT_x1 OR x2)
-Wish 3: + 1 - 2  ->  (x1 OR NOT_x2)
-Wish 4: - 1 - 2  ->  (NOT_x1 OR NOT_x2)
+(x1 OR x2):      NOT_x1 -> x2  (2->1),  NOT_x2 -> x1     (3->0)
+(NOT_x1 OR x2):  x1 -> x2      (0->1),  NOT_x2 -> NOT_x1 (3->2)
+(x1 OR NOT_x2):  NOT_x1 -> NOT_x2 (2->3),  x2 -> x1      (1->0)
 ```
 
-**Step 2: Build implication graph (edges)**
+**Step 2: SCCs (Kosaraju)**
 ```
-Graph with 6 nodes: x1(0), NOT_x1(1), x2(2), NOT_x2(3), x3(4), NOT_x3(5)
-
-From (x1 OR x2):      1->2, 3->0
-From (NOT_x1 OR x2):  0->2, 3->1
-From (x1 OR NOT_x2):  1->3, 2->0
-From (NOT_x1 OR NOT_x2): 0->3, 2->1
-
-Adjacency list:
-  0 (x1):     [2, 3]
-  1 (NOT_x1): [2, 3]
-  2 (x2):     [0, 1]
-  3 (NOT_x2): [0, 1]
+SCC 0 = {NOT_x1, NOT_x2}   (2 <-> 3)
+SCC 1 = {x1, x2}           (0 <-> 1)
+Condensation: SCC 0 -> SCC 1, and Kosaraju numbers SCCs in topological order
 ```
 
-**Step 3: Find SCCs (Kosaraju's algorithm)**
+**Step 3: Check and assign**
 ```
-First DFS (finish order): [0, 2, 1, 3] (example order)
-Transpose graph, DFS in reverse finish order:
-  SCC 0: {3, 1} = {NOT_x2, NOT_x1}
-  SCC 1: {2, 0} = {x2, x1}
-```
-
-**Step 4: Check satisfiability**
-```
-scc[x1]=1, scc[NOT_x1]=0  -> Different SCCs (OK)
-scc[x2]=1, scc[NOT_x2]=0  -> Different SCCs (OK)
-
-Formula is SATISFIABLE!
+x1: scc 1 vs NOT_x1: scc 0 -> different, and x1 is later -> x1 = TRUE (+)
+x2: scc 1 vs NOT_x2: scc 0 -> different, and x2 is later -> x2 = TRUE (+)
+Output: + +
 ```
 
-**Step 5: Determine assignment**
-```
-x1: scc[x1]=1 > scc[NOT_x1]=0 -> x1 = TRUE  (+)
-x2: scc[x2]=1 > scc[NOT_x2]=0 -> x2 = TRUE  (+)
-x3: not constrained, default to - (FALSE)
-
-Output: - + -
-```
+**What breaks it:** add a fourth wish `- 1 - 2`, i.e. (NOT_x1 OR NOT_x2). It adds x1 -> NOT_x2 and x2 -> NOT_x1, so all four nodes collapse into one SCC. x1 and NOT_x1 now share an SCC, so the answer is `IMPOSSIBLE`. That makes sense: the four wishes forbid every combination of toppings 1 and 2.
 
 ## Python Implementation
 
@@ -293,7 +238,7 @@ sys.setrecursionlimit(300000)
 def solve():
   input_data = sys.stdin.read().split()
   idx = 0
-  n, m = int(input_data[idx]), int(input_data[idx + 1])
+  wishes, n = int(input_data[idx]), int(input_data[idx + 1])  # n = toppings = variables
   idx += 2
 
   # Build implication graph
@@ -315,7 +260,7 @@ def solve():
       return node + n
     return node - n
 
-  for _ in range(m):
+  for _ in range(wishes):
     sign1, var1 = input_data[idx], int(input_data[idx + 1])
     sign2, var2 = input_data[idx + 2], int(input_data[idx + 3])
     idx += 4

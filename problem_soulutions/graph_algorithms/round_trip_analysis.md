@@ -54,6 +54,8 @@ Output:
 3 5 1 3
 ```
 
+Any valid round trip is accepted; the code below prints `1 5 3 1`.
+
 ## Key Insight: Back Edge Detection
 
 In an undirected graph, a **cycle exists if and only if** we encounter an already-visited node that is NOT our immediate parent during DFS.

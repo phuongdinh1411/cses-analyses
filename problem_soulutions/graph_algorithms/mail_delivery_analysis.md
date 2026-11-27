@@ -89,36 +89,7 @@ Algorithm:
 ## Visual Diagram
 
 ```
-Example: n=5, m=6
-Streets: (1,2), (1,3), (2,3), (2,4), (3,4), (4,5), (5,1)
-Wait, that's 7 edges. Let's use: (1,2), (1,3), (2,3), (3,4), (4,5), (5,1)
-
-Initial Graph:
-        1
-       /|\
-      / | \
-     2--3  5
-        |  |
-        4--+
-
-Degree check:
-- Vertex 1: degree 3 (edges to 2, 3, 5) - ODD!
-- This graph has NO Eulerian circuit
-
-Let's fix it - add edge (1,4):
-Streets: (1,2), (1,3), (1,4), (2,3), (3,4), (4,5), (5,1)
-
-        1
-       /|\\
-      / | \\
-     2--3  5
-        |  |
-        4--+
-
-Degrees: 1->4, 2->2, 3->3, 4->3, 5->2
-Still odd degrees! Need even simpler example.
-
-Simple Example: n=4, m=4
+Example: n=4, m=4
 Streets: (1,2), (2,3), (3,4), (4,1)
 
     1 --- 2

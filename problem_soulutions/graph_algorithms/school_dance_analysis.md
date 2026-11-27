@@ -63,6 +63,8 @@ Output:
 4 3
 ```
 
+Any maximum matching is accepted; the code below prints the pairs `1 1`, `2 2`, `4 3`.
+
 ## Key Insight
 
 Maximum bipartite matching is equivalent to maximum flow in a specially constructed network:

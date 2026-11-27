@@ -141,63 +141,33 @@ Adjacency list (each node -> list of (neighbor, edge_label)):
   11: [(10, '0'), (11, '1')]
 ```
 
-**Step 2: Hierholzer's Algorithm**
+**Step 2: Hierholzer's Algorithm** (exactly what the code below does: try edge '0' first, then '1')
 ```
-Start at node "00"
-Stack: [00]
-Path: []
-
-Iteration 1: At 00, go to 01 via edge '1'
-  Stack: [00, 01], Path: []
-
-Iteration 2: At 01, go to 11 via edge '1'
-  Stack: [00, 01, 11], Path: []
-
-Iteration 3: At 11, go to 11 via edge '1'
-  Stack: [00, 01, 11, 11], Path: []
-
-Iteration 4: At 11, go to 10 via edge '0'
-  Stack: [00, 01, 11, 11, 10], Path: []
-
-Iteration 5: At 10, go to 01 via edge '1'
-  Stack: [00, 01, 11, 11, 10, 01], Path: []
-
-Iteration 6: At 01, go to 10 via edge '0'
-  Stack: [00, 01, 11, 11, 10, 01, 10], Path: []
-
-Iteration 7: At 10, go to 00 via edge '0'
-  Stack: [00, 01, 11, 11, 10, 01, 10, 00], Path: []
-
-Iteration 8: At 00, go to 00 via edge '0'
-  Stack: [00, 01, 11, 11, 10, 01, 10, 00, 00], Path: []
-
-Iteration 9: At 00, no more edges, pop to path
-  Stack: [00, 01, 11, 11, 10, 01, 10, 00], Path: [(00, -)]
-
-Continue popping until stack empty...
+at 00: take edge '0' -> 00   stack = [00, 00]
+at 00: take edge '1' -> 01   stack = [00, 00, 01]
+at 01: take edge '0' -> 10   stack = [00, 00, 01, 10]
+at 10: take edge '0' -> 00   stack = [00, 00, 01, 10, 00]
+at 00: stuck, pop            path = [00]
+at 10: take edge '1' -> 01   stack = [00, 00, 01, 10, 01]
+at 01: take edge '1' -> 11   stack = [00, 00, 01, 10, 01, 11]
+at 11: take edge '0' -> 10   stack = [00, 00, 01, 10, 01, 11, 10]
+at 10: stuck, pop            path = [00, 10]
+at 11: take edge '1' -> 11   stack = [00, 00, 01, 10, 01, 11, 11]
+now every edge is used: pop the rest
+                             path = [00, 10, 11, 11, 01, 10, 01, 00, 00]
 ```
+
+The first walk got stuck back at 00 with edges still unused at 10. Hierholzer resumes from the deepest node that still has an unused edge and splices that detour into the circuit. That is the whole algorithm.
 
 **Step 3: Build Result**
 ```
-Path (reversed): 00 -> 00 -> 01 -> 10 -> 01 -> 10 -> 11 -> 11 -> 00
-Edge labels:         0    1    0    1    0    1    1    0
+Circuit (path reversed): 00 -> 00 -> 01 -> 10 -> 01 -> 11 -> 11 -> 10 -> 00
+Edge labels (last bit):        0     1     0     1     1     1     0     0
 
-Result: "00" + "01010110" = "0001010110"
-        ^^^^   ^^^^^^^^
-        start  edge labels
+Result: "00" + "01011100" = "0001011100"
 
-Verify: Contains all 3-bit patterns:
-  000 at pos 0, 001 at pos 1, 010 at pos 2, 101 at pos 3
-  010 at pos 4, 101 at pos 5, 011 at pos 6, 110 at pos 7
-
-Wait - we have duplicates! Let me recalculate...
-```
-
-**Correct traversal (one valid circuit):**
-```
-00 -[0]-> 00 -[1]-> 01 -[1]-> 11 -[1]-> 11 -[0]-> 10 -[1]-> 01 -[0]-> 10 -[0]-> 00
-
-Result: "00" + "01110100" = "0001110100"
+Check, all 8 windows of length 3 are distinct:
+  000 001 010 101 011 111 110 100
 ```
 
 ## Python Implementation

@@ -59,6 +59,8 @@ Output:
 3 1 3 4
 ```
 
+Any maximum set of edge-disjoint routes, in any order, is accepted.
+
 ## Key Insight: Max Flow and Edge-Disjoint Paths
 
 This problem is equivalent to finding the **maximum flow** in a network where each edge has **capacity 1**.

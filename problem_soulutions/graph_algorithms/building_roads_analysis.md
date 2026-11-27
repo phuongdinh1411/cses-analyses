@@ -58,6 +58,8 @@ Output:
 2 3
 ```
 
+Any set of roads that connects the components is accepted; the code below prints `1 3` (one representative per component).
+
 **Explanation:** Cities {1, 2} form one component and {3, 4} form another. We need exactly 1 road to connect them. Road (2, 3) is one valid solution; (1, 3), (1, 4), or (2, 4) would also work.
 
 ## Key Insight

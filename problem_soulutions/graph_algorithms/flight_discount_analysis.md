@@ -103,18 +103,18 @@ State (x, 1) = at node x, coupon used
 
 **Priority Queue Processing:**
 
-| Step | Pop from PQ | dist[node][state] | Add to PQ |
-|------|-------------|-------------------|-----------|
+State 0 = coupon unused, state 1 = coupon used (the coupon halves one flight, rounding down).
+
+| Step | Pop from PQ | Updates | Add to PQ |
+|------|-------------|---------|-----------|
 | Init | - | dist[1][0] = 0 | (0, 1, 0) |
-| 1 | (0, 1, 0) | dist[2][0]=3, dist[2][1]=1, dist[3][0]=10, dist[3][1]=5 | (3,2,0), (1,2,1), (10,3,0), (5,3,1) |
-| 2 | (1, 2, 1) | dist[3][1]=min(5, 1+6)=5 | - |
-| 3 | (3, 2, 0) | dist[3][0]=min(10,9)=9, dist[3][1]=min(5,3+3)=5 | (9,3,0) |
-| 4 | (5, 3, 1) | **DESTINATION with coupon used** | - |
+| 1 | (0, 1, 0) | 1->2: dist[2][0]=3, dist[2][1]=3//2=1; 1->3: dist[3][0]=10, dist[3][1]=10//2=5 | (1,2,1), (3,2,0), (5,3,1), (10,3,0) |
+| 2 | (1, 2, 1) | 2->3: 1+6=7 > 5, no change; 2->1: dist[1][1]=2 | (2,1,1) |
+| 3 | (2, 1, 1) | 1->2: 2+3=5 > 1; 1->3: 2+10=12 > 5, no change | - |
+| 4 | (3, 2, 0) | 2->3: dist[3][0]=9, coupon 3+6//2=6 > 5, no change | (9,3,0) |
+| 5 | (5, 3, 1) | city 3 settled with the coupon used | - |
 
-**Answer:** min(dist[3][0], dist[3][1]) = min(9, 5) = **5**
-
-Wait, let me recalculate: Path 1->2->3 with discount on (2,3) = 3 + 3 = 6.
-Path 1->3 with discount = 5. So answer is **5**.
+**Answer: 5.** Check the three candidate routes: 1->3 with the coupon costs 5; 1->2->3 with the coupon on 2->3 costs 3 + 3 = 6; with it on 1->2 it costs 1 + 6 = 7. Using the coupon never hurts, so `min(dist[n][0], dist[n][1])` in the code always equals `dist[n][1]`.
 
 ## Python Solution
 

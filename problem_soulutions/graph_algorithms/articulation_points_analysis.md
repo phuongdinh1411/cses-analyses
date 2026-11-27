@@ -65,7 +65,8 @@ disconnects {1} from {3, 4}.
 - Next `m` lines: two integers `u` and `v` describing an edge
 
 **Output:**
-- All vertices that are articulation points
+- First line: the number k of articulation points
+- Second line: those k vertices in increasing order
 
 **Constraints:**
 - 1 <= n <= 10^5
@@ -83,6 +84,7 @@ Input:
 4 5
 
 Output:
+2
 2 4
 ```
 
@@ -219,7 +221,7 @@ function findArticulationPoints(graph):
 | 4 | 4 | Visit | [0,1,2,3,-] | [0,1,2,3,-] | From 3, timer=4 |
 | 5 | 5 | Visit | [0,1,2,3,4] | [0,1,2,3,4] | From 4, timer=5 |
 | 6 | 5 | Back edge to 3 | - | [0,1,2,3,2] | low[5]=min(4,disc[3])=2 |
-| 7 | 5 | Back edge to 4 | - | [0,1,2,3,2] | low[5]=min(2,disc[4])=2 (no change) |
+| 7 | 5 | Edge to 4 | - | [0,1,2,3,2] | 4 is the parent, skip |
 | 8 | 4 | Return from 5 | - | [0,1,2,2,2] | low[4]=min(3,low[5])=2 |
 | 9 | 4 | Back edge to 2 | - | [0,1,2,1,2] | low[4]=min(2,disc[2])=1 |
 | 10 | 3 | Return from 4 | - | [0,1,1,1,2] | low[3]=min(2,low[4])=1 |
@@ -232,26 +234,14 @@ function findArticulationPoints(graph):
 | Vertex | parent | children | Condition | Result |
 |--------|--------|----------|-----------|--------|
 | 1 | -1 (root) | 1 | Root needs 2+ children | Not AP |
-| 2 | 1 | 2 (3,4 in DFS tree) | low[3]=1 >= disc[2]=1? Yes | **AP** |
+| 2 | 1 | 1 (3; vertex 4 is reached through 3) | low[3]=1 >= disc[2]=1? Yes | **AP** |
 | 3 | 2 | 1 (4) | low[4]=1 >= disc[3]=2? No | Not AP |
 | 4 | 3 | 1 (5) | low[5]=2 >= disc[4]=3? No | Not AP |
 | 5 | 4 | 0 | Leaf node | Not AP |
 
 **Result:** Vertex 2 is the only articulation point.
 
-Wait - let me recheck. In the DFS tree I traced:
-- From 2, we visit 3 first (child)
-- From 3, we visit 4 (child)
-- From 4, we visit 5 (child)
-- 4 also connects to 2, but 2 is already visited
-
-Actually with the back edges 4-2, 5-3, 5-4, the low values propagate up allowing nodes below 2 to reach 2's ancestors. But vertex 1 can only be reached through vertex 2.
-
-Checking vertex 2:
-- low[child] >= disc[2] for any child?
-- For child 3: low[3] = 1, disc[2] = 1, so 1 >= 1 is true
-
-Actually, the result depends on graph structure. In this particular fully connected subgraph {2,3,4,5}, removing vertex 2 would disconnect vertex 1. So **vertex 2 is an articulation point**.
+Why: the back edges 4-2 and 5-3 let everything below 2 climb back to 2, but never above it. So 1 can only be reached through 2, and removing 2 cuts 1 off.
 
 ---
 
