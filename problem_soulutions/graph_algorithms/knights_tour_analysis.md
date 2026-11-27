@@ -1,5 +1,5 @@
 ---
-layout: problem-analysis
+layout: simple
 title: "Knight's Tour"
 difficulty: Hard
 tags: [graph, backtracking, warnsdorff, heuristic]

@@ -1,5 +1,5 @@
 ---
-layout: analysis
+layout: simple
 title: "School Dance"
 difficulty: Hard
 tags: [graph, bipartite-matching, max-flow, hopcroft-karp]

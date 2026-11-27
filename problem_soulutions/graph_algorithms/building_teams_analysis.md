@@ -1,5 +1,5 @@
 ---
-layout: problem-analysis
+layout: simple
 title: "Building Teams"
 difficulty: Easy
 tags: [graph, bipartite, bfs, dfs, 2-coloring]

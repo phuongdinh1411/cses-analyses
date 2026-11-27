@@ -1,5 +1,5 @@
 ---
-layout: problem
+layout: simple
 title: "Articulation Points (Cut Vertices)"
 difficulty: Medium
 tags: [graph, dfs, tarjan, low-link, connectivity, critical-nodes]

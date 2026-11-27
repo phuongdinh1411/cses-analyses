@@ -1,5 +1,5 @@
 ---
-layout: problem-analysis
+layout: simple
 title: "Giant Pizza"
 difficulty: Hard
 tags: [graph, 2-sat, scc, implication-graph]

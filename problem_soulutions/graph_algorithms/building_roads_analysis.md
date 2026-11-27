@@ -1,5 +1,5 @@
 ---
-layout: problem
+layout: simple
 title: "Building Roads"
 difficulty: Easy
 tags: [graph, union-find, dsu, connected-components]

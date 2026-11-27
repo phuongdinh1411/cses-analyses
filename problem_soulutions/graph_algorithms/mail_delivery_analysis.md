@@ -1,5 +1,5 @@
 ---
-layout: analysis
+layout: simple
 title: "Mail Delivery"
 difficulty: Medium
 tags: [graph, eulerian-circuit, hierholzer, undirected]

@@ -1,5 +1,5 @@
 ---
-layout: analysis
+layout: simple
 title: "Shortest Routes I"
 difficulty: Medium
 tags: [graph, dijkstra, shortest-path, priority-queue, weighted-graph]

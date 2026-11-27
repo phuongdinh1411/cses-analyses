@@ -1,5 +1,5 @@
 ---
-layout: problem_analysis
+layout: simple
 title: "Distinct Routes"
 difficulty: Hard
 tags: [graph, max-flow, ford-fulkerson, bfs]

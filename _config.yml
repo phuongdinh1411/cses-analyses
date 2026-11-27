@@ -38,6 +38,16 @@ defaults:
       sidebar:
         nav: "main"
 
+exclude:
+  - react-app
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+
 markdown: kramdown
 highlighter: rouge
 

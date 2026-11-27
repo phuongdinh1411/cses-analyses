@@ -1,5 +1,5 @@
 ---
-layout: problem-analysis
+layout: simple
 title: "Police Chase"
 difficulty: Hard
 tags: [graph, max-flow, min-cut, ford-fulkerson]
