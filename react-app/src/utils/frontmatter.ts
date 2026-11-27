@@ -12,14 +12,19 @@ export interface ParsedMarkdown {
   content: string
 }
 
+// Jekyll needs {% raw %} around literal {{ }}; the React renderer does not.
+function stripLiquidRaw(content: string): string {
+  return content.replace(/^\{% (?:end)?raw %\}\r?\n/gm, '')
+}
+
 export function parseFrontMatter(raw: string): ParsedMarkdown {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/)
   if (!match) {
-    return { frontMatter: {}, content: raw }
+    return { frontMatter: {}, content: stripLiquidRaw(raw) }
   }
 
   const yamlBlock = match[1]
-  const content = match[2]
+  const content = stripLiquidRaw(match[2])
   const frontMatter: FrontMatter = {}
 
   for (const line of yamlBlock.split('\n')) {
