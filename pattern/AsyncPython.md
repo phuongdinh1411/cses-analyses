@@ -278,6 +278,7 @@ async def good_fetch(url):
 ## 5. Avoiding N+1 Queries
 
 ```python
+# fragment: runs inside an async function / solver body
 from sqlalchemy.orm import selectinload, joinedload
 
 # ❌ N+1: 1 query for users, then 1 query PER user for orders

@@ -8,6 +8,14 @@ permalink: /pattern/bitmask
 
 ---
 
+## Recognize when
+
+- **n ≤ 20** (sometimes ≤ 25 with meet-in-the-middle) and the problem talks about *subsets*, *assignments*, or *visiting every item once* → bitmask DP / subset enumeration.
+- "Minimum cost to visit all nodes", "assign n workers to n jobs", "partition into k groups" → state = set of used items.
+- XOR puzzles: "single number", "maximum XOR pair", "subarray XOR = k" → bit tricks / prefix XOR / binary trie.
+- Small alphabet with parity questions ("substring with even counts of each vowel") → parity mask + hash map.
+- **Not this pattern** when n is large (2ⁿ explodes) and the order of items matters more than membership — think greedy or ordinary DP instead.
+
 ## What Are Bitmask Techniques?
 
 Bitmask techniques use binary representations and bitwise operations to efficiently solve problems involving:

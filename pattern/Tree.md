@@ -13,6 +13,14 @@ Trees are everywhere in competitive programming. This guide covers **every major
 
 ---
 
+## Recognize when
+
+- Input is **n nodes and n − 1 edges** (connected, no cycles) → it is a tree even if the problem never says so.
+- Answer for a node depends on its children → **post-order tree DP**; for every node as root → **rerooting**.
+- Queries on **paths** between two nodes → LCA (distance, path sum); with updates → HLD + segment tree.
+- Queries on **subtrees** → Euler tour flattens a subtree into a contiguous range.
+- "Count pairs at distance k" / "closest marked node" over many queries → centroid decomposition.
+
 ## Quick Navigation: "I need to..."
 
 | I need to... | Technique | Section |

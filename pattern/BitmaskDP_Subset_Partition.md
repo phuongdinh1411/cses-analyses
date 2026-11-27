@@ -722,6 +722,7 @@ See n ≤ 16?
 ### The Universal Skeleton
 
 ```python
+# fragment: body of a solve() function
 # 1. Precompute per-mask values
 for mask in range(1, 1 << n):
     total[mask] = ...   # whatever the problem needs: sum, length, feasibility

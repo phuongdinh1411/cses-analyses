@@ -5,300 +5,143 @@ permalink: /quick_reference/common_mistakes
 ---
 
 
-# Common Mistakes and Pitfalls
+# Common Mistakes and Pitfalls (Python interviews)
 
-## 🚨 Time Complexity Mistakes
+### In 60 seconds
+- **Complexity traps:** `list.pop(0)`, `x in list`, slicing in a loop, and string `+=` look O(1) but are O(n).
+- **Python-specific traps:** mutable defaults, `[[0]*m]*n` aliasing, recursion limit (~1000), float `==`.
+- **Edge cases to say out loud:** empty input, one element, duplicates, negatives, all-equal values, max size.
+- **Not a Python problem:** integer overflow (ints are unbounded) and negative `%` with a positive modulus (the result is already in `[0, m)`). Mention them only when porting to C++/Java.
 
-### ❌ Nested Loops = O(n²)
-**Mistake**: Thinking nested loops are O(n)
-**Correct**: Nested loops are O(n²) or worse
-**Example**:
+> **Say this in the interview:** "Before coding I'll list the edge cases — empty, single, duplicates, negatives — and check that every inner operation is O(1)."
+
+---
+
+## Hidden O(n) operations
+
+| Looks cheap | Actually | Use instead |
+|---|---|---|
+| `lst.pop(0)`, `lst.insert(0, x)` | O(n) shift | `collections.deque` (`popleft`, `appendleft`) |
+| `x in lst` | O(n) scan | `set` / `dict` membership, O(1) average |
+| `lst[i:j]`, `s[i:j]` inside a loop | O(j − i) copy each time | Pass indices, not slices |
+| `s += piece` in a loop | Can be O(n²) total (CPython sometimes optimises, don't rely on it) | Collect in a list, `"".join(parts)` |
+| `min(lst)` / `max(lst)` inside a loop | O(n) per call | Heap, monotonic deque, or running value |
+| `sorted(...)` inside a loop | O(n log n) per call | Sort once; `bisect` or `SortedList` for updates |
+
 ```python
-# Wrong: O(n)
-for i in range(n):
-    for j in range(n):
-        # operations
-```
-**Fix**: Look for ways to reduce nested loops
+from collections import deque
 
-### ❌ String Operations = O(1)
-**Mistake**: Thinking string concatenation is O(1)
-**Correct**: String operations are often O(n)
-**Example**:
-```python
-# Wrong: O(1)
-result = result + "string"  # O(n) each time
+q = deque([1, 2, 3])
+q.append(4)
+assert q.popleft() == 1          # O(1), unlike list.pop(0)
 
-# Correct: O(n)
-result = "".join(strings)   # O(n) total
-```
-
-### ❌ List Operations = O(1)
-**Mistake**: Thinking list operations are O(1)
-**Correct**: Many list operations are O(n)
-**Example**:
-```python
-# Wrong: O(1)
-list.insert(0, item)  # O(n)
-list.pop(0)           # O(n)
-
-# Correct: O(1)
-list.append(item)     # O(1) amortized
-list.pop()            # O(1)
+parts = [str(i) for i in range(5)]
+assert "".join(parts) == "01234"  # O(total length)
 ```
 
-## 💾 Memory Issues
+## Python-specific traps
 
-### ❌ Large Arrays Without Optimization
-**Mistake**: Creating large arrays when not needed
-**Correct**: Use sparse representations
-**Example**:
 ```python
-# Wrong: O(n²) space
-dp = [[0] * n for _ in range(n)]
+# 1. Mutable default argument is shared across calls
+def add_bad(x, acc=[]):
+    acc.append(x)
+    return acc
 
-# Correct: O(n) space
-dp = [0] * n  # if only current row needed
+def add_good(x, acc=None):
+    acc = [] if acc is None else acc
+    acc.append(x)
+    return acc
+
+add_bad(1); assert add_bad(2) == [1, 2]          # surprise
+add_good(1); assert add_good(2) == [2]
+
+# 2. Grid aliasing: every row is the same list object
+bad = [[0] * 3] * 2
+bad[0][0] = 1
+assert bad == [[1, 0, 0], [1, 0, 0]]
+good = [[0] * 3 for _ in range(2)]
+good[0][0] = 1
+assert good == [[1, 0, 0], [0, 0, 0]]
+
+# 3. Floats: compare with a tolerance, never ==
+import math
+assert 0.1 + 0.2 != 0.3
+assert math.isclose(0.1 + 0.2, 0.3)
+
+# 4. Integer square root: float sqrt is wrong for large n
+n = (10**8 + 1) ** 2 - 1
+assert int(n ** 0.5) != math.isqrt(n)            # float rounds up
+assert math.isqrt(n) == 10**8
+
+# 5. Python % with a positive modulus is already non-negative
+assert -7 % 3 == 2                                # no ((a % m) + m) % m needed
+assert -7 // 3 == -3                              # floor division, unlike C++/Java truncation
 ```
 
-### ❌ Deep Recursion
-**Mistake**: Deep recursion causing stack overflow
-**Correct**: Use iterative approach or tail recursion
-**Example**:
-```python
-# Wrong: Stack overflow for large n
-def factorial(n):
-    if n <= 1: return 1
-    return n * factorial(n-1)
+**Recursion depth:** CPython's default limit is about 1000 frames and Python has no tail-call optimisation. For DFS on 10⁵ nodes, use an explicit stack (or `sys.setrecursionlimit` plus a larger thread stack as a last resort).
 
-# Correct: Iterative
-def factorial(n):
-    result = 1
-    for i in range(1, n+1):
-        result *= i
-    return result
+```python
+def dfs_iterative(adj: dict[int, list[int]], start: int) -> list[int]:
+    order, stack, seen = [], [start], {start}
+    while stack:
+        u = stack.pop()
+        order.append(u)
+        for v in reversed(adj.get(u, [])):
+            if v not in seen:
+                seen.add(v)
+                stack.append(v)
+    return order
+
+assert dfs_iterative({0: [1, 2], 1: [3]}, 0) == [0, 1, 3, 2]
 ```
 
-### ❌ String Concatenation in Loops
-**Mistake**: Building strings with + in loops
-**Correct**: Use list and join
-**Example**:
+## Edge cases that break "correct" code
+
 ```python
-# Wrong: O(n²)
-result = ""
-for i in range(n):
-    result += str(i)
+def second_largest(arr: list[int]) -> int | None:
+    """Second largest *distinct* value; sorted(arr)[-2] fails on [5, 5] and [7]."""
+    first = second = None
+    for x in arr:
+        if first is None or x > first:
+            first, second = x, first
+        elif x != first and (second is None or x > second):
+            second = x
+    return second
 
-# Correct: O(n)
-result = "".join(str(i) for i in range(n))
-```
+assert second_largest([3, 5, 5]) == 3
+assert second_largest([5, 5]) is None
+assert second_largest([]) is None
 
-## ⚠️ Edge Cases
-
-### ❌ Empty Input
-**Mistake**: Not checking for empty input
-**Correct**: Always check edge cases
-**Example**:
-```python
-# Wrong: Crashes on empty array
-def max_element(arr):
-    return max(arr)
-
-# Correct: Handle empty case
-def max_element(arr):
-    if not arr:
-        return None
-    return max(arr)
-```
-
-### ❌ Single Element
-**Mistake**: Not handling single element case
-**Correct**: Check for single element
-**Example**:
-```python
-# Wrong: May fail for single element
-def find_second_max(arr):
-    return sorted(arr)[-2]
-
-# Correct: Handle single element
-def find_second_max(arr):
-    if len(arr) < 2:
-        return None
-    return sorted(arr)[-2]
-```
-
-### ❌ Negative Numbers
-**Mistake**: Not considering negative numbers
-**Correct**: Check bounds and signs
-**Example**:
-```python
-# Wrong: May fail with negatives
-def sqrt_floor(n):
-    return int(n ** 0.5)
-
-# Correct: Handle negatives
-def sqrt_floor(n):
-    if n < 0:
-        return None
-    return int(n ** 0.5)
-```
-
-### ❌ Integer Overflow
-**Mistake**: Not handling large numbers
-**Correct**: Use appropriate data types
-**Example**:
-```python
-# Wrong: Overflow for large numbers
-def factorial(n):
-    result = 1
-    for i in range(1, n+1):
-        result *= i
-    return result
-
-# Correct: Use modular arithmetic
-def factorial_mod(n, mod):
-    result = 1
-    for i in range(1, n+1):
-        result = (result * i) % mod
-    return result
-```
-
-## 🔍 Algorithm Selection Mistakes
-
-### ❌ Wrong Algorithm for Constraints
-**Mistake**: Using O(n²) for n ≤ 10⁶
-**Correct**: Choose algorithm based on constraints
-**Example**:
-```python
-# Wrong: O(n²) for large n
-def find_pair_sum(arr, target):
-    for i in range(len(arr)):
-        for j in range(i+1, len(arr)):
-            if arr[i] + arr[j] == target:
-                return (i, j)
+def two_sum(arr: list[int], target: int) -> tuple[int, int] | None:
+    """Store indices, not values: arr.index() is O(n) and wrong with duplicates."""
+    seen: dict[int, int] = {}
+    for i, x in enumerate(arr):
+        if target - x in seen:
+            return seen[target - x], i
+        seen[x] = i
     return None
 
-# Correct: O(n) with hash set
-def find_pair_sum(arr, target):
-    seen = set()
-    for i, num in enumerate(arr):
-        complement = target - num
-        if complement in seen:
-            return (arr.index(complement), i)
-        seen.add(num)
-    return None
+assert two_sum([3, 3], 6) == (0, 1)
+assert two_sum([1, 2], 7) is None
 ```
 
-### ❌ Over-engineering Simple Problems
-**Mistake**: Using complex algorithms for simple problems
-**Correct**: Start simple, optimize if needed
-**Example**:
-```python
-# Wrong: Complex DP for simple problem
-def sum_array(arr):
-    dp = [0] * len(arr)
-    dp[0] = arr[0]
-    for i in range(1, len(arr)):
-        dp[i] = dp[i-1] + arr[i]
-    return dp[-1]
+| Edge case | Typical failure |
+|---|---|
+| Empty input | `max([])`, `arr[0]`, division by `len(arr)` raise |
+| One element | `arr[-2]`, `range(1, n)` loops never run |
+| Duplicates | `arr.index`, `set` conversion, strict `<` vs `<=` in binary search |
+| Negatives / zero | Sliding-window "shrink while sum > k" assumes non-negative values; product signs flip |
+| All equal | Partition-based quickselect degrades; rank ties |
+| Max constraints | O(n²) at n = 10⁵ is 10¹⁰ operations — too slow |
 
-# Correct: Simple solution
-def sum_array(arr):
-    return sum(arr)
-```
+## Choosing the algorithm from constraints
 
-## 🔢 Mathematical Mistakes
+Use the [constraint-size cheat sheet](/pattern/decision-map#9-constraint-size-cheat-sheet). One Python-specific adjustment: CPython runs roughly 10⁷ simple operations per second, about 10× fewer than C++, so an O(n²) solution at n = 10⁴ (10⁸ steps) is already too slow.
 
-### ❌ Division by Zero
-**Mistake**: Not checking for division by zero
-**Correct**: Always check denominator
-**Example**:
-```python
-# Wrong: Division by zero
-def average(arr):
-    return sum(arr) / len(arr)
+## Checklist
 
-# Correct: Check for empty array
-def average(arr):
-    if not arr:
-        return 0
-    return sum(arr) / len(arr)
-```
+1. **Before coding:** restate the problem, read constraints, list edge cases, state the target complexity.
+2. **While coding:** keep every inner-loop operation O(1); use indices instead of slices.
+3. **After coding:** dry-run one normal case and two edge cases out loud; re-state time and space.
 
-### ❌ Floating Point Precision
-**Mistake**: Using floating point for exact comparisons
-**Correct**: Use integer arithmetic when possible
-**Example**:
-```python
-# Wrong: Floating point comparison
-def is_equal(a, b):
-    return abs(a - b) < 1e-9
-
-# Correct: Integer comparison
-def is_equal(a, b):
-    return a == b
-```
-
-### ❌ Modulo with Negative Numbers
-**Mistake**: Incorrect modulo with negative numbers
-**Correct**: Handle negative numbers properly
-**Example**:
-```python
-# Wrong: Incorrect for negative numbers
-def mod(a, m):
-    return a % m
-
-# Correct: Handle negatives
-def mod(a, m):
-    return ((a % m) + m) % m
-```
-
-## 🎯 Prevention Strategies
-
-### 📋 Before Coding
-1. **Read constraints carefully**
-2. **Identify edge cases**
-3. **Choose appropriate algorithm**
-4. **Plan implementation steps**
-
-### 📋 During Coding
-1. **Check bounds and edge cases**
-2. **Use appropriate data types**
-3. **Test with small examples**
-4. **Verify time complexity**
-
-### 📋 After Coding
-1. **Test with edge cases**
-2. **Check for overflow**
-3. **Verify correctness**
-4. **Optimize if needed**
-
-## 🚀 Best Practices
-
-### ✅ Always Do
-- Check input constraints
-- Handle edge cases
-- Use appropriate data types
-- Test with examples
-- Verify time complexity
-
-### ❌ Never Do
-- Assume input is valid
-- Ignore edge cases
-- Use wrong data types
-- Skip testing
-- Ignore time complexity
-
-## 📊 Common Complexity Mistakes
-
-### ⏰ Time Complexity
-- **Nested loops**: O(n²) not O(n)
-- **String operations**: O(n) not O(1)
-- **List operations**: O(n) not O(1)
-- **Sorting**: O(n log n) not O(n)
-
-### 💾 Space Complexity
-- **Recursion**: O(depth) not O(1)
-- **Large arrays**: O(n²) not O(n)
-- **String building**: O(n²) not O(n)
-- **Hash maps**: O(n) not O(1)
+See also: [Code Templates](/quick_reference/code_templates) and the [pattern decision map](/pattern/decision-map).

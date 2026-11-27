@@ -1476,6 +1476,8 @@ def trap_two_pointers(height):
 ```python
 def trap_prefix(height):
     n = len(height)
+    if n == 0:
+        return 0
     left_max = [0] * n
     right_max = [0] * n
 

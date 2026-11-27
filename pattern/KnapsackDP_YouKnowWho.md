@@ -17,6 +17,14 @@ Every true-knapsack problem below is tagged `[multiplicity · index]`. The last 
 
 ---
 
+## Recognize when
+
+- You pick a **subset of items** under a **budget** (weight, cost, time, count) and maximise/minimise a value or count the ways → knapsack.
+- "Can we reach sum S?" / "split into two equal halves" → subset-sum feasibility (boolean knapsack).
+- "Number of ways to make amount" → counting knapsack; *order matters* → loop target outside, items inside.
+- Capacity is huge (10⁹) but total value is small → index the DP by value instead.
+- **Not knapsack** when items interact (adjacency, ordering constraints) — that is interval or sequence DP.
+
 ## Knapsack-Variant Map
 
 | § | Knapsack variant | Signature | Problems |

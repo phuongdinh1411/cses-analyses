@@ -311,7 +311,7 @@ def floyd_warshall(n, edges):
         dist[i][i] = 0
 
     for u, v, w in edges:
-        dist[u][v] = w
+        dist[u][v] = min(dist[u][v], w)  # keep the cheapest parallel edge
 
     for k in range(n):
         for i in range(n):
@@ -822,6 +822,8 @@ def mod_inv(a, mod=MOD):
 ```python
 def sieve(n):
     """Return list of primes up to n."""
+    if n < 2:
+        return []
     is_prime = [True] * (n + 1)
     is_prime[0] = is_prime[1] = False
 

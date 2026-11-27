@@ -8,6 +8,8 @@ permalink: /quick_reference/study_guide
 
 A comprehensive guide covering learning paths, pattern recognition, and interview preparation.
 
+> The phases below are a long-term (36-week) DSA path. For a fixed interview date, follow the [unified 8-week schedule](/worldquant/worldquant_study_plan#unified-8-week-schedule) instead and use this page as a reference.
+
 ## Learning Path
 
 ```
@@ -60,20 +62,7 @@ Phase 4: Advanced (Weeks 25-36)
 
 ## Pattern Recognition
 
-### By Input Type
-
-| Input | Think | Algorithm |
-|-------|-------|-----------|
-| Sorted array | Binary search | `bisect_left/right` |
-| Unsorted array + pairs | Hash map | `dict/set` |
-| Subarray/substring | Sliding window | Two pointers |
-| Next greater/smaller | Monotonic stack | Stack |
-| Shortest path (unweighted) | BFS | `deque` |
-| Shortest path (weighted) | Dijkstra | `heapq` |
-| All pairs shortest | Floyd-Warshall | 3 nested loops |
-| Connected components | DFS/Union-Find | `find/union` |
-| Count ways/optimize | DP | `dp[i] = ...` |
-| Dependencies/ordering | Topological Sort | Kahn's algorithm |
+For "what I see → which technique", use the [Decision Map master router](/pattern/decision-map#1-master-router).
 
 ### By Keywords
 
@@ -92,15 +81,7 @@ Phase 4: Advanced (Weeks 25-36)
 
 ### By Constraints
 
-| Constraint | Max Complexity | Suitable Algorithms |
-|------------|----------------|---------------------|
-| n <= 10 | O(n!) | Brute force, permutations |
-| n <= 20 | O(2^n) | Bitmask DP, backtracking |
-| n <= 500 | O(n^3) | Floyd-Warshall, interval DP |
-| n <= 5000 | O(n^2) | Simple DP, nested loops |
-| n <= 10^5 | O(n log n) | Sorting, segment tree |
-| n <= 10^6 | O(n) | Linear scan, two pointers |
-| n <= 10^9 | O(log n) | Binary search, math formula |
+See the [constraint-size cheat sheet](/pattern/decision-map#9-constraint-size-cheat-sheet) (n ≤ 20 → 2ⁿ, n ≤ 5000 → n², n ≤ 10⁵ → n log n, n ≤ 10⁶ → n, larger → log n or a formula).
 
 ---
 

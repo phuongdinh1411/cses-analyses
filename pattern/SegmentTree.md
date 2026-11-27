@@ -10,6 +10,14 @@ A segment tree answers **range queries** and applies **updates** on an array in 
 
 ---
 
+## Recognize when
+
+- **Mixed range queries and updates** on an array: "update index i, then query sum/min/max/gcd on [l, r]", repeated up to 10⁵ times.
+- **Range updates + range queries** ("add x to [l, r]", "set [l, r] to x") → lazy propagation.
+- "Find the first index where the prefix sum reaches k" or "k-th one" → descend the tree.
+- Counting smaller/larger elements seen so far (inversions, "count of smaller numbers after self") → segment tree or BIT over compressed values.
+- **Prefer a simpler tool** when there are no updates (prefix sums / sparse table) or the operation is invertible and you only need prefix sums (Fenwick tree).
+
 ## Quick Navigation: "I need to..."
 
 | I need to... | Technique | Section |

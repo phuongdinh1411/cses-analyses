@@ -77,6 +77,7 @@ Before reaching for a sort, ask:
 ### Template
 
 ```python
+# fragment: body of a solve() function
 # Exchange argument sort → greedy sweep
 items.sort(key=lambda x: exchange_key(x))   # proven order
 result = 0

@@ -38,6 +38,9 @@ permalink: /quick_reference/hedge_fund_swe_interviews
 **HQ:** Old Greenwich, CT (+ global offices: Bucharest, Singapore, Mumbai, etc.)
 
 #### Interview Process
+
+> Candidate reports differ by office and year. Older Glassdoor reports describe an online test covering **Linux/Unix + SQL + one language** instead of a pure coding OA (see the [WorldQuant prep page](/worldquant/worldquant_senior_swe_prep)). Ask your recruiter which format applies and prepare for both.
+
 1. **Online Assessment (OA)** — 2–3 coding problems on HackerRank, ~90 min. LC Medium level.
 2. **Technical Phone Screen** — 1 coding problem + discussion of past projects (~45–60 min).
 3. **On-site / Virtual On-site** — 3–4 rounds:
@@ -69,7 +72,7 @@ permalink: /quick_reference/hedge_fund_swe_interviews
 #### Tips
 - WorldQuant values clean, production-quality code. Don't just write "interview code" — think about edge cases, error handling.
 - Research roles overlap with SWE roles; expect some statistical intuition questions if applying to Research Engineer.
-- Global offices (especially Eastern Europe/Asia) often have slightly different pipelines; the Bucharest office is known for more algorithmic depth.
+- Global offices (Eastern Europe, Asia) may run different pipelines; confirm the round structure with your recruiter.
 
 ---
 
