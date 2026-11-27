@@ -214,11 +214,7 @@ Index:      0     1     2     3     4
 Prefix:  0    2    6    7    9    16
          ^              ^
          |              |
-         +-- diff = 7 --+  (subarray [2,4,1])
-
-         ^                   ^
-         |                   |
-         +---- diff = 9 ----+  ... wait, that's not 7
+         +-- diff = 7 --+  (subarray [2,4,1], since 7-0=7)
 
               ^         ^
               |         |

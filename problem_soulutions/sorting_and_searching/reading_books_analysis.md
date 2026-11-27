@@ -181,16 +181,6 @@ Output: 16
 Books: [2, 8, 3], Total = 13, Max = 8
 
 Optimal Schedule:
-Time:     0         5    8         13        16
-          |---------|----|---------|---------|----|
-Person A: |----8----|    |   2     |    3    |
-Person B: |  2 | 3  |    |--------8----------|
-
-Time 0-5:   A reads book "8", B reads "2" then "3"
-Time 5-8:   A reads "2" (2 units) + "3" (1 unit), B starts "8"
-            Wait, that doesn't quite work...
-
-Better visualization:
 Time:     0              8              16
 Person A: |------8-------|--2--|---3----|
 Person B: |--2--|---3----|------8-------|

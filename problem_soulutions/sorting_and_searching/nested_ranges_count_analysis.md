@@ -176,143 +176,55 @@ Compressed:    [3, 1, 2, 4] (1-indexed positions)
 
 ### Algorithm
 
-**For "contains" count:**
-1. Sort ranges by (start ASC, end DESC) with original indices
-2. Process in order; for each range:
-   - Query BIT: how many ends <= current end? (these ranges are contained by current)
-   - Update BIT: add current end
-3. Handle ties (same start) carefully
+**For "contained_by" (how many ranges contain me):**
+1. Sort by (start ASC, end DESC). Everything processed before a range starts at or before it; on equal starts, the longer range comes first.
+2. For each range: `contained_by = (ends seen so far) - (ends seen that are < my end)`, i.e. previously seen ends ≥ my end.
+3. Add my end to the BIT.
 
-**For "contained_by" count:**
-1. Sort ranges by (start DESC, end ASC)
-2. Similar logic but reversed
+**For "contains" (how many ranges I contain):**
+1. Sort by (start DESC, end ASC). Everything processed before a range starts at or after it; on equal starts, the shorter range comes first.
+2. For each range: `contains = (ends seen so far that are ≤ my end)`.
+3. Add my end to the BIT.
+
+Both passes rely on ranges being distinct, which CSES guarantees.
 
 ### Dry Run Example
 
-Let's trace through with ranges: `[1,6], [2,4], [3,5], [7,8]`
+Ranges `[1,6], [2,4], [3,5], [7,8]`. Compress ends: `4→1, 5→2, 6→3, 8→4`.
 
-**Step 1: Coordinate Compression**
-```
-All end values: [6, 4, 5, 8]
-Sorted unique:  [4, 5, 6, 8]
-Mapping: 4->1, 5->2, 6->3, 8->4
-
-Compressed ranges:
-  [1,6] idx=0 -> end compressed = 3
-  [2,4] idx=1 -> end compressed = 1
-  [3,5] idx=2 -> end compressed = 2
-  [7,8] idx=3 -> end compressed = 4
-```
-
-**Step 2: Sort for "contains" (start ASC, end DESC)**
-```
-Sorted order: [1,6], [2,4], [3,5], [7,8]
-              idx=0   idx=1   idx=2   idx=3
-```
-
-**Step 3: Process with BIT for "contains"**
-```
-BIT initially: [0, 0, 0, 0, 0] (1-indexed)
-
-Process [1,6] (compressed end = 3):
-  Query(3) = 0 (no ends <= 3 seen yet)
-  contains[0] = 0
-  Update BIT at position 3: BIT adds 1
-  BIT: [0, 0, 0, 1, 0]
-
-Process [2,4] (compressed end = 1):
-  Query(1) = 0
-  contains[1] = 0
-  Update BIT at position 1
-  BIT: [0, 1, 0, 1, 0]
-
-Process [3,5] (compressed end = 2):
-  Query(2) = 1 (position 1 has value)
-  But wait - [2,4] has start=2, [3,5] has start=3
-  So [3,5] does NOT contain [2,4] (3 > 2)
-  contains[2] = 0
-  Update BIT at position 2
-
-Process [7,8] (compressed end = 4):
-  Query(4) = 3 (all previous ends)
-  But [7,8] doesn't contain any (starts 1,2,3 < 7)
-  contains[3] = 0
-```
-
-Wait - our dry run shows we need to be more careful. Let me correct the algorithm:
-
-**Corrected Algorithm for "contains":**
-- Sort by (start ASC, end DESC)
-- When processing range with start=s, ranges with SAME start and LARGER end come first
-- These larger-end ranges contain the current one
-- We need to count ranges that current range contains = ranges with start >= current.start AND end <= current.end
-
-Actually, let me re-approach. For "contains":
-- Sort by (end ASC, start DESC)
-- Process in order. For range [a,b], count ranges with start > a that we've seen
-
-**Revised Dry Run:**
+**Pass 1 — contained_by, order (start ASC, end DESC): [1,6], [2,4], [3,5], [7,8]**
 
 ```
-For counting how many ranges each range CONTAINS:
-
-Sort by (start ASC, end DESC):
-  [1,6], [2,4], [3,5], [7,8]
-
-BIT tracks: ends of ranges we've processed (with smaller or equal start)
-
-Process [1,6]:
-  BIT empty, contains[0] += 0
-  Add end=6 to BIT
-
-Process [2,4]:
-  Query: ends <= 4? We have [6], so 0 ends <= 4
-  contains[1] += 0
-  Add end=4 to BIT
-
-Process [3,5]:
-  Query: ends <= 5? We have [6,4], one end (4) <= 5
-  contains[2] += 1? NO! [3,5] doesn't contain [2,4] since 2 < 3
-  ...this approach counts [2,4] wrongly
+[1,6] end→3: seen=0, ends<6: 0  → contained_by=0; add 3
+[2,4] end→1: seen=1, ends<4: 0  → contained_by=1 ([1,6]); add 1
+[3,5] end→2: seen=2, ends<5: 1  → contained_by=1 ([1,6]); add 2
+[7,8] end→4: seen=3, ends<8: 3  → contained_by=0; add 4
 ```
 
-The key insight is: we need to count ranges where start >= current.start AND end <= current.end. Let me use the correct approach:
+**Pass 2 — contains, order (start DESC, end ASC): [7,8], [3,5], [2,4], [1,6]**
 
-**Correct Approach:**
-1. For "contains": Sort by (start ASC, end DESC). Process ranges. When ranges have same start, larger end should process FIRST (it might contain smaller ends). Use BIT to count ends.
-2. For "contained_by": Sort by (start DESC, end ASC). Similar logic reversed.
+```
+[7,8] end→4: ends≤8 seen: 0 → contains=0; add 4
+[3,5] end→2: ends≤5 seen: 0 → contains=0; add 2   (8 > 5)
+[2,4] end→1: ends≤4 seen: 0 → contains=0; add 1   (8, 5 > 4)
+[1,6] end→3: ends≤6 seen: 2 → contains=2 ([3,5], [2,4]); add 3
+```
+
+Result: contains = `2 0 0 0`, contained_by = `0 1 1 0` ✅
 
 ### Visual Diagram
 
 ```
-Ranges on number line:
    1   2   3   4   5   6   7   8
-   [===============]              [1,6] contains [2,4] and [3,5]
-       [=====]                    [2,4]
-           [=====]                [3,5]
-                       [===]      [7,8]
-
-After sorting by (start ASC, end DESC):
-  [1,6] -> [2,4] -> [3,5] -> [7,8]
-
-BIT counts ends seen so far:
-  At [1,6]: no ends seen, contains = 0
-  At [2,4]: end 6 seen but 6 > 4, contains = 0
-  At [3,5]: ends [6,4] seen, 4 <= 5, but [2,4] has start=2 < 3
-            Need to track that [1,6] doesn't apply (start 1 < 2)
-
-Key: When starts differ, we CAN'T use simple prefix count!
-     When start is same, end DESC means bigger end processes first.
+   [=====================]          [1,6] contains [2,4] and [3,5]
+       [=========]                  [2,4]
+           [=========]              [3,5]
+                           [===]    [7,8]
 ```
 
 ### Handling Equal Starts
 
-For ranges with **equal start**, the one with **larger end** contains the smaller ones:
-- Sort by (start ASC, end DESC)
-- Ranges with same start: larger end comes first
-- It counts smaller ends as "contained"
-
-For ranges with **different starts**, we process in start order and use BIT on ends.
+The tie-breaks make equal starts work: in pass 1 the longer range is processed first, so it is "seen" when the shorter one asks who contains it; in pass 2 the shorter range is processed first, so it is "seen" when the longer one counts what it contains.
 
 ### Code
 
