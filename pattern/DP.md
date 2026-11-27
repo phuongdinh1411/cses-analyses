@@ -40,6 +40,7 @@ The memo caches 6 distinct subproblems `fib(0)..fib(5)` and computes each once, 
 | I need to... | Family | Section |
 |--------------|--------|---------|
 | **Recognize the right state** — prefix vs ending-at vs interval vs budget | State Design | [1b](#1b-state-recognition--design) |
+| **Reduce 2D → 1D** or drop space without changing time | Space Opt. | [2b](#2b-space-optimization) |
 | Choose take-or-skip along a **line** (rob houses, climb stairs) | Linear | [3](#3-linear-dp) |
 | Walk a **grid** moving only right/down; count paths or min cost | Grid | [4](#4-grid-dp) |
 | Fill a **capacity/target** with items (subset sum, coin change) | Knapsack | [5](#5-knapsack-family) |
@@ -146,21 +147,22 @@ One canonical LeetCode problem per family — the walkthrough for each lives in 
 1. [How to Approach DP Problems](#1-how-to-approach-dp-problems)
 2. [State Recognition & Design](#1b-state-recognition--design)
 3. [Top-Down vs Bottom-Up](#2-top-down-vs-bottom-up)
-4. [Linear DP](#3-linear-dp)
-5. [Grid DP](#4-grid-dp)
-6. [Knapsack Family](#5-knapsack-family)
-7. [Longest Increasing Subsequence](#6-longest-increasing-subsequence)
-8. [Longest Common Subsequence](#7-longest-common-subsequence)
-9. [Interval DP](#8-interval-dp)
-10. [State Machine DP](#9-state-machine-dp)
-11. [Tree DP](#10-tree-dp)
-12. [Bitmask DP](#11-bitmask-dp)
-13. [Digit DP](#12-digit-dp)
-14. [Probability / Expected Value DP](#13-probability--expected-value-dp)
-15. [DP on DAGs](#14-dp-on-dags)
-16. [DP Optimizations](#15-dp-optimizations)
-17. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
-18. [Practice Order](#17-practice-order)
+4. [Space Optimization](#2b-space-optimization)
+5. [Linear DP](#3-linear-dp)
+6. [Grid DP](#4-grid-dp)
+7. [Knapsack Family](#5-knapsack-family)
+8. [Longest Increasing Subsequence](#6-longest-increasing-subsequence)
+9. [Longest Common Subsequence](#7-longest-common-subsequence)
+10. [Interval DP](#8-interval-dp)
+11. [State Machine DP](#9-state-machine-dp)
+12. [Tree DP](#10-tree-dp)
+13. [Bitmask DP](#11-bitmask-dp)
+14. [Digit DP](#12-digit-dp)
+15. [Probability / Expected Value DP](#13-probability--expected-value-dp)
+16. [DP on DAGs](#14-dp-on-dags)
+17. [DP Optimizations](#15-dp-optimizations)
+18. [Pattern Recognition Cheat Sheet](#16-pattern-recognition-cheat-sheet)
+19. [Practice Order](#17-practice-order)
 
 ---
 
@@ -496,6 +498,317 @@ a, b = 0, 1
 for _ in range(2, n + 1):
     a, b = b, a + b
 ```
+
+---
+
+## 2b. Space Optimization
+
+Space optimization is the most common DP interview follow-up: *"Can you do it in less memory?"*
+It never changes time complexity — it only discards states you no longer need.
+
+### The One Rule That Governs Everything
+
+> **You only need to keep states that future transitions still read.
+> Once a state can never be read again, discard it.**
+
+The question to ask after writing any DP: *"Which previous states does `dp[i]` actually read?"*
+If the answer is a bounded window (last 1 row, last 2 values, last k entries), you can shrink.
+
+---
+
+### Technique 1 — Rolling Variables (1D → O(1))
+
+**When**: `dp[i]` depends only on `dp[i-1]` (and maybe `dp[i-2]`).
+
+```
+Fibonacci / Climbing Stairs:
+  dp[i] = dp[i-1] + dp[i-2]
+
+  Before:  array dp[0..n]            O(N) space
+  After:   two variables a, b        O(1) space
+```
+
+```python
+# Before
+dp = [0] * (n + 1)
+dp[0], dp[1] = 0, 1
+for i in range(2, n + 1):
+    dp[i] = dp[i-1] + dp[i-2]
+return dp[n]
+
+# After — rolling two variables
+a, b = 0, 1
+for _ in range(2, n + 1):
+    a, b = b, a + b     # tuple assignment: both sides read OLD values first
+return b
+```
+
+`★ Insight ─────────────────────────────────────`
+The tuple assignment `a, b = b, a + b` is not cosmetic — it evaluates the **entire right side** before assigning anything. Writing it as two lines `a = b; b = a + b` silently uses the already-updated `a`, producing wrong results. This is the #1 rolling-variable bug.
+`─────────────────────────────────────────────────`
+
+**Works for**: Fibonacci, Climbing Stairs, House Robber (window of 2), any linear recurrence with a fixed look-back.
+
+---
+
+### Technique 2 — Rolling Row (2D → O(N))
+
+**When**: `dp[i][j]` depends only on cells in row `i-1` (the row directly above).
+
+```
+Grid DP (Minimum Path Sum, Unique Paths):
+  dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])
+                                ↑ row above    ↑ same row, left
+
+  Before:  2D array dp[m][n]         O(MN) space
+  After:   single 1D array dp[n]     O(N) space
+           (reuse it row-by-row)
+```
+
+```python
+# Before — 2D
+dp = [[0]*n for _ in range(m)]
+for i in range(m):
+    for j in range(n):
+        dp[i][j] = grid[i][j] + min(
+            dp[i-1][j] if i > 0 else INF,
+            dp[i][j-1] if j > 0 else INF
+        )
+
+# After — rolling single row
+dp = [INF] * n
+dp[0] = grid[0][0]
+for j in range(1, n):
+    dp[j] = dp[j-1] + grid[0][j]       # seed first row
+for i in range(1, m):
+    dp[0] += grid[i][0]                 # seed first column
+    for j in range(1, n):
+        dp[j] = grid[i][j] + min(dp[j],     # dp[j] still holds row i-1 value → "up"
+                                  dp[j-1])   # dp[j-1] already updated this row → "left"
+```
+
+**Why it works**: when processing cell `(i, j)` left-to-right:
+- `dp[j]` hasn't been updated yet this row → still holds the `i-1` value → serves as "up"
+- `dp[j-1]` was just updated → already holds the `i` value → serves as "left"
+
+One 1D array simultaneously stores the previous row (at positions not yet reached) and the current row (at positions already processed).
+
+**Works for**: Minimum Path Sum, Unique Paths, Unique Paths II, any grid DP where movement is right/down only.
+
+---
+
+### Technique 3 — Knapsack Flattening (direction is everything)
+
+**When**: 2D knapsack `dp[i][w]` → 1D `dp[w]`.
+
+This is the trickiest reduction. The correct **loop direction** decides whether items are reused or not:
+
+```
+2D original:
+  dp[i][w] = max(dp[i-1][w],                   skip item i
+                 dp[i-1][w - weight[i]] + val)   take item i (reads i-1 row)
+
+1D flattened:
+  dp[w]    = max(dp[w],                          skip
+                 dp[w - weight[i]] + val)          take (reads... which row?)
+                      ↑
+              THIS DEPENDS ON LOOP DIRECTION
+```
+
+#### Reverse loop → 0/1 knapsack (each item used once)
+
+```python
+for item in items:
+    for w in range(W, weight[item] - 1, -1):   # RIGHT TO LEFT
+        dp[w] = max(dp[w], dp[w - weight[item]] + val[item])
+```
+
+Why it's correct: when processing `dp[w]`, we read `dp[w - weight[item]]`. Since we iterate **right-to-left**, `dp[w - weight[item]]` is at a *smaller index* — it hasn't been touched yet this iteration. It still holds the value from the **previous item's** pass. Item used at most once. ✓
+
+#### Forward loop → unbounded knapsack (item reused freely)
+
+```python
+for item in items:
+    for w in range(weight[item], W + 1):       # LEFT TO RIGHT
+        dp[w] = max(dp[w], dp[w - weight[item]] + val[item])
+```
+
+Why it's correct: when processing `dp[w]`, we read `dp[w - weight[item]]`. Since we iterate **left-to-right**, that cell was *already updated this pass* — it already includes the current item. Item can be reused. ✓
+
+#### The mental picture
+
+```
+0/1 (reverse):       w=W ... w=3  w=2  w=1
+                                    ^
+                     reading here ──┘ hasn't been touched yet
+                     → sees last-item's row → item used once
+
+Unbounded (forward): w=1  w=2  w=3 ... w=W
+                           ^
+                     already updated ──┘
+                     → item already counted → reused freely
+```
+
+`★ Insight ─────────────────────────────────────`
+One character separates 0/1 from unbounded knapsack: the loop direction. There is no error message when you get it wrong — the wrong code produces a plausible number. The mnemonic: **Reverse = Restrict** (one use per item).
+`─────────────────────────────────────────────────`
+
+**Works for**: Subset Sum (0/1), Partition Equal Subset Sum, Coin Change (unbounded), any knapsack-family problem.
+
+---
+
+### Technique 4 — Diagonal Save (LCS / Edit Distance)
+
+**When**: `dp[i][j]` depends on `dp[i-1][j]`, `dp[i][j-1]`, **and** `dp[i-1][j-1]` (the diagonal).
+
+The rolling-row trick nearly works, but there's a problem: when you're about to write `dp[j]`, the old `dp[j]` (which was `dp[i-1][j]`, needed as "up") is about to be overwritten — and you also need `dp[i-1][j-1]` (diagonal), which was stored at `dp[j-1]` before the current row updated it.
+
+```python
+# Before — 2D LCS
+dp = [[0]*(n+1) for _ in range(m+1)]
+for i in range(1, m+1):
+    for j in range(1, n+1):
+        if s1[i-1] == s2[j-1]:
+            dp[i][j] = dp[i-1][j-1] + 1
+        else:
+            dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+
+# After — 1D with diagonal save
+dp = [0] * (n + 1)
+for i in range(1, m + 1):
+    prev_diag = 0           # tracks dp[i-1][j-1]
+    for j in range(1, n + 1):
+        old = dp[j]         # save dp[i-1][j] BEFORE we overwrite it
+        if s1[i-1] == s2[j-1]:
+            dp[j] = prev_diag + 1
+        else:
+            dp[j] = max(dp[j],      # dp[i-1][j]  = old "up"  (not yet updated)
+                        dp[j-1])    # dp[i][j-1]  = new "left" (already updated)
+        prev_diag = old     # for next column: dp[i-1][j] becomes dp[i-1][(j+1)-1]
+```
+
+**The three cells at each step:**
+
+```
+row i-1:  ... [prev_diag] [dp[j]] ...
+                   ↑         ↑
+               diagonal     up (save as `old` before overwrite)
+row i:    ... [dp[j-1]]  [dp[j]] ...
+                   ↑         ↑
+               left (already new)  ← writing here
+```
+
+`★ Insight ─────────────────────────────────────`
+`prev_diag` slides one column behind `j` — it always holds `dp[i-1][j-1]` relative to the current `j`. The key is saving `old = dp[j]` *before* writing the new value, then promoting it to `prev_diag` for the next iteration.
+`─────────────────────────────────────────────────`
+
+**Works for**: LCS, Edit Distance, Shortest Common Supersequence, Longest Palindromic Subsequence (LCS of s and reverse(s)).
+
+---
+
+### Technique 5 — Simultaneous Update (State Machine)
+
+**When**: Multiple DP states each depend on the *previous step's* values of several other states.
+
+```
+State machine (e.g., Cooldown Stock):
+  rest[i] = max(rest[i-1], cool[i-1])
+  hold[i] = max(hold[i-1], rest[i-1] - price)
+  cool[i] = hold[i-1] + price
+
+  After flattening to three variables:
+  rest, hold, cool = max(rest, cool),
+                     max(hold, rest - price),
+                     hold + price
+```
+
+```python
+# WRONG — sequential update corrupts state
+rest = max(rest, cool)             # rest is now step i
+hold = max(hold, rest - price)     # BUG: reads step-i rest, not step-(i-1)
+cool = hold + price                # BUG: reads step-i hold
+
+# CORRECT — compute all new values before assigning any
+new_rest = max(rest, cool)
+new_hold = max(hold, rest - price) # still reads old rest
+new_cool = hold + price            # still reads old hold
+rest, hold, cool = new_rest, new_hold, new_cool
+
+# ALSO CORRECT — Python tuple unpacking does this automatically
+rest, hold, cool = (
+    max(rest, cool),
+    max(hold, rest - price),
+    hold + price
+)
+```
+
+`★ Insight ─────────────────────────────────────`
+The rule: **compute all new values from old values, then assign all at once.** Python's tuple assignment `a, b = expr_a, expr_b` evaluates both right-hand expressions first, then assigns — exploiting this is both idiomatic and correct. Sequential assignment is the classic state-machine DP bug.
+`─────────────────────────────────────────────────`
+
+**Works for**: Any state-machine DP with multiple interleaved states: stock problems with cooldown/fee, any finite automaton over a sequence.
+
+---
+
+### When You CANNOT Optimize Space
+
+Not everything reduces. These patterns genuinely need their full table:
+
+| Pattern | Why you can't reduce |
+|---------|---------------------|
+| **Interval DP** `dp[i][j]` | Reads arbitrary `dp[i][k]` and `dp[k+1][j]` — no bounded window |
+| **Bitmask DP** `dp[mask]` | Every subset is a unique state; all 2^N must coexist |
+| **Solution reconstruction** | Rolling array discards the path — keep the full table if you need the actual sequence, not just its length/cost |
+| **Tree DP with rerooting** | Needs `dp_down[]` and `dp_up[]` arrays simultaneously |
+
+**The reconstruction trade-off:**
+
+```
+LCS length:    O(N) space — 1D rolling row
+LCS string:    O(MN) space — need full 2D table to backtrack
+
+If the interview asks "return the length": optimize.
+If it asks "return the actual subsequence": keep the full table.
+Always clarify which one is needed before optimizing.
+```
+
+---
+
+### Decision Checklist
+
+```
+Before optimizing, ask:
+
+1. What does dp[i] (or dp[i][j]) depend on?
+   Only dp[i-1]?                → rolling 2 variables
+   dp[i-1] and dp[i-2]?         → rolling 3 variables
+   Only the previous row?        → rolling 1D array
+   Previous row + diagonal cell? → rolling 1D + prev_diag
+   Multiple interleaved states?  → simultaneous update
+   Arbitrary earlier rows/cols?  → cannot reduce
+
+2. Am I doing a knapsack-style flatten?
+   Each item used once?          → reverse inner loop
+   Item reusable?                → forward inner loop
+
+3. Do I need to reconstruct the solution?
+   YES → keep full table (or use Hirschberg's)
+   NO  → optimize freely
+```
+
+### Quick Reference Table
+
+| Pattern | Before | After | Technique |
+|---------|--------|-------|----------|
+| Linear recurrence (window 1) | O(N) | O(1) | 2 rolling variables |
+| Linear recurrence (window 2) | O(N) | O(1) | 3 rolling variables |
+| Grid DP (right/down moves) | O(MN) | O(N) | Rolling 1D row |
+| 0/1 Knapsack | O(NW) | O(W) | 1D array, **reverse** loop |
+| Unbounded Knapsack | O(NW) | O(W) | 1D array, **forward** loop |
+| LCS / Edit Distance | O(MN) | O(min(M,N)) | 1D row + `prev_diag` save |
+| State Machine (S states) | O(N·S) | O(S) | S variables, simultaneous update |
+| Interval DP | O(N²) | O(N²) | **Cannot reduce** |
+| Bitmask DP | O(2^N) | O(2^N) | **Cannot reduce** |
 
 ---
 
@@ -2216,94 +2529,22 @@ The memo is what turns exponential path enumeration into `O(R·C)`: each cell's 
 
 When the basic DP is too slow, apply these optimizations.
 
-### 15.0 Space Optimization Principles
+### 15.0 Space Optimization
 
-The most common DP optimization — reducing memory without changing time complexity. This is a **frequent interview follow-up**: "Can you do it in less space?"
+> Full treatment — all five techniques with worked examples — is in [§2b Space Optimization](#2b-space-optimization).
+> Quick-reference table reproduced here for completeness:
 
-#### The Core Rule
-
-> **If `dp[i]` only depends on a bounded window of previous states, you only need to keep that window in memory.**
-
-#### Decision Framework
-
-| Dependency pattern | Reduction | Technique |
-|-------------------|-----------|-----------|
-| `dp[i]` depends only on `dp[i-1]` | O(N) → O(1) | Two variables |
-| `dp[i]` depends on `dp[i-1]` and `dp[i-2]` | O(N) → O(1) | Three variables |
-| `dp[i][j]` depends on row `i-1` only | O(MN) → O(N) | Two rows or single row |
-| `dp[i][j]` depends on `dp[i-1][j-1]`, `dp[i-1][j]`, `dp[i][j-1]` | O(MN) → O(N) | Single row + saved diagonal |
-| `dp[i][j]` depends on any `dp[i][k]`, `dp[k][j]` | **Cannot reduce** | Need full table (interval DP) |
-| `dp[mask]` over subsets | **Cannot reduce** | Need full 2^N table |
-
-#### The Reverse-Iteration Trick (Critical for Knapsack)
-
-When flattening 2D → 1D, the **iteration direction** determines whether old or new values are read:
-
-```
-Forward iteration (left to right):
-  dp[w - weight[i]] reads the ALREADY-UPDATED value from THIS iteration
-  → item i can be reused → UNBOUNDED knapsack
-
-Reverse iteration (right to left):
-  dp[w - weight[i]] reads the NOT-YET-UPDATED value from PREVIOUS iteration
-  → item i used at most once → 0/1 knapsack
-
-Mnemonic: "Reverse = Restrict (to one use)"
-```
-
-#### The Diagonal-Save Trick (for LCS / Edit Distance)
-
-When a single-row DP depends on `dp[i-1][j-1]` (the diagonal), that value gets overwritten as you process column `j`. Save it before overwriting:
-
-```python
-prev_diag = 0
-for j in range(1, n + 1):
-    temp = dp[j]           # save dp[i-1][j] before overwrite
-    dp[j] = f(dp[j],       # dp[i-1][j]  (old value, still intact)
-              dp[j-1],      # dp[i][j-1]  (already updated this row)
-              prev_diag)    # dp[i-1][j-1] (saved from last iteration)
-    prev_diag = temp        # carry forward for next column
-```
-
-#### The Simultaneous-Update Rule (State Machine DP)
-
-When multiple states depend on each other at step `i-1`, update them **simultaneously** — otherwise you'll accidentally read a partially-updated current-step value:
-
-```python
-# WRONG: hold uses the just-updated rest value
-rest = max(rest, cool)
-hold = max(hold, rest - prices[i])  # bug: rest is already step i!
-
-# CORRECT: compute all new values, then assign
-new_rest = max(rest, cool)
-new_hold = max(hold, rest - prices[i])
-new_cool = hold + prices[i]
-rest, hold, cool = new_rest, new_hold, new_cool
-
-# ALSO CORRECT: Python tuple unpacking (idiomatic)
-rest, hold, cool = max(rest, cool), max(hold, rest - prices[i]), hold + prices[i]
-```
-
-#### When Space Optimization Isn't Possible
-
-- **Interval DP**: `dp[i][j]` depends on arbitrary sub-intervals — need full O(N^2) table
-- **Bitmask DP**: `dp[mask]` over all 2^N subsets — need full table
-- **When you need to reconstruct the solution**: Space optimization preserves the final answer but discards the path. To reconstruct, either keep the full table or use Hirschberg's divide-and-conquer trick (works for LCS in O(N) space)
-- **Tree DP with rerooting**: Needs full dp_down[] and dp_up[] arrays
-
-#### Space Optimization Summary by Pattern
-
-| Pattern | Original space | Optimized space | How |
-|---------|---------------|----------------|-----|
-| Fibonacci / Linear (window) | O(N) | O(1) | Rolling variables |
-| Grid DP | O(MN) | O(N) | Process row by row |
-| 0/1 Knapsack | O(NW) | O(W) | 1D array, **reverse** iteration |
-| Unbounded Knapsack | O(NW) | O(W) | 1D array, **forward** iteration |
-| LCS / Edit Distance | O(MN) | O(min(M,N)) | Single row + diagonal save |
-| State Machine DP | O(N × S) | O(S) | S variables, simultaneous update |
-| Interval DP | O(N^2) | O(N^2) | Cannot reduce |
+| Pattern | Before | After | Technique |
+|---------|--------|-------|-----------|
+| Linear recurrence (window 1) | O(N) | O(1) | 2 rolling variables |
+| Linear recurrence (window 2) | O(N) | O(1) | 3 rolling variables |
+| Grid DP (right/down only) | O(MN) | O(N) | Rolling 1D row |
+| 0/1 Knapsack | O(NW) | O(W) | 1D array, **reverse** loop |
+| Unbounded Knapsack | O(NW) | O(W) | 1D array, **forward** loop |
+| LCS / Edit Distance | O(MN) | O(min(M,N)) | 1D row + `prev_diag` save |
+| State Machine (S states) | O(N·S) | O(S) | S variables, simultaneous update |
+| Interval DP | O(N²) | O(N²) | Cannot reduce |
 | Bitmask DP | O(2^N) | O(2^N) | Cannot reduce |
-
 ### 15.1 Convex Hull Trick
 
 **When**: Transition has the form `dp[i] = min(dp[j] + b[j] * a[i])` where slopes `b[j]` are monotonic.
