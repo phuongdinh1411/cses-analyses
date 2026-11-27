@@ -187,22 +187,20 @@ Correctness is guaranteed since we traverse the actual tree path. However, with 
 ```
 Tree:               Entry/Exit times:
       1             Node 1: entry=0, exit=9
-     /|\            Node 2: entry=1, exit=2
-    2 3 4           Node 3: entry=3, exit=8
-     /|\            Node 4: entry=4, exit=5
-    5 6 7           ...
+     / \            Node 2: entry=1, exit=2
+    2   3           Node 3: entry=3, exit=8
+       / \          Node 4: entry=4, exit=5
+      4   5         Node 5: entry=6, exit=7
 
-Euler tour array (size 2n):
+Euler tour array (size 2n), +v at entry, -v at exit:
 Position: 0   1   2   3   4   5   6   7   8   9
 Event:   +1  +2  -2  +3  +4  -4  +5  -5  -3  -1
-         ^entry    ^entry      ^entry
-         1         3           5
 ```
 
-**For query on node 5:**
+**For query on node 5** (path 1 -> 3 -> 5), writing each value as its node number:
 - Entry time of node 5 = 6
-- Prefix sum [0..6] = +1 -2 +2 +3 +4 -4 +5 = 1 + 3 + 5 = 9
-- Wait, node 2 cancels out! Only ancestors remain!
+- Prefix sum [0..6] = +1 +2 -2 +3 +4 -4 +5 = 1 + 3 + 5 = 9
+- Nodes 2 and 4 were entered *and* exited before position 6, so they cancel. Only the ancestors 1 and 3, plus node 5 itself, remain.
 
 ### Why This Works
 

@@ -23,7 +23,7 @@ One row per problem: the technique, the one-line insight, and the time complexit
 | [Digit Queries](digit_queries_analysis) | Digit Counting by Range | Group numbers by digit length, skip entire groups, then pinpoint the exact number and digit | O(log k) |
 | [Gray Code](gray_code_analysis) | XOR Formula / Recursive Construction | Gray code for integer i is simply `i ^ (i >> 1)` | O(2^n * n) |
 | [Grid Coloring I](grid_coloring_i_analysis) | Backtracking with Constraint Checking | Check constraints immediately when placing a color | O(k^(n^2)) |
-| [Grid Paths](grid_path_description_analysis) | Backtracking with Aggressive Pruning | Prune paths that cannot possibly visit all remaining cells | ~O(exponential, heavily pruned) |
+| [Grid Paths](grid_path_description_analysis) | Backtracking with Aggressive Pruning | Prune paths that cannot possibly visit all remaining cells | Exponential, heavily pruned |
 | [Increasing Array](increasing_array_analysis) | Greedy, Single Pass | Instead of modifying the array, track the running maximum | O(n) |
 | [Knight Moves Grid](knight_moves_grid_analysis) | Breadth-First Search | BFS explores all positions at distance k before any position at distance k+1, guaranteeing the first path found to target is shortest | O(n^2) |
 | [MEX Grid Construction](mex_grid_construction_analysis) | Constraint Satisfaction + MEX Properties | If m <= n, place {0, 1, ..., m-1} in each row and fill remaining cells with values > m | O(n^2) |

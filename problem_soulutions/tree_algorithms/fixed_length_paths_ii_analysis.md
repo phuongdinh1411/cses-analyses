@@ -224,6 +224,7 @@ def solve(n, k1, k2, edges):
     get_size(u, -1)
     c = get_centroid(u, -1, size[u])
     removed[c] = True
+    bit_update(0, 1)  # the centroid itself: depth 0
 
     max_d = 0
     for v in adj[c]:

@@ -171,8 +171,7 @@ Moving to Node 2:
   answer[2] = dist_sum_down[2] + (contribution_from_1 + 4)
             = 0 + (5 + 4) = 9
 
-  Verify: From node 2, distances are: 1->1, 1->3, 2->4, 2->5, 3->... wait
-  Actually: d(2,1)=1, d(2,3)=2, d(2,4)=3, d(2,5)=3 => 1+2+3+3 = 9 [Correct!]
+  Verify: d(2,1)=1, d(2,3)=2, d(2,4)=3, d(2,5)=3 => 1+2+3+3 = 9 [Correct!]
 
 Moving to Node 3:
   Nodes outside subtree of 3: {1, 2} = 2 nodes
