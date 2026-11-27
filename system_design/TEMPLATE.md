@@ -1,7 +1,6 @@
 ---
 layout: simple
 title: "Design [System Name]"
-permalink: /system_design/design-[system-name]
 ---
 
 # Design [System Name]

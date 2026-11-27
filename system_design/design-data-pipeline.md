@@ -32,6 +32,7 @@ A data pipeline moves, transforms, and delivers data from sources to consumers r
 18. [Cost Optimization](#cost-optimization)
 19. [Trade-offs](#trade-offs)
 20. [Interview Follow-ups](#interview-follow-ups)
+21. [Key Takeaways](#key-takeaways)
 
 ---
 
@@ -51,8 +52,8 @@ A data pipeline moves, transforms, and delivers data from sources to consumers r
 
 | Requirement | Target |
 |-------------|--------|
-| **Reliability** | Exactly-once or at-least-once delivery with idempotent loads |
-| **Latency** | Batch: minutes to hours; Streaming: < 1 second end-to-end |
+| **Reliability** | Effectively-once results: at-least-once delivery + idempotent loads, or transactional sinks |
+| **Latency** | Batch: minutes to hours; Streaming: < 1 second end-to-end with idempotent sinks (transactional sinks add up to one checkpoint interval) |
 | **Throughput** | 1M+ events/sec streaming; TB/day batch |
 | **Fault tolerance** | Auto-retry with backoff; partial failure isolation; no silent data loss |
 | **Data quality** | Schema validation, null checks, range checks, freshness checks |
@@ -216,7 +217,7 @@ extract → validate → transform → load_staging → quality_check → promot
 | **UPSERT (ON CONFLICT)** | Insert or update atomically by primary key | Low-volume, row-level uniqueness |
 | **DELETE + INSERT** | Delete all rows for the partition, re-insert | Simple; holds brief locks |
 | **Staging table swap** | Load into temp table; `ALTER TABLE … RENAME` | Zero-downtime large loads |
-| **Partition swap** | Drop old partition; attach new one atomically | Huge tables; instant, lock-free |
+| **Partition swap** | Drop old partition; attach new one atomically | Huge tables; atomic metadata-only commit (brief metadata lock, no data copy) |
 | **Write-once partitions** | Partition by `date`; never overwrite a closed partition | Append-only warehouses (Redshift, BigQuery) |
 
 ### Backfill strategy
@@ -308,7 +309,7 @@ Late events beyond watermark — three options:
 |-----------|-----|------|
 | **At-most-once** | No retry on failure | Data loss on crash |
 | **At-least-once** | Retry + idempotent sink | Duplicates possible |
-| **Exactly-once** | Transactions or 2-phase commit | Higher latency/complexity |
+| **Exactly-once** | Kafka transactions or a Flink sink that commits on checkpoint (2PC) | Adds checkpoint latency; other side effects still need idempotency |
 
 ### Kafka transactions (producer side)
 
@@ -328,15 +329,26 @@ Consumers must use:
 ### Flink exactly-once (2-phase commit sink)
 
 ```
-Checkpoint N:
-  1. Flink snapshots operator state to S3  (checkpoint barrier)
-  2. Kafka sink starts a transaction
-  3. Writes buffered records to Kafka (pre-commit phase)
-  4. On barrier complete → commit Kafka transaction
-  5. If crash before commit → transaction aborted; replay from checkpoint N-1
+KafkaSink with DeliveryGuarantee.EXACTLY_ONCE, per checkpoint interval:
+  1. A Kafka transaction is open for the whole interval; records are written
+     into it as they arrive
+  2. Barrier N reaches the sink → flush + pre-commit that transaction, record
+     its id in checkpoint N's state, open a new transaction for the next interval
+  3. Checkpoint N completes on every operator → notifyCheckpointComplete → commit
+  4. Crash before N completes → the open transactions are aborted; restore from
+     N-1 and replay from N-1's source offsets
+  5. Crash after N completes but before the commit → restore from N and
+     re-commit; aborting would lose those records (N's offsets are past them)
 
-Result: each record visible in the sink exactly once to read_committed
-        consumers (requires a transactional sink), even if Flink restarts.
+Costs:
+  - read_committed consumers see a record only after step 3 → up to one
+    checkpoint interval (+ checkpoint duration) of extra latency
+  - transaction.timeout.ms must exceed checkpoint interval + checkpoint duration
+    + restart time, and be ≤ the broker's transaction.max.timeout.ms (default
+    15 min); otherwise the broker aborts a pre-committed transaction → data loss
+
+Result: read_committed consumers see each record once, even across Flink
+        restarts. Writes to non-transactional systems are not covered.
 ```
 
 ### At-least-once + idempotent sink (practical alternative)
@@ -361,20 +373,21 @@ Re-processing the same event → conflict → safely ignored
 
 Schema changes (new fields, renamed fields, type changes) happen constantly. Pipelines must handle them **without coordinated downtime across producers and consumers**.
 
-### Avro / Protobuf compatibility rules
+### Avro compatibility rules
 
 | Change | Backward Compatible | Forward Compatible | Full Compatible |
 |--------|--------------------|--------------------|-----------------|
 | Add optional field with default | ✅ | ✅ | ✅ |
 | Delete optional field | ✅ | ✅ | ✅ |
 | Add required field (no default) | ❌ | ✅ | ❌ |
-| Rename field | ❌ | ❌ | ❌ |
-| Change field type (int→long) | ✅ Avro | ❌ | ❌ |
+| Change field type (int→long) | ✅ (type promotion) | ❌ | ❌ |
+| Rename field | ✅ only with an alias in the reader schema | ❌ | ❌ |
 
 **Rules:**
 - **Backward compatible**: new schema can read data written with old schema (safe to upgrade consumers first)
 - **Forward compatible**: old schema can read data written with new schema (safe to upgrade producers first)
 - **Full compatible**: both directions — the safest; use as default
+- **Protobuf** works by field number, not name: add fields under new numbers, never reuse or renumber a deleted field's number (mark it `reserved`); renaming is wire-safe
 
 ### Schema Registry enforcement
 
@@ -556,13 +569,13 @@ Target file size: 128MB–1GB (matches HDFS/S3 read buffer)
 
 For production data lakes, use a table format layer:
 
-| Feature | Delta Lake / Iceberg |
-|---------|---------------------|
-| **ACID transactions** | Multiple writers without file conflicts |
-| **Time travel** | Query table as of any past snapshot |
-| **Schema evolution** | Add/rename columns without rewrite |
-| **Partition evolution** | Change partition strategy without rewrite |
-| **Compaction** | Built-in `OPTIMIZE` / `rewrite_data_files` |
+| Feature | Delta Lake | Iceberg |
+|---------|-----------|---------|
+| **ACID transactions** | Optimistic concurrency on the `_delta_log` | Optimistic concurrency on the catalog's snapshot pointer |
+| **Time travel** | `VERSION AS OF` / `TIMESTAMP AS OF` | Query by snapshot id or timestamp |
+| **Schema evolution** | Add columns freely; rename/drop needs column-mapping mode | Add/rename/drop/reorder by field ID, no rewrite |
+| **Partition evolution** | Rewrite the table (or use liquid clustering) | Change the partition spec in place; old files keep the old spec |
+| **Compaction** | `OPTIMIZE` | `rewrite_data_files` |
 
 ---
 
@@ -782,7 +795,7 @@ Downstream can rebuild silver from bronze; gold from silver
 
 | Failure | Detection | Recovery |
 |---------|-----------|---------|
-| Source API down | HTTP 5xx / timeout | Exponential backoff; alert after N failures; Kafka buffers |
+| Source API down | HTTP 5xx / timeout; sequence gap | Backoff + alert; Kafka can't buffer what was never produced, so backfill from the source |
 | Bad data / schema mismatch | Schema Registry rejection | Dead-letter queue; human review |
 | Transform bug | Data quality check failure | Roll back load; page on-call; fix and backfill |
 | DB connection error | Connection timeout | Airflow retry; events buffered in Kafka |
@@ -809,15 +822,19 @@ Failure flow: Source → Kafka:prices.ticks.v1 → Processor
 
 ```
 During outage:
-  - Producer fails to push events; no data in Kafka
-  - Downstream consumers idle; consumer lag = 0 (no new messages)
-  - Alert fires on data freshness: MAX(ts) > 15 min old
+  - Producer can't push events; nothing reaches Kafka, so nothing is retained
+  - Downstream consumers idle; consumer lag = 0, so lag alerts stay silent
+  - Detect with per-source sequence-number gaps; freshness (MAX(ts) > 15 min
+    old) is the backstop for sources without sequence numbers
 
-Recovery:
-  - Source comes back online; pushes buffered events (or sends backfill)
-  - Consumers process catch-up burst; consumer lag rises then recovers
-  - Kafka retention (7 days) ensures no data loss if outage < retention window
-  - If source has no buffer: use pull-based reconciliation job to detect and fill gaps
+Recovery comes from the source's own replay, not from Kafka:
+  - Exchange feed: request retransmission / gap-fill by sequence number
+  - CDC: connector resumes from its stored WAL/binlog position (only if the
+    source hasn't purged that log yet)
+  - REST API: backfill job re-pulls the missing time range
+  - Consumers process the catch-up burst; idempotent writes make overlap safe
+
+Kafka retention (7 days) covers the opposite case: consumer or sink outages.
 ```
 
 ---
@@ -954,7 +971,7 @@ Tiered storage (Confluent/MSK):
 
 ### "How would you handle a 3-hour source outage?"
 
-> Kafka acts as the buffer — events accumulate while the source is down. On recovery, consumers process the catch-up burst. Because Kafka retains 7 days of data, nothing is lost as long as the outage is shorter. If the source has no buffer (REST API with no history), use a gap-detection job: compare expected sequence numbers or timestamps, then trigger a targeted backfill for the missing window.
+> Kafka can't help here: it only retains what was produced, so its 7-day retention covers consumer or sink outages, not a source outage. Detect the gap with per-source sequence numbers (consumer lag stays at 0, so lag alerts won't fire; freshness alerts are the backstop). Recover from the source's own replay: exchange retransmit or gap-fill by sequence number, CDC resuming from its WAL/binlog position, or an API backfill of the missing time range. Idempotent writes let the backfill overlap the gap edges safely. If the source keeps no history at all, the gap is permanent — record it in the audit table rather than silently interpolating.
 
 ### "How do you ensure data quality?"
 
@@ -966,7 +983,7 @@ Tiered storage (Confluent/MSK):
 
 ### "What if the stream processor crashes mid-window?"
 
-> Flink checkpoints state to S3 every N seconds. On crash, Flink restarts from the last successful checkpoint, replays events from Kafka (which still holds them), and re-processes the in-progress window. With exactly-once checkpointing, the sink only sees committed writes — no duplicates. The recovery time is proportional to the checkpoint interval, so tune it based on acceptable recovery latency vs. checkpoint overhead.
+> Flink checkpoints state to S3 every N seconds. On crash, Flink restarts from the last successful checkpoint, replays events from Kafka (which still holds them), and re-processes the in-progress window. With a transactional (2PC) sink, `read_committed` consumers see only committed writes, so replayed records don't appear twice; with an at-least-once sink, idempotent writes absorb the replay. The recovery time is proportional to the checkpoint interval, so tune it based on acceptable recovery latency vs. checkpoint overhead.
 
 ### "How would you handle schema changes without downtime?"
 
@@ -991,3 +1008,13 @@ Tiered storage (Confluent/MSK):
 | **S3** | 5500 GET/sec per prefix; 3500 PUT/sec per prefix |
 | **Parquet** | 10:1 vs CSV; column pruning makes queries 10–100× faster |
 | **Airflow** | 1,000+ concurrent tasks (Celery/K8s executor) |
+
+---
+
+## Key Takeaways
+
+1. **Kafka buffers downstream outages, not the source**: retention keeps records while consumers or sinks are down; a source outage leaves nothing to retain, so detect it by sequence gaps and recover via the source's replay (gap-fill, CDC log position, time-range backfill).
+2. **Exactly-once = checkpoint + 2PC sink**: records go into an open transaction, pre-commit on the barrier, commit on checkpoint-complete; `read_committed` visibility lags by up to one checkpoint interval, and only sinks that join the checkpoint (Kafka transactions, FileSink, XA JDBC) are covered.
+3. **Batch loads overwrite, never append blindly**: re-running a partition replaces it (partition overwrite/swap, DELETE + INSERT, or UPSERT on a natural key), so retries and backfills can't double-count.
+4. **Schema Registry in BACKWARD mode**: upgrade consumers first, add fields with defaults; breaking changes go to a new `.v2` topic run in parallel.
+5. **Late data = watermark + allowed lateness + batch correction**: the stream emits fast provisional results, very late events go to a side output, and a batch job recomputes closed partitions as the record of truth.

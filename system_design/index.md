@@ -29,33 +29,50 @@ These guides are designed to prepare you for system design interviews:
 
 | Guide | Description | Key Trade-offs |
 |-------|-------------|----------------|
-| [Consistent Hashing](/cses-analyses/system_design/consistent-hashing) | Why modulo fails, hash ring mechanics, virtual nodes | Distribution vs complexity, memory vs balance |
-| [Unique ID Generator](/cses-analyses/system_design/design-unique-id-generator) | UUID vs Snowflake vs ULID decision framework | Sortability vs randomness, coordination vs independence |
+| [Consistent Hashing](/system_design/consistent-hashing) | Why modulo fails, hash ring mechanics, virtual nodes | Distribution vs complexity, memory vs balance |
+| [Unique ID Generator](/system_design/design-unique-id-generator) | UUID vs Snowflake vs ULID decision framework | Sortability vs randomness, coordination vs independence |
+| [Message Queue](/system_design/design-message-queue) | Partitioned log, replication, delivery semantics, consumer groups | Durability vs throughput, ordering vs parallelism |
 
 ### Storage Systems
 
 | Guide | Description | Key Trade-offs |
 |-------|-------------|----------------|
-| [Key-Value Store](/cses-analyses/system_design/design-key-value-store) | Distributed storage with replication and consistency | CAP trade-offs, consistency vs availability |
-| [Google Drive](/cses-analyses/system_design/design-google-drive) | Cloud file storage, sync, sharing, versioning | Durability vs cost, sync latency vs consistency |
+| [Key-Value Store](/system_design/design-key-value-store) | Distributed storage with replication and consistency | CAP trade-offs, consistency vs availability |
+| [Google Drive](/system_design/design-google-drive) | Cloud file storage, sync, sharing, versioning | Durability vs cost, sync latency vs consistency |
+| [S3 Object Storage](/system_design/design-s3-object-storage) | Flat namespace, erasure coding, metadata service, read/write path | Replication vs erasure coding, durability vs cost |
 
 ### Web-Scale Systems
 
 | Guide | Description | Key Trade-offs |
 |-------|-------------|----------------|
-| [URL Shortener](/cses-analyses/system_design/design-url-shortener) | Short URL generation strategies and caching | Predictability vs security, SQL vs NoSQL |
-| [Web Crawler](/cses-analyses/system_design/design-web-crawler) | URL frontier, politeness, duplicate detection | Breadth vs depth, crawl rate vs politeness |
-| [Chat System](/cses-analyses/system_design/design-chat-system) | Real-time messaging with presence and delivery | WebSocket vs polling, push vs pull |
-| [News Feed](/cses-analyses/system_design/design-news-feed) | Push vs pull vs hybrid, celebrity problem | Fan-out trade-offs, real-time vs batch |
-| [Search Autocomplete](/cses-analyses/system_design/design-search-autocomplete) | Trie with cached top-K, multi-level caching | Freshness vs latency, memory vs CPU |
-| [YouTube](/cses-analyses/system_design/design-youtube) | Video upload, transcoding, CDN, streaming | Storage tiering, processing speed vs cost |
+| [URL Shortener](/system_design/design-url-shortener) | Short URL generation strategies and caching | Predictability vs security, SQL vs NoSQL |
+| [Web Crawler](/system_design/design-web-crawler) | URL frontier, politeness, duplicate detection | Breadth vs depth, crawl rate vs politeness |
+| [Chat System](/system_design/design-chat-system) | Real-time messaging with presence and delivery | WebSocket vs polling, push vs pull |
+| [News Feed](/system_design/design-news-feed) | Push vs pull vs hybrid, celebrity problem | Fan-out trade-offs, real-time vs batch |
+| [Search Autocomplete](/system_design/design-search-autocomplete) | Trie with cached top-K, multi-level caching | Freshness vs latency, memory vs CPU |
+| [YouTube](/system_design/design-youtube) | Video upload, transcoding, CDN, streaming | Storage tiering, processing speed vs cost |
+
+### Data & Streaming Systems
+
+| Guide | Description | Key Trade-offs |
+|-------|-------------|----------------|
+| [Ad Click Aggregation](/system_design/design-ad-click-aggregation) | Real-time click counting accurate enough for billing | Stream vs batch, dedup cost vs accuracy |
+| [Data Pipeline](/system_design/design-data-pipeline) | Batch ETL and streaming with Kafka, Flink, Spark, lakehouse tables | Latency vs correctness, replay vs reprocessing |
+| [Observability Platform](/system_design/design-observability-platform) | Metrics, logs and traces with OpenTelemetry and Grafana | Cardinality vs detail, sampling vs completeness |
 
 ### Domain-Specific Systems
 
 | Guide | Description | Key Trade-offs |
 |-------|-------------|----------------|
-| [Payment System](/cses-analyses/system_design/design-payment-system) | Idempotency, exactly-once semantics, reconciliation | Sync vs async, retry vs reconciliation |
-| [Skills GraphRAG](/cses-analyses/system_design/design-skills-graphrag) | Graph traversal with LLM-powered retrieval | Graph vs vector, latency vs accuracy |
+| [Payment System](/system_design/design-payment-system) | Idempotency keys, at-most-one charge per key, reconciliation | Sync vs async, retry vs reconciliation |
+| [Skills GraphRAG](/system_design/design-skills-graphrag) | Graph traversal with LLM-powered retrieval | Graph vs vector, latency vs accuracy |
+
+### Problem Breakdown Collections
+
+| Collection | Contents |
+|------------|----------|
+| [Hello Interview Breakdowns](/system_design/hellointerview/) | 32 problems (Bitly, Ticketmaster, Uber, ad-click aggregator, …), each with a Summary |
+| [System Design School](/system_design/sds/) | 41 problems plus 20 concept pages (primer, patterns, tech choices) |
 
 ---
 

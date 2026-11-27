@@ -58,7 +58,7 @@ A distributed message queue is middleware that enables asynchronous communicatio
 | **Availability** | 99.99% | Critical infrastructure for all downstream services |
 | **Throughput** | 1M messages/sec | High-volume event streaming |
 | **Latency** | p99 < 10ms (produce), p99 < 50ms (consume) | Near real-time processing |
-| **Durability** | Zero message loss after acknowledgement | Financial and audit use cases |
+| **Durability** | No loss of acknowledged messages while one in-sync replica survives (`acks=all`, `min.insync.replicas=2`, `unclean.leader.election.enable=false`) | Financial and audit use cases |
 | **Data retention** | Configurable, up to 30 days | Replay and debugging |
 
 ### Capacity Estimation
@@ -86,11 +86,8 @@ Daily storage (with replication): ~258 TB
 │           (Microservices, Applications, IoT devices)            │
 └─────────────────────────────────────────────────────────────────┘
                               │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      LOAD BALANCER                              │
-│                  (DNS round-robin / L4 LB)                      │
-└─────────────────────────────────────────────────────────────────┘
+                              │  produce: direct connection to each
+                              │  partition's leader (advertised listener)
                               │
               ┌───────────────┼───────────────┐
               ▼               ▼               ▼
@@ -104,10 +101,10 @@ Daily storage (with replication): ~258 TB
               ┌───────────────┼───────────────┐
               ▼               ▼               ▼
         ┌──────────┐   ┌──────────┐   ┌──────────┐
-        │  Disk    │   │  Coord.  │   │  Metadata│
-        │ Storage  │   │ Service  │   │  Store   │
-        │ (Append  │   │(ZooKeeper│   │ (etcd)   │
-        │  Log)    │   │/ Raft)   │   │          │
+        │  Disk    │   │Controller│   │ Offsets  │
+        │ Storage  │   │  quorum  │   │(internal │
+        │ (Append  │   │ (KRaft:  │   │compacted │
+        │  Log)    │   │ metadata)│   │  topic)  │
         └──────────┘   └──────────┘   └──────────┘
                               │
                               ▼
@@ -117,16 +114,18 @@ Daily storage (with replication): ~258 TB
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+A DNS name or L4 load balancer is used **only for bootstrap**: the client's first connection reaches any broker and fetches metadata (the leader of every partition). After that, producers and consumers connect directly to each leader. A produce sent to a non-leader is rejected with `NOT_LEADER_OR_FOLLOWER` (fetches too, unless rack-aware follower fetching is enabled), so a load balancer can't sit in the data path.
+
 ### Component Responsibilities
 
 | Component | Responsibility | Technology Choice |
 |-----------|---------------|-------------------|
 | **Producer Client** | Serialize, partition, batch, and send messages | Client SDK (Java, Go, Python) |
-| **Load Balancer** | Route producer/consumer connections to brokers | L4 LB / DNS |
+| **Bootstrap endpoint** | First connection only: returns cluster metadata (leader per partition) | DNS name / L4 LB over brokers |
 | **Broker** | Receive, store, replicate, and serve messages | Custom (Kafka-like) |
 | **Disk Storage** | Persist messages as append-only segment logs | Local SSD / EBS |
-| **Coordination Service** | Leader election, partition assignment, cluster membership | ZooKeeper / Raft (KRaft) |
-| **Metadata Store** | Topic configs, consumer offsets, ACLs | etcd / embedded in coordination |
+| **Controller quorum** | Partition leader election, replica assignment, broker membership, topic configs, ACLs | KRaft (Raft among 3–5 controllers) |
+| **Offset store** | Committed offset per (group, partition) | `__consumer_offsets`, a compacted internal topic |
 | **Consumer Client** | Pull messages, track offsets, handle rebalancing | Client SDK |
 
 ---
@@ -169,7 +168,7 @@ Topic "orders" (4 partitions):
 ```
 
 - **Partition key**: Producer specifies a key; `hash(key) % num_partitions` determines the partition. Messages with the same key always go to the same partition, preserving per-key ordering.
-- **No key**: Round-robin across partitions for even load distribution.
+- **No key**: Sticky partitioner (KIP-480, Kafka 2.4+): fill a batch for one partition, then switch. Load evens out over time and batches stay large; per-record round-robin would send many tiny batches.
 
 #### Why Not Global Ordering?
 
@@ -254,7 +253,7 @@ Consumer Group A (Order Service):     Consumer Group B (Analytics):
                                      └──────────┘
 ```
 
-**Offset tracking**: Each consumer group tracks a **committed offset** per partition---the position of the last successfully processed message. Offsets are stored in a dedicated internal topic (`__consumer_offsets`) or in the metadata store.
+**Offset tracking**: Each consumer group tracks a **committed offset** per partition---the position of the last successfully processed message. Offsets are stored in a dedicated compacted internal topic (`__consumer_offsets`).
 
 - **Auto-commit**: Offsets committed periodically (at-least-once, risk of re-processing on crash).
 - **Manual commit**: Consumer commits after processing (still at-least-once; effectively-once only when combined with idempotent processing).
@@ -366,13 +365,13 @@ CREATE TABLE consumer_offsets (
 |-------|-----------|---------|
 | Append message to partition | Very High | Segment log (sequential write) |
 | Read messages from offset | Very High | Segment log + sparse index |
-| Get/update consumer offset | High | Metadata store / internal topic |
-| Get partition leader | Medium | Coordination service cache |
-| List topics/partitions | Low | Metadata store |
+| Get/update consumer offset | High | `__consumer_offsets` topic |
+| Get partition leader | Medium | Client metadata cache (refreshed from any broker) |
+| List topics/partitions | Low | Controller quorum metadata (cached on every broker) |
 
 > **Interviewer might ask**: "Why store offsets in a topic rather than a database?"
 >
-> Storing offsets in a compacted internal topic (`__consumer_offsets`) uses the same replication infrastructure as data topics, avoiding an external dependency. The topic is compacted (only latest value per key is kept), keeping it small.
+> Storing offsets in a compacted internal topic (`__consumer_offsets`) uses the same replication infrastructure as data topics, avoiding an external dependency. The topic is compacted (only latest value per key is kept), keeping it small. An external store like etcd is a poor fit: every write goes through Raft, and its default storage quota is 2 GB (8 GB suggested maximum), against thousands of commits per second.
 
 ---
 
@@ -417,7 +416,7 @@ CREATE TABLE consumer_offsets (
 | Consumer model | Pull-based | Push-based | Consumer backpressure, batching flexibility |
 | Delivery default | At-least-once | Exactly-once | Performance; consumers handle idempotency |
 | Storage | Append-only log | Database (B-tree) | Sequential I/O; 10x throughput |
-| Replication | ISR quorum | Sync-all / Async | Balance of durability and availability |
+| Replication | ISR + `min.insync.replicas=2` | Majority quorum / Async | Tolerates f failures with f+1 in-sync replicas (a majority quorum needs 2f+1) |
 | Coordination | Raft (KRaft) | ZooKeeper | Fewer moving parts, built-in consensus |
 | Batching | Client-side | None | 10x throughput improvement |
 
@@ -450,16 +449,16 @@ Producers (stateless, scale freely)
 Consumer Groups (scale up to num_partitions)
 ```
 
-**Adding capacity**: Add brokers → reassign partition leaders/followers to new brokers → traffic redistributes automatically.
+**Adding capacity**: New brokers receive no existing partitions on their own; only newly created partitions may land there. Run a partition reassignment (`kafka-reassign-partitions` or Cruise Control) to move replicas and leaders, throttled so the copy traffic doesn't starve producers.
 
 ### Scaling Strategies
 
 | Component | Strategy | When to Apply |
 |-----------|----------|---------------|
 | **Producers** | Add more producer instances | Throughput limited by producer count |
-| **Brokers** | Add brokers, increase partitions | Disk I/O > 80%, network saturation |
+| **Brokers** | Add brokers, then reassign partitions onto them | Disk I/O > 80%, network saturation |
 | **Consumers** | Add consumers (up to partition count) | Consumer lag growing |
-| **Partitions** | Increase partition count | Need more parallelism (note: can't decrease) |
+| **Partitions** | Increase partition count | Need more parallelism (can't decrease; `hash(key) % N` changes, so per-key ordering breaks across the change; over-provision up front) |
 | **Storage** | Tiered storage (hot: SSD, cold: S3) | Retention exceeds local disk capacity |
 
 ### Bottlenecks and Mitigations
@@ -485,7 +484,7 @@ Consumer Groups (scale up to num_partitions)
 |----------|--------|------------|
 | **Broker crash** | Partitions on that broker unavailable until leader election | ISR follower promoted to leader (< 10s); producer retries to new leader |
 | **Disk failure** | Data on that disk lost | Replication ensures other brokers have copies; replace disk and re-replicate |
-| **Network partition** | Split brain: two leaders for same partition | Fencing: old leader detects it's no longer in coordination quorum and stops serving |
+| **Network partition** | Split brain: two leaders for same partition | Leader epochs: the controller elects a new leader with a higher epoch; the old leader can't commit `acks=all` writes (followers now fetch from the new leader) and is fenced once its controller heartbeats lapse |
 | **Slow consumer** | Consumer lag grows, messages risk expiring | Monitoring + alerting on lag; scale consumers; increase retention |
 | **Producer failure** | Unacked in-flight messages lost or retried | Idempotent producer dedups retries (producer ID + sequence number); app must re-send anything never acked (e.g., outbox) |
 | **Datacenter outage** | Regional unavailability | Multi-datacenter replication (async), MirrorMaker / geo-replication |
@@ -493,7 +492,7 @@ Consumer Groups (scale up to num_partitions)
 ### Recovery Procedures
 
 1. **Detection**: Broker heartbeats every 3s; missed 3 heartbeats = broker marked dead
-2. **Leader election**: Coordination service picks new leader from ISR (< 10s)
+2. **Leader election**: The controller quorum picks a new leader from the ISR (< 10s)
 3. **Re-replication**: New follower assigned; catches up from current leader
 4. **Consumer rebalancing**: Partitions from dead consumers reassigned to live consumers
 
@@ -533,7 +532,7 @@ Producer                    Broker
 10-25 min: HIGH-LEVEL DESIGN
            - Producer → Broker cluster → Consumer
            - Topics, partitions, replication
-           - Coordination service for metadata
+           - KRaft controller quorum for metadata
 
 25-40 min: DEEP DIVE (pick 2-3)
            - Storage engine (commit log, segments, zero-copy)
@@ -554,7 +553,7 @@ Producer                    Broker
 | "Store messages on disk" | "Each partition is an append-only commit log with segment rotation, using sequential I/O and zero-copy for throughput" |
 | "Replicate for safety" | "We use ISR-based replication with configurable ack levels---acks=all with min.insync.replicas=2 for strong durability" |
 | "Consumers read messages" | "Consumer groups provide independent consumption with at-most-one-consumer-per-partition assignment for ordering guarantees" |
-| "Handle failures" | "On broker failure, the coordination service promotes an ISR follower to leader; idempotent producers retry transparently" |
+| "Handle failures" | "On broker failure, the KRaft controller promotes an ISR follower to leader; idempotent producers retry transparently" |
 
 ### Common Follow-up Questions
 

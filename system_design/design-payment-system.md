@@ -224,8 +224,9 @@ CREATE TABLE payment_events (
     checkout_id VARCHAR(50) NOT NULL,
     amount DECIMAL(19, 4) NOT NULL,
     currency VARCHAR(3) NOT NULL,
-    status ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'REFUNDED'),
+    status ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED', 'UNKNOWN', 'REFUNDED'),
     idempotency_key VARCHAR(100) UNIQUE NOT NULL,
+    request_hash CHAR(64) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -322,31 +323,30 @@ Net = Debits - Credits = $100 - $100 = $0 ✓
 sequenceDiagram
     participant Client
     participant PS as Payment Service
+    participant DB as Payments DB
     participant PE as Payment Executor
     participant PSP as PSP (Stripe)
 
-    Client->>PS: 1. Place Order
-    PS->>PE: 2. Store Event (DB)
-    PS->>PE: 3. Risk Check (AML/Fraud)
-    PS->>PE: 4. Execute Order
-    PE->>PSP: 5. Call PSP API
+    Client->>PS: 1. Place Order (Idempotency-Key)
+    PS->>DB: 2. INSERT payment event, status=PENDING (UNIQUE key)
+    PS->>PS: 3. Risk Check (AML/Fraud)
+    PS->>PE: 4. Execute payment order
+    PE->>PSP: 5. Call PSP API (same stable key)
     PSP-->>PE: 6. PSP Response
-    PE-->>PS: 7. Update Wallet
-    PE-->>PS: 8. Update Ledger
-    PS-->>Client: 9. Confirmation
+    PE->>DB: 7. BEGIN ... COMMIT: status + wallet + ledger rows
+    PS-->>Client: 8. Confirmation
 ```
 
 ### Detailed Steps
 
-1. **User clicks "Place Order"** - Payment event sent to Payment Service
-2. **Store payment event** - Persist to database immediately
+1. **User clicks "Place Order"** - Payment event sent to Payment Service with an idempotency key
+2. **Store payment event** - INSERT it immediately with status=PENDING; the UNIQUE idempotency key makes this insert the claim (see [Idempotency](#idempotency))
 3. **Risk check** - Verify AML/CFT compliance, fraud detection
 4. **Route to Payment Executor** - For each payment order in the event
-5. **Execute via PSP** - Call external payment provider API
-6. **Receive PSP response** - Success, failure, or pending
-7. **Update wallet** - Adjust seller balance on success
-8. **Record in ledger** - Create double-entry bookkeeping records
-9. **Return confirmation** - Notify client of payment status
+5. **Execute via PSP** - Call the PSP API, forwarding a stable idempotency key
+6. **Receive PSP response** - Success, failure, or pending; a timeout means UNKNOWN, not failed
+7. **Commit status, wallet and ledger together** - One transaction updates the payment status, the seller's wallet balance and the balanced double-entry ledger rows; if they live in separate services, use an outbox + saga instead (see [Handling PSP Sync](#handling-psp-sync))
+8. **Return confirmation** - Notify client of payment status
 
 ---
 
@@ -379,6 +379,8 @@ sequenceDiagram
     Page-->>Client: 7. Redirect to Success URL
     PSP->>PS: 8. Webhook Notification
 ```
+
+**Webhooks are at-least-once**: PSPs retry until they get a 2xx and may deliver events out of order. Verify the signature, dedup on the PSP's event id (`INSERT ... ON CONFLICT (psp_event_id) DO NOTHING`), only move status forward (PENDING → COMPLETED, never back), then return 2xx.
 
 ### Benefits of Hosted Page
 
@@ -413,16 +415,15 @@ Client ──► Retry ──► Duplicate charge!
 POST /v1/payments
 Idempotency-Key: order_123        (same key on every retry; never per-attempt)
 
-First request:  Process payment, store result with key
-Second request: Return cached result (no reprocessing)
+First request:  claim the key (INSERT), call the PSP, store the result
+Retry:          key already claimed → return the stored result (no reprocessing)
 ```
 
-**How it works**:
-1. Client sends request with unique idempotency key
-2. Server checks if key exists in database
-3. If exists → return cached result (no processing)
-4. If new → process payment, store result with key
-5. Forward a stable key (e.g., `payment_order_id`) as the PSP's idempotency key, so a retried PSP call after a timeout doesn't charge twice
+**How it works** — claim the key *before* any side effect. "Check if the key exists, then process" is a race: two concurrent retries both see "not found" and both charge.
+1. `INSERT INTO payment_events (..., idempotency_key, request_hash, status) VALUES (..., 'PENDING')`; the UNIQUE constraint lets exactly one request win
+2. On conflict, load the existing row: a different `request_hash` → `422` (key reused for another request); still PENDING/PROCESSING → `409`, client retries later; finished → return the stored result
+3. The winner calls the PSP, forwarding a stable key (e.g., `payment_order_id`) as the PSP's idempotency key, so a retried PSP call after a timeout doesn't charge twice
+4. Store the PSP result: COMPLETED or FAILED, or UNKNOWN on timeout, which goes to reconciliation (query the PSP by key) rather than a blind re-run
 
 ### Database Constraint
 
@@ -438,11 +439,11 @@ CREATE UNIQUE INDEX idx_idempotency ON payment_events(idempotency_key);
 
 ```mermaid
 flowchart LR
-    subgraph ExactlyOnce["Exactly-Once Delivery"]
+    subgraph ExactlyOnce["Effectively-Once Processing"]
         A["At-Least-Once (Retry)<br/>Keep retrying until success"]
         B["Idempotent processing<br/>Idempotency key → at-most-once effect"]
         A ---|+| B
-        Result["= Exactly-Once Semantics"]
+        Result["= One effect per idempotency key"]
     end
 ```
 
@@ -494,14 +495,16 @@ flowchart LR
         C1["Attempt 1"] -->|5s| C2["Attempt 2"] -->|10s| C3["Attempt 3"]
     end
 
-    subgraph R4["4. Exponential Backoff (Recommended)"]
-        D1["Attempt 1"] -->|1s| D2["Attempt 2"] -->|2s| D3["Attempt 3"] -->|4s| D4["..."]
+    subgraph R4["4. Exponential Backoff + Jitter (Recommended)"]
+        D1["Attempt 1"] -->|~1s| D2["Attempt 2"] -->|~2s| D3["Attempt 3"] -->|~4s| D4["..."]
     end
 
     subgraph R5["5. Cancel (Permanent failure)"]
         E1["Attempt 1"] --> E2["Mark as failed"]
     end
 ```
+
+Add random jitter (e.g., full jitter: sleep a random time in `[0, base × 2^attempt]`) so clients that failed together don't retry in lockstep against a recovering PSP.
 
 ### Queue Architecture
 
@@ -718,8 +721,9 @@ Every transaction must have balanced debits and credits. This ensures:
 ### 3. Idempotency is Critical
 
 Use idempotency keys to prevent duplicate charges:
-- Store with unique constraint
-- Return cached result on duplicate request
+- Claim the key with an INSERT under a UNIQUE constraint before calling the PSP (never check-then-insert)
+- Return the stored result on a duplicate request; `409` while the first is in flight
+- Forward the same key to the PSP; dedup PSP webhooks by event id
 
 ### 4. PSP Integration Strategy
 
