@@ -53,11 +53,11 @@ for i in range(len(s)):
 if first_smaller >= 0:
     if s[first_smaller + 1:] >= t[first_smaller + 1:]:
         for i in range(first_smaller + 1, len(t)):
-            if t[i] is not 'a':
+            if t[i] != 'a':
                 result = s[:first_smaller] + chr(ord(s[first_smaller]) + 1) + t[first_smaller + 1:i] + chr(
                     ord(t[i]) - 1) + t[i + 1:]
                 break
-            if s[i] is not 'z':
+            if s[i] != 'z':
                 result = s[:i] + chr(ord(s[i]) + 1) + s[i + 1:]
                 break
     elif s[first_smaller + 1:] < t[first_smaller + 1:]:

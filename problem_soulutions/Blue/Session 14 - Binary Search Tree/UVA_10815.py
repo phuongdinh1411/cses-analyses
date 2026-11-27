@@ -61,7 +61,7 @@ def solution():
         except Exception:
             break
 
-        new_words = list(filter(lambda x: x is not '', new_words))
+        new_words = list(filter(lambda x: x != '', new_words))
 
         if root is None:
             if len(new_words) > 0:

@@ -20,109 +20,101 @@ Breadth-First Search problems involving shortest paths in unweighted graphs, lev
 
 #### Problem Statement
 
-You're in an ice cave represented as an n x m grid. Each cell is either:
-- '.' (intact ice) - you can step on it, but it will crack and become 'X'
-- 'X' (cracked ice) - you cannot step on it; stepping on it means falling through
+The cave level is an n x m grid. Each cell is intact ice `.` or cracked ice `X`. You move to side-adjacent cells (never staying in place):
+- moving onto intact ice cracks it (it becomes `X`);
+- moving onto cracked ice makes you fall through it.
 
-You start at position (r1, c1) and want to reach (r2, c2). The goal is to FALL THROUGH the ice at the destination (the destination must become cracked when you step on it).
-
-You can reach the destination if:
-- There's a valid path from start to an adjacent cell of destination
-- The destination ice will crack when you step on it (either already cracked, or you've visited an adjacent cell that cracks it)
+You stand on (r1, c1), which is always cracked. Can you fall through at (r2, c2)?
 
 #### Input Format
-- Line 1: n m (grid dimensions)
-- Next n lines: Grid of '.' and 'X'
-- Line n+2: r1 c1 (starting position, 1-indexed)
-- Line n+3: r2 c2 (destination position, 1-indexed)
+- Line 1: n m
+- Next n lines: the grid
+- Then r1 c1 (start, 1-indexed, always `X`)
+- Then r2 c2 (target, 1-indexed; may equal the start)
 
 #### Output Format
-"YES" if you can reach and fall through at destination, "NO" otherwise.
+"YES" if you can fall through the target, "NO" otherwise.
 
 #### Example
 ```
 Input:
 4 6
+X...XX
+...XX.
+.X..X.
 ......
-X.X.X.
-....X.
-......
+1 6
 2 2
-2 5
 
 Output:
 YES
 ```
-Start at (2,2), destination (2,5). Can navigate around obstacles and reach destination to fall through.
+Walk through intact cells to a neighbour of (2,2). (2,2) is intact, so step on it once (it cracks), step off, and step back on to fall.
 
 ```
 Input:
-2 2
-..
-..
+5 4
+.X..
+...X
+X.X.
+....
+.XX.
+5 3
 1 1
-2 2
 
 Output:
 NO
 ```
-Destination (2,2) is intact ice '.'. Need to crack it first, but no way to approach it twice.
+The target (1,1) is intact and has only one intact neighbour, (2,1). You can enter (1,1) once from (2,1), but then (2,1) is cracked and there is no second way back in.
 
 #### Solution
 
-##### Approach
-Use BFS pathfinding with special handling for the destination cell. When we reach a cell adjacent to the destination, we check if the destination is already cracked (can step on it directly) or if there's another path to crack it first.
+##### Key Insight
+Cracking a cell is the same as marking it visited. So run an ordinary BFS where stepping on `.` turns it into `X`. You succeed exactly when you move onto a cell that is already `X` and that cell is the target.
+
+This covers every case without special code:
+- **Target already `X`:** reaching any neighbour is enough.
+- **Target is `.`:** the first visit cracks it, so you must re-enter it from a second neighbour.
+- **Target equals the start:** leave to any intact neighbour and come straight back.
 
 ##### Python Solution
 
 ```python
 from collections import deque
 
-def can_reach_destination(start, end, n, m, matrix):
-    directions = [(1, 0), (0, -1), (-1, 0), (0, 1)]
-    visited = [[False] * m for _ in range(n)]
-    visited[start[0]][start[1]] = True
 
+def can_fall(n, m, grid, start, end):
+    grid = [list(row) for row in grid]
     queue = deque([start])
-
     while queue:
         x, y = queue.popleft()
-        for dx, dy in directions:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             nx, ny = x + dx, y + dy
-            if (nx, ny) == tuple(end):
-                if matrix[nx][ny] == 'X':
+            if not (0 <= nx < n and 0 <= ny < m):
+                continue
+            if grid[nx][ny] == 'X':
+                if (nx, ny) == end:
                     return 'YES'
-                # Check if destination has another adjacent passable cell
-                for ddx, ddy in directions:
-                    nnx, nny = nx + ddx, ny + ddy
-                    if (0 <= nnx < n and 0 <= nny < m and
-                        matrix[nnx][nny] == '.' and (nnx, nny) != (x, y)):
-                        return 'YES'
-                return 'NO'
-            if (0 <= nx < n and 0 <= ny < m and
-                matrix[nx][ny] == '.' and not visited[nx][ny]):
-                queue.append((nx, ny))
-                visited[nx][ny] = True
-
+                continue
+            grid[nx][ny] = 'X'  # stepping on intact ice cracks it
+            queue.append((nx, ny))
     return 'NO'
+
 
 def solution():
     n, m = map(int, input().split())
-    matrix = [input().strip() for _ in range(n)]
-
+    grid = [input().strip() for _ in range(n)]
     r1, c1 = map(int, input().split())
     r2, c2 = map(int, input().split())
-    start = (r1 - 1, c1 - 1)
-    end = (r2 - 1, c2 - 1)
+    print(can_fall(n, m, grid, (r1 - 1, c1 - 1), (r2 - 1, c2 - 1)))
 
-    print(can_reach_destination(start, end, n, m, matrix))
 
 solution()
 ```
 
 ##### Complexity Analysis
-- **Time Complexity:** O(n * m) for BFS traversal of the grid
-- **Space Complexity:** O(n * m) for visited array and queue
+- **Time Complexity:** O(n * m). Each cell is cracked, and so enqueued, at most once.
+- **Space Complexity:** O(n * m) for the grid copy and the queue.
 
 ---
 

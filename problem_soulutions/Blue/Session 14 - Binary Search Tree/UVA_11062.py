@@ -62,11 +62,11 @@ def solution():
 
         try:
             new_line = input().strip()
-            new_words = list(map(lambda word: re.sub('[^a-z\-]+', '', word.lower()), re.compile(r'[^A-Za-z\-]').split(new_line)))
+            new_words = list(map(lambda word: re.sub(r'[^a-z\-]+', '', word.lower()), re.compile(r'[^A-Za-z\-]').split(new_line)))
         except Exception:
             break
 
-        new_words = list(filter(lambda x: x is not '', new_words))
+        new_words = list(filter(lambda x: x != '', new_words))
 
         if imcompleted_word is not None and len(new_words) > 0:
             new_words[0] = imcompleted_word[:-1] + new_words[0]
