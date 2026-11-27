@@ -13,7 +13,7 @@ prerequisites: [line_segment_intersection]
 
 | Attribute | Value |
 |-----------|-------|
-| **CSES Link** | [https://cses.fi/problemset/task/2196](https://cses.fi/problemset/task/2196) |
+| **CSES Link** | [https://cses.fi/problemset/task/1740](https://cses.fi/problemset/task/1740) |
 | **Difficulty** | Hard |
 | **Category** | Geometry |
 | **Time Limit** | 1 second |

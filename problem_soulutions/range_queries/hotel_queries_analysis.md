@@ -35,7 +35,7 @@ After solving this problem, you will be able to:
 **Input:**
 - Line 1: Two integers n and m (number of hotels, number of groups)
 - Line 2: n integers h_1, h_2, ..., h_n (room count in each hotel)
-- Next m lines: One integer r_i (size of each group)
+- Line 3: m integers r_1, r_2, ..., r_m (size of each group)
 
 **Output:**
 - For each group, print the hotel number (1-indexed) where they are assigned, or 0 if impossible
@@ -214,7 +214,7 @@ Output: 3
 ```
 Segment Tree Structure (array-based, 1-indexed internal):
 
-For n=8 hotels, tree size = 2*8 = 16
+For n=8 hotels (already a power of two), size = 8 and the tree array has 2*8 = 16 slots
 
          Index:    1
                 /     \
@@ -224,8 +224,7 @@ For n=8 hotels, tree size = 2*8 = 16
           /\    /\   /\    /\
          8  9 10 11 12 13 14 15   <- leaves store hotel rooms
 
-Leaf index i corresponds to hotel (i - n + 1) in 1-indexed terms
-Or: leaf at tree[n + i] stores hotel[i] (0-indexed)
+Leaf at tree[size + i] stores hotel[i] (0-indexed)
 ```
 
 ### Code
@@ -248,17 +247,17 @@ def solve():
 
   groups = [int(input_data[idx + i]) for i in range(m)]
 
-  # Build segment tree (1-indexed, size 2*n)
-  # tree[i] for i >= n are leaves (hotels)
-  # tree[i] for i < n are internal nodes (max of children)
-  tree = [0] * (2 * n)
+  # Leaves must sit at one depth for the left-first descent,
+  # so pad to a power of two (padding leaves hold 0 rooms)
+  size = 1 << (n - 1).bit_length()
+  tree = [0] * (2 * size)
 
   # Initialize leaves
   for i in range(n):
-    tree[n + i] = hotels[i]
+    tree[size + i] = hotels[i]
 
   # Build internal nodes (bottom-up)
-  for i in range(n - 1, 0, -1):
+  for i in range(size - 1, 0, -1):
     tree[i] = max(tree[2 * i], tree[2 * i + 1])
 
   results = []
@@ -271,14 +270,14 @@ def solve():
 
     # Descend to find leftmost hotel with enough rooms
     v = 1
-    while v < n:
+    while v < size:
       if tree[2 * v] >= group_size:
         v = 2 * v      # go left
       else:
         v = 2 * v + 1  # go right
 
-    # v is now a leaf, hotel index = v - n (0-indexed), output v - n + 1 (1-indexed)
-    hotel_idx = v - n
+    # v is now a leaf, hotel index = v - size (0-indexed)
+    hotel_idx = v - size
     results.append(hotel_idx + 1)
 
     # Update: subtract group_size from this hotel
@@ -301,7 +300,7 @@ if __name__ == "__main__":
 | Metric | Value | Explanation |
 |--------|-------|-------------|
 | Time | O((n + m) * log n) | Build tree O(n), each query O(log n) |
-| Space | O(n) | Segment tree of size 2n |
+| Space | O(n) | Segment tree with fewer than 4n slots |
 
 ---
 
@@ -350,15 +349,20 @@ hotel_number = v - n  # This is 0-indexed!
 hotel_number = v - n + 1  # Convert to 1-indexed for output
 ```
 
-### Mistake 4: Wrong Tree Size for Non-Power-of-2
+### Mistake 4: Descending a 2*n Tree When n Is Not a Power of 2
 
 ```python
-# Potential issue: if n is not power of 2
-# The simple 2*n approach works, but be careful with indexing
+# WRONG - with tree size 2*n, leaves sit at different depths and
+# "left child first" no longer means "leftmost hotel"
+tree = [0] * (2 * n)          # n = 6: input 1 7 4 7 1 4, group 4 -> hotel 3, not 2
 
-# Safe approach: pad to next power of 2, or use this exact method
-# which works for any n
+# CORRECT - pad to a power of two
+size = 1 << (n - 1).bit_length()
+tree = [0] * (2 * size)
 ```
+
+**Problem:** The bottom-up `2*n` tree is fine for range queries, but its node order is not left-to-right when n is not a power of two, so the descent can return a later hotel.
+**Fix:** Pad the leaves to a power of two (padding holds 0) before descending.
 
 ---
 

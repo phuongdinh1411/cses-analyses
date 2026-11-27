@@ -406,7 +406,7 @@ dp[1][1] = 1  # mask=1 means city 1 is visited
 | Problem | Why It Helps |
 |---------|--------------|
 | [Grid Paths](https://cses.fi/problemset/task/1638) | Basic DP counting paths |
-| [Counting Paths](https://cses.fi/problemset/task/1643) | DP on DAG |
+| [Game Routes](https://cses.fi/problemset/task/1681) | DP on DAG |
 
 ### Similar Difficulty
 
@@ -422,7 +422,7 @@ dp[1][1] = 1  # mask=1 means city 1 is visited
 |---------|-------------|
 | [Elevator Rides](https://cses.fi/problemset/task/1653) | Bitmask DP with optimization |
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | Profile DP (bitmask on grid) |
-| [General Graph Matching](https://cses.fi/problemset/task/1696) | Bitmask with complex state |
+| [School Dance](https://cses.fi/problemset/task/1696) | Bipartite matching via max flow |
 
 ---
 

@@ -340,7 +340,7 @@ for k in range(1, n):  # k goes from 1 to n-1
 | Problem | New Concept |
 |---------|-------------|
 | [Collecting Numbers II](https://cses.fi/problemset/task/2217) | Segment trees or efficient updates |
-| [Inversion Count](https://cses.fi/problemset/task/1643) | Merge sort technique |
+| [Collecting Numbers Distribution](https://cses.fi/problemset/task/3157) | Count permutations by number of rounds |
 
 ---
 

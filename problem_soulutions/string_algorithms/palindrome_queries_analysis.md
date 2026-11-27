@@ -308,7 +308,7 @@ if __name__ == "__main__": solve()
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [String Hashing (CSES 1753)](https://cses.fi/problemset/task/1753) | Learn polynomial hashing basics |
+| [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | Learn polynomial hashing basics |
 | [Static Range Sum Queries](https://cses.fi/problemset/task/1646) | Basic segment tree without updates |
 
 ### Similar Difficulty

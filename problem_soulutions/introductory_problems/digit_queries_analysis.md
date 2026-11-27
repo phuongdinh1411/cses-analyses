@@ -359,7 +359,7 @@ while k > digit_len * count:
 | Problem | Key Difference |
 |---------|----------------|
 | [LeetCode - Nth Digit](https://leetcode.com/problems/nth-digit/) | Same problem, different constraints |
-| [Counting Digits](https://cses.fi/problemset/task/2220) | Count occurrences of digits 0-9 |
+| [Counting Numbers](https://cses.fi/problemset/task/2220) | Digit DP over a range of numbers |
 
 ### Harder (Do These After)
 

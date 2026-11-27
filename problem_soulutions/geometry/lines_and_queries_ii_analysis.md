@@ -344,7 +344,7 @@ def query(self, x):
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Line Segment Intersection Queries I](https://cses.fi/problemset/task/2189) | Simpler CHT with sorted queries |
+| [Lines and Queries I](https://cses.fi/problemset/task/3429) | Same Li Chao tree, lines active everywhere |
 
 ### Similar Difficulty
 
@@ -357,7 +357,7 @@ def query(self, x):
 
 | Problem | New Concept |
 |---------|-------------|
-| [Covered Points Count](https://cses.fi/problemset/task/2168) | Coordinate compression with sweepline |
+| [Covered Points Count](https://codeforces.com/problemset/problem/1000/C) | Coordinate compression with sweepline |
 | [Aliens (IOI)](https://oj.uz/problem/view/IOI16_aliens) | Li Chao + Lagrangian relaxation |
 
 ---

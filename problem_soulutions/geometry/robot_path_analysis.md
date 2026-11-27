@@ -315,7 +315,7 @@ if (x, y) in visited:  # Linear search!
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Walking on a Grid](https://cses.fi/problemset/task/1638) | Basic grid traversal concepts |
+| [Grid Paths I](https://cses.fi/problemset/task/1638) | Basic grid traversal concepts |
 
 ### Similar Difficulty
 

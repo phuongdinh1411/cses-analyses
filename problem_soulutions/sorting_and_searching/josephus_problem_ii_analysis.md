@@ -31,7 +31,7 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
-**Problem:** There are n children in a circle. Starting from child 1, count k children clockwise and remove the k-th child. Repeat until all children are removed. Print the removal order.
+**Problem:** There are n children (numbered 1..n) in a circle. Starting from child 1, repeatedly **skip k children and remove the next one**. Print the removal order.
 
 **Input:**
 - Line 1: Two integers n and k (number of children and skip count)
@@ -41,19 +41,19 @@ After solving this problem, you will be able to:
 
 **Constraints:**
 - 1 <= n <= 2 * 10^5
-- 1 <= k <= 10^9
+- 0 <= k <= 10^9
 
 ### Example
 
 ```
 Input:
-7 3
+7 2
 
 Output:
 3 6 2 7 5 1 4
 ```
 
-**Explanation:** Starting from position 1, count 3 positions: 1->2->3, remove child 3. Next, count 3 from position 4: 4->5->6, remove child 6. Continue this process until all children are removed.
+**Explanation:** From child 1, skip 1 and 2, remove 3. From 4, skip 4 and 5, remove 6. From 7, skip 7 and 1, remove 2. Continue until the circle is empty. With k = 0 nobody is skipped, so the order is simply 1..n.
 
 ---
 
@@ -61,9 +61,9 @@ Output:
 
 ### Pattern Recognition
 
-> **Key Question:** Why is this different from Josephus Problem I (k=2)?
+> **Key Question:** Why is this different from Josephus Problem I (every second child, i.e. k=1 here)?
 
-With k=2, we can use the mathematical formula J(n) = 2*L + 1 where n = 2^m + L. But this problem:
+When every second child is removed, the survivor has the formula J(n) = 2*L + 1 where n = 2^m + L. But this problem:
 1. Has **arbitrary k** (up to 10^9)
 2. Requires the **full elimination order**, not just the survivor
 
@@ -73,12 +73,12 @@ The mathematical recurrence J(n,k) = (J(n-1,k) + k) mod n only gives the FINAL s
 
 1. **What are we looking for?** The complete sequence of eliminated children
 2. **What information do we have?** Circle size n, skip count k
-3. **What operation do we need repeatedly?** Find and remove the k-th element from current position
+3. **What operation do we need repeatedly?** Skip k elements from the current position and remove the next one
 
 ### The Core Challenge
 
 Each step requires:
-- Finding the k-th element from current position in a shrinking circle
+- Finding the element k places after the current position in a shrinking circle
 - Removing that element efficiently
 - Continuing from the next position
 
@@ -102,7 +102,7 @@ Maintain a list of remaining children. For each elimination, compute the target 
 1. Initialize list with children 1 to n
 2. Start at index 0
 3. While list is not empty:
-   - Compute target = (current + k - 1) % size
+   - Compute target = (current + k) % size
    - Remove and output element at target
    - Update current = target % new_size (if non-empty)
 
@@ -121,7 +121,7 @@ def josephus_brute_force(n: int, k: int) -> list[int]:
   current = 0
 
   while children:
-    current = (current + k - 1) % len(children)
+    current = (current + k) % len(children)
     result.append(children.pop(current))
     if children:
       current = current % len(children)
@@ -155,11 +155,11 @@ This data structure provides:
 
 ### Why Indexed Set Works
 
-In a circle of size m, to find the k-th element from current position:
+In a circle of size m, to skip k children from the current position:
 1. Current position has rank `pos` (0-indexed)
-2. Target rank = (pos + k - 1) % m
+2. Target rank = (pos + k) % m
 3. Get element at that rank, remove it
-4. New position = target_rank % (m - 1)
+4. New position = target_rank % (m - 1): the next child slides into the removed rank
 
 All operations are O(log n) with an indexed set.
 
@@ -168,62 +168,62 @@ All operations are O(log n) with an indexed set.
 1. Insert all children 1..n into indexed set
 2. Start at position 0
 3. While set is not empty:
-   - target_pos = (current_pos + k - 1) % size
+   - target_pos = (current_pos + k) % size
    - Get element at target_pos using find_by_order
    - Output and erase that element
    - Update current_pos = target_pos % new_size (if non-empty)
 
 ### Dry Run Example
 
-Let's trace through with n=7, k=3:
+Let's trace through with n=7, k=2:
 
 ```
 Initial: {1, 2, 3, 4, 5, 6, 7}, pos = 0
 
 Step 1:
-  size = 7, target = (0 + 3 - 1) % 7 = 2
+  size = 7, target = (0 + 2) % 7 = 2
   Element at rank 2 is: 3
   Remove 3, output: [3]
   New pos = 2 % 6 = 2
   Set: {1, 2, 4, 5, 6, 7}
 
 Step 2:
-  size = 6, target = (2 + 3 - 1) % 6 = 4
+  size = 6, target = (2 + 2) % 6 = 4
   Element at rank 4 is: 6
   Remove 6, output: [3, 6]
   New pos = 4 % 5 = 4
   Set: {1, 2, 4, 5, 7}
 
 Step 3:
-  size = 5, target = (4 + 3 - 1) % 5 = 1
+  size = 5, target = (4 + 2) % 5 = 1
   Element at rank 1 is: 2
   Remove 2, output: [3, 6, 2]
   New pos = 1 % 4 = 1
   Set: {1, 4, 5, 7}
 
 Step 4:
-  size = 4, target = (1 + 3 - 1) % 4 = 3
+  size = 4, target = (1 + 2) % 4 = 3
   Element at rank 3 is: 7
   Remove 7, output: [3, 6, 2, 7]
   New pos = 3 % 3 = 0
   Set: {1, 4, 5}
 
 Step 5:
-  size = 3, target = (0 + 3 - 1) % 3 = 2
+  size = 3, target = (0 + 2) % 3 = 2
   Element at rank 2 is: 5
   Remove 5, output: [3, 6, 2, 7, 5]
   New pos = 2 % 2 = 0
   Set: {1, 4}
 
 Step 6:
-  size = 2, target = (0 + 3 - 1) % 2 = 0
+  size = 2, target = (0 + 2) % 2 = 0
   Element at rank 0 is: 1
   Remove 1, output: [3, 6, 2, 7, 5, 1]
   New pos = 0 % 1 = 0
   Set: {4}
 
 Step 7:
-  size = 1, target = (0 + 3 - 1) % 1 = 0
+  size = 1, target = (0 + 2) % 1 = 0
   Element at rank 0 is: 4
   Remove 4, output: [3, 6, 2, 7, 5, 1, 4]
   Set: {}
@@ -234,52 +234,58 @@ Final output: 3 6 2 7 5 1 4
 ### Visual Diagram
 
 ```
-Circle (n=7, k=3):
+Circle (n=7, k=2): skip 2, remove the next
 
-Initial:        After removing 3:    After removing 6:
-    1                 1                   1
-  7   2             7   2               7   2
- 6     3 <-X       6     4 <-         5     4 <-
-  5   4             5   4
-                        ^                   ^
-                    count from 4        count from 4
+1 2 [3] 4 5 6 7     skip 1,2 -> remove 3, continue from 4
+1 2 4 5 [6] 7       skip 4,5 -> remove 6, continue from 7
+1 [2] 4 5 7         skip 7,1 -> remove 2, continue from 4
+1 4 5 [7]           skip 4,5 -> remove 7, continue from 1
 ```
 
-### Code (Python with SortedList)
+### Code (Python, Fenwick Tree as Indexed Set)
 
-Python's standard library lacks an indexed set, but we can use `sortedcontainers.SortedList`:
+Python's standard library lacks an indexed set and CSES does not provide `sortedcontainers`, so we emulate one: a Fenwick tree stores 1 for each child still in the circle, and a binary-lifting descent finds the child with a given rank. (Locally, `SortedList.pop(pos)` does the same job.)
 
 ```python
-from sortedcontainers import SortedList
+import sys
 
 def josephus_optimal(n: int, k: int) -> list[int]:
   """
-  Optimal solution using SortedList (balanced BST).
+  Fenwick tree order statistics.
 
   Time: O(n log n)
   Space: O(n)
   """
-  children = SortedList(range(1, n + 1))
+  tree = [0] * (n + 1)
+  for i in range(1, n + 1):          # O(n) build of an all-ones array
+    tree[i] += 1
+    j = i + (i & -i)
+    if j <= n:
+      tree[j] += tree[i]
+  top = 1 << (n.bit_length() - 1)
+
   result = []
   pos = 0
-
-  while children:
-    pos = (pos + k - 1) % len(children)
-    removed = children.pop(pos)
-    result.append(removed)
-    if children:
-      pos = pos % len(children)
-
+  for size in range(n, 0, -1):
+    pos = (pos + k) % size           # rank of the child to remove
+    idx, need, step = 0, pos + 1, top
+    while step:                      # smallest idx with prefix count >= need
+      nxt = idx + step
+      if nxt <= n and tree[nxt] < need:
+        idx = nxt
+        need -= tree[nxt]
+      step >>= 1
+    child = idx + 1
+    result.append(child)
+    while child <= n:
+      tree[child] -= 1
+      child += child & -child
   return result
 
-# Main
 if __name__ == "__main__":
-  n, k = map(int, input().split())
-  result = josephus_optimal(n, k)
-  print(" ".join(map(str, result)))
+  n, k = map(int, sys.stdin.readline().split())
+  print(" ".join(map(str, josephus_optimal(n, k))))
 ```
-
-**Note:** For CSES submissions, use the C++ version as `sortedcontainers` is not available.
 
 ### Complexity
 
@@ -295,15 +301,15 @@ if __name__ == "__main__":
 ### Mistake 1: Wrong Modulo Calculation
 
 ```python
-# WRONG: Using k directly without adjusting for 0-indexing
-pos = (pos + k) % len(children)  # Off by one!
+# WRONG: Treating k as "remove the k-th child"
+pos = (pos + k - 1) % len(children)  # 7 2 -> 2 4 6 1 5 3 7
 
-# CORRECT: Account for 0-indexed positions
-pos = (pos + k - 1) % len(children)
+# CORRECT: Skip k children, remove the next one
+pos = (pos + k) % len(children)      # 7 2 -> 3 6 2 7 5 1 4
 ```
 
-**Problem:** The k-th element from current means moving k-1 positions forward.
-**Fix:** Use `k - 1` in the calculation.
+**Problem:** CSES skips k children, so the removed child is k positions after the current one (k = 0 removes the current child).
+**Fix:** Use `pos + k`, not `pos + k - 1`.
 
 ### Mistake 2: Forgetting to Update Position After Removal
 
@@ -350,10 +356,11 @@ def josephus_math(n, k):
 | Case | Input | Expected Output | Why |
 |------|-------|-----------------|-----|
 | Single child | n=1, k=5 | 1 | Only one child to remove |
-| k=1 | n=5, k=1 | 1 2 3 4 5 | Remove in order |
-| k=n | n=4, k=4 | 4 3 2 1 | Remove last, then last of remaining |
-| Large k | n=3, k=10^9 | Depends on k%n pattern | Modulo handles large k |
-| k > n | n=5, k=7 | Same as k=2 (mod pattern) | Modulo wraps around |
+| k=0 | n=5, k=0 | 1 2 3 4 5 | Nobody is skipped |
+| k=1 | n=5, k=1 | 2 4 1 5 3 | Every second child (Josephus I) |
+| k=n | n=4, k=4 | 1 3 4 2 | k wraps a full circle first |
+| Large k | n=3, k=10^9 | 2 3 1 | Reduce k modulo the current size |
+| k > n | n=5, k=7 | 3 2 5 4 1 | Not the same as k=2: the size shrinks each step |
 
 ---
 
@@ -363,11 +370,11 @@ def josephus_math(n, k):
 - You need to repeatedly find and remove the k-th element
 - Operations must be faster than O(n) per step
 - Order of removal matters (not just final survivor)
-- k is arbitrary (not just k=2 which has a formula)
+- k is arbitrary (not just every second child, which has a formula)
 
 ### Don't Use When:
 - Only the final survivor is needed (use mathematical formula)
-- k=2 specifically (Josephus I has O(n) formula)
+- Every second child is removed (Josephus I has an O(n) recursion)
 - n is very small (brute force is simpler)
 
 ### Pattern Recognition Checklist:
@@ -383,8 +390,8 @@ def josephus_math(n, k):
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Josephus Problem I (CSES 2162)](https://cses.fi/problemset/task/2162) | k=2 case with mathematical solution |
-| [Find the Winner (LeetCode 1823)](https://leetcode.com/problems/find-the-winner-of-the-circular-game/) | Same problem, only asks for survivor |
+| [Josephus Problem I (CSES 2162)](https://cses.fi/problemset/task/2162) | Every-second-child case (k=1 here) |
+| [Find the Winner (LeetCode 1823)](https://leetcode.com/problems/find-the-winner-of-the-circular-game/) | Removes the k-th child and asks only for the survivor |
 
 ### Similar Difficulty
 
@@ -398,7 +405,7 @@ def josephus_math(n, k):
 | Problem | New Concept |
 |---------|-------------|
 | [Sliding Window Median (LeetCode 480)](https://leetcode.com/problems/sliding-window-median/) | Two balanced BSTs for median tracking |
-| [Range Sum BST variants](https://cses.fi/problemset/task/1749) | Order statistics in more complex scenarios |
+| [List Removals (CSES 1749)](https://cses.fi/problemset/task/1749) | Same rank-based removal with arbitrary positions |
 
 ---
 
@@ -415,8 +422,8 @@ def josephus_math(n, k):
 
 Before moving on, make sure you can:
 - [ ] Explain why mathematical formula doesn't work for elimination order
-- [ ] Implement indexed set solution in C++ using pb_ds
-- [ ] Handle the modulo arithmetic correctly (k-1 and position adjustment)
+- [ ] Implement the indexed set with pb_ds (C++) or a Fenwick tree descent (Python)
+- [ ] Handle the modulo arithmetic correctly (skip k, then reduce modulo the current size)
 - [ ] Identify similar problems requiring order statistics
 
 ---

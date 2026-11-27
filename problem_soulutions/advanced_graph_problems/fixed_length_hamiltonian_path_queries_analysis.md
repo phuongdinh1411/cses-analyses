@@ -396,8 +396,8 @@ for v in range(n):
 | Problem | Key Difference |
 |---------|----------------|
 | [CSES - Hamiltonian Flights](https://cses.fi/problemset/task/1690) | This problem |
-| [CSES - Counting Paths](https://cses.fi/problemset/task/1638) | General path counting without Hamiltonian constraint |
-| [TSP with DP](https://cses.fi/problemset/task/1690) | Minimize cost instead of counting |
+| [CSES - Game Routes](https://cses.fi/problemset/task/1681) | General path counting without Hamiltonian constraint |
+| [TSP with DP (AtCoder ABC180 E)](https://atcoder.jp/contests/abc180/tasks/abc180_e) | Minimize cost instead of counting |
 
 ### Harder (Do These After)
 

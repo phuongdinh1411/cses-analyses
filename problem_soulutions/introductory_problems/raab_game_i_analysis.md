@@ -381,7 +381,7 @@ if move <= i and not dp[i - move]:
 |---------|-------------|
 | [Nim Game II (CSES)](https://cses.fi/problemset/task/1098) | Multiple piles, XOR |
 | [Grundy's Game (CSES)](https://cses.fi/problemset/task/2207) | Sprague-Grundy numbers |
-| [Staircase Nim](https://cses.fi/problemset/task/1099) | Modified Nim rules |
+| [Stair Game](https://cses.fi/problemset/task/1099) | Modified Nim rules |
 
 ---
 

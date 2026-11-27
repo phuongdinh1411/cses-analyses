@@ -12,7 +12,7 @@ tags: [suffix-array, lcp, string-hashing, trie]
 
 | Attribute | Value |
 |-----------|-------|
-| **CSES Link** | [https://cses.fi/problemset/task/2223](https://cses.fi/problemset/task/2223) |
+| **CSES Link** | [https://cses.fi/problemset/task/2105](https://cses.fi/problemset/task/2105) |
 | **Difficulty** | Medium |
 | **Category** | String Algorithms |
 | **Time Limit** | 1 second |

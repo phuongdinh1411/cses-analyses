@@ -422,7 +422,7 @@ backtrack(current + c)
 | Problem | New Concept |
 |---------|-------------|
 | [Chessboard and Queens (CSES)](https://cses.fi/problemset/task/1624) | Backtracking with constraints |
-| [Grid Paths (CSES)](https://cses.fi/problemset/task/1625) | Backtracking with pruning |
+| [Grid Path Description (CSES)](https://cses.fi/problemset/task/1625) | Backtracking with pruning |
 | [Letter Combinations (LeetCode 17)](https://leetcode.com/problems/letter-combinations-of-a-phone-number/) | Backtracking with multiple choices per position |
 
 ---

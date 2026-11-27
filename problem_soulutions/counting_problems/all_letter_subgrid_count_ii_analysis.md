@@ -54,14 +54,10 @@ aaa
 aaa
 
 Output:
-14
+36
 ```
 
-**Explanation:**
-- 9 subgrids of size 1x1 (each cell)
-- 4 subgrids of size 2x2 (all contain 'a')
-- 1 subgrid of size 3x3 (entire grid)
-- Total: 9 + 4 + 1 = 14
+**Explanation:** Every rectangle is uniform, so count all rectangles: choose 2 of the 4 horizontal grid lines and 2 of the 4 vertical ones, C(4,2) × C(4,2) = 6 × 6 = 36. Counting only squares would give 9 + 4 + 1 = 14.
 
 ---
 
@@ -219,21 +215,12 @@ def count_uniform_subgrids(grid):
         height[j] = 1
         prev_char[j] = grid[i][j]
 
-    # Count rectangles ending at row i
+    # Count rectangles ending at row i, one same-letter segment at a time
     j = 0
     while j < m:
-      # Find segment of same letter
-      letter = grid[i][j]
       start = j
-      min_height = height[j]
-
-      while j < m and grid[i][j] == letter:
-        min_height = min(min_height, height[j])
-        # Count rectangles with this cell as bottom-right
-        # Using stack approach for general case
+      while j < m and grid[i][j] == grid[i][start]:
         j += 1
-
-      # For segment [start, j), count all uniform rectangles
       total += count_segment_rectangles(height, start, j)
 
   return total
@@ -241,25 +228,20 @@ def count_uniform_subgrids(grid):
 
 def count_segment_rectangles(height, start, end):
   """
-  Count rectangles in a horizontal segment where all cells
-  have the same letter. Uses monotonic stack.
+  Count rectangles whose bottom-right cell lies in columns [start, end)
+  of a same-letter segment. Uses a monotonic stack.
   """
   count = 0
-  stack = []  # (index, height)
+  stack = []  # column indices with strictly increasing heights
+  ending = {}  # ending[j] = rectangles whose bottom-right cell is column j
 
-  for j in range(start, end + 1):
-    h = height[j] if j < end else 0
-    width = 0
-
-    while stack and stack[-1][1] >= h:
-      idx, prev_h = stack.pop()
-      width += (j - idx) if not stack else (j - stack[-1][0] - 1)
-      # Rectangles with height exactly prev_h
-      segment_width = j - idx
-      count += (prev_h - h) * segment_width * (segment_width + 1) // 2
-
-    if width > 0 or not stack:
-      stack.append((j - width if width else j, h))
+  for j in range(start, end):
+    while stack and height[stack[-1]] >= height[j]:
+      stack.pop()
+    left = stack[-1] if stack else start - 1
+    ending[j] = height[j] * (j - left) + ending.get(left, 0)
+    stack.append(j)
+    count += ending[j]
 
   return count
 ```
@@ -297,18 +279,15 @@ for j in range(m):
 ### Mistake 2: Off-by-One in Segment Boundaries
 
 ```python
-# WRONG
-while j < m and grid[i][j] == letter:
-  process(j)
-# Forgot to handle last element properly
+# WRONG - lets rectangles extend left past the segment
+left = stack[-1] if stack else -1
 
-# CORRECT
-for j in range(start, end + 1):  # Include sentinel
-  h = height[j] if j < end else 0  # Sentinel forces stack flush
+# CORRECT - the segment starts at column `start`
+left = stack[-1] if stack else start - 1
 ```
 
-**Problem:** Not properly closing out rectangles at segment end.
-**Fix:** Use a sentinel value (height 0) to force final processing.
+**Problem:** A rectangle cannot cross into a neighbouring segment with a different letter.
+**Fix:** When the stack is empty, the leftmost allowed column is `start`, not 0.
 
 ### Mistake 3: Integer Overflow
 

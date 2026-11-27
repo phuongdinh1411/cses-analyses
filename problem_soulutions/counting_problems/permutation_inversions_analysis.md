@@ -385,5 +385,5 @@ Before moving on, make sure you can:
 ## Additional Resources
 
 - [CP-Algorithms: Counting Inversions](https://cp-algorithms.com/sequences/inversions.html)
-- [CSES Inversion Probability](https://cses.fi/problemset/task/2169) - Expected inversions
+- [CSES Inversion Probability](https://cses.fi/problemset/task/1728) - Expected inversions
 - [Inversions in Permutations - Math Background](https://en.wikipedia.org/wiki/Inversion_(discrete_mathematics))

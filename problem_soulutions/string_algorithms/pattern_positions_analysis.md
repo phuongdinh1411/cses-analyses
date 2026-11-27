@@ -17,7 +17,7 @@ prerequisites: [string_matching_analysis, finding_borders_analysis]
 | **Category** | String Algorithms |
 | **Time Limit** | 1 second |
 | **Key Technique** | Aho-Corasick Automaton |
-| **CSES Link** | [Pattern Positions](https://cses.fi/problemset/task/2102) |
+| **CSES Link** | [Pattern Positions](https://cses.fi/problemset/task/2104) |
 
 ### Learning Goals
 
@@ -383,4 +383,4 @@ for idx in out[node]: ...     |  temp = node
 ## Additional Resources
 
 - [CP-Algorithms: Aho-Corasick](https://cp-algorithms.com/string/aho_corasick.html)
-- [CSES Pattern Positions](https://cses.fi/problemset/task/2107) - Multi-pattern string matching
+- [CSES Pattern Positions](https://cses.fi/problemset/task/2104) - Multi-pattern string matching

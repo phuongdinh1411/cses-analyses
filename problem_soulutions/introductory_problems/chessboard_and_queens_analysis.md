@@ -384,7 +384,7 @@ col_used[col] = False  # Backtrack!
 | Problem | New Concept |
 |---------|-------------|
 | [Sudoku Solver (LeetCode 37)](https://leetcode.com/problems/sudoku-solver/) | More complex constraints, 2D placement |
-| [Grid Paths (CSES)](https://cses.fi/problemset/task/1625) | Backtracking with path constraints |
+| [Grid Path Description (CSES)](https://cses.fi/problemset/task/1625) | Backtracking with path constraints |
 
 ---
 

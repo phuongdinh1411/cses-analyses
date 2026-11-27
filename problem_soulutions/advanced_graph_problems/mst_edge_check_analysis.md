@@ -1,19 +1,19 @@
 ---
 layout: simple
-title: "New Roads Queries - MST Edge Check"
+title: "MST Edge Check - Graph Problem"
 permalink: /problem_soulutions/advanced_graph_problems/mst_edge_check_analysis
 difficulty: Hard
 tags: [mst, kruskal, union-find, graph, lca]
 prerequisites: [union-find, mst-basics, binary-lifting]
 ---
 
-# New Roads Queries (MST Edge Check)
+# MST Edge Check
 
 ## Problem Overview
 
 | Attribute | Value |
 |-----------|-------|
-| **Source** | [CSES - New Roads Queries](https://cses.fi/problemset/task/2101) |
+| **Source** | [CSES - MST Edge Check](https://cses.fi/problemset/task/3407) |
 | **Difficulty** | Hard |
 | **Category** | Graph / MST |
 | **Time Limit** | 1 second |

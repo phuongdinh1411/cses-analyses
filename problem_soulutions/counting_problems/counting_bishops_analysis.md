@@ -17,7 +17,7 @@ prerequisites: [binomial-coefficients, dp-basics]
 | **Category** | Combinatorics / DP |
 | **Time Limit** | 1 second |
 | **Key Technique** | Diagonal Independence + DP Convolution |
-| **CSES Link** | [Counting Bishops](https://cses.fi/problemset/task/1677) |
+| **CSES Link** | [Counting Bishops](https://cses.fi/problemset/task/2176) |
 
 ### Learning Goals
 

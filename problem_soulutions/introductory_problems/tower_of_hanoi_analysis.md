@@ -326,7 +326,7 @@ def hanoi(disks, source, target, auxiliary):
 
 | Problem | New Concept |
 |---------|-------------|
-| [Grid Paths](https://cses.fi/problemset/task/1625) | Backtracking with pruning |
+| [Grid Path Description](https://cses.fi/problemset/task/1625) | Backtracking with pruning |
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Recursive backtracking |
 
 ---

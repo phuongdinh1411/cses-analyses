@@ -372,7 +372,7 @@ while length > 0:
 | Problem | Key Difference |
 |---------|----------------|
 | [Finding Periods (CSES 1733)](https://cses.fi/problemset/task/1733) | Uses failure function to find periods |
-| [Pattern Positions (CSES 1753)](https://cses.fi/problemset/task/1753) | Full KMP pattern matching |
+| [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | Full KMP pattern matching |
 | [Shortest Palindrome (LC 214)](https://leetcode.com/problems/shortest-palindrome/) | Uses KMP on s + "#" + reverse(s) |
 
 ### Harder (Do These After)

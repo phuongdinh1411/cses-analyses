@@ -13,7 +13,7 @@ prerequisites: []
 
 | Attribute | Value |
 |-----------|-------|
-| **Problem Link** | [CSES 1625 - Grid Paths](https://cses.fi/problemset/task/1625) |
+| **Problem Link** | [CSES 1625 - Grid Path Description](https://cses.fi/problemset/task/1625) |
 | **Difficulty** | Hard |
 | **Category** | Backtracking / Pruning |
 | **Time Limit** | 1 second |
@@ -371,6 +371,6 @@ Before moving on, make sure you can:
 
 ## Additional Resources
 
-- [CSES Grid Paths](https://cses.fi/problemset/task/1625) - Backtracking on grid
+- [CSES Grid Path Description](https://cses.fi/problemset/task/1625) - Backtracking on grid
 - [CP-Algorithms: Backtracking](https://cp-algorithms.com/others/backtracking.html)
 - [Hamiltonian Path - Wikipedia](https://en.wikipedia.org/wiki/Hamiltonian_path)

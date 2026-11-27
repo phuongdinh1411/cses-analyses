@@ -15,7 +15,7 @@ tags: [set, multiset, binary-search, dynamic-maximum]
 | **Difficulty** | Medium |
 | **Category** | Sorting and Searching |
 | **Time Limit** | 1 second |
-| **Key Technique** | Set + Multiset for Dynamic Maximum Tracking |
+| **Key Technique** | Set + Multiset for Dynamic Maximum Tracking; offline reverse with a linked list |
 | **CSES Link** | [Traffic Lights](https://cses.fi/problemset/task/1163) |
 
 ### Learning Goals
@@ -25,6 +25,7 @@ After solving this problem, you will be able to:
 - [ ] Use a multiset to track segment lengths and find maximum in O(log n)
 - [ ] Handle dynamic updates where inserting splits one segment into two
 - [ ] Choose between set vs multiset based on whether duplicates are possible
+- [ ] Turn insertions into deletions by processing offline in reverse
 
 ---
 
@@ -42,7 +43,7 @@ After solving this problem, you will be able to:
 **Constraints:**
 - 1 <= x <= 10^9
 - 1 <= n <= 2 * 10^5
-- 0 < position < x (lights are always between endpoints)
+- 0 < position < x (lights are always between endpoints), all positions distinct
 
 ### Example
 
@@ -220,17 +221,15 @@ Step 3: Add position 2
   Output: 3
 ```
 
-### Code (Python)
+### Code (Python, local only)
 
-Python does not have a built-in multiset. We use `sortedcontainers.SortedList` for an efficient implementation:
+Python has no built-in multiset. `sortedcontainers.SortedList` gives the same O(log n) operations, but **CSES does not provide `sortedcontainers`**; for submission use Solution 3.
 
 ```python
 from sortedcontainers import SortedList
 
 def solve_optimal(x, positions):
   """
-  Optimal solution using sorted containers.
-
   Time: O(n log n)
   Space: O(n)
   """
@@ -239,59 +238,18 @@ def solve_optimal(x, positions):
   result = []
 
   for p in positions:
-    # Find neighbors using bisect
     idx = lights.bisect_left(p)
     right = lights[idx]
     left = lights[idx - 1]
 
-    # Remove old segment, add two new segments
     segments.remove(right - left)
     segments.add(p - left)
     segments.add(right - p)
-
-    # Add new position
     lights.add(p)
 
-    # Maximum is the last element
     result.append(segments[-1])
 
   return result
-
-# For CSES submission (without external libraries)
-from bisect import bisect_left, insort
-
-def solve_for_submission(x, positions):
-  """
-  Solution using built-in bisect (O(n) per insert, but works for n <= 2*10^5).
-  """
-  lights = [0, x]
-  segments = [x]
-  result = []
-
-  for p in positions:
-    idx = bisect_left(lights, p)
-    right = lights[idx]
-    left = lights[idx - 1]
-
-    # Remove old segment
-    segments.remove(right - left)
-
-    # Add new segments
-    insort(segments, p - left)
-    insort(segments, right - p)
-
-    # Insert new light
-    lights.insert(idx, p)
-
-    result.append(segments[-1])
-
-  return result
-
-# Read input and solve
-if __name__ == "__main__":
-  x, n = map(int, input().split())
-  positions = list(map(int, input().split()))
-  print(*solve_for_submission(x, positions))
 ```
 
 ### Complexity
@@ -300,6 +258,74 @@ if __name__ == "__main__":
 |--------|-------|-------------|
 | Time | O(n log n) | n insertions, each O(log n) for set/multiset operations |
 | Space | O(n) | Store n+2 positions and n+1 segments |
+
+---
+
+## Solution 3: Offline in Reverse (Python stdlib, CSES-ready)
+
+### Key Insight
+
+> **The Trick:** All positions are known up front. Run time backwards: start with every light present and **remove** them in reverse order. Removing a light merges two gaps into one, so the maximum gap can only grow, and a single running maximum suffices.
+
+### Algorithm
+
+1. Sort `[0, x] + positions`; link each sorted position to its neighbours (`prev`, `nxt` arrays).
+2. `best` = largest gap with all lights present; this is the answer after the last addition.
+3. For i = n-1 down to 1: unlink light `p[i]`, set `best = max(best, right - left)`; this is the answer after addition i-1.
+4. Print the answers in forward order.
+
+### Dry Run Example
+
+`x = 8, positions = [3, 6, 2]`:
+
+```
+Sorted: [0, 2, 3, 6, 8]   gaps 2 1 3 2    best = 3   -> answer 3 (after adding 2)
+Remove 2: neighbours 0 and 3, gap 3       best = 3   -> answer 3 (after adding 6)
+Remove 6: neighbours 3 and 8, gap 5       best = 5   -> answer 5 (after adding 3)
+
+Output: 5 3 3
+```
+
+### Code
+
+```python
+import sys
+
+def main():
+  data = sys.stdin.buffer.read().split()
+  x, n = int(data[0]), int(data[1])
+  p = list(map(int, data[2:2 + n]))
+
+  pts = sorted(p + [0, x])
+  rank = {v: i for i, v in enumerate(pts)}
+  m = len(pts)
+  prev = list(range(-1, m - 1))
+  nxt = list(range(1, m + 1))
+
+  best = max(pts[i + 1] - pts[i] for i in range(m - 1))
+  ans = [0] * n
+  ans[n - 1] = best
+  for i in range(n - 1, 0, -1):
+    k = rank[p[i]]
+    left, right = prev[k], nxt[k]
+    nxt[left], prev[right] = right, left
+    gap = pts[right] - pts[left]
+    if gap > best:
+      best = gap
+    ans[i - 1] = best
+
+  print(" ".join(map(str, ans)))
+
+if __name__ == "__main__":
+  main()
+```
+
+### Complexity
+
+| Metric | Value | Explanation |
+|--------|-------|-------------|
+| Time | O(n log n) | One sort; each removal is O(1) |
+| Space | O(n) | Sorted positions and the linked list |
 
 ---
 
@@ -315,10 +341,17 @@ if __name__ == "__main__":
 **Problem:** `multiset::erase(value)` removes all elements equal to value.
 **Fix:** Use `multiset::erase(multiset::find(value))` to remove exactly one instance.
 
-### Mistake 3: Wrong neighbor finding logic
+### Mistake 3: Using a Python list as the multiset
 
-**Problem:** If p already exists, lower_bound returns p itself.
-**Fix:** Use `upper_bound` which always returns the first element strictly greater than p.
+```python
+# WRONG - each remove/insort/insert shifts the list: O(n) per light
+segments.remove(right - left)
+insort(segments, p - left)
+lights.insert(idx, p)
+```
+
+**Problem:** This is O(n^2) overall; at n = 2*10^5 it runs for well over 30 seconds against a 1 second limit.
+**Fix:** Use the offline reverse method (Solution 3), or a real ordered multiset in C++.
 
 ---
 
@@ -329,7 +362,7 @@ if __name__ == "__main__":
 | Single light in middle | x=10, pos=[5] | 5 | Splits 10 into 5,5. Max = 5 |
 | Light near start | x=10, pos=[1] | 9 | Splits into 1,9. Max = 9 |
 | Light near end | x=10, pos=[9] | 9 | Splits into 9,1. Max = 9 |
-| Sequential insertions | x=10, pos=[5,2,8] | 5 4 4 | Each split affects maximum |
+| Sequential insertions | x=10, pos=[5,2,8] | 5 5 3 | The second 5-gap survives until 8 splits it |
 | Large x | x=10^9, pos=[500000000] | 500000000 | Handle large values correctly |
 
 ---
@@ -384,6 +417,7 @@ if __name__ == "__main__":
 2. **Time Optimization:** From O(n^2 log n) to O(n log n) by tracking segments separately
 3. **Space Trade-off:** O(n) extra space for segment lengths enables O(log n) updates
 4. **Pattern:** Set + Multiset is powerful for dynamic interval problems with max/min queries
+5. **Offline Trick:** When all updates are known in advance, reversing time turns splits into merges, and a running maximum replaces the multiset
 
 ---
 

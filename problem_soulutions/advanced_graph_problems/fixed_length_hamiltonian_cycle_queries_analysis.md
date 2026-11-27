@@ -372,8 +372,8 @@ dp[new_mask][j] = (dp[new_mask][j] + dp[mask][i]) % MOD
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [CSES Counting Paths](https://cses.fi/problemset/task/1638) | Basic path counting DP |
-| [CSES Grid Paths](https://cses.fi/problemset/task/1639) | 2D grid path counting |
+| [CSES Game Routes](https://cses.fi/problemset/task/1681) | Basic path counting DP |
+| [CSES Grid Paths I](https://cses.fi/problemset/task/1638) | 2D grid path counting |
 
 ### Similar Difficulty
 

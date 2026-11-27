@@ -345,7 +345,7 @@ result = pow(2, exponent, MOD)  # Fast modular exponentiation
 
 | Problem | New Concept |
 |---------|-------------|
-| [Graph Counting](https://cses.fi/problemset/task/2415) | More complex graph counting |
+| [Functional Graph Distribution](https://cses.fi/problemset/task/2415) | More complex graph counting |
 | [Distributing Apples](https://cses.fi/problemset/task/1716) | Stars and bars counting |
 
 ---

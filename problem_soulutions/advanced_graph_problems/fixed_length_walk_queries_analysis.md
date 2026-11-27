@@ -389,7 +389,7 @@ answers[idx] = Ak[a-1][b-1]  # Convert to 0-indexed
 | Problem | Why It Helps |
 |---------|--------------|
 | [Binary Exponentiation](https://cses.fi/problemset/task/1095) | Core technique for fast power |
-| [BFS Shortest Path](https://cses.fi/problemset/task/1667) | Basic graph traversal |
+| [Message Route](https://cses.fi/problemset/task/1667) | Basic graph traversal |
 
 ### Similar Difficulty
 

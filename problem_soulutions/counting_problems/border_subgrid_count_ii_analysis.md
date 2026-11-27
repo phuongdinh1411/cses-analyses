@@ -1,12 +1,14 @@
 ---
 layout: simple
-title: "Border Subgrid Count II - Grid Counting Problem"
+title: "Border Subgrid Count II (Variant) - Grid Counting Problem"
 permalink: /problem_soulutions/counting_problems/border_subgrid_count_ii_analysis
 difficulty: Hard
 tags: [grid, prefix-sum, counting, 2d-arrays]
 ---
 
 # Border Subgrid Count II
+
+> **Note:** This page solves a variant, not CSES [Border Subgrid Count II](https://cses.fi/problemset/task/3418), which asks, for each of the first k letters, how many rectangular subgrids of an n × n letter grid have a border made only of that letter.
 
 ## Problem Overview
 
@@ -16,6 +18,7 @@ tags: [grid, prefix-sum, counting, 2d-arrays]
 | **Category** | Grid Counting / 2D Prefix Sums |
 | **Time Limit** | 1.0 seconds |
 | **Key Technique** | 2D Prefix Sum, Range Queries |
+| **CSES Link** | [Border Subgrid Count II](https://cses.fi/problemset/task/3418) (real CSES task; this page is a variant) |
 
 ### Learning Goals
 
@@ -29,7 +32,7 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
-**Problem:** Given an n x m grid, count all subgrids where border cells equal a specific value and interior cells equal a different value.
+**Problem:** Given an n x m grid, count all subgrids where border cells equal a border value (1) and interior cells equal an interior value (0). A subgrid with height or width below 3 has no interior, so only its border is checked.
 
 **Input:**
 - Line 1: Two integers n and m (grid dimensions)
@@ -53,12 +56,13 @@ Input:
 1 1 1 1
 
 Output:
-1
+37
 ```
 
-**Explanation:** Only the 4x4 subgrid satisfies the condition:
-- Border cells (perimeter): all 1s
-- Interior cells (2x2 center): all 0s
+**Explanation:**
+- 36 subgrids are too thin to have an interior (height or width below 3) and consist only of 1s: the 12 single border cells and the strips of 1s along the edges
+- The only subgrid with an interior that qualifies is the full 4x4 grid: border cells all 1s, 2x2 center all 0s
+- Total: 36 + 1 = 37
 
 ---
 

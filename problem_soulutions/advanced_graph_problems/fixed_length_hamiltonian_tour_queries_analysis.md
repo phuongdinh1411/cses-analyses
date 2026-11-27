@@ -383,8 +383,8 @@ for i in range(n):
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Counting Paths (CSES)](https://cses.fi/problemset/task/1638) | Basic path counting DP |
-| [Grid Paths (CSES)](https://cses.fi/problemset/task/1639) | DP on grids |
+| [Game Routes (CSES)](https://cses.fi/problemset/task/1681) | Basic path counting DP |
+| [Grid Paths I (CSES)](https://cses.fi/problemset/task/1638) | DP on grids |
 
 ### Similar Difficulty
 
@@ -399,7 +399,7 @@ for i in range(n):
 | Problem | New Concept |
 |---------|-------------|
 | [Counting Tilings (CSES)](https://cses.fi/problemset/task/2181) | Profile/broken profile DP |
-| [TSP (Traveling Salesman)](https://cses.fi/problemset/task/1690) | Minimum cost variant |
+| [TSP (AtCoder ABC180 E)](https://atcoder.jp/contests/abc180/tasks/abc180_e) | Minimum cost variant |
 
 ---
 

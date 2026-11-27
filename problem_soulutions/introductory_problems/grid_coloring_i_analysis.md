@@ -394,7 +394,7 @@ for color in range(1, k + 1):
 |---------|-------------|
 | [N-Queens II](https://leetcode.com/problems/n-queens-ii/) | Counting all solutions |
 | [Graph Coloring](https://cp-algorithms.com/graph/coloring.html) | Generalized to arbitrary graphs |
-| [Hamiltonian Path](https://cses.fi/problemset/task/1690) | Backtracking with bitmask DP |
+| [Hamiltonian Flights](https://cses.fi/problemset/task/1690) | Backtracking with bitmask DP |
 
 ---
 

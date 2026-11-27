@@ -373,7 +373,7 @@ if m1 * x + b1 < m2 * x + b2:
 
 | Difficulty | Problem | Notes |
 |------------|---------|-------|
-| Similar | [Line Segment Intersection](https://cses.fi/problemset/task/2189) | Direct CHT application |
+| Similar | [Line Segments Trace I](https://cses.fi/problemset/task/3427) | Direct CHT application |
 | Similar | [Polygon Area](https://cses.fi/problemset/task/2191) | Related geometry |
 | Harder | Li Chao Segment Tree | Handles arbitrary insertion order |
 

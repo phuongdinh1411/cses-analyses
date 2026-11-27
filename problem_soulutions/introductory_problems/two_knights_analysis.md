@@ -342,7 +342,7 @@ for k in range(1, n + 1):
 
 | Problem | Key Difference |
 |---------|----------------|
-| [Grid Paths](https://cses.fi/problemset/task/1625) | Counting paths on a grid |
+| [Grid Path Description](https://cses.fi/problemset/task/1625) | Counting paths on a grid |
 | [Counting Tilings](https://cses.fi/problemset/task/2181) | More complex combinatorics |
 
 ### Harder (Do These After)

@@ -465,7 +465,7 @@ Output: 4
 |---------|-------------|
 | [String Matching (CSES 1753)](https://cses.fi/problemset/task/1753) | Full KMP pattern matching |
 | [Longest Happy Prefix (LC 1392)](https://leetcode.com/problems/longest-happy-prefix/) | Find the longest border directly |
-| [Z-Algorithm Problems](https://cses.fi/problemset/task/1733) | Alternative approach to periods using Z-array |
+| [String Functions](https://cses.fi/problemset/task/2107) | Alternative approach to periods using Z-array |
 
 ---
 

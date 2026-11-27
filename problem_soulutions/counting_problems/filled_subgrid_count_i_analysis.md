@@ -361,7 +361,7 @@ if subgrid_sum == k * k * grid[r][c]:
 
 | Problem | New Concept |
 |---------|-------------|
-| [Filled Subgrid Count II](https://cses.fi/problemset/task/2102) | Larger constraints, optimization needed |
+| [Filled Subgrid Count II](https://cses.fi/problemset/task/3414) | Larger constraints, optimization needed |
 | [Maximal Rectangle (LeetCode)](https://leetcode.com/problems/maximal-rectangle/) | Histogram-based approach |
 
 ---

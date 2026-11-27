@@ -365,8 +365,8 @@ return edges  # Missing one edge!
 
 | Problem | Key Concept |
 |---------|-------------|
-| [Counting Trees](https://cses.fi/problemset/task/1693) | Cayley's formula application |
-| [New Roads Queries](https://cses.fi/problemset/task/1160) | Tree construction |
+| [Clues (Codeforces 156D)](https://codeforces.com/problemset/problem/156/D) | Cayley's formula application |
+| [New Roads Queries](https://cses.fi/problemset/task/2101) | Tree construction |
 
 ### Harder (Do These After)
 

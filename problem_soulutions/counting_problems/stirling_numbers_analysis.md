@@ -428,7 +428,7 @@ Number of surjections from n to k = k! * S(n, k)
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Counting Combinations (CSES)](https://cses.fi/problemset/task/1079) | Basic combinatorics |
+| [Binomial Coefficients (CSES)](https://cses.fi/problemset/task/1079) | Basic combinatorics |
 | [Distributing Apples (CSES)](https://cses.fi/problemset/task/1716) | Stars and bars method |
 
 ### Direct Applications

@@ -35,7 +35,7 @@ After solving this problem, you will be able to:
 1. **Update (type 1):** Change the value at position k to u
 2. **Max prefix sum (type 2):** Find the maximum prefix sum in range [a, b]
 
-A prefix sum at position i within range [a, b] is: sum(arr[a], arr[a+1], ..., arr[i])
+A prefix sum at position i within range [a, b] is: sum(arr[a], arr[a+1], ..., arr[i]). **Empty prefixes (with sum 0) are allowed**, so the answer is never negative.
 
 **Input:**
 - Line 1: n (array size) and q (number of queries)
@@ -53,23 +53,23 @@ A prefix sum at position i within range [a, b] is: sum(arr[a], arr[a+1], ..., ar
 ```
 Input:
 8 4
-3 -1 4 1 -5 9 2 6
-2 1 8
-2 2 3
-1 3 -5
-2 1 8
+1 2 -1 3 1 -5 1 4
+2 2 6
+1 4 -2
+2 2 6
+2 3 4
 
 Output:
-19
-3
-10
+5
+2
+0
 ```
 
 **Explanation:**
-- Query `2 1 8`: Prefix sums are [3, 2, 6, 7, 2, 11, 13, 19]. Max = 19 at position 8.
-- Query `2 2 3`: Range [-1, 4], prefix sums [-1, 3]. Max = 3.
-- Update `1 3 -5`: arr[3] becomes -5.
-- Query `2 1 8`: New prefix sums [3, 2, -3, -2, -7, 2, 4, 10]. Max = 10.
+- Query `2 2 6`: Range [2, -1, 3, 1, -5], prefix sums [2, 1, 4, 5, 0]. Max = 5.
+- Update `1 4 -2`: arr[4] becomes -2.
+- Query `2 2 6`: Range [2, -1, -2, 1, -5], prefix sums [2, 1, -1, 0, -5]. Max = 2.
+- Query `2 3 4`: Range [-1, -2], prefix sums [-1, -3]. Both are negative, so the empty prefix wins: 0.
 
 ---
 
@@ -111,7 +111,7 @@ def solve_brute_force(arr, queries):
       arr[query[1] - 1] = query[2]
     else:  # Query
       a, b = query[1], query[2]
-      max_prefix, curr = float('-inf'), 0
+      max_prefix, curr = 0, 0  # empty prefix
       for i in range(a - 1, b):
         curr += arr[i]
         max_prefix = max(max_prefix, curr)
@@ -130,7 +130,9 @@ def solve_brute_force(arr, queries):
 | Field | Meaning |
 |-------|---------|
 | `total` | Sum of all elements in this segment |
-| `max_prefix` | Maximum prefix sum from segment's left boundary |
+| `max_prefix` | Maximum prefix sum from segment's left boundary, counting the empty prefix (so always >= 0) |
+
+A leaf with value x is `(x, max(x, 0))`, and an empty segment is `(0, 0)`.
 
 ### Merge Function
 
@@ -154,15 +156,15 @@ Tree Structure:
         (sum=2, max=3)      (sum=2, max=4)
          /       \            /       \
        [1]       [2]        [3]       [4]
-    (3, 3)    (-1,-1)     (4, 4)   (-2,-2)
+    (3, 3)    (-1, 0)     (4, 4)   (-2, 0)
 
 Query [2,4]:
-  Combine [2] with [3-4]: merge((-1,-1), (2,4))
+  Combine [2] with [3-4]: merge((-1,0), (2,4))
   total = -1 + 2 = 1
-  max_prefix = max(-1, -1 + 4) = 3
+  max_prefix = max(0, -1 + 4) = 3
 
 Verify: arr[2..4] = [-1, 4, -2]
-  Prefixes: -1, 3, 1 -> Max = 3  [Correct]
+  Prefixes: (empty) 0, -1, 3, 1 -> Max = 3  [Correct]
 ```
 
 ### Code (Python)
@@ -176,14 +178,14 @@ def solve():
   n, q = int(data[idx]), int(data[idx+1]); idx += 2
 
   arr = [0] + [int(data[idx+i]) for i in range(n)]; idx += n
-  tree = [(0, float('-inf'))] * (4 * n)
+  tree = [(0, 0)] * (4 * n)
 
   def merge(l, r):
     return (l[0] + r[0], max(l[1], l[0] + r[1]))
 
   def build(node, start, end):
     if start == end:
-      tree[node] = (arr[start], arr[start])
+      tree[node] = (arr[start], max(arr[start], 0))
       return
     mid = (start + end) // 2
     build(2*node, start, mid)
@@ -192,7 +194,7 @@ def solve():
 
   def update(node, start, end, pos, val):
     if start == end:
-      tree[node] = (val, val)
+      tree[node] = (val, max(val, 0))
       return
     mid = (start + end) // 2
     if pos <= mid:
@@ -203,7 +205,7 @@ def solve():
 
   def query(node, start, end, l, r):
     if r < start or end < l:
-      return (0, float('-inf'))
+      return (0, 0)
     if l <= start and end <= r:
       return tree[node]
     mid = (start + end) // 2
@@ -258,14 +260,19 @@ max_prefix = max(right[1], right[0] + left[1])  # Reversed!
 
 **Fix:** Use `max(left.max_prefix, left.total + right.max_prefix)`.
 
-### Mistake 3: Wrong Identity Element
+### Mistake 3: Forgetting the Empty Prefix
 
 ```python
-# WRONG
-return (0, 0)  # Empty segment max_prefix should be -infinity
+# WRONG - a range of only negatives returns a negative answer
+tree[node] = (x, x)
+return (0, float('-inf'))  # out of range
+
+# CORRECT - CSES allows the empty prefix (sum 0)
+tree[node] = (x, max(x, 0))
+return (0, 0)  # out of range
 ```
 
-**Fix:** Use `(0, float('-inf'))` for out-of-range.
+**Fix:** Count the empty prefix in every node; then `(0, 0)` is also the correct identity. On the sample, query `2 3 4` must print 0, not -1.
 
 ### Mistake 4: Integer Overflow (C++)
 
@@ -277,8 +284,8 @@ Values up to 10^9, sums can reach 2 x 10^14. Use `long long`.
 
 | Case | Input | Output | Why |
 |------|-------|--------|-----|
-| Single element | `query [1,1]` | arr[1] | Only one prefix |
-| All negative | `[-5,-3,-1]` | -1 | Shortest prefix best |
+| Single element | `query [1,1]` | max(arr[1], 0) | One element or the empty prefix |
+| All negative | `[-5,-3,-1]` | 0 | Empty prefix best |
 | All positive | `[1,2,3]` | 6 | Full range best |
 | Large values | 10^9 | Use long long | Overflow prevention |
 

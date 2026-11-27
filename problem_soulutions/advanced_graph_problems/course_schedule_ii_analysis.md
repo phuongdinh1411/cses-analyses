@@ -1,10 +1,10 @@
 ---
 layout: simple
-title: "Course Schedule II - Topological Sorting"
+title: "Course Schedule II - Reverse Topological Sort with Max-Heap"
 permalink: /problem_soulutions/advanced_graph_problems/course_schedule_ii_analysis
-difficulty: Medium
-tags: [topological-sort, graph, bfs, dfs, kahn-algorithm]
-prerequisites: [graph_basics, bfs_dfs]
+difficulty: Hard
+tags: [topological-sort, graph, heap, greedy, kahn-algorithm]
+prerequisites: [course_schedule, topological_sorting]
 ---
 
 # Course Schedule II
@@ -13,54 +13,65 @@ prerequisites: [graph_basics, bfs_dfs]
 
 | Attribute | Value |
 |-----------|-------|
-| **CSES Link** | [Course Schedule](https://cses.fi/problemset/task/1757) |
-| **Difficulty** | Medium |
+| **CSES Link** | [Course Schedule II](https://cses.fi/problemset/task/1757) |
+| **Difficulty** | Hard |
 | **Category** | Graph / Topological Sort |
 | **Time Limit** | 1 second |
-| **Key Technique** | Kahn's Algorithm / DFS |
+| **Key Technique** | Kahn's Algorithm on the Reversed Graph with a Max-Heap |
 
 ### Learning Goals
 
 After solving this problem, you will be able to:
-- [ ] Understand topological sorting and when it applies
-- [ ] Implement Kahn's algorithm (BFS-based topological sort)
-- [ ] Implement DFS-based topological sort with cycle detection
-- [ ] Detect cycles in directed graphs
-- [ ] Solve dependency resolution problems
+- [ ] Explain why "lexicographically smallest topological order" is not "course 1 as early as possible"
+- [ ] Build an order from the back by reversing the graph
+- [ ] Use a max-heap to decide which course goes last
+- [ ] Prove a greedy choice with an exchange argument
 
 ---
 
 ## Problem Statement
 
-**Problem:** Given n courses labeled 1 to n and m prerequisite requirements, find a valid order to complete all courses. If no valid order exists (due to cycles), output "IMPOSSIBLE".
+**Problem:** There are n courses and m requirements of the form "course a has to be completed before course b". Complete course 1 as early as possible; among those schedules, complete course 2 as early as possible; and so on. Print the resulting order.
 
 **Input:**
-- Line 1: Two integers n and m (number of courses and prerequisites)
-- Lines 2 to m+1: Two integers a and b, meaning course a requires course b
+- Line 1: Two integers n and m (number of courses and requirements)
+- Next m lines: Two integers a and b: course a must be completed before course b
 
 **Output:**
-- A valid order to complete all courses, or "IMPOSSIBLE" if a cycle exists
+- One line with n integers: the order in which the courses are completed
 
 **Constraints:**
 - 1 <= n <= 10^5
 - 1 <= m <= 2 * 10^5
+- 1 <= a, b <= n
+- At least one valid schedule exists (the graph is acyclic)
 
 ### Example
 
 ```
 Input:
-5 3
-3 1
-4 1
-5 4
+4 2
+2 1
+2 3
 
 Output:
-1 2 3 4 5
+2 1 3 4
 ```
 
-**Explanation:** Course 1 has no prerequisites, so we take it first. Course 3 requires 1 (done). Course 4 requires 1 (done). Course 5 requires 4 (done). Course 2 is independent.
+**Explanation:** Course 1 needs course 2 first, so the earliest course 1 can be completed is second: `2 1`. Then course 3 (its only requirement, 2, is done), then 4.
 
-Any valid order is accepted; the code below prints `2 1 4 5 3`, which also respects every prerequisite.
+A case where the "obvious" greedy fails:
+
+```
+Input:
+3 1
+3 1
+
+Output:
+3 1 2
+```
+
+Taking the smallest available course first gives `2 3 1`, which puts course 1 third. The required answer puts it second.
 
 ---
 
@@ -68,298 +79,136 @@ Any valid order is accepted; the code below prints `2 1 4 5 3`, which also respe
 
 ### Pattern Recognition
 
-> **Key Question:** We have items with dependencies - in what order can we process them?
+> **Key Question:** Kahn's algorithm with a min-heap gives the lexicographically smallest order. Why isn't that enough?
 
-This is the classic **topological sorting** problem. Whenever you see:
-- Tasks with prerequisites
-- Dependencies between items
-- "Valid ordering" with constraints
+Lexicographically smallest compares the *sequence of courses*: it wants a small course at position 1, then at position 2. This problem compares the *positions of courses*: course 1 must be as early as possible, even if that means taking a large course first. In the second example, `2 3 1` < `3 1 2` lexicographically, yet `3 1 2` is what we want.
 
-Think **topological sort**.
+### The Reversal Trick
 
-### Breaking Down the Problem
+Look at the schedule from the end. The last course can be any course that no other course depends on. Which one should go last? **The largest such course.** Pushing a large course to the end never delays a smaller one, while putting a small course last would make it as late as possible.
 
-1. **What are we looking for?** An ordering where every prerequisite comes before the course that needs it.
-2. **What information do we have?** Directed edges showing dependencies (b -> a means "take b before a").
-3. **What makes it impossible?** A cycle - if A requires B and B requires A, neither can go first.
+So: reverse every edge, run Kahn's algorithm with a **max-heap** to build the schedule back to front, then reverse the result.
 
-### Analogy
+### Why the Greedy Is Correct (Sketch)
 
-Think of getting dressed. You must put on underwear before pants, socks before shoes. If there was a rule "put on shoes before socks," you'd have a cycle - impossible to satisfy!
+Suppose the largest available course x is not last in an optimal schedule; some y < x is last instead. Both have no dependents left, so moving x to the end keeps the schedule valid. Courses smaller than x keep or improve their positions, and y moves one place earlier. That is no worse in the "course 1 first, then course 2…" comparison, so some optimal schedule ends with x. Repeat on the remaining courses.
 
 ---
 
-## Solution 1: Brute Force (Conceptual)
+## Solution 1: Brute Force
 
 ### Idea
 
-Try all n! permutations and check if each one satisfies all prerequisites.
-
-### Why It's Impractical
-
-With n up to 10^5, we cannot enumerate all permutations. This is purely for understanding - we need a smarter approach.
-
-**Time:** O(n! * m) - completely infeasible
-
----
-
-## Solution 2: Kahn's Algorithm (BFS)
-
-### Key Insight
-
-> **The Trick:** Start with courses that have no prerequisites (in-degree = 0). After "taking" them, reduce the in-degree of dependent courses. Repeat.
-
-### Algorithm
-
-1. Build adjacency list and compute in-degree for each node
-2. Add all nodes with in-degree 0 to a queue
-3. Process queue: remove node, add to result, decrease in-degree of neighbors
-4. If any neighbor's in-degree becomes 0, add it to queue
-5. If result has all n nodes, we succeeded; otherwise, there's a cycle
-
-### Dry Run Example
-
-```
-Input: n=5, edges: 3->1, 4->1, 5->4
-
-Step 1: Build graph and in-degrees
-  Adjacency: 1->[3,4], 4->[5]
-  In-degree: [0, 0, 0, 1, 1, 1]  (1-indexed: nodes 1,2 have 0)
-
-Step 2: Queue = [1, 2] (in-degree 0)
-
-Step 3: Process node 1
-  Result: [1]
-  Decrease in-degree of 3: 1->0, add to queue
-  Decrease in-degree of 4: 1->0, add to queue
-  Queue: [2, 3, 4]
-
-Step 4: Process node 2
-  Result: [1, 2]
-  No neighbors
-  Queue: [3, 4]
-
-Step 5: Process node 3
-  Result: [1, 2, 3]
-  No neighbors
-  Queue: [4]
-
-Step 6: Process node 4
-  Result: [1, 2, 3, 4]
-  Decrease in-degree of 5: 1->0, add to queue
-  Queue: [5]
-
-Step 7: Process node 5
-  Result: [1, 2, 3, 4, 5]
-  Queue: []
-
-Final: [1, 2, 3, 4, 5] - all 5 nodes processed, valid order!
-```
-
-### Visual Diagram
-
-```
-    1 -----> 3
-    |
-    +------> 4 -----> 5
-
-    2 (independent)
-
-In-degree:  1:0  2:0  3:1  4:1  5:1
-            ^    ^
-            |____|___ Start here (in-degree 0)
-```
-
-### Code (Python)
+Try all n! orders, keep the valid ones, and pick the one whose position vector (position of course 1, position of course 2, ...) is lexicographically smallest.
 
 ```python
-from collections import deque
+from itertools import permutations
 
-def solve():
-  n, m = map(int, input().split())
-
-  adj = [[] for _ in range(n + 1)]
-  in_degree = [0] * (n + 1)
-
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[b].append(a)  # b must come before a
-    in_degree[a] += 1
-
-  # Kahn's algorithm
-  queue = deque()
-  for i in range(1, n + 1):
-    if in_degree[i] == 0:
-      queue.append(i)
-
-  result = []
-  while queue:
-    node = queue.popleft()
-    result.append(node)
-
-    for neighbor in adj[node]:
-      in_degree[neighbor] -= 1
-      if in_degree[neighbor] == 0:
-        queue.append(neighbor)
-
-  if len(result) == n:
-    print(*result)
-  else:
-    print("IMPOSSIBLE")
-
-solve()
+def brute_force(n, edges):
+  best = None
+  for order in permutations(range(1, n + 1)):
+    pos = [0] * (n + 1)
+    for i, c in enumerate(order):
+      pos[c] = i
+    if all(pos[a] < pos[b] for a, b in edges):
+      key = pos[1:]
+      if best is None or key < best[0]:
+        best = (key, order)
+  return list(best[1])
 ```
 
-### Complexity
-
-| Metric | Value | Explanation |
-|--------|-------|-------------|
-| Time | O(n + m) | Visit each node and edge once |
-| Space | O(n + m) | Adjacency list and queue |
+**Time:** O(n! * (n + m)): usable only to check small cases.
 
 ---
 
-## Solution 3: DFS-Based Topological Sort
-
-### Key Insight
-
-> **The Trick:** Use DFS with three states: unvisited, visiting (in current path), visited. Add nodes to result in post-order (after all descendants processed). Reverse at the end.
+## Solution 2: Optimal - Reverse Graph + Max-Heap
 
 ### Algorithm
 
-1. Mark all nodes as unvisited (state = 0)
-2. For each unvisited node, run DFS
-3. During DFS: mark as visiting (state = 1), recurse on neighbors
-4. If we encounter a "visiting" node, we found a cycle
-5. After recursion, mark as visited (state = 2), add to result
-6. Reverse result at the end
+1. For each requirement `a b`, add the reversed edge b -> a and count `out[a] += 1` (how many courses still have to come after a).
+2. Push every course with `out = 0` into a max-heap.
+3. Repeatedly pop the largest course x and append it to `rev`. For each reversed edge x -> a, decrement `out[a]`; push a when it reaches 0.
+4. Print `rev` reversed.
 
 ### Dry Run Example
 
+Input `4 2 / 2 1 / 2 3`:
+
 ```
-Input: n=4, edges: 2->1, 3->1, 4->2, 4->3
+Reversed edges: 1 -> 2, 3 -> 2        out[2] = 2, others 0
 
-DFS from node 1:
-  Visit 1 (state: visiting)
-  No unvisited neighbors
-  Mark 1 visited, add to result: [1]
+Heap {1, 3, 4}   pop 4   rev = [4]
+Heap {1, 3}      pop 3   rev = [4, 3]         out[2]: 2 -> 1
+Heap {1}         pop 1   rev = [4, 3, 1]      out[2]: 1 -> 0, push 2
+Heap {2}         pop 2   rev = [4, 3, 1, 2]
 
-DFS from node 2:
-  Visit 2 (state: visiting)
-  Neighbor 4: visit 4 (state: visiting)
-    Neighbor of 4: none unvisited
-    Mark 4 visited, add to result: [1, 4]
-  Back to 2: mark visited, add to result: [1, 4, 2]
-
-DFS from node 3:
-  Visit 3 (state: visiting)
-  Neighbor 4: already visited, skip
-  Mark 3 visited, add to result: [1, 4, 2, 3]
-
-Reverse: [3, 2, 4, 1] - valid topological order!
+Reverse: 2 1 3 4
 ```
 
 ### Code (Python)
 
 ```python
 import sys
-sys.setrecursionlimit(200005)
+import heapq
 
-def solve():
-  n, m = map(int, input().split())
+def main():
+  data = sys.stdin.buffer.read().split()
+  n, m = int(data[0]), int(data[1])
 
-  adj = [[] for _ in range(n + 1)]
-  for _ in range(m):
-    a, b = map(int, input().split())
-    adj[b].append(a)  # b must come before a
+  radj = [[] for _ in range(n + 1)]
+  out = [0] * (n + 1)
+  for i in range(m):
+    a, b = int(data[2 + 2 * i]), int(data[3 + 2 * i])
+    radj[b].append(a)
+    out[a] += 1
 
-  state = [0] * (n + 1)  # 0: unvisited, 1: visiting, 2: visited
-  result = []
-  has_cycle = False
+  heap = [-c for c in range(1, n + 1) if out[c] == 0]
+  heapq.heapify(heap)
 
-  def dfs(node):
-    nonlocal has_cycle
-    if has_cycle:
-      return
+  rev = []
+  while heap:
+    x = -heapq.heappop(heap)
+    rev.append(x)
+    for a in radj[x]:
+      out[a] -= 1
+      if out[a] == 0:
+        heapq.heappush(heap, -a)
 
-    state[node] = 1  # visiting
+  print(" ".join(map(str, reversed(rev))))
 
-    for neighbor in adj[node]:
-      if state[neighbor] == 1:  # cycle detected
-        has_cycle = True
-        return
-      if state[neighbor] == 0:
-        dfs(neighbor)
-
-    state[node] = 2  # visited
-    result.append(node)
-
-  for i in range(1, n + 1):
-    if state[i] == 0:
-      dfs(i)
-
-  if has_cycle:
-    print("IMPOSSIBLE")
-  else:
-    print(*result[::-1])
-
-solve()
+if __name__ == "__main__":
+  main()
 ```
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(n + m) | Visit each node and edge once |
-| Space | O(n + m) | Adjacency list and recursion stack |
+| Time | O(n log n + m) | Each course is pushed and popped once; each edge is relaxed once |
+| Space | O(n + m) | Reversed adjacency list and heap |
 
 ---
 
 ## Common Mistakes
 
-### Mistake 1: Wrong Edge Direction
+### Mistake 1: Min-Heap on the Forward Graph
 
 ```python
-# WRONG - edge direction reversed
-adj[a].append(b)  # a points to b
-
-# CORRECT - b must come before a, so b points to a
-adj[b].append(a)
+# WRONG - lexicographically smallest order, not "course 1 earliest"
+heap = [c for c in range(1, n + 1) if indeg[c] == 0]
+x = heapq.heappop(heap)        # 3 1 / 3 1 -> 2 3 1
 ```
 
-**Problem:** The edge direction determines the order. "a requires b" means b -> a.
+**Problem:** Taking a small course early can delay course 1.
+**Fix:** Build from the back: reversed graph, max-heap, reverse the result.
 
-### Mistake 2: Forgetting to Reverse DFS Result
+### Mistake 2: Reading the Requirement Backwards
 
-```python
-# WRONG
-return result  # Post-order gives reverse topological order
+CSES means "a before b". The forward edge is a -> b, so the reversed edge used here is b -> a, and it is `a` whose count drops when `b` is placed.
 
-# CORRECT
-return result[::-1]  # Reverse to get correct order
-```
+### Mistake 3: Forgetting the Final Reverse
 
-### Mistake 3: Not Handling Disconnected Components
-
-```python
-# WRONG - only starts from node 1
-dfs(1)
-
-# CORRECT - check all nodes
-for i in range(1, n + 1):
-  if state[i] == 0:
-    dfs(i)
-```
-
-### Mistake 4: Using Only Two States for Cycle Detection
-
-```python
-# WRONG - can't distinguish "in current path" from "fully processed"
-visited = [False] * n
-
-# CORRECT - three states needed
-state = [0] * n  # 0: unvisited, 1: visiting, 2: visited
-```
+`rev` lists courses from last to first. Printing it directly gives the schedule backwards.
 
 ---
 
@@ -367,30 +216,27 @@ state = [0] * n  # 0: unvisited, 1: visiting, 2: visited
 
 | Case | Input | Expected | Why |
 |------|-------|----------|-----|
-| No edges | n=3, m=0 | Any order like "1 2 3" | All orderings valid |
-| Self-loop | n=2, 1->1 | IMPOSSIBLE | Node depends on itself |
-| Simple cycle | n=2, 1->2, 2->1 | IMPOSSIBLE | Circular dependency |
-| Linear chain | n=3, 2->1, 3->2 | 1 2 3 | Simple dependency chain |
-| Single node | n=1, m=0 | 1 | Trivial case |
+| No requirements | `3 0` | `1 2 3` | Every course is free; smallest first |
+| Course 1 has a long chain | `3 2 / 3 2 / 2 1` | `3 2 1` | 1 can only come after its ancestors |
+| Smallest-first trap | `3 1 / 3 1` | `3 1 2` | Not `2 3 1` |
+| Duplicate requirement | `2 2 / 1 2 / 1 2` | `1 2` | Counts handle repeated edges |
+| Single course | `1 0` | `1` | Trivial |
 
 ---
 
 ## When to Use This Pattern
 
-### Use Topological Sort When:
-- Tasks have dependencies/prerequisites
-- Need to find valid execution order
-- Checking if dependencies have cycles
-- Build systems, task scheduling, course planning
+### Use This Approach When:
+- The objective is "item 1 as early as possible, then item 2, ..." under precedence constraints
+- A min-heap topological sort gives a plausible but wrong answer on small tests
 
-### Kahn's vs DFS:
-- **Kahn's (BFS):** Iterative, easier to understand, directly produces order
-- **DFS:** Recursive, useful when also need to find the actual cycle path
+### Don't Use When:
+- Any valid order is accepted: plain Kahn's algorithm is enough ([Course Schedule](https://cses.fi/problemset/task/1679))
+- The lexicographically smallest sequence is asked for: forward graph with a min-heap
 
 ### Pattern Recognition Checklist:
-- [ ] Directed graph with dependencies? -> **Topological Sort**
-- [ ] Need to detect cycles? -> **Either approach works**
-- [ ] Need lexicographically smallest order? -> **Use Kahn's with priority queue**
+- [ ] Precedence constraints + "minimise positions in priority order"? -> **Reverse graph, max-heap**
+- [ ] Precedence constraints + "smallest sequence"? -> **Forward graph, min-heap**
 
 ---
 
@@ -400,37 +246,37 @@ state = [0] * n  # 0: unvisited, 1: visiting, 2: visited
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Building Roads](https://cses.fi/problemset/task/1666) | Basic graph connectivity |
+| [Course Schedule (CSES 1679)](https://cses.fi/problemset/task/1679) | Plain topological sort with cycle detection |
+| [Longest Flight Route (CSES 1680)](https://cses.fi/problemset/task/1680) | DP over a topological order |
 
 ### Similar Difficulty
 
 | Problem | Key Difference |
 |---------|----------------|
-| [Game Routes](https://cses.fi/problemset/task/1681) | Count paths in DAG |
-| [Longest Flight Route](https://cses.fi/problemset/task/1680) | Longest path in DAG |
+| [Game Routes (CSES 1681)](https://cses.fi/problemset/task/1681) | Count paths in a DAG |
+| [Course Schedule II (LeetCode 210)](https://leetcode.com/problems/course-schedule-ii/) | Any valid order (with cycle detection) |
 
 ### Harder (Do These After)
 
 | Problem | New Concept |
 |---------|-------------|
-| [Strongly Connected Components](https://cses.fi/problemset/task/1682) | Kosaraju's/Tarjan's algorithm |
-| [Cycle Finding](https://cses.fi/problemset/task/1669) | Find actual cycle path |
+| [Planets and Kingdoms (CSES 1683)](https://cses.fi/problemset/task/1683) | Strongly connected components |
+| [Round Trip II (CSES 1678)](https://cses.fi/problemset/task/1678) | Find an actual directed cycle |
 
 ---
 
 ## Key Takeaways
 
-1. **Core Idea:** Process nodes with no remaining dependencies first
-2. **Cycle Detection:** If we can't process all nodes, a cycle exists
-3. **Two Approaches:** Kahn's (BFS with in-degree) or DFS (three-state coloring)
-4. **Pattern:** Classic dependency resolution - very common in real systems
+1. **The Core Idea:** To make small courses early, decide the *last* course first: the largest course with no remaining dependents.
+2. **Technique:** Kahn's algorithm on the reversed graph with a max-heap, then reverse.
+3. **Trap:** The lexicographically smallest topological order answers a different question.
+4. **Proof Tool:** An exchange argument justifies the greedy choice at the end of the schedule.
 
 ---
 
 ## Practice Checklist
 
 Before moving on, make sure you can:
-- [ ] Implement Kahn's algorithm from memory
-- [ ] Implement DFS-based topological sort from memory
-- [ ] Explain why three states are needed for DFS cycle detection
-- [ ] Recognize topological sort problems in disguise
+- [ ] Give a 3-course example where the min-heap greedy fails
+- [ ] Implement the reversed max-heap version from memory
+- [ ] Explain the exchange argument in two sentences

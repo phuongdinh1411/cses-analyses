@@ -373,7 +373,7 @@ return powered[a - 1][a - 1]  # Convert to 0-indexed
 
 | Problem | New Concept |
 |---------|-------------|
-| [Knight's Tour](https://cses.fi/problemset/task/1635) | Matrix exponentiation on grid |
+| [Fixed Length Walk Queries](https://cses.fi/problemset/task/3357) | Parity BFS instead of matrix power for large n |
 | [Shortest Routes II](https://cses.fi/problemset/task/1672) | Floyd-Warshall for all-pairs shortest paths |
 
 ---

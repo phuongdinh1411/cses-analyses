@@ -1,12 +1,12 @@
 ---
 layout: simple
-title: "Minimum Euclidean Distance - Geometry Problem"
+title: "All Manhattan Distances - Geometry Problem"
 permalink: /problem_soulutions/geometry/all_manhattan_distances_analysis
 difficulty: Medium
 tags: [geometry, sorting, prefix-sums, divide-and-conquer]
 ---
 
-# Minimum Euclidean Distance
+# All Manhattan Distances
 
 ## Problem Overview
 
@@ -16,7 +16,7 @@ tags: [geometry, sorting, prefix-sums, divide-and-conquer]
 | **Category** | Geometry |
 | **Time Limit** | 1 second |
 | **Key Technique** | Sorting + Prefix Sums |
-| **CSES Link** | [Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) |
+| **CSES Link** | [All Manhattan Distances](https://cses.fi/problemset/task/3411) |
 
 ### Learning Goals
 

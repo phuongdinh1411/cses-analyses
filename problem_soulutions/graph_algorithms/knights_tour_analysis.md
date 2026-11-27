@@ -13,8 +13,8 @@ cses_link: https://cses.fi/problemset/task/1689
 | Aspect | Details |
 |--------|---------|
 | Problem | Find a path for a knight to visit all squares exactly once |
-| Input | 8x8 chessboard, starting position (row, column) |
-| Output | Sequence of 64 positions covering the entire board |
+| Input | Starting square `x y` (column, then row; 1-indexed) |
+| Output | 8x8 grid of move numbers 1..64 |
 | Type | Hamiltonian Path on a graph |
 | Core Technique | Backtracking with Warnsdorff's Heuristic |
 
@@ -29,8 +29,25 @@ After completing this problem, you will understand:
 
 Given an 8x8 chessboard and a starting position, find a sequence of knight moves that visits every square exactly once. A knight moves in an "L" shape: two squares in one direction and one square perpendicular (or vice versa).
 
-**Input**: Starting row `y` and column `x` (1-indexed)
-**Output**: 64 positions representing a complete tour, or indicate impossibility
+**Input**: One line with two integers `x y` (1 <= x, y <= 8): the starting **column** x and **row** y.
+**Output**: An 8x8 grid: row y, column x holds 1, and each square holds the move number (1..64) on which the knight visits it. Any valid tour is accepted; a tour exists from every square.
+
+```
+Input:
+2 1
+
+Output:
+4 1 6 19 30 27 16 41
+7 20 3 26 17 40 31 28
+2 5 18 39 58 29 42 15
+21 8 25 56 43 54 59 32
+24 45 22 63 38 57 14 53
+9 48 37 44 55 62 33 60
+46 23 50 11 64 35 52 13
+49 10 47 36 51 12 61 34
+```
+
+Here `2 1` means column 2 of the top row, which is why 1 sits in the second cell of the first line. This is the grid the code below prints; the CSES sample shows a different, equally valid tour.
 
 ## The 8 Knight Moves
 
@@ -139,7 +156,7 @@ def solve_knights_tour(start_row: int, start_col: int) -> list:
   """
   Find knight's tour on 8x8 board starting from (start_row, start_col).
   Uses Warnsdorff's heuristic for efficient solving.
-  Returns list of (row, col) tuples representing the tour.
+  Returns the board: board[r][c] = move number (1..64), or None.
   """
   N = 8
 
@@ -180,7 +197,7 @@ def solve_knights_tour(start_row: int, start_col: int) -> list:
     board[r][c] = move_num
 
     # Base case: all squares visited
-    if move_num == N * N - 1:
+    if move_num == N * N:
       return True
 
     # Try moves in Warnsdorff order (lowest degree first)
@@ -192,30 +209,14 @@ def solve_knights_tour(start_row: int, start_col: int) -> list:
     board[r][c] = -1
     return False
 
-  # Solve and extract path
-  if backtrack(start_row, start_col, 0):
-    path = [None] * (N * N)
-    for r in range(N):
-      for c in range(N):
-        path[board[r][c]] = (r, c)
-    return path
-  return None
+  return board if backtrack(start_row, start_col, 1) else None
 
 
-def print_tour(path: list) -> None:
-  """Print the tour as required by CSES."""
-  if path is None:
-    print("NO SOLUTION")
-    return
-  for r, c in path:
-    print(r + 1, c + 1)  # Convert to 1-indexed
-
-
-# Example usage
 if __name__ == "__main__":
-  y, x = map(int, input().split())
-  tour = solve_knights_tour(y - 1, x - 1)  # Convert to 0-indexed
-  print_tour(tour)
+  x, y = map(int, input().split())          # column first, then row
+  board = solve_knights_tour(y - 1, x - 1)  # 0-indexed (row, col)
+  for row in board:
+    print(" ".join(map(str, row)))
 ```
 
 ### Complexity Analysis
@@ -237,9 +238,9 @@ if __name__ == "__main__":
    - Knight moves are (+/-1, +/-2) and (+/-2, +/-1)
    - Common error: using (+/-1, +/-1) or (+/-2, +/-2)
 
-3. **Off-by-one in indexing**
-   - CSES uses 1-indexed input/output
-   - Remember to convert when using 0-indexed arrays
+3. **Swapping x and y, or printing coordinates**
+   - CSES gives `x y` = column, then row, so the start is `board[y-1][x-1]`
+   - The answer is the 8x8 grid of move numbers, not a list of 64 squares
 
 4. **Forgetting to backtrack**
    - Must reset board[r][c] = -1 when returning false
@@ -261,42 +262,21 @@ The intuition: By always visiting the most constrained squares first, we ensure 
 ## Visual: Complete Example
 
 ```
-Starting at (1,1) - top-left corner:
+Input "1 1": start in the top-left corner (row 1, column 1).
 
-Move 1: (1,1)     Degree of candidates: (2,3)=4, (3,2)=4
-                  Both equal, pick first
+Move 1 -> 2: the two candidates (row 2, col 3) and (row 3, col 2) both have
+             degree 5; the tie goes to the first in sorted order, (row 2, col 3).
+Each later move again picks the unvisited neighbour with the fewest exits.
 
-Move 2: (2,3)     Degree of candidates: (1,1)=visited, (3,1)=3, (4,2)=4...
-                  Pick (3,1) with degree 3
-
-Move 3: (3,1)     Continue applying Warnsdorff...
-
-Final board (move numbers):
-+----+----+----+----+----+----+----+----+
-
-|  1 | 38 | 55 | 34 |  3 | 36 | 19 | 22 |
-+----+----+----+----+----+----+----+----+
-
-| 54 | 47 |  2 | 37 | 20 | 23 |  4 | 17 |
-+----+----+----+----+----+----+----+----+
-
-| 39 | 56 | 33 | 46 | 35 | 18 | 21 |  8 |
-+----+----+----+----+----+----+----+----+
-
-| 48 | 53 | 40 | 57 | 24 |  7 | 16 |  5 |
-+----+----+----+----+----+----+----+----+
-
-| 59 | 32 | 45 | 52 | 41 | 26 |  9 | 14 |
-+----+----+----+----+----+----+----+----+
-
-| 44 | 49 | 58 | 25 | 62 | 15 |  6 | 27 |
-+----+----+----+----+----+----+----+----+
-
-| 31 | 60 | 51 | 42 | 29 | 10 | 63 | 12 |
-+----+----+----+----+----+----+----+----+
-
-| 50 | 43 | 30 | 61 | 64 | 13 | 28 | 11 |
-+----+----+----+----+----+----+----+----+
+Final board printed by the code (move numbers):
+ 1 16 31 40  3 18 21 56
+30 39  2 17 42 55  4 19
+15 32 41 46 53 20 57 22
+38 29 48 43 58 45 54  5
+33 14 37 52 47 60 23 62
+28 49 34 59 44 63  6  9
+13 36 51 26 11  8 61 24
+50 27 12 35 64 25 10  7
 ```
 
 ## Summary

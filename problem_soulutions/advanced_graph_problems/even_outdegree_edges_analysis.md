@@ -371,13 +371,13 @@ if child_out % 2 == 0:  # Should be == 1
 | Problem | Key Difference |
 |---------|----------------|
 | [Strongly Connected Edges](https://cses.fi/problemset/task/2177) | Orient for strong connectivity |
-| [Acyclic Graph Edges](https://cses.fi/problemset/task/2178) | Orient to make DAG |
+| [Acyclic Graph Edges](https://cses.fi/problemset/task/1756) | Orient to make DAG |
 
 ### Harder (Do These After)
 
 | Problem | New Concept |
 |---------|-------------|
-| [Eulerian Path](https://cses.fi/problemset/task/1691) | Finding path using all edges |
+| [Mail Delivery](https://cses.fi/problemset/task/1691) | Finding path using all edges |
 | [New Flight Routes](https://cses.fi/problemset/task/1685) | SCC-based edge addition |
 
 ---

@@ -340,7 +340,7 @@ if len(letters) == target_count:
 
 | Problem | Why It Helps |
 |---------|--------------|
-| [Subarray Distinct Values](https://cses.fi/problemset/task/2428) | 1D version of distinct counting |
+| [Distinct Values Subarrays II](https://cses.fi/problemset/task/2428) | 1D version of distinct counting |
 
 ### Similar Difficulty
 

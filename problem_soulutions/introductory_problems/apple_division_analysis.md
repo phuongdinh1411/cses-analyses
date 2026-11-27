@@ -283,7 +283,7 @@ solve()
 |---------|----------------|
 | [Two Sets](https://cses.fi/problemset/task/1092) | Partition into equal sums, uses math |
 | [Chessboard and Queens](https://cses.fi/problemset/task/1624) | Bitmask for different constraint type |
-| [Grid Paths](https://cses.fi/problemset/task/1625) | Exhaustive enumeration with pruning |
+| [Grid Path Description](https://cses.fi/problemset/task/1625) | Exhaustive enumeration with pruning |
 
 ### Harder (Do These After)
 

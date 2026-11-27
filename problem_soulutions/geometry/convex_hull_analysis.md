@@ -31,19 +31,20 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
-**Problem:** Given n points in a 2D plane, find the convex hull - the smallest convex polygon that contains all the points.
+**Problem:** Given n points in a 2D plane, find the convex hull - the smallest convex polygon that contains all the points. **Print every point that lies on the hull boundary**, including points in the middle of an edge.
 
 **Input:**
 - Line 1: Integer n (number of points)
 - Lines 2 to n+1: Two integers x and y (coordinates of each point)
 
 **Output:**
-- Line 1: Integer m (number of vertices in the convex hull)
-- Lines 2 to m+1: Coordinates of hull vertices in counter-clockwise order, starting from the leftmost-lowest point
+- Line 1: Integer k (number of points on the convex hull)
+- Lines 2 to k+1: The hull points, in any order (the code below prints them counter-clockwise from the lowest-leftmost point)
 
 **Constraints:**
-- 1 <= n <= 2 * 10^5
+- 3 <= n <= 2 * 10^5
 - -10^9 <= x, y <= 10^9
+- All points are distinct and the hull has positive area
 
 ### Example
 
@@ -67,6 +68,35 @@ Output:
 ```
 
 **Explanation:** The hull is the pentagon (0,0) → (2,0) → (3,1) → (2,2) → (1,2). Point (1,1) is strictly inside. (2,2) is a vertex, not an interior point: the segment from (3,1) to (1,2) passes x = 2 at y = 1.5, below it.
+
+Collinear boundary points count too. A square with its edge midpoints and centre:
+
+```
+Input:
+9
+0 0
+2 0
+4 0
+4 2
+4 4
+2 4
+0 4
+0 2
+2 2
+
+Output:
+8
+0 0
+2 0
+4 0
+4 2
+4 4
+2 4
+0 4
+0 2
+```
+
+Only the centre (2,2) is left out; the four midpoints lie on edges and must be printed.
 
 ---
 
@@ -146,7 +176,7 @@ cross(O, A, B) = (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x)
 
 Let's trace through with input points: `(0,0), (1,1), (2,2), (3,1), (2,0), (1,2)`
 
-`cross(o, a, b) > 0` means o → a → b turns left (counter-clockwise). Pop while `cross <= 0`.
+`cross(o, a, b) > 0` means o → a → b turns left (counter-clockwise). Pop while `cross < 0` (a right turn); a collinear point (`cross == 0`) stays, because it lies on the boundary.
 
 ```
 Step 1: Sort by x-coordinate (then y)
@@ -214,17 +244,17 @@ def convex_hull(points: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
   if len(points) <= 1:
     return points
 
-  # Build lower hull
+  # Build lower hull (pop only right turns: collinear points stay)
   lower = []
   for p in points:
-    while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+    while len(lower) >= 2 and cross(lower[-2], lower[-1], p) < 0:
       lower.pop()
     lower.append(p)
 
   # Build upper hull
   upper = []
   for p in reversed(points):
-    while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+    while len(upper) >= 2 and cross(upper[-2], upper[-1], p) < 0:
       upper.pop()
     upper.append(p)
 
@@ -272,30 +302,17 @@ if __name__ == "__main__":
 
 ```python
 # fragment
-# WRONG - excludes collinear boundary points
-while len(hull) >= 2 and cross(hull[-2], hull[-1], p) < 0:  # strict
-
-# CORRECT for excluding collinear (typical requirement)
+# WRONG for CSES - drops points in the middle of a hull edge
 while len(hull) >= 2 and cross(hull[-2], hull[-1], p) <= 0:  # non-strict
+
+# CORRECT for CSES - keeps every boundary point
+while len(hull) >= 2 and cross(hull[-2], hull[-1], p) < 0:   # strict
 ```
 
-**Problem:** CSES problem typically wants minimal hull (no collinear points on edges).
-**Fix:** Use `<= 0` to exclude collinear points from the hull boundary.
+**Problem:** CSES asks for all points on the hull, not just its corners. With `<= 0`, the square-with-midpoints example prints 4 points instead of 8.
+**Fix:** Pop only on a strict right turn. This is safe because CSES guarantees a hull with positive area; if all points were collinear, the strict version would list the middle points twice.
 
-### Mistake 3: Wrong Output Order
-
-```python
-# WRONG - clockwise order
-hull = upper[:-1] + lower[:-1]
-
-# CORRECT - counter-clockwise order
-hull = lower[:-1] + upper[:-1]
-```
-
-**Problem:** The problem specifies counter-clockwise output order.
-**Fix:** Combine lower hull first, then upper hull.
-
-### Mistake 4: Not Removing Duplicate Points
+### Mistake 3: Not Removing Duplicate Points
 
 ```python
 # WRONG - duplicate points cause issues
@@ -311,12 +328,12 @@ points = sorted(set(points))
 
 | Case | Input | Expected Output | Why |
 |------|-------|-----------------|-----|
-| Single point | `n=1, (0,0)` | `1\n0 0` | Hull is the point itself |
-| Two points | `n=2, (0,0), (1,1)` | `2\n0 0\n1 1` | Hull is a line segment |
-| All collinear | `(0,0), (1,1), (2,2)` | `2\n0 0\n2 2` | Only endpoints matter |
-| All same point | `(1,1), (1,1), (1,1)` | `1\n1 1` | Deduplicate first |
+| Minimum input | `n=3`, a triangle | all 3 points | Every point is a corner |
 | Square | `(0,0), (0,1), (1,0), (1,1)` | `4\n...` | All points on hull |
+| Points on an edge | square plus edge midpoints | 8 points | Collinear boundary points are printed |
+| Vertical edge | `(0,0), (0,1), (0,2), (1,0)` | 4 points | (0,1) lies on the left edge |
 | Triangle with interior | `(0,0), (2,0), (1,2), (1,1)` | `3\n0 0\n2 0\n1 2` | Interior point excluded |
+| Large coordinates | `±10^9` | - | Cross product up to ~8·10^18: use 64-bit in C++ |
 
 ---
 
@@ -326,7 +343,7 @@ points = sorted(set(points))
 - You need to find the convex boundary of a point set
 - All points fit in memory and can be sorted
 - You need O(n log n) performance
-- Output order matters (counter-clockwise)
+- You may also need the hull in boundary order (the chains give it for free)
 
 ### Don't Use When:
 - Points arrive in a stream (use online algorithms)
@@ -355,14 +372,14 @@ points = sorted(set(points))
 |---------|----------------|
 | [Polygon Area](https://cses.fi/problemset/task/2191) | Apply cross product for area calculation |
 | [Point in Polygon](https://cses.fi/problemset/task/2192) | Use cross product for containment test |
-| [Erect the Fence (LeetCode 587)](https://leetcode.com/problems/erect-the-fence/) | Same problem, include collinear points |
+| [Erect the Fence (LeetCode 587)](https://leetcode.com/problems/erect-the-fence/) | Same task (all boundary points, collinear included) |
 
 ### Harder (Do These After)
 
 | Problem | New Concept |
 |---------|-------------|
-| [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem with convex hull |
-| [Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) | Convex hull for optimization |
+| [Polygon Lattice Points](https://cses.fi/problemset/task/2193) | Pick's theorem and gcd for points on edges |
+| [Minimum Euclidean Distance](https://cses.fi/problemset/task/2194) | Closest pair by sweep line or divide and conquer |
 
 ---
 

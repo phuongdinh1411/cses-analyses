@@ -31,31 +31,45 @@ After solving this problem, you will be able to:
 
 ## Problem Statement
 
-**Problem:** Given two line segments, determine if they intersect.
+**Problem:** For each test, two line segments are given: (x1,y1)-(x2,y2) and (x3,y3)-(x4,y4). Determine whether they have at least one common point.
 
 **Input:**
-- Line 1: Four integers x1, y1, x2, y2 - endpoints of first segment
-- Line 2: Four integers x3, y3, x4, y4 - endpoints of second segment
+- Line 1: Integer t (number of tests)
+- Next t lines: Eight integers x1 y1 x2 y2 x3 y3 x4 y4
 
 **Output:**
-- "YES" if the segments intersect, "NO" otherwise
+- For each test, "YES" if the segments intersect, "NO" otherwise
 
 **Constraints:**
-- -10^9 <= x, y <= 10^9
-- Segments may be points (both endpoints same)
+- 1 <= t <= 10^5
+- -10^9 <= all coordinates <= 10^9
+- (x1,y1) != (x2,y2) and (x3,y3) != (x4,y4)
 
 ### Example
 
 ```
 Input:
-0 0 4 4
-0 4 4 0
+5
+1 1 5 3 1 2 4 3
+1 1 5 3 1 1 4 3
+1 1 5 3 2 3 4 1
+1 1 5 3 2 4 4 1
+1 1 5 3 3 2 7 4
 
 Output:
+NO
+YES
+YES
+YES
 YES
 ```
 
-**Explanation:** The two segments form an "X" shape, crossing at point (2, 2).
+**Explanation:** The first segment is always (1,1)-(5,3), the line y = (x+1)/2.
+- Test 1: (1,2)-(4,3) lies entirely above it, so NO.
+- Test 2: The segments share the endpoint (1,1).
+- Test 3: (2,3)-(4,1) crosses it at (3,2).
+- Test 4: (2,4)-(4,1) crosses it properly.
+- Test 5: (3,2)-(7,4) is collinear with it and overlaps on (3,2)-(5,3).
 
 ---
 
@@ -175,6 +189,8 @@ Step 3: Both conditions met -> Output "YES"
 
 **Python:**
 ```python
+import sys
+
 def cross(o, a, b):
   """
   Compute cross product of vectors OA and OB.
@@ -212,22 +228,26 @@ def segments_intersect(p1, p2, p3, p4):
 
   return False
 
-# Read input and solve
-x1, y1, x2, y2 = map(int, input().split())
-x3, y3, x4, y4 = map(int, input().split())
+def main():
+  data = sys.stdin.buffer.read().split()
+  t = int(data[0])
+  out = []
+  for i in range(t):
+    x1, y1, x2, y2, x3, y3, x4, y4 = map(int, data[1 + 8 * i: 9 + 8 * i])
+    hit = segments_intersect((x1, y1), (x2, y2), (x3, y3), (x4, y4))
+    out.append("YES" if hit else "NO")
+  print("\n".join(out))
 
-if segments_intersect((x1, y1), (x2, y2), (x3, y3), (x4, y4)):
-  print("YES")
-else:
-  print("NO")
+if __name__ == "__main__":
+  main()
 ```
 
 ### Complexity
 
 | Metric | Value | Explanation |
 |--------|-------|-------------|
-| Time | O(1) | Fixed number of arithmetic operations |
-| Space | O(1) | Only store a few variables |
+| Time | O(t) | O(1) arithmetic per test; read all input at once for t = 10^5 |
+| Space | O(t) | Input tokens and output lines |
 
 ---
 
@@ -276,8 +296,8 @@ if d1 * d2 <= 0 and d3 * d4 <= 0:  # Too permissive!
 | Collinear no overlap | (0,0)-(2,0), (3,0)-(5,0) | NO | On same line but gap exists |
 | Touch at endpoint | (0,0)-(2,2), (2,2)-(4,0) | YES | Segments share point (2,2) |
 | T-junction | (0,0)-(4,0), (2,0)-(2,2) | YES | One endpoint on other segment |
-| Point segments | (2,2)-(2,2), (0,0)-(4,4) | YES | Point lies on the line segment |
 | Same segment | (0,0)-(4,4), (0,0)-(4,4) | YES | Identical segments |
+| Large coordinates | ±10^9 | - | Cross products reach ~8·10^18: use 64-bit in C++ |
 
 ---
 

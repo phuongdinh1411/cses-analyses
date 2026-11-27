@@ -300,7 +300,7 @@ if k <= cnt[u]:
 
 | Problem | New Concept |
 |---------|-------------|
-| [CSES - Repeating Substring](https://cses.fi/problemset/task/2107) | Finding repeated patterns |
+| [CSES - Repeating Substring](https://cses.fi/problemset/task/2106) | Finding repeated patterns |
 | [CSES - Required Substring](https://cses.fi/problemset/task/1112) | DP + string matching |
 
 ---
